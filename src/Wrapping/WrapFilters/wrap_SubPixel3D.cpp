@@ -70,7 +70,7 @@ BasicVariable::ptr WrapClass_SubPixel3D::wrap_GradienteCurvo3D
   
   //Create the AMIObject with the result
   AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("Sub-pixel2D");
+  amiobject->SetName("Sub-pixel3D");
   int size = sp->getBorderVoxelVector().size();
   //InrImages for params
   InrImage::ptr AIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,

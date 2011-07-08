@@ -25,6 +25,24 @@ if (!exists(Subpixel3DClass)){
       ::show_vol    = UCHAR(0),          "Show or hide the volume"
       ::show_planes = UCHAR(1),          "Show or hide the planes of the edge"
       ::show_normals= UCHAR(0),          "Show or hide the normals of the edge"
+      
+      #Parameters of the settings
+      #Planes
+      ::planes_opacity = 1.0,            "Opacity of the planes of the edges"
+      ::planes_r       = 255.0,          "Red component of the color of the planes"
+      ::planes_g       = 0.0,            "Green component of the color of the planes"
+      ::planes_b       = 0.0,            "Blue component of the color of the planes"
+      #Normals
+      ::normals_opacity = 1.0,           "Opacity of the normals of the edges"
+      ::normals_r       = 0.0,           "Red component of the color of the normals"
+      ::normals_g       = 0.0,           "Green component of the color of the normals"
+      ::normals_b       = 255.0,         "Blue component of the color of the normals"
+      #Volume
+      ::volume_opacity  = 1.0,           "Opacity of the volume"
+      #Background
+      ::background_r    = 76.5,          "Red component of the color of the background"
+      ::background_g    = 76.5,          "Green component of the color of the background"
+      ::background_b    = 153,           "Blue component of the color of the background"
     }
     
 
@@ -42,118 +60,146 @@ if (!exists(Subpixel3DClass)){
     #-----------------------
     
     proc ::vtkDrawEdges() {
-      #Edge points
-      edge_points = vtk.vtkPoints.New()
-      #We fill the points with the result of the subpixel3D algorithm
-      for i = 0 to ::res->xpos.tx-1 {
-        edge_points.InsertNextPoint(::res->xpos(i), ::res->ypos(i), ::res->zpos(i))
-      }
-      
-      #Add the points to a polydata
-      edges_polydata = vtk.vtkPolyData.New()
-      edges_polydata.SetPoints(&edge_points)
-      
-      #Array for the normals
-      normals_array = vtk.vtkDoubleArray.New()
-      #Three components (x,y,z)
-      normals_array.SetNumberOfComponents(3)
-      #The number of tuples will be the number of edge pixels
-      normals_array.SetNumberOfTuples(::res->xpos.tx)
-      #We fill the array with the normals previously computed
-      if(exists(i)) { del i; }
-      for i = 0 to ::res->xpos.tx-1 {
-        if (exists(v)) { del v; }
-        v = vector_double()
-        v.push_back(::res->nx(i,0,0))
-        v.push_back(::res->ny(i,0,0))
-        v.push_back(::res->nz(i,0,0))
-        normals_array.SetTupleValue(i, &v[0])
-      }
-      
-      #Asign the normals to the polydata
-      edges_polydata.GetPointData().SetNormals(&normals_array)
-      
-      if (::show_vol == 1) {
-        #Drawing the input image
-        ::vol_isosurf = isosurf(::input, (max(::input)+min(::input))/2)
-        #Create the polydata and compute the normals
-        vol_polydata = global::ToVtkPolyData(::vol_isosurf)
-        vol_normals = vtk.vtkPolyDataNormals.New()
-        vol_normals.SetInput(&vol_polydata)
-        vol_normals.SetFeatureAngle(60.0)
-        #Create the mapper and conect it with the normals output
-        vol_mapper = vtk.vtkPolyDataMapper.New()
-        vol_mapper.SetInputConnection(&vol_normals.GetOutputPort())
-        vol_mapper.ScalarVisibilityOff()
-        #Create a new actor set the vol_mapper
-        ::vol_actor = vtk.vtkActor.New()
-        ::vol_actor.SetMapper(&vol_mapper)
-      }
-     
-      if (::show_normals == 1) {
-        arrowSource = vtk.vtkArrowSource.New()
-        arrow_glyph3D = vtk.vtkGlyph3D.New()
-        arrow_glyph3D.OrientOn()
-        arrow_glyph3D.SetSource(&arrowSource.GetOutput())
-        arrow_glyph3D.SetVectorModeToUseNormal()
-        arrow_glyph3D.SetInput(&edges_polydata)
-        arrow_glyph3D.SetScaleFactor(0.5)
-        arrow_glyph3D.Update()
+      if (exists(::res)) {
+        #Edge points
+        edge_points = vtk.vtkPoints.New()
+        #We fill the points with the result of the subpixel3D algorithm
+        for i = 0 to ::res->xpos.tx-1 {
+          edge_points.InsertNextPoint(::res->xpos(i), ::res->ypos(i), ::res->zpos(i))
+        }
         
-        #Mapper for the visualization
-        arrow_mapper = vtk.vtkPolyDataMapper.New()
-        arrow_mapper.SetInputConnection(&arrow_glyph3D.GetOutputPort())
+        #Add the points to a polydata
+        edges_polydata = vtk.vtkPolyData.New()
+        edges_polydata.SetPoints(&edge_points)
         
-        #Actor
-        ::arrow_actor = vtk.vtkActor.New()
-        ::arrow_actor.SetMapper(&arrow_mapper)
-      }
-      
-      if (::show_planes == 1) {
-        planeSource = vtk.vtkPlaneSource.New()
-        planeSource.SetNormal(1.0, 0.0, 0.0)
-        plane_glyph3D = vtk.vtkGlyph3D.New()
-        plane_glyph3D.OrientOn()
-        plane_glyph3D.SetSource(&planeSource.GetOutput())
-        plane_glyph3D.SetVectorModeToUseNormal()
-        plane_glyph3D.SetInput(&edges_polydata)
-        plane_glyph3D.SetScaleFactor(0.8)
-        plane_glyph3D.Update()
+        #Array for the normals
+        normals_array = vtk.vtkDoubleArray.New()
+        #Three components (x,y,z)
+        normals_array.SetNumberOfComponents(3)
+        #The number of tuples will be the number of edge pixels
+        normals_array.SetNumberOfTuples(::res->xpos.tx)
+        #We fill the array with the normals previously computed
+        if(exists(i)) { del i; }
+        for i = 0 to ::res->xpos.tx-1 {
+          if (exists(v)) { del v; }
+          v = vector_double()
+          v.push_back(::res->nx(i,0,0))
+          v.push_back(::res->ny(i,0,0))
+          v.push_back(::res->nz(i,0,0))
+          normals_array.SetTupleValue(i, &v[0])
+        }
         
-        #Mapper for the visualization
-        plane_mapper = vtk.vtkPolyDataMapper.New()
-        plane_mapper.SetInputConnection(&plane_glyph3D.GetOutputPort())
+        #Asign the normals to the polydata
+        edges_polydata.GetPointData().SetNormals(&normals_array)
         
-        #Actor
-        ::plane_actor = vtk.vtkActor.New()
-        ::plane_actor.SetMapper(&plane_mapper)
-      }
-      
-      #Create the scene
-      renwin = ::renwin_interact.GetRenderWindow()
-      #Create and add the renderer
-      renderer = vtk.vtkRenderer.New()
-      renwin.AddRenderer(&renderer)
-      interact = vtk.vtkInteractorStyleTrackballCamera.New()
-      ::renwin_interact.SetInteractorStyle(&interact)
-      #We add the actors
-      if (::show_vol == 1) {
-        renderer.AddActor(&::vol_actor)
-      }
-      if (::show_planes == 1) {
-        renderer.AddActor(&::plane_actor)
-      }
-      if (::show_normals == 1) {
-        renderer.AddActor(&::arrow_actor)
-      }
+        if (::show_vol == 1) {
+//          #Drawing the input image
+//          ::vol_isosurf = isosurf(::input, (max(::input)+min(::input))/2)
+//          #Create the polydata and compute the normals
+//          vol_polydata = global::ToVtkPolyData(::vol_isosurf)
+//          vol_normals = vtk.vtkPolyDataNormals.New()
+//          vol_normals.SetInput(&vol_polydata)
+//          vol_normals.SetFeatureAngle(60.0)
+//          #Create the mapper and conect it with the normals output
+//          vol_mapper = vtk.vtkPolyDataMapper.New()
+//          vol_mapper.SetInputConnection(&vol_normals.GetOutputPort())
+//          vol_mapper.ScalarVisibilityOff()
+//          #Create a new actor set the vol_mapper
+//          ::vol_actor = vtk.vtkActor.New()
+//          #Set the opacity property
+//          ::vol_actor.GetProperty().SetOpacity(::volume_opacity)
+//          ::vol_actor.SetMapper(&vol_mapper)
+          
+          ::vol = vtk.vtkVolume.New()
+          uinput = (USHORT)::input
+          ::volmapper = vtk.vtkVolumeRayCastMapper.New()
+          compositeFunction = vtk.vtkVolumeRayCastCompositeFunction.New()
+          ::volmapper.SetVolumeRayCastFunction(&compositeFunction)
+          ::vtkinput = vtktools.ToVtkImageData(&uinput)
+          ::volmapper.SetInput(&::vtkinput)
+          ::property = vtk.vtkVolumeProperty.New()
+          ::property.SetIndependentComponents(1)
+          ::property.SetInterpolationTypeToLinear()
+          ::vol.SetProperty(&::property)
+          ::vol.SetMapper(&::volmapper)
+        }
+       
+        if (::show_normals == 1) {
+          arrowSource = vtk.vtkArrowSource.New()
+          arrow_glyph3D = vtk.vtkGlyph3D.New()
+          arrow_glyph3D.OrientOn()
+          arrow_glyph3D.SetSource(&arrowSource.GetOutput())
+          arrow_glyph3D.SetVectorModeToUseNormal()
+          arrow_glyph3D.SetInput(&edges_polydata)
+          arrow_glyph3D.SetScaleFactor(0.5)
+          arrow_glyph3D.Update()
+          
+          #Mapper for the visualization
+          arrow_mapper = vtk.vtkPolyDataMapper.New()
+          arrow_mapper.SetInputConnection(&arrow_glyph3D.GetOutputPort())
+          
+          #Actor
+          ::arrow_actor = vtk.vtkActor.New()
+          #Set the opacity property
+          ::arrow_actor.GetProperty().SetOpacity(::normals_opacity)
+          #Set the color of the normals
+          ::arrow_actor.GetProperty().SetColor(::normals_r/255,::normals_g/255,::normals_b/255)
+          ::arrow_actor.SetMapper(&arrow_mapper)
+        }
+        
+        if (::show_planes == 1) {
+          planeSource = vtk.vtkPlaneSource.New()
+          planeSource.SetNormal(1.0, 0.0, 0.0)
+          plane_glyph3D = vtk.vtkGlyph3D.New()
+          plane_glyph3D.OrientOn()
+          plane_glyph3D.SetSource(&planeSource.GetOutput())
+          plane_glyph3D.SetVectorModeToUseNormal()
+          plane_glyph3D.SetInput(&edges_polydata)
+          plane_glyph3D.SetScaleFactor(0.8)
+          plane_glyph3D.Update()
+          
+          #Mapper for the visualization
+          plane_mapper = vtk.vtkPolyDataMapper.New()
+          plane_mapper.SetInputConnection(&plane_glyph3D.GetOutputPort())
+          
+          #Actor
+          ::plane_actor = vtk.vtkActor.New()
+          #Set the opacity property
+          ::plane_actor.GetProperty().SetOpacity(::planes_opacity)
+          #Set the color of the planes
+          ::plane_actor.GetProperty().SetColor(::planes_r/255,::planes_g/255,::planes_b/255)
+          ::plane_actor.SetMapper(&plane_mapper)
+        }
+        
+        #Create the scene
+        renwin = ::renwin_interact.GetRenderWindow()
+        #Create and add the renderer
+        renderer = vtk.vtkRenderer.New()
+        renwin.AddRenderer(&renderer)
+        interact = vtk.vtkInteractorStyleTrackballCamera.New()
+        ::renwin_interact.SetInteractorStyle(&interact)
+        #We add the actors
+        if (::show_vol == 1) {
+          #renderer.AddActor(&::vol_actor)
+          renderer.AddVolume(&::vol)
+        }
+        if (::show_planes == 1) {
+          renderer.AddActor(&::plane_actor)
+        }
+        if (::show_normals == 1) {
+          renderer.AddActor(&::arrow_actor)
+        }
 
-      renderer.ResetCameraClippingRange()
-      renderer.SetBackground(0.3, 0.3, 0.6)
-      renderer.ResetCamera()
-      #renwin.Render()
-      ::renwin_interact.Start()
-      
+        renderer.ResetCameraClippingRange()
+        renderer.SetBackground(::background_r/255, ::background_g/255, ::background_b/255)
+        renderer.ResetCamera()
+        #renwin.Render()
+        ::renwin_interact.Start()
+      } else {
+        InfoDialog("You must apply the method before draw the edges.")
+      }
     }
+    Comments(::vtkDrawEdges, "Draw the subvoxel edges.")
     
     #-----------------------
     
@@ -254,6 +300,7 @@ if (!exists(Subpixel3DClass)){
       ::win = ::import->ParamPanel("Subpixel 3D")
       
       ::win.BeginBook()
+        #Main parameters page
         ::win.AddPage("Param.")
         
           #Global parameters panel
@@ -279,10 +326,42 @@ if (!exists(Subpixel3DClass)){
             ::win.AddBoolean(&::show_normals, "Normals")
           ::win.EndBoxPanel()
           
- 
-          ::icons.LoadIconPNG("Play")
-          ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+          ::win.BeginHorizontal()
+            ::icons.LoadIconPNG("Play")
+            ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+            ::icons.LoadIconPNG("Refresh")
+            ::AddBitmapButton(&::win, &::icons._Refresh, 16, "vtkDrawEdges")
+          ::win.EndHorizontal()
           
+        #Settings page
+        ::win.AddPage("Set.")
+          ::win.BeginBoxPanel("Volume")
+            ::win.AddFloat(&::volume_opacity, "Opacity", 0, 1)
+          ::win.EndBoxPanel()
+          
+          ::win.BeginBoxPanel("Planes")
+            ::win.AddFloat(&::planes_opacity, "Opacity", 0, 1)
+            ::win.BeginBoxPanel("Color")
+              ::win.AddFloat(&::planes_r, "R", 0, 255)
+              ::win.AddFloat(&::planes_g, "G", 0, 255)
+              ::win.AddFloat(&::planes_b, "B", 0, 255)
+            ::win.EndBoxPanel()
+          ::win.EndBoxPanel()
+          
+          ::win.BeginBoxPanel("Normals")
+            ::win.AddFloat(&::normals_opacity, "Opacity", 0, 1)
+            ::win.BeginBoxPanel("Color")
+              ::win.AddFloat(&::normals_r, "R", 0, 255)
+              ::win.AddFloat(&::normals_g, "G", 0, 255)
+              ::win.AddFloat(&::normals_b, "B", 0, 255)
+            ::win.EndBoxPanel()
+          ::win.EndBoxPanel()
+      
+          ::win.BeginBoxPanel("Background color")
+            ::win.AddFloat(&::background_r, "R", 0, 255)
+            ::win.AddFloat(&::background_g, "G", 0, 255)
+            ::win.AddFloat(&::background_b, "B", 0, 255)
+          ::win.EndBoxPanel()
       
       ::win.EndBook()
 

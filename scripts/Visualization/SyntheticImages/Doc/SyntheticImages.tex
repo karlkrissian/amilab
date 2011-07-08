@@ -10,6 +10,7 @@
 \author{Karl Krissian \& Daniel El\'ias Santana Cedr\'es}
 \thanks{
 Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Centro de Tecnolog\'ias de la Imagen (CTIM)\\
 Universidad de Las Palmas de Gran Canaria\\
 email: krissian@dis.ulpgc.es
 email: daniel.santana104@estudiantes.ulpgc.es
@@ -19,7 +20,7 @@ email: daniel.santana104@estudiantes.ulpgc.es
 \maketitle
 
 \begin{abstract}
-This script provides a user interface to create synthetic images in 2D and 3D based on an analytic function (line, circle, sphere or torus).
+This script provides a user interface to create synthetic images in 2D and 3D based on an analytic function (line, circle, vessel, torus, cube, cylinder, sphere or torus).
 \end{abstract}
 
 
@@ -40,10 +41,10 @@ The interface is divided into several tabs.
 \subsection{\emph{Main} tab}
 In the \emph{Main} tab you can create a new input image indicating the x, y and z dimensions.
 
-After to create an analytic function you can apply the method. You can choose the recursive subdivision level and two diferent methods:
+After to create an analytic function you can apply the method. You can choose the recursive subdivision level and two different methods:
 \begin{itemize}
-	\item Analytic Partial Surface: Compute partial effect on a 2D image using the line or circle analytic function.
-	\item Analytic Partial Volume: Compute partial effect on a 3D image using the sphere or torus analytic function.
+	\item Analytic Partial Surface: Compute partial effect on a 2D image using the line, circle, vessel or ring analytic function.
+	\item Analytic Partial Volume: Compute partial effect on a 3D image using the cube, cylinder, sphere or torus analytic function.
 \end{itemize}
 
 Also, you can save the image as a global variable.
@@ -52,9 +53,13 @@ Also, you can save the image as a global variable.
 In the \emph{Func} tab you can create an analytic function object. There are four functions with some parameters:
 \begin{itemize}
 	\item Line: The normal parameters and y axis cut point.
-	\item Circle: The center and the radius.
-	\item Sphere: The center and the radius.
-	\item Torus: The center, the minimum radius and the maximum radius
+	\item Circle: Center and the radius.
+	\item Vessel: Center, angle and thickness.
+	\item Ring: Center, radius and thickness.
+	\item Cube: Center and x,y,z dimensions.
+	\item Cylinder: Radius and x,y,z directions.
+	\item Sphere: Center and radius.
+	\item Torus: Center, minimum and maximum radius.
 \end{itemize}
 
 All analytic functions have a reload option. If you check it, you can see the changes on the image when modify a parameter.
