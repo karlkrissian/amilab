@@ -3,7 +3,7 @@
 #
 # Adding main GUI scripts to the menu interface
 #
-
+printn "Main Add2Menu begin"
 for dir in  "BasicFilters","Filtering","Denoising",\
             "Noise","Segmentation","SyntheticImages",\
             "Visualization","IO","Centerlines",\

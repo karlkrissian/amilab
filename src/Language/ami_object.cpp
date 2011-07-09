@@ -17,10 +17,12 @@ AMIObject::~AMIObject()
 void AMIObject::SetClass(AMIClass::ptr& amiclass)
 {
     if (amiclass.get()!=NULL)
+/*
       std::cout  << "will run the code of the class "
             << amiclass->GetName()
             << " for the object " 
             << GetName()
             << std::endl;
+*/
     _class = amiclass;
 }
