@@ -97,7 +97,7 @@ extern "C" {
   #include "vtkJPEGWriter.h"
   #include "vtkTIFFWriter.h"
   #include "vtkPNGWriter.h"
-  #include <vtkTIFFReader.h>
+  #include "vtkTIFFReader.h"
   #include "vtkStructuredPoints.h"
   #include "vtkPointData.h"
   #include "vtkImageData.h"

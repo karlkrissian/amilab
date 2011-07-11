@@ -36,3 +36,5 @@ if exists(global::scripts_toolbar) {
 
  ami.MainFrame.AddToMenu("&Scripts","&Visualization","&TextureMappingExample",  "Visualization/TextureMappingExample/TextureMappingExampleGui")
 
+ ami.MainFrame.AddToMenu("&Scripts","&Visualization","&vtkImageViewer",  "Visualization/vtkImageViewer/vtkImageViewerGui")
+

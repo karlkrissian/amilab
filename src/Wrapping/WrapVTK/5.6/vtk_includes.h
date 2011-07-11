@@ -36,6 +36,7 @@
 #include <vtkImageRGBToHSI.h>
 #include <vtkImageRGBToHSV.h>
 #include <vtkImageRFFT.h>
+#include <vtkImageViewer.h>
 #include <vtkInformation.h>
 #include <vtkInteractorStyleImage.h>
 #include <vtkInteractorStyleTrackball.h>

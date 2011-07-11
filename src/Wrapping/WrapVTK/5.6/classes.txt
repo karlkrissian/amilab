@@ -48,6 +48,7 @@ vtkImageFFT
 vtkImageRFFT
 vtkImageRGBToHSI
 vtkImageRGBToHSV
+vtkImageViewer
 vtkImplicitFunction
 vtkIndent
 vtkInformation
