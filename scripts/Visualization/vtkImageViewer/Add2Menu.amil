@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuvtkImageViewer() \
+{
+  category = "&PDI"
+  script = "PDI/vtkImageViewer/vtkImageViewerGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&vtkImageViewer",script)
+}
+
+AddMenuvtkImageViewer()
+del AddMenuvtkImageViewer
