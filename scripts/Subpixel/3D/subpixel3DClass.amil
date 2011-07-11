@@ -93,35 +93,35 @@ if (!exists(Subpixel3DClass)){
         edges_polydata.GetPointData().SetNormals(&normals_array)
         
         if (::show_vol == 1) {
-//          #Drawing the input image
-//          ::vol_isosurf = isosurf(::input, (max(::input)+min(::input))/2)
-//          #Create the polydata and compute the normals
-//          vol_polydata = global::ToVtkPolyData(::vol_isosurf)
-//          vol_normals = vtk.vtkPolyDataNormals.New()
-//          vol_normals.SetInput(&vol_polydata)
-//          vol_normals.SetFeatureAngle(60.0)
-//          #Create the mapper and conect it with the normals output
-//          vol_mapper = vtk.vtkPolyDataMapper.New()
-//          vol_mapper.SetInputConnection(&vol_normals.GetOutputPort())
-//          vol_mapper.ScalarVisibilityOff()
-//          #Create a new actor set the vol_mapper
-//          ::vol_actor = vtk.vtkActor.New()
-//          #Set the opacity property
-//          ::vol_actor.GetProperty().SetOpacity(::volume_opacity)
-//          ::vol_actor.SetMapper(&vol_mapper)
-          
-          ::vol = vtk.vtkVolume.New()
-          uinput = (USHORT)::input
-          ::volmapper = vtk.vtkVolumeRayCastMapper.New()
-          compositeFunction = vtk.vtkVolumeRayCastCompositeFunction.New()
-          ::volmapper.SetVolumeRayCastFunction(&compositeFunction)
-          ::vtkinput = vtktools.ToVtkImageData(&uinput)
-          ::volmapper.SetInput(&::vtkinput)
-          ::property = vtk.vtkVolumeProperty.New()
-          ::property.SetIndependentComponents(1)
-          ::property.SetInterpolationTypeToLinear()
-          ::vol.SetProperty(&::property)
-          ::vol.SetMapper(&::volmapper)
+          #Drawing the input image
+          ::vol_isosurf = isosurf(::input, (max(::input)+min(::input))/2)
+          #Create the polydata and compute the normals
+          vol_polydata = global::ToVtkPolyData(::vol_isosurf)
+          vol_normals = vtk.vtkPolyDataNormals.New()
+          vol_normals.SetInput(&vol_polydata)
+          vol_normals.SetFeatureAngle(60.0)
+          #Create the mapper and conect it with the normals output
+          vol_mapper = vtk.vtkPolyDataMapper.New()
+          vol_mapper.SetInputConnection(&vol_normals.GetOutputPort())
+          vol_mapper.ScalarVisibilityOff()
+          #Create a new actor set the vol_mapper
+          ::vol_actor = vtk.vtkActor.New()
+          #Set the opacity property
+          ::vol_actor.GetProperty().SetOpacity(::volume_opacity)
+          ::vol_actor.SetMapper(&vol_mapper)
+          #Testing volume rendering (dont work)
+//          ::vol = vtk.vtkVolume.New()
+//          uinput = (USHORT)::input
+//          ::volmapper = vtk.vtkVolumeRayCastMapper.New()
+//          compositeFunction = vtk.vtkVolumeRayCastCompositeFunction.New()
+//          ::volmapper.SetVolumeRayCastFunction(&compositeFunction)
+//          ::vtkinput = vtktools.ToVtkImageData(&uinput)
+//          ::volmapper.SetInput(&::vtkinput)
+//          ::property = vtk.vtkVolumeProperty.New()
+//          ::property.SetIndependentComponents(1)
+//          ::property.SetInterpolationTypeToLinear()
+//          ::vol.SetProperty(&::property)
+//          ::vol.SetMapper(&::volmapper)
         }
        
         if (::show_normals == 1) {
@@ -174,25 +174,25 @@ if (!exists(Subpixel3DClass)){
         #Create the scene
         renwin = ::renwin_interact.GetRenderWindow()
         #Create and add the renderer
-        renderer = vtk.vtkRenderer.New()
-        renwin.AddRenderer(&renderer)
+        ::renderer = vtk.vtkRenderer.New()
+        renwin.AddRenderer(&::renderer)
         interact = vtk.vtkInteractorStyleTrackballCamera.New()
         ::renwin_interact.SetInteractorStyle(&interact)
         #We add the actors
         if (::show_vol == 1) {
-          #renderer.AddActor(&::vol_actor)
-          renderer.AddVolume(&::vol)
+          ::renderer.AddActor(&::vol_actor)
+          #renderer.AddVolume(&::vol)
         }
         if (::show_planes == 1) {
-          renderer.AddActor(&::plane_actor)
+          ::renderer.AddActor(&::plane_actor)
         }
         if (::show_normals == 1) {
-          renderer.AddActor(&::arrow_actor)
+          ::renderer.AddActor(&::arrow_actor)
         }
 
-        renderer.ResetCameraClippingRange()
-        renderer.SetBackground(::background_r/255, ::background_g/255, ::background_b/255)
-        renderer.ResetCamera()
+        ::renderer.ResetCameraClippingRange()
+        ::renderer.SetBackground(::background_r/255, ::background_g/255, ::background_b/255)
+        ::renderer.ResetCamera()
         #renwin.Render()
         ::renwin_interact.Start()
       } else {
@@ -200,6 +200,33 @@ if (!exists(Subpixel3DClass)){
       }
     }
     Comments(::vtkDrawEdges, "Draw the subvoxel edges.")
+    
+    #-----------------------
+    
+    proc ::Reload() {
+      if (exists(::res)) {
+        if (::show_vol == 1) {
+          ::vol_actor.GetProperty.SetOpacity(::volume_opacity)
+        }
+        if (::show_planes == 1) {
+          ::plane_actor.GetProperty().SetOpacity(::planes_opacity)
+          ::plane_actor.GetProperty().SetColor(::planes_r/255,::planes_g/255,::planes_b/255)
+        }
+        if (::show_normals == 1) {
+          ::arrow_actor.GetProperty().SetOpacity(::normals_opacity)
+          ::arrow_actor.GetProperty().SetColor(::normals_r/255,::normals_g/255,::normals_b/255)
+        }
+        ::renderer.ResetCameraClippingRange()
+        ::renderer.SetBackground(::background_r/255, ::background_g/255, ::background_b/255)
+        ::renderer.ResetCamera()
+        #renwin.Render()
+        ::renwin_interact.Start()
+      } else {
+        InfoDialog("You must apply the method before refresh the visualization.")
+      }
+
+     
+    }
     
     #-----------------------
     
@@ -330,7 +357,7 @@ if (!exists(Subpixel3DClass)){
             ::icons.LoadIconPNG("Play")
             ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
             ::icons.LoadIconPNG("Refresh")
-            ::AddBitmapButton(&::win, &::icons._Refresh, 16, "vtkDrawEdges")
+            ::AddBitmapButton(&::win, &::icons._Refresh, 16, "Reload")
           ::win.EndHorizontal()
           
         #Settings page

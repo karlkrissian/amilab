@@ -12,6 +12,7 @@ ami.MainFrame.AddToMenu("&Scripts",category,"&Sphere",         dir+"create_spher
 ami.MainFrame.AddToMenu("&Scripts",category,"&Superquadric",   dir+"superquadric_gui")
 
 func "CreateTorus/Add2Menu.amil"
+func "SyntheticPVEImages/Add2Menu.amil"
 
 if exists(global::scripts_toolbar) {
   global::scripts_toolbar.AddSeparator()

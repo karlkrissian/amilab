@@ -1,9 +1,9 @@
-# Generating synthetic images (with linear interpolation or analytic function)
+# Generating synthetic images (with analytic function)
 #
 func "Common/ScriptGui"
 
-if (!exists(SyntheticImagesClass)) {
-  Class SyntheticImagesClass  : public ScriptGui{
+if (!exists(SyntheticPVEImagesClass)) {
+  Class SyntheticPVEImagesClass  : public ScriptGui{
 
   #---------------------------------------------
   proc ::Init() \
@@ -58,34 +58,33 @@ if (!exists(SyntheticImagesClass)) {
     ::cube_dimz = 30.0, "Z size of the cube"
     
     #Cylinder parameters
-    ::cylinder_r    = 25.0, "Cylinder radius"
+    ::cylinder_r    = 25.0, "Radius of the cylinder"
     ::cylinder_xdir =  0.0, "Cylinder X direction"
     ::cylinder_ydir =  0.0, "Cylinder Y direction"
     ::cylinder_zdir =  9.0, "Cylinder Z direction"
     
     #Sphere parameters
-    ::sx = 50.0, "X component of sphere's center"
-    ::sy = 50.0, "Y component of sphere's center"
-    ::sz = 50.0, "Z component of sphere's center"
-    ::sr = 20.0, "Sphere's radius"
+    ::sx = 50.0, "X component of the center of the sphere"
+    ::sy = 50.0, "Y component of the center of the sphere"
+    ::sz = 50.0, "Z component of the center of the sphere"
+    ::sr = 20.0, "Radius of the sphere"
     
     #Torus parameters
-    ::tx = 50.0, "X component of torus' center"
-    ::ty = 50.0, "Y component of torus' center"
-    ::tz = 50.0, "Z component of torus' center"
-    ::tr = 2.0,  "Torus' minimum radius"
-    ::tR = 10.0, "Torus' maximum radius"
+    ::tx = 50.0, "X component of the center of the torus"
+    ::ty = 50.0, "Y component of the center of the torus"
+    ::tz = 50.0, "Z component of the center of the torus"
+    ::tr = 2.0,  "Minimum radius of the torus"
+    ::tR = 10.0, "Maximum radius of the torus"
     
     ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
-    ::html_filename = GetScriptsDir+"/Visualization/SyntheticImages/Doc/SyntheticImages/index.html"
+    ::html_filename = GetScriptsDir+"/SyntheticImages/SyntheticPVEImages/Doc/SyntheticPVEImages/index.html"
     
     #Image intensities
     ::A = 200.0
     ::B = 100.0
     
-    ::Gui()
-    ::NewType2D()
-    ::NewType3D()
+    #::NewType2D()
+    #::NewType3D()
     
   }
 
@@ -798,9 +797,13 @@ if (!exists(SyntheticImagesClass)) {
     ::AddStandardButtons(&::win)
     ::win.Update(-1)
     ::win.Display()
+    
+    ::NewType2D()
+    ::NewType3D()
   }
   
   ::Init
+  
   }
 
 }
@@ -811,8 +814,8 @@ if (!exists(SyntheticImagesClass)) {
   # Main
   #----------------------------
 
-  if (!exists(si)) {
-    SyntheticImagesClass si
-  } else {
-    InfoDialog "The script for generate synthetic images seems to be already loaded."
-  }
+#  if (!exists(si)) {
+#    SyntheticImagesClass si
+#  } else {
+#    InfoDialog "The script for generate synthetic images seems to be already loaded."
+#  }
