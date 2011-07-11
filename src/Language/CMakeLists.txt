@@ -149,5 +149,5 @@ ENDIF(AMI_USE_FLEXBISON)
 #ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/include/amilab_messages.h Language_SRCS)
 #ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/include/DefineClass.hpp Language_SRCS)
 
-my_add_library ( Language)
+my_add_shared_library ( Language)
 add_dependencies ( Language WrapWxWidgets )

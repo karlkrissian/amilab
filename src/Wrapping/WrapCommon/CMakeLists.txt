@@ -30,4 +30,4 @@ SET(WrapCommon_SRCS
      ${WrapCommon_HDRS}
 )
 
-my_add_library ( WrapCommon)
+my_add_shared_library ( WrapCommon)
