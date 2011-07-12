@@ -1,26 +1,26 @@
-#Interface for sub-pixel 3D detection
+#Interface for subvoxel 3D detection
 
 func "Common/ScriptGui"
 
 #For use VTK
 import_vtk
 
-if (!exists(Subpixel3DClass)){
+if (!exists(Subvoxel3DClass)){
 
 	#Import filters
   ami_import->Filters()
 
-	Class Subpixel3DClass : public ScriptGui{
+	Class Subvoxel3DClass : public ScriptGui{
   
     ::filters = &global::filters
     
     #-----------------------
     proc ::Init(){
-      ::class_name  = "global::Subpixel3DClass"
+      ::class_name  = "global::Subvoxel3DClass"
       ::input_name  = "",                "Input image"
-      ::output_name = "subpixel3D_edge", "Output image name"
+      ::output_name = "subvoxel3D_edge", "Output image name"
       ::threshold   = 25,                "Gradient threshold"
-      ::alg_type    = INT(0),            "Sub-pixel 3D algorithm type"
+      ::alg_type    = INT(0),            "Subvoxel 3D algorithm type"
       ::alg_enum    = INT(0),            "Enumeration of algorithms"
       ::show_vol    = UCHAR(0),          "Show or hide the volume"
       ::show_planes = UCHAR(1),          "Show or hide the planes of the edge"
@@ -43,6 +43,10 @@ if (!exists(Subpixel3DClass)){
       ::background_r    = 76.5,          "Red component of the color of the background"
       ::background_g    = 76.5,          "Green component of the color of the background"
       ::background_b    = 153,           "Blue component of the color of the background"
+      
+      #Help
+    ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
+    ::html_filename = GetScriptsDir+"/Subpixel/3D/Doc/subvoxel3D/index.html"
     }
     
 
@@ -63,7 +67,7 @@ if (!exists(Subpixel3DClass)){
       if (exists(::res)) {
         #Edge points
         edge_points = vtk.vtkPoints.New()
-        #We fill the points with the result of the subpixel3D algorithm
+        #We fill the points with the result of the subvoxel3D algorithm
         for i = 0 to ::res->xpos.tx-1 {
           edge_points.InsertNextPoint(::res->xpos(i), ::res->ypos(i), ::res->zpos(i))
         }
@@ -243,7 +247,7 @@ if (!exists(Subpixel3DClass)){
       	::norm_input <<= (DOUBLE) norm(::input)
         ::norm_input.info
       }
-      #Erase the subpixel object and the result if it exists
+      #Erase the subvoxel object and the result if it exists
       if (exists(::res))  { del ::res; }
       if (exists(::sp3D)) { del ::sp3D; }
       #Build a SubPixel3D object
@@ -256,7 +260,7 @@ if (!exists(Subpixel3DClass)){
       ::vtkDrawEdges()
       
     }
-    Comments(::Run, "Detects edges with Subpixel3D methods")
+    Comments(::Run, "Detects edges with Subvoxel3D methods")
     
     #-----------------------
     
@@ -274,7 +278,7 @@ if (!exists(Subpixel3DClass)){
        mb = ami.MainFrame.GetMainBook()
 
       ::panel = wx.wxPanel(&ami.MainFrame)
-      ::panel._SetName("Subp3D")
+      ::panel._SetName("SubV3D")
 
       sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel.SetSizer(&sbox_sizer)
@@ -294,8 +298,8 @@ if (!exists(Subpixel3DClass)){
       ::flex_sizer.Add(&::renwin_interact, 1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER )
       
       # Add to main book
-      ::icons.LoadIconPNG2("Transparency","Transparency")
-      mb.AddPage( &::panel,"Subp3D",1, wx.wxBitmap(&::icons._Transparency.Scale(16,16)))
+      ::icons.LoadIconPNG2("Subvoxel3DIcon32","Subvoxel3DIcon32")
+      mb.AddPage( &::panel,"SubV3D",1, wx.wxBitmap(&::icons._Subvoxel3DIcon32.Scale(16,16)))
       ::volren_pageindex = mb.GetPageIndex(&::panel)
       
     }
@@ -324,7 +328,7 @@ if (!exists(Subpixel3DClass)){
     
     proc ::CreateGui() {
       ::import = &global::ami_import;
-      ::win = ::import->ParamPanel("Subpixel 3D")
+      ::win = ::import->ParamPanel("Subvoxel 3D")
       
       ::win.BeginBook()
         #Main parameters page
@@ -336,13 +340,13 @@ if (!exists(Subpixel3DClass)){
               ::win.AddImageChoice(&::input_name, "In.")
               ::AddBitmapButton(&::win, &::icons._New_image, 16, "load_input")
             ::win.EndHorizontal()
-            ::win.AddString(&::output_name, "Out.")
+            #::win.AddString(&::output_name, "Out.")
             #Edge detection parameters
             ::win.AddFloat(&::threshold, "Thr.", 0, 100)
           ::win.EndBoxPanel()
           
           #Method panel
-          ::win.BeginBoxPanel("Subpixel detection method")
+          ::win.BeginBoxPanel("Subvoxel detection method")
             ::alg_enum = ::win.AddEnum(&::alg_type, "Method")
               ::win.AddEnumChoice(::alg_enum, "Basic detector")
           ::win.EndBoxPanel()
@@ -389,6 +393,9 @@ if (!exists(Subpixel3DClass)){
             ::win.AddFloat(&::background_g, "G", 0, 255)
             ::win.AddFloat(&::background_b, "B", 0, 255)
           ::win.EndBoxPanel()
+      
+        #Help tab
+        ::AddHelpPage(&::win)
       
       ::win.EndBook()
 

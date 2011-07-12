@@ -1,24 +1,24 @@
-if (!exists(subpixel3D_display)) {
+if (!exists(subvoxel3D_display)) {
 
   proc AddScript() {
     global
     func "Common/ScriptDisplayClass"
 
-    ScriptDisplayClass subpixel3D_display
+    ScriptDisplayClass subvoxel3D_display
 
-    subpixel3D_display.SetScript("Subpixel/3D/subpixel3DGui.amil")
-    subpixel3D_display.SetScriptObjName("global::subpixel3D_obj")
+    subvoxel3D_display.SetScript("Subpixel/3D/subvoxel3DGui.amil")
+    subvoxel3D_display.SetScriptObjName("global::subvoxel3D_obj")
 
-    subpixel3D_display.SetInMenus("Scripts","Subpixel edge detection")
-    subpixel3D_display.SetDisplayedName("&subpixel3D")
-    subpixel3D_display.SetHelp("Detects edges with subvoxel accuracy in 3D images")
+    subvoxel3D_display.SetInMenus("Scripts","Subpixel edge detection")
+    subvoxel3D_display.SetDisplayedName("&subvoxel3D")
+    subvoxel3D_display.SetHelp("Detects edges with subvoxel accuracy in 3D images")
 
     ami_import.System(); 
-    subpixel3D_display.SetIcon16( op_system.GetCurrentScriptDir()+"/Subpixel3DIcon16.png")
-    subpixel3D_display.SetIcon32( op_system.GetCurrentScriptDir()+"/Subpixel3DIcon32.png")
+    subvoxel3D_display.SetIcon16( op_system.GetCurrentScriptDir()+"/Subvoxel3DIcon16.png")
+    subvoxel3D_display.SetIcon32( op_system.GetCurrentScriptDir()+"/Subvoxel3DIcon32.png")
 
-    subpixel3D_display.Add2Menu()
-    subpixel3D_display.Add2Toolbar()
+    subvoxel3D_display.Add2Menu()
+    subvoxel3D_display.Add2Toolbar()
   }
   AddScript()
   del AddScript

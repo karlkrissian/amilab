@@ -7,9 +7,9 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Func tab</TITLE>
-<META NAME="description" CONTENT="Func tab">
-<META NAME="keywords" CONTENT="SyntheticPVEImages">
+<TITLE>Set. tab</TITLE>
+<META NAME="description" CONTENT="Set. tab">
+<META NAME="keywords" CONTENT="subvoxel3D">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
@@ -17,7 +17,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
-<LINK REL="STYLESHEET" HREF="SyntheticPVEImages.css">
+<LINK REL="STYLESHEET" HREF="subvoxel3D.css">
 
 <LINK REL="next" HREF="node5.html">
 <LINK REL="previous" HREF="node3.html">
@@ -45,37 +45,26 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <B> Up:</B> <A NAME="tex2html50"
   HREF="node2.html">Interface tabs</A>
 <B> Previous:</B> <A NAME="tex2html44"
-  HREF="node3.html">Main tab</A>
+  HREF="node3.html">Param. tab</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
 <H2><A NAME="SECTION00022000000000000000">
-<I>Func</I> tab</A>
+<I>Set.</I> tab</A>
 </H2>
-In the <I>Func</I> tab you can create an analytic function object. There are four functions with some parameters:
+In the <I>Set.</I> tab you can change some parameters of the visualization. The settings are divided in four parts:
 
 <UL>
-<LI>Line: The normal parameters and y axis cut point.
+<LI>Volume: You can set the opacity of the volume. For now, the volume charged in the vtk viewer is an isosurface of the 3D input image.
 </LI>
-<LI>Circle: Center and the radius.
+<LI>Planes: The planes represent the edges detected in the image. In every voxel the algorithm draws a little plane in the subvoxel position obtained by the detection. You can set the opacity and the color (in RGB). By default the planes are opaques and the color is red (255,0,0).
 </LI>
-<LI>Vessel: Center, angle and thickness.
+<LI>Normals: Same as the previous item, here you can choose the opacity and color of the normals of the edges. By default the normals are opaques and the color is blue (0,0,255).
 </LI>
-<LI>Ring: Center, radius and thickness.
+<LI>Background: The background color of the viewer is customizable. You can set an alternative color in RGB in the background box panel. 
 </LI>
-<LI>Cube: Center and x,y,z dimensions.
-</LI>
-<LI>Cylinder: Radius and x,y,z directions.
-</LI>
-<LI>Sphere: Center and radius.
-</LI>
-<LI>Torus: Center, minimum and maximum radius.
-</LI>
-</UL>
-
-<P>
-All analytic functions have a reload option. If you check it, you can see the changes on the image when modify a parameter.
+</UL> 
 
 <P>
 <BR><HR>

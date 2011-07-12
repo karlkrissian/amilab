@@ -1,0 +1,102 @@
+\documentclass{article}
+\usepackage{/Applications/Tex/html}
+\usepackage[latin1]{inputenc}
+
+
+\begin{document}
+
+% Title Page
+\title{Subpixel 2D Gui}
+\author{Daniel El\'ias Santana Cedr\'es}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Centro de Tecnolog\'ias de la Imagen (CTIM)\\
+Escuela de Ingenier\'ia Inform\'atica (EIIN). Universidad de Las Palmas de Gran Canaria (ULPGC)\\
+email: dsantana@ctim.es
+}
+
+
+\maketitle
+
+\begin{abstract}
+This script provides a user interface to detect edges with subpixel accuracy in 2D images.
+\end{abstract}
+
+
+\section{Quick Start}
+
+For detect the edges in a 2D image follow this steps:
+\begin{enumerate}
+  \item Select a 2D input image on \emph{Param.} tab.
+  \item Select the threshold value in the same tab (also you can select if you are detecting a first order edge).
+  \item Select the method to apply and if you want to draw the normals of the edges. Based on the method, you can set some parameters.
+  \item Press the run button.
+\end{enumerate}
+
+\section{Interface tabs}
+
+The interface is divided into several tabs.
+
+\subsection{\emph{Param.} tab}
+In the \emph{Param.} tab you can select an input image for the subpixel edges detection. Is necessary to set a threshold value for the detection (25 by default). Also, is possible to indicate to the algorithm that you are trying to detect a first order edge.
+
+After to select these parameters, you can choose the method to apply, to check if you want to draw the normals of the edges or select some parameters based on the method that you had selected. 
+
+The methods that you can select for the subpixel edge detection are:
+\begin{itemize}
+	\item Basic detector: Is basic subpixel edge detection. It doesn't detects very close edges or edges in noisy images.
+	\item Averaged detector: It detects edges in noisy images, but it doesn't detects very close edges.
+	\item Subpixel denoising: It's the most complete method. It detects edges in noisy images and very close images. Also, during detection, it makes a restoration of the input image.
+\end{itemize}
+
+In general, the parameters based on the method that you can set are related with: 
+\begin{itemize}
+	\item The comparison between the input image subpixel detection and the averaged/restored image.
+	\item The possibility of draw the subpixel detection in the averaged/restored image.
+\end{itemize}
+
+In the case of the subpixel denoising method, you can set also the number of iterations to apply.
+
+At the bottom of this tab is the run button.
+
+\subsection{\emph{Px.Info.} tab}
+In the \emph{Px.Info.} tab you can see the information about a pixel. This is:
+\begin{itemize}
+	\item Pixel: The position and edge type (horizontal or vertical) of the selected pixel.
+	\item Mod.: The jump intensity between both sides of the edge pixel.
+	\item Rad.: The radius of the edge.
+	\item Slo.: The slope of the edge.
+	\item Dis.: The displacement respect to the center of the pixel.
+\end{itemize}
+
+If you want to see the information of a pixel, only you must make click with the middle button of the mouse in the image and then press the information button placed on the top of this tab. If the selected pixel isn't an edge pixel, the position and the text \emph{NO EDGE} is shown.
+
+\subsection{\emph{Stat.} tab}
+In the \emph{Stat.} tab you can compute the statistics of the subpixel edge detection. In the method text box appear the name of the method that you applied to the input image.
+
+The statistics that you can compute are:
+\begin{itemize}
+	\item Minimum.
+	\item Maximum.
+	\item Mean.
+	\item Variance.
+	\item Standard Deviation.
+\end{itemize} 
+
+This calculation is made with the intensity difference, radius and slope parameters.
+
+\subsection{\emph{Set.} tab}
+In the \emph{Set.} tab you can change the settings of the edges and the normals. First, you must check that you want change the default settings.
+In both cases, edges and normals, you can select:
+\begin{itemize}
+	\item Color: You can set the color for the edges or normals in the RGB scale. Also, you can indicate the value of the alpha channel for transparency (0 for transparent and 255 for opaque).
+	\item Properties: Here you can set the thickness and the style of the line.
+\end{itemize}
+
+When you apply the method you will see the changes established.
+
+\subsection{\emph{Help} tab}
+This help.
+
+
+\end{document}          

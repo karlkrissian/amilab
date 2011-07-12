@@ -76,6 +76,7 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::tr = 2.0,  "Minimum radius of the torus"
     ::tR = 10.0, "Maximum radius of the torus"
     
+    #Help
     ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
     ::html_filename = GetScriptsDir+"/SyntheticImages/SyntheticPVEImages/Doc/SyntheticPVEImages/index.html"
     

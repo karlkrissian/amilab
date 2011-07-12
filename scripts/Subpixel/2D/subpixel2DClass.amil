@@ -69,6 +69,10 @@ if (!exists(Subpixel2DClass)){
       ::s_rad       = "",                "Radius"
       ::s_slope     = "",                "Slope"
       ::s_disp      = "",                "Displacement (the a coefficient of the equation)"
+      
+      #Help
+      ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
+      ::html_filename = GetScriptsDir+"/Subpixel/2D/Doc/subpixel2D/index.html"
     }
     
 
@@ -509,7 +513,7 @@ if (!exists(Subpixel2DClass)){
               ::win.AddImageChoice(&::input_name, "In.")
               ::AddBitmapButton(&::win, &::icons._New_image, 16, "load_input")
             ::win.EndHorizontal()
-            ::win.AddString(&::output_name, "Out.")
+            #::win.AddString(&::output_name, "Out.")
             #Edge detection parameters
             ::win.AddFloat(&::threshold, "Thr.", 0, 100)
             ::win.SetCallback(&::AutoRun)
@@ -637,6 +641,9 @@ if (!exists(Subpixel2DClass)){
                 ::win.EndBoxPanel()
                 ::win.EnablePanel(::prop_normal_panel, 0)
           ::win.EndBook()
+      
+        #Help tab
+        ::AddHelpPage(&::win)
           
       ::win.EndBook()
 

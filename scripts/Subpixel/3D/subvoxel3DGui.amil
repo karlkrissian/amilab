@@ -1,0 +1,12 @@
+
+func "subvoxel3DClass.amil"
+
+#----------------
+# Main
+#----------------
+if (!exists(subv3D)) {
+  Subvoxel3DClass subv3D
+  subv3D.CreateGui()
+} else {
+  InfoDialog "The script for subvoxel edge detection in 3D images seems to be already loaded."
+}
