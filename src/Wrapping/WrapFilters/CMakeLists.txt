@@ -47,7 +47,7 @@ SET(  WrapFilters_SRCS
   wrap_ImageCos.cpp
 	wrapBasicEdgeDetection.cpp
   wrapSubPixel2D.cpp
-  wrap_SubPixel3D.cpp
+  wrap_SubVoxel3D.cpp
   wrapGenerateRamp.cpp
   wrap_AnisoGS.cpp
   wrap_AnalyticFunctionBase.cpp
@@ -85,7 +85,7 @@ SET(WrapFilters_HDRS
   ../include/wrap_ImageCos.h
 	../include/wrapBasicEdgeDetection.h
   ../include/wrapSubPixel2D.h
-  ../include/wrap_SubPixel3D.h
+  ../include/wrap_SubVoxel3D.h
   ../include/wrapGenerateRamp.h
   ../include/wrap_AnisoGS.h
   ../include/wrap_ContinuousMorphology.h

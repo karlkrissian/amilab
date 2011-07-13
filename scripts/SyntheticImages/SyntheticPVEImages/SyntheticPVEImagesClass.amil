@@ -790,6 +790,7 @@ if (!exists(SyntheticPVEImagesClass)) {
           ::win.AddFloat(&::A, "A", 0, 255)
           ::win.AddFloat(&::B, "B", 0, 255)
         ::win.EndBoxPanel()
+      
       #Help tab
       ::AddHelpPage(&::win)
       

@@ -43,7 +43,7 @@ SET(Algorithms_SRCS
 
   RegionGrowingTest.cpp
   Segmentation/SubPixel2D.cpp
-  Segmentation/SubPixel3D.cpp
+  Segmentation/SubVoxel3D.cpp
 
   AnalyticFunctionBase.cpp
   AnalyticLine.cpp
@@ -110,7 +110,7 @@ SET(Algorithms_HDRS
 
   include/RegionGrowingTest.h
   include/SubPixel2D.h
-  include/SubPixel3D.h
+  include/SubVoxel3D.h
 
   include/AnalyticFunctionBase.h
   include/AnalyticLine.h

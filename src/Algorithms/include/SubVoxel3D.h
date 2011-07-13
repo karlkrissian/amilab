@@ -1,10 +1,10 @@
 /*
- *  SubPixel3D.h
+ *  SubVoxel3D.h
  *  AMILab
  */
 
-#ifndef SUBPIXEL3D
-#define SUBPIXEL3D
+#ifndef SUBVOXEL3D
+#define SUBVOXEL3D
 
 #include "DessinImage.hpp"
 #include "inrimage.hpp"
@@ -15,7 +15,7 @@ using namespace std;
 
 /**
  *  This class represent the information of a voxel that is a member of the edge.
- *  Is used by the SubPixel3D class.
+ *  Is used by the SubVoxel3D class.
  *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
  *  @author Karl Krissian (krissian@dis.ulpgc.es)
@@ -192,19 +192,19 @@ private:
  *  @author Agustín Trujillo Pino (agustin@dis.ulpgc.es)
  *  @author Karl Krissian (krissian@dis.ulpgc.es)
  */
-class SubPixel3D {
+class SubVoxel3D {
   
-  DEFINE_CLASS(SubPixel3D);
+  DEFINE_CLASS(SubVoxel3D);
   
 public:
   /**
-   *  SubPixel3D constructor.
+   *  SubVoxel3D constructor.
    *  @param inp_image The input image.
    *  @param thres     The threshold value.
    */
-  SubPixel3D(InrImage* inp_image, float thres);
+  SubVoxel3D(InrImage* inp_image, float thres);
   
-  ~SubPixel3D();
+  ~SubVoxel3D();
   
   /**
    *  Get the vector that contains the voxel members of the edge.
@@ -254,4 +254,4 @@ private:
    
 };
 
-#endif //SUBPIXEL3D
+#endif //SubVoxel3D

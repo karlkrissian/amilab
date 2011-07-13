@@ -197,8 +197,8 @@ if (!exists(Subvoxel3DClass)){
         ::renderer.ResetCameraClippingRange()
         ::renderer.SetBackground(::background_r/255, ::background_g/255, ::background_b/255)
         ::renderer.ResetCamera()
-        #renwin.Render()
-        ::renwin_interact.Start()
+        ::renwin_interact.Render()
+        #::renwin_interact.Start()
       } else {
         InfoDialog("You must apply the method before draw the edges.")
       }
@@ -210,7 +210,7 @@ if (!exists(Subvoxel3DClass)){
     proc ::Reload() {
       if (exists(::res)) {
         if (::show_vol == 1) {
-          ::vol_actor.GetProperty.SetOpacity(::volume_opacity)
+          ::vol_actor.GetProperty().SetOpacity(::volume_opacity)
         }
         if (::show_planes == 1) {
           ::plane_actor.GetProperty().SetOpacity(::planes_opacity)
@@ -223,8 +223,8 @@ if (!exists(Subvoxel3DClass)){
         ::renderer.ResetCameraClippingRange()
         ::renderer.SetBackground(::background_r/255, ::background_g/255, ::background_b/255)
         ::renderer.ResetCamera()
-        #renwin.Render()
-        ::renwin_interact.Start()
+        ::renwin_interact.Render()
+        #::renwin_interact.Start()
       } else {
         InfoDialog("You must apply the method before refresh the visualization.")
       }
@@ -245,16 +245,16 @@ if (!exists(Subvoxel3DClass)){
         #::norm_input.info
       } else {
       	::norm_input <<= (DOUBLE) norm(::input)
-        ::norm_input.info
+        #::norm_input.info
       }
       #Erase the subvoxel object and the result if it exists
       if (exists(::res))  { del ::res; }
-      if (exists(::sp3D)) { del ::sp3D; }
-      #Build a SubPixel3D object
-      ::sp3D = ::import->SubPixel3D(&::norm_input,::threshold)
+      if (exists(::sv3D)) { del ::sv3D; }
+      #Build a SubVoxel3D object
+      ::sv3D = ::import->SubVoxel3D(&::norm_input,::threshold)
       
       if (::alg_type == 0) {
-        ::res = ::sp3D->GradienteCurvo3D()
+        ::res = ::sv3D->GradienteCurvo3D()
       }
       
       ::vtkDrawEdges()

@@ -1,9 +1,9 @@
 /*
- *  SubPixel3D.cpp
+ *  SubVoxel3D.cpp
  *  AMILab
  */
 
-#include "SubPixel3D.h"
+#include "SubVoxel3D.h"
 #include <cmath>
 
 //Border type macros
@@ -169,26 +169,26 @@ void borderVoxel::printBorderVoxel(int linear_case)
 }
 
 //---------------------------------------------
-//SubPixel3D class methods
+//SubVoxel3D class methods
 //---------------------------------------------
 //Constructor
-SubPixel3D::SubPixel3D(InrImage* inp_image, float thres)
+SubVoxel3D::SubVoxel3D(InrImage* inp_image, float thres)
 {
   input       = inp_image;
   threshold   = thres;
 }
 
 //Destructor
-SubPixel3D::~SubPixel3D() {}
+SubVoxel3D::~SubVoxel3D() {}
 
 //Get the vector with the border voxels
-vector<borderVoxel> SubPixel3D::getBorderVoxelVector()
+vector<borderVoxel> SubVoxel3D::getBorderVoxelVector()
 {
   return borderVoxelVector;
 }
 
 //Fill the images with the edges information
-void SubPixel3D::fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity, 
+void SubVoxel3D::fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity, 
                   InrImage::ptr border, InrImage::ptr a, InrImage::ptr b, 
                   InrImage::ptr c, InrImage::ptr d, InrImage::ptr f, 
                   InrImage::ptr g, InrImage::ptr curvature, 
@@ -254,7 +254,7 @@ void SubPixel3D::fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity,
 }
 
 //3D subpixel method for second order edges
-void SubPixel3D::GradienteCurvo3D()
+void SubVoxel3D::GradienteCurvo3D()
 {
   //Margin at the limits of the image
   int margin = 3;

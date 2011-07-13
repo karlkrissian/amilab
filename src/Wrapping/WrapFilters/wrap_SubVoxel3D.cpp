@@ -1,16 +1,16 @@
 /*
- *  wrap_SubPixel3D.cpp
+ *  wrap_SubVoxel3D.cpp
  *  AMILab
  */
 
-#include "wrap_SubPixel3D.h"
+#include "wrap_SubVoxel3D.h"
 
-#include "VarContexts.hpp"
+#include "VarContexts.hpp"c
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
-#include "SubPixel3D.h"
+#include "SubVoxel3D.h"
 #include "wrap_DessinImage.h"
 #include <wx/colour.h>
 
@@ -19,30 +19,30 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<SubPixel3D>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<SubVoxel3D>::CreateVar( ParamList* p)
 {
-  WrapClass_SubPixel3D::wrap_SubPixel3D construct;
+  WrapClass_SubVoxel3D::wrap_SubVoxel3D construct;
   return construct.CallMember(p);
 }
 
 //---------------------------------------------------
-//SubPixel3D Wrapping
+//SubVoxel3D Wrapping
 //---------------------------------------------------
 
-AMI_DEFINE_WRAPPEDTYPE_HASCOPY(SubPixel3D);
-AMI_DEFINE_VARFROMSMTPTR(SubPixel3D);
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(SubVoxel3D);
+AMI_DEFINE_VARFROMSMTPTR(SubVoxel3D);
 
 //---------------------------------------------------
-//SubPixel3D Constructor
-void WrapClass_SubPixel3D::wrap_SubPixel3D::SetParametersComments()
+//SubVoxel3D Constructor
+void WrapClass_SubVoxel3D::wrap_SubVoxel3D::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE(InrImage, "The input image.");
   ADDPARAMCOMMENT_TYPE(float, "The intensity threshold.");
   ADDPARAMCOMMENT_TYPE(int, "First or second order method.");
-  return_comments = "A wrapped SubPixel3D object.";
+  return_comments = "A wrapped SubVoxel3D object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_SubPixel3D::wrap_SubPixel3D::CallMember(ParamList* p)
+BasicVariable::ptr WrapClass_SubVoxel3D::wrap_SubVoxel3D::CallMember(ParamList* p)
 {
   InrImage* input_image;
   float thres;
@@ -51,20 +51,20 @@ BasicVariable::ptr WrapClass_SubPixel3D::wrap_SubPixel3D::CallMember(ParamList* 
   if (!get_val_ptr_param<InrImage>(input_image, p, num)) ClassHelpAndReturn;
   if (!get_val_param<float>(thres, p, num))    ClassHelpAndReturn;
   
-  return AMILabType<SubPixel3D>::CreateVar(new SubPixel3D(input_image, thres));
+  return AMILabType<SubVoxel3D>::CreateVar(new SubVoxel3D(input_image, thres));
 }
 
 //---------------------------------------------------
 //GradienteCurvo3D
-void WrapClass_SubPixel3D::wrap_GradienteCurvo3D::SetParametersComments()
+void WrapClass_SubVoxel3D::wrap_GradienteCurvo3D::SetParametersComments()
 {
   return_comments = "Returns an AMIObject with parameters inside 1D images.";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_SubPixel3D::wrap_GradienteCurvo3D
+BasicVariable::ptr WrapClass_SubVoxel3D::wrap_GradienteCurvo3D
                                        ::CallMember(ParamList* p)
 {
-  SubPixel3D::ptr sp(_objectptr->GetObj());
+  SubVoxel3D::ptr sp(_objectptr->GetObj());
     
   sp->GradienteCurvo3D();
   
