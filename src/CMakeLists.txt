@@ -337,6 +337,9 @@ OPTION(AMI_USE_ITK "Use ITK: recommended" ON)
 
 IF(AMI_USE_ITK)
   FIND_PACKAGE ( ITK )
+  IF(ITK_FOUND)
+    SET(AMI_ITK_VERSION "${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}")
+  ENDIF(ITK_FOUND)
 ENDIF(AMI_USE_ITK)
 
 FIND_PACKAGE ( AMIFluid )
@@ -891,40 +894,42 @@ INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
 #INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
 
 
-# check if doxygen is even installed
-find_package(Doxygen)
-if (DOXYGEN_FOUND STREQUAL "NO")
+if (GENERATE_HTML_HELP)
+  # check if doxygen is even installed
+  find_package(Doxygen)
+  if (DOXYGEN_FOUND STREQUAL "NO")
     message(FATAL_ERROR "Doxygen not found. Please get a copy http://www.doxygen.org")
-endif (DOXYGEN_FOUND STREQUAL "NO")
+  endif (DOXYGEN_FOUND STREQUAL "NO")
 
-# prepare doxygen configuration file
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../Doxygen/doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
+  # prepare doxygen configuration file
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../Doxygen/doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
 
-# add doxygen as target
-add_custom_target(doxygen ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
+  # add doxygen as target
+  add_custom_target(doxygen ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
 
-# cleanup $build/api-doc on "make clean"
-set_property(DIRECTORY APPEND PROPERTY
+  # cleanup $build/api-doc on "make clean"
+  set_property(DIRECTORY APPEND PROPERTY
        ADDITIONAL_MAKE_CLEAN_FILES api-doc)
 
-# add doxygen as dependency to doc-target
-get_target_property(DOC_TARGET doc TYPE)
-if(NOT DOC_TARGET)
-  add_custom_target(doc)
-endif()
-add_dependencies(doc doxygen)
+  # add doxygen as dependency to doc-target
+  get_target_property(DOC_TARGET doc TYPE)
+  if(NOT DOC_TARGET)
+    add_custom_target(doc)
+  endif()
+  add_dependencies(doc doxygen)
 
-# install HTML API documentation and manual pages
-set(DOC_PATH "share/amilab-${AMILAB_VERSION}")
+  # install HTML API documentation and manual pages
+  set(DOC_PATH "share/amilab-${AMILAB_VERSION}")
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/html
-         DESTINATION ${DOC_PATH}
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/html
+           DESTINATION ${DOC_PATH}
        )
 
-# install man pages into packages, scope is now project root..
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3
+  # install man pages into packages, scope is now project root..
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3
          DESTINATION share/man/man3/
        )
+endif (GENERATE_HTML_HELP)
 
 
 PrintSources(${AMILAB_BIN})

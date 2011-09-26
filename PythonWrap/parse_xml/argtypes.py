@@ -28,6 +28,9 @@ class ArgTypeBase:
     
   def SetName(self,n):
     self._name=n
+
+  def GetName(self):
+    return self._name
   
   def GetAbstract(self):
     return None

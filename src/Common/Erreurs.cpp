@@ -40,7 +40,7 @@
 //---------------------------------------------------------------------
 /**
  */
-ostream& operator<<(ostream& os, const NomMethode& m)
+std::ostream& operator<<(std::ostream& os, const NomMethode& m)
 //       ----------
 {
 
@@ -58,7 +58,7 @@ ostream& operator<<(ostream& os, const NomMethode& m)
 //---------------------------------------------------------------------
 /**
  */
-ostream& operator<<(ostream& os, const ExceptionErreur& e)
+std::ostream& operator<<(std::ostream& os, const ExceptionErreur& e)
 //       ----------
 {
 
@@ -89,7 +89,7 @@ ostream& operator<<(ostream& os, const ExceptionErreur& e)
 //---------------------------------------------------------------------
 /**
  */
-ostream& operator<<(ostream& os, const ExceptionWarning& w)
+std::ostream& operator<<(std::ostream& os, const ExceptionWarning& w)
 //       ----------
 {
     int      n;

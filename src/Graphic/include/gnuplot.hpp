@@ -58,7 +58,7 @@ extern "C" {
 #define TYPE_GNUPLOT 0
 #define TYPE_SECTION 1
 
-using namespace std;
+// using -- namespace std;
 
 ///----------------------------------------------------------------------
 class GnuPlot

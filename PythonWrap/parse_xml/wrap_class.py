@@ -291,6 +291,7 @@ class PublicMembers:
     self.StaticMethods=[]
     self.OperatorMethods=[]
     self.Fields=[]
+    self.Typedefs=[]
     self.Enumerations=[]
     self.destructor=None
 
@@ -422,7 +423,7 @@ class ParsePublicMembers:
           self.enum.values[valname]=valinit
       return False # allow further processing of the enumeration
     
-    if (name!='Field') and (name!='Enumeration') \
+    if (name not in ['Field','Enumeration','Typedef']) \
         and (name not in self.available_methods):
       return False
     
@@ -468,6 +469,16 @@ class ParsePublicMembers:
       self.inenum = True
       print "found enumeration ", ename, " in ", config.types[context].GetDemangled()
       return False # allow further processing of the enumeration
+      
+
+    if name=='Typedef':
+      tname=attrs.get('name',None)
+      ttype=attrs.get('type',None)
+      print "Found Typedef '{0}' in class".format(tname)
+      typedef = TypedefInfo()
+      typedef.name=tname
+      typedef._reftypeid = ttype
+      self.public_members.Typedefs.append(typedef)
       
     # If it's not a method element, ignore it
     if not(name in self.available_methods): return False
@@ -1078,12 +1089,21 @@ def WrapClass(classname,include_file,inputfile):
       wrapped_base='WrapClass_{0}'.format(baseusedname)
       if virtual=='1':
         virtualstring="virtual"
-      if basename in config.available_classes:
+      # problem to find the base class because of spaces mismatch after the ',' 
+      # in templates, small trick here to try to fix it
+      basename1 = basename.replace(',',', ')
+      basename1 = basename1.replace(',  ',', ')
+      basename_ok = basename in config.available_classes or \
+                    basename1 in config.available_classes
+      if basename_ok:
         include_bases+='#include "wrap_{0}.h"\n'.format(baseusedname)
         inherit_bases+=', public {0}  {1}'.format(\
             virtualstring, wrapped_base)
         constructor_bases+=', {0}(si)'.format(wrapped_base)
       else:
+        print "basename = ", basename
+        print "basename1 = ", basename1
+        print "config.available_classes = ", config.available_classes
         config.new_needed_classes.append(basename)
         include_bases+='//#include "wrap_{0}.h"\n'.format(baseusedname)
         inherit_bases+='//, public {0} {1}'.format(virtualstring,wrapped_base)
@@ -1091,7 +1111,7 @@ def WrapClass(classname,include_file,inputfile):
       #
       # Add lines needed to include parents methods in object context
       #
-      if not(basename in config.available_classes):
+      if  not(basename_ok):
         methods_bases +="/*"
       methods_bases+="\n"
       indent='  '
@@ -1108,7 +1128,7 @@ def WrapClass(classname,include_file,inputfile):
       methods_bases+=indent+'Variable<AMIObject>::ptr obj_{0} = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_{0});\n'.format(baseusedname)
       methods_bases+=indent+'context->AddDefault(obj_{0}->Pointer()->GetContext());\n'.format(baseusedname)
       
-      if not(basename in config.available_classes):
+      if not(basename_ok):
         methods_bases +="*/\n"
       
 
@@ -1246,6 +1266,7 @@ def WrapClass(classname,include_file,inputfile):
           add_var_all += "*/\n"
       add_var_all += '\n'
 
+    # Adding public fields
     add_public_fields = ''
     if config.libmodule != None:
       if not config.libmodule.wrap_public_fields(classname):
@@ -1305,11 +1326,30 @@ def WrapClass(classname,include_file,inputfile):
         add_public_fields += indent+"*/\n"
         f.iswrapped = False
               
+    # Adding public typedefs as static elments
+    add_public_typedefs = ''
+    if len(fm.Typedefs)>0:
+      n=0
+      add_public_typedefs += "// Adding public typedefs \n"
+    for td in fm.Typedefs:
+      add_public_typedefs += indent
+      # need to find the variable that corresponds to the type to add ...
+      # for now just adding a string
+      st = '{0}  --  {1}'.format(td.GetFullString(),\
+            config.ClassShortName(\
+                config.types[td._reftypeid].GetString(),args.val.libname))
+      add_public_typedefs += 'BasicVariable::ptr type_{0} = AMILabType<std::string>::CreateVar(new std::string("{1}"));\n'.format(n,st)
+      add_public_typedefs += indent
+      add_public_typedefs += 'type_{0}->Rename("{1}");\n'.format(n,td.name)
+      add_public_typedefs += indent
+      add_public_typedefs += "amiobject->GetContext()->AddVar(type_{0}->Name(),type_{0},context);\n".format(n)
+      n=n+1
+
     # Add public Enumerations
     add_public_enums = '\n'
+    # TODO: ideally should check for a typedef here
+    add_public_enums += "// Add public enumerations \n"
     for e in fm.Enumerations:
-      # TODO: ideally should check for a typedef here
-      add_public_enums = "// Add public enumerations \n"
       enum_usedname = e.name.replace('.','enum')
       # Create an amiobject
       add_public_enums += indent
@@ -1378,26 +1418,16 @@ def WrapClass(classname,include_file,inputfile):
     # in case of template, check template parameters for includes
     m = re.match(r"([^<]*)<(.*)>",classname)
     if m!=None:
-      template_params = m.group(2)
-      while template_params!="":
-        print "template_params = {0}".format(template_params)
-        # list types inside
-        # this test is not really correct: need to be improved, but let's see if it allows to go on with template wrapping
-        m1 = re.match(r"([^<,]+<[^>]*>)?(,.*)*",template_params)
-        if m1!=None and m1.group(1)!=None:
-          template_param = m1.group(1).strip(' ')
-          print "To check for include: {0}".format(template_param)
-          if template_param in config.classes.keys():
-            fileid = config.types[config.classes[template_param]].fileid
-            filetoadd = FindIncludeFile(template_param,fileid)
-            #local_include_file += '\n#include "{0}"'.format(filetoadd)
-            local_include_file += '\n{0}'.format(filetoadd)
-          if m1.group(2)==None:
-            template_params=""
-          else:
-            template_params=m1.group(2).strip(', ')
-        else:
-          template_params=""
+      template_params = []
+      config.templatetypes(m.group(2),template_params)
+      for template_param in template_params:
+        template_param = template_param.strip(' ')
+        print "To check for include: {0}".format(template_param)
+        if template_param in config.classes.keys():
+          fileid = config.types[config.classes[template_param]].fileid
+          filetoadd = FindIncludeFile(template_param,fileid)
+          #local_include_file += '\n#include "{0}"'.format(filetoadd)
+          local_include_file += '\n{0}'.format(filetoadd)
     print "local include file {0}".format(local_include_file)
         
     for line in fileinput.FileInput(header_filename,inplace=1):
@@ -1520,11 +1550,12 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${IMPLEMENT_DELETER}",     implement_deleter)
       line = line.replace("${TEMPLATE}",              config.ClassTypeDef(classname))
       line = line.replace("${TEMPLATENAME}",          config.ClassUsedName(classname))
-      line = line.replace("${TEMPLATESHORTNAME}",     config.ClassShortName(classname))
+      line = line.replace("${TEMPLATESHORTNAME}",     config.ClassShortName(classname,args.val.libname))
       line = line.replace("${METHODS_BASES}",         methods_bases)
       line = line.replace("${AddVar_method_all}",     add_var_all)
       line = line.replace("${AddPublicFields}",       add_public_fields)
       line = line.replace("${AddPublicEnums}",        add_public_enums)
+      line = line.replace("${AddPublicTypedefs}",     add_public_typedefs)
       line = line.replace("${AddVar_constructor}",    add_constructor)
       line = line.replace("${AddVar_static_methods}", add_static_methods)
       line = line.replace("${WRAP_PUBLIC_METHODS}",   impl)

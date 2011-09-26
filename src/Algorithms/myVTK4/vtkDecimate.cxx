@@ -199,7 +199,7 @@ void vtkDecimate::Execute()
   error = this->InitialError;
   Distance = error * max;
   Angle = this->InitialFeatureAngle;
-  CosAngle = cos ((double) vtkMath::DegreesToRadians() * Angle);
+  CosAngle = cos ((double) vtkMath::RadiansFromDegrees( Angle));
   AspectRatio2 = 1.0 / (this->AspectRatio * this->AspectRatio);
   Squawks = 0;
 
@@ -439,7 +439,8 @@ void vtkDecimate::Execute()
     Angle = ((Angle > this->MaximumFeatureAngle && 
               this->MaximumFeatureAngle > 0.0) ? this->MaximumFeatureAngle
              : Angle);
-    CosAngle = cos ((double) vtkMath::DegreesToRadians() * Angle);
+    // TODO: ifndef VTK5.8 else for VTK < 5.8 ...
+    CosAngle = cos ((double) vtkMath::RadiansFromDegrees(Angle));
 
     } //********************************** outer loop **********************
   //

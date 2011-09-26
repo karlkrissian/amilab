@@ -176,6 +176,9 @@ float roundf(const float& a);
 
 #include <math.h>
 
+// for memcpy
+#include <string.h>
+
 // taken from Zinrimage.h
 typedef enum {
   WT_UNSIGNED_CHAR,  /* Unsigned 8 bits */

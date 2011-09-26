@@ -199,8 +199,11 @@ if (!exists(PropagateVesselsContoursClass)) {
       if (!exists(::pos1x)) {
         InfoDialog "Set the starting point first!"
       } else {
+	SetStatusText("Local Stats")
         ::LocalStats()
+	SetStatusText("Curvatures")
         ::Curvatures() 
+	SetStatusText("Speed")
         ::speed_curv <<= ::Curv3D.maxcurv
         Comments(::speed_curv,"Curvature component of the speed")
         ::speed_curv <<= ::ImUtils.Clamp(&::speed_curv,::maxcurv_low,::maxcurv_high)
@@ -217,10 +220,11 @@ if (!exists(PropagateVesselsContoursClass)) {
           in_s = filter(in0,::stats_sigma,0,0,0)
           in2 = in0*in0
           in2_s = filter(in2,::stats_sigma,0,0,0)
-          ::lsd = sqrt(in2_s-in_s*in_s)
+          ::lsd <<= sqrt(in2_s-in_s*in_s)
           del in2_s
         }
 
+	SetStatusText("Propagation speed")
 
         grad = gradient(::input,::grad_stddev)
         # normalize the gradient vector field
@@ -244,6 +248,14 @@ if (!exists(PropagateVesselsContoursClass)) {
         ::sp <<= prob_weight*::speed_curv*(::prop_voxels)
         del var; del prob_weight
         
+        SetStatusText("Fast Marching")
+
+        # to enable rerun
+        func "DistanceTransform/FastMarching/FastMarchingUtils.amil"
+        del ::FMCompeting
+        CompetingFastMarching ::FMCompeting
+
+
         if (exists(::pos2x)) {
           ::FMCompeting.SetSpeedImage(&::sp)
           ::FMCompeting.SetPoint1(::pos1x,::pos1y,::pos1z)
@@ -252,9 +264,9 @@ if (!exists(PropagateVesselsContoursClass)) {
             ::FMCompeting.SetPoint3(::pos3x,::pos3y,::pos3z)
           }
           ::FMCompeting.Evolve(::maxdist)
-          if (exists(::res)) { del ::res; }
+          del ::res
           ::res = &::FMCompeting.result
-          if (exists(::classim)) { del ::classim; }
+          del ::classim
           ::classim = &::FMCompeting.classim
         } else {
           ::res <<= ::FMUtils.FastMarchingFromPoint(&::sp,::maxdist,::pos1x,::pos1y,::pos1z)
@@ -283,9 +295,11 @@ if (!exists(PropagateVesselsContoursClass)) {
           #sigma = meanspacing
           mask = morph.Dilate(mask,1,0.5)
           mask <<= (UCHAR) (mask>0.5)*255
+          del ::res1_surf
           ::res1_surf = isosurf(-::zerocross,0,mask)
           # show only the main connected component to avoid artifacts
           ::res1_surf.drawCC(0)
+          del ::res1_surf_draw
           show ::res1_surf
 
           del mask
@@ -294,6 +308,7 @@ if (!exists(PropagateVesselsContoursClass)) {
           #sigma = meanspacing
           #mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
           mask <<= (UCHAR) (mask>0.5)*255
+          del ::res2_surf
           ::res2_surf = isosurf(-::zerocross,0,mask)
           # show only the main connected component to avoid artifacts
           ::res2_surf.drawCC(0)
@@ -306,6 +321,7 @@ if (!exists(PropagateVesselsContoursClass)) {
             #sigma = meanspacing
             #mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
             mask <<= (UCHAR) (mask>0.5)*255
+            del ::res3_surf
             ::res3_surf = isosurf(-::zerocross,0,mask)
             # show only the main connected component to avoid artifacts
             ::res3_surf.drawCC(0)
@@ -319,7 +335,9 @@ if (!exists(PropagateVesselsContoursClass)) {
           #sigma = meanspacing
           #mask = filter(mask,sigma,0,0,0)*sqrt(2*Pi*sigma)
           mask <<= (UCHAR) (mask>0.5)*255
+          del ::res_surf
           ::res_surf = isosurf(-::zerocross,0,mask)
+          del ::res_surf_draw
           show ::res_surf
         }
       }

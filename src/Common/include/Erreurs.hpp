@@ -41,7 +41,7 @@
 #include "style.hpp"
 
 #include <iostream>
-using namespace std;
+//using -- namespace std;
 
 #include "chaine.hpp"
 #include <string>
@@ -152,7 +152,7 @@ public:
   {}
 
   /// Message
-  friend ostream& operator<<(ostream&, const NomMethode&);
+  friend std::ostream& operator<<(std::ostream&, const NomMethode&);
 
 };
 
@@ -208,7 +208,7 @@ public:
   }
 
   /// Message
-  friend ostream& operator<<(ostream&, const ExceptionErreur&);
+  friend std::ostream& operator<<(std::ostream&, const ExceptionErreur&);
 
 }; // ExceptionErreur
 
@@ -233,7 +233,7 @@ public:
   }
 
   /// Message
-  friend ostream& operator<<(ostream&, const ExceptionWarning&);
+  friend std::ostream& operator<<(std::ostream&, const ExceptionWarning&);
 
 }; // ExceptionWarning
 

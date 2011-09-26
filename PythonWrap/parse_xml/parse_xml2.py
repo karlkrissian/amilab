@@ -199,6 +199,9 @@ if __name__ == '__main__':
     if args.val.libname=="vtk":
       import vtk_lib
       config.libmodule = vtk_lib.config
+    if args.val.libname=="itk":
+      import itk_lib
+      config.libmodule = itk_lib.config
     if args.val.libname=="mt":
       import mt_lib
       config.libmodule = mt_lib.config
@@ -248,10 +251,32 @@ if __name__ == '__main__':
         #print "typedef : {0}".format(typedef_dict[f])
       #print typedef_dict
       
+      #print "--------------------"
+      #print classes_dict.values()
+      #print "--------------------"
+      
       print "Creating ancestors"
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
-      for b in args.val.ancestors:
+      # 3. expand ancestor to classes within templates
+      ancestors_templates = ancestors[:]
+      for b in ancestors:
+        if wrap_class.IsTemplate(b):
+          #print "Looking for additional types in ", b
+          ttypes=[]
+          config.templatetypes(b,ttypes)
+          #print ttypes
+          for nt in ttypes:
+            #print "  Searching for '{0}'".format(nt)
+            if nt not in ancestors_templates:
+              if nt in classes_dict.values():
+                ancestors_templates.append(nt)
+                #print "    added ..."
+              #else:
+                #print "    not in classes_dict.values()"
+      print "New ancestors list = ",ancestors_templates
+      ancestors = ancestors_templates[:]
+      for b in ancestors:
         #print "b=",b
         # find the class corresponding to typedefs
         #for k in typedef_dict.keys():

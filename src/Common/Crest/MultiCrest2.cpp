@@ -50,7 +50,7 @@
 
 //---------------------------------------------------------------------
 //
-ostream& operator<<(ostream& o, const t_point& p)
+std::ostream& operator<<(std::ostream& o, const t_point& p)
 {
   return o << " (  ligne = "
           	   << p.ligne << "; point = "
@@ -60,7 +60,7 @@ ostream& operator<<(ostream& o, const t_point& p)
 
 //---------------------------------------------------------------------
 //
-ostream& operator<<(ostream& o, const point_ligne& p)
+std::ostream& operator<<(std::ostream& o, const point_ligne& p)
 {
   return o << " ( point = " << p.mpoint << "; coeff = "
           	   << p.coeff  << " )";
@@ -974,7 +974,7 @@ void MultiCrest2 :: Fusionne( const int& ligne1,
     // Desactiver les points de la ligne dans l'image ...
     return;
 
-    } catch (OutOfArray) {  cin >> n;    }
+    } catch (OutOfArray) {  std::cin >> n;    }
 
   FinSi
 
@@ -1023,7 +1023,7 @@ void MultiCrest2 :: Fusionne( const int& ligne1,
     //   std::cout << "AjouteLigne2 \n";
     AjouteLigne(  lr2);
 
-    } catch (OutOfArray) {  cin >> n;    }
+    } catch (OutOfArray) {  std::cin >> n;    }
 
   Autrement
 
@@ -1059,7 +1059,7 @@ void MultiCrest2 :: Fusionne( const int& ligne1,
     //  std::cout << " AjouteLigne\n";
     AjouteLigne(  lr1);
 
-    } catch (OutOfArray) {  cin >> n;    }
+    } catch (OutOfArray) {  std::cin >> n;    }
 
   // ---------------------------------------------------------
   // une partie de ligne1 se projette a l'interieur de ligne2
@@ -1087,7 +1087,7 @@ void MultiCrest2 :: Fusionne( const int& ligne1,
       AjoutePartieLigne(  lr1, ligne2, pos21, 0);
       AjoutePartieLigne(  lr2, ligne2, pos22, NbPoints(ligne2)-1);
     FinSi
-    } catch (OutOfArray) { std::cout << "creation lignes\n"; cin >> n;    }
+    } catch (OutOfArray) { std::cout << "creation lignes\n"; std::cin >> n;    }
     try{
 
     // Suppression de ligne1
@@ -1097,7 +1097,7 @@ void MultiCrest2 :: Fusionne( const int& ligne1,
     // Ajout des nouvelles lignes dans E1
     AjouteLigne(  lr1 );
     AjouteLigne(  lr2);
-    } catch (OutOfArray) { std::cout << "efface - ajoute lignes\n"; cin >> n;    }
+    } catch (OutOfArray) { std::cout << "efface - ajoute lignes\n"; std::cin >> n;    }
 
 
   FinSi
@@ -1190,7 +1190,7 @@ void MultiCrest2 :: CreeProjections( )
         catch (ExceptionBadPointNumber)
         {
           std::cerr << "CreeProjections : probleme .. \n";
-          cin >> n;
+          std::cin >> n;
           continue;
         }
         Si distance < pt.rayon Alors

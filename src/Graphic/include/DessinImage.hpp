@@ -165,7 +165,7 @@
 #include "CallBackBase.h"
 
 #include <iostream>
-using namespace std;
+//using -- namespace std;
 
 //#include "Viewer3D.hpp"
 class Viewer3D;

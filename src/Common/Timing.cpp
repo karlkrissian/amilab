@@ -97,7 +97,7 @@ int gettimeofday(struct timeval* tp, void* tzp)
 
 //---------------------------------------------------------------------
 //
-ostream& operator<<(ostream& o, const Timing& d)
+std::ostream& operator<<(std::ostream& o, const Timing& d)
 {
   if (d.debut_OK && d.fin_OK)
     return o << " Timing du traitement: " << 
@@ -107,7 +107,7 @@ ostream& operator<<(ostream& o, const Timing& d)
 }
 
 //--------------------------------------
-void Timing::AfficheCumul(ostream& o)
+void Timing::AfficheCumul(std::ostream& o)
 {
   
     long minutes;

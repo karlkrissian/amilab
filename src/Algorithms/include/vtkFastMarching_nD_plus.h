@@ -51,7 +51,7 @@
 //ETX
 
 #include <list>
-using namespace std;
+//using -- namespace std;
 
 #define VTK_VAL_ACCEPTED 0
 #define VTK_VAL_TRIAL    1
@@ -168,7 +168,7 @@ public:
     return (p1.value > p2.value);
   }
 
-  friend ostream& operator << (ostream&, const FM_TrialPoint_nD_plus& p);
+  friend std::ostream& operator << (std::ostream&, const FM_TrialPoint_nD_plus& p);
 
 }; // FM_TrialPoint_nD_plus
 
@@ -180,7 +180,7 @@ class VTK_EXPORT vtkFastMarching_nD_plus : public vtkImageToImageFilter
 {
 public:
   vtkTypeMacro(vtkFastMarching_nD_plus,vtkImageToImageFilter);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  void PrintSelf(std::ostream& os, vtkIndent indent);
 
   // Description:
   // Construct object to extract all of the input data.

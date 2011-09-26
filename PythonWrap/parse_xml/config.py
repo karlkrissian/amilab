@@ -139,24 +139,30 @@ declare_list = []
 #-------------------------------------------------------------
 def ClassUsedName(classname):
   res = classname
-  res = res.replace('<','__LT__')
-  res = res.replace('>','__GT__')
-  res = res.replace(',','__COMMA__')
-  res = res.replace('::','__NS__')
-  res = res.replace(' ','__SPACE__')
+  res = res.replace('<','_L_')
+  res = res.replace('>','_G_')
+  res = res.replace(',','_')
+  res = res.replace('::','_')
+  res = res.replace(' ','')
   return res
 
 #-------------------------------------------------------------
-def ClassShortName(classname):
+def ClassShortName(classname,libnamespace=""):
   res = classname
   # keep std::string as is
   if classname=="std::string":
     return res
+  if libnamespace!="":
+    res = res.replace(libnamespace+"::","")
   res = res.replace('<','_')
   res = res.replace('>','')
   res = res.replace(',','_')
   res = res.replace('::','_')
   res = res.replace(' ','')
+  res = res.replace('unsignedchar', 'uchar')
+  res = res.replace('unsignedshort','ushort')
+  res = res.replace('unsignedint',  'uint')
+  res = res.replace('unsignedlong', 'ulong')
   return res
 
 #-------------------------------------------------------------
@@ -221,6 +227,49 @@ def IsSharedPtr(typename):
     return res.group(1).strip()
   else:
     return None
+
+#------------------------------------------------------------------
+# Recursively find all the types within the template expression
+#------------------------------------------------------------------
+def templatetypes(string, all_types):
+    #print "--------------"
+    #print " starting templatetypes for", string
+    #print ""
+    types = []
+    types.append("")
+    #index
+    idx = 0
+    template_level=0
+    intemplate=False
+    template=""
+    for char in string:
+      #print types, " ", template
+      if char == "<":
+        template_level += 1
+        if template_level == 1:
+          template=""
+        else:
+          template+=char
+      elif char == ">":
+        template_level -= 1
+        if template_level ==0:
+          types[idx] += "<" + template + ">"
+          templatetypes(template,all_types)
+        else:
+          template+=char
+      else:
+        if template_level>0:
+          template+=char
+        else:
+          if char==",":
+            types[idx] = types[idx].strip()
+            types.append("")
+            idx=idx+1
+          else:
+            types[idx] += char
+    types[idx] = types[idx].strip()
+    all_types +=  types
+
 
 #-------------------------------------------
 # Language tokens

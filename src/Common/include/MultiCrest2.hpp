@@ -125,7 +125,7 @@ public:
   void Init( const int& l, int p) {  ligne=l; point=p;}
 
   ///
-  friend ostream& operator<<(ostream& o, const t_point& p);
+  friend std::ostream& operator<<(std::ostream& o, const t_point& p);
 
 } t_point;
 
@@ -174,7 +174,7 @@ public:
   }
 
   ///
-  friend ostream& operator<<(ostream& o, const point_ligne& p);
+  friend std::ostream& operator<<(std::ostream& o, const point_ligne& p);
 
 } point_ligne;
 

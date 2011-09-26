@@ -106,7 +106,10 @@ VARTYPE_STRING_DOUBLE( long,                 Value(),                   Value())
 VARTYPE_STRING_DOUBLE( bool,                 (Value()?"true":"false"),  (Value()?1:0)) /// New (added: 19/11/2010)
 VARTYPE_STRING_DOUBLE( int,                  Value(),                   Value())
 VARTYPE_STRING_DOUBLE( unsigned char,        (int)Value(),              Value())
-VARTYPE_STRING_DOUBLE( std::string,          Value(),                   0)
+//VARTYPE_STRING_DOUBLE( std::string,          Value(),                   0)
+
+template <> std::string Variable<std::string>::GetValueAsString() const { return Value();} 
+template <> double Variable<std::string>::GetValueAsDouble() const { return 0; } 
 
 // FloatMatrix
 template <> std::string Variable<FloatMatrix>::GetValueAsString() const 

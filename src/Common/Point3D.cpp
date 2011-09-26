@@ -13,7 +13,7 @@
 
 #include "Point3D.hpp"
 
-ostream& operator<<(ostream& o, const Point3D& p)
+std::ostream& operator<<(std::ostream& o, const Point3D& p)
 {
   return o << " ( " << p.x << "; "
           	   << p.y << "; "

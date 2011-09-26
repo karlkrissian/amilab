@@ -69,7 +69,7 @@ wrap_wxStcFrame::CallMember( ParamList* p)
   std::string* title = NULL;
   int n=0;
   CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
-  if (!get_val_ptr_param<string>( title, p, n))   ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( title, p, n))   ClassHelpAndReturn;
 
   if (parent.get() && title!=NULL)
     return WrapClass_wxStcFrame::CreateVar(
@@ -109,7 +109,7 @@ BasicVariable::ptr WrapClass_wxStcFrame::
 {
   std::string* filename = NULL;
   int n = 0;
-  if (!get_val_ptr_param<string>( filename,  p, n))  ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( filename,  p, n))  ClassHelpAndReturn;
 
   this->_objectptr->_obj->FileOpen(
     wxString(filename->c_str(),wxConvUTF8)

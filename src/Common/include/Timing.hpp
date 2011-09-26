@@ -51,7 +51,7 @@ int gettimeofday(struct timeval* tp, void* tzp);
 
 #include <iostream>
 #include <string>
-using namespace std;
+//using -- namespace std;
 
 
 //======================================================================
@@ -72,7 +72,7 @@ class Timing
 
   long       cumul_diff_sec;
   long       cumul_diff_microsec;
-  string     name;
+  std::string     name;
   
 public:
 
@@ -103,7 +103,7 @@ public:
 
   double GetCumulTimer() { return cumul_timer; }
 
-  void AfficheCumul(ostream& o);
+  void AfficheCumul(std::ostream& o);
 
   void GetCumul(long& heures, long& minutes, float& secondes )
   {
@@ -147,7 +147,7 @@ public:
   }
 
   ///
-  friend ostream& operator<<(ostream& o, const Timing& d);
+  friend std::ostream& operator<<(std::ostream& o, const Timing& d);
 
 };
 

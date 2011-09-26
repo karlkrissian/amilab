@@ -60,7 +60,7 @@
 
 #include "inrimage_base.hpp"
 
-using namespace std;
+//using -- namespace std;
 
 //=========================================================================
 

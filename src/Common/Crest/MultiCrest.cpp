@@ -57,7 +57,7 @@
 
 //---------------------------------------------------------------------
 //
-ostream& operator<<(ostream& o, const multipoint& p)
+std::ostream& operator<<(std::ostream& o, const multipoint& p)
 {
   return o << " ( num = " << p.num << "; ligne = "
           	   << p.ligne << "; point = "
@@ -67,7 +67,7 @@ ostream& operator<<(ostream& o, const multipoint& p)
 
 //---------------------------------------------------------------------
 //
-ostream& operator<<(ostream& o, const multiligne& l)
+std::ostream& operator<<(std::ostream& o, const multiligne& l)
 {
   return o << " ( num = " << l.num << "; ligne = "
           	   << l.ligne << " )";
@@ -76,7 +76,7 @@ ostream& operator<<(ostream& o, const multiligne& l)
 
 //---------------------------------------------------------------------
 //
-ostream& operator<<(ostream& o, const multipoint_ligne& p)
+std::ostream& operator<<(std::ostream& o, const multipoint_ligne& p)
 {
   return o << " ( point = " << p.mpoint << "; coeff = "
           	   << p.coeff  << " )";
@@ -1166,7 +1166,7 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
     // Desactiver les points de la ligne dans l'image ...
     return;
 
-    } catch (OutOfArray) {  cin >> n;    }
+    } catch (OutOfArray) {  std::cin >> n;    }
 
   FinSi
 
@@ -1231,7 +1231,7 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
     Si pos12 != pos11 AlorsFait
       AjouteLigne( 2, lr4);
 
-    } catch (OutOfArray) {  cin >> n;    }
+    } catch (OutOfArray) {  std::cin >> n;    }
 
   Autrement
 
@@ -1269,7 +1269,7 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
     AjouteLigne( 2, lr2);
     AjouteLigne( ligne2.Ensemble(), lr3);
 
-    } catch (OutOfArray) {  cin >> n;    }
+    } catch (OutOfArray) {  std::cin >> n;    }
 
   // ---------------------------------------------------------
   // une partie de ligne1 se projette a l'interieur de ligne2
@@ -1311,7 +1311,7 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
     lr5.nb_points++;
 
     } 
-    catch (OutOfArray) { std::cout << "creation lignes\n"; cin >> n;    }
+    catch (OutOfArray) { std::cout << "creation lignes\n"; std::cin >> n;    }
 
     try{
     
@@ -1327,7 +1327,7 @@ void MultiCrest :: Fusionne( const multiligne& ligne1,
     AjouteLigne( ligne2.Ensemble(), lr4);
     AjouteLigne( 2, lr5);
 
-    } catch (OutOfArray) { std::cout << "efface - ajoute lignes\n"; cin >> n;    }
+    } catch (OutOfArray) { std::cout << "efface - ajoute lignes\n"; std::cin >> n;    }
 
   FinSi
 
@@ -1448,7 +1448,7 @@ void MultiCrest :: CreeJonctions( )
     Point3D          pt;
     LigneCrest       ligne;
 
-cout << "Debut CreeJonctions \n";
+std::cout << "Debut CreeJonctions \n";
 
  std::cout << " size x = " << _image->_size_x 
        << " size y = " << _image->_size_y 
@@ -1520,7 +1520,7 @@ void MultiCrest :: CreeJonction( int nouv_l, int l , int pos)
     catch (ExceptionBadPointNumber)
     {
       std::cerr << "CreeProjections : probleme .. \n";
-      cin >> n;
+      std::cin >> n;
       return;
     }
 
@@ -1590,7 +1590,7 @@ void MultiCrest :: CreeProjections( )
         catch (ExceptionBadPointNumber)
         {
           std::cerr << "CreeProjections : probleme .. \n";
-          cin >> n;
+          std::cin >> n;
           continue;
         }
         Si distance < pt.rayon Alors

@@ -80,6 +80,7 @@ void WrapClass${TEMPLATENAME}_AddStaticMethods( Variables::ptr& context)
   ${AddVar_constructor}
   ${AddVar_static_methods}
   ${AddPublicEnums}
+  ${AddPublicTypedefs}
 
   //  add it to the given context
   context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);

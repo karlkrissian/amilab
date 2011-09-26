@@ -363,7 +363,7 @@ if (!exists(VolRenClass)) {
        mb = ami.MainFrame.GetMainBook()
 
       ::panel = wx.wxPanel(&ami.MainFrame)
-      ::panel._SetName("VolRen panel")
+      //::panel.SetName("VolRen panel")
 
       # StaticBox gives problems on XP ..., avoid it ...
       # sbox = wx.wxStaticBox(&::panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")

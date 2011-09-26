@@ -21,3 +21,5 @@ ami.MainFrame.AddToMenu("&ITK",filt_category,"Weighted Local Stats",filt_dir+"/i
 
 del filt_category
 del filt_dir
+ ami.MainFrame.AddToMenu("&Scripts","&Basic Filters","&ImageResample",  "BasicFilters/ImageResample/ImageResampleGui")
+

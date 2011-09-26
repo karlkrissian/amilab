@@ -12,7 +12,7 @@
 #include <boost/shared_ptr.hpp>
 
 using namespace boost;
-using namespace std;
+//using -- namespace std;
 
 
 typedef float weight_type;
@@ -28,15 +28,15 @@ typedef shared_ptr<graph_t> graph_ptr;
 typedef graph_traits < graph_t >::vertex_descriptor vertex_descriptor;
 typedef graph_traits < graph_t >::edge_descriptor edge_descriptor;
 
-typedef vector<weight_type>   weight_vec;
-typedef pair<int,int> Edge; 
-typedef vector<Edge>  Edge_vec;
+typedef std::vector<weight_type>   weight_vec;
+typedef std::pair<int,int> Edge; 
+typedef std::vector<Edge>  Edge_vec;
 
 
 class PathInfo {
 public:
-  vector<vertex_descriptor> previous;
-  vector<weight_type>       distance;
+  std::vector<vertex_descriptor> previous;
+  std::vector<weight_type>       distance;
 };
 
 

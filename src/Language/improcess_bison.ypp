@@ -6463,7 +6463,7 @@ image:
     }
     |
     T_AnisoSRAD
-    T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6482,7 +6482,7 @@ image:
     }
     |
     T_AnisoSRAD
-    T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6502,7 +6502,7 @@ image:
     }
     |
     T_AnisoSRAD2
-    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6524,7 +6524,7 @@ image:
     |
       T_AnisoSRAD2
       T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA
-      expr T_COMMA image_extent T_CL_PAR
+      expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6544,7 +6544,7 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
     }
     |
-    T_AnisoLeeAdd2 T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_AnisoLeeAdd2 T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6563,7 +6563,7 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
     }
     |
-    T_AnisoDPAD T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_AnisoDPAD T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6583,7 +6583,7 @@ image:
     }
     |
     T_AnisoDPAD2
-    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6603,7 +6603,7 @@ image:
     }
     |
     T_AnisoNRAD
-    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
     /**
       Parameters:

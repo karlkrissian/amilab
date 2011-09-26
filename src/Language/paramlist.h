@@ -29,7 +29,7 @@ extern unsigned char GB_debug;
 
 #include <string>
 #include <vector>
-//using namespace std;
+//using -- namespace std;
 
 #ifndef __APPLE__
   template class AMI_DLLEXPORT std::vector<BasicVariable::ptr>;

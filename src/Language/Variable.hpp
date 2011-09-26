@@ -657,7 +657,8 @@ public:
    * 
    * @return A string containing the value of the variable.
    */
-  virtual std::string GetValueAsString() const { return std::string(); }
+  virtual std::string GetValueAsString() const;
+  //const { return std::string(); }
 
   // allow access to private members of Variable class
 //  friend class VarArray;

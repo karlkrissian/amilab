@@ -58,7 +58,7 @@
 #include "style.hpp"
 //#include "Erreurs.hpp"
 #include <iostream>
-using namespace std;
+//using -- namespace std;
 
 
 template < class T > class Pile;
@@ -67,7 +67,7 @@ template < class T > class Pile;
 /**
  */
 template<class T>
-ostream& operator<< (ostream&, const Pile<T>& p);
+std::ostream& operator<< (std::ostream&, const Pile<T>& p);
 
 
 
@@ -244,10 +244,10 @@ public:
 // && !(defined(_linux_)) 
   /**
    */
-  friend ostream& operator << <>(ostream&, const Pile<T>& p);
+  friend std::ostream& operator << <>(std::ostream&, const Pile<T>& p);
 #else
 
-  friend ostream& operator << (ostream&, const Pile<T>& p);
+  friend std::ostream& operator << (std::ostream&, const Pile<T>& p);
 #endif
 
 }; // Pile<T>
@@ -508,7 +508,7 @@ unsigned char Pile<T> :: Existe( T elt)
 /**
  */
 template<class T>
-ostream& operator << (ostream& os, const Pile<T>& p)
+std::ostream& operator << (std::ostream& os, const Pile<T>& p)
 //       -----------
 {
   

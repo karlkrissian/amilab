@@ -89,7 +89,7 @@ public:
 
   /**
    */
-  friend ostream& operator<<( ostream&s, Voisin27& pt)
+  friend std::ostream& operator<<( std::ostream&s, Voisin27& pt)
   {
     return s <<'(' << pt.X()  << ',' << pt.Y()  << ',' << pt.Z()  << ')';
   }

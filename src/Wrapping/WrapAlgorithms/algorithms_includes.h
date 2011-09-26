@@ -9,6 +9,15 @@
 #include "ShortestPathClass.h"
 #include "Curvatures.h"
 
+// why do I need this include ??
+//#include "vcl_config_compiler.h"
+//#define vcl_generic_complex_STD 
+//#define vcl_generic_iosfwd_STD
+//#include "vcl_complex.h"
+//#include "vnl/vnl_matrix.h"
+
+/*
+ * #include "vcl_limits.h"
 // trying vnl_matrix ...
 #include "vnl/vnl_matrix.h"
 #include "vnl/vnl_vector.h"
@@ -25,7 +34,8 @@
 #ifdef __GCCXML__
   template class vnl_vector_fixed<double,3>;
 #endif // __GCCXML__
-
+*/
+/*
 // trying itk
 #include <itkImage.h>
 #include <itkSmartPointer.h>
@@ -55,7 +65,7 @@
   //template class std::list<int>::iterator;
   //template class std::list<int>::const_iterator;
 #endif // __GCCXML__
-
+*/
 // trying iostream
 #include <iostream>
 #include <sstream>

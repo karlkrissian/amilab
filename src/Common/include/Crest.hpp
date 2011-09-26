@@ -78,7 +78,7 @@
 #include <string.h>
 #include <math.h>
 #include <iostream>
-using namespace std;
+//using -- namespace std;
 
 
 

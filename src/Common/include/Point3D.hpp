@@ -15,7 +15,7 @@
 
 #include "style.hpp"
 #include <iostream>
-using namespace std;
+//using - namespace std;
 #include "Coordonnees.hpp"
 #include "math1.hpp"
 
@@ -130,7 +130,7 @@ public:
   }
 
   ///
-  friend ostream& operator<<(ostream& o, const Point3D& p);
+  friend std::ostream& operator<<(std::ostream& o, const Point3D& p);
 
 };
 

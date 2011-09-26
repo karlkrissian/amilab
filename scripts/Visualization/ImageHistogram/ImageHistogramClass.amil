@@ -566,7 +566,7 @@ printn "xmax = %1%" % xmax
       # parameters window
       # parameters window
       if (exists(::parent_panel)) {
-        print "Creating window with panel '%1%'" % ::parent_panel._GetName().c_str()
+        print "Creating window with panel '%1%'" % ::parent_panel.GetName().c_str()
         ::win = ParamPanel("ImHist",&::parent_panel)
       } else {
         ::win = ParamPanel("ImHist")

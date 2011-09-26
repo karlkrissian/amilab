@@ -53,6 +53,7 @@
 
 #include "ami_object.h"
 
+#include "addwrap_itk.h"
 
 extern VarContexts  Vars;
 
@@ -101,5 +102,9 @@ void AddWrapITK(AMIObject::ptr& obj){
 
   // Add the new object (namespace)
   obj->GetContext()->AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject,obj->GetContext());
+
+  // Add classes to itk classes to context
+  wrap_itk_classes(amiobject->GetContext());
+
 }
 

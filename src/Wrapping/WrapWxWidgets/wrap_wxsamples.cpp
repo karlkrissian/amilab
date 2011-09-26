@@ -101,7 +101,7 @@ void wrap_wxStcFrame( ParamList* p)
   std::string* filename = NULL;
   int line_number = 0;
   
-  if (!get_val_ptr_param<string>( filename,    p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<std::string>( filename,    p, n)) HelpAndReturn;
   if (!get_int_param( line_number,    p, n)) HelpAndReturn;
 
   // create application frame

@@ -1,2 +1,4 @@
 
 func "PropagateVesselsContours/Add2Menu.amil"
+ ami.MainFrame.AddToMenu("&Scripts","&Vessels","&VesselContours2D",  "Vessels/VesselContours2D/VesselContours2DGui")
+

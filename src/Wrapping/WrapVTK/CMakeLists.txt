@@ -26,7 +26,9 @@ INCLUDE( ${wxWidgets_USE_FILE})
 # if automatic wrapping, generate source files
 IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   # Generate XML file
-  MESSAGE("Generate XML file for VTK")
+  MESSAGE("***************************")
+  MESSAGE(" Generate XML file for VTK")
+  MESSAGE("***************************")
   #
   IF   (VTK_FOUND)
     IF   (VTK_INCLUDE_DIRS)
@@ -83,8 +85,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   # Generate the classes list
 
   # Read list of classes to wrap
-  FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt" classes_txt)
-  STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+  FILE(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt" classes_list REGEX "[^#].*")
+  MESSAGE("classes_list = ${classes_list}")
 
   SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")

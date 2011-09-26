@@ -77,8 +77,8 @@ extern yyip::Driver GB_driver;
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::TryCast(const std::string& type_string) const
 {
   //Modified: Added (12-07-2010)
-  string_ptr value( new string(type_string));
-  Variable<string>::ptr b( new Variable<string>( type_string, value));
+  string_ptr value( new std::string(type_string));
+  Variable<std::string>::ptr b( new Variable<std::string>( type_string, value));
 
   APPLY_MEMBER_PARAM1("try_cast", b, varres)
   if (varres.get())

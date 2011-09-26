@@ -114,7 +114,7 @@ private:
       unsigned char* new_point_traite;
       int   i,j,k;
 
-cout << "Resize() \n";
+    std::cout << "Resize() \n";
 
     new_size = _taille_max * 2;
 

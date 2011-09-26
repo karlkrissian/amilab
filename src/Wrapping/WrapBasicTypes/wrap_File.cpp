@@ -93,8 +93,8 @@ std::string readline(FILE* f)
 
 void  WrapClass_File::wrap_File::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"The name of the file to be opened.");
-  ADDPARAMCOMMENT_TYPE(string,"The file access modes (def: w).");
+  ADDPARAMCOMMENT_TYPE(std::string,"The name of the file to be opened.");
+  ADDPARAMCOMMENT_TYPE(std::string,"The file access modes (def: w).");
   return_comments = "A wrapped File object.";
 }
 
@@ -103,8 +103,8 @@ BasicVariable::ptr WrapClass_File::wrap_File::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sFileName,"");
-  GET_PARAM(string,sMode,"w");
+  GET_PARAM(std::string,sFileName,"");
+  GET_PARAM(std::string,sMode,"w");
 
   if ((sMode == "") || (sFileName == "")) {
     ClassHelpAndReturn;
@@ -234,7 +234,7 @@ BasicVariable::ptr WrapClass_File::
 void WrapClass_File::
       wrap_scan_float::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"Indicates a format specifier.");
+  ADDPARAMCOMMENT_TYPE(std::string,"Indicates a format specifier.");
   return_comments = "The float number that has been read from the file.";
 }
 //---------------------------------------------------
@@ -247,7 +247,7 @@ BasicVariable::ptr WrapClass_File::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sFormatSpecifier,"");
+  GET_PARAM(std::string,sFormatSpecifier,"");
 
   /**
     Description:
@@ -378,7 +378,7 @@ BasicVariable::ptr WrapClass_File::
 {
   FILE_ptr file(this->_objectptr->GetObj());
 
-  string val = "";
+  std::string val = "";
 
   if (file.get())
   {
@@ -391,7 +391,7 @@ BasicVariable::ptr WrapClass_File::
 
  }
 
-  RETURN_VAR(string,val);
+  RETURN_VAR(std::string,val);
 }
 
 //---------------------------------------------------
@@ -408,7 +408,7 @@ BasicVariable::ptr WrapClass_File::
 {
   FILE_ptr file(this->_objectptr->GetObj());
 
-  string val = "";
+  std::string val = "";
 
   if (file.get())
   {
@@ -416,7 +416,7 @@ BasicVariable::ptr WrapClass_File::
     val = readline(file.get());
  }
 
-  RETURN_VAR(string,val);
+  RETURN_VAR(std::string,val);
 }
 
 //---------------------------------------------------

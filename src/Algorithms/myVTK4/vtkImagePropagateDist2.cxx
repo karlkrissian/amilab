@@ -749,7 +749,7 @@ void vtkImagePropagateDist2::PropagateDanielsson2D( )
     }
     list_remaining_trial.clear();
 
-    list<int>::iterator it;
+    std::list<int>::iterator it;
     for ( it = list0.begin(); it != list0.end(); it++ ) {
       p    = *it;
       pt0  = list_elts[p];
@@ -1111,7 +1111,7 @@ void vtkImagePropagateDist2::PropagateDanielsson3D( )
     }
     list_remaining_trial.clear();
 
-    list<int>::iterator it;
+    std::list<int>::iterator it;
     for(it=list0.begin();it!=list0.end();it++) {
       p    = *it;
       pt0  = list_elts[p];

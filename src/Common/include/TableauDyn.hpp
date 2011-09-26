@@ -73,7 +73,7 @@ template < class T > class TableauDyn;
 /**
  */
 template<class T>
-ostream& operator<< (ostream&, const TableauDyn<T>& p);
+std::ostream& operator<< (std::ostream&, const TableauDyn<T>& p);
 
 
 //===========================================================================
@@ -236,10 +236,10 @@ public:
 // && !(defined(_linux_))
   /**
    */
-  friend ostream& operator << <>(ostream&, const TableauDyn<T>& p);
+  friend std::ostream& operator << <>(std::ostream&, const TableauDyn<T>& p);
 #else
 
-  friend ostream& operator << (ostream&, const TableauDyn<T>& p);
+  friend std::ostream& operator << (std::ostream&, const TableauDyn<T>& p);
 #endif
 
 }; // TableauDyn<T>
@@ -484,7 +484,7 @@ int TableauDyn<T> :: Position( const T& elt)
 /**
  */
 template<class T>
-ostream& operator << (ostream& os, const TableauDyn<T>& p)
+std::ostream& operator << (std::ostream& os, const TableauDyn<T>& p)
 //       -----------
 {
 
