@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuVesselContours2D() \
+{
+  category = "&PDI"
+  script = "PDI/VesselContours2D/VesselContours2DGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&VesselContours2D",script)
+}
+
+AddMenuVesselContours2D()
+del AddMenuVesselContours2D

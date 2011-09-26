@@ -1,0 +1,11 @@
+
+func "VesselContours2DClass"
+
+if (!exists(VesselContours2D_obj)) {
+  VesselContours2DClass VesselContours2D_obj
+  VesselContours2D_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
