@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuImageResample() \
+{
+  category = "&PDI"
+  script = "PDI/ImageResample/ImageResampleGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&ImageResample",script)
+}
+
+AddMenuImageResample()
+del AddMenuImageResample

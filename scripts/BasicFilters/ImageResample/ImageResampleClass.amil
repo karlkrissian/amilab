@@ -1,0 +1,227 @@
+
+func "Common/ScriptGui"
+
+if (!exists(ImageResampleClass)) {
+
+  Class ImageResampleClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+        ::input_name   = "","Name of the input image variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::new_dimx = INT(256)
+        ::new_dimy = INT(256)
+        ::new_dimz = INT(256)
+
+        ::magnification_x = 1
+        ::magnification_y = 1
+        ::magnification_z = 1
+
+        ::new_voxsize_x = 1
+        ::new_voxsize_y = 1
+        ::new_voxsize_z = 1
+
+        ::method = INT(0), "0: AMILab 1: VTK 2: ITK"
+        ::interpolation = INT(1), "0: nearest neighbor, 1: linear, 2: cubic"
+
+        ::html_filename = GetScriptsDir+"/ImageResample/Doc/ImageResample/index.html"
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      del ::input_draw
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::ResetAll()
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+    #-----------------------------------------------
+    proc ::ResetAll() \
+    {
+      if (exists(::input)) {
+        ::new_dimx = ::input.tx
+        ::new_dimy = ::input.ty
+        ::new_dimz = ::input.tz
+        ::magnification_x = 1
+        ::magnification_y = 1
+        ::magnification_z = 1
+        ::new_voxsize_x = ::input.vx
+        ::new_voxsize_y = ::input.vy
+        ::new_voxsize_z = ::input.vz
+        ::win.Update(-1)
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::ChangedDim() \
+    {
+      ::magnification_x = (FLOAT)::new_dimx/::input.tx
+      ::magnification_y = (FLOAT)::new_dimy/::input.ty
+      ::magnification_z = (FLOAT)::new_dimz/::input.tz
+      ::new_voxsize_x   = (FLOAT)::input.vx/::magnification_x
+      ::new_voxsize_y   = (FLOAT)::input.vy/::magnification_y
+      ::new_voxsize_z   = (FLOAT)::input.vz/::magnification_z
+      ::win.Update(::magnification_x_id)
+      ::win.Update(::magnification_y_id)
+      ::win.Update(::magnification_z_id)
+      ::win.Update(::new_voxsize_x_id)
+      ::win.Update(::new_voxsize_y_id)
+      ::win.Update(::new_voxsize_z_id)
+    }
+
+    #-----------------------------------------------
+    proc ::AMILabResample() \
+    {
+      ::output <<= Resize(::input,::new_dimx,::new_dimy,::new_dimz,::interpolation)
+    }
+
+    #-----------------------------------------------
+    proc ::VTKResample() \
+    {
+      # Convert input to vtk
+      input_vtk  = vtktools.ToVtkImageData(&::input)
+
+      # Run Resample filter
+      imresample = vtk.vtkImageResample.New()
+      imresample.GetOutput().ReleaseDataFlagOn()
+      imresample.SetAxisMagnificationFactor(0,::magnification_x)
+      imresample.SetAxisMagnificationFactor(1,::magnification_y)
+      imresample.SetAxisMagnificationFactor(2,::magnification_z)
+      if ::interpolation==0 {
+        imresample.SetInterpolationModeToNearestNeighbor()
+      }
+      if ::interpolation==1 {
+        imresample.SetInterpolationModeToLinear()
+      }
+      if ::interpolation==2 {
+        imresample.SetInterpolationModeToCubic()
+      }
+      imresample.SetInput(&input_vtk)
+      imresample.Update()
+      output_vtk = imresample.GetOutput()
+      
+      # Convert back to amilab image format
+      ::output <<= vtktools.FromVtkImageData(&output_vtk)
+    }
+
+    #-----------------------------------------------
+    proc ::ITKResample() \
+    {
+    }
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      del ::output_draw
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+        if ::method==0 { ::AMILabResample(); }
+        if ::method==1 { ::VTKResample(); }
+        if ::method==2 { ::ITKResample(); }
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::Display() \
+    {
+      if (exists(::input)) {
+        show ::input
+      }
+      if (exists(::output)) {
+        show ::output
+        ::input_draw.compare(&::output_draw)
+      }
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("ImageResample",&::parent_panel)
+      } else {
+        ::win = ParamPanel("ImageResample")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+            ::win.BeginBoxPanel("New Dimensions")
+              ::new_dimx_id = ::win.AddInt(&::new_dimx,"X",1,512)
+              ::win.SetCallback( &::ChangedDim)
+              ::new_dimy_id = ::win.AddInt(&::new_dimy,"Y",1,512)
+              ::win.SetCallback( &::ChangedDim)
+              ::new_dimz_id = ::win.AddInt(&::new_dimz,"Z",1,512)
+              ::win.SetCallback( &::ChangedDim)
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("New Magnification")
+              ::magnification_x_id = ::win.AddFloat(&::magnification_x,"X",0.01,10)
+              ::magnification_y_id = ::win.AddFloat(&::magnification_y,"Y",0.01,10)
+              ::magnification_z_id = ::win.AddFloat(&::magnification_z,"Z",0.01,10)
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("New Voxel Size")
+              ::new_voxsize_x_id = ::win.AddFloat(&::new_voxsize_x,"X",0.01,10)
+              ::new_voxsize_y_id = ::win.AddFloat(&::new_voxsize_y,"Y",0.01,10)
+              ::new_voxsize_z_id = ::win.AddFloat(&::new_voxsize_z,"Z",0.01,10)
+            ::win.EndBoxPanel()
+            ::win.AddButton("Reset",&::ResetAll)
+
+            method_id = ::win.AddEnum( &::method,"Method")
+              ::win.AddEnumChoice(method_id,"AMILab")
+              ::win.AddEnumChoice(method_id,"VTK")
+              ::win.AddEnumChoice(method_id,"ITK")
+            interp_id = ::win.AddEnum( &::interpolation,"Interpolation")
+              ::win.AddEnumChoice(interp_id,"nearest neighbor")
+              ::win.AddEnumChoice(interp_id,"linear")
+              ::win.AddEnumChoice(interp_id,"cubic")
+          
+
+        ::win.AddPage("Run")
+          ::win.AddButton("Run Filter",::Run)
+          ::win.AddButton("Display",::Display)
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

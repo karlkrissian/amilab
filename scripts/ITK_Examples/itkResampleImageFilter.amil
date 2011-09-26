@@ -1,0 +1,53 @@
+
+#
+# Example works
+#
+
+  input = $1
+
+  # itk::Image<unsigned char, 2>
+  ImageType ="Image_uchar_2u"
+
+  # ImageType::Pointer
+  ImageType_Pointer="itk.SmartPointer_"+ImageType
+
+  # 1. Get Input image
+  input_itk = itk.amiConvert.ToITK_US2(&input)
+
+  # 1. Put a transform 
+  transform_ptr = itk.TranslationTransform_double_2u.New()
+  transform = transform_ptr.GetPointer()
+  transl = itk.Vector_double_2u.Vector()
+  #transl[0] = 10
+  #transl[1] = 20
+  transl[0] = 0
+  transl[1] = 0
+  transform.Translate(&transl)
+ 
+ 
+  # 2. Set spacing
+  spacing = vector_double(2,0)
+  spacing[0] = 1.0;
+  spacing[1] = 1.0;
+  resampleFilter->SetOutputSpacing( &spacing[0] );
+ 
+  # 2. Set origin
+  origin = vector_double(2,0)
+  origin[0] = 0.0;
+  origin[1] = 0.0;
+  resampleFilter->SetOutputOrigin( &origin[0] );
+ 
+  #// Without this, the program crashes
+  size = im.GetLargestPossibleRegion().GetSize()
+  resampleFilter.SetSize(&size )
+
+  eval "resampleFilter_ptr = itk.ResampleImageFilter_%1_%1_double.New();" % ImageType
+  resampleFilter = resampleFilter_ptr.GetPointer()
+  resampleFilter.SetTransform(&transform)
+  resampleFilter.SetInput(&input_itk)
+
+  resampleFilter.Update()
+
+  res = itk.amiConvert.FromITK_US2(&resampleFilter.GetOutput())
+  show res
+

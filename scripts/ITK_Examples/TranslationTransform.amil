@@ -1,0 +1,86 @@
+
+#
+# Example works
+#
+
+# itk::Image<unsigned char, 2>
+ImageType ="Image_uchar_2u"
+
+# ImageType::Pointer
+ImageType_Pointer="itk.SmartPointer_"+ImageType
+
+#------------------------------------------------------------
+proc CreateImage(OBJECT image) \
+{
+  start = itk.Index_2u.Index()
+  start.Fill(0);
+ 
+  size = itk.Size_2u.Size();
+  size.Fill(100);
+ 
+  region = itk.ImageRegion_2u.ImageRegion(&start,&size)
+  image.SetRegions(&region);
+  image.Allocate();
+  image.FillBuffer(0);
+ 
+  # Make a square
+  pixelIndex = itk.Index_2u.Index()
+  for  r = 40 to 59 {
+    for c = 40 to 59 \
+      {
+        pixelIndex[0] = r
+        pixelIndex[1] = c
+        image.SetPixel(&pixelIndex, 255);
+      }
+    }
+}
+
+ 
+#------------------------------------------------------------
+  eval "image_ptr = itk.%1%.New();" % ImageType
+  im = image_ptr.GetPointer()
+  CreateImage(&im)
+ 
+  transform_ptr = itk.TranslationTransform_double_2u.New()
+  transform = transform_ptr.GetPointer()
+  transl = itk.Vector_double_2u.Vector()
+  transl[0] = 10
+  transl[1] = 20
+  transform.Translate(&transl)
+ 
+  resampleFilter_ptr = itk.ResampleImageFilter_Image_uchar_2u_Image_uchar_2u_double.New()
+  resampleFilter = resampleFilter_ptr.GetPointer()
+  resampleFilter.SetTransform(&transform)
+  resampleFilter.SetInput(&im)
+ 
+  #/*
+  #// These are the defaults
+  #double spacing[ 2 ];
+  #spacing[0] = 1.0;
+  #spacing[1] = 1.0;
+  #resampleFilter->SetOutputSpacing( spacing );
+ 
+  #double origin[ 2 ];
+  #origin[0] = 0.0;
+  #origin[1] = 0.0;
+  #resampleFilter->SetOutputOrigin( origin );
+  #*/
+ 
+  #// Without this, the program crashes
+  size = im.GetLargestPossibleRegion().GetSize()
+  resampleFilter.SetSize(&size )
+  resampleFilter.Update()
+ 
+  writer_sp  = itk.ImageFileWriter_Image_uchar_2u.New()
+  writer = writer_sp.GetPointer()
+  writer.SetFileName( "res.png" )
+  writer.SetInput( &resampleFilter.GetOutput() )
+  writer.Update()
+
+  #QuickView viewer;
+  #viewer.AddImage(image.GetPointer());
+  #viewer.AddImage(resampleFilter->GetOutput());
+  #viewer.Visualize();
+ 
+ 
+ 
