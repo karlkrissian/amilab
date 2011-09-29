@@ -159,6 +159,7 @@ def WrapMethodTypePointer(typedefname,include_file):
     line = line.replace("${AddVar_constructor}",  "")
     line = line.replace("${AddVar_static_methods}",  "")
     line = line.replace("${WRAP_PUBLIC_METHODS}",impl)
+    line = line.replace("${AddPublicTypedefs}","")
     print line,
   wrap_class.BackupFile(header_filename)
   wrap_class.BackupFile(impl_filename)

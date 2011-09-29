@@ -61,6 +61,8 @@ wxEventTypeTag<wxCloseEvent>
 wxEventTypeTag<wxMenuEvent>
 wxEventTypeTag<wxTimerEvent>
 wxEventTypeTag<wxListEvent>
+wxEventTypeTag<wxHtmlCellEvent>
+wxEventTypeTag<wxHtmlLinkEvent>
 wxFocusEvent
 wxFSFile
 wxFileName

@@ -49,7 +49,7 @@ public:
                       size,
                       style) 
   {
-    std::cout << "myDirPickerCtrl, path = " << path << std::endl;
+    std::cout << "myDirPickerCtrl, path = " << path.c_str() << std::endl;
     std::cout << "exists ? = " << wxFileName::DirExists(path) << std::endl;
     _callback = _calldata = NULL;
 

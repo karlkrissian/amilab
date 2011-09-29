@@ -163,7 +163,11 @@ if (!exists(ROCClass)){
     proc ::Gui() {
       
       # parameters window
-      ::win = ParamPanel("ROC")
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("ROC",&::parent_panel)
+      } else {
+        ::win = ParamPanel("ROC")
+      }
       
       # add Drawing Window
       d = ::win.CurrentParent()
@@ -232,7 +236,11 @@ if (!exists(ROCClass)){
       ::AddStandardButtons(&::win)
 
       ::win.Update(-1)
-      ::win.Display()
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
     }
 
     ::Init()

@@ -29,18 +29,20 @@
   // The correct number does not matter here, because it is for gccxml to 
   // to be able to instantiate the template class ...
   int id=0; 
-  class wxEventTypeTag<wxCommandEvent> et1(id);
-  class wxEventTypeTag<wxMouseEvent>   et2(id);
-  class wxEventTypeTag<wxKeyEvent>     et3(id);
-  class wxEventTypeTag<wxSizeEvent>    et4(id);
-  class wxEventTypeTag<wxPaintEvent>   et5(id);
-  class wxEventTypeTag<wxEraseEvent>   et6(id);
-  class wxEventTypeTag<wxMoveEvent>    et7(id);
-  class wxEventTypeTag<wxFocusEvent>   et8(id);
-  class wxEventTypeTag<wxCloseEvent>   et9(id);
-  class wxEventTypeTag<wxMenuEvent>    et10(id);
-  class wxEventTypeTag<wxTimerEvent>   et11(id);
-  class wxEventTypeTag<wxListEvent>    et12(id);
+  class wxEventTypeTag<wxCommandEvent>  et1(id);
+  class wxEventTypeTag<wxMouseEvent>    et2(id);
+  class wxEventTypeTag<wxKeyEvent>      et3(id);
+  class wxEventTypeTag<wxSizeEvent>     et4(id);
+  class wxEventTypeTag<wxPaintEvent>    et5(id);
+  class wxEventTypeTag<wxEraseEvent>    et6(id);
+  class wxEventTypeTag<wxMoveEvent>     et7(id);
+  class wxEventTypeTag<wxFocusEvent>    et8(id);
+  class wxEventTypeTag<wxCloseEvent>    et9(id);
+  class wxEventTypeTag<wxMenuEvent>     et10(id);
+  class wxEventTypeTag<wxTimerEvent>    et11(id);
+  class wxEventTypeTag<wxListEvent>     et12(id);
+  class wxEventTypeTag<wxHtmlCellEvent> et13(id);
+  class wxEventTypeTag<wxHtmlLinkEvent> et14(id);
   // TODO list all the possible types of events here ...
 #endif // __GCCXML__
 
