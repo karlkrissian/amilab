@@ -22,7 +22,7 @@ INCLUDE( ${USE_VTK_FILE})
 MESSAGE( "USE_VTK_FILE = ${USE_VTK_FILE}")
 
 
-IF(AMI_ENABLE_WRAPPING)
+IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
   # Generate XML file
   MESSAGE("********************************")
   MESSAGE("Generate XML file for ITK")
@@ -194,7 +194,7 @@ MESSAGE("ITK_SOURCE_DIR=${ITK_SOURCE_DIR}")
       (NOT EXISTS ${WRAPITK_OUTDIR}/addwrap_itk.h) OR
       (NOT EXISTS ${WRAPITK_OUTDIR}/addwrap_itk.cpp))
 
-ENDIF(AMI_ENABLE_WRAPPING)
+ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
 
 FOREACH( class ${ancestors_list}  ) 
   ClassUsedName( class m_class )
