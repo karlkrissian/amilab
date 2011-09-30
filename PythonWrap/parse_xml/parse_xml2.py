@@ -188,7 +188,14 @@ if __name__ == '__main__':
 
 
     if not(os.path.exists(args.val.outputdir)):
-      os.mkdir(args.val.outputdir)
+      try:
+        os.mkdir(args.val.outputdir)
+      except:
+        # create temporary directory
+        prev = args.val.outputdir
+        import tempfile
+        args.val.outputdir=tempfile.mkdtemp("wrap")
+        print "{0} failed: switch to temporary output directory {1}".format(prev,args.val.outputdir)
 
     # Create a parser
     parser = make_parser()
