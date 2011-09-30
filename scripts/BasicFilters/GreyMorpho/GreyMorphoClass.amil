@@ -191,7 +191,7 @@ if (!exists(GreyMorphoClass)) {
           ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
-              ::win.AddButton("Load",::LoadInput)
+              ::win.AddButton("Load",&::load_input)
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
