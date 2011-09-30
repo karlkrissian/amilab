@@ -1946,7 +1946,7 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
 }
 
 
-//Version with floating window and very close edges
+//Iterative version with floating window and very close edges
 void SubPixel2D::SubpixelDenoising(int niter)
 {
   int margin = 1;

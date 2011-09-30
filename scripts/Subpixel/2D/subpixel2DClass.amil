@@ -344,6 +344,7 @@ if (!exists(Subpixel2DClass)){
       
       if (::alg_type == 0) {
         ::res = ::sp2D->SuperGradienteCurvo()
+        ::s_method = "Basic method"
       }
       if (::alg_type == 1) {
         ::res = ::sp2D->DenoisingGus()
@@ -358,8 +359,8 @@ if (!exists(Subpixel2DClass)){
         ::win.EnablePanel(::pxinf_panel, 1)
         ::win.EnablePanel(::stat_panel, 1)
         
-        ::Display
-        ::drawBorder
+        ::Display()
+        ::drawBorder()
         
         if (::draw_on_averaged) {
           ::averaged_draw.PaintCallback(&::drawBorder)

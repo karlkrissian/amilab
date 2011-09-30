@@ -158,7 +158,11 @@ if (!exists(SyntheticPVEImagesClass)) {
             ::pv->setSubdiv(::subdiv)
             if(::type2D == 0){
               ::pv->setAnalyticFunction(&::line)
+              InitTime
               ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
+              printn "Tiempo = " + TimeSpent
+              EndTime
+              RestartTime
               ::output_name = "line"
             }
             if(::type2D == 1) {
@@ -193,7 +197,11 @@ if (!exists(SyntheticPVEImagesClass)) {
           if(::dimz > 1) {
             if(::type3D == 0) {
               ::pv->setAnalyticFunction(&::cube)
+              InitTime
               ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
+              printn "Tiempo = " + TimeSpent
+              EndTime
+              RestartTime
               ::output_name = "cube"
             }
             if(::type3D == 1) {

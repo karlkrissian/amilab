@@ -13,7 +13,7 @@ if (!exists(BasicEdgeDetection3DClass)){
     proc ::Init(){
       ::class_name   = "global::BasicEdgeDetection3DClass"
       ::input_name   = "",           "Input image."
-      ::output_name  = "bed3D_edge", "Output image name."
+      #::output_name  = "bed3D_edge", "Output image name."
       ::show_compare = UCHAR(0),    "Show the input and the result comparison."
       #Masks
       ::xMask = Image(DOUBLE, 3, 3, 3), "Mask in X."
@@ -27,8 +27,6 @@ if (!exists(BasicEdgeDetection3DClass)){
       ::beta  = 0.0
       #Method selection
       ::mask_type = INT(0), "The method selected for the edge detection"
-      
-      ::CreateGui()
     }
     
     #-----------------------
@@ -321,7 +319,7 @@ if (!exists(BasicEdgeDetection3DClass)){
               ::win.AddImageChoice(&::input_name, "In.")
               ::AddBitmapButton(&::win, &::icons._New_image, 16, "load_input")
             ::win.EndHorizontal()
-            ::win.AddString(&::output_name, "Out.")
+            #::win.AddString(&::output_name, "Out.")
           ::win.EndBoxPanel()
           
           #Method panel

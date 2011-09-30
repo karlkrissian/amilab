@@ -30,7 +30,7 @@ public:
   ~borderVoxel() {}
   
   /**
-   *  Set the border pixel values.
+   *  Set the border voxel values.
    *  @param intA A intensity.
    *  @param intB B intensity.
    *  @param bord Edge type (X, Y or Z).
@@ -213,7 +213,8 @@ public:
   vector<borderVoxel> getBorderVoxelVector();
   
   /**
-   *
+   *  This procedure applies the basic method for sub-voxel edge detection in 3D
+   *  images.
    */
   void GradienteCurvo3D();
   

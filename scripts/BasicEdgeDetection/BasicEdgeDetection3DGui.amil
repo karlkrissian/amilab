@@ -6,6 +6,7 @@ func "BasicEdgeDetection3DClass.amil"
 #----------------
 if (!exists(bed3D)) {
   BasicEdgeDetection3DClass bed3D
+  bed3D.CreateGui()
 } else {
   InfoDialog "The script for basic edge detection in 3D images seems to be already loaded."
 }
