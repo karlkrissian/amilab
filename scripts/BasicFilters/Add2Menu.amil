@@ -23,3 +23,5 @@ del filt_category
 del filt_dir
  ami.MainFrame.AddToMenu("&Scripts","&Basic Filters","&ImageResample",  "BasicFilters/ImageResample/ImageResampleGui")
 
+ ami.MainFrame.AddToMenu("&Scripts","&BasicFilters","&GreyMorpho",  "BasicFilters/GreyMorpho/GreyMorphoGui")
+

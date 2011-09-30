@@ -1,0 +1,11 @@
+
+func "GreyMorphoClass"
+
+if (!exists(GreyMorpho_obj)) {
+  GreyMorphoClass GreyMorpho_obj
+  GreyMorpho_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
