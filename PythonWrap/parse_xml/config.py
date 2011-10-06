@@ -144,6 +144,10 @@ def ClassUsedName(classname):
   res = res.replace(',','_')
   res = res.replace('::','_')
   res = res.replace(' ','')
+  res = res.replace('unsignedchar', 'uchar')
+  res = res.replace('unsignedshort','ushort')
+  res = res.replace('unsignedint',  'uint')
+  res = res.replace('unsignedlong', 'ulong')
   return res
 
 #-------------------------------------------------------------

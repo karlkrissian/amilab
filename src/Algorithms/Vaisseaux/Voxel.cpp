@@ -81,7 +81,7 @@ float Voxel :: Distance( PtPosition& pt1, PtPosition& pt2)
 //
 {
 
-  return sqrt( (pt1.x-pt2.x)*(pt1.x-pt2.x) +
+  return (float )sqrt( (pt1.x-pt2.x)*(pt1.x-pt2.x) +
                  (pt1.y-pt2.y)*(pt1.y-pt2.y) +
                  (pt1.z-pt2.z)*(pt1.z-pt2.z) 
                );
@@ -97,7 +97,7 @@ float Voxel :: Distance( PtFace& pt1, PtFace& pt2)
 //
 {
 
-  return sqrt( (pt1.x-pt2.x)*(pt1.x-pt2.x) +
+  return (float) sqrt( (pt1.x-pt2.x)*(pt1.x-pt2.x) +
                  (pt1.y-pt2.y)*(pt1.y-pt2.y) 
                );
 

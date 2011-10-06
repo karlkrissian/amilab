@@ -29,7 +29,6 @@
 
 
 #include "driver.h"
-
 extern yyip::Driver GB_driver;
 
 //

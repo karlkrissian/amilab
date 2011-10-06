@@ -31,7 +31,8 @@ extern "C" {
 #include "wrapfunctions.hpp" 
 #include "wrapWII.h"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 #ifdef _USE_WII_
 

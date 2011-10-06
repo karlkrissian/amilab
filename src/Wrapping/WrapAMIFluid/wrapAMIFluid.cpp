@@ -46,7 +46,8 @@ typedef float real;
 #include <string>
 using namespace std;
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 static PDEOpticFlowParam ami_optic_flow_param;
 

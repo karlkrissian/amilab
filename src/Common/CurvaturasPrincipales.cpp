@@ -91,7 +91,7 @@ int CurvaturasPrincipales(float H[3][3],
   /* NORMALIZO EL VECTOR GRADIENTE Y LO GUARDO EN p1[3]*/
   pnorm=sqrt((double) pnorm);
   for(i=0;i<3;i++)
-    p1[i]=p[i]/pnorm;
+    p1[i]=(float)(p[i]/pnorm);
 
 
  /* CALCULO CALCULO A=(Id-pxp/p^2)H(Id-pxp/p^2) (VERSION OPTIMIZADA)*/
@@ -105,7 +105,7 @@ int CurvaturasPrincipales(float H[3][3],
 
   for(i=0;i<3;i++)
     for(j=i;j<3;j++)
-      A[i][j]=H[i][j]-paso[i]*p1[j]+(a*p1[j]-paso[j])*p1[i]; 
+      A[i][j]=(float)(H[i][j]-paso[i]*p1[j]+(a*p1[j]-paso[j])*p1[i]); 
 
   for(i=0;i<3;i++)
     for(j=0;j<i;j++)
@@ -124,8 +124,8 @@ int CurvaturasPrincipales(float H[3][3],
   p2[k2]=0;
   p2norm=p2[k]*p2[k]+p2[k1]*p2[k1];
   p2norm=sqrt(p2norm);
-  p2[k]/=p2norm; 
-  p2[k1]/=p2norm;  
+  p2[k]/=(float)p2norm; 
+  p2[k1]/=(float)p2norm;  
 
   p3[k]=-p1[k2]*p2[k1];
   p3[k1]=p1[k2]*p2[k];
@@ -157,7 +157,7 @@ int CurvaturasPrincipales(float H[3][3],
   d=sqrt((c-a)*(c-a)+4*b*b);
   e=c+a;
   if(e>0){
-    *lmax=0.5*(e+d);
+    *lmax=(float)(0.5*(e+d));
     if( autovector0((a-*lmax),b,(c-*lmax),paso)==-1){  
       paso[0]=0;
       paso[1]=1;
@@ -168,7 +168,7 @@ int CurvaturasPrincipales(float H[3][3],
     for(i=0;i<3;i++)
       for(j=0;j<3;j++)
         vmax[i]+=P[i][j]*paso[j];
-    *lmin=0.5*(e-d);
+    *lmin=(float)(0.5*(e-d));
     if( autovector0((a-*lmin),b,(c-*lmin),paso)==-1){  
       paso[0]=0;
       paso[1]=0;
@@ -181,7 +181,7 @@ int CurvaturasPrincipales(float H[3][3],
         vmin[i]+=P[i][j]*paso[j];
   }
   else{
-    *lmin=0.5*(e+d);
+    *lmin=(float)(0.5*(e+d));
     if( autovector0((a-*lmin),b,(c-*lmin),paso)==-1){  
       paso[0]=0;
       paso[1]=0;
@@ -192,7 +192,7 @@ int CurvaturasPrincipales(float H[3][3],
     for(i=0;i<3;i++)
       for(j=0;j<3;j++)
         vmin[i]+=P[i][j]*paso[j];
-    *lmax=0.5*(e-d);
+    *lmax=(float)(0.5*(e-d));
     if( autovector0((a-*lmax),b,(c-*lmax),paso)==-1){  
       paso[0]=0;
       paso[1]=1;
@@ -206,8 +206,8 @@ int CurvaturasPrincipales(float H[3][3],
   }
 
   /* NORMALIZO LOS AUTOVALORES PARA OBTENER LAS CURVATURAS PRINCIPALES */
-  *lmax/=-pnorm;
-  *lmin/=-pnorm;
+  *lmax/=(float)-pnorm;
+  *lmin/=(float)-pnorm;
 
   //  printf("vmin %f %f %f \n", vmin[0], vmin[1], vmin[2]);
  
@@ -233,7 +233,7 @@ int CurvaturasPrincipales(float H[3][3],
      //float *lmax,*lmin;  /* CURVATURAS PRINCIPALES */
      //float umbral;       /* UMBRAL MINIMO DE LA NORMA CUADRADO DEL GRADIENTE PARA HACER EL CALCULO */
 {
-  float P[3][3],
+  double P[3][3],
 //PASO[3][3],
         A[3][3],p1[3],p2[3],p3[3],paso[3];
   double a,b,c,d,e,p2norm; //,ap,cp;
@@ -313,17 +313,17 @@ int CurvaturasPrincipales(float H[3][3],
   d=sqrt((c-a)*(c-a)+4*b*b);
   e=c+a;
   if(e>0){
-    *lmax=0.5*(e+d);
-    *lmin=0.5*(e-d);
+    *lmax=(float)(0.5*(e+d));
+    *lmin=(float)(0.5*(e-d));
   }
   else{
-    *lmin=0.5*(e+d);
-    *lmax=0.5*(e-d);
+    *lmin=(float)(0.5*(e+d));
+    *lmax=(float)(0.5*(e-d));
   }
 
   /* NORMALIZO LOS AUTOVALORES PARA OBTENER LAS CURVATURAS PRINCIPALES */
-  *lmax/=-pnorm;
-  *lmin/=-pnorm;
+  *lmax/=(float)-pnorm;
+  *lmin/=(float)-pnorm;
 
   return(1);
 

@@ -52,7 +52,8 @@
 #include "wrap_ClassBase2.h"
 #include "wrap_ClassBase3.h"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 //---------------------------------------------------------
 void AddWrapFilters(AMIObject::ptr& obj)

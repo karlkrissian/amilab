@@ -69,9 +69,9 @@ int IsoLigne2 :: RechercheLignes( int num_face, num_valeurs val,
     LigneFace* lignes_zero;
     int     i,j;
     unsigned char    sommet_dans_liste[4];
-    double* valeurs=NULL;
-    char        message[100];
-    float        a,b,c,d,S,f;
+    double*          valeurs=NULL;
+    char             message[100];
+    double           a,b,c,d,S,f;
 
   Pour(i,0,3)
     sommet_dans_liste[i] = false;

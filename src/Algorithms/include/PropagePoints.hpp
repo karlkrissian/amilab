@@ -51,8 +51,9 @@
 #include "style.hpp"
 #include <iostream>
 
-extern unsigned char verbose;
-extern unsigned char GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT unsigned char GB_verbose;
 
 //======================================================================
 class PropagePoints
@@ -227,7 +228,7 @@ public:
   //
   {
 
-    TantQue (point_traite[_pos_depart] == true) Et (_depart<=_fin) Faire 
+    TantQue ((bool)point_traite[_pos_depart] == true) Et (_depart<=_fin) Faire 
       _depart++;
       _pos_depart++;
       Si _pos_depart == _taille_max AlorsFait _pos_depart = 0;

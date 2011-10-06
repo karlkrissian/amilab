@@ -107,7 +107,12 @@ if (!exists(ImageResampleClass)) {
       if ::interpolation==2 {
         imresample.SetInterpolationModeToCubic()
       }
+	  
+	  #input_vtk_prod = input_vtk.GetProducerPort()
+      #imresample.SetInputConnection(&input_vtk_prod)
       imresample.SetInput(&input_vtk)
+	  inp = imresample.GetInputConnection(0,0)
+	  printn "image resample input = %1%" % inp
       imresample.Update()
       output_vtk = imresample.GetOutput()
       

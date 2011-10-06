@@ -37,7 +37,8 @@
 
 #include <math.h>
 #include "chaine.hpp"
- 
+#include "CommonConfigure.h"
+
 #ifndef PI
 const double PI = 3.141592741;
 #endif
@@ -139,8 +140,8 @@ float nombre         ( st46 a);
  * Expression compil�e
  */
 
-class CompileExpr
-//     ===========
+class COMMON_EXPORT CompileExpr
+//                  ===========
 {
 
 
@@ -191,8 +192,8 @@ public:
 #define SYNTAX_ERROR 1
 #define CALCUL_ERROR 2
 
-class ExprMath : public CompileExpr
-//     ========
+class COMMON_EXPORT ExprMath : public CompileExpr
+//                  ========
 {
 
   Chaine chaine;

@@ -14,8 +14,8 @@
 
 #include "wxPluginBase.h"
 #include "wrap_ExamplePlugin.h"
-#include "wrap_Foo__LT__int__COMMA____SPACE__10__GT__.h"
-#include "wrap_Foo2__LT__int__COMMA____SPACE__float__COMMA____SPACE__bool__GT__.h"
+#include "wrap_Foo_L_int_10_G_.h"
+#include "wrap_Foo2_L_int_float_bool_G_.h"
 
 /**
  * @brief Plugin of ExamplePlugin class.

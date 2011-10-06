@@ -18,9 +18,12 @@
 #include "FloatMatrix.hpp"
 #include "Eigen.hpp"
 
-extern    VarContexts  Vars;
-extern    unsigned char GB_debug;
-extern    unsigned char GB_verbose;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT unsigned char GB_verbose;
 
 
 namespace ami {

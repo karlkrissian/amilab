@@ -74,10 +74,11 @@
 #include "FloatMatrix.hpp"
 #include "Eigen.hpp"
 
-extern    VarContexts  Vars;
-extern    unsigned char GB_debug;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
-//extern unsigned char verbose;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 
 // Filtrage de l'image et de ses d�riv�es
@@ -109,8 +110,6 @@ unsigned char      Func_Derivatives( InrImage* image_initiale,
                    int H3,
                    int _G)
 {
-
-  //  verbose = true;
 
   Si image_initiale->_tz == 1 AlorsFait return false;
 
@@ -327,8 +326,6 @@ unsigned char Func_HessianMatrix( InrImage* image_initiale,
                     InrImage* mask)
 {
 
-//  verbose = true;
-
   Si image_initiale->_tz == 1 AlorsFait return false;
 printf("Func_HessianMatrix\n");
 
@@ -501,8 +498,6 @@ unsigned char Func_HessianVap( InrImage* image_initiale,
              InrImage* mask,
              int vap_num)
 {
-
-//  verbose = true;
 
   Si image_initiale->_tz == 1 AlorsFait return false;
 printf("Func_HessianVap\n");

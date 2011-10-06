@@ -27,9 +27,14 @@
 */
 
 
+
+
 #ifndef CURVATURAS_PRINCIPALES_HPP
 #define CURVATURAS_PRINCIPALES_HPP
 
+#include "CommonConfigure.h"
+
+COMMON_EXPORT
 int CurvaturasPrincipales(float H[3][3],
 			  float p[3],
 			  float vmax[3],
@@ -39,6 +44,7 @@ int CurvaturasPrincipales(float H[3][3],
 			  float umbral);
 
 // Without eigenvectors
+COMMON_EXPORT
 int CurvaturasPrincipales(float H[3][3],
 			  float p[3],
 			  float *lmax,

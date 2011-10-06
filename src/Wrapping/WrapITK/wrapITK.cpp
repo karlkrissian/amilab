@@ -55,7 +55,8 @@
 
 #include "addwrap_itk.h"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 //---------------------------------------------------------
 void AddWrapITK(AMIObject::ptr& obj){

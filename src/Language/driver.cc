@@ -22,11 +22,16 @@
 #include "wxStcFrame.h"
 
 #include <wx/filename.h>
+#include "CommonConfigure.h"
 
-extern VarContexts    Vars;
-extern wxString       GB_scripts_dir;
-extern MainFrame*     GB_main_wxFrame;
-extern unsigned char  GB_nofile;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
+#include "AMILabConfigure.h"
+AMILab_VAR_IMPORT wxString    GB_scripts_dir;
+AMILab_VAR_IMPORT MainFrame*  GB_main_wxFrame;
+
+COMMON_VAR_IMPORT unsigned char  GB_nofile;
 
 namespace yyip {
 

@@ -25,7 +25,9 @@
 #include "wxStcFrame.h"
 #include "MainFrame.h"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
 extern MainFrame*   GB_main_wxFrame;
 
 void AddWrapWXSamples(AMIObject::ptr & obj)

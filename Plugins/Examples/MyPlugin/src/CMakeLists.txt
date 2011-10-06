@@ -19,10 +19,27 @@ INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}
                     ${PROJECT_SOURCE_DIR}/Wrapping/Generated
-                    ${AMILab_Header} )
+                    ${AMILab_PATHS} )
 
+OPTION(Boost_USE_STATIC_LIBS "Use Boost static libraries" ON)
+SET(Boost_USE_MULTITHREAD OFF)
 SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
 FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
+FIND_PACKAGE( ZLIB)
+FIND_PACKAGE( BZip2)
+
+# should get everything from amilab configuration but ok for the moment
+FIND_PACKAGE( VTK )
+FIND_PACKAGE( ITK )
+MESSAGE( "ITK_FOUND=${ITK_FOUND}")
+IF(ITK_FOUND)
+  MESSAGE("ITK_USE_FILE=${ITK_USE_FILE}")
+  INCLUDE(${ITK_USE_FILE})
+ENDIF(ITK_FOUND)
+
+FIND_PACKAGE( wxWidgets COMPONENTS adv html aui  gl core base stc net richtext)
+
+
 
 INCLUDE(${PROJECT_SOURCE_DIR}/../CMAKE/wrapping.cmake)
 
@@ -52,8 +69,49 @@ include_directories (
 )
 
 ADD_LIBRARY(ExamplePlugin MODULE ${ExamplePlugin_SRCS})
-TARGET_LINK_LIBRARIES(
-  ExamplePlugin ${wxWidgets_LIBRARIES}  ${Boost_LIBRARIES}
+
+
+SET(amilab_ownlibs
+  ${LanguageBase}
+  ${Common}
+  ${CommonBase}
+  ${WrapCommon}
+  ${WrapLanguage}
 )
+
+INCLUDE(${VTK_USE_FILE})
+
+SET(LINK_VTK
+	vtkGraphics
+	vtkImaging
+	vtkIO
+	vtkFiltering
+	vtkCommon
+	vtkNetCDF
+	vtkRendering 
+	vtkVolumeRendering 
+	vtkWidgets
+	vtkViews
+	vtkCharts
+)
+
+
+# conflict between freetype and vtkfreetype
+TARGET_LINK_LIBRARIES( ExamplePlugin
+  ${amilab_ownlibs}
+  ${LINK_VTK}
+  ${wxWidgets_LIBRARIES}
+  ${Boost_LIBRARIES}
+  )
+  
+TARGET_LINK_LIBRARIES( ExamplePlugin
+  ITKIO
+  ITKAlgorithms
+  itkvnl
+  itkvnl_algo
+)
+
+TARGET_LINK_LIBRARIES( ExamplePlugin ${ZLIB_LIBRARIES})
+TARGET_LINK_LIBRARIES( ExamplePlugin ${BZIP2_LIBRARIES})
 
 MESSAGE("TARGET: ExamplePlugin")

@@ -24,7 +24,7 @@ if (argc<1) {
   
   #for extension in ".png", ".jpg", ".tiff" , ".bmp" {
   
-  if exists(l_script_dir) { del l_script_dir; }
+  del l_script_dir
   l_script_dir = op_system->GetCurrentScriptDir()
   printn "script dir = "+l_script_dir
   l_exact=(extension==".png") || (extension==".bmp")
@@ -33,7 +33,7 @@ if (argc<1) {
   l_i0 = Image(image_name+extension)
   l_i = Image(image_name+".ami.gz")
 
-  if (l_i0.GetFormat.val == RGB.val)  {
+  if (l_i0.GetFormat == RGB.val)  {
     l_i <<= (RGB) l_i
   }
   

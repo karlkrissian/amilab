@@ -25,13 +25,15 @@
 #include "wrapfunction_class.h"
 
 
-#include "driver.h"
+#include "DriverBase.h"
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
+
 #include "MainFrame.h"
 #include "CallBackAMIFunction.h"
 
 #include <wx/string.h>
 
-extern yyip::Driver GB_driver;
 extern MainFrame* GB_main_wxFrame;
 extern wxApp* GB_wxApp;
 
@@ -375,7 +377,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
   if ( sdraw->GetCanvas()->SetCurrentObject( i ) )
     sdraw->Paint();
   else
-    GB_driver.err_print("WrapClass_Viewer3D::wrap_SetCurrentObj Incorrect index.\n");
+    GB_DriverBase->err_print("WrapClass_Viewer3D::wrap_SetCurrentObj Incorrect index.\n");
 
 //    fprintf(stderr," Incorrect index \n");
 
@@ -436,7 +438,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
   InrImage::ptr image(varim->Pointer());
 
   if (!image.get()) {
-    GB_driver.err_print("WrapClass_Viewer3D::wrap_setvector empty image.");
+    GB_DriverBase->err_print("WrapClass_Viewer3D::wrap_setvector empty image.");
     return BasicVariable::ptr();
   }
 
@@ -486,7 +488,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
   InrImage::ptr image(varim->Pointer());
 
   if (!image.get()) {
-    GB_driver.err_print("WrapClass_Viewer3D::wrap_ShowSection empty image.");
+    GB_DriverBase->err_print("WrapClass_Viewer3D::wrap_ShowSection empty image.");
     return BasicVariable::ptr();
   }
 
@@ -582,7 +584,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
 
   //delete tr;
 
-  //GB_driver.err_print("WrapClass_Viewer3D::wrap_SetTransform Not available at this time!");
+  //GB_DriverBase->err_print("WrapClass_Viewer3D::wrap_SetTransform Not available at this time!");
 
   return BasicVariable::ptr();
 }
@@ -852,7 +854,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
 {
   Viewer3D::ptr vi(this->_objectptr->_obj);
 
-  GB_driver.err_print("WrapClass_Viewer3D::wrap_GetImageFromX Not available in new wxwidgets version of the 3D viewer !");
+  GB_DriverBase->err_print("WrapClass_Viewer3D::wrap_GetImageFromX Not available in new wxwidgets version of the 3D viewer !");
 
   return BasicVariable::ptr();
 }
@@ -872,7 +874,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
 {
   Viewer3D::ptr vi(this->_objectptr->GetObj());
 
-  //GB_driver.err_print("WrapClass_Viewer3D::wrap_GetTransform Not available at this time!");
+  //GB_DriverBase->err_print("WrapClass_Viewer3D::wrap_GetTransform Not available at this time!");
   GLTransfMatrix* glt = new GLTransfMatrix();
   *glt = vi->GetCanvas()->GetObjectTransform();
   return AMILabType<GLTransfMatrix>::CreateVar(glt);

@@ -55,7 +55,9 @@
 #include "CalculIsoLignes.hpp"
 #include "Eigen.hpp"
 
-#define min(a,b) ((a)<(b)?(a):(b))
+#ifndef min
+  #define min(a,b) ((a)<(b)?(a):(b))
+#endif
 
 static Chaine     ce_fichier = "CalculIsoLignes.cpp";
 

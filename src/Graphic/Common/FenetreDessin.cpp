@@ -52,7 +52,9 @@
   #define PENSTYLE_SOLID wxSOLID 
 #endif
 
-extern unsigned char      GB_debug;
+
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 #define aff_err(a) Si GB_debug AlorsFait fprintf(stderr,a);
 
 #define SETARG(option,valeur) XtSetArg( args[n], option, valeur  ); n++;

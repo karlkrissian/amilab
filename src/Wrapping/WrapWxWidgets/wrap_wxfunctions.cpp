@@ -28,7 +28,8 @@
 #include <wx/utils.h>
 #include <wx/string.h>
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 
 AMIObject::ptr AddWrap_wxfunctions()

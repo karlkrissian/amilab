@@ -8,6 +8,7 @@
 // $Id: driver.h 17 2007-08-19 18:51:39Z tb $
 /** \file driver.h Declaration of the yyip::Driver class. */
 
+#pragma once
 #ifndef EXAMPLE_DRIVER_H
 #define EXAMPLE_DRIVER_H
 
@@ -27,10 +28,11 @@
 //#include "GLTransformStack.h"
 #include "ami_class.h"
 #include "ami_object.h"
-
+#include "DriverBase.h"
 
 struct yy_buffer_state;
 
+#include "LanguageConfigure.h"
 
 /*
 //------------------------------------------------------
@@ -69,17 +71,11 @@ namespace yyip {
  * sequence. Furthermore the driver object is available in the grammar rules as
  * a parameter. Therefore the driver class contains a reference to the
  * structure into which the parsed data is saved. */
-class Driver
+class Language_EXPORT Driver: public DriverBase
 {
   DEFINE_CLASS(Driver);
 
 protected:
-
-    /** 
-     * Check if the current command is from the command line.
-     * Kept for transition from C flex-bison code should be removed later
-     **/
-    bool in_console;
 
     /**
      * Disable MessageDialogs

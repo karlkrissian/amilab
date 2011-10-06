@@ -15,7 +15,7 @@
 
 #include "AMILabConfig.h"
 #include "paramlist.h"
-
+#include "ami_object.h"
 
 /** function that adds an import object to import all the code wrapping
  */

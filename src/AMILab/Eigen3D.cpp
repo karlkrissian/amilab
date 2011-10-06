@@ -65,8 +65,11 @@
 #include "FloatMatrix.hpp"
 #include "Eigen.hpp"
 
-extern    VarContexts  Vars;
-extern    unsigned char GB_debug;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 //extern unsigned char verbose;
 
@@ -95,7 +98,6 @@ unsigned char      Func_Eigen2D( char* varname,
     InrImage::ptr       image_vap2;
     std::string         resname;
 
-//  verbose = true;
 
   image_vep1 = InrImage::ptr( new InrImage( WT_FLOAT,2,  "E-vep1.inr.gz", Mxx));
   image_vep2 = InrImage::ptr( new InrImage( WT_FLOAT,2,  "E-vep2.inr.gz", Mxx));
@@ -201,7 +203,6 @@ unsigned char      Func_Eigen3D( char* varname,
     InrImage::ptr       image_vap3;
     std::string         resname;
 
-//  verbose = true;
 
   Si Mxx->_tz == 1 AlorsFait return false;
 

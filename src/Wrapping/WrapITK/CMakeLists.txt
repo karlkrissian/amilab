@@ -5,6 +5,7 @@ MESSAGE("***** Boost_INCLUDE_DIR=${Boost_INCLUDE_DIR}")
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${wxParams_INCLUDE_DIRS}
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Wrapping/include
@@ -54,7 +55,7 @@ MESSAGE("ITK_SOURCE_DIR=${ITK_SOURCE_DIR}")
        ENDFOREACH(def ${ITK_REQUIRED_CXX_FLAGS})       
      ENDIF(ITK_REQUIRED_CXX_FLAGS)
      # Add Cable configuration for gccxml compilation
-     SET(ITK_DEFS -DCABLE_CONFIGURATION )
+     SET(ITK_DEFS -DCABLE_CONFIGURATION  )
      MESSAGE("ITK_DEFS=${ITK_DEFS}")
   ENDIF ( ITK_FOUND)
 
@@ -77,10 +78,13 @@ MESSAGE("ITK_SOURCE_DIR=${ITK_SOURCE_DIR}")
   SET(XML_OUTPUT "${WRAPITK_OUTDIR}/itk_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/itk_includes.h")
   #SET( GCCXML_result 0)
+#${WX_DEFS} 
+  MESSAGE(" ${GCCXML} -fxml=${XML_OUTPUT} ${GCCXML_FLAGS} -I${AMILAB_SOURCE_DIR}/Wrapping/include -I${AMILAB_SOURCE_DIR}/CommonBase  -I${AMILAB_SOURCE_DIR}/Common/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR} ${ITK_INCLUDES}  ${ITK_DEFS}  ${XML_INPUT}")
 
-  MESSAGE(" ${GCCXML} -fxml=${XML_OUTPUT}  -I${AMILAB_SOURCE_DIR}/Wrapping/include/  -I${AMILAB_SOURCE_DIR}/Common/include/  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR} -I${AMILAB_SOURCE_DIR}/Wrapping/include/ -I${CMAKE_BINARY_DIR}  ${ITK_INCLUDES}  ${ITK_DEFS} ${WX_DEFS}  ${XML_INPUT}")
+  #${GCCXML} -fxml=${XML_OUTPUT}  -I${AMILAB_SOURCE_DIR}/Wrapping/include/ -I${AMILAB_SOURCE_DIR}/CommonBase/ -I${AMILAB_SOURCE_DIR}/Common/include/  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR} -I${AMILAB_SOURCE_DIR}/Wrapping/include/ -I${CMAKE_BINARY_DIR}  ${ITK_INCLUDES}  ${ITK_DEFS} ${WX_DEFS}  ${XML_INPUT}")
+  
   execute_process(
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include/ -I${CMAKE_BINARY_DIR}  ${ITK_INCLUDES}  ${ITK_DEFS} ${WX_DEFS}  ${XML_INPUT}
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} ${GCCXML_FLAGS} -I${AMILAB_SOURCE_DIR}/Wrapping/include -I${AMILAB_SOURCE_DIR}/CommonBase -I${AMILAB_SOURCE_DIR}/Common/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR} ${ITK_INCLUDES} ${ITK_DEFS} ${XML_INPUT}
     OUTPUT_VARIABLE gccxml_result
     ERROR_VARIABLE gccxml_error
   )
@@ -213,9 +217,9 @@ SET(  WrapITK_SRCS
     LeastSquares.cpp
     wrapitkRecursiveGaussianImageFilter.cpp
     #wrapitkRead_3D_US.cpp
-    ami_itkRead.cpp
+    #ami_itkRead.cpp
     wrapitkRead.cpp
-    ami_itkWrite.cpp
+    #ami_itkWrite.cpp
     wrapitkWrite.cpp
     wrapitkIsoContourDist.cpp
     wrapitkBasicNLMeansFilter.cpp
@@ -234,16 +238,16 @@ SET(  WrapITK_SRCS
 
 SET(WrapITK_HDRS
     ../include/itkCannyEdgeDetector.h
-    ../include/wrapConversion.h
+    #../include/wrapConversion.h
     ../include/wrapITK.h
     ../include/wrapitkFastMarchingImageFilter.h
     ../include/wrapitkIsoContourDist.h
-    ../include/ami_itkRead.h
+    #../include/ami_itkRead.h
     ../include/wrapitkRead.h
     #wrapitkRead_3D_US.h
     ../include/wrapitkRecursiveGaussianImageFilter.h
     ../include/wrapitkWaterShedImageFilter.h
-    ../include/ami_itkWrite.h
+    #../include/ami_itkWrite.h
     ../include/wrapitkWrite.h
     ../include/wrapitkBackTrackingMeshFilter.h
     ../include/wrapitkLocalMeanImageFilter.h

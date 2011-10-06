@@ -12,14 +12,15 @@
 
 #include "fonctions.h"
 #include "localstats.h"
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include <pthread.h>
 
 #include "AMILabConfig.h"
 #include "amilab_messages.h"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+#include "VarContexts.hpp"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 #include "wrapAlgorithmsBasic.h"
 #include "imageextent.h"

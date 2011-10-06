@@ -20,7 +20,13 @@
 #include "driver.h"
 #include <wx/filename.h>
 
-extern yyip::Driver GB_driver;
+#if defined(WIN32)
+  #define VAR_IMPORT __declspec( dllimport ) 
+#else
+  #define VAR_IMPORT extern
+#endif
+
+VAR_IMPORT yyip::Driver GB_driver;
 
 
 bool ImageStack::AddFileImage( const char* name)

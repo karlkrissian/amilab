@@ -4,6 +4,7 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
+  ${AMILAB_SOURCE_DIR}/Language
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 

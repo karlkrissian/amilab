@@ -114,6 +114,7 @@
 // Sophia Antipolis le 20-10-97
 //
 
+#pragma once
 #ifndef _DESSIN_IMAGE_BASE_HPP
 #define _DESSIN_IMAGE_BASE_HPP
 

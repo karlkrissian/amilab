@@ -14,7 +14,9 @@
 #define _RegionGrowingTest_h_
 
 #if defined(WIN32)
-  #define NOMINMAX
+  #ifndef NOMINMAX
+    #define NOMINMAX
+  #endif
   #include <limits>
   #include <windows.h>
 #else

@@ -14,6 +14,31 @@ endif(POLICY CMP0017)
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
+#-------------------------------------------------------------
+#  CONFIGURE OUTPUT DIRECTORIES
+#-------------------------------------------------------------
+
+# ---------- Setup output Directories -------------------------
+SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY
+   ${PROJECT_BINARY_DIR}/Bin
+   CACHE PATH
+   "Single Directory for all Libraries"
+   )
+
+# --------- Setup the Executable output Directory -------------
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
+   ${PROJECT_BINARY_DIR}/Bin
+   CACHE PATH
+   "Single Directory for all Executables."
+   )
+
+# --------- Setup the Executable output Directory -------------
+SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+   ${PROJECT_BINARY_DIR}/Bin
+   CACHE PATH
+   "Single Directory for all static libraries."
+   )
+
 
 #-----------------------------------------------------
 # VERSION information
@@ -240,6 +265,7 @@ CONFIGURE_FILE(
 #-------------------------------------------------------------------------------
 
 OPTION(AMI_USE_STATIC_LIBS     "Look for static libraries" ON)
+OPTION(AMI_USE_DOXYGEN         "Look for doxygen" OFF)
 OPTION(AMI_USE_PRECOMP_HEADERS "Use precompiled headers when available" OFF)
 
 
@@ -530,6 +556,7 @@ include_directories (
 # for compatibility with previous name
 SET( AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR} )
 
+add_subdirectory (CommonBase)
 add_subdirectory (Common)
 #add_subdirectory (DistTransf)
 add_subdirectory (Graphic)
@@ -552,6 +579,7 @@ ENDIF(AMI_USE_PLUGINS)
 #add_subdirectory (WrapITK)
 add_subdirectory (Wrapping)
 
+add_subdirectory (LanguageBase)
 add_subdirectory (Language)
 
 #IF(AMI_USE_FASTNLMEANS)
@@ -560,8 +588,10 @@ add_subdirectory (Algorithms)
 
 include_directories (
   ${wxParams_INCLUDE_DIRS}
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Plugins/
@@ -614,8 +644,20 @@ endif (WIN32)
 
 
 include_directories (
+  ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
 )
+
+#add_library( AMILab_lib ${amilab_bin_SRCS})
+# target_link_libraries(AMILab_lib
+#   Language
+#   vtkIO 
+#   vtkImaging
+#   ITKIO
+#   ${wxWidgets_LIBRARIES}
+#   ${Boost_LIBRARIES}
+# )
+
 
 add_executable (${AMILAB_BIN} WIN32
   # MACOSX_BUNDLE
@@ -641,17 +683,20 @@ SET(amilab_ownlibs
   WrapCommon
   WrapIO
   WrapImage
+  LanguageBase
   Language
   WrapVTK
   WrapWxVTK
   WrapWII
   WrapITK
   AMILab
+  LanguageBase
   Language
   Algorithms
   Graphic
   wxParams
   Common
+  CommonBase
 # wrapped wxwidgets samples
   penguin
   wxStcFrame
@@ -768,6 +813,27 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
 )
 endif (WIN32)
 
+# create AMILAB_BIN variable
+IF(CMAKE_BUILD_TYPE)
+  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
+ELSE(CMAKE_BUILD_TYPE)
+  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
+ENDIF(CMAKE_BUILD_TYPE)
+
+IF(MSVC)
+  SET(CMAKE_DEBUG_POSTFIX  _debug)
+  SET(CMAKE_RELEASE_POSTFIX _release)
+  SET(CMAKE_MINSIZEREL_POSTFIX _minsizerel)
+  SET(CMAKE_RELWITHDEBINFO_POSTFIX _relwithdebinfo)
+  
+  SET_TARGET_PROPERTIES( ${AMILAB_BIN}
+    PROPERTIES 
+      DEBUG_POSTFIX  _debug
+      RELEASE_POSTFIX _release
+      MINSIZEREL_POSTFIX _minsizerel
+      RELWITHDEBINFO_POSTFIX _relwithdebinfo
+  )
+ENDIF(MSVC)
 
 IF(MSVC)
   # NEED TO SPECIFY FOR EACH POSSIBLE CONFIGURATION
@@ -815,7 +881,8 @@ ENDIF(APPLE)
 #ENDIF(APPLE)
 
 
-INSTALL(TARGETS ${AMILAB_BIN}
+INSTALL(TARGETS ${AMILAB_BIN} 
+#LanguageBase
   RUNTIME DESTINATION bin
   #  COMPONENT applications
   #  BUNDLE DESTINATION 
@@ -891,10 +958,6 @@ endif(UNIX)
 INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
 
 
-#Test for amilab.
-#INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
-
-
 if (GENERATE_HTML_HELP)
   # check if doxygen is even installed
   find_package(Doxygen)
@@ -924,13 +987,12 @@ if (GENERATE_HTML_HELP)
 
   install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/html
            DESTINATION ${DOC_PATH}
-       )
+         )
 
   # install man pages into packages, scope is now project root..
   install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3
          DESTINATION share/man/man3/
        )
 endif (GENERATE_HTML_HELP)
-
 
 PrintSources(${AMILAB_BIN})

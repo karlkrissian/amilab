@@ -58,6 +58,7 @@
 #include "Crest.hpp"
 #include "Coordonnees.hpp"
 #include "Voisins27.hpp"
+#include "CommonConfigure.h"
 
 #define NB_LISTES_MAX 1E9
 
@@ -99,8 +100,8 @@ TableauDyn<pt3DReel> tab_points;
   Cretion d'un ensemble de lignes dans un fichier '.crest' \\
   a partir d'un ensemble de points par voxel
  */
-class CreeCrest : public Crest
-//     ---------
+class COMMON_EXPORT CreeCrest : public Crest
+//                  ---------
 {
 
 protected:

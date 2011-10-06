@@ -21,12 +21,14 @@
 
 #include "DessinImage.hpp"
 #include "wrap_FenetreDessin.h"
+#include "wrap_ImageViewerBase.h"
+
 #include "wrap_wxWindow.h"
 #include "wrap_Viewer3D.h"
 
 AMI_DECLARE_TYPE(DessinImage);
 
-class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_FenetreDessin
+class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_FenetreDessin, public WrapClass_ImageViewerBase
 {
   DEFINE_CLASS(WrapClass_DessinImage);
 
@@ -39,7 +41,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
     const boost::shared_ptr<DessinImage>& GetObj() const { return WrapClass<DessinImage>::GetObj(); }
 
     /// Constructor
-    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si):  WrapClass<DessinImage>(si), WrapClass_FenetreDessin(si) 
+    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si):  WrapClass<DessinImage>(si), WrapClass_FenetreDessin(si), WrapClass_ImageViewerBase(si)
     {}
 
     /// Destructor

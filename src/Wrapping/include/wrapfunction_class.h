@@ -15,6 +15,7 @@
 
 #include "paramlist.h"
 #include "DefineClass.hpp"
+#include "WrapCommonConfigure.h"
 
 // new includes needed for WrapClass<T>
 #include "ami_object.h"
@@ -290,7 +291,7 @@ std::string GetPointerAsString(void*);
 /**
  Base class for class wrapping
  **/
-class  WrapClassBase
+class WrapCommon_DECLARE WrapClassBase
 {
   DEFINE_CLASS(WrapClassBase);
 
@@ -407,7 +408,7 @@ class WrapClass: public virtual WrapClassBase
 /**
  * Basic class for wrapping class function members.
  **/
-class WrapClassMember {
+class WrapCommon_DECLARE WrapClassMember {
 
   DEFINE_CLASS(WrapClassMember);
 

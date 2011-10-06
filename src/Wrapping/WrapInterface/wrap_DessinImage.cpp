@@ -23,12 +23,15 @@
 #include "Func_ReadCTALine.h"
 #include "fonctions.h"
 
-#include "driver.h"
 #include "MainFrame.h"
 #include "CallBackAMIFunction.h"
 
-extern yyip::Driver GB_driver;
-extern MainFrame* GB_main_wxFrame;
+#include "DriverBase.h"
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
+
+#include "AMILabConfigure.h"
+AMILab_VAR_IMPORT MainFrame*  GB_main_wxFrame;
 
 extern void CB_delete_variable( void* var);
 extern void CB_delete_varlist( void* var);
@@ -85,7 +88,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   InrImage::ptr image(varim->Pointer());
 
   if (!image.get()) {
-    GB_driver.err_print("wrap_DessinImage constructor empty image.");
+    GB_DriverBase->err_print("wrap_DessinImage constructor empty image.");
     return BasicVariable::ptr();
   }
 
@@ -271,7 +274,7 @@ BasicVariable::ptr WrapClass_DessinImage::
       di->CreeCompare2Image(objimd);
     else
     {
-      GB_driver.err_print("WrapClass_DessinImage::wrap_compare empty imagedraw.");
+      GB_DriverBase->err_print("WrapClass_DessinImage::wrap_compare empty imagedraw.");
       return BasicVariable::ptr();
     }
 
@@ -290,7 +293,7 @@ BasicVariable::ptr WrapClass_DessinImage::
       newvar->Rename(title.c_str());
       context->AddVar(newvar, context);
     } else {
-      GB_driver.err_print("Failed to create image viewer.");
+      GB_DriverBase->err_print("Failed to create image viewer.");
       return BasicVariable::ptr();
     }
 
@@ -343,7 +346,7 @@ BasicVariable::ptr WrapClass_DessinImage::
       wrap_SetCompTransf::CallMember( ParamList* p)
 {
   //TODO
-  GB_driver.err_print("SetCompTransf is not available at the moment");
+  GB_DriverBase->err_print("SetCompTransf is not available at the moment");
   return BasicVariable::ptr();
 }
 
@@ -372,7 +375,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   InrImage::ptr image(varim->Pointer());
 
   if (!image.get()) {
-    GB_driver.err_print("WrapClass_DessinImage::wrap_setvector empty image.");
+    GB_DriverBase->err_print("WrapClass_DessinImage::wrap_setvector empty image.");
     return BasicVariable::ptr();
   }
 
@@ -702,7 +705,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   InrImage::ptr image(varim->Pointer());
 
   if (!image.get()) {
-    GB_driver.err_print("WrapClass_DessinImage::SetColormap empty image.");
+    GB_DriverBase->err_print("WrapClass_DessinImage::SetColormap empty image.");
     return BasicVariable::ptr();
   }
 
@@ -790,7 +793,7 @@ BasicVariable::ptr WrapClass_DessinImage::
     InrImage::ptr image(varim->Pointer());
 
     if (!image.get()) {
-      GB_driver.err_print("WrapClass_DessinImage::SetIsoContour empty image.");
+      GB_DriverBase->err_print("WrapClass_DessinImage::SetIsoContour empty image.");
       return BasicVariable::ptr();
     }
 
@@ -805,7 +808,7 @@ BasicVariable::ptr WrapClass_DessinImage::
     InrImage::ptr image(varim->Pointer());
 
     if (!image.get()) {
-      GB_driver.err_print("WrapClass_DessinImage::SetIsoContour empty image.");
+      GB_DriverBase->err_print("WrapClass_DessinImage::SetIsoContour empty image.");
       return BasicVariable::ptr();
     }
 
@@ -1027,7 +1030,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   InrImage::ptr image(varim->Pointer());
 
   if (!image.get()) {
-    GB_driver.err_print("WrapClass_DessinImage::SetOpacityImage empty image.");
+    GB_DriverBase->err_print("WrapClass_DessinImage::SetOpacityImage empty image.");
     return BasicVariable::ptr();
   }
 
@@ -1189,7 +1192,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   float val=param->_pos._x;
   string comment;
   comment = str(format(" //  xpos=%3d") % param->_pos._x);
-  if(GB_driver.InConsole())
+  if(GB_DriverBase->InConsole())
     GB_main_wxFrame->GetConsole()
                     ->IncCommand(wxString::FromAscii(comment.c_str()));
 
@@ -1216,7 +1219,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   float val=param->_pos._y;
   string comment;
   comment = str( format(" //  ypos=%3d") % param->_pos._y);
-  if(GB_driver.InConsole())
+  if(GB_DriverBase->InConsole())
     GB_main_wxFrame->GetConsole()
                     ->IncCommand(wxString::FromAscii(comment.c_str()));
 
@@ -1243,7 +1246,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   float val=param->_pos._z;
   string comment;
   comment = str( format(" //  zpos=%3d") % param->_pos._z);
-  if(GB_driver.InConsole())
+  if(GB_DriverBase->InConsole())
     GB_main_wxFrame->GetConsole()
                     ->IncCommand(wxString::FromAscii(comment.c_str()));
 

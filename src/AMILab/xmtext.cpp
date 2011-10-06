@@ -45,19 +45,24 @@
 
 #include "token_list.h"
 
-#include "MainFrame.h"
-#include "driver.h"
 #include "amilab_messages.h"
 
 #include "fonctions.h"
 
-extern yyip::Driver GB_driver;
-extern MainFrame*   GB_main_wxFrame;
+#include "driver.h"
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT yyip::Driver GB_driver;
+
+//#include "MainFrame.h"
+//extern MainFrame*   GB_main_wxFrame;
 
 // for completion search
 #include "VarContexts.hpp"
 //#include <wx/unichar.h> 
-extern    VarContexts  Vars;
+#include <wx/filename.h>
+
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 
 using namespace std;

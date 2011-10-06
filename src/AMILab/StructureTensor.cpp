@@ -76,9 +76,12 @@
 #include "Eigen.hpp"
 //#include "fonctions.h"
 
-extern    VarContexts  Vars;
-extern    unsigned char GB_debug;
-extern    unsigned char GB_verbose;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT unsigned char GB_verbose;
 
 
 // not thread-safe !!!
@@ -329,8 +332,6 @@ unsigned char Func_StructureTensor( InrImage* image_initiale,
     GeneralGaussianFilter::ptr filtre;
   std::string     resname;
 //    int             i;
-
-//  verbose = true;
 
   type_filtre = MY_FILTRE_CONV;
   Si (image_initiale->_format == WT_FLOAT) Alors
@@ -610,8 +611,6 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
     double          hessien[9];
     int             i,j,k;
 
-//  verbose = true;
-
   type_filtre = MY_FILTRE_CONV;
   Si (image_initiale->_format == WT_FLOAT) Alors
     image = image_initiale;
@@ -840,8 +839,6 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
     GeneralGaussianFilter::ptr filtre;
     double              hessien[9];
     int                 i,j,k;
-
-//  verbose = true;
 
   type_filtre = MY_FILTRE_CONV;
   Si (image_initiale->_format == WT_FLOAT) Alors

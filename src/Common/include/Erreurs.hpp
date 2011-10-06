@@ -47,7 +47,7 @@
 #include <string>
 #include "Pile.hpp"
 
-
+#include "CommonConfigure.h"
 
 class ExceptionErreur;
 class NomMethode;
@@ -60,12 +60,14 @@ class NomMethode;
 /*
   pile des methodes utilisees
  */
-///
-extern Pile<NomMethode*> GB_pile_nom_methode;
-///
-extern unsigned char GB_AfficheWarning;
-///
-extern unsigned char GB_AfficheErreur;
+
+
+#include "CommonConfigure.h"
+
+#include "common_global_import.h"
+//COMMON_EXPORT Pile<NomMethode*> GB_pile_nom_methode;
+//COMMON_EXPORT unsigned char GB_AfficheWarning;
+//COMMON_EXPORT unsigned char GB_AfficheErreur;
 
 ///
 void AffichePileNomMethode();
@@ -152,7 +154,7 @@ public:
   {}
 
   /// Message
-  friend std::ostream& operator<<(std::ostream&, const NomMethode&);
+  friend COMMON_EXPORT std::ostream& operator<<(std::ostream&, const NomMethode&);
 
 };
 
@@ -161,8 +163,8 @@ public:
 /**
 class Exception
  */
-class Exception 
-//     ---------
+class COMMON_EXPORT Exception 
+//                  ---------
 {
 
 protected:
@@ -191,8 +193,8 @@ public:
 /**
 class ExceptionErreur
  */
-class ExceptionErreur : public Exception
-//     ---------------
+class COMMON_EXPORT ExceptionErreur : public Exception
+//                  ---------------
 {
 
 protected:
@@ -208,7 +210,7 @@ public:
   }
 
   /// Message
-  friend std::ostream& operator<<(std::ostream&, const ExceptionErreur&);
+  friend COMMON_EXPORT std::ostream& operator<<(std::ostream&, const ExceptionErreur&);
 
 }; // ExceptionErreur
 
@@ -216,7 +218,7 @@ public:
 /**
 class ExceptionWarning
  */
-class ExceptionWarning : public Exception
+class COMMON_EXPORT ExceptionWarning : public Exception
 //     ---------------
 {
 
@@ -233,14 +235,14 @@ public:
   }
 
   /// Message
-  friend std::ostream& operator<<(std::ostream&, const ExceptionWarning&);
+  friend COMMON_EXPORT std::ostream& operator<<(std::ostream&, const ExceptionWarning&);
 
 }; // ExceptionWarning
 
 
 /**
  */
-class WarningDivers: public ExceptionWarning
+class COMMON_EXPORT WarningDivers: public ExceptionWarning
 //     -------------
 {
 
@@ -258,7 +260,7 @@ public:
 
 /**
  */
-class ErreurDivers: public ExceptionErreur
+class COMMON_EXPORT ErreurDivers: public ExceptionErreur
 //     ------------
 {
 
@@ -277,7 +279,7 @@ public:
 
 /**
  */
-class ErreurParametres: public ExceptionErreur
+class COMMON_EXPORT ErreurParametres: public ExceptionErreur
 //     ----------------
 {
 
@@ -296,7 +298,7 @@ public:
 
 /**
  */
-class ErreurAllocation: public ExceptionErreur
+class COMMON_EXPORT ErreurAllocation: public ExceptionErreur
 //     ----------------
 {
 
@@ -315,7 +317,7 @@ public:
 
 /**
  */
-class ErreurCalcul: public ExceptionErreur
+class COMMON_EXPORT ErreurCalcul: public ExceptionErreur
 //     ------------
 {
 
@@ -337,8 +339,8 @@ public:
 //---------------------------------------------------------------------
 /** class de Gestion des Erreurs
  */
-class GestionErreurs
-//     --------------
+class COMMON_EXPORT GestionErreurs
+//                  --------------
 {
 
   ///

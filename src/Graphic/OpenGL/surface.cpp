@@ -95,8 +95,9 @@ using namespace amilab;
 
 //#include "FloatMatrix.hpp"
 
-extern unsigned char      GB_debug;
-extern unsigned char      GB_verbose;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char      GB_debug;
+COMMON_VAR_IMPORT unsigned char      GB_verbose;
 
 //extern std::ostream  out;
 
@@ -2201,7 +2202,7 @@ void SurfacePoly :: CalculCC()
     int         nb_cc_displayed;
 
 
-  Si _cc_calculees == true AlorsFait return;
+  Si (bool)_cc_calculees == true AlorsFait return;
 
   _tab_cc.VideTableau();
   _nb_cc = 0;

@@ -260,7 +260,7 @@ unsigned char Crest ::  AlloueCrest( )
     FinPour // j
 
     fscanf( fichier, ")\n");
-//      Si verbose Alors
+//      Si GB_verbose Alors
         Si i > 0 Alors 
           printf("\b\b\b\b\b");
         Sinon

@@ -1,7 +1,9 @@
 %{
 
 // use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
-#define NOMINMAX
+#ifndef NOMINMAX
+  #define NOMINMAX
+#endif
 
 #include "IdentifierInfo.h"
 //#include "Variable.hpp"
@@ -57,7 +59,8 @@ int yycharno = 0;
 bool LexError = 0;
 
 //extern  void yyiperror(const char*);
-extern  VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 yyip::Parser::token::yytokentype checkvar(
       yyip::Parser::semantic_type* yylval,

@@ -5,6 +5,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/AMILab
+  ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}

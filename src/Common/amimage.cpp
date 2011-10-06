@@ -101,9 +101,10 @@ using namespace std;
 #define OFFSET_IH_TOP_RIGHT        166
 #define OFFSET_IH_BOT_RIGHT        178
 
+#include "CommonConfigure.h"
 
-extern unsigned char GB_debug;
-extern unsigned char GB_verbose;
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT unsigned char GB_verbose;
 
 #include "amilab_messages.h"
 

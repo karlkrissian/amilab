@@ -68,13 +68,16 @@ using namespace amilab;
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
-extern wxString        GB_help_dir;
-extern wxString        GB_scripts_dir;
-extern VarContexts  Vars;
+#include "AMILabConfigure.h"
+AMILab_VAR_IMPORT wxString    GB_scripts_dir;
+AMILab_VAR_IMPORT wxString    GB_help_dir;
+AMILab_VAR_IMPORT MainFrame*  GB_main_wxFrame;
+AMILab_VAR_IMPORT wxApp*      GB_wxApp;
+AMILab_VAR_IMPORT wxConfig*   GB_Config;
 
-extern MainFrame*    GB_main_wxFrame;
-extern wxApp*        GB_wxApp;
-extern wxConfig*     GB_Config;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
 
 
 // in function.cpp

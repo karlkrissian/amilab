@@ -2,8 +2,9 @@
 #ifndef _message_dialog_h_
 #define _message_dialog_h_
 
-#include <string>
+#include "CommonConfigure.h"
 
-void MessageDialog(std::string message);
+#include <string>
+COMMON_EXPORT void MessageDialog(std::string message);
 
 #endif // _message_dialog_h_

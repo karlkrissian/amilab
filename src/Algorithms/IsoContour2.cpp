@@ -48,7 +48,7 @@
  * changing sign definition for IsoContour2 and also for Computing Connected Components
  *
  * Revision 1.6  2004/08/12 04:23:08  karl
- * put on verbose some outputs
+ * put on GB_verbose some outputs
  *
  * Revision 1.5  2004/08/03 20:04:01  karl
  * Connected component + lines in vrml

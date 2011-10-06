@@ -134,7 +134,8 @@
 #define basename(s) s
 #endif
 
-extern unsigned char      GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 // Values for choosing the coordinates printing steps
 #define NUM_ACCEP_VAL 7

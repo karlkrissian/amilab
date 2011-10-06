@@ -1229,8 +1229,7 @@ void wxDrawingWindow::OnRemoveControlledCurve(wxCommandEvent& event)
 {
   if (_focus_controlledcurve.get())
       // TODO: fix remove feature
-//    _controlled_curves->erase(_controlled_curves->begin()+_focus_controlledcurve)
-    ;
+//    _controlled_curves->erase(_controlled_curves->begin()+_focus_controlledcurve);
   Refresh(false);
 }
 

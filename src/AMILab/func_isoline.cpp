@@ -57,8 +57,10 @@ extern "C" {
 //static Chaine  ce_fichier = "IsoLigneMain.cpp";
 
 extern char program[80];
-extern unsigned char verbose;
-extern unsigned char GB_debug;
+
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT unsigned char GB_verbose;
 
 
 //---------------------------------------------------------
@@ -179,7 +181,7 @@ CreeCrest* Func_IsoLine( InrImage* input, float Sigma, InrImage* image_masque, I
     FinSi 
 
   // Initialisation des images des derivees jusqu'a l'ordre 2
-  Si verbose AlorsFait
+  Si GB_verbose AlorsFait
     printf("Allocation des images lissees (image initiale et derivees a l'ordre 2)\n");
 
   // Calcul des images des derivees avec filtrage Gaussien
@@ -282,7 +284,7 @@ CreeCrest* Func_IsoLine( InrImage* input, float Sigma, InrImage* image_masque, I
   FinPour
   FinPour
 
-    Si verbose Alors
+    Si GB_verbose Alors
       Si z > 0 Alors 
         printf("\b\b\b");
       Sinon

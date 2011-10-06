@@ -30,6 +30,9 @@
    The full GNU Lesser General Public License file is in vtkLevelSets/LesserGPL_license.txt
 */
 
+#if defined(WIN32)
+  #define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include "vtkImagePropagateDist2.h"
 #include "vtkObjectFactory.h"

@@ -250,6 +250,7 @@ protected:
         std::cerr << e._p << e._lmax << std::endl;
       }
     FinSi
+    return Point3D();
   } 
 
   ///

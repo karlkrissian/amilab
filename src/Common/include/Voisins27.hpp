@@ -33,6 +33,7 @@
 #define VOISINS27_HPP
 
 #include "style.hpp"
+#include <iostream>
 
 #define MASQUE_X 3  // 1+2
 #define MASQUE_Y 12 // 4+8

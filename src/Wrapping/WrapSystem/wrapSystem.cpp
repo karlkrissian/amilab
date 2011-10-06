@@ -25,7 +25,9 @@ extern yyip::Driver GB_driver;
 #include <wx/utils.h>
 //#include <improcess_bison.ypp>
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
 extern wxString  GB_scripts_dir;
 
 using namespace std;

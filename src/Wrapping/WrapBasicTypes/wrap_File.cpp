@@ -24,8 +24,9 @@
   AMI_DECLARE_TYPE(BasicVariable);
 #endif
 
-#include "driver.h"
-extern yyip::Driver GB_driver;
+#include "DriverBase.h"
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
 
 //
 // static member for creating a variable from a ParamList
@@ -173,7 +174,7 @@ BasicVariable::ptr WrapClass_File::
       fflush(file.get());
     }
     else
-      GB_driver.err_print("empty variable");
+      GB_DriverBase->err_print("empty variable");
   }
 
   return BasicVariable::ptr();
@@ -207,7 +208,7 @@ BasicVariable::ptr WrapClass_File::
       fflush(file.get());
     }
     else
-      GB_driver.err_print("empty variable");
+      GB_DriverBase->err_print("empty variable");
   }
 
   return BasicVariable::ptr();
@@ -264,7 +265,7 @@ BasicVariable::ptr WrapClass_File::
       float res;
       setlocale(LC_NUMERIC, "C");
       if(fscanf(file.get(),sFormatSpecifier.c_str(),&res) == 0) {
-        GB_driver.err_print("Unable to read value from file");
+        GB_DriverBase->err_print("Unable to read value from file");
         val = 0;
       }
       else
@@ -300,7 +301,7 @@ BasicVariable::ptr WrapClass_File::
       int res;
       setlocale(LC_NUMERIC, "C");
       if (fscanf(file.get(),"%d",&res) == 0) {
-        GB_driver.err_print("Unable to read integer value from file");
+        GB_DriverBase->err_print("Unable to read integer value from file");
       }
       else
         *intparam->Pointer() =  res;
@@ -313,7 +314,7 @@ BasicVariable::ptr WrapClass_File::
       float res;
       setlocale(LC_NUMERIC, "C");
       if (fscanf(file.get(),"%f",&res) == 0) {
-        GB_driver.err_print("Unable to read float value from file");
+        GB_DriverBase->err_print("Unable to read float value from file");
       }
       else
         *floatparam->Pointer() =  res;
@@ -324,7 +325,7 @@ BasicVariable::ptr WrapClass_File::
     char res[512];
     //setlocale(LC_NUMERIC, "C");
     if (fscanf(file.get(),"%s",res) == 0)
-      GB_driver.err_print("Unable to read string value from file");
+      GB_DriverBase->err_print("Unable to read string value from file");
     else
         *stringparam->Pointer() =  res;
   } else 
@@ -354,7 +355,7 @@ BasicVariable::ptr WrapClass_File::
     float res;
     setlocale(LC_NUMERIC, "C");
     if (fscanf(file.get(),"%f",&res) == 0) {
-      GB_driver.err_print("Unable to read value from file (needs float variable)");
+      GB_DriverBase->err_print("Unable to read value from file (needs float variable)");
       val = 0;
     }
     else
@@ -385,7 +386,7 @@ BasicVariable::ptr WrapClass_File::
     char res[512];
     //setlocale(LC_NUMERIC, "C");
     if (fscanf(file.get(),"%s",res) == 0)
-      GB_driver.err_print("Unable to read value from file (needs string variable)");
+      GB_DriverBase->err_print("Unable to read value from file (needs string variable)");
     else
       val = res;
 

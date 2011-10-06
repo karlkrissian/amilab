@@ -188,7 +188,8 @@ typedef  unsigned long Dimension;
 extern MainFrame*   GB_main_wxFrame;
 
 //extern XtAppContext GB_contexte;
-extern unsigned char      GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 #define aff_err(mess) if (GB_debug) fprintf(stderr,mess);
 

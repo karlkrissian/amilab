@@ -7,6 +7,7 @@ INCLUDE( ${wxWidgets_USE_FILE})
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include

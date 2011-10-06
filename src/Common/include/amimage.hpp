@@ -51,6 +51,8 @@
   #include <boost/iostreams/filtering_streambuf.hpp>
 #endif
 
+#include "CommonConfigure.h"
+
 /*
 #include <fstream>
 #include <iostream>
@@ -185,7 +187,7 @@ unsigned char WriteAMI(const char* name,
 */
 
 //----------------------------------------------------------------------
-class amimage
+class COMMON_EXPORT amimage
 {
 
   DEFINE_CLASS(amimage)

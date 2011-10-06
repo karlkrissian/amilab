@@ -2,8 +2,10 @@
 # The extension is already found.  Any number of sources could be listed here.
 
 
+
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
@@ -11,6 +13,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
+  ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/AMILab
@@ -23,64 +26,26 @@ include_directories (
   )
 
 INCLUDE( ${VTK_USE_FILE} )
+INCLUDE( ${ITK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
 
 
 SET(Language_SRCS
-    driver.cc
-    CallBackAMIFunction.cpp
-    ami_object.cpp
-    VarContexts.cpp
-    BasicVariable.cpp
-    Variable.cpp
-    Variable_bool.cpp
-    Variable_long.cpp
-    Variable_int.cpp
-    Variable_uchar.cpp
-    Variable_float.cpp
-    Variable_double.cpp
-    Variable_InrImage.cpp
-    Variable_string.cpp
-    Variable_FloatMatrix.cpp
-    Variable_AMIObject.cpp
-    Variables.cpp
-    paramlist.cpp
     ImageStack.cpp
-    VarArray.cpp
+    driver.cc
+    language_global_export.cpp
 )
 
 SET(Language_HDRS
-    ami_class.h
-    AmiInstructionBlock.h
+    LanguageConfigure.h
+    language_global_import.h
     driver.h
-    IdentifierInfo.h
     MatrixStack.h  
     scanner.h
-    vartype.h
-    ami_function.h
-    CallBackAMIFunction.h
-    ami_object.h
     GLTransformStack.h
     ImageStack.h
     VariableStack.h
-    paramlist.h
 #    SurfStack.h
-    VarContexts.hpp
-    VarContexts.tpp
-    BasicVariable.h
-    Variable.hpp
-    Variable_bool.h
-    Variable_long.h
-    Variable_int.h
-    Variable_uchar.h
-    Variable_float.h
-    Variable_double.h
-    Variable_InrImage.h
-    Variable_string.h
-    Variable_FloatMatrix.h
-    Variable_AMIObject.h
-    Variables.hpp
-    VarArray.h
 )
 
 SET(Language_BISONFLEX_SRCS
@@ -112,6 +77,14 @@ IF(AMI_USE_FLEXBISON)
 
   ADD_FLEX_BISON_DEPENDENCY(improcessflex improcessbison)
 
+  
+  #MESSAGE("******************** Language_SRCS = ${Language_SRCS} *****************************")
+  IF(WIN32)
+    set_source_files_properties(${Language_SRCS} PROPERTIES COMPILE_FLAGS "-DLanguage_EXPORTS")
+    set_source_files_properties(${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_flex.cpp PROPERTIES COMPILE_FLAGS "-DLanguage_EXPORTS")
+    set_source_files_properties(${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp PROPERTIES COMPILE_FLAGS "-DLanguage_EXPORTS")
+  ENDIF(WIN32)
+
   SET(Language_SRCS
     ${BISON_improcessbison_OUTPUTS}
     ${FLEX_improcessflex_OUTPUTS}
@@ -135,8 +108,16 @@ ELSE(AMI_USE_FLEXBISON)
     ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_flex.cpp
   )
  
-   SET(Language_SRCS
+  SET(Language_SRCS
      ${FLEXBISON_OUTPUTS}
+     ${Language_SRCS}
+  )
+  
+  IF(WIN32)
+    set_source_files_properties(${Language_SRCS} PROPERTIES COMPILE_FLAGS "-DLanguage_EXPORTS")
+  ENDIF(WIN32)
+
+   SET(Language_SRCS
      ${Language_SRCS}
      ${Language_HDRS}
    )
@@ -149,5 +130,22 @@ ENDIF(AMI_USE_FLEXBISON)
 #ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/include/amilab_messages.h Language_SRCS)
 #ADD_PCH_RULE( ${AMILAB_SOURCE_DIR}/Common/include/DefineClass.hpp Language_SRCS)
 
-my_add_shared_library ( Language)
-add_dependencies ( Language WrapWxWidgets )
+my_add_library ( Language)
+
+target_link_libraries(Language 
+  AMILab
+  Common
+  Graphic
+  vtkIO 
+  vtkImaging
+  wxStcFrame
+  myVTK4
+  WrapVTK
+  ${wxWidgets_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+
+
+add_dependencies ( Language 
+  WrapWxWidgets 
+)

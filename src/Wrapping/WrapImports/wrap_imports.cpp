@@ -92,7 +92,9 @@
 
 //#include "wrap_TestTemplateClass__LT__int__GT__.h"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
 extern MainFrame*   GB_main_wxFrame;
 extern std::string  GB_cmdline;
 
@@ -335,12 +337,14 @@ BasicVariable::ptr wrap_WrapVariable( ParamList* p)
 void AddWrapLanguage(AMIObject::ptr& obj)
 {
 
-  // Create a new context (or namespace)
+
+// Create a new context (or namespace)
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("language");
 
   // Add classes to language context
-  wrap_language_classes(amiobject->GetContext());
+  // PROBLEM WITH DOUBLE DEFINITION OF WrapClass<AMIObject>::name_as_string() ???
+//  wrap_language_classes(amiobject->GetContext());
 
   // Add Vars: all the variable contexts
   BasicVariable::ptr vars = AMILabType<VarContexts>::CreateVar(Vars);
@@ -354,11 +358,11 @@ void AddWrapLanguage(AMIObject::ptr& obj)
                           "GetObjPointerAsString",
                           wrap_GetObjPointerAsString);
 
-  // Add wx context to obj context
+  // Add context to obj context
   obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
       amiobject,obj->GetContext());
 
-  
+
 
 }
 

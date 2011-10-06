@@ -37,7 +37,8 @@ extern "C" {
 #include    "interpol.h"
 }
 
-extern unsigned char GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 /*
 //#define MacroInterpoleCoeff2D( xr,yr, coeff)                           \

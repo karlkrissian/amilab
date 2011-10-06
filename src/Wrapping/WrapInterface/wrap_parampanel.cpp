@@ -39,7 +39,8 @@
 
 
 extern MainFrame*     GB_main_wxFrame;
-extern VarContexts Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 void CB_ParamWin( void* cd );
 void CB_update_imagelist( void* imagelist_gui);
@@ -696,7 +697,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_SetLabelValue::CallMember( ParamLi
   int label_id = 0;
   std::string* label_val = NULL;
   int  n = 0;
-  int  var_id;
+  //int  var_id;
 
   if (!get_val_param<int>( label_id, p, n)) ClassHelpAndReturn;
   if (!get_val_ptr_param<string>( label_val, p, n)) ClassHelpAndReturn;

@@ -215,11 +215,15 @@ ENDMACRO( GenerateSourcesWrapping)
 MACRO( ClassUsedName input_name output_name )
 #-------------------------------------------------------------------------------
 
-  STRING(REGEX REPLACE "<" "_L_"     ${output_name} ${${input_name}} )
-  STRING(REGEX REPLACE ">" "_G_"     ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "<" "_L_"    ${output_name} ${${input_name}} )
+  STRING(REGEX REPLACE ">" "_G_"    ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE "," "_"      ${output_name} ${${output_name}} )
-  STRING(REGEX REPLACE "::" "_"    ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "::" "_"     ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE " " ""       ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsignedchar"  "uchar"     ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsignedshort" "ushort"    ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsignedint"   "uint"      ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsignedlong"  "ulong"     ${output_name} ${${output_name}} )
 
 ENDMACRO( ClassUsedName)
 #-------------------------------------------------------------------------------

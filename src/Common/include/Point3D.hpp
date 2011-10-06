@@ -19,10 +19,12 @@
 #include "Coordonnees.hpp"
 #include "math1.hpp"
 
+#include "CommonConfigure.h"
+
 //============================================================================
 //
-struct vect3D
-//        ======
+struct COMMON_EXPORT vect3D
+//                   ======
 {
 
   float x;
@@ -33,8 +35,8 @@ struct vect3D
 
 //============================================================================
 //
-class Point3D
-//     =======
+class COMMON_EXPORT Point3D
+//                  =======
 {
 
 public:
@@ -130,7 +132,7 @@ public:
   }
 
   ///
-  friend std::ostream& operator<<(std::ostream& o, const Point3D& p);
+  friend COMMON_EXPORT std::ostream& operator<<(std::ostream& o, const Point3D& p);
 
 };
 
@@ -141,13 +143,13 @@ public:
  */
 //@{
 ///
-Vect3D<float> operator-(const Point3D& p1, const Point3D& p2);
+COMMON_EXPORT Vect3D<float> operator-(const Point3D& p1, const Point3D& p2);
 
 ///
-Point3D operator+( const Point3D& p, const Vect3D<float>& v);
+COMMON_EXPORT Point3D operator+( const Point3D& p, const Vect3D<float>& v);
 
 ///
-Point3D operator+( const Point3D& p, const Vect3D<double>& v);
+COMMON_EXPORT Point3D operator+( const Point3D& p, const Vect3D<double>& v);
 //@}
 
 #endif // POINT3D_HPP

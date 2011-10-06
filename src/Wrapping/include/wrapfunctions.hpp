@@ -16,6 +16,7 @@
 
 #include "message_dialog.h"
 #include "ami_format.h"
+#include "WrapCommonConfigure.h"
 
 class InrImage;
 //#include "inrimage.hpp"
@@ -308,6 +309,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
  * Function returns the number of parameters of the parameters list
  * if the pointer is NULL, returns -1 to allow display the documentation
  */
+WrapCommon_DECLARE
 int get_num_param(ParamList* p);
 
 
@@ -319,6 +321,7 @@ int get_num_param(ParamList* p);
  * @param required 
  * @return true is succes, false if failure
  */
+WrapCommon_DECLARE 
 bool get_next_param( BasicVariable::ptr& var, 
                     ParamList*p, int& num, bool required = false, bool quiet=false);
 
@@ -331,6 +334,7 @@ bool get_next_param( BasicVariable::ptr& var,
  * @param force_ref if true forces that the variable be a reference.
  * @return true/false if success/failure
  */
+WrapCommon_DECLARE
 bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num, bool force_ref = false);
 
 /**
@@ -415,6 +419,7 @@ bool get_several_int_params(int* arg, ParamList*p, int& num);
 /**
  * Function used to parse a vectorial image in a list of parameters
  */
+WrapCommon_DECLARE
 bool get_vectimage_param(InrImage*& arg, ParamList*p, int& num);
 
 #include "wrapfunctions.tpp"

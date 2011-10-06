@@ -22,7 +22,8 @@ using namespace amilab;
 #include "wrap_SurfacePoly.h"
 #include "vtkGPURayCasting.h"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 #ifndef _WITHOUT_VTK_
 

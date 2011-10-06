@@ -43,7 +43,8 @@
 
 #include "filtrage_rec.hpp"
 
-extern unsigned char verbose;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_verbose;
 
 //--------------------------------------------------
 void FiltrageRec :: 
@@ -219,7 +220,7 @@ void FiltrageRec ::
 
   Pour(i,1,nb_iter)
 
-    Si verbose Alors
+    Si GB_verbose Alors
       Si i==1 Alors
         printf("i = %3d",i);
         fflush(stdout);

@@ -13,8 +13,9 @@
 #include "wxDrawingArea.h"
 #include "FenetreDessin.hpp"
 
-extern unsigned char      GB_debug;
-extern unsigned char      GB_verbose;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT unsigned char GB_verbose;
 
 BEGIN_EVENT_TABLE(wxDrawingArea, wxWindow)
     EVT_PAINT       ( wxDrawingArea::OnPaint      )

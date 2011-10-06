@@ -134,6 +134,7 @@
 // Sophia Antipolis le 08-12-96
 //
 
+#pragma once
 #ifndef _DESSIN_IMAGE_HPP
 #define _DESSIN_IMAGE_HPP
 
@@ -144,7 +145,7 @@
 #define  SAUVE_PS_GRIS    1
 #define  SAUVE_PS_COULEUR 2
 
-
+#include "ImageViewerBase.h"
 #include "ParamBox.hpp"
 #include "DessinImageBase.hpp"
 //#include "BarreDefil.hpp"
@@ -236,7 +237,7 @@ public:
 //============================================================================
 /**
  */
-class DessinImage : public DessinImageBase
+class DessinImage : public DessinImageBase, public ImageViewerBase
 //     -----------
 {
 

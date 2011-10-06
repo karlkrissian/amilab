@@ -65,7 +65,9 @@
 #ifndef COORDONNEES_HPP
 #define COORDONNEES_HPP
 
-
+#ifdef _MSC_VER
+  #pragma warning(disable:4290)
+#endif // _MSC_VER
 
 #include <iostream>
 //using -- namespace std;

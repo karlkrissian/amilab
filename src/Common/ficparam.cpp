@@ -34,8 +34,10 @@
 //
 
 
+#ifdef _MSC_VER
+  #define _CRT_SECURE_NO_WARNINGS
+#endif 
 #include "ficparam.hpp"
-
 
 // -----------------------------------------------------------
 Parametres ::  Parametres()
@@ -65,7 +67,11 @@ void Parametres :: NomFichier( char* fic_param)
 //                             ----------
 {
 
+#ifdef _MSC_VER
+  fopen_s( &pfichier,fic_param, "r");
+#else
   pfichier = fopen( fic_param, "r");
+#endif
   Si pfichier == NULL Alors
     printf(" Erreur dans l'ouverture du fichier de parametres %s \n"
            , fic_param);

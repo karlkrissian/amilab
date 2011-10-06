@@ -131,6 +131,7 @@ if (!exists(vtkVolumeClass)) {
         ::vol       = vtk.vtkVolume.New()
         # don't put the boxwidget for the moment
         # convert input to vtkimage
+		printn "Create vtkImageData from Image"
         ::vtkinput  = vtktools.ToVtkImageData(&input_image)
 
         if ::volrenmapper_type==0 {
@@ -179,6 +180,7 @@ if (!exists(vtkVolumeClass)) {
 
             # don't put the boxwidget for the moment
             # convert input to vtkimage
+			del ::vtkinput
             ::vtkinput  = vtktools.ToVtkImageData(&input_image)
 
             #supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
@@ -198,6 +200,7 @@ if (!exists(vtkVolumeClass)) {
         }
         ::win.SetLabelValue(::volmapper_classname_id,::volmapper.GetClassName())
         ::volmapper.SetInput(&::vtkinput)
+		printn "GetInput = %1%" % ::volmapper.GetInput()
 
         # connect up the volume to the property and the mapper
         ::vol.SetProperty( &::property )

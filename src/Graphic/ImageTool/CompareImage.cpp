@@ -70,7 +70,8 @@
   #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
 #endif 
 
-extern unsigned char      GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 //----------------------------------------------------------------
 void CompareImage :: InitMinMax( )

@@ -57,39 +57,31 @@
 
 #include <wx/config.h>
 
-Pile<NomMethode*> GB_pile_nom_methode((NomMethode*)NULL);
-unsigned char GB_AfficheWarning = false;
-unsigned char GB_AfficheErreur  = false;
+
+#include "common_global_import.h"
+#include "amilab_global_import.h"
 
 //XtAppContext  GB_contexte;
-unsigned char       GB_debug;
-unsigned char       GB_debug_opengl;
-unsigned char       GB_verbose;
-unsigned char       GB_nofile;
 
 
-yyip::Driver  GB_driver;
-VarContexts   Vars;
+#include "LanguageConfigure.h"
+Language_VAR_IMPORT yyip::Driver  GB_driver;
 
-MainFrame*    GB_main_wxFrame;
-wxApp*        GB_wxApp;
-wxConfig*     GB_Config;
+#include "DriverBase.h"
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
 
-wxString        GB_help_dir;
-wxString        GB_scripts_dir;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
 
 unsigned char DELETE_IDRAW;
 
-extern VarContexts  Vars;
-
-
-int         GB_argc;
-wxChar**    GB_argv;
-int         GB_num_arg_parsed;
-std::string GB_cmdline;
+#include "amilab_global_import.h"
 
 char program[80];
-unsigned char verbose;
+
+//COMMON_EXPORT unsigned char GB_verbose;
 
 #include "xmtext.hpp"
 
@@ -315,7 +307,8 @@ bool MyApp::OnInitGui()
 //-----------------------------------------
 bool MyApp::OnInit()
 {
-
+  // Initialize GB_DriverBase
+  GB_DriverBase = DriverBase::ptr(&GB_driver,smartpointer_nodeleter<DriverBase>());
 
  ::wxInitAllImageHandlers();
 

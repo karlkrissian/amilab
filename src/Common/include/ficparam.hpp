@@ -41,12 +41,14 @@
 #include "style.hpp"
 #include "chaine.hpp"
 
+#include "CommonConfigure.h"
+
 extern "C" {
 #include <stdio.h>
 }
 
-class Parametres
-//     ==========
+class COMMON_EXPORT Parametres
+//                  ==========
 {
 
   Chaine NomFicSortie;

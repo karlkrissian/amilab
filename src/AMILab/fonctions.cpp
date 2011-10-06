@@ -43,14 +43,17 @@ using namespace amilab;
 
 #define EPSILON_fonctions_cpp 1E-5
 
-extern unsigned char GB_debug;
-extern    VarContexts  Vars;
-extern wxString  GB_scripts_dir;
-
 #include "driver.h"
-extern yyip::Driver GB_driver;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT yyip::Driver GB_driver;
 
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
+#include "AMILabConfigure.h"
+AMILab_VAR_IMPORT wxFrame* GB_main_wxFrame;
+AMILab_VAR_IMPORT wxString GB_scripts_dir;
 
 
 InrImage* Func_OpImage( InrImage* im1, InrImage* im2, InrImage* im3,
@@ -1182,7 +1185,6 @@ void Func_DiscSecDerGrad( InrImage* image_entree, InrImage* dersec, InrImage* no
 
 
 //#include "ParamBox.hpp"
-extern wxFrame*      GB_main_wxFrame;
 
 #include <map>
 #include <string>
@@ -2593,7 +2595,6 @@ InrImage*    Func_CC(InrImage* im, float background_threshold, int topology)
   isocontour->SetMaxFond(background_threshold);
 
   isocontour->SetSauve(0);
-  //  isocontour->SetVerbose(verbose);
   isocontour->SetDebug(GB_debug);
 
   isocontour->RechercheContours( image_num_contour);

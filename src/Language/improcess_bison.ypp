@@ -16,7 +16,9 @@
 #include "MainFrame.h"
 
 // use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
-#define NOMINMAX
+#ifndef NOMINMAX
+  #define NOMINMAX
+#endif
 
 #include <iomanip>
 #include <cassert>
@@ -112,18 +114,28 @@
 //#include "histo.hpp"
 
 
-extern VarContexts       Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 //Duree            IP_time;
 
-extern MainFrame*   GB_main_wxFrame;
-extern wxApp*       GB_wxApp;
-extern int          GB_argc;
+/*
+#if defined(WIN32)
+  #define AMILAB_VAR_IMPORT __declspec( dllimport )
+#else
+  #define AMILAB_VAR_IMPORT extern
+#endif
 
-extern int       GB_num_arg_parsed;
-extern wxString  GB_scripts_dir;
-extern wxString  GB_help_dir;
+AMILAB_VAR_IMPORT MainFrame*   GB_main_wxFrame;
+AMILAB_VAR_IMPORT wxApp*       GB_wxApp;
+AMILAB_VAR_IMPORT int          GB_argc;
 
+AMILAB_VAR_IMPORT int       GB_num_arg_parsed;
+AMILAB_VAR_IMPORT wxString  GB_scripts_dir;
+AMILAB_VAR_IMPORT wxString  GB_help_dir;
+*/
+
+#include "amilab_global_import.h"
 
 namespace AMIFluid {
 extern char* FLUID_NAVIGATION_FILE;
@@ -134,12 +146,13 @@ DessinImage* CreateIDraw(  const std::string& title, InrImage::ptr image);
 // Creation of a DessinImage pointer
 // this function is distinct if compiling with all amilab
 
-extern yyip::Driver GB_driver;
+#include "language_global_import.h"
 
-extern unsigned char        GB_debug;
-extern unsigned char        GB_verbose;
-extern unsigned char        verbose;
-extern unsigned char        GB_nofile;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT unsigned char GB_verbose;
+COMMON_VAR_IMPORT unsigned char GB_nofile;
+
 
 extern char program[80];
 
@@ -2012,7 +2025,6 @@ command:
     |  T_SetVerboseOn
     {
       GB_verbose = 1;
-      verbose = 1;
     }
     |  T_SetVerboseOff
     {
