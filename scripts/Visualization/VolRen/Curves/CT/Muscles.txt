@@ -5,7 +5,9 @@
 217	0.88	0.60	0.29	0.68	0.33	0.45 
 420	1	0.94	0.95	0.83	0.5	0.0 
 3071	0.83	0.66	1	0.80	0.5	0.0
-# Property shadeon/off Ambient Diffuse Specular SpecularPower OpacityUnitDistance
-1	0.1	0.9	0.2	10.0	0.8919
+# Property shadeon/off Ambient Diffuse Specular SpecularPower OpacityUnitDistance Blendmode	Normalize
+1	0.1	0.9	0.2	10.0	0.8919 0	0
+# Background RGB RGB UseGradientBackground 
+255	165	0	77	77	77	1
 # Description
 CT Muscles

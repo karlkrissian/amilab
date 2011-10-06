@@ -18,11 +18,58 @@ if (!exists(vtkCurveClass)) {
       ::category    = "", "name of the category"
       ::type        = "", "type in category"
       ::descripcion = "", "general descripcion"
+      ::blend_mode  = 0
+      ::use_shade   = 0
       ::colorFun    = vtk.vtkColorTransferFunction.New()
       ::opacityFun  = vtk.vtkPiecewiseFunction    .New()
       ::property    = vtk.vtkVolumeProperty       .New()
+      ::r1          = 255
+      ::g1          = 255
+      ::b1          = 255
+      ::r2          = 255
+      ::g2          = 255
+      ::b2          = 255
+      ::Gradient    = 0
+      ::min_x       = 0
+      ::max_x       = 1
+      ::norma       = 0
     }
 
+   #----------------------------
+    proc ::Norm_x()\
+    {
+      if (::norma==1){
+        max_local=1
+        min_local=0
+        for z=0 to (::colorFun.GetSize()-1) {
+          del colorvector
+          colorvector=vector_double(6) 
+          ::colorFun.GetNodeValue(z,&colorvector[0])
+          if (max_local<colorvector[0]){
+            max_local=colorvector[0]
+          }
+          if (min_local>colorvector[0]){
+            min_local=colorvector[0]
+          }
+        }  
+
+        for z=0 to (::colorFun.GetSize()-1) {
+          #printn "Normalizando %1%" %z
+          del colorvector
+          colorvector=vector_double(6) 
+          ::colorFun.GetNodeValue(z,&colorvector[0])
+          del opacityvector
+          opacityvector=vector_double(4) 
+          ::opacityFun.GetNodeValue (z, &opacityvector[0])
+          x=colorvector[0]*(::max_x-::min_x)/max_local 
+          //x=min_local+abs (colorvector[0]*(::max_x-::min_x)/(max_local))      
+          colorvector[0]=x
+          opacityvector[0]=x
+          ::colorFun.SetNodeValue(z,&colorvector[0])
+          ::opacityFun.SetNodeValue(z,&opacityvector[0])
+        }
+      }
+    }
     #----------------------------
     proc ::__assign__(OBJECT c1) {
       ::category    = c1.category
@@ -57,6 +104,10 @@ if (!exists(vtkCurveClass)) {
       ::property  = &f
     }
     #----------------------------
+    proc ::SetBlendMode(NUM  m) {
+      ::blend_mode  = m
+    }
+    #----------------------------
     proc ::GetPropertyFun() {
       return= &::property
     }
@@ -76,17 +127,6 @@ if (!exists(vtkCurveClass)) {
       }
       ::opacityFun.AddPoint( &i, &o, &m , &s)
     }
-
-    #----------------------------
-    #proc ::GetAmilabCurve() \
-    #{
-      #if (exists(::curve)) {
-        #return = ::curve
-      #} else {
-        #InfoDialog "No curve available!"
-      #}
-    #}
-    #Comments(::GetCurve,"Returns the loaded curve.")
 
     #----------------------------
     proc ::Save( STRING path){
@@ -116,7 +156,7 @@ if (!exists(vtkCurveClass)) {
 
           outputfile._printn(text)
         }
-        text  = "# Property shadeon/off Ambient Diffuse Specular SpecularPower OpacityUnitDistance"
+        text  = "# Property shadeon/off Ambient Diffuse Specular SpecularPower OpacityUnitDistance Blendmode Normalize"
         outputfile._printn(text)
         text= "%1%" %::property.GetShade() 
         text= text + "  %1%" %::property.GetAmbient() 
@@ -124,6 +164,18 @@ if (!exists(vtkCurveClass)) {
         text= text + "  %1%" %::property.GetSpecular()
         text= text + "  %1%" %::property.GetSpecularPower()
         text= text + "  %1%" %::property.GetScalarOpacityUnitDistance() 
+        text= text + "  %1%" %::blend_mode 
+        text= text + "  %1%" %::norma
+        outputfile._printn(text)
+        text  = "# Background RGB RGB UseGradientBackground"
+        outputfile._printn(text)
+        text= "%1%" %::r1 
+        text= text + "  %1%" %::g1
+        text= text + "  %1%" %::b1
+        text= text + "  %1%" %::r2
+        text= text + "  %1%" %::g2
+        text= text + "  %1%" %::b2
+        text= text + "  %1%" %::Gradient
         outputfile._printn(text)
         text  = "# Description"
         outputfile._printn(text)
@@ -154,15 +206,16 @@ if (!exists(vtkCurveClass)) {
       inputfile.read_line()
       inputfile.read_line()
       
-      shon      = inputfile.read_float()
-      amb       = inputfile.read_float()
-      diff      = inputfile.read_float()
-      spec      = inputfile.read_float()
-      specpower = inputfile.read_float()
-      scalaropa = inputfile.read_float()
-
+      shon          = inputfile.read_float()
+      amb           = inputfile.read_float()
+      diff          = inputfile.read_float()
+      spec          = inputfile.read_float()
+      specpower     = inputfile.read_float()
+      scalaropa     = inputfile.read_float()
+      blend         = inputfile.read_float()
       if (shon==1){
         ::property.ShadeOn()
+        ::use_shade=1
       }else{
         ::property.ShadeOff()
       }
@@ -171,10 +224,23 @@ if (!exists(vtkCurveClass)) {
       ::property.SetSpecular(spec)
       ::property.SetSpecularPower(specpower)
       ::property.SetScalarOpacityUnitDistance(scalaropa)
+      ::blend_mode=blend
+      ::norma       = inputfile.read_float()
+      #backgraund
+      inputfile.read_line()
+      inputfile.read_line()
+      ::r1          = inputfile.read_float()
+      ::g1          = inputfile.read_float()
+      ::b1          = inputfile.read_float()
+      ::r2          = inputfile.read_float()
+      ::g2          = inputfile.read_float()
+      ::b2          = inputfile.read_float()
+      ::Gradient    = inputfile.read_float()
+
+
       inputfile.read_line()
       inputfile.read_line()
       ::descripcion=inputfile.read_line()
-printn ::descripcion
 
     }
     Comments(::Load,"Load operation.")

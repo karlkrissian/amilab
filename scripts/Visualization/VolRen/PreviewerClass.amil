@@ -19,15 +19,21 @@ Class PreviewerClass \
   ::vtkcurve = &vtkCurveClass 
 
   #-----------------------------
-  proc ::Curve() \
-  {
-     del aux_curve2
-    ::vtkcurve aux_curve2
-    aux_curve2.Load("/home/carlos/Devel/amilab_trunk/scripts/Visualization/VolRen/Curves/CT/Muscles.txt")
-    aux_curve2.SetCategory("CT")
-    aux_curve2.SetType("Muscles")
-    #    aux_curve2.Save("/home/carlos/Escritorio/")
-  }
+  #proc ::Curve() \
+  #{
+     #del aux_curve2
+    #::vtkcurve aux_curve2
+    #aux_curve2.Load("/home/carlos/Devel/amilab_trunk/scripts/Visualization/VolRen/Curves/MIP/MIP.txt")
+
+      #printn aux_curve2.descripcion
+      #aux_curve2.type = "MIP"
+      #aux_curve2.category = "MIP"
+      #aux_curve2.max_x=100
+
+      #aux_curve2.norm_x()
+      #aux_curve2.norm_x()
+       #aux_curve2.Save("/home/carlos/Escritorio/")
+  #}
 
   #----------------------------
   proc ::Init() \
@@ -37,11 +43,13 @@ Class PreviewerClass \
     ::cols=2
     ::files=2
     ::Gui()
-
+    ::x_min=0
+    ::x_max=0
     ::active_window=0
     ::apply_window=::active_window
-    ::SVCVector= VarVector()
     ::isAvailable=  vector_int(::files*::cols,0)
+    ::InfoTextVector[::active_window].SetForegroundColour( wx.wxColour(255,0,0))
+    ::SVCVector = VarVector()
     for n=0 to ::RWIVector.size()-1 {
       del aux_svc
       ::svc aux_svc
@@ -50,12 +58,10 @@ Class PreviewerClass \
       #init renderer 
       ::SVCVector[n].InitManager(&::RWIVector[n])
     }
-    ::SVCVector[::apply_window].SetBackground(0,0,0,255,255,255)
     for n = 0 to ::listCategory.Count()-1 {
       ::choice1.Append(::listCategory[n])
     }
     ::choice1.SetSelection(0)
-    ::frame.Show()
   }
 
   #----------------------------
@@ -77,7 +83,6 @@ Class PreviewerClass \
     del ::input
     # limit the preview image size to 1 million voxels ?
     ::input = ::ReduceImage(&image)
-    #::Load()
     ::Render()
   }
 
@@ -85,7 +90,9 @@ Class PreviewerClass \
   proc ::LoadCurves() \
   {
     #::pathname=wx.FromWxString(wx.wxFileName.GetCwd())
-    pathname=GetScriptsDir+"Visualization/VolRen/"
+    pathname=GetScriptsDir+"Visualization"+\
+            wx.FromWxString(wx.wxFileName.GetPathSeparator())\
+            +"VolRen"+wx.FromWxString(wx.wxFileName.GetPathSeparator())
     #printn pathname
     defaultdir= "Curves/"
     path=pathname+defaultdir
@@ -128,7 +135,6 @@ Class PreviewerClass \
       ::numElemCategory[i] = ::numElemCategory[i]+1
 
       type =wx.FromWxString(aux.SubString(bar+1,aux.Len()-5))
-      #printn type
       # create curve
       del aux_curve
       ::vtkcurve aux_curve
@@ -136,7 +142,13 @@ Class PreviewerClass \
       aux_curve.SetCategory(category)
       aux_curve.SetType(type)
       ::CurveVector.push_back(&aux_curve)
+      #aux_curve.Save("/home/carlos/Escritorio/")
     }
+  }
+  #----------------------------
+  proc ::SetIntensityValues(NUM xmin, NUM xmax){
+    ::x_min= xmin
+    ::x_max= xmax
   }
 
   #----------------------------
@@ -158,14 +170,25 @@ Class PreviewerClass \
       index = ::choice1.GetCurrentSelection()
       for n=0 to ::RWIVector.size()-1 {
         ::SVCVector[n].DelVTK()
+        ::SVCVector[n].SetBackground(0,0,0,0,0,0,0 )
+        ::InfoTextVector[n].SetLabel(" ")
         if (n<::numElemCategory[index]){
           ::isAvailable[n]=1
           #printn index
           indexCurve= ::GetCurveIndex(index)+n
           #printn "Index of curve %1%" %indexCurve
+          ::CurveVector[indexCurve].min_x=::x_min
+          ::CurveVector[indexCurve].max_x=::x_max
+          ::CurveVector[indexCurve].Norm_x()
+          ::InfoTextVector[n].SetLabel(::CurveVector[indexCurve].descripcion)
+          ::SVCVector[n].SetBlendMode(  ::CurveVector[indexCurve].blend_mode)
           ::SVCVector[n].SetColorFun(  &::CurveVector[indexCurve].GetColorFun())
           ::SVCVector[n].SetOpacityFun(&::CurveVector[indexCurve].GetOpacityFun())
           ::SVCVector[n].SetProperty(  &::CurveVector[indexCurve].GetPropertyFun())
+          ::SVCVector[n].SetBackground(::CurveVector[indexCurve].r1, \
+                    ::CurveVector[indexCurve].g1, ::CurveVector[indexCurve].b1, \
+                    ::CurveVector[indexCurve].r2, ::CurveVector[indexCurve].g2, \
+                    ::CurveVector[indexCurve].b2, ::CurveVector[indexCurve].Gradient )
           #Create & addvolume
           ::SVCVector[n].CreateVTK( &::input)
           ::SVCVector[n].OnRender()
@@ -178,7 +201,7 @@ Class PreviewerClass \
   } # end Render()
 
   #----------------------------
-  proc ::Load() {
+  proc ::Load() { #obsolete method you should use ::Render()
     if (exists(::input)) {
 #Visualize
       for n=0 to ::RWIVector.size()-1 {  
@@ -213,7 +236,12 @@ Class PreviewerClass \
     #::RWIVector[n].Render()
     #::RWIVector[n].Refresh()
   }
-
+  #----------------------------
+  proc ::Show() \
+  {
+    ::frame.Show()
+    wait(33)
+  }
   #----------------------------
   proc ::Hide() \
   {
@@ -254,6 +282,7 @@ Class PreviewerClass \
   # sets an object that contains a method named call()
   proc ::SetApplyCallback( VAR cb) \
   {
+    del ::apply_cb
     ::apply_cb = &cb
   }
 
@@ -263,19 +292,16 @@ Class PreviewerClass \
       ::apply_cb()
     }
   }
-
-
   #----------------------------
   proc ::Rotate(NUM n){
    rend=::RWIVector[n].GetRenderWindow().GetRenderers().GetFirstRenderer()
-   for i=0 to 35 {
+   for i=0 to 10 {
       wait(33)
       rend.GetActiveCamera().Azimuth( 10 )
       ::RWIVector[n].Render()
     }
 
   }
-
   #----------------------------
   proc ::Rotate2(NUM n){
    for i=0 to 35 {
@@ -283,7 +309,6 @@ Class PreviewerClass \
       ::SVCVector[n].Rotate()
     }
   }
-
   #----------------------------
   proc ::MultView(){
    del angle
@@ -297,7 +322,6 @@ Class PreviewerClass \
    }
    ::Refresh()
   }
-
   #----------------------------
   proc ::ChangeViewConfiguration(NUM index){
     ::Render()
@@ -308,9 +332,13 @@ Class PreviewerClass \
   proc ::ChoiceSelected( OBJECT event ) \
   {
     index = event.GetSelection()
-    //pos = atof(event.GetItem().GetText().c_str())
-   // printn "item  = %1%" % index
     ::ChangeViewConfiguration(index)
+      for n=0 to ::RWIVector.size()-1 {
+        ::InfoTextVector[n].SetForegroundColour( wx.wxColour(0,0,0))
+      }
+    ::active_window=0
+    ::apply_window=::active_window
+    ::InfoTextVector[::active_window].SetForegroundColour( wx.wxColour(255,0,0))
      event.Skip()
   }
 
@@ -331,7 +359,6 @@ Class PreviewerClass \
   proc ::OnEnter1( OBJECT event) \
   {
     ::active_window=event.GetId()-10000
-    //printn "Event id = %1%" % ::active_window
     event.Skip()
   }
 
@@ -340,12 +367,11 @@ Class PreviewerClass \
   {
     if (::isAvailable[::active_window]){
       if(::apply_window!=::active_window){
+
         for n=0 to ::RWIVector.size()-1 {
-          ::SVCVector[n].SetBackground(0,0,0,0,0,0)
+          ::InfoTextVector[n].SetForegroundColour( wx.wxColour(0,0,0))
         }
-        ::SVCVector[::active_window].SetBackground(0,0,0,255,255,255)
-        ::Refresh()
-        //::Rotate(::active_window)
+        ::InfoTextVector[::active_window].SetForegroundColour( wx.wxColour(255,0,0))
         ::apply_window=::active_window
 
       }
@@ -362,6 +388,7 @@ Class PreviewerClass \
                           wx.wxPoint(100,100),wx.wxSize(300,300),\
                           wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX|wx.wxMAXIMIZE_BOX,\
                           "test")
+   ::frame.CenterOnParent()
     # Create a panel with a sizer
     ::panel = wx.wxPanel(&::frame)
     # Create a BoxSizer
@@ -395,6 +422,7 @@ Class PreviewerClass \
     ::wxvtk_id = 10000
     #wxvtkIterator vector
     ::RWIVector= VarVector()
+    ::InfoTextVector=VarVector()
     for n=0 to ::cols*::files-1 {
       del wxvtkI
       wxvtkI =  vtktools.wxVTKRenderWindowInteractor(&::panel,::wxvtk_id+n)
@@ -413,8 +441,18 @@ Class PreviewerClass \
                       &evh_ChoiceW.GetMouseEventFunction(),&NULL,&evh_ChoiceW)
       #add vector
       ::RWIVector.push_back(&wxvtkI)
+      del boxsizer
+      boxsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+      del text
+      text=wx.wxStaticText.wxStaticText_2(&::panel,wx.wxID_ANY,"")
+      ::InfoTextVector.push_back(&text)
+
+      boxsizer.Add(&::RWIVector[n], 1, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,    1)
+      boxsizer.Add(&::InfoTextVector[n], 0,  wx.wxALL,    1)
       #add to gridsizer
-      gridsizer.Add(  &::RWIVector[n],\
+      #gridsizer.Add(  &::RWIVector[n],\
+                      #&wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
+      gridsizer.Add(  &boxsizer,\
                       &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
     }
     boxsizerB.Add(&::b_Apply,&wx.wxSizerFlags(0).Right())
@@ -423,11 +461,9 @@ Class PreviewerClass \
     ::boxsizerM.Add(&line,      0, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,  1)
     ::boxsizerM.Add(&boxsizerB, 0, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,  1)
     #panel
+
     ::panel.SetSizer(&::boxsizerM ) 
     ::frame.SetMinSize(wx.wxSize(300,300))
-    #Init
-    #::Init()
-    #::frame.Show()
   }
 
   ::Init()

@@ -3,8 +3,10 @@ func "Visualization/VolRen/VolRenClass"
 
 #----------------------------
 if (!exists(VolRen_obj)) {
+
   VolRenClass VolRen_obj
   VolRen_obj.Gui()
+
   
 } else {
   InfoDialog "The script seems to be already loaded." 
