@@ -385,8 +385,9 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
   int                     aint;
   ParamList*              paramlist; // here smart pointer
                             // not allowed in union ...
-  ParamListDecl*          paramlistdecl;
-  std::list<std::string>* string_list;
+  ParamListDecl*              paramlistdecl;
+  std::list<std::string>*     string_list;
+  std::vector<AMIClass::ptr>* class_list;
 }
 
 %token LEX_ERROR
@@ -789,13 +790,14 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %type <adouble>         NUMBER
 %type <paramlist>      param_list
 %type <paramlistdecl>  param_list_decl
-%type <string_list>     stringlist
-%type <string_list>     exprstringlist
+%type <string_list>    exprstringlist
+%type <class_list>     var_ami_class_list
 
 %destructor { delete [] $$; } ASTRING primary_expr_string expr_string
 %destructor { delete  $$; } identifier IDENTIFIER POINT_IDENTIFIER
 %destructor { delete  $$; } instr_block
 %destructor { delete  $$; } exprstringlist
+%destructor { delete  $$; } var_ami_class_list
 
 
 
@@ -1126,11 +1128,12 @@ class_decl:
 
     }
     |
-    T_Class  identifier T_COLON T_public VAR_AMI_CLASS
+    T_Class  identifier T_COLON T_public var_ami_class_list
         instr_block end_instr
     {
-      Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
-      AMIClass::ptr parent = var->Pointer();
+      //Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
+      //AMIClass::ptr parent = var->Pointer();
+      std::vector<AMIClass::ptr>* classlist = $5;
 
       AmiInstructionBlock::ptr body($6);
       IdentifierInfo::ptr ident($2);
@@ -1139,13 +1142,15 @@ class_decl:
 
       amiclass->SetName(ident->GetName());
       amiclass->SetFileName(driver.current_file);
-      amiclass->Inherit(parent);
+      amiclass->Inherit(*classlist);
       amiclass->SetBody(     body);
       if (GB_debug) printf("%s body = %s\n", ident->GetName().c_str(),body->GetBody().c_str());
 
       Vars.AddVar<AMIClass>(ident, amiclass);
+      //del classlist; Bison does it, no?
 
     };
+    
 
 object_decl:
     VAR_AMI_CLASS  identifier
@@ -3928,6 +3933,25 @@ command:
 
 
 
+var_ami_class_list:
+  VAR_AMI_CLASS
+  {
+    Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
+    AMIClass::ptr c = var->Pointer();
+    std::vector<AMIClass::ptr>* cl = new std::vector<AMIClass::ptr>();
+    cl->push_back(c);
+    $$ = cl;
+  }
+  |
+  var_ami_class_list T_COMMA VAR_AMI_CLASS
+  {
+    Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
+    AMIClass::ptr c = var->Pointer();
+    std::vector<AMIClass::ptr>* cl = $1;
+    cl->push_back(c);
+    $$ = cl;
+  }
+
 exprstringlist: 
         expr_string 
         {
@@ -3944,13 +3968,6 @@ exprstringlist:
             delete [] $3;
             $$ = sl;
         }
-
-//Esta regla esta huerfana, nadie la llama.
-stringlist:
-      T_OP_BR exprstringlist T_CL_BR
-      {
-        $$=$2;
-      }
 
 
 param_list:

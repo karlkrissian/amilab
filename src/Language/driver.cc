@@ -192,7 +192,8 @@ void Driver::ParseClassBody(const AMIClass::ptr& oclass)
   string previous_filename = this->current_file;
   if (oclass.get()) {
     // recursive call to possible parent
-    this->ParseClassBody(oclass->GetParentClass());
+    for(int i=0;i<oclass->GetNumberOfParentClasses();i++)
+      this->ParseClassBody(oclass->GetParentClass(i));
     // call to its body after setting the current filename
     this->SetCurrentFile(oclass->GetFileName().c_str());
     parse_block(oclass->GetBody());
