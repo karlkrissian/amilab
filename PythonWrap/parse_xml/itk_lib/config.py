@@ -4,7 +4,7 @@
 # in VTK, the header file is the same as the classname
 def get_include_file(classname,filename):
   incfile = '#include "{0}"'.format(filename)
-  print "including class {0} from file {1}".format(classname,incfile)
+  #print "including class {0} from file {1}".format(classname,incfile)
   if classname.startswith("itk::DefaultConvertPixelTraits"):
     incfile = '#include "itkMatrix.h"\n'+incfile
   return incfile

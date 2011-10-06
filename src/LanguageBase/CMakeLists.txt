@@ -99,11 +99,17 @@ SET(LanguageBase_SRCS
  ${LanguageBase_HDRS}
 )
  
-OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" ON)
+IF(WIN32)
+  OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" ON)
+ELSE(WIN32)
+  OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" OFF)
+ENDIF(WIN32)
+
 IF (LanguageBase_SHARED)
   my_add_shared_library ( LanguageBase)
   INSTALL(TARGETS LanguageBase
     RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
     #  COMPONENT applications
     #  BUNDLE DESTINATION 
     #${CMAKE_INSTALL_DESTINATION_ARGS}

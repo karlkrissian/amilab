@@ -2,7 +2,7 @@
 #ifndef ami_itkImageConversion_h_
 #define ami_itkImageConversion_h_
 
-#include "I:/AMILabCompilationWindows/Sourceforge/amilab_trunk/src/Common/include/inrimage.hpp"
+#include "inrimage.hpp"
 #include <itkImage.h>
 
 typedef  itk::Image<unsigned char,2> Image_UC2;

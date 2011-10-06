@@ -935,10 +935,10 @@ def HTMLInitialization(createhtml,templatedir, outputdirectory, outputfilename, 
 def WrapClass(classname,include_file,inputfile):
   if (args.val.profile):
     t0 = time.clock()
-    print "\n**************"
-    print "   Wrapping: {0}",format(classname)
-    print "**************"
-    print "WrapClass({0},{1},{2})".format(classname,include_file,inputfile)
+    #print "\n**************"
+    print "\n   Wrapping: {0}".format(classname)
+    print "             **************"
+    #print "WrapClass({0},{1},{2})".format(classname,include_file,inputfile)
   parser = make_parser()
   # Create the handler
   #dh = parse_class.FindClass(classname)
@@ -1428,7 +1428,7 @@ def WrapClass(classname,include_file,inputfile):
           filetoadd = FindIncludeFile(template_param,fileid)
           #local_include_file += '\n#include "{0}"'.format(filetoadd)
           local_include_file += '\n{0}'.format(filetoadd)
-    print "local include file {0}".format(local_include_file)
+    print "from {0}".format(local_include_file)
         
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)

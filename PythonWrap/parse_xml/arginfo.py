@@ -268,7 +268,7 @@ class ArgInfo:
     if config.types[self.typeid].GetRealType()=="PointerType":
       if config.types[self.typeid].GetFullString().endswith("* *"):
         res =  self.WrapGetParamDoublePointer(noconstructor_call)
-        print "res= ",res
+        #print "res= ",res
         return res
       else:
         return self.WrapGetParamPointer(noconstructor_call)

@@ -6,7 +6,7 @@ def get_include_file(classname,filename):
   last = filename.rfind('/')
   incfile=filename[last+1:]
   incfile = '#include "{0}"'.format(incfile)
-  print "including class {0} from file {1}".format(classname,incfile)
+  #print "including class {0} from file {1}".format(classname,incfile)
   return incfile
   #return "{0}.h".format(classname)
   
