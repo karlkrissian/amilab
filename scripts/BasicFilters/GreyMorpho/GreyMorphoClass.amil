@@ -162,7 +162,7 @@ if (!exists(GreyMorphoClass)) {
     #----------------------------
     proc ::Restart() \
     {
-      ::LoadInput
+      ::load_input()
       ::res <<= ::input
       show ::res
     }

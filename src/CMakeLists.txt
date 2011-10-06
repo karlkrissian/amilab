@@ -15,30 +15,31 @@ endif(POLICY CMP0017)
 SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
 #-------------------------------------------------------------
-#  CONFIGURE OUTPUT DIRECTORIES
+#  CONFIGURE OUTPUT DIRECTORIES FOR WINDOWS BECAUSE OF DLL
 #-------------------------------------------------------------
 
-# ---------- Setup output Directories -------------------------
-SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY
-   ${PROJECT_BINARY_DIR}/Bin
-   CACHE PATH
-   "Single Directory for all Libraries"
-   )
+IF (WIN32)
+  # ---------- Setup output Directories -------------------------
+  SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Bin
+    CACHE PATH
+    "Single Directory for all Libraries"
+  )
+
+  # --------- Setup the Executable output Directory -------------
+  SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Bin
+    CACHE PATH
+    "Single Directory for all static libraries."
+  )
+ENDIF(WIN32)
 
 # --------- Setup the Executable output Directory -------------
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-   ${PROJECT_BINARY_DIR}/Bin
-   CACHE PATH
-   "Single Directory for all Executables."
-   )
-
-# --------- Setup the Executable output Directory -------------
-SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-   ${PROJECT_BINARY_DIR}/Bin
-   CACHE PATH
-   "Single Directory for all static libraries."
-   )
-
+  ${PROJECT_BINARY_DIR}
+  CACHE PATH
+  "Single Directory for all Executables."
+)
 
 #-----------------------------------------------------
 # VERSION information

@@ -45,9 +45,9 @@ public:
 
   /** Returns true if the current command is run from the console.
   */
-  bool InConsole() { return in_console; }
+  virtual bool InConsole() { return in_console; }
 
-  BasicVariable::ptr yyip_call_function( AMIFunction* v, 
+  virtual BasicVariable::ptr yyip_call_function( AMIFunction* v, 
     const ParamList::ptr& param = ParamList::ptr() ) { return BasicVariable::ptr(); }
 
 };
