@@ -2,6 +2,7 @@ wxAcceleratorEntry
 wxAcceleratorTable
 wxActivateEvent
 wxAmiEventHandler
+wxApp
 wxArrayInt
 wxArtProvider
 wxAuiDockArt
@@ -143,6 +144,7 @@ wxSplitterWindow
 wxStaticBox
 wxStaticBoxSizer
 wxStaticLine
+wxStaticText
 wxStatusBar
 wxStdDialogButtonSizer
 wxString

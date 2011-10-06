@@ -317,6 +317,27 @@ public:
   }
 
   /**
+   * Color Map operations
+   */
+  int GetSizelinearCM(){
+    return _linearCM.size();    
+  }
+    
+  double GetPoslinearCM(int x){
+    return _linearCM.GetPoint(x).GetPosition();    
+  }
+
+  double GetAlphalinearCM(int x){
+    return _linearCM.GetPoint(x).GetAlpha();    
+  }
+  
+   wxColour GetColourlinearCM(int x){
+     return _linearCM.GetPoint(x).GetLeftColour();
+   }
+  
+
+
+  /**
    * Draw a given curve in the graphical context.
    */
   void DrawCurve( dwCurve& curve );

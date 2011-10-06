@@ -89,13 +89,14 @@
 #endif
 
 #include "wrapVTK.h"
-
+#include "wrap_wxApp.h"
 //#include "wrap_TestTemplateClass__LT__int__GT__.h"
 
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 extern MainFrame*   GB_main_wxFrame;
+extern wxApp*       GB_wxApp;
 extern std::string  GB_cmdline;
 
 /// global Null variable
@@ -412,6 +413,10 @@ void AddWrapAmilab(AMIObject::ptr& obj)
   BasicVariable::ptr mainframe_var = WrapClass_MainFrame::CreateVar(GB_main_wxFrame);
   amiobject->GetContext()->AddVar("MainFrame", mainframe_var, amiobject->GetContext());
 
+  // Add the App as an object
+  BasicVariable::ptr app_var = AMILabType<wxApp>::CreateVar(GB_wxApp,true);
+  amiobject->GetContext()->AddVar("wxApp", app_var, amiobject->GetContext());
+  
   // Add the command line as a string, with a reference to the global variable and no deleter
   BasicVariable::ptr cmdline_var = AMILabType<std::string>::CreateVar(&GB_cmdline,true);
   amiobject->GetContext()->AddVar("CommandLine", cmdline_var, amiobject->GetContext());

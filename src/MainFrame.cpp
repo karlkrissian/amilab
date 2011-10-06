@@ -234,7 +234,7 @@ CustomAboutMenu::CustomAboutMenu(wxWindow* parent)
         Francisco Santana  : Developer\n\
         Daniel E. Santana  : Developer\n\
         Carlos M. Falcón   : Developer\n\
-        Sara Illeras       : Developer\n\
+        Sara Illera        : Developer\n\
         \n\
     Contributors and previous developers:\n\
         Luis Álvarez\n\
@@ -2728,7 +2728,7 @@ void MainFrame::OnUpdate(wxUpdateUIEvent& event)
 
   
  
- //this->Refresh(-1); //repaint gnome
+ //this->Refresh(-1); //force repaint gnome (it's not a good idea)
   
 }
 

@@ -592,6 +592,12 @@ void wxDrawingWindow::DrawAxes(  )
 
 }
 
+inline double InterpolateAlpha( const double& a1,  const double& a2)
+{
+  return (a1*a1+a2*a2)/(a1+a2);
+}
+
+
 inline wxColour InterpolateColour( const wxColour& c1, const double& w1, 
                             const wxColour& c2, const double& w2)
 {
@@ -602,6 +608,11 @@ inline wxColour InterpolateColour( const wxColour& c1, const double& w1,
                     (unsigned char) ((w1*c1.Blue() +w2*c2.Blue() )/sum)  );
 }
 
+//------------------------------------------------
+// LinearColorMap wxDrawingWindow::GetLinearCM()
+// {
+//   return _linearCM;
+// }
 
 //------------------------------------------------
 void wxDrawingWindow::DrawLinearCM(  )
@@ -632,7 +643,7 @@ void wxDrawingWindow::DrawLinearCM(  )
     for(int i = 0; i<(int) points->size(); i++) 
     {  
 //||((*points)[i].GetType() == colormap_point))
-        _linearCM.AddPoint(LinearColorMapPoint((*points)[i].GetX(),
+        _linearCM.AddPoint(LinearColorMapPoint((*points)[i].GetX(),(*points)[i].GetY(),
                                               (*points)[i].GetColour()));
     }
   }
@@ -641,6 +652,7 @@ void wxDrawingWindow::DrawLinearCM(  )
   //std::cout<< "cm_size = " << cm_size << std::endl;
   std::vector<wxColour> left_colours(cm_size,*wxBLACK);
   std::vector<wxColour> right_colours(cm_size,*wxBLACK);
+  std::vector<double> alphas(cm_size,0.0); //Alpha
   std::vector<double> weights(cm_size,0.0);
   for(int c=0; c<(int) _controlled_curves->size();c++)
   {
@@ -693,6 +705,10 @@ void wxDrawingWindow::DrawLinearCM(  )
               InterpolateColour(current_colour,current_weight,
                                 right_colours[cmpt_id], weights[cmpt_id]);
           //std::cout<< "right_colour = " << right_colours[cmpt_id].GetAsString().ToAscii() << std::endl;
+          
+          alphas[cmpt_id] =InterpolateAlpha(
+              InterpolateAlpha(w1,w2),alphas[cmpt_id]);
+              
           weights[cmpt_id] += current_weight;
 
           cmpt_id++;
@@ -709,6 +725,7 @@ void wxDrawingWindow::DrawLinearCM(  )
   {
     _linearCM.GetPoint(c).SetLeftColour (left_colours [c]);
     _linearCM.GetPoint(c).SetRightColour(right_colours[c]);
+    _linearCM.GetPoint(c).SetAlpha      (alphas[c]);
   }
   
   // the points are already sorted
@@ -1269,7 +1286,6 @@ void wxDrawingWindow::OnColormapControlledCurve(wxCommandEvent& event)
     _focus_controlledcurve->SetType(colormap_curve);
   else
     _focus_controlledcurve->SetType(normal_curve);
-
   Refresh(false);
 }
 

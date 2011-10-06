@@ -6,6 +6,7 @@ vtkAbstractTransform
 vtkAbstractVolumeMapper
 vtkActorCollection
 vtkActor
+vtkActor2D
 vtkAlgorithm
 vtkAlgorithmOutput
 vtkAmiCommand
@@ -26,6 +27,7 @@ vtkColorTransferFunction
 vtkCommand
 vtkContextScene
 vtkContextView
+vtkCoordinate
 vtkDataArray
 vtkDataObject
 vtkDataSet
@@ -92,6 +94,8 @@ vtkScalarsToColors
 vtkSphereSource
 vtkStdString
 vtkTable
+vtkTextMapper
+vtkTextProperty
 vtkTexture
 vtkTexturedSphereSource
 vtkTimeStamp

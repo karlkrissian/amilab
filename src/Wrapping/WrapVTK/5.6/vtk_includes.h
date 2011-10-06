@@ -2,6 +2,7 @@
 //#include <vtkGPURayCasting.h>
 #include <vtkAlgorithm.h>
 #include <vtkAlgorithmOutput.h>
+#include <vtkActor2D.h>
 #include "vtkAmiCommand.h"
 #include <vtkAnnotatedCubeActor.h>
 #include <vtkAxis.h>
@@ -18,6 +19,7 @@
 #include <vtkContextScene.h>
 #include <vtkContextView.h>
 #include <vtkColorTransferFunction.h>
+#include <vtkCoordinate.h>
 #include <vtkDirectory.h>
 #include <vtkFieldData.h>
 #include <vtkFixedPointVolumeRayCastMapper.h>
@@ -56,6 +58,7 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSphereSource.h>
+#include <vtkTextProperty.h>
 #include <vtkUnstructuredGridVolumeRayCastMapper.h>
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
@@ -65,6 +68,7 @@
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkProperty.h>
 #include <vtkTable.h>
+#include <vtkTextMapper.h>
 #include <vtkTexture.h>
 #include <vtkTexturedSphereSource.h>
 #include <vtkTransform.h>

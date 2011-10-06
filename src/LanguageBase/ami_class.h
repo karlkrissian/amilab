@@ -35,6 +35,7 @@
 #include <boost/shared_ptr.hpp>
 #include "DefineClass.hpp"
 #include "AmiInstructionBlock.h"
+#include <vector>
 
 using namespace boost;
 
@@ -46,9 +47,9 @@ class LanguageBase_EXPORT AMIClass {
 
 private:
   AmiInstructionBlock::ptr   _body;
-  std::string               _name;
-  std::string               _filename;
-  AMIClass::ptr             _parent_class;
+  std::string                _name;
+  std::string                _filename;
+  std::vector<AMIClass::ptr> _parent_classes;
 
  public:
 
@@ -62,8 +63,12 @@ private:
     {
     }
 
-  void Inherit(const AMIClass::ptr& parent) { _parent_class = parent; }
-  AMIClass::ptr GetParentClass() { return _parent_class; }
+  void Inherit(const std::vector<AMIClass::ptr>& parents) { _parent_classes = parents; }
+  
+  std::vector<AMIClass::ptr> GetParentClasses() { return _parent_classes; }
+  int           GetNumberOfParentClasses() { return _parent_classes.size(); }
+  AMIClass::ptr GetParentClass(int i) { return _parent_classes[i]; }
+
 
   void SetName( const std::string& fname) { _name = fname; }
 
