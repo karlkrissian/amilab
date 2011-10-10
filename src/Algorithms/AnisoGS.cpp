@@ -1396,7 +1396,7 @@ float AnisoGS::Itere2D ( InrImage* im )
   float     divF;
 //    char      divFname[100];
 
-  unsigned char mask_test;
+  bool mask_test,attach_mask_val;
 
 
   if (contours_mode!=CONTOURS_GRAD)
@@ -1437,7 +1437,19 @@ float AnisoGS::Itere2D ( InrImage* im )
 
 
   val0 = *in;
-  mask_test = ( mask==NULL ) || ( ( mask!=NULL ) && ( ( *mask ) ( x,y,z ) >0.5 ) );
+  if ((x>=ROI_xmin)&&(x<=ROI_xmax)&&
+      (y>=ROI_ymin)&&(y<=ROI_ymax)&&
+      (z>=ROI_zmin)&&(z<=ROI_zmax)) 
+  {
+    mask_test = ( !mask.get() ) || 
+                ( ( mask.get() ) && 
+                  ( ( *mask ) ( x-ROI_xmin,y-ROI_ymin,z-ROI_zmin ) >0.5 ) );
+    attach_mask_val = ( !attach_mask.get() ) || 
+                ( ( attach_mask.get() ) && 
+                  ( ( *attach_mask ) ( x-ROI_xmin,y-ROI_ymin,z-ROI_zmin ) >0.5 ) );
+  }
+  else 
+    mask_test=1;
 
   if (x>0 && x<tx-1 && y>0 && y<ty-1) {
 
@@ -1570,9 +1582,13 @@ float AnisoGS::Itere2D ( InrImage* im )
         sum_divF += divF;
         nb_calculated_points++;
       }
-
-      val1    += this->beta* ( *image_entree ) ( x,y,z );
-      val1div += this->beta;
+if ((x==ROI_xmin+354)&&(y==ROI_ymin+121)) {
+  std::cout << "testing" << std::endl;
+}
+      if (attach_mask_val) {
+        val1    += this->beta* ( *image_entree ) ( x,y,z );
+        val1div += this->beta;
+      }
 
       switch ( contours_mode )
       {
@@ -2572,6 +2588,8 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
     std::string  divFname;
 
     unsigned char mask_test;
+    bool attach_mask;
+    
 //    double    phi0_value=0;
     double    lambda0=0,lambda1=0,lambda2=0;
     double    sigma2=0.0; // variance of the noise
@@ -2630,11 +2648,11 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
 
   for(z=ROI_zmin;z<=ROI_zmax;z++) {
     if ( z==ROI_zmin ) {
-      printf("z = %3d",z);
+      printf("z = %3d",z-ROI_zmin);
       fflush(stdout);
     } else { 
       printf("\b\b\b");
-      printf("%3d",z);
+      printf("%3d",z-ROI_zmin);
       fflush(stdout);
     } // end if
 
@@ -2655,7 +2673,8 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
   for(x=ROI_xmin;x<=ROI_xmax;x++) {
   
     val1 = val0 = *in;
-    mask_test = (mask==NULL)||((mask!=NULL)&&((*mask)(x,y,z)>0.5));
+    
+    mask_test = (!mask.get())||((mask.get())&&((*mask)(x-ROI_xmin,y-ROI_ymin,z-ROI_zmin)>0.5));
     xp=1;
     xm=-1;
     incx=1;
@@ -3332,7 +3351,8 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
   for(x=ROI_xmin;x<=ROI_xmax;x++) {
   
     val1 = val0 = *in;
-    mask_test = (mask==NULL)||((mask!=NULL)&&((*mask)(x,y,z)>0.5));
+    mask_test = (!mask.get())||
+                ((mask.get())&&((*mask)(x-ROI_xmin,y-ROI_ymin,z-ROI_zmin)>0.5));
     xp=1;
     xm=-1;
     incx=1;
@@ -3939,7 +3959,14 @@ int xp,xm,yp,ym,zp,zm;
   for(x=0;x<=tx-1;x++) {
   
     val1 = val0 = *in;
-    mask_test = (mask==NULL)||((mask!=NULL)&&((*mask)(x,y,z)>0.5));
+    if ((x>=ROI_xmin)&&(x<=ROI_xmax)&&
+        (y>=ROI_ymin)&&(y<=ROI_ymax)&&
+        (z>=ROI_zmin)&&(z<=ROI_zmax))
+      mask_test = ( !mask.get() ) || 
+                  ( ( mask.get() ) && 
+                    ( ( *mask ) ( x-ROI_xmin,y-ROI_ymin,z-ROI_zmin ) >0.5 ) );
+    else 
+      mask_test=1;
 
     if ( x>0 && x<tx-1 && y>0 && y<ty-1 && z>0 && z<tz-1 && fabs(*in)<4-1E-3
     ) {
@@ -4170,7 +4197,14 @@ double maxerr=0.5;
   for(x=0;x<=tx-1;x++) {
   
     val1 = val0 = *in;
-    mask_test = (mask==NULL)||((mask!=NULL)&&((*mask)(x,y,z)>0.5));
+    if ((x>=ROI_xmin)&&(x<=ROI_xmax)&&
+        (y>=ROI_ymin)&&(y<=ROI_ymax)&&
+        (z>=ROI_zmin)&&(z<=ROI_zmax))
+      mask_test = ( !mask.get() ) || 
+                  ( ( mask.get() ) && 
+                    ( ( *mask ) ( x-ROI_xmin,y-ROI_ymin,z-ROI_zmin ) >0.5 ) );
+    else 
+      mask_test=1;
 
     if ( x>0 && x<tx-1 && y>0 && y<ty-1 && z>0 && z<tz-1 
     // && fabs(*in)<4-1E-3
@@ -4932,34 +4966,45 @@ void AnisoGS::Init(InrImage* in,
   // Creates input image extending boundaries
   this->input_image = in;
 
-  switch (local_structure_mode) {
-   case LOCAL_STRUCT_CURV:
-   case LOCAL_STRUCT_TENSOR:
-     this->CreateBoundariesVonNeumann(in);
-     this->ROI_xmin = this->boundary_extension_size;
-     this->ROI_ymin = this->boundary_extension_size;
-     this->ROI_zmin = this->boundary_extension_size;
-     this->ROI_xmax = image_entree->DimX()-1-boundary_extension_size;
-     this->ROI_ymax = image_entree->DimY()-1-boundary_extension_size;
-     this->ROI_zmax = image_entree->DimZ()-1-boundary_extension_size;
-   break;
-/*
-   case LOCAL_STRUCT_CURV:
-    printf("LOCAL_STRUCT_CURV \n");
-    image_entree = new InrImage( WT_FLOAT, "image_reel.inr.gz", in);
-    image_entree_allouee=true;
-    (*image_entree) = (*in);
-    this->boundary_extension_size=0;
-     this->ROI_xmin = this->boundary_extension_size;
-     this->ROI_ymin = this->boundary_extension_size;
-     this->ROI_zmin = this->boundary_extension_size;
-     this->ROI_xmax = image_entree->DimX()-1-boundary_extension_size;
-     this->ROI_ymax = image_entree->DimY()-1-boundary_extension_size;
-     this->ROI_zmax = image_entree->DimZ()-1-boundary_extension_size;
-   break;
-*/
-  }
-
+  this->ROI_xmin = 0;
+  this->ROI_ymin = 0;
+  this->ROI_zmin = 0;
+  this->ROI_xmax = input_image->DimX()-1;
+  this->ROI_ymax = input_image->DimY()-1;
+  this->ROI_zmax = input_image->DimZ()-1;
+//  if  ((mode != MODE_2D)&&(image_resultat->DimZ()>1)&&(!DistanceMap))
+//  {
+    switch (local_structure_mode) {
+    case LOCAL_STRUCT_CURV:
+    case LOCAL_STRUCT_TENSOR:
+      this->CreateBoundariesVonNeumann(in);
+      this->ROI_xmin = this->boundary_extension_size;
+      this->ROI_ymin = this->boundary_extension_size;
+      this->ROI_xmax = image_entree->DimX()-1-boundary_extension_size;
+      this->ROI_ymax = image_entree->DimY()-1-boundary_extension_size;
+      if  ((mode != MODE_2D)&&(image_resultat->DimZ()>1)) {
+        this->ROI_zmin = this->boundary_extension_size;
+        this->ROI_zmax = image_entree->DimZ()-1-boundary_extension_size;
+      }
+    break;
+  /*
+    case LOCAL_STRUCT_CURV:
+      printf("LOCAL_STRUCT_CURV \n");
+      image_entree = new InrImage( WT_FLOAT, "image_reel.inr.gz", in);
+      image_entree_allouee=true;
+      (*image_entree) = (*in);
+      this->boundary_extension_size=0;
+      this->ROI_xmin = this->boundary_extension_size;
+      this->ROI_ymin = this->boundary_extension_size;
+      this->ROI_zmin = this->boundary_extension_size;
+      this->ROI_xmax = image_entree->DimX()-1-boundary_extension_size;
+      this->ROI_ymax = image_entree->DimY()-1-boundary_extension_size;
+      this->ROI_zmax = image_entree->DimZ()-1-boundary_extension_size;
+    break;
+  */
+    }
+//  }
+  
   this->image_lissee = new InrImage( WT_FLOAT, "image_lissee.inr.gz", image_entree);
 
   if ( use_filtre_rec ) {

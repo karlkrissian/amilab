@@ -172,6 +172,10 @@ class AnisoGS {
 
   /// mask image
   AddSetGetVar( mask, InrImage::ptr)
+
+  /// attachment mask image: only apply attachment term to pixel with mask
+  /// value > 0.5
+  AddSetGetVar( attach_mask, InrImage::ptr)
  
   InrImage* divFim        ;
 
