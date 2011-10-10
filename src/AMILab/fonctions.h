@@ -57,8 +57,6 @@
 #include "VectorImage2StructuredGrid.h"
 #include "InterpolateTransform.h"
 #include "Resize.hpp"
-
-#include "StructureTensor.h"
 #include "Curvatures.h"
 
 #include "Chamfer.h"

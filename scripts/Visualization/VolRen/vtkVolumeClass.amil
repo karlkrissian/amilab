@@ -294,14 +294,14 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::BlendLinearCurve1() \
     {
-      printn "BlendLinearCurve1"
+      #printn "BlendLinearCurve1"
       if (!exists(::imhisto1->h)) {
         ::UpdateHistogram()
       }
       if (exists(::imhisto1->h)) {
         curves = ::imhisto1.dw.GetControlledCurves()
         numcurves = curves.size()
-                    printn "************NUmero de curvas %1%" %numcurves
+        # printn "************NUmero de curvas %1%" %numcurves
         if (!exists(::linearcurve1_id)) {
           printn "--"
           ::linearcurve1_id   = numcurves
@@ -311,8 +311,8 @@ if (!exists(vtkVolumeClass)) {
         # Create colors based on the curve
         hmax = max(::imhisto1.h[0])
         nc=0
-//carlos
-        //for nc=0 to curves.size()-1 {  #draw curve(s)
+        #carlos
+        #for nc=0 to curves.size()-1 {  #draw curve(s)
           ctrlpoints = curves[nc].GetControlPoints()
           for n=0 to ctrlpoints.size()-1 {
 
@@ -328,14 +328,14 @@ if (!exists(vtkVolumeClass)) {
             y = -max(-y,-1)
             ::opacityFun.AddPoint(  cp.GetX(), y , \
                                     cp.Getmidpoint(), cp.Getsharpness())
-          printn "point number %1%" %n
-          printn "Getmidpoint %1%" %cp.Getmidpoint()
-          printn "Getsharpness %1%" %cp.Getsharpness()
+            #printn "point number %1%" %n
+            #printn "Getmidpoint %1%" %cp.Getmidpoint()
+            #printn "Getsharpness %1%" %cp.Getsharpness()
           }
 
           #x = cp.GetX()
           #printn " (%1%, " % x + " %1%)" % y
-        //}
+        #}
 
         #for n=0 to ::imhisto1.dw.GetSizelinearCM()-1 {
           #y =  ::opacity_attenuation/hmax*::imhisto1.dw.GetAlphalinearCM()

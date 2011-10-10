@@ -126,6 +126,9 @@ target_link_libraries(LanguageBase
   ${Boost_LIBRARIES}
 )
 
+IF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)
+  SET_TARGET_PROPERTIES(LanguageBase PROPERTIES COMPILE_FLAGS -fPIC)
+ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)
 
 #add_dependencies ( LanguageBase
 #  WrapWxWidgets 

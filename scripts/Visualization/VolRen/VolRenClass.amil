@@ -20,8 +20,10 @@ if (!exists(VolRenClass)) {
     ::previewerclass=&PreviewerClass
 
     func "vtkVolumeClass.amil"
-
     func "Visualization/ImageHistogram/ImageHistogramClass.amil"
+
+    func "VTKControls/vtkCamera/vtkCameraClass"
+    vtkCameraClass ::vtk_camera_gui
 
     # volume(s)
     ::vtkvol = &vtkVolumeClass 
@@ -42,7 +44,7 @@ if (!exists(VolRenClass)) {
       ::azimuthAnt    = INT(0), "Rotate camera angle along vertical axis (in degrees)"
       ::elevationAnt  = INT(0), "Rotate camera angle along horizontal axis (in degrees)"
       ::zoomAnt       = 0
-      ::volrenmapper_type = INT(0), "Choose volume rendering mapper type, 0: GPU 1: Fixed Point 2: Standard"
+      ::volrenmapper_type = INT(0), "Choose volume rendering mapper type, 0: GPU 1: Fixed Point 2: Standard 3: AMILab type"
       ::hist_mode = 0
       ::volVector = VarVector()
       ::volPageVector = VarVector()
@@ -351,13 +353,17 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
     }
 
     #----------------------------
+    proc ::CameraCallback() \
+    {
+      ::renwin_interact.Render()
+    }
+
+    #----------------------------
     proc ::StartNew() \
     {
       if (::resizevol1==0){
         ::load_input()
       }
-
-
       ::azimuthAnt=0
       ::elevationAnt=0
       ::zoomAnt=0
@@ -368,14 +374,17 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
      ::resizevol1=0
       if (exists(::input)){
         if (::volVector[0].initialized==0){
-
           ::renwin_interact.Initialize()
           ::volVector[0].InitManager(&::renwin_interact)
-
         }
         ::volVector[0].DelVTK()
         ::volVector[0].SetVolRenMapper(::volrenmapper_type)
         ::volVector[0].CreateVTK( &::input)
+        if (::volrenmapper_type!=::volVector[0].volrenmapper_type) {
+          ::volrenmapper_type=::volVector[0].volrenmapper_type
+          ::win.Update(::volrentype_id)
+        }
+
         ::SetRendererBg()
         ::volVector[0].OnRender()
         ::volVector[0].InitRenderer()
@@ -387,6 +396,10 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
         ::ShowHistogram()
         ::hist_mode = 0
         ::volVector[0].OnCtrlPoint()
+
+        # TODO: fix the dependency of the renderer for the volVector[0] ...
+        ::vtk_camera_gui.SetCamera(&::volVector[0].camera)
+        ::vtk_camera_gui.SetCallback(&::CameraCallback)
       }
     }
     Comments(::StartNew,"Starts rendering of first volume.")
@@ -394,7 +407,8 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
     #----------------------------
     proc ::EnableGPUmode(NUM x) {
       ::win.EnablePanel(::volVector[x].GPU_page,0)
-      if (::volrenmapper_type==0){
+      if  (::volVector[x].volrenmapper_type==0)||\
+          (::volVector[x].volrenmapper_type==3) {
         mem = ::volVector[x].volmapper.GetMaxMemoryFraction()
         ::volVector[x].maxmemoryfraction=mem
         ::volVector[x].OnTextureMemory()
@@ -585,6 +599,7 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
       ::ChangeViewA()
       ::ChangeViewE()
       ::ChangeViewZ()
+      ::renwin_interact.Render()
     }
     Comments(::ChangeView,"Applies the user-given transformation to the camera.")
     #----------------------------
@@ -593,7 +608,6 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
       ::volVector[0].Azimuth(0-::azimuthAnt)
       ::azimuthAnt=::azimuth
       ::volVector[0].Azimuth(::azimuth)
-      ::renwin_interact.Render()
     }
     Comments(::ChangeView,"Applies the user-given transformation to the camera (azimut).")
     #----------------------------
@@ -602,8 +616,6 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
       ::volVector[0].Elevation(0-::elevationAnt)
       ::elevationAnt=::elevation
       ::volVector[0].Elevation(::elevation)
-      ::renwin_interact.Render()
-
     }
     Comments(::ChangeViewE,"Applies the user-given transformation to the camera (elevation).")
     #----------------------------
@@ -613,8 +625,6 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
       ::volVector[0].Zoom(exp(::zoomAnt*ln(2)))
       ::zoomAnt=::zoom*-1
       ::volVector[0].Zoom(exp(::zoom*ln(2)))
-      ::renwin_interact.Render()
-
     }
     Comments(::ChangeViewE,"Applies the user-given transformation to the camera (elevation).")
     #----------------------------
@@ -725,6 +735,7 @@ event.Skip()
         ::win.AddEnumChoice(::volrentype_id,"GPU mapper")
         ::win.AddEnumChoice(::volrentype_id,"FixedPoint mapper")
         ::win.AddEnumChoice(::volrentype_id,"Standard mapper")
+        ::win.AddEnumChoice(::volrentype_id,"AMILab GPU mapper (if available)")
 
 
       ::win.BeginBook()
@@ -801,18 +812,20 @@ event.Skip()
 
           ::win.EndBoxPanel()
           
-          ::win.BeginBoxPanel("Camera control")
-            ::win.AddInt(&::azimuth,"azimuth",-180,180)
-            //::win.SetCallback( &::ChangeView)
-            ::win.AddInt(&::elevation,"elevation",-180,180)
-            ::win.AddFloat(&::zoom,"zoom",-5,5)
-            //::win.SetCallback( &::ChangeViewE)
+          ::vtk_camera_gui.AddGui(&::win)
+          #::win.BeginBoxPanel("Camera control")
+            #::win.AddInt(&::azimuth,"azimuth",-180,180)
+            #::win.SetCallback( &::ChangeView)
+            #::win.AddInt(&::elevation,"elevation",-180,180)
+            #::win.SetCallback( &::ChangeView)
+            #::win.AddFloat(&::zoom,"zoom",-5,5)
+            #::win.SetCallback( &::ChangeView)
    
-            ::win.BeginHorizontal()
-              ::win.AddButton("Apply",&::ChangeView)
-              ::win.AddButton("Reset",&::ResetView)
-            ::win.EndHorizontal()
-          ::win.EndBoxPanel()
+            #::win.BeginHorizontal()
+              #::win.AddButton("Apply",&::ChangeView)
+              #::win.AddButton("Reset",&::ResetView)
+            #::win.EndHorizontal()
+          #::win.EndBoxPanel()
       ::win.EndBook()
       ::AddStandardButtons(&::win)
       

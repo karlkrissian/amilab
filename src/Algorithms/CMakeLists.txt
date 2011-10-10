@@ -45,6 +45,7 @@ SET(Algorithms_SRCS
   RegionGrowingTest.cpp
 
   ComputePartialVolume.cpp
+  StructureTensor.cpp
 
   # files coming from previous Filtering directory
   bruit.cpp
@@ -100,6 +101,7 @@ SET(Algorithms_HDRS
   include/RegionGrowingTest.h
 
   include/ComputePartialVolume.h
+  include/StructureTensor.h
 
   # files coming from previous Filtering directory
   include/bruit.hpp

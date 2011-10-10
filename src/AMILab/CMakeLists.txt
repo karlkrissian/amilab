@@ -52,7 +52,6 @@ SET(AMILab_SRCS
     Skeleton2lines.cpp
     SmoothLines.cpp
     SmoothLinesToSplines.cpp
-    StructureTensor.cpp
     Thinning.cpp
     VectorImage2StructuredGrid.cpp
     Weickert.cpp
@@ -86,7 +85,6 @@ SET (AMILab_HDRS
 	messages.h
 	myscan.h
 	Rudin.h
-	StructureTensor.h
 	token_list.h
 	VectorImage2StructuredGrid.h
 	dif_param.hpp

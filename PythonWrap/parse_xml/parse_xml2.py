@@ -321,6 +321,8 @@ if __name__ == '__main__':
                 #print classes_dict[anc_id] not in config.classes_blacklist
                 if  classes_dict[anc_id] not in ancestors and  \
                     classes_dict[anc_id] not in config.classes_blacklist and\
+                    (classes_dict[anc_id] not in args.val.available_external_classes) and \
+                    (classes_dict[anc_id] not in config.available_builtin_classes) and\
                     ( (not wrap_class.IsTemplate(classes_dict[anc_id])) \
                       or args.val.templates ):
                   m = re.match(args.val.filter, classes_dict[anc_id])
@@ -384,7 +386,15 @@ if __name__ == '__main__':
     #WrapMethodTypePointer("wxCommandEventFunction",include_file)
     #WrapMethodTypePointer("wxObjectEventFunction",include_file)
     
-    config.needed_classes = args.val.classes
+    config.needed_classes = []
+    
+    #if the needed class is already available, don't wrap it
+    for cl in args.val.classes:
+      if  (cl not in args.val.available_external_classes) and \
+          (cl not in config.available_builtin_classes):
+        config.needed_classes.append(cl)
+        #print "Adding class {0}".format(cl)
+    
     # in case of update option, add all the classes found in the files
     # and that match the library filter
     if args.val.update:

@@ -52,6 +52,7 @@
 
 #include "CoutwxString.h"
 #include "fonctions.h"
+#include "StructureTensor.h"
 #include "func_isoline.hpp"
 
 #include "ami_function.h"
@@ -848,12 +849,13 @@ loop_inst :
 
       int_ptr varint(new int);
       Vars.AddVar<int>(ident,varint);
-      bool goon=true;
+      //bool goon=true;
 
       for(*varint = (int) $4; *varint <= (int) $6; (*varint)++)
         {
           driver.yyiplineno = block->GetStartingLine();
-          goon=driver.parse_block(block);
+          //goon=
+          driver.parse_block(block);
         }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
@@ -3378,7 +3380,7 @@ command:
           // TODO: wrap HessianMatrix and get rid of this conflict ...
           if (param3.get()) {
             if (param3->IsNumeric())  {
-              gamma = param3->GetValueAsDouble();
+              gamma =  param3->GetValueAsDouble();
             } else {
               if (param3->Type()==type_image)  {
                 DYNAMIC_CAST_VARIABLE(InrImage,param3,maskvar) 
@@ -6350,7 +6352,7 @@ image:
       // 5: number of iterations
       //
       int        nb_iter,i;
-      float       error;
+      float      error;
 
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -6405,11 +6407,11 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
 
     }
-        |
-        AnisoSmoothGS
-        T_OP_PAR var_image
-        T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    |
+    AnisoSmoothGS
+    T_OP_PAR var_image
+    T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       int        nb_iter,i;
       float       error;
 

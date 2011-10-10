@@ -147,22 +147,22 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
   IF(GENERATE_HTML_HELP)
-    MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q")
-    EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q
-      OUTPUT_VARIABLE ancestors_result
-      ERROR_VARIABLE ancestors_error
-    )
+    SET(GENERATE_HTML_OPTIONS "--generate-html" "--url" "${CLASSES_URL_LIST}" "--outputhtmldir" "${HTML_DIR}")
   ELSE(GENERATE_HTML_HELP)
-    MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" --ancestors-file ${ANCESTORS_FILE} -q")
-    EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" --ancestors-file ${ANCESTORS_FILE} -q
-      OUTPUT_VARIABLE ancestors_result
-      ERROR_VARIABLE ancestors_error
-    )
+    SET(GENERATE_HTML_OPTIONS "")
   ENDIF(GENERATE_HTML_HELP)
+
+  MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE}  ${GENERATE_HTML_OPTIONS} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q")
+  EXECUTE_PROCESS(
+    COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} ${GENERATE_HTML_OPTIONS} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q
+    OUTPUT_VARIABLE ancestors_result
+    ERROR_VARIABLE ancestors_error
+  )
   MESSAGE(" ancestors_result = ${ancestors_result} ")
   MESSAGE(" ancestors_error = ${ancestors_error} ")
+    IF(GENERATE_HTML_HELP)
+      SET(GENERATE_HTML_CMD "--generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR}")
+    ENDIF(GENERATE_HTMLHELP)
 
   FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
@@ -197,55 +197,31 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
   MESSAGE(" NB_MISSING_CLASSES=${NB_MISSING_CLASSES}")
   MESSAGE(" WrapAlgorithms_OUTDIR = ${WrapAlgorithms_OUTDIR} ")
   MESSAGE(" GENERATE_HTML_HELP = ${GENERATE_HTML_HELP}")
+
   IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
       (NOT EXISTS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h) OR
       (NOT EXISTS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp))
     # Go for python wrapping
-    IF(GENERATE_HTML_HELP)
-      ADD_CUSTOM_COMMAND(
-        OUTPUT  ${OUTPUT_LIST} ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp
-        COMMAND
-          ${PYTHON_EXECUTABLE}
-            ${AMI_WRAPPER} ${XML_OUTPUT}
-  #          --filter "*"
-            --libname algorithms
-            --classes ${MISSING_CLASSES}
-            --available_classes ${ancestors_list} 
-            --available_external_classes ${vtk_ancestors_list}
-            --outputdir "${WrapAlgorithms_OUTDIR}"
-            --templates
-            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-            --addwrap
-            --profile
-            --generate-html             #flag to generate html help
-            --url ${CLASSES_URL_LIST}   #base URL html help
-            --outputhtmldir ${HTML_DIR} #HTML directory
-            -q
-          #DEPENDS
-          #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
-          VERBATIM
+    ADD_CUSTOM_COMMAND(
+      OUTPUT  ${OUTPUT_LIST} ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp
+      COMMAND
+        ${PYTHON_EXECUTABLE}
+          ${AMI_WRAPPER} ${XML_OUTPUT}
+          # --filter "*"
+          --libname algorithms
+          --classes ${MISSING_CLASSES}
+          --available_classes ${ancestors_list} 
+          --available_external_classes ${vtk_ancestors_list}
+          --outputdir "${WrapAlgorithms_OUTDIR}"
+          --templates
+          --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+          --addwrap
+          --profile
+          ${GENERATE_HTML_OPTIONS}
+          -q
+          # DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/classes.txt
+        VERBATIM
       )
-    ELSE(GENERATE_HTML_HELP)
-      ADD_CUSTOM_COMMAND(
-        OUTPUT  ${OUTPUT_LIST} ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp
-        COMMAND
-          ${PYTHON_EXECUTABLE}
-            ${AMI_WRAPPER} ${XML_OUTPUT}
-  #          --filter "*"
-            --libname algorithms
-            --classes ${MISSING_CLASSES}
-            --available_classes ${ancestors_list} 
-            --available_external_classes ${vtk_ancestors_list}
-            --outputdir "${WrapAlgorithms_OUTDIR}"
-            --templates
-            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-            --addwrap
-            --profile
-            -q
-  #         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/classes.txt
-          VERBATIM
-        )
-    ENDIF(GENERATE_HTML_HELP)
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
       (NOT EXISTS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.h) OR
       (NOT EXISTS ${WrapAlgorithms_OUTDIR}/addwrap_algorithms.cpp))

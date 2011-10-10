@@ -409,7 +409,7 @@ printn "xmax = %1%" % xmax
           curve = ::dw.GetControlledCurves()[i].copy()
           if (exists(points)) { del points; }
           points = curve.GetControlPoints()
-          printn "nb points %1% " % points.size()
+          #printn "nb points %1% " % points.size()
           for k=0 to points.size()-1 {
             if (exists(cp)) { del cp; }
             cp = points[k].copy()

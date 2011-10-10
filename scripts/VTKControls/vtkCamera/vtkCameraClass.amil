@@ -1,0 +1,126 @@
+
+#
+# This class is designed to control the parameters of a vtkCamera
+#
+
+Class vtkCameraClass \
+{
+  # initialize the parameters
+  proc ::Init() {
+    ::azimuth   = 0, "azimuth rotation in degrees"
+    ::elevation = 0, "elevation in degrees"
+    ::zoom      = 0, "logarithm zoom scale, zoom factor is 2^z"
+    ::parallel_projection = UCHAR(1), "Parallel/Perspective projection"
+  }
+
+  proc ::SetCallback( VAR cb) {
+    ::callback = &cb
+  }
+
+  proc ::ResetParams() {
+    ::azimuth   = 0
+    ::elevation = 0
+    ::zoom      = 0
+    ::win.Update(::azimuth_id)
+    ::win.Update(::elevation_id)
+    ::win.Update(::zoom_id)
+  }
+
+  proc ::SetCurrent() {
+    ::last_cam.DeepCopy(&::vtkcam)
+    ::ResetParams()
+    ::ChangeView()
+  }
+
+  proc ::SetInitial() {
+    ::last_cam.DeepCopy(&::init_cam)
+    ::ResetParams()
+    ::ChangeView()
+  }
+
+  proc ::ResetView( ) {
+    ::vtkcam.DeepCopy(&::last_cam)
+  }
+
+  proc ::ChangeView( ) {
+    if (exists(::vtkcam)) {
+      ::ResetView()
+      ::vtkcam.Azimuth(   ::azimuth)
+      ::vtkcam.Elevation( ::elevation)
+      ::vtkcam.Zoom(      exp(ln(2)*::zoom))
+      ::vtkcam.SetParallelProjection(::parallel_projection)
+      if (exists(::callback)) {
+        ::callback()
+      }
+    }
+  }
+
+  proc ::ChangeProjection( ) {
+    ::SetCurrent()
+    ::ChangeView()
+  }
+
+  proc ::SetCamera( OBJECT obj) {
+    if obj.IsA("vtkCamera") {
+      ::vtkcam = &obj
+    } else {
+      if obj.IsA("vtkRenderer") {
+        ::vtkcam = obj.GetActiveCamera()
+      } else {
+        InfoDialog "vtkCameraClass.SetCamera(obj): wrong object type"
+      }
+    }
+
+    ::init_cam = vtk.vtkCamera.New()
+    ::init_cam.DeepCopy(&::vtkcam)
+    ::last_cam = vtk.vtkCamera.New()
+    ::last_cam.DeepCopy(&::vtkcam)
+    # get the camera parameters: position, focal point and view up vector
+    # position
+    ::position = vector_double(3)
+    ::vtkcam.GetPosition(&::position[0])
+    printn "Position "+ \
+            "%1%, " % ::position[0] +\
+            "%1%, " % ::position[1] +\
+            "%1% "  % ::position[2] 
+    # focal point
+    ::focalpoint = vector_double(3)
+    ::vtkcam.GetFocalPoint(&::focalpoint[0])
+    printn "Focal Point "+ \
+            "%1%, " % ::focalpoint[0] +\
+            "%1%, " % ::focalpoint[1] +\
+            "%1% "  % ::focalpoint[2] 
+    # view up
+    ::viewup = vector_double(3)
+    ::vtkcam.GetViewUp(&::viewup[0])
+    printn "View up "+ \
+            "%1%, " % ::viewup[0] +\
+            "%1%, " % ::viewup[1] +\
+            "%1% "  % ::viewup[2] 
+  }
+
+  # create the gui on a ParamPanel
+  proc ::AddGui( OBJECT win) \
+  {
+    ::win = &win
+    win.BeginBoxPanel("Camera control")
+      ::azimuth_id   = win.AddFloat(&::azimuth,"azimuth",-180,180)
+      win.SetCallback( &::ChangeView)
+      ::elevation_id = win.AddFloat(&::elevation,"elevation",-89.9,89.9)
+      win.SetCallback( &::ChangeView)
+      ::zoom_id      = win.AddFloat(&::zoom,"zoom",-5,5)
+      win.SetCallback( &::ChangeView)
+      ::parallel_projection_id  = win.AddBoolean(&::parallel_projection,\
+                                    "parallel projection")
+      win.SetCallback( &::ChangeProjection)
+
+      win.BeginHorizontal()
+        win.AddButton("Apply",&::ChangeView)
+        win.AddButton("Set Current",&::SetCurrent)
+        win.AddButton("Set Initial",&::SetInitial)
+      win.EndHorizontal()
+    win.EndBoxPanel()
+  }
+
+  ::Init()
+}

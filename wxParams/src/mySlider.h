@@ -49,7 +49,7 @@ class mySlider: public wxSlider
   {
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
-	event.Skip();
+    event.Skip();
   }
 
   void SetDragCallback(bool dcb)
@@ -63,7 +63,7 @@ class mySlider: public wxSlider
       void (*cbf)( void*) = (void (*)(void*)) this->_callback;
       cbf(this->_calldata);
     }
-	event.Skip();
+    event.Skip();
   }
   
 

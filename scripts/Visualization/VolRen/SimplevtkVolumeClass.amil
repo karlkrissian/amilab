@@ -81,7 +81,7 @@ if (!exists(SimplevtkVolumeClass)) {
       ::renwininter = &inter
     }
     #----------------------------
-    proc ::cpManager(OBJECT volume ){
+    proc ::cpManager(OBJECT volume ) {
       #::renwininter = &volume.renwininter
       #::renderer = &volume.renderer
       #::camera=&volume.camera 
@@ -92,11 +92,11 @@ if (!exists(SimplevtkVolumeClass)) {
         ::SetRenderWindow(&volume.renwin)
     }
     #----------------------------
-     proc ::InitCamera(){
+     proc ::InitCamera() {
       ::camera=::renderer.GetActiveCamera()
-      ::camera.SetViewUp(0,0,1) //change orientation
-      //::camera.SetParallelProjection(true)
-      //::camera.SetPosition(0,-100,0)
+      ::camera.SetViewUp(0,0,1) # change orientation
+      #::camera.SetParallelProjection(true)
+      #::camera.SetPosition(0,-100,0)
     }
     #----------------------------
     #Initialize Iterator,Renderer, RendererWindow and variables
@@ -106,7 +106,7 @@ if (!exists(SimplevtkVolumeClass)) {
       #Init
       ::renwininter = &inter
       ::renderer = vtk.vtkRenderer.New()
-      ::renderer.ResetCamera()   // carlos
+      ::renderer.ResetCamera()   # carlos
       ::InitCamera()
 
       ::renwininter.GetRenderWindow().AddRenderer(&::renderer)
@@ -118,10 +118,9 @@ if (!exists(SimplevtkVolumeClass)) {
       ::renwin   = ::renwininter.GetRenderWindow()
       ::renwininter.SetRenderWindow(&::renwin)
       ::AddAnnotatedCube()
-        ::initialized = 1
-
-
+      ::initialized = 1
     }
+
     #----------------------------
     proc ::AddAnnotatedCube(){
       axesActor = vtk.vtkAnnotatedCubeActor.New()
@@ -235,14 +234,20 @@ if (!exists(SimplevtkVolumeClass)) {
         del ::volmapper
         #printn "VolMapper Mode = %1%" %::volrenmapper_type
 
-        if ::volrenmapper_type==0 {
-          ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
-
-        # Check if the rendering is supported
-        supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
-        #supported = 0
+        if (::volrenmapper_type==0)||(::volrenmapper_type==3) {
+          if  (::volrenmapper_type==3) && \
+              (exists(vtkAmiVolRen)) {
+            ::volmapper = vtkAmiVolRen.vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.New()
+          } else {
+            ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
+          }
+          # Check if the rendering is supported
+          supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
+          #supported = 0
           if (!supported) {
-            InfoDialog "vtkGPUVolumeRayCastMapper rendering is not supported, trying vtkVolumeRayCastMapper ..."
+            mess= "vtkGPUVolumeRayCastMapper rendering is not supported, trying vtkVolumeRayCastMapper ..."
+            printn mess
+            #InfoDialog mess
             del ::volmapper
             ::volrenmapper_type=2
           } 
@@ -290,12 +295,12 @@ if (!exists(SimplevtkVolumeClass)) {
         ::property.SetColor( &::colorFun )
         ::property.SetScalarOpacity( &::opacityFun )
 
-#funcion a tener en cuenta
-#volumeGradientOpacity = vtk.vtkPiecewiseFunction.New()
-#volumeGradientOpacity.AddPoint(0,   0.0)
-#volumeGradientOpacity.AddPoint(90,  0.5)
-#volumeGradientOpacity.AddPoint(100, 1.0)
-#::property.SetGradientOpacity(&volumeGradientOpacity)
+        #funcion a tener en cuenta
+        #volumeGradientOpacity = vtk.vtkPiecewiseFunction.New()
+        #volumeGradientOpacity.AddPoint(0,   0.0)
+        #volumeGradientOpacity.AddPoint(90,  0.5)
+        #volumeGradientOpacity.AddPoint(100, 1.0)
+        #::property.SetGradientOpacity(&volumeGradientOpacity)
 
         ::property.SetInterpolationTypeToLinear()
  
@@ -449,7 +454,8 @@ if (!exists(SimplevtkVolumeClass)) {
     {
       if (exists(::volmapper)) {
         if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
-            (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") \
+            (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") || \
+            (::volmapper.GetClassName()=="vtkAMILabOpenGLGPUMultiVolumeRayCastMapper") || 
         {
           # update volmapper GPU settings
           ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
