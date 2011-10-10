@@ -30,8 +30,8 @@ if (argc<1) {
   l_exact=(extension==".png") || (extension==".bmp")
 
   # read test
-  l_i0 = Image(image_name+extension)
-  l_i = Image(image_name+".ami.gz")
+  l_i0 = Image(l_script_dir+"/"+image_name+extension)
+  l_i = Image(l_script_dir+"/"+image_name+".ami.gz")
 
   if (l_i0.GetFormat == RGB.val)  {
     l_i <<= (RGB) l_i
@@ -57,8 +57,15 @@ if (argc<1) {
   printn "\t ******* "+extension+" Read Test Result:  %1%" % l_result
   resultRead = l_result
   
+  OutputFileName = wx.wxFileName()
+  OutputFileName.AssignTempFileName("tmp")
+  OutputFileName->SetName(image_name2)
+  OutputFileName.SetExt(wx.wxString(extension).AfterFirst("."))
+
+  printn "file is %1%" % wx.FromWxString(OutputFileName.GetFullPath())
+
   # write test
-  l_i.save l_script_dir+"/"+image_name2+extension
+  l_i.save  wx.FromWxString(OutputFileName.GetFullPath())
   l_j= Image(image_name2+extension)
   l_imd = (FLOAT) l_i - (FLOAT) l_j
   if (l_exact) {
@@ -80,6 +87,7 @@ if (argc<1) {
   printn "\t ******* "+extension+" Write Test Result:  %1%" % l_result
   resultWrite = (l_result)
 
+  # TODO: remove the created file: need ::wxRemoveFile function here ...
 
   ctest.PrintTestResult( resultRead && resultWrite ) 
 

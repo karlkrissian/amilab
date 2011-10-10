@@ -4095,8 +4095,8 @@ param_list_decl:
     | T_NUM IDENTIFIER
     {
       IdentifierInfo::ptr ident($2);
-     std::cout << "param_list_decl: T_NUM IDENTIFIER" << std::endl;
-     std::cout << ident->GetName().c_str() << std::endl;
+      //std::cout << "param_list_decl: T_NUM IDENTIFIER" << std::endl;
+      //std::cout << ident->GetName().c_str() << std::endl;
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_float);
       $$ = pl;

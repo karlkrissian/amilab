@@ -206,16 +206,16 @@ void wxEnumerationParameter::SetChoices( const boost::shared_ptr<wxArrayString>&
   // get the current selected name
   wxString currentselection = GetStringSelection();
   
-  std::cout << "wxEnumerationParameter::SetChoices"
-            << " Current Item: "
-            << currentselection << std::endl;
+//   std::cout << "wxEnumerationParameter::SetChoices"
+//             << " Current Item: "
+//             << currentselection << std::endl;
 
   this->_choice->Clear();
   for(int i=0;i<(int)choices->GetCount();i++) {
     this->_choice->Append((*choices)[i]);
-    std::cout << "wxEnumerationParameter::SetChoices"
+/*    std::cout << "wxEnumerationParameter::SetChoices"
               << " Added Item:"
-              << (*choices)[i] << std::endl;
+              << (*choices)[i] << std::endl;*/
   }
 
   if (!this->_choice->SetStringSelection(currentselection))
@@ -338,9 +338,9 @@ wxString wxEnumerationParameter::GetAbsoluteName(const wxString& Name)
         }
       }
   }
-  std::cout << "wxEnumerationParameter::GetAbsoluteName->Obtained name: "
+/*  std::cout << "wxEnumerationParameter::GetAbsoluteName->Obtained name: "
             << Result.ToAscii()
-            << std::endl;
+            << std::endl;*/
   return Result;
 }
 #endif
