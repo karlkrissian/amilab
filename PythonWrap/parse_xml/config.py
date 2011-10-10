@@ -148,10 +148,11 @@ def ClassUsedName(classname):
   res = res.replace(',','_')
   res = res.replace('::','_')
   res = res.replace(' ','')
-  res = res.replace('unsignedchar', 'uchar')
-  res = res.replace('unsignedshort','ushort')
-  res = res.replace('unsignedint',  'uint')
-  res = res.replace('unsignedlong', 'ulong')
+  res = res.replace('unsignedchar', 'UC')
+  res = res.replace('unsignedshort','US')
+  res = res.replace('unsignedint',  'UI')
+  res = res.replace('unsignedlong', 'UL')
+  res = res.replace('itk_', '')
   return res
 
 #-------------------------------------------------------------
@@ -167,10 +168,11 @@ def ClassShortName(classname,libnamespace=""):
   res = res.replace(',','_')
   res = res.replace('::','_')
   res = res.replace(' ','')
-  res = res.replace('unsignedchar', 'uchar')
-  res = res.replace('unsignedshort','ushort')
-  res = res.replace('unsignedint',  'uint')
-  res = res.replace('unsignedlong', 'ulong')
+  res = res.replace('unsignedchar', 'UC')
+  res = res.replace('unsignedshort','US')
+  res = res.replace('unsignedint',  'UI')
+  res = res.replace('unsignedlong', 'UL')
+  res = res.replace('itk_', '')
   return res
 
 #-------------------------------------------------------------
