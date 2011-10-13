@@ -46,6 +46,7 @@ SET(Algorithms_SRCS
 
   ComputePartialVolume.cpp
   StructureTensor.cpp
+  HessianMatrix.cpp
 
   # files coming from previous Filtering directory
   bruit.cpp
@@ -102,6 +103,7 @@ SET(Algorithms_HDRS
 
   include/ComputePartialVolume.h
   include/StructureTensor.h
+  include/HessianMatrix.h
 
   # files coming from previous Filtering directory
   include/bruit.hpp

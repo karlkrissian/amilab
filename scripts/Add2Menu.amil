@@ -25,6 +25,8 @@ for dir in  "BasicFilters","Filtering","Denoising",\
   del local_f
 }
 
+func "../Modules/Add2Menu"
+
 #quit
 
 

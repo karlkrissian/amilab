@@ -84,6 +84,9 @@ char program[80];
 //COMMON_EXPORT unsigned char GB_verbose;
 
 #include "xmtext.hpp"
+/*
+#include <boost/format/format_implementation.hpp>
+boost::format test;*/
 
 //-----------------------------------------
 bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookforfile = wxEmptyString)

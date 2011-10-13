@@ -35,7 +35,6 @@ SET(AMILab_SRCS
     FluidProject.cpp
     Func_ReadCTALine.cpp
     GenRead.cpp
-    HessianMatrix.cpp
     InterpolateTransform.cpp
     LevelSetsCURVES.cpp
     LineCC.cpp
@@ -70,29 +69,29 @@ SET(AMILab_SRCS
 )
 
 SET (AMILab_HDRS
-  amilab_global_import.h
-	Chamfer.h
-    ContinuousMorphology.h
-	EigenDecomp.h
-	FluidProject.h
-	fonctions.h
-	func_globalstats.h
-	Func_ReadCTALine.h
-	InterpolateTransform.h
-	LevelSetsCURVES.h
-	LineCC.h
-	LineRecons.h
-	messages.h
-	myscan.h
-	Rudin.h
-	token_list.h
-	VectorImage2StructuredGrid.h
-	dif_param.hpp
-	DirPrincipales.hpp
-	FastVector.hpp
-	func_isoline.hpp
-	Resize.hpp
-	xmtext.hpp
+    amilab_global_import.h
+    Chamfer.h
+      ContinuousMorphology.h
+    EigenDecomp.h
+    FluidProject.h
+    fonctions.h
+    func_globalstats.h
+    Func_ReadCTALine.h
+    InterpolateTransform.h
+    LevelSetsCURVES.h
+    LineCC.h
+    LineRecons.h
+    messages.h
+    myscan.h
+    Rudin.h
+    token_list.h
+    VectorImage2StructuredGrid.h
+    dif_param.hpp
+    DirPrincipales.hpp
+    FastVector.hpp
+    func_isoline.hpp
+    Resize.hpp
+    xmtext.hpp
 )
 
 IF(WIN32)

@@ -10,6 +10,8 @@
  *
  **/
 
+#pragma once
+
 #ifndef _wrap_${TEMPLATENAME}_h_
 #define _wrap_${TEMPLATENAME}_h_
 

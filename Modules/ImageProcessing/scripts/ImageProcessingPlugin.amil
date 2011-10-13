@@ -1,0 +1,30 @@
+
+del ImageProcessingPlugin
+Class ImageProcessingPlugin \
+{
+
+  proc ::Init() {
+    ::plugin_mgr=wx.wxPluginManager()
+  }
+
+  proc ::Load() {
+    # Make this platform independent, using a .in file ?
+    ::plugin_mgr.Load(op_system.GetCurrentScriptDir()+"/../src/build/release/libImageProcessing.so")
+    ::plugin_mgr.Getplugin().Execute()
+  }
+
+  proc ::UnLoad() {
+    # should delete variables in Buitin
+    del ImageProcessing
+    # need to call detach first, otherwise SEGFAULT!
+    ::plugin_mgr.Detach()
+    ::plugin_mgr.Unload()
+  }
+
+  proc ::ReLoad() {
+    ::UnLoad()
+    ::Load()
+  }
+
+  ::Init()
+}

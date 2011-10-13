@@ -69,3 +69,10 @@ FIND_LIBRARY(WrapLanguage WrapLanguage
     PATH_SUFFIXES Wrapping/WrapLanguage 
                   Wrapping/WrapLanguage/Debug 
                   Wrapping/WrapLanguage/Release)
+
+FIND_LIBRARY(Algorithms Algorithms
+    DOC "AMILab Algorithms library"
+    PATHS ${AMILAB_BINARY_DIR}
+    PATH_SUFFIXES Algorithms 
+                  Algorithms/Debug 
+                  Algorithms/Release)

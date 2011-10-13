@@ -28,8 +28,9 @@ ENDIF(ITK_FOUND)
 FIND_PACKAGE( VTK )
 
 
-OPTION(ENABLE_WRAPPING   "ENABLE MODULE WRAPPING" ON)
-OPTION(NEED_VTK_WRAPPING "NEED VTK WRAPPING" ON)
+OPTION(ENABLE_WRAPPING    "ENABLE MODULE WRAPPING"  ON )
+OPTION(NEED_VTK_WRAPPING  "NEED VTK WRAPPING"       ON )
+OPTION(GENERATE_HTML_HELP "Generate HTML file help" OFF)
 
 INCLUDE(${PROJECT_SOURCE_DIR}/../../../CMAKE/AMILabConfig.cmake)
 INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
@@ -37,7 +38,9 @@ INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}
                     ${PROJECT_SOURCE_DIR}/Wrapping
                     ${PROJECT_SOURCE_DIR}/Wrapping/Generated
-                    ${AMILab_PATHS} )
+                    ${AMILab_PATHS}
+                    ${AMILAB_SOURCE_DIR}/Algorithms/include
+ )
 
 OPTION(Boost_USE_STATIC_LIBS "Use Boost static libraries" ON)
 SET(Boost_USE_MULTITHREAD OFF)
@@ -100,6 +103,7 @@ SET(amilab_ownlibs
   ${CommonBase}
   ${WrapCommon}
   ${WrapLanguage}
+  ${Algorithms}
 )
 
 INCLUDE(${VTK_USE_FILE})
@@ -127,6 +131,7 @@ IF(WIN32)
   # conflict between freetype and vtkfreetype
   TARGET_LINK_LIBRARIES( ${KIT}
     ${amilab_ownlibs}
+    Algorithms
     ${LINK_VTK}
     ${wxWidgets_LIBRARIES}
     ${Boost_LIBRARIES}
@@ -140,6 +145,43 @@ IF(WIN32)
   TARGET_LINK_LIBRARIES( ${KIT} ${ZLIB_LIBRARIES})
   TARGET_LINK_LIBRARIES( ${KIT} ${BZIP2_LIBRARIES})
 ENDIF(WIN32)
+
+IF(GENERATE_HTML_HELP)
+  # check if doxygen is even installed
+  FIND_PACKAGE(Doxygen)
+  IF (DOXYGEN_FOUND STREQUAL "NO")
+    MESSAGE(FATAL_ERROR "Doxygen not found. Please get a copy http://www.doxygen.org")
+  ENDIF (DOXYGEN_FOUND STREQUAL "NO")
+
+  # prepare doxygen configuration file
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../../../Doxygen/doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
+
+  # add doxygen as target
+  ADD_CUSTOM_TARGET(doxygen ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
+
+  # cleanup $build/api-doc on "make clean"
+  SET_PROPERTY(DIRECTORY APPEND PROPERTY
+       ADDITIONAL_MAKE_CLEAN_FILES api-doc)
+
+  # add doxygen as dependency to doc-target
+  GET_TARGET_PROPERTY(DOC_TARGET doc TYPE)
+  IF(NOT DOC_TARGET)
+    ADD_CUSTOM_TARGET(doc)
+  ENDIF(NOT DOC_TARGET)
+  ADD_DEPENDENCIES(doc doxygen)
+
+  # install HTML API documentation and manual pages
+  SET(DOC_PATH "share/amilab-${AMILAB_VERSION}/${CMAKE_PROJECT_NAME}")
+
+  INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/html
+           DESTINATION ${DOC_PATH}
+         )
+
+  # install man pages into packages, scope is now project root..
+  INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3
+         DESTINATION share/man/man3/
+       )
+ENDIF(GENERATE_HTML_HELP)
 
 
 MESSAGE("TARGET: ${KIT}")

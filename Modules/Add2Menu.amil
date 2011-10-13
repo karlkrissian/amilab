@@ -1,0 +1,5 @@
+
+# loop over all directories??
+
+func "ImageProcessing/scripts/Add2Menu"
+func "vtkAmiVolRen/scripts/Add2Menu"

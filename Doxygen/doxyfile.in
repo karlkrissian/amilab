@@ -44,7 +44,7 @@ PROJECT_BRIEF          = "AMILab image processing and visualization software"
 # exceed 55 pixels and the maximum width should not exceed 200 pixels. 
 # Doxygen will copy the logo to the output directory.
 
-PROJECT_LOGO           = @CMAKE_SOURCE_DIR@/../Pixmaps/amilab_logo_new_32x32_alpha.png
+PROJECT_LOGO           = @AMILAB_SOURCE_DIR@/../Pixmaps/amilab_logo_new_32x32_alpha.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -843,13 +843,13 @@ HTML_FILE_EXTENSION    = .html
 # have to redo this when upgrading to a newer version of doxygen or when
 # changing the value of configuration settings such as GENERATE_TREEVIEW!
 
-HTML_HEADER            = @CMAKE_SOURCE_DIR@/../Doxygen/header.html
+HTML_HEADER            = @AMILAB_SOURCE_DIR@/../Doxygen/header.html
 
 # The HTML_FOOTER tag can be used to specify a personal HTML footer for 
 # each generated HTML page. If it is left blank doxygen will generate a 
 # standard footer.
 
-HTML_FOOTER            = @CMAKE_SOURCE_DIR@/../Doxygen/footer.html
+HTML_FOOTER            = @AMILAB_SOURCE_DIR@/../Doxygen/footer.html
 
 # If the HTML_TIMESTAMP tag is set to YES then the generated HTML
 # documentation will contain the timesstamp.
@@ -863,7 +863,7 @@ HTML_TIMESTAMP         = YES
 # the style sheet file to the HTML output directory, so don't put your own 
 # stylesheet in the HTML output directory as well, or it will be erased!
 
-HTML_STYLESHEET        = @CMAKE_SOURCE_DIR@/../Doxygen/stylesheet.css
+HTML_STYLESHEET        = @AMILAB_SOURCE_DIR@/../Doxygen/stylesheet.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or 
 # other source files which should be copied to the HTML output directory. Note 
@@ -872,7 +872,7 @@ HTML_STYLESHEET        = @CMAKE_SOURCE_DIR@/../Doxygen/stylesheet.css
 # files. In the HTML_STYLESHEET file, use the file name only. Also note that 
 # the files will be copied as-is; there are no commands or markers available.
 
-HTML_EXTRA_FILES       = @CMAKE_SOURCE_DIR@/../Doxygen/amilab_doxygen.ico
+HTML_EXTRA_FILES       = @AMILAB_SOURCE_DIR@/../Doxygen/amilab_doxygen.ico
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. 
 # Doxygen will adjust the colors in the stylesheet and background images 
@@ -1132,7 +1132,7 @@ FORMULA_TRANSPARENT    = YES
 # output. When enabled you also need to install MathJax separately and 
 # configure the path to it using the MATHJAX_RELPATH option.
 
-USE_MATHJAX            = NO
+USE_MATHJAX            = YES
 
 # When MathJax is enabled you need to specify the location relative to the 
 # HTML output directory using the MATHJAX_RELPATH option. The destination 

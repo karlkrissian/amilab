@@ -40,5 +40,8 @@ bool ImageProcessingPlugin::Execute(void)
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
       amiobject,Vars.GetBuiltinContext());  
 
+  // Set as default
+  Vars.GetBuiltinContext()->AddDefault(amiobject->GetContext());
+
   return true;
 }

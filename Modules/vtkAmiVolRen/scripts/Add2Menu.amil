@@ -1,0 +1,2 @@
+
+ami.MainFrame.AddToMenu("&Modules","&Visualization","&vtkAmiVolRen",  "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen")

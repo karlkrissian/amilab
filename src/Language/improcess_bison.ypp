@@ -53,6 +53,7 @@
 #include "CoutwxString.h"
 #include "fonctions.h"
 #include "StructureTensor.h"
+#include "HessianMatrix.h"
 #include "func_isoline.hpp"
 
 #include "ami_function.h"
@@ -3394,7 +3395,7 @@ command:
           Func_HessianMatrix(im.get(),
                  varim->Name().c_str(),
                  $5,   // sigma
-                 0,   // gamma
+                 gamma,   // gamma
                  mask.get()  // mask
                  );
         }

@@ -9,7 +9,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-
+#pragma once
 #ifndef _MainFrame_h
 #define _MainFrame_h
 

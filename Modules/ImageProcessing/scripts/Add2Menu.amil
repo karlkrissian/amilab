@@ -1,0 +1,3 @@
+
+ami.MainFrame.AddToMenu("&Modules","&Image Processing","&Load",    "../Modules/ImageProcessing/scripts/Load_ImageProcessing")
+ami.MainFrame.AddToMenu("&Modules","&Image Processing","&ReLoad",  "../Modules/ImageProcessing/scripts/ReLoad_ImageProcessing")

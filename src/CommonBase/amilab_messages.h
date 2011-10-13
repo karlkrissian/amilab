@@ -9,7 +9,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-
+#pragma once
 #ifndef _amilab_messages_h_
 #define _amilab_messages_h_
 

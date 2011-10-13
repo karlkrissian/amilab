@@ -1,4 +1,4 @@
-
+#pragma once
 #ifndef _AMI_VARIABLE_HPP
 #define _AMI_VARIABLE_HPP
 

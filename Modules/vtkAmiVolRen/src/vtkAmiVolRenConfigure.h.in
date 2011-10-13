@@ -1,0 +1,27 @@
+#pragma once
+#ifndef _vtkAMILabGPUMultiVolumeRayCastMapperConfigure_h_
+#define _vtkAMILabGPUMultiVolumeRayCastMapperConfigure_h_
+
+#define vtkAMILabGPUMultiVolumeRayCastMapperConfigure_SHARED
+
+#if defined(WIN32)
+  //disable warnings on extern before template instantiation
+  #pragma warning (disable : 4231)
+  // annoying warning 4251, passing for now ...
+  #pragma warning (disable : 4251)
+  //#pragma warning ( disable : 4275 )
+#endif
+
+#if defined(WIN32) && defined(vtkAMILabGPUMultiVolumeRayCastMapperConfigure_SHARED)
+  #if defined(vtkAMILabGPUMultiVolumeRayCastMapperConfigure_EXPORTS)
+    #define vtkAMILabGPUMultiVolumeRayCastMapperConfigure_EXPORT __declspec( dllexport ) 
+    #define vtkAMILabGPUMultiVolumeRayCastMapperConfigure_EXPIMP_TEMPLATE
+  #else
+    #define vtkAMILabGPUMultiVolumeRayCastMapperConfigure_EXPORT __declspec( dllimport ) 
+    #define vtkAMILabGPUMultiVolumeRayCastMapperConfigure_EXPIMP_TEMPLATE extern
+  #endif
+#else
+  #define vtkAMILabGPUMultiVolumeRayCastMapperConfigure_EXPORT 
+#endif
+
+#endif // _vtkAMILabGPUMultiVolumeRayCastMapperConfigure_h_
