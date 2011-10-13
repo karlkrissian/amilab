@@ -152,9 +152,9 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
     SET(GENERATE_HTML_OPTIONS "")
   ENDIF(GENERATE_HTML_HELP)
 
-  MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE}  ${GENERATE_HTML_OPTIONS} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q")
+  MESSAGE("command is: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE}  --available_external_classes ${vtk_ancestors_list} ${GENERATE_HTML_OPTIONS} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q")
   EXECUTE_PROCESS(
-    COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} ${GENERATE_HTML_OPTIONS} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q
+    COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE}  --available_external_classes ${vtk_ancestors_list} ${GENERATE_HTML_OPTIONS} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"  -q
     OUTPUT_VARIABLE ancestors_result
     ERROR_VARIABLE ancestors_error
   )
