@@ -113,7 +113,6 @@ SET(amilab_ownlibs
 )
 
 INCLUDE(${VTK_USE_FILE})
-
 SET(LINK_VTK
   vtkGraphics
   vtkImaging
@@ -129,15 +128,11 @@ SET(LINK_VTK
 )
 
 
-TARGET_LINK_LIBRARIES( ${KIT}
-    ${LINK_VTK}
-)
   
 IF(WIN32)
   # conflict between freetype and vtkfreetype
   TARGET_LINK_LIBRARIES( ${KIT}
     ${amilab_ownlibs}
-    Algorithms
     ${LINK_VTK}
     ${wxWidgets_LIBRARIES}
     ${Boost_LIBRARIES}
@@ -150,6 +145,10 @@ IF(WIN32)
   )
   TARGET_LINK_LIBRARIES( ${KIT} ${ZLIB_LIBRARIES})
   TARGET_LINK_LIBRARIES( ${KIT} ${BZIP2_LIBRARIES})
+ELSE(WIN32)
+  TARGET_LINK_LIBRARIES( ${KIT}
+    ${LINK_VTK}
+  )
 ENDIF(WIN32)
 
 IF(GENERATE_HTML_HELP)
