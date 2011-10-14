@@ -30,6 +30,7 @@ IF(AMILab_FOUND)
       ${AMILAB_BINARY_DIR}
   )
 
+
   IF (NEED_VTK_WRAPPING)
     SET(AMILab_PATHS
       ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
@@ -37,6 +38,8 @@ IF(AMILab_FOUND)
       )
     MESSAGE(" VTK wrapping path is ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated")
   ENDIF(NEED_VTK_WRAPPING)
+
+  MESSAGE("AMILab_PATHS = ${AMILab_PATHS}")
 
   FIND_LIBRARY(CommonBase CommonBase
       DOC "AMILab CommonBase library"
@@ -73,3 +76,4 @@ IF(AMILab_FOUND)
       PATH_SUFFIXES Algorithms 
                     Algorithms/Debug 
                     Algorithms/Release)
+ENDIF(AMILab_FOUND)

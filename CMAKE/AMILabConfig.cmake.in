@@ -18,15 +18,15 @@ SET(AMILAB_BINARY_DIR     "@AMILab_BINARY_DIR@")
 SET(AMI_VTK_VERSION       "@AMI_VTK_VERSION@")
 
 
-SET(AMILab_PATHS
-    ${AMILAB_SOURCE_DIR}/LanguageBase
-    ${AMILAB_SOURCE_DIR}/Language
-    ${AMILAB_SOURCE_DIR}/Common/include
-    ${AMILAB_SOURCE_DIR}/CommonBase
-    ${AMILAB_SOURCE_DIR}/Wrapping/include
-    ${AMILAB_SOURCE_DIR}
-    ${AMILAB_BINARY_DIR}
-)
+#SET(AMILab_PATHS
+#    ${AMILAB_SOURCE_DIR}/LanguageBase
+#    ${AMILAB_SOURCE_DIR}/Language
+#    ${AMILAB_SOURCE_DIR}/Common/include
+#    ${AMILAB_SOURCE_DIR}/CommonBase
+#    ${AMILAB_SOURCE_DIR}/Wrapping/include
+#    ${AMILAB_SOURCE_DIR}
+#    ${AMILAB_BINARY_DIR}
+#)
 
 #SET(AMILAB_USE_FILE "@AMILAB_USE_FILE@")
 

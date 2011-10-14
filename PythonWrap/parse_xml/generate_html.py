@@ -432,7 +432,7 @@ class generate_html:
     try: urllib2.urlopen(req)
     except urllib2.URLError:
       res=False
-    print "result = {0}".format(res)
+    #print "result = {0}".format(res)
     return res
 
   #-------------------------------------------------------------
