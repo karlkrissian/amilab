@@ -33,13 +33,13 @@ void ImageDerivativesClass::HessianMatrix(InrImage::ptr input
                                           ,
                                           double        sigma
                                           ,
-                                          double        gamma = 0
+                                          double        gamma
                                           ,
-                                          InrImage::ptr mask=InrImage::ptr()
+                                          InrImage::ptr mask
                                         )
 {
   Func_HessianMatrix( input.get(),
-                      name().c_str(),
+                      name.c_str(),
                       sigma,
                       gamma,
                       mask.get()  // mask
@@ -64,11 +64,11 @@ void ImageDerivativesClass::Derivatives(InrImage::ptr input
                               ,
                               bool          G
                               ,
-                              InrImage::ptr mask=InrImage::ptr()
+                              InrImage::ptr mask
                              )
 {
-    Func_Derivatives( im.get(),
-                      varim->Name().c_str(),
+    Func_Derivatives( input.get(),
+                      name.c_str(),
                       sigma,
                       gamma,
                       mask.get(),
