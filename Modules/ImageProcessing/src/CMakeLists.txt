@@ -12,6 +12,8 @@ project (ImageProcessing)
 
 SET(KIT ${CMAKE_PROJECT_NAME})
 
+SET(CMAKE_MODULE_PATH  ${AMILAB_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
+
 MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
@@ -52,8 +54,12 @@ FIND_PACKAGE( BZip2)
 FIND_PACKAGE( wxWidgets COMPONENTS adv html aui  gl core base stc net richtext)
 
 IF(ENABLE_WRAPPING)
+  IF(VTK_FOUND)
+    SET(AMI_VTK_VERSION "${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
+  ENDIF(VTK_FOUND)
+
   # allow use of vtk classes  wrapped within AMILab
-  FILE(READ "${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/5.8/Generated/ancestors.txt" vtk_ancestors_txt)
+  FILE(READ "${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated/ancestors.txt" vtk_ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" vtk_ancestors_list ${vtk_ancestors_txt} )
   SET(AVAILABLE_EXTERNAL_CLASSES ${vtk_ancestors_list})
   MESSAGE("AVAILABLE_EXTERNAL_CLASSES=${AVAILABLE_EXTERNAL_CLASSES}")
