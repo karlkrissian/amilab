@@ -14,7 +14,7 @@
 #define POINT3D_HPP
 
 #include "style.hpp"
-#include <iostream>
+#include <iosfwd>
 //using - namespace std;
 #include "Coordonnees.hpp"
 #include "math1.hpp"

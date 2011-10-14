@@ -1,0 +1,11 @@
+
+func "RetinaVesselsClass"
+
+if (!exists(RetinaVessels_obj)) {
+  RetinaVesselsClass RetinaVessels_obj
+  RetinaVessels_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

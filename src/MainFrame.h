@@ -78,7 +78,7 @@ class ParamPanel;
 
 #include "Variables.hpp"
 
-#include <iostream>
+#include <iosfwd>
 #include <list>
 #include <map>
 

@@ -36,7 +36,7 @@
 #include "FloatMatrix.hpp"
 #include "Timing.hpp"
 #include "Chamfer.h"
-
+#include <iostream>
 //
 // Computes a Chamfer distance transform
 //

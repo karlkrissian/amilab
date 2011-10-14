@@ -28,6 +28,7 @@
 
 #include "StringUtils.hpp"
 #include <string.h>
+#include <iostream>
 
 Chaine RemovePath(const Chaine& ch)
 //     ------------

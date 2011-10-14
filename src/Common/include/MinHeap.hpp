@@ -38,7 +38,7 @@
 
 
 #include "style.hpp"
-#include <iostream>
+#include <iosfwd>
 #include <stdio.h>
 
 // Template ??

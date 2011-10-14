@@ -40,7 +40,7 @@
 #include "style.hpp"
 #include "DessinImage.hpp"
 #include "CompareImage.hpp"
-#include <iostream.h>
+#include <iosfwd.h>
 
 //extern ostream        std::cout;
 

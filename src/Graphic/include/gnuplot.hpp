@@ -76,10 +76,10 @@ public:
   class ErreurLecture
   {
   public:
-    ErreurLecture( Chaine message)
-      {
-	std::cerr << "GnuPlot Erreur de Lecture " << message << std::endl;
-      }
+    ErreurLecture( Chaine message);
+/*      {
+        std::cerr << "GnuPlot Erreur de Lecture " << message << std::endl;
+      }*/
   };
 
 private:

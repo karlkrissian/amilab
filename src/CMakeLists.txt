@@ -228,7 +228,6 @@ INCLUDE(CPack)
 #  Configuration files
 #-------------------------------------------------------------------------------
 
-
 #
 # Configuration of Linux Desktop
 #
@@ -541,6 +540,7 @@ set(  wxParams_INCLUDE_DIRS
 #MESSAGE(wxParams_INCLUDE_DIRS=${wxParams_INCLUDE_DIRS})
 MESSAGE(FLEX_INCLUDE_DIR=${FLEX_INCLUDE_DIR})
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE/AMILabConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/AMILabConfig.cmake)
 
 include_directories (
   ${Boost_INCLUDE_DIR}

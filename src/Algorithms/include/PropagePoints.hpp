@@ -49,7 +49,7 @@
 
 
 #include "style.hpp"
-#include <iostream>
+#include <iosfwd>
 
 #include "CommonConfigure.h"
 COMMON_VAR_IMPORT unsigned char GB_debug;

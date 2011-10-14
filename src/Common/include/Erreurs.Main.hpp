@@ -37,7 +37,7 @@
 
 #include "style.hpp"
 #include "Erreurs.hpp"
-#include <iostream>
+#include <iosfwd>
 
 
 //-------------------------------------------------------------------

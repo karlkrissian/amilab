@@ -33,14 +33,14 @@
 // Karl Krissian        Sophia Antipolis le 15-08-98
 //
 
-
+#pragma once
 #ifndef _ERREURS_HPP
 #define _ERREURS_HPP
 
 
 #include "style.hpp"
 
-#include <iostream>
+#include <iosfwd>
 //using -- namespace std;
 
 #include "chaine.hpp"
@@ -249,11 +249,7 @@ class COMMON_EXPORT WarningDivers: public ExceptionWarning
 public:
 
   ///
-   WarningDivers( const Chaine& mess) :   ExceptionWarning(mess)
-  {
-   _type = WARNING_DIVERS;
-    Si GB_AfficheWarning AlorsFait std::cerr << *this;
-  }
+   WarningDivers( const Chaine& mess);
 
 }; // WarningDivers
 
@@ -267,12 +263,11 @@ class COMMON_EXPORT ErreurDivers: public ExceptionErreur
 public:
 
   ///
-   ErreurDivers( const Chaine& mess) : 
-    ExceptionErreur(mess)
-  {
-    _type = ERREUR_DIVERS; 
-    Si GB_AfficheErreur AlorsFait std::cerr << *this;
-  }
+   ErreurDivers( const Chaine& mess);
+//   {
+//     _type = ERREUR_DIVERS; 
+//     Si GB_AfficheErreur AlorsFait std::cerr << *this;
+//   }
 
 }; // ErreurDivers
 
@@ -286,12 +281,7 @@ class COMMON_EXPORT ErreurParametres: public ExceptionErreur
 public:
 
   ///
-   ErreurParametres( const Chaine& mess) : 
-    ExceptionErreur(mess)
-  {
-    _type = ERREUR_PARAMETRES;
-    Si GB_AfficheErreur AlorsFait std::cerr << *this;
-  }
+  ErreurParametres( const Chaine& mess);
 
 }; // ErreurParametres
 
@@ -324,12 +314,11 @@ class COMMON_EXPORT ErreurCalcul: public ExceptionErreur
 public:
 
   ///
-   ErreurCalcul( Chaine& mess) : 
-    ExceptionErreur(mess)
-  {
-     _type = ERREUR_CALCUL;
-    Si GB_AfficheErreur AlorsFait std::cerr << *this;
-  }
+   ErreurCalcul( Chaine& mess);
+//   {
+//      _type = ERREUR_CALCUL;
+//     Si GB_AfficheErreur AlorsFait std::cerr << *this;
+//   }
 
 }; // ErreurParametres
 

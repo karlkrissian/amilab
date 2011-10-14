@@ -33,14 +33,41 @@
 // Karl Krissian        Sophia Antipolis le 15-08-98
 // 
 
-
-#include "Erreurs.hpp"
 #ifdef _MSC_VER
   #define _CRT_SECURE_NO_WARNINGS
 #endif 
 
+#include "Erreurs.hpp"
 
-//---------------------------------------------------------------------
+#include <iostream>
+
+
+WarningDivers::WarningDivers( const Chaine& mess) :   ExceptionWarning(mess)
+{
+  _type = WARNING_DIVERS;
+  Si GB_AfficheWarning AlorsFait std::cerr << *this;
+}
+
+ErreurDivers::ErreurDivers( const Chaine& mess) : 
+    ExceptionErreur(mess)
+{
+  _type = ERREUR_DIVERS; 
+  Si GB_AfficheErreur AlorsFait std::cerr << *this;
+}
+
+ErreurParametres::ErreurParametres( const Chaine& mess) :  ExceptionErreur(mess)
+{
+  _type = ERREUR_PARAMETRES;
+  Si GB_AfficheErreur AlorsFait std::cerr << *this;
+}
+
+ErreurCalcul::ErreurCalcul( Chaine& mess) : ExceptionErreur(mess)
+{
+    _type = ERREUR_CALCUL;
+  Si GB_AfficheErreur AlorsFait std::cerr << *this;
+}
+
+    //---------------------------------------------------------------------
 /**
  */
 std::ostream& operator<<(std::ostream& os, const NomMethode& m)

@@ -165,7 +165,7 @@
 #include "DefineClass.hpp"
 #include "CallBackBase.h"
 
-#include <iostream>
+#include <iosfwd>
 //using -- namespace std;
 
 //#include "Viewer3D.hpp"

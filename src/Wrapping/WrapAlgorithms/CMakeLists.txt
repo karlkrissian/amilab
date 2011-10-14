@@ -162,7 +162,7 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
   MESSAGE(" ancestors_error = ${ancestors_error} ")
     IF(GENERATE_HTML_HELP)
       SET(GENERATE_HTML_CMD "--generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR}")
-    ENDIF(GENERATE_HTMLHELP)
+    ENDIF(GENERATE_HTML_HELP)
 
   FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )

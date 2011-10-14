@@ -7,7 +7,7 @@
 //#include "Viewer3D.hpp"
 //#include "paramlist.h"
 #include <string>
-#include <iostream>
+#include <iosfwd>
 
 #include "DefineClass.hpp"
 

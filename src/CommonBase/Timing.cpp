@@ -55,6 +55,7 @@
  ***************************************************************************/
 
 #include "Timing.hpp"
+#include <iostream>
 
 #include "AMILabConfig.h"
 #ifdef AMI_USE_OPENMP

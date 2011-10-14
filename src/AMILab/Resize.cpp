@@ -30,6 +30,7 @@
 //#include "DessinImage.hpp"
 #include "inrimage.hpp"
 #include "math1.hpp"
+#include <iostream>
 
 // spline interpolation
 extern "C" {

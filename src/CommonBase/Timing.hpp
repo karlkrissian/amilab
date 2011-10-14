@@ -39,7 +39,7 @@
   #include <omp.h>
 #endif
 
-#include <iostream>
+#include <iosfwd>
 
 
 double am_timer(void);
@@ -49,7 +49,6 @@ double am_timer(void);
 int gettimeofday(struct timeval* tp, void* tzp);
 #endif
 
-#include <iostream>
 #include <string>
 //using -- namespace std;
 

@@ -49,7 +49,7 @@
 
 
 #include "style.hpp"
-#include <iostream>
+#include <iosfwd>
 #include "math1.hpp"
 #include "chaine.hpp"
 

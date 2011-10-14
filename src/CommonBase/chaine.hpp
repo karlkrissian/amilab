@@ -29,12 +29,12 @@
 // Karl KRISSIAN
 // Chaine.hpp
 // Perpignan,	24/09/94
-
+#pragma once
 #ifndef _CHAINE_H
 #define _CHAINE_H
 
 #include "CommonBaseConfigure.h"
-#include <iostream>
+#include <iosfwd>
 
 #include "style.hpp"
 //#include <malloc.h>

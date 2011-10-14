@@ -3,7 +3,7 @@
 #define _AmiMessage_h_
 
 #include "CommonBaseConfigure.h"
-#include <iostream>
+#include <iosfwd>
 #include <string>
 
 /**

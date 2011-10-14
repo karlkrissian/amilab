@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuRetinaVessels() \
+{
+  category = "&PDI"
+  script = "PDI/RetinaVessels/RetinaVesselsGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&RetinaVessels",script)
+}
+
+AddMenuRetinaVessels()
+del AddMenuRetinaVessels
