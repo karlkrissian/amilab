@@ -54,6 +54,10 @@ def get_include_file(classname, filename):
   #  s1 = '#include <wx/listctrl.h>\n'+s1
   #if classname=="wxFormatString":
   #  s1 = '#include <wx/string.h>\n'+s1
+
+  # include platform.h to avoid problems
+  s1 = '#include <wx/platform.h>\n' + s1
+
   return s1
  
 def get_var_filter():

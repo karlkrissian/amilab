@@ -31,7 +31,7 @@
 
 //#include "StringUtils.hpp"
 #include "CommonBaseConfigure.h"
-#include <string.h>
+#include <string>
 #include "chaine.hpp"
 
 CommonBase_EXPORT Chaine RemovePath(const Chaine& ch);

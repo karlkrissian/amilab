@@ -72,6 +72,7 @@ members_blacklist=[
   'wxListCtrl::ResetCurrent',      # idem
   'wxApp::Initialize',               # double pointer pb
   'wxApp::InitialzeVisual',          # not implemented, static function
+  'wxApp::InitRichEdit',             # not implemented, static function
   'wxAppBase::Initialize',           # double pointer pb
   'wxAppConsole::Initialize',        # double pointer pb
   'InternalTransformDerivative', # VTK: pointer to array ...
