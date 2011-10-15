@@ -54,6 +54,7 @@
 #include "fonctions.h"
 #include "StructureTensor.h"
 #include "HessianMatrix.h"
+#include "Eigen3D.h"
 #include "func_isoline.hpp"
 
 #include "ami_function.h"

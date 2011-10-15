@@ -48,6 +48,7 @@
  * *** empty log message ***
  ***************************************************************************/
 
+#include "Eigen3D.h"
 
 #include <iomanip>
 #include <cassert>

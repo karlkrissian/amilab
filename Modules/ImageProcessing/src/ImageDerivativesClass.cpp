@@ -79,3 +79,80 @@ void ImageDerivativesClass::Derivatives(InrImage::ptr input
                     );
 }
 
+//------------------------------------------------------------------------------
+void ImageDerivativesClass::HessianEVal(
+                                          InrImage::ptr input
+                                          ,
+                                          std::string name
+                                          ,
+                                          double sigma
+                                          , 
+                                          double gamma
+                                          , 
+                                          InrImage::ptr mask
+                                          ,
+                                          int index
+                                        )
+{
+  Func_HessianVap(
+                  input.get(),
+                  name.c_str(),
+                  sigma,
+                  gamma,
+                  mask.get(),
+                  index
+      );
+}
+
+//------------------------------------------------------------------------------
+void ImageDerivativesClass::Eigen3D(
+                                    std::string name
+                                    ,
+                                    InrImage::ptr Mxx
+                                    ,
+                                    InrImage::ptr Mxy
+                                    ,
+                                    InrImage::ptr Mxz
+                                    ,
+                                    InrImage::ptr Myy
+                                    ,
+                                    InrImage::ptr Myz
+                                    ,
+                                    InrImage::ptr Mzz
+                                    ,
+                                    InrImage::ptr mask = InrImage::ptr()
+                                    )
+{
+    Func_Eigen3D(
+                  name.c_str(),
+                  Mxx.get(),
+                  Mxy.get(),
+                  Mxz.get(),
+                  Myy.get(),
+                  Myz.get(),
+                  Mzz.get(),
+                  mask.get()
+                  );
+}
+
+//------------------------------------------------------------------------------
+void ImageDerivativesClass::Eigen2D(
+                                    std::string name
+                                    ,
+                                    InrImage::ptr Mxx
+                                    ,
+                                    InrImage::ptr Mxy
+                                    ,
+                                    InrImage::ptr Myy
+                                    ,
+                                    InrImage::ptr mask = InrImage::ptr()
+                                    )
+{
+    Func_Eigen2D(
+                  name.c_str(),
+                  Mxx.get(),
+                  Mxy.get(),
+                  Myy.get(),
+                  mask.get()
+                  );
+}

@@ -16,19 +16,29 @@
 //         2 save the eigenvalue
 //         3 save both
 //
-unsigned char      Func_Derivatives(  InrImage* image_initiale,
+unsigned char      Func_Derivatives(  InrImage*   image_initiale,
                                       const char* varname,
-                                      float Sigma,
-                                      float Gamma,
-                                      InrImage* mask,
-                                      int _H1,
-                                      int _H2,int _H3,int _G);
+                                      float       Sigma,
+                                      float       Gamma,
+                                      InrImage*   mask,
+                                      int         _H1,
+                                      int         _H2,
+                                      int         _H3,
+                                      int         _G);
 
 
-unsigned char      Func_HessianMatrix(  InrImage* image_initiale, 
+unsigned char      Func_HessianMatrix(  InrImage*   image_initiale, 
                                         const char* varname,
-                                        float Sigma,
-                                        float Gamma,
-                                        InrImage* mask);
+                                        float       Sigma,
+                                        float       Gamma,
+                                        InrImage*   mask);
+
+unsigned char      Func_HessianVap( InrImage*   image_initiale, 
+                                    const char* varname,
+                                    float       Sigma,  
+                                    float       Gamma,
+                                    InrImage*   mask, 
+                                    int         vap_num);
+
 
 #endif // _HessianMatrix_h_

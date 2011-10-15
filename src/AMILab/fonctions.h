@@ -162,11 +162,6 @@ amilab::SurfacePoly* Func_isosurf( InrImage::ptr im, float Threshold, InrImage* 
                int coord_system=0);
 
 
-
-unsigned char      Func_HessianVap( InrImage* image_initiale, const char* varname,
-                  float Sigma,  float Gamma,
-                  InrImage* mask, int vap_num);
-
 InrImage* Func_2DFlux( InrImage* vectors, float radius);
 
 #include "CalculRepCercle.hpp"
@@ -249,16 +244,6 @@ void         Func_Pad( InrImage* im1, InrImage* im2,
                );
 
 int          Func_GenRead(char* fname);
-
-unsigned char      Func_Eigen2D( char* varname,
-               InrImage* Mxx, InrImage* Mxy,
-               InrImage* Myy,
-               InrImage* mask = NULL);
-
-unsigned char      Func_Eigen3D( char* varname,
-               InrImage* Mxx, InrImage* Mxy, InrImage* Mxz,
-               InrImage* Myy, InrImage* Myz, InrImage* Mzz,
-               InrImage* mask = NULL);
 
 InrImage*    Func_PropagationDistance(InrImage* input, float max_dist=1000);
 InrImage*    Func_PropagationDistance2(InrImage* input, float max_dist=1000);

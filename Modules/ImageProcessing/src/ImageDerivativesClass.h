@@ -161,7 +161,6 @@ public:
      *         2 save the eigenvalue
      *         3 save both
      */
-
     static void Derivatives(InrImage::ptr input
                               ,
                               std::string   name
@@ -181,16 +180,96 @@ public:
                               InrImage::ptr mask=InrImage::ptr()
                              );
 
-/*    Func_Derivatives(im.get(),
-               varim->Name().c_str(),
-               $5,   // sigma
-               $7,   // gamma
-               NULL,
-               (int)$9,   // 1st eigenvalue | eigenvector?
-               (int)$11,  // 2nd eigenvalue | eigenvector?
-               (int)$13,  // 3rd eigenvalue | eigenvector?
-               (int)$15  // Gradient vector?
-               );*/
+    /**
+     * Computes and returns the selected eigenvalue of the Hessian matrix for 3D
+     * images.
+     * @param input   Input image
+     * @param name    string used to create the resulting images of 
+     *                eigen(values/vectors) of the computed tensor.
+     * @param sigma   Gaussian standard deviation for convolution
+     * @param gamma   derivatives normalization parameter
+     * @param mask    mask image
+     * @param index   eigenvalue index between 1 and 3, eigenvalues are sorted
+     *                based on their absolute values in descending order.
+     * the returned image has the name "%s_Hvap%d" where %s is the name parameter
+     * and %d is the index parameter.
+     */
+    static void HessianEVal(
+                            InrImage::ptr input
+                            ,
+                            std::string   name
+                            , 
+                            double sigma
+                            , 
+                            double gamma
+                            , 
+                            InrImage::ptr mask
+                            ,
+                            int index
+                           );
+
+    /**
+     * @brief Computes eigenvalues of the given 3x3 real symmetric matrix field.
+     *
+     * @param name string for creating output images.
+     * @param Mxx 3D scalar image of component 0,0 of the matrix field
+     * @param Mxy 3D scalar image of component 0,1 of the matrix field
+     * @param Mxz 3D scalar image of component 0,2 of the matrix field
+     * @param Myy 3D scalar image of component 1,1 of the matrix field
+     * @param Myz 3D scalar image of component 1,2 of the matrix field
+     * @param Mzz 3D scalar image of component 2,2 of the matrix field
+     * @param mask mask image to speed-up the computation
+     * @return void
+     * Output images of eigenvalues are in named ${name}_Evap{1,2,3} 
+     * and ${name}_Evep{1,2,3} for eigenvectors.
+     * Eigenvalues are sorts the eigenvalues into descending order of 
+     * their signed values.
+     **/
+    static void Eigen3D(
+                        std::string name
+                        ,
+                        InrImage::ptr Mxx
+                        ,
+                        InrImage::ptr Mxy
+                        ,
+                        InrImage::ptr Mxz
+                        ,
+                        InrImage::ptr Myy
+                        ,
+                        InrImage::ptr Myz
+                        ,
+                        InrImage::ptr Mzz
+                        ,
+                        InrImage::ptr mask = InrImage::ptr()
+                        );
+    
+
+    /**
+     * @brief Computes eigenvalues of the given 3x3 real symmetric matrix field.
+     *
+     * @param name string for creating output images.
+     * @param Mxx 2D scalar image of component 0,0 of the matrix field
+     * @param Mxy 2D scalar image of component 0,1 of the matrix field
+     * @param Myy 2D scalar image of component 1,1 of the matrix field
+     * @param mask  mask image to speed-up the computation, 
+     *              Defaults to InrImage::ptr().
+     * @return void
+     * Output images of eigenvalues are in named ${name}_Evap{1,2} 
+     * and ${name}_Evep{1,2} for eigenvectors.
+     * Eigenvalues are sorts the eigenvalues into descending order of 
+     * their signed values.
+     **/
+    static void Eigen2D(
+                        std::string name
+                        ,
+                        InrImage::ptr Mxx
+                        ,
+                        InrImage::ptr Mxy
+                        ,
+                        InrImage::ptr Myy
+                        ,
+                        InrImage::ptr mask = InrImage::ptr()
+                        );
 };
 
 

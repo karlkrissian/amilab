@@ -35,3 +35,4 @@ CMakeFiles
 ./doc/Rules/
 *.asv
 *.orig
+*.amil.converted

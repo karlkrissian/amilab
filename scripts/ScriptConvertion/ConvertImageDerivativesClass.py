@@ -58,6 +58,14 @@ if __name__ == "__main__":
     # --------- HessianMatrix with 4 arguments -------------
     (r"HessianMatrix\(([^,]+),([^,]+),([^,]+),([^,\)]+)\)",
      r'ImageDerivativesClass.HessianMatrix(&\1,"\1",\2,\3,&\4)')
+    ,
+    # --------- HessianEval with 5 arguments -------------
+    (r"HessianEval\(([^,]+),([^,]+),([^,]+),([^,]+),([^,\)]+)\)",
+     r'ImageDerivativesClass.HessianEval(&\1,"\1",\2,\3,&\4,\5)')
+    ,
+    # --------- Eigen3D with 8 arguments -------------
+    (r"Eigen3D\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,\)]+)\)",
+     r'ImageDerivativesClass.Eigen3D(\1,&\2,&\3,&\4,&\5,&\6,&\7,&\8)')
     ]
     
   scripts=[]
