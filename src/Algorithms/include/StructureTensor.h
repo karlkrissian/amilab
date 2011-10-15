@@ -14,24 +14,25 @@
 #ifndef _StructureTensor_h_
 #define _StructureTensor_h_
 
+#include "AlgorithmsConfigure.h"
 #include "style.hpp"
 #include "inrimage.hpp"
 
 
-unsigned char Func_StructureTensor2D( InrImage* image_initiale, 
+Algorithms_EXPORT unsigned char Func_StructureTensor2D( InrImage* image_initiale, 
 //            ----------------------
                const char* varname,
                 float Sigma1, float Sigma2,
                 InrImage* mask);
 
 
-unsigned char Func_StructureTensor( InrImage* image_initiale, 
+Algorithms_EXPORT unsigned char Func_StructureTensor( InrImage* image_initiale, 
 //            --------------------
                       const char* varname,
                   float Sigma1, float Sigma2,
                   InrImage* mask);
 
-unsigned char Func_StructureTensorHessian( InrImage* image_initiale, 
+Algorithms_EXPORT unsigned char Func_StructureTensorHessian( InrImage* image_initiale, 
 //      ---------------------------
                      const char* varname,
                      float sigma,
@@ -40,7 +41,7 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
                      bool save_grad = false);
 
 //--------------------------------------------------------------------------
-InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale, 
+Algorithms_EXPORT InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale, 
 //        ------------------------------
                      float sigma,
                      float beta,

@@ -108,6 +108,33 @@ include_directories (
   ${Boost_INCLUDE_DIR}
 )
 
+# ---------- Setup output Directories -------------------------
+SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY
+  ${PROJECT_SOURCE_DIR}/bin
+  CACHE PATH
+  "Single Directory for all Libraries"
+)
+
+# --------- Setup the Executable output Directory -------------
+SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+  ${PROJECT_SOURCE_DIR}/bin
+  CACHE PATH
+  "Single Directory for all static libraries."
+)
+
+# --------- Setup the Executable output Directory -------------
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
+  ${PROJECT_SOURCE_DIR}/bin
+  CACHE PATH
+  "Single Directory for all Executables."
+)
+
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/dllpath.amil.in 
+    ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/dllpath.amil
+    )
+
 ADD_LIBRARY(${KIT} MODULE ${${KIT}_SRCS} )
 
 SET(amilab_ownlibs

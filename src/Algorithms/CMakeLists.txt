@@ -149,9 +149,13 @@ SET(Algorithms_HDRS
   include/dijkstra.h
 )
 
-SET(OpenGL_SRCS
-     ${OpenGL_SRCS}
-     ${OpenGL_HDRS}
+IF(WIN32)
+  set_source_files_properties(${Algorithms_SRCS} PROPERTIES COMPILE_FLAGS "-DAlgorithms_EXPORTS")
+ENDIF(WIN32)
+
+SET(Algorithms_SRCS
+     ${Algorithms_SRCS}
+     ${Algorithms_HDRS}
 )
 
 my_add_library ( Algorithms)

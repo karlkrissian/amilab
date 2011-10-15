@@ -2,6 +2,7 @@
 #include "ImageDerivativesClass.h"
 #include "StructureTensor.h"
 #include "HessianMatrix.h"
+#include "Eigen3D.h"
 
 //------------------------------------------------------------------------------
 void ImageDerivativesClass::StructTensor(InrImage::ptr input, std::string name, 
@@ -120,7 +121,7 @@ void ImageDerivativesClass::Eigen3D(
                                     ,
                                     InrImage::ptr Mzz
                                     ,
-                                    InrImage::ptr mask = InrImage::ptr()
+                                    InrImage::ptr mask 
                                     )
 {
     Func_Eigen3D(
@@ -145,7 +146,7 @@ void ImageDerivativesClass::Eigen2D(
                                     ,
                                     InrImage::ptr Myy
                                     ,
-                                    InrImage::ptr mask = InrImage::ptr()
+                                    InrImage::ptr mask
                                     )
 {
     Func_Eigen2D(

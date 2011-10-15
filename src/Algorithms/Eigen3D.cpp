@@ -78,7 +78,7 @@ COMMON_VAR_IMPORT unsigned char GB_debug;
 
 //---------------------------------------------------------
 //
-unsigned char      Func_Eigen2D( char* varname,
+unsigned char      Func_Eigen2D( const char* varname,
 			   InrImage* Mxx, InrImage* Mxy,
 			   InrImage* Myy, 
 			   InrImage* mask)
@@ -181,7 +181,7 @@ unsigned char      Func_Eigen2D( char* varname,
 // Func_HessianMatrix
 //---------------------------------------------------------
 
-unsigned char      Func_Eigen3D( char* varname,
+unsigned char      Func_Eigen3D( const char* varname,
 			   InrImage* Mxx, InrImage* Mxy, InrImage* Mxz,
 			   InrImage* Myy, InrImage* Myz, InrImage* Mzz,
 			   InrImage* mask)

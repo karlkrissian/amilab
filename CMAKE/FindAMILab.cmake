@@ -44,36 +44,58 @@ IF(AMILab_FOUND)
   FIND_LIBRARY(CommonBase CommonBase
       DOC "AMILab CommonBase library"
       PATHS ${AMILAB_BINARY_DIR}
-      PATH_SUFFIXES CommonBase CommonBase/Debug CommonBase/Release)
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        CommonBase
+        CommonBase/Debug
+        CommonBase/Release
+  )
 
   FIND_LIBRARY(Common Common
       DOC "AMILab Common library"
       PATHS ${AMILAB_BINARY_DIR}
-      PATH_SUFFIXES Common Common/Debug Common/Release)
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        Common Common/Debug 
+        Common/Release)
 
   FIND_LIBRARY(LanguageBase LanguageBase
       DOC "AMILab LanguageBase library"
       PATHS ${AMILAB_BINARY_DIR}
-      PATH_SUFFIXES LanguageBase LanguageBase/Debug LanguageBase/Release)
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        LanguageBase LanguageBase/Debug LanguageBase/Release)
 
   FIND_LIBRARY(WrapCommon WrapCommon
       DOC "AMILab WrapCommon library"
       PATHS ${AMILAB_BINARY_DIR}
-      PATH_SUFFIXES Wrapping/WrapCommon 
-                    Wrapping/WrapCommon/Debug 
-                    Wrapping/WrapCommon/Release)
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        Wrapping/WrapCommon 
+        Wrapping/WrapCommon/Debug 
+        Wrapping/WrapCommon/Release)
 
   FIND_LIBRARY(WrapLanguage WrapLanguage
       DOC "AMILab WrapLanguage library"
       PATHS ${AMILAB_BINARY_DIR}
-      PATH_SUFFIXES Wrapping/WrapLanguage 
-                    Wrapping/WrapLanguage/Debug 
-                    Wrapping/WrapLanguage/Release)
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        Wrapping/WrapLanguage 
+        Wrapping/WrapLanguage/Debug 
+        Wrapping/WrapLanguage/Release)
 
   FIND_LIBRARY(Algorithms Algorithms
       DOC "AMILab Algorithms library"
       PATHS ${AMILAB_BINARY_DIR}
-      PATH_SUFFIXES Algorithms 
-                    Algorithms/Debug 
-                    Algorithms/Release)
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        Algorithms 
+        Algorithms/Debug 
+        Algorithms/Release)
 ENDIF(AMILab_FOUND)

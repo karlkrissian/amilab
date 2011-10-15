@@ -1,5 +1,7 @@
 
 del ImageProcessingPlugin
+
+
 Class ImageProcessingPlugin \
 {
 
@@ -9,8 +11,23 @@ Class ImageProcessingPlugin \
 
   proc ::Load() {
     # Make this platform independent, using a .in file ?
-    ::plugin_mgr.Load(op_system.GetCurrentScriptDir()+"/../src/build/release/libImageProcessing.so")
-    ::plugin_mgr.Getplugin().Execute()
+    found=false
+    func "dllpath"
+    if wx.wxFileName(dllpath+"/libImageProcessing.so").FileExists() {
+      SetStatusText("Loading "+dllpath+"/libImageProcessing.so")
+      ::plugin_mgr.Load(dllpath+"/libImageProcessing.so")
+      found=true
+    }
+    if wx.wxFileName(dllpath+"/Debug/ImageProcessing.dll").FileExists() {
+      SetStatusText("Loading "+dllpath+"/Debug/ImageProcessing.dll")
+      ::plugin_mgr.Load(dllpath+"/Debug/ImageProcessing.dll")
+      found=true
+    }
+    if found {
+      ::plugin_mgr.Getplugin().Execute()
+    } else {
+      InfoDialog("Dynamic Library not found")
+    }
   }
 
   proc ::UnLoad() {
