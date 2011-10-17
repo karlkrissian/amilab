@@ -66,6 +66,18 @@ if __name__ == "__main__":
     # --------- Eigen3D with 8 arguments -------------
     (r"Eigen3D\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,\)]+)\)",
      r'ImageDerivativesClass.Eigen3D(\1,&\2,&\3,&\4,&\5,&\6,&\7,&\8)')
+    ,
+    # --------- Eigen2D with 4 arguments -------------
+    (r"Eigen2D\(([^,]+),([^,]+),([^,]+),([^,\)]+)\)",
+     r'ImageDerivativesClass.Eigen2D(\1,&\2,&\3,&\4,&\5)')
+    ,
+    # --------- discsecdergrad with 2 arguments -------------
+    (r"discsecdergrad\(([^,]+),([^,\)]+)\)",
+     r'ImageDerivativesClass.discsecdergrad(\1,&\2)')
+    ,
+    # --------- discsecdergrad with 3 arguments -------------
+    (r"discsecdergrad\(([^,]+),([^,]+),([^,\)]+)\)",
+     r'ImageDerivativesClass.discsecdergrad(\1,&\2,&\3)')
     ]
     
   scripts=[]

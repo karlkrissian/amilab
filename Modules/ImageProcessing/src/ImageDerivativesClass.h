@@ -270,6 +270,22 @@ public:
                         ,
                         InrImage::ptr mask = InrImage::ptr()
                         );
+
+  
+    /**
+     * @brief Computes discrete second order derivatives of the image intensity
+     * in the gradient direction.
+     *
+     * @param input Input image
+     * @param Isecder Image of second order derivatives in the gradient direction
+     * @param Inormgrad Image of gradient norm. Defaults to InrImage::ptr().
+     * @return void
+     **/
+    static void discsecdergrad(
+                                InrImage::ptr input,
+                                InrImage::ptr Isecder,
+                                InrImage::ptr Inormgrad = InrImage::ptr()
+                              );
 };
 
 
