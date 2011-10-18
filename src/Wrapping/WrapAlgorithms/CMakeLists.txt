@@ -52,8 +52,8 @@ IF(AMI_ENABLE_WRAPPING)
       FOREACH( inc ${ITK_INCLUDE_DIRS})
         SET( ITK_INCLUDES  -I${inc}  ${ITK_INCLUDES} )
       ENDFOREACH(inc ${ITK_INCLUDE_DIRS})
-       SET( ITK_INCLUDES -I/home/karl/projects/Install/amilab/InsightToolkit-3.20.0/Utilities/vxl/vcl/generic/ ${ITK_INCLUDES} )
-       SET( ITK_INCLUDES -I/home/karl/projects/Install/amilab/InsightToolkit-3.20.0/Utilities/vxl/core/vnl/ ${ITK_INCLUDES} )
+       #SET( ITK_INCLUDES -I/home/karl/projects/Install/amilab/InsightToolkit-3.20.0/Utilities/vxl/vcl/generic/ ${ITK_INCLUDES} )
+       #SET( ITK_INCLUDES -I/home/karl/projects/Install/amilab/InsightToolkit-3.20.0/Utilities/vxl/core/vnl/ ${ITK_INCLUDES} )
     ENDIF(ITK_INCLUDE_DIRS)
      IF   (ITK_REQUIRED_CXX_FLAGS)
        FOREACH( def ${ITK_REQUIRED_CXX_FLAGS})
@@ -98,6 +98,10 @@ IF(AMI_ENABLE_WRAPPING)
   IF(WIN32)
     SET(GCCXML_FLAGS ${GCCXML_FLAGS} -D_WIN32 -DWIN32 -D_MSC_VER)
   ENDIF(WIN32)
+  # Add Frameworks information
+  IF(APPLE)
+    SET(GCCXML_FLAGS ${GCCXML_FLAGS} -F /System/Library/Frameworks )
+  ENDIF(APPLE)
   MESSAGE("GCCXML_FLAGS='${GCCXML_FLAGS}'")
 
   #
@@ -123,7 +127,7 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
 #   )
   MESSAGE("${GCCXML}  -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language  -I${AMILAB_SOURCE_DIR}/Algorithms/include  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${ITK_INCLUDES} ${WX_INCLUDES}  ${ITK_DEFS} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}")
   execute_process(
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include -I${AMILAB_SOURCE_DIR}/CommonBase -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${ITK_INCLUDES} ${WX_INCLUDES} ${ITK_DEFS} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${OPENGL_INCLUDE_DIR} -I${AMILAB_SOURCE_DIR}/Wrapping/include -I${AMILAB_SOURCE_DIR}/CommonBase -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language -I${AMILAB_SOURCE_DIR}/Algorithms/include -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${ITK_INCLUDES} ${WX_INCLUDES} ${ITK_DEFS} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}
     OUTPUT_VARIABLE gccxml_result
     ERROR_VARIABLE gccxml_error
   )

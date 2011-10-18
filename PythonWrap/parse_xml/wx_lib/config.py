@@ -24,7 +24,7 @@ def get_include_file(classname, filename):
   if s.find("paletteg.h")!=-1:  s = "wx/palette.h"
   # AD-HOC fixes, can be improved ...
   if classname.find("Aui")!=-1: s = "wx/aui/aui.h"
-  #if classname=="wxDC":         s = "wx_includes.h"
+  if classname=="wxDC":         s = "wx/dc.h"
   #if classname=="wxListCtrl":   s = "wx_includes.h"
   #if classname=="wxBitmap":     s = "wx_includes.h"
   #if classname=="wxRegionBase": s = "wx_includes.h"
