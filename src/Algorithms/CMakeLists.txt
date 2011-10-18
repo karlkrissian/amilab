@@ -48,6 +48,10 @@ SET(Algorithms_SRCS
   StructureTensor.cpp
   HessianMatrix.cpp
   Eigen3D.cpp
+  DiscSecDerGrad.cpp
+  NormGrad.cpp
+  DiscNormGrad.cpp
+  DiscMeanCurvature.cpp
 
   # files coming from previous Filtering directory
   bruit.cpp
@@ -106,6 +110,10 @@ SET(Algorithms_HDRS
   include/StructureTensor.h
   include/HessianMatrix.h
   include/Eigen3D.h
+  include/DiscSecDerGrad.h
+  include/NormGrad.h
+  include/DiscNormGrad.h
+  include/DiscMeanCurvature.h
 
   # files coming from previous Filtering directory
   include/bruit.hpp

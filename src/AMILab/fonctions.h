@@ -91,12 +91,6 @@ InrImage* Func_OpImage( InrImage* im1, InrImage* im2, InrImage* im3,
 InrImage* Func_Filter( InrImage* im, float sigma,
                int der_x, int der_y, int der_z);
 
-InrImage* Func_NormGrad( InrImage* im, float sigma, int support=4 );
-
-InrImage* Func_DiscNormGrad( InrImage* im );
-
-InrImage* Func_DiscMeanCurvature( InrImage* im );
-
 InrImage* Func_Gradient( InrImage* im, float sigma );
 
 
@@ -105,7 +99,6 @@ InrImage* Func_SecDerGrad( InrImage* im, float sigma );
 // Don't use voxel size
 InrImage* Func_SecDerGrad2( InrImage* im, float sigma );
 
-void      Func_DiscSecDerGrad( InrImage* im, InrImage* Isecder, InrImage* Inormgrad = NULL);
 
 
 int AskImage   (  std::string& name);

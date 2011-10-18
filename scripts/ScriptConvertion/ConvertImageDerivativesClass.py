@@ -78,6 +78,18 @@ if __name__ == "__main__":
     # --------- discsecdergrad with 3 arguments -------------
     (r"discsecdergrad\(([^,]+),([^,]+),([^,\)]+)\)",
      r'ImageDerivativesClass.discsecdergrad(\1,&\2,&\3)')
+    ,
+    # --------- normgrad with 2 arguments -------------
+    (r"normgrad\(([^,]+),([^,\)]+)\)",
+     r'ImageDerivativesClass.normgrad(&\1,\2)')
+    ,
+    # --------- discnormgrad with 1 argument -------------
+    (r"discnormgrad\(([^,\)]+)\)",
+     r'ImageDerivativesClass.discnormgrad(&\1)')
+    ,
+    # --------- DiscMeanCurvature with 1 argument -------------
+    (r"DiscMeanCurvature\(([^,\)]+)\)",
+     r'ImageDerivativesClass.DiscMeanCurvature(&\1)')
     ]
     
   scripts=[]

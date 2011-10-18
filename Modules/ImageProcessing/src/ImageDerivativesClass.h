@@ -286,6 +286,41 @@ public:
                                 InrImage::ptr Isecder,
                                 InrImage::ptr Inormgrad = InrImage::ptr()
                               );
+
+  /**
+   * @brief Image Gradient Norm based on convolution with Gaussian derivatives.
+   *
+   * @param input Input image
+   * @param sigma Gaussian standard deviation
+   * @param support Gaussian convolution suppport size (number of times the standard deviation: support.sigma) Defaults to 4.
+   * @return void
+   **/
+  static InrImage::ptr normgrad(
+                        InrImage::ptr input,
+                        double sigma,
+                        double support = 4
+                      );
+    
+  /**
+   * @brief Discrete gradient norm
+   *
+   * @param input Input image
+   * @return Resulting gradient norm 
+   **/
+  static InrImage::ptr discnormgrad(
+                        InrImage::ptr input
+                      );
+
+  /**
+   * @brief Discrete mean curvature
+   *
+   * @param input Input image
+   * @return Resulting image of mean curvature
+   **/
+  static InrImage::ptr DiscMeanCurvature(
+                        InrImage::ptr input
+                      );
+  
 };
 
 

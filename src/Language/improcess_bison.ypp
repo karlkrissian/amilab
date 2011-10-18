@@ -55,6 +55,10 @@
 #include "StructureTensor.h"
 #include "HessianMatrix.h"
 #include "Eigen3D.h"
+#include "DiscSecDerGrad.h"
+#include "NormGrad.h"
+#include "DiscNormGrad.h"
+#include "DiscMeanCurvature.h"
 #include "func_isoline.hpp"
 
 #include "ami_function.h"

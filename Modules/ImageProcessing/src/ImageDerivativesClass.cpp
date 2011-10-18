@@ -3,6 +3,10 @@
 #include "StructureTensor.h"
 #include "HessianMatrix.h"
 #include "Eigen3D.h"
+#include "DiscSecDerGrad.h"
+#include "NormGrad.h"
+#include "DiscNormGrad.h"
+#include "DiscMeanCurvature.h"
 
 //------------------------------------------------------------------------------
 void ImageDerivativesClass::StructTensor(InrImage::ptr input, std::string name, 
@@ -165,6 +169,30 @@ void ImageDerivativesClass::discsecdergrad(
                             InrImage::ptr Inormgrad 
                           )
 {
-//  Func_DiscSecDerGrad(input.get,Isecder.get(),Inormgrad.get());
+  Func_DiscSecDerGrad(input.get(),Isecder.get(),Inormgrad.get());
 }
 
+//------------------------------------------------------------------------------
+InrImage::ptr ImageDerivativesClass::normgrad(
+                        InrImage::ptr input,
+                        double sigma,
+                        double support
+                      )
+{
+  InrImage::ptr res ( Func_NormGrad( input.get(), sigma, support));
+  return res;
+}
+
+//------------------------------------------------------------------------------
+InrImage::ptr ImageDerivativesClass::discnormgrad(  InrImage::ptr input )
+{
+  InrImage::ptr res (Func_DiscNormGrad( input.get()));
+  return res;
+}
+
+//------------------------------------------------------------------------------
+InrImage::ptr ImageDerivativesClass::DiscMeanCurvature( InrImage::ptr input )
+{
+  InrImage::ptr res (Func_DiscMeanCurvature( input.get()));
+  return res;
+}
