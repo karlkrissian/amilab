@@ -159,12 +159,12 @@ void ImageDerivativesClass::Eigen2D(
 }
 
 //------------------------------------------------------------------------------
-static void discsecdergrad(
+void ImageDerivativesClass::discsecdergrad(
                             InrImage::ptr input,
                             InrImage::ptr Isecder,
-                            InrImage::ptr Inormgrad = InrImage::ptr()
+                            InrImage::ptr Inormgrad 
                           )
 {
-  Func_DiscSecDerGrad(input.get,Isecder.get(),Inormgrad.get());
+//  Func_DiscSecDerGrad(input.get,Isecder.get(),Inormgrad.get());
 }
 

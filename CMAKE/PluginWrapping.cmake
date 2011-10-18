@@ -84,6 +84,7 @@ ELSE(MYCOMMAND_RESULT)
   SET(MYCOMMAND_2 ${PYTHON_EXECUTABLE})                          #Command
   SET(MYCOMMAND_2 ${MYCOMMAND_2} ${AMI_WRAPPER})                 #Wrapper
   SET(MYCOMMAND_2 ${MYCOMMAND_2} ${XML_OUTPUT})                  #Input
+  SET(MYCOMMAND_2 ${MYCOMMAND_2} "--libname" "${CMAKE_PROJECT_NAME}")
   SET(MYCOMMAND_2 ${MYCOMMAND_2} "--ancestors" ${classes_list})  #Options
   SET(MYCOMMAND_2 ${MYCOMMAND_2} "--ancestors-file" ${ANCESTORS_FILE} "-q")
   IF(DEFINED AVAILABLE_EXTERNAL_CLASSES)

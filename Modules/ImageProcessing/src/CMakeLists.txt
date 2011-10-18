@@ -135,7 +135,6 @@ CONFIGURE_FILE(
     ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/dllpath.amil
     )
 
-ADD_LIBRARY(${KIT} MODULE ${${KIT}_SRCS} )
 
 SET(amilab_ownlibs
   ${LanguageBase}
@@ -146,7 +145,12 @@ SET(amilab_ownlibs
   ${Algorithms}
 )
 
+MESSAGE("VTK_USE_FILE=${VTK_USE_FILE}")
 INCLUDE(${VTK_USE_FILE})
+MESSAGE("VTK_LIBRARY_DIRS=${VTK_LIBRARY_DIRS}")
+
+LINK_DIRECTORIES( ${LINK_DIRECTORIES} ${VTK_LIBRARY_DIRS} )
+
 SET(LINK_VTK
   vtkGraphics
   vtkImaging
@@ -161,9 +165,10 @@ SET(LINK_VTK
   vtkCharts
 )
 
+ADD_LIBRARY(${KIT} MODULE ${${KIT}_SRCS} )
 
   
-IF(WIN32)
+IF(WIN32 OR APPLE)
   # conflict between freetype and vtkfreetype
   TARGET_LINK_LIBRARIES( ${KIT}
     ${amilab_ownlibs}
@@ -173,17 +178,17 @@ IF(WIN32)
     )
   TARGET_LINK_LIBRARIES( ${KIT}
     ITKIO
-    ITKAlgorithms
-    itkvnl
-    itkvnl_algo
+    #ITKAlgorithms
+    #itkvnl
+    #itkvnl_algo
   )
   TARGET_LINK_LIBRARIES( ${KIT} ${ZLIB_LIBRARIES})
   TARGET_LINK_LIBRARIES( ${KIT} ${BZIP2_LIBRARIES})
-ELSE(WIN32)
+ELSE(WIN32 OR APPLE)
   TARGET_LINK_LIBRARIES( ${KIT}
     ${LINK_VTK}
   )
-ENDIF(WIN32)
+ENDIF(WIN32 OR APPLE)
 
 IF(GENERATE_HTML_HELP)
   # check if doxygen is even installed
