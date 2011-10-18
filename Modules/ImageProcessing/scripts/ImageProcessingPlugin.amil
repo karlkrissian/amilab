@@ -13,16 +13,37 @@ Class ImageProcessingPlugin \
     # Make this platform independent, using a .in file ?
     found=false
     func "dllpath"
-    if wx.wxFileName(dllpath+"/libImageProcessing.so").FileExists() {
-      SetStatusText("Loading "+dllpath+"/libImageProcessing.so")
-      ::plugin_mgr.Load(dllpath+"/libImageProcessing.so")
-      found=true
+    f_so = wx.wxArrayString()
+    found_so = wx.wxDir.GetAllFiles(dllpath,&f_so,"*ImageProcessing.so")
+
+    f_dll = wx.wxArrayString()
+    found_dll = wx.wxDir.GetAllFiles(dllpath,&f_dll,"*ImageProcessing.dll")
+
+    if found_so+found_dll>1 {
+      InfoDialog "Found several libraries under directory %1%" % dllpath
     }
-    if wx.wxFileName(dllpath+"/Debug/ImageProcessing.dll").FileExists() {
-      SetStatusText("Loading "+dllpath+"/Debug/ImageProcessing.dll")
-      ::plugin_mgr.Load(dllpath+"/Debug/ImageProcessing.dll")
-      found=true
+
+    # try to load .so library
+    if found_so>0 {
+      libname = wx.FromWxString(f_so[0])
+      SetStatusText("Loading "+libname)
+      found = ::plugin_mgr.Load(libname)
     }
+
+    # try to load .dll library
+    if !found && (found_dll>0) {
+      libname = wx.FromWxString(f_dll[0])
+      SetStatusText("Loading "+libname)
+      found = ::plugin_mgr.Load(libname)
+    }
+
+    #if wx.wxFileName(dllpath+"/libImageProcessing.so").FileExists() {
+    #}
+    #if wx.wxFileName(dllpath+"/Debug/ImageProcessing.dll").FileExists() {
+      #SetStatusText("Loading "+dllpath+"/Debug/ImageProcessing.dll")
+      #::plugin_mgr.Load(dllpath+"/Debug/ImageProcessing.dll")
+      #found=true
+    #}
     if found {
       ::plugin_mgr.Getplugin().Execute()
     } else {
