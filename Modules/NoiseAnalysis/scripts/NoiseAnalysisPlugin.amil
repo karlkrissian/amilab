@@ -1,0 +1,68 @@
+
+del NoiseAnalysisPlugin
+
+
+Class NoiseAnalysisPlugin \
+{
+
+  proc ::Init() {
+    ::plugin_mgr=wx.wxPluginManager()
+  }
+
+  proc ::Load() {
+    # Make this platform independent, using a .in file ?
+    found=false
+    func "dllpath"
+    f_so = wx.wxArrayString()
+    found_so = wx.wxDir.GetAllFiles(dllpath,&f_so,"*NoiseAnalysis.so")
+
+    f_dll = wx.wxArrayString()
+    found_dll = wx.wxDir.GetAllFiles(dllpath,&f_dll,"*NoiseAnalysis.dll")
+
+    if found_so+found_dll>1 {
+      InfoDialog "Found several libraries under directory %1%" % dllpath
+    }
+
+    # try to load .so library
+    if found_so>0 {
+      libname = wx.FromWxString(f_so[0])
+      SetStatusText("Loading "+libname)
+      found = ::plugin_mgr.Load(libname)
+    }
+
+    # try to load .dll library
+    if !found && (found_dll>0) {
+      libname = wx.FromWxString(f_dll[0])
+      SetStatusText("Loading "+libname)
+      found = ::plugin_mgr.Load(libname)
+    }
+
+    #if wx.wxFileName(dllpath+"/libNoiseAnalysis.so").FileExists() {
+    #}
+    #if wx.wxFileName(dllpath+"/Debug/NoiseAnalysis.dll").FileExists() {
+      #SetStatusText("Loading "+dllpath+"/Debug/NoiseAnalysis.dll")
+      #::plugin_mgr.Load(dllpath+"/Debug/NoiseAnalysis.dll")
+      #found=true
+    #}
+    if found {
+      ::plugin_mgr.Getplugin().Execute()
+    } else {
+      InfoDialog("Dynamic Library not found")
+    }
+  }
+
+  proc ::UnLoad() {
+    # should delete variables in Buitin
+    del NoiseAnalysis
+    # need to call detach first, otherwise SEGFAULT!
+    ::plugin_mgr.Detach()
+    ::plugin_mgr.Unload()
+  }
+
+  proc ::ReLoad() {
+    ::UnLoad()
+    ::Load()
+  }
+
+  ::Init()
+}
