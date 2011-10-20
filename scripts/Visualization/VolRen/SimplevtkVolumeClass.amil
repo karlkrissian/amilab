@@ -4,13 +4,9 @@ if (!exists(SimplevtkVolumeClass)) {
   #  SimplevtkVolumeClass
   #-----------------------------------------------------
   Class SimplevtkVolumeClass {
-
     #----------------------------
     proc ::Init( ) \
     {
-      #::opacitywindow = 1000, "Opacity Window"
-      #::opacitylevel  = 1000, "Opacity Level"
-
       ::clip = UCHAR(0), "Enable/Disable clipping box"
       ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
       ::clip_interactive = UCHAR(1), "Interactive clipping"
@@ -18,7 +14,7 @@ if (!exists(SimplevtkVolumeClass)) {
 
       #::opacity_attenuation = 1, "Attenuation factor for the opacity"
 
-      ::maxmemory = INT(0), "Max. 3D texture GPU memory in Mb (2^8 bytes)"
+      ::maxmemory = INT(512), "Max. 3D texture GPU memory in Mb (2^8 bytes)"
       ::maxmemoryfraction = 1, "Maximal fraction of 3D max. 3D texture memory to use."
 
       ::SampleDistance = 1, "distance between samples used for rendering"
@@ -32,7 +28,7 @@ if (!exists(SimplevtkVolumeClass)) {
       ::specular_power = 15.0, "specular power"
       ::scalar_opacity_unitdistance = 0.8919, "scalar opacity unit distance"
 
-      ::blend_mode  = 0
+      ::blend_mode = INT(0), "0: Composite, 1: Maximum Intensity, 2:Minimum Intensity, 3:Additive_blend"
       ::volrenmapper_type = INT(0), "Volume Rendering Mapper type 0: GPU, 1: Fixed Point 2: Standard"
       ::colorFun=vtk.vtkColorTransferFunction.New()
       ::opacityFun=vtk.vtkPiecewiseFunction.New()
@@ -42,6 +38,39 @@ if (!exists(SimplevtkVolumeClass)) {
       ::property.SetInterpolationTypeToLinear()
     }
 
+  #----------------------------
+    proc ::InitInherit( ) \
+    {
+      ::clip = UCHAR(0), "Enable/Disable clipping box"
+      ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
+      ::clip_interactive = UCHAR(1), "Interactive clipping"
+      ::initialized=0
+
+      #::opacity_attenuation = 1, "Attenuation factor for the opacity"
+
+      ::maxmemory = INT(512), "Max. 3D texture GPU memory in Mb (2^8 bytes)"
+      ::maxmemoryfraction = 1, "Maximal fraction of 3D max. 3D texture memory to use."
+
+      ::SampleDistance = 1, "distance between samples used for rendering"
+      ::ImageSampleDistance = 1, "Sampling distance in the XY image dimensions. Default value of 1 meaning 1 ray cast per pixel. If set to 0.5, 4 rays will be cast per pixel. If set to 2.0, 1 ray will be cast for every 4 (2 by 2) pixels. This value will be adjusted to meet a desired frame rate when AutoAdjustSampleDistances is on. "
+      ::AutoAdjustSampleDistances = UCHAR(1), "Auto-adjust sample distances"
+
+      ::use_shade = UCHAR(1), "use shading"
+      ::ambient   = 0.15, "ambient coefficient"
+      ::diffuse   = 0.9, "diffuse coefficient"
+      ::specular  = 0.3, "specular coefficient"
+      ::specular_power = 15.0, "specular power"
+      ::scalar_opacity_unitdistance = 0.8919, "scalar opacity unit distance"
+
+      ::blend_mode = INT(0), "0: Composite, 1: Maximum Intensity, 2:Minimum Intensity, 3:Additive_blend"
+      ::volrenmapper_type = INT(0), "Volume Rendering Mapper type 0: GPU, 1: Fixed Point 2: Standard"
+      ::colorFun=vtk.vtkColorTransferFunction.New()
+      ::opacityFun=vtk.vtkPiecewiseFunction.New()
+      # Create the property and attach the transfer functions
+      ::property = vtk.vtkVolumeProperty.New()
+      ::property.SetIndependentComponents(1)
+      ::property.SetInterpolationTypeToLinear()
+    }
     #----------------------------
     proc ::SetText( STRING text ) {
 
@@ -239,6 +268,7 @@ if (!exists(SimplevtkVolumeClass)) {
               (exists(vtkAmiVolRen)) {
             ::volmapper = vtkAmiVolRen.vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.New()
           } else {
+            ::volrenmapper_type=0
             ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
           }
           # Check if the rendering is supported
@@ -455,7 +485,7 @@ if (!exists(SimplevtkVolumeClass)) {
       if (exists(::volmapper)) {
         if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
             (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") || \
-            (::volmapper.GetClassName()=="vtkAMILabOpenGLGPUMultiVolumeRayCastMapper") || 
+            (::volmapper.GetClassName()=="vtkAMILabOpenGLGPUMultiVolumeRayCastMapper") \
         {
           # update volmapper GPU settings
           ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
@@ -470,6 +500,7 @@ if (!exists(SimplevtkVolumeClass)) {
         }
       }
     }
+
     #----------------------------
     proc ::OnSampleDistance() \
     {

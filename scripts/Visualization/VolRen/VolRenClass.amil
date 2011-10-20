@@ -70,7 +70,6 @@ if (!exists(VolRenClass)) {
       index=::vbCtrl.GetSelection()
       if (exists(::input)) {
         imin = ::volVector[index].imhisto1.minval
-printn "valor min= %1%" % ::volVector[index].imhisto1.minval
         imax = ::volVector[index].imhisto1.maxval
         ::previewer.SetIntensityValues(imin, imax)
         ::previewer.Show()
@@ -120,7 +119,7 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
       ::tb.AddTool( tb_id+id, "Save curve", &bm,"Save the current curve")
       ::tb.Realize()
 
-      // add the toolbars to the manager
+      #add the toolbars to the manager
       ::mgr.AddPane(&::tb, wx.wxAuiPaneInfo().\
                   Name("VolRen").Caption("VolRen").\
                   ToolbarPane().Top().Position(2).\
@@ -384,10 +383,10 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
           ::volrenmapper_type=::volVector[0].volrenmapper_type
           ::win.Update(::volrentype_id)
         }
-
+        ::volVector[0].InitRenderer()
         ::SetRendererBg()
         ::volVector[0].OnRender()
-        ::volVector[0].InitRenderer()
+
 
         ::renwin_interact.Render()
         ::renwin_interact.Refresh()
@@ -688,11 +687,22 @@ printn "valor min= %1%" % ::volVector[index].imhisto1.minval
 
 
     #----------------------------
-    proc ::ChoiceBackground(OBJECT event) \
+    proc ::ChoiceBackground() \
     {
-printn "MIERDAAAAAAAAA= %1%" %::d
-event.Skip()
+      if (::d==1){
+        ::background_color=wx.wxColour(255,255,255)
+        ::background_color2=::background_color
+        ::UseGradientBackground=0
+  
+      }
+      if (::d==2){
+        ::background_color=wx.wxColour(0,0,0)
+        ::background_color2=::background_color
+        ::UseGradientBackground=0
 
+      }
+      ::SetRendererBg()
+      ::win.Update(-1)
     }
     #----------------------------
     # Redefinition of Close to close the panel tab in main_book
@@ -735,7 +745,7 @@ event.Skip()
         ::win.AddEnumChoice(::volrentype_id,"GPU mapper")
         ::win.AddEnumChoice(::volrentype_id,"FixedPoint mapper")
         ::win.AddEnumChoice(::volrentype_id,"Standard mapper")
-        ::win.AddEnumChoice(::volrentype_id,"AMILab GPU mapper (if available)")
+        ::win.AddEnumChoice(::volrentype_id,"AMILabGPU mapper")
 
 
       ::win.BeginBook()
@@ -785,33 +795,19 @@ event.Skip()
               ::win.SetCallback(&::SetRendererBg)
               ::win.AddColor("Color 2",&::background_color2)
               ::win.SetCallback(&::SetRendererBg)
+              ::win.AddBoolean(&::UseGradientBackground,"Gradient")
+              ::win.SetCallback(&::SetRendererBg)
             ::win.EndHorizontal()
-
-            ::win.AddBoolean(&::UseGradientBackground,"Gradient")
-            ::win.SetCallback(&::SetRendererBg)
 
             ::win.BeginHorizontal()
-::scCtrl = ::win.GetBookCtrl()
               ::d_id = ::win.AddEnum(&::d,"Background")
+              ::win.AddEnumChoice(::d_id,"Manual")
               ::win.AddEnumChoice(::d_id,"White")
               ::win.AddEnumChoice(::d_id,"Black")
-
-              ::evh_selected = wx.wxAmiEventHandler(&::ChoiceBackground)
-              ::evh_selected.SetSendListEvent(true)
-
-              ::scCtrl.Connect( wx.wxEVT_COMMAND_CHOICE_SELECTED,\
-                       &::evh_selected.GetEventFunction(),\
-                       &NULL,&::evh_selected)
-
-      ::scCtrl.Connect( ::d_id, wx.wxEVT_COMMAND_CHOICE_SELECTED \
-                  ,&::evh_selected.GetEventFunction(),\
-                  &NULL,&::evh_selected)
-
+              ::win.SetCallback(&::ChoiceBackground)
             ::win.EndHorizontal()
-
-
           ::win.EndBoxPanel()
-          
+
           ::vtk_camera_gui.AddGui(&::win)
           #::win.BeginBoxPanel("Camera control")
             #::win.AddInt(&::azimuth,"azimuth",-180,180)
