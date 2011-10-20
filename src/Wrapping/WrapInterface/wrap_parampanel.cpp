@@ -84,7 +84,7 @@ BasicVariable::ptr wrap_ParamPanel( ParamList* p)
   int n = 0;
   std::string* title = NULL;
 
-  if (!get_val_ptr_param<string>(    title, p, n)) HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<std::string>(    title, p, n)) HelpAndReturnVarPtr;
 
   Variable<AMIObject>::ptr var;
   wxWindow* parent = GB_main_wxFrame;
@@ -126,7 +126,7 @@ BasicVariable::ptr wrap_ParamPanel( ParamList* p)
 void  WrapClass_ParamPanel::
       wrap_ParamPanel::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"title of the tab.");
+  ADDPARAMCOMMENT_TYPE(std::string,"title of the tab.");
   ADDPARAMCOMMENT_TYPE(wxWindow,"Optional: other parent parampanel with a notebook.");
   return_comments = "A wrapped ParamPanel object.";
 }
@@ -139,7 +139,7 @@ BasicVariable::ptr WrapClass_ParamPanel::
   int n = 0;
   std::string* title = NULL;
 
-  if (!get_val_ptr_param<string>(    title, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>(    title, p, n)) ClassHelpAndReturn;
 
   Variable<AMIObject>::ptr var;
   wxWindow* parent = GB_main_wxFrame;
@@ -198,7 +198,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_BeginBook::CallMember( ParamList* 
   int id = this->_objectptr->GetObj()->BeginBook();
 
   // create integer variable to return
-  string name = (boost::format("book_%1%")%id).str();
+  std::string name = (boost::format("book_%1%")%id).str();
   RETURN_VARINT(id,name.c_str());
 }
 
@@ -251,7 +251,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_BeginBoxPanel::CallMember( ParamLi
 {
   std::string* label = NULL;
   int n = 0;
-  if (!get_val_ptr_param<string>( label,  p, n)) 
+  if (!get_val_ptr_param<std::string>( label,  p, n)) 
     ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->BeginBox( label->c_str());
@@ -287,7 +287,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_BeginPanel::CallMember( ParamList*
 {
   std::string* label = NULL;
   int n = 0;
-  if (!get_val_ptr_param<string>( label,  p, n)) 
+  if (!get_val_ptr_param<std::string>( label,  p, n)) 
     ClassHelpAndReturn;
 
   int id = this->_objectptr->GetObj()->BeginPanel( label->c_str());
@@ -330,7 +330,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddFloat::CallMember( ParamList* p
   int   n = 0;
 
   if (!get_var_param<float>(var, p, n))         ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n)) ClassHelpAndReturn;
   if (!get_val_param<float>( minval, p, n))     ClassHelpAndReturn;
   if (!get_val_param<float>( maxval, p, n))     ClassHelpAndReturn;
 
@@ -391,7 +391,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddInt::CallMember( ParamList* p)
   int  n = 0;
 
   if (!get_var_param<int>(var, p, n))          ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>(label, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>(label, p, n)) ClassHelpAndReturn;
   if (!get_int_param(minval, p, n))            ClassHelpAndReturn;
   if (!get_int_param(maxval, p, n))            ClassHelpAndReturn;
 
@@ -449,7 +449,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddEnum::CallMember( ParamList* p)
   int  var_id;
 
   if (!get_var_param<int>(var, p, n))           ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n,false))
+  if (!get_val_ptr_param<std::string>( label, p, n,false))
       ClassHelpAndReturn;
 
   // take care of default label value
@@ -490,7 +490,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddEnumChoice::CallMember( ParamLi
   int var_id;
 
   if (!get_int_param(id, p, n))                 ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->AddEnumChoice( id, &var_id, label->c_str());
 
@@ -601,7 +601,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddPage::CallMember( ParamList* p)
   Variable<AMIObject>::ptr var;
   int   n = 0;
 
-  if (!get_val_ptr_param<string>( title,  p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( title,  p, n)) ClassHelpAndReturn;
 
   int var_id;
 
@@ -670,8 +670,8 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddLabel::CallMember( ParamList* p
   int  n = 0;
   int  var_id;
 
-  if (!get_val_ptr_param<string>( label_name, p, n)) ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label_val, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label_name, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label_val, p, n)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->AddLabel( &var_id,
                 label_name->c_str(),
@@ -700,7 +700,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_SetLabelValue::CallMember( ParamLi
   //int  var_id;
 
   if (!get_val_param<int>( label_id, p, n)) ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label_val, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label_val, p, n)) ClassHelpAndReturn;
 
   this->_objectptr->GetObj()->SetLabelValue( label_id,
                 label_val->c_str());
@@ -725,17 +725,17 @@ void WrapClass_ParamPanel::wrap_AddFilename::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_ParamPanel::wrap_AddFilename::CallMember( ParamList* p)
 {
-  Variable<string>::ptr var;
+  Variable<std::string>::ptr var;
   std::string* label = NULL;
   std::string* defpath = NULL;
   std::string* defmask = NULL;
   int  n = 0;
   int  var_id;
 
-  if (!get_var_param<string>(var, p, n))          ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( defpath, p, n)) ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( defmask, p, n)) ClassHelpAndReturn;
+  if (!get_var_param<std::string>(var, p, n))          ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n))   ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( defpath, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( defmask, p, n)) ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
   
@@ -766,14 +766,14 @@ void WrapClass_ParamPanel::wrap_AddDirname::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_ParamPanel::wrap_AddDirname::CallMember( ParamList* p)
 {
-  Variable<string>::ptr var;
+  Variable<std::string>::ptr var;
   std::string* label = NULL;
 //  std::string* defpath = NULL;
   int  n = 0;
   int  var_id;
 
-  if (!get_var_param<string>(var, p, n))          ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+  if (!get_var_param<std::string>(var, p, n))          ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n))   ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
   
@@ -799,13 +799,13 @@ void WrapClass_ParamPanel::wrap_AddString::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_ParamPanel::wrap_AddString::CallMember( ParamList* p)
 {
-  Variable<string>::ptr var;
+  Variable<std::string>::ptr var;
   std::string* label = NULL;
   int  n = 0;
   int  var_id;
 
-  if (!get_var_param<string>(var, p, n))          ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+  if (!get_var_param<std::string>(var, p, n))          ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n))   ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
 
@@ -833,14 +833,14 @@ void WrapClass_ParamPanel::wrap_AddImageChoice::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_ParamPanel::wrap_AddImageChoice::CallMember( ParamList* p)
 {
-  Variable<string>::ptr var;
+  Variable<std::string>::ptr var;
   std::string* label = NULL;
   int  n = 0;
   boost::shared_ptr<wxArrayString> imagelist;
   int  var_id;
 
-  if (!get_var_param<string>(var, p, n))          ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+  if (!get_var_param<std::string>(var, p, n))          ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n))   ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
 
@@ -874,14 +874,14 @@ void WrapClass_ParamPanel::wrap_AddAMIObjectChoice::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_ParamPanel::wrap_AddAMIObjectChoice::CallMember( ParamList* p)
 {
-  Variable<string>::ptr var;
+  Variable<std::string>::ptr var;
   std::string* label = NULL;
   int  n = 0;
   boost::shared_ptr<wxArrayString> AMIObjectlist;
   int  var_id;
 
-  if (!get_var_param<string>(var, p, n))          ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+  if (!get_var_param<std::string>(var, p, n))          ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n))   ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
 
@@ -922,7 +922,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddBoolean::CallMember( ParamList*
   int  var_id;
 
   if (!get_var_param<unsigned char>(var, p, n))     ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n,false))   ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n,false))   ClassHelpAndReturn;
 
   // take care of default label value
   std::string label_val;
@@ -966,7 +966,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddButton::CallMember( ParamList* 
   int  n = 0;
   int  var_id;
 
-  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n))   ClassHelpAndReturn;
   if (!get_var_param<AMIFunction>(var, p, n))     ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
@@ -1001,7 +1001,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddBitmapButton::CallMember( Param
   int  n = 0;
   int  var_id;
 
-  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n))   ClassHelpAndReturn;
   if (!get_var_param<AMIFunction>(varfunc, p, n))     ClassHelpAndReturn;
   GET_OBJECT_PARAM(wxBitmap,bitmap,GetObj());
   if (!bitmap.get())                              ClassHelpAndReturn;
@@ -1037,7 +1037,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddColor::CallMember( ParamList* p
   int  n = 0;
   int  var_id;
 
-  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+  if (!get_val_ptr_param<std::string>( label, p, n))   ClassHelpAndReturn;
 
   GET_OBJECT_PARAM(wxColour,colour,GetObj());
   if (!colour.get())                              ClassHelpAndReturn;

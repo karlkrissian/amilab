@@ -103,7 +103,11 @@ InrImage* Func_SecDerGrad2( InrImage* im, float sigma );
 
 int AskImage   (  std::string& name);
 int AskFilename(  std::string& name);
-int AskVarName (   wxWindow* parent, const string title, const string label, const string def, std::string& name);
+int AskVarName (   wxWindow* parent, 
+                   const std::string title, 
+                   const std::string label, 
+                   const std::string def, 
+                   std::string& name);
 int AskSurface (  std::string& name);
 int AskScript  (  std::string& name);
 

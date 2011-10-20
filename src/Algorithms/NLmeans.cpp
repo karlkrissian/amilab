@@ -21,6 +21,13 @@
 #include <pthread.h>
 //#include "wrapfunctions.hpp"
 
+#ifndef macro_min
+  #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
+#endif
+
+#ifndef macro_max
+  #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#endif 
 
 //------------------------------------------------------------------
 double probability_weight2(InrImage* in, InrImage* smoothed,
@@ -73,13 +80,13 @@ double probability_weight2(InrImage* in, InrImage* smoothed,
     }else    fk1_min=fk1_max = 0;
 
     // combine restrictions
-    fi_min = max(fi_min,fi1_min);
-    fi_max = min(fi_max,fi1_max);
-    fj_min = max(fj_min,fj1_min);
-    fj_max = min(fj_max,fj1_max);
+    fi_min = macro_max(fi_min,fi1_min);
+    fi_max = macro_min(fi_max,fi1_max);
+    fj_min = macro_max(fj_min,fj1_min);
+    fj_max = macro_min(fj_max,fj1_max);
     if (tz>1) {
-      fk_min = max(fk_min,fk1_min);
-      fk_max = min(fk_max,fk1_max);
+      fk_min = macro_max(fk_min,fk1_min);
+      fk_max = macro_min(fk_max,fk1_max);
     }else    fk_min=fk_max = 0;
   } else {
     if (tz>1) {
@@ -203,13 +210,13 @@ double probability_weight(InrImage* in, int x,int y, int z,
     }
 
     // combine restrictions
-    fi_min = max(fi_min,fi1_min);
-    fi_max = min(fi_max,fi1_max);
-    fj_min = max(fj_min,fj1_min);
-    fj_max = min(fj_max,fj1_max);
+    fi_min = macro_max(fi_min,fi1_min);
+    fi_max = macro_min(fi_max,fi1_max);
+    fj_min = macro_max(fj_min,fj1_min);
+    fj_max = macro_min(fj_max,fj1_max);
     if (tz>1) {
-      fk_min = max(fk_min,fk1_min);
-      fk_max = min(fk_max,fk1_max);
+      fk_min = macro_max(fk_min,fk1_min);
+      fk_max = macro_min(fk_max,fk1_max);
     }
   } else {
     fi_min = fj_min = fk_min = -f;
@@ -348,13 +355,13 @@ double square_distance(InrImage* in, int x,int y, int z, int dx, int dy, int dz,
     }
 
     // combine restrictions
-    fi_min = max(fi_min,fi1_min);
-    fi_max = min(fi_max,fi1_max);
-    fj_min = max(fj_min,fj1_min);
-    fj_max = min(fj_max,fj1_max);
+    fi_min = macro_max(fi_min,fi1_min);
+    fi_max = macro_min(fi_max,fi1_max);
+    fj_min = macro_max(fj_min,fj1_min);
+    fj_max = macro_min(fj_max,fj1_max);
     if (tz>1) {
-      fk_min = max(fk_min,fk1_min);
-      fk_max = min(fk_max,fk1_max);
+      fk_min = macro_max(fk_min,fk1_min);
+      fk_max = macro_min(fk_max,fk1_max);
     }
   } else {
     fi_min = fj_min = fk_min = -f;

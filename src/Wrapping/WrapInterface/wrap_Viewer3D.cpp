@@ -72,7 +72,7 @@ Variable<AMIObject>::ptr WrapClass_Viewer3D::CreateVar( Viewer3D* sp)
 void   WrapClass_Viewer3D::
       wrap_Viewer3D::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"Title of viewer (by default, Viewer 3D).");
+  ADDPARAMCOMMENT_TYPE(std::string,"Title of viewer (by default, Viewer 3D).");
   return_comments = "A wrapped Viewer3D object.";
 }
 
@@ -83,7 +83,7 @@ BasicVariable::ptr  WrapClass_Viewer3D::
   if (!p) ClassHelpAndReturn;
   int n=0;
   //if (!get_var_param<string>(sTitle,p,n)) ClassHelpAndReturn;
-  GET_PARAM(string,sTitle,"Viewer 3D");
+  GET_PARAM(std::string,sTitle,"Viewer 3D");
 
   Viewer3D* oViewer3D = new Viewer3D(GB_main_wxFrame, wxString(sTitle.c_str(), wxConvUTF8));
 

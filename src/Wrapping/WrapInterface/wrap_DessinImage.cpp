@@ -1190,7 +1190,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   DessinImageParametres* param;
   param = di->GetParam();
   float val=param->_pos._x;
-  string comment;
+  std::string comment;
   comment = str(format(" //  xpos=%3d") % param->_pos._x);
   if(GB_DriverBase->InConsole())
     GB_main_wxFrame->GetConsole()
@@ -1217,7 +1217,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   DessinImageParametres* param;
   param = di->GetParam();
   float val=param->_pos._y;
-  string comment;
+  std::string comment;
   comment = str( format(" //  ypos=%3d") % param->_pos._y);
   if(GB_DriverBase->InConsole())
     GB_main_wxFrame->GetConsole()
@@ -1244,7 +1244,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   DessinImageParametres* param;
   param = di->GetParam();
   float val=param->_pos._z;
-  string comment;
+  std::string comment;
   comment = str( format(" //  zpos=%3d") % param->_pos._z);
   if(GB_DriverBase->InConsole())
     GB_main_wxFrame->GetConsole()

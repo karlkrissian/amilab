@@ -31,6 +31,7 @@
 #include "AMILabConfig.h"
 
 #ifndef _WITHOUT_ITK_
+#include <stddef.h>
 #include "itkImage.h"
 #include "itkFastMarchingImageFilter.h"
 #endif // _WITHOUT_ITK_

@@ -43,7 +43,7 @@
 #endif
 
 wxString GetwxStr(const char* str);
-wxString GetwxStr(const string& str);
+wxString GetwxStr(const std::string& str);
 
 //==============================================================================
 //      wxEnumerationParameter
@@ -270,7 +270,7 @@ void wxEnumerationParameter::OnEnumUpdate(void* data)
   if (_this->_selection_param.get()) 
   {
     std::string res = std::string(_this->_choice->GetStringSelection().mb_str(wxConvUTF8));
-    cout << __func__ << "setting selection string to " << res << endl;
+    std::cout << __func__ << "setting selection string to " << res << std::endl;
     *_this->_selection_param = res;
   }
   _this->Callback();
@@ -302,7 +302,7 @@ wxString wxEnumerationParameter::GetAbsoluteName(const wxString& Name)
   wxString Result= wxT("");
   wxString Text;
   wxArrayString choices;
-  string Simb;
+  std::string Simb;
   int Pos, Size;
 
   // eventually call update button callback function

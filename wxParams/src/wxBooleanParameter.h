@@ -17,6 +17,8 @@
 #include "StructParams.hpp"
 #include <string>
 
+#include <wx/checkbox.h>
+
 /*!
   \brief wxBooleanParameter: GUI for a boolean parameter
 */

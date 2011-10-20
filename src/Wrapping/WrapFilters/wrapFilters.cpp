@@ -1017,7 +1017,7 @@ BasicVariable::ptr Wrap_EigenDecomp(ParamList* p) {
   if (!get_val_ptr_param<InrImage>( mask,        p, n,false))   HelpAndReturnVarPtr;
 
 
-  vector<InrImage::ptr> result;
+  std::vector<InrImage::ptr> result;
 
   // how to do with smart pointers ???
   // should be managed by ParamList ...

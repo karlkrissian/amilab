@@ -83,7 +83,11 @@ LanguageBase_VAR_IMPORT VarContexts  Vars;
 // in function.cpp
 int AskScript(std::string& name);
 int AskImage(std::string& name);
-int AskVarName(wxWindow*,const string title, const string label,const string def, std::string& name);
+int AskVarName(wxWindow*,
+               const std::string title, 
+               const std::string label,
+               const std::string def, 
+               std::string& name);
 int AskSurface(     std::string& name);
 
 
@@ -2206,8 +2210,8 @@ void MainFrame::OnViewScript_bar( wxCommandEvent& event )
 void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
 {
   int res;
-  string name;
-  string varname;
+  std::string name;
+  std::string varname;
 //  string cmd; // increment the command line string
 
   res=AskImage(name);
@@ -2245,8 +2249,8 @@ bool MainFrame::TryToOpenImage( const wxString& string_filename)
     st = std::string("_")+st;
 
   int res=AskVarName( this,
-                  string("Image variable name"),
-                  string("Enter name:"),
+                  std::string("Image variable name"),
+                  std::string("Enter name:"),
                   st,
                   varname);
   if (!res) {
@@ -2288,7 +2292,7 @@ bool MainFrame::TryToOpenImage( const wxString& string_filename)
 void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
 {
 //  string cmd; // increment the command line string
-  string varname;
+  std::string varname;
   size_t pos = event.GetId() - wxID_Images_History;
   wxString filename(images_history->GetHistoryFile(pos));
   
@@ -2304,7 +2308,7 @@ void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
 void MainFrame::OnFileOpenScriptHistory ( wxCommandEvent& event )
 {
 //  string cmd; // increment the command line string
-  string varname;
+  std::string varname;
   size_t pos = event.GetId() - wxID_Scripts_History;
   wxString filename(scripts_history->GetHistoryFile(pos));
 
@@ -2326,8 +2330,8 @@ void MainFrame::OnFileOpenScriptHistory ( wxCommandEvent& event )
 void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
 {
   int res;
-  string name;
-  string varname;
+  std::string name;
+  std::string varname;
 //  string cmd; // increment the command line string
 
   res=AskSurface(name);
@@ -2350,9 +2354,9 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
   possible_name.Replace(wxT(")"),wxT("_"));
 
   res=AskVarName(this,
-        string("Surface variable name"),
-        string("Enter name:"),
-        string(possible_name.mb_str(wxConvUTF8)),
+        std::string("Surface variable name"),
+        std::string("Enter name:"),
+        std::string(possible_name.mb_str(wxConvUTF8)),
         varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;
@@ -2380,7 +2384,7 @@ void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
 {
   //cout << "Load script" << std::endl;
   int res;
-  string name;
+  std::string name;
 //  string cmd; // increment the command line string
 
   res=AskScript(name);
@@ -2675,7 +2679,7 @@ void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
   //cout << "MainFrame::OnUserMenuScript() ";
   //cout << "GetId() = "<< event.GetId() << std::endl;
   //cout << "script = " << usermenu_scripts[event.GetId()] << std::endl;
-  string cmd; // increment the command line string
+  std::string cmd; // increment the command line string
 
   
   wxString filename(usermenu_scripts[event.GetId()].c_str(),wxConvUTF8);

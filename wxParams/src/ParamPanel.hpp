@@ -58,7 +58,8 @@
 // including vector after wxwidget classes could
 // lead to problems because of the 'new' macro
 
-// includes for wxWidgets
+/*
+ * // includes for wxWidgets
 #include "wx/wxprec.h"
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -69,6 +70,16 @@
 #include <wx/propdlg.h>
 #include <wx/notebook.h>
 #include <wx/panel.h>
+//#include "ParamBox.hpp"
+#include <wx/scrolwin.h>
+#include <wx/toolbar.h>
+*/
+
+// forward declarations
+class wxStaticBox;
+class wxWindow;
+class wxNotebook;
+class wxBoxSizer;
 
 //#include "NoyauParametre.hpp"
 #include "widget.hpp"
@@ -125,11 +136,12 @@ typedef boost::shared_ptr<std::string>     string_ptr;
 \\
  */
 
-//#include "ParamBox.hpp"
-#include <wx/scrolwin.h>
-#include <wx/toolbar.h>
 
 #include "ParamInfo.h"
+#include <wx/scrolwin.h>
+#include <wx/toolbook.h>
+#include <wx/propdlg.h>
+#include <wx/generic/propdlg.h>
 
 /*!
   \brief ParamPanel: a wxPanel to include parameters

@@ -63,7 +63,7 @@
 #include "wxIntegerParameter.h"
 
 wxString GetwxStr(const char* str);
-wxString GetwxStr(const string& str);
+wxString GetwxStr(const std::string& str);
 
 
 

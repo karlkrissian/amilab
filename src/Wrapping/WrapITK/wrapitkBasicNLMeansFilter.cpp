@@ -31,7 +31,7 @@
 #include "AMILabConfig.h"
 
 #ifndef _WITHOUT_ITK_
-
+#include <stddef.h>
 #include "itkImage.h"
 #include "itkImageIOBase.h"
 #include "itkImageLinearConstIteratorWithIndex.h"

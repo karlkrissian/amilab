@@ -16,6 +16,7 @@
 #include "widget.hpp"
 #include <wx/filepicker.h>
 #include <wx/filename.h>
+#include <wx/stattext.h>
 
 #include "StructParams.hpp"
 

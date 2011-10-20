@@ -144,7 +144,7 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   SurfacePoly::ptr s(this->_objectptr->GetObj());
   std::string filename;
   int n=0;
-  if (!get_val_param<string>( filename, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string>( filename, p, n)) ClassHelpAndReturn;
 
   s->Write(filename.c_str());
   return BasicVariable::ptr();
@@ -185,7 +185,7 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   SurfacePoly::ptr s(this->_objectptr->GetObj());
   std::string filename;
   int n=0;
-  if (!get_val_param<string>( filename, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string>( filename, p, n)) ClassHelpAndReturn;
 
   Func_WriteCTALine(s.get(),filename.c_str());
   return BasicVariable::ptr();

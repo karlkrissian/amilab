@@ -1204,7 +1204,7 @@ SurfacePoly :: operator vtkPolyData* (void) const
     vtkPolyData*       vtk_surf;
     vtkDataArray       *vtk_normals;
     vtkDataArray       *vtk_colors;
-    vector<vtkIdType>  pts;
+    std::vector<vtkIdType>  pts;
 
     // Renumerotation pour ne sauver que les points utilises
     unsigned char       show_poly;
@@ -4237,7 +4237,7 @@ void SurfacePoly :: SaveSelectedLines( char* name)
     SurfPoly           poly;
     vtkPolyData*       vtk_lines;
     vtkPolyDataWriter* writer;
-    vector<vtkIdType>  pts;
+    std::vector<vtkIdType>  pts;
 
     // Renumerotation pour ne sauver que les points utilises
 
@@ -4416,7 +4416,7 @@ void SurfacePoly::SelectMinPath(int pt)
 
   // find the line of the current point
   if (path.distance[current_point]==
-      numeric_limits<weight_type>::max())
+      std::numeric_limits<weight_type>::max())
   {
     std::cerr << "SurfacePoly::SelectMinPath() \tNo path between points " << std::endl;
     return;

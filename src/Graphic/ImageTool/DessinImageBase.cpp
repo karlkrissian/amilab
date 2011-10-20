@@ -448,7 +448,7 @@ void DessinImageBase::UpdateStatusIntensity( int x, int y, int z)
     return;
   }
 
-  string intensity_string;
+  std::string intensity_string;
 
   if ((_image->_format == WT_RGB)||
       (_image->_format == WT_RGBA)) {
@@ -1558,7 +1558,7 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
                                 int Ox, int Oy)
 {
   float   px,py;
-  string  num_str;
+  std::string  num_str;
   int     text_pixel_step;
   float   unit,text_unit_step;
   int     unit_scale = 0;

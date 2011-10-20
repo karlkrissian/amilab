@@ -102,7 +102,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 void WrapClass_GLTransfMatrix::
       wrap_save::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"Image name.");
+  ADDPARAMCOMMENT_TYPE(std::string,"Image name.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_GLTransfMatrix::
@@ -113,7 +113,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sImageName,"");
+  GET_PARAM(std::string,sImageName,"");
 
   if(sImageName != "")
   {
@@ -135,7 +135,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 void WrapClass_GLTransfMatrix::
       wrap_read::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"Image name.");
+  ADDPARAMCOMMENT_TYPE(std::string,"Image name.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_GLTransfMatrix::
@@ -146,7 +146,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sImageName,"");
+  GET_PARAM(std::string,sImageName,"");
 
   if(sImageName != "")
   {
