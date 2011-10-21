@@ -42,11 +42,15 @@ Class PreviewerClass \
     ::LoadCurves()
     ::cols=2
     ::files=2
-    ::Gui()
     ::x_min=0
     ::x_max=0
     ::active_window=0
     ::apply_window=::active_window
+
+    //::Gui()
+  }
+
+  proc ::PostGuiInit(){
     ::isAvailable=  vector_int(::files*::cols,0)
     ::InfoTextVector[::active_window].SetForegroundColour( wx.wxColour(255,0,0))
     ::SVCVector = VarVector()
@@ -264,11 +268,17 @@ Class PreviewerClass \
   }
 
   #----------------------------
-  proc ::Close() \
-  {
+  proc ::Destroy(){
+   del ::vtkcurve
+   del ::SVCVector
+   del ::RWIVector
     ::frame.Destroy()
   }
 
+  #----------------------------
+  proc ::Close(){
+    ::Hide()
+  }
   #----------------------------
   proc ::GetSelection(){
     index= ::choice1.GetCurrentSelection()
@@ -276,6 +286,7 @@ Class PreviewerClass \
     ::Rotate(::apply_window)
     return = &::CurveVector[indexCurve]
     ::Hide()
+    //::Close()
   }
 
   #----------------------------
@@ -386,7 +397,7 @@ Class PreviewerClass \
     # Create a Frame
     ::frame = wx.wxFrame( &ami.MainFrame,wx.wxID_ANY,"Previewer", \
                           wx.wxPoint(100,100),wx.wxSize(300,300),\
-                          wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX|wx.wxMAXIMIZE_BOX,\
+                          wx.wxRESIZE_BORDER|wx.wxMAXIMIZE_BOX,\
                           "test")
    ::frame.CenterOnParent()
     # Create a panel with a sizer
@@ -406,10 +417,15 @@ Class PreviewerClass \
                        &NULL,&::evh_selected)
     #button
     ::b_Apply = wx.wxButton(&::panel,wx.wxID_ANY,"Apply")
+    ::b_Close = wx.wxButton(&::panel,wx.wxID_ANY,"Close")
     #button event 
     evh1 = wx.wxAmiEventHandler(&::Apply)
     ::b_Apply.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,\
                       &evh1.GetEventFunction(),&NULL,&evh1)
+
+    evh2 = wx.wxAmiEventHandler(&::Close)
+    ::b_Close.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,\
+                      &evh2.GetEventFunction(),&NULL,&evh2)
     #line separator
     line=wx.wxStaticLine(&::panel,wx.wxID_ANY)
 
@@ -423,6 +439,8 @@ Class PreviewerClass \
     #wxvtkIterator vector
     ::RWIVector= VarVector()
     ::InfoTextVector=VarVector()
+
+
     for n=0 to ::cols*::files-1 {
       del wxvtkI
       wxvtkI =  vtktools.wxVTKRenderWindowInteractor(&::panel,::wxvtk_id+n)
@@ -455,7 +473,11 @@ Class PreviewerClass \
       gridsizer.Add(  &boxsizer,\
                       &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
     }
-    boxsizerB.Add(&::b_Apply,&wx.wxSizerFlags(0).Right())
+
+    //boxsizerB.Add(&::b_Apply,wx.wxLEFT)
+    //boxsizerB.Add(&::b_Close,wx.wxRIGHT)
+    boxsizerB.Add(&::b_Apply, 0, wx.wxLEFT,    1)
+    boxsizerB.Add(&::b_Close, 0, wx.wxRIGHT,   1)
     ::boxsizerM.Add(&::choice1, 0, wx.wxALL | wx.wxEXPAND | wx.wxLEFT,    1)
     ::boxsizerM.Add(&gridsizer, 1, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,  1)
     ::boxsizerM.Add(&line,      0, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,  1)
@@ -464,6 +486,7 @@ Class PreviewerClass \
 
     ::panel.SetSizer(&::boxsizerM ) 
     ::frame.SetMinSize(wx.wxSize(300,300))
+    ::PostGuiInit()
   }
 
   ::Init()

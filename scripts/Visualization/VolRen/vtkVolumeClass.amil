@@ -151,7 +151,10 @@ if (!exists(vtkVolumeClass)) {
           #c = size
         #} else {
           #::linearcurve1 = curve
+          ::imhisto1.dw.DrawLinearCM()
           ccurv = &::imhisto1.dw.GetControlledCurves()
+          printn "NUM CURV %1%" %ccurv.size()
+          printn "linearcurve1_id %1%" %::linearcurve1_id
           if (::linearcurve1_id<ccurv.size()) {
             ccurv[::linearcurve1_id] = curve
           } else {
@@ -347,6 +350,7 @@ if (!exists(vtkVolumeClass)) {
                 ::selected_curv.r2, ::selected_curv.g2, ::selected_curv.b2, ::selected_curv.Gradient ) 
      
       if (!exists(::imhisto1->h)) {
+
         ::UpdateHistogram()
       }
       hmax = max(::imhisto1.h[0])

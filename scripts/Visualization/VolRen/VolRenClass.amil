@@ -59,14 +59,20 @@ if (!exists(VolRenClass)) {
         ::volVector.push_back(&aux)
       }
 
-      ##Preview_obj
+      #Preview_obj
       ::previewerclass ::previewer
+      ::previewer.Gui()
       ::previewer.SetApplyCallback(&::PreviewApplied)
 
     }
     #----------------------------
     proc ::Preview() \
     {
+      #del ::previewer
+      #::previewerclass ::previewer
+      #::previewer.Gui()
+      #::previewer.SetApplyCallback(&::PreviewApplied)
+
       index=::vbCtrl.GetSelection()
       if (exists(::input)) {
         imin = ::volVector[index].imhisto1.minval
@@ -716,7 +722,7 @@ if (!exists(VolRenClass)) {
       ::mgr.Update()
 
       if (exists(::previewer)){
-        ::previewer.Close()
+        ::previewer.Destroy()
         del ::previewer
       }
       delvars GetObjectName(::Close)
@@ -745,7 +751,7 @@ if (!exists(VolRenClass)) {
         ::win.AddEnumChoice(::volrentype_id,"GPU mapper")
         ::win.AddEnumChoice(::volrentype_id,"FixedPoint mapper")
         ::win.AddEnumChoice(::volrentype_id,"Standard mapper")
-        ::win.AddEnumChoice(::volrentype_id,"AMILabGPU mapper")
+        ::win.AddEnumChoice(::volrentype_id,"AMILab mapper")
 
 
       ::win.BeginBook()
