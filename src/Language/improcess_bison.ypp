@@ -3705,7 +3705,7 @@ command:
       float* tabx;
       float* taby;
       GnuPlot   gnuplot;
-      int x,num_courbe;
+      int x;
       std::string name;
 
       tabx = new float[image->_tx];
@@ -3718,7 +3718,8 @@ command:
           //cout << boost::format("%1%,%2% --> %3%")%x%y%taby[x] << std::endl;
         FinPour
         name =  (boost::format("%s_%02d")%$5%y).str();
-        num_courbe = gnuplot.AddCourbe( image->_tx, tabx, taby, name.c_str());
+        //num_courbe = 
+        gnuplot.AddCourbe( image->_tx, tabx, taby, name.c_str());
       }
 
       name =  (boost::format("%s.gnuplot")%$5).str();
@@ -6358,7 +6359,7 @@ image:
       // 5: number of iterations
       //
       int        nb_iter,i;
-      float      error;
+      //float      error;
 
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -6370,7 +6371,8 @@ image:
       if (nb_iter < 1) nb_iter = 1;
 
       Pour(i,1,nb_iter)
-        error = Func_ItereFlux(varim2->Pointer().get(),$9);
+        //error = 
+        Func_ItereFlux(varim2->Pointer().get(),$9);
       FinPour
 
       InrImage::ptr res ( Func_AnisoGS_GetOutput());
@@ -6419,7 +6421,7 @@ image:
     T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
       int        nb_iter,i;
-      float       error;
+      //float       error;
 
       GET_VARSTACK_VALUE(InrImage, im);
       Func_InitAnisoGS( im.get(), $5,  $7, $9);
@@ -6431,7 +6433,8 @@ image:
       if (nb_iter < 1) nb_iter = 1;
 
       Pour(i,1,nb_iter)
-        error = Func_ItereAnisoGS();
+        //error = 
+        Func_ItereAnisoGS();
       FinPour
       InrImage::ptr res ( Func_AnisoGS_GetOutput());
       Si !res.get() Alors

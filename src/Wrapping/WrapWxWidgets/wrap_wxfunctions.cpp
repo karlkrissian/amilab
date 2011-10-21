@@ -99,7 +99,8 @@ BasicVariable::ptr wrap_FromWxString( ParamList* p)
   if (!get_val_smtptr_param<wxString>( input_smtptr, p, n)) HelpAndReturnVarPtr;
   if (input_smtptr.get()) {
     //std::cout << "Data: " << (*input_smtptr).ToAscii()<< " - " << input_smtptr->ToAscii().data() << std::endl;
-    return AMILabType< std::string >::CreateVar( new std::string( (*input_smtptr).ToAscii() ) );
+    BasicVariable::ptr res = AMILabType< std::string >::CreateVar( new std::string( (*input_smtptr).char_str() ) );
+    return res;
   }
   else
     return BasicVariable::ptr();

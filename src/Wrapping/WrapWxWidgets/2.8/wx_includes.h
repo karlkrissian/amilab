@@ -15,6 +15,7 @@
 #include <wx/dir.h>
 #include <wx/dynlib.h>
 #include <wx/filename.h>
+#include <wx/ffile.h>
 #include <wx/html/htmlwin.h>
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>

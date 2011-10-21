@@ -48,14 +48,15 @@ wxDynamicLibraryDetailsArray
 wxEvent
 wxEventTable
 wxEvtHandler
-wxFSFile
 wxFileName
 wxFileSystem
 wxFileSystemHandler
+wxFFile
 wxFlexGridSizer
 wxFocusEvent
 wxFont
 wxFrame
+wxFSFile
 wxGDIObject
 wxGridSizer
 wxHelpEvent
