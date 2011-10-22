@@ -9,19 +9,19 @@
  * Copyright: See COPYING file that comes with this distribution
  *
  **/
-
+#pragma once
 #ifndef _wrap_${FUNCTION}_h_
 #define _wrap_${FUNCTION}_h_
 
 /*
 #include "wrapfunction_class.h"
-#include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
 */
+#include "wrapfunctions.hpp"
 
-#include "${INCLUDEFILE}"
+${INCLUDEFILES}
 
 
 // Standard function

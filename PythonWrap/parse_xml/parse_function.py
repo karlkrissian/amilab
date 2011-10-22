@@ -31,13 +31,15 @@ def IsTemplate(classname):
 class FindFunction(handler.ContentHandler):
   def __init__(self, funcname):
     self.search_funcname = funcname
-    self.name = funcname
-    self.found=False
-    self.infunc=False
-    self.fileid=""
-    self.duplicated=False
-    self.args=[]
-    self.missingtypes=False
+    self.name         = funcname
+    self.usedname     = FunctionUsedName(funcname)
+    self.static       = "0"
+    self.found        = False
+    self.infunc       = False
+    self.fileid       = ""
+    self.duplicated   = False
+    self.args         = []
+    self.missingtypes = False
 
   #---------------------------------------------
   def CheckEnumDefault(self, default):
@@ -45,7 +47,7 @@ class FindFunction(handler.ContentHandler):
     if default in config.enumvalues.keys():
       typeid = config.enumvalues[default]
       if typeid in config.types.keys():
-        print "replacing {0} by {1}::{0} ".format(default,config.types[typeid].GetString())
+        #print "replacing {0} by {1}::{0} ".format(default,config.types[typeid].GetString())
         return "{1}::{0}".format(default,config.types[typeid].GetString())
     return default
   
@@ -69,34 +71,39 @@ class FindFunction(handler.ContentHandler):
     return res
 
   #---------------------------------------------
+  def CheckArgument(self, name, attrs):
+    # process arguments
+    if name=='Argument':
+      typeid=attrs.get('type',None)
+      argname=attrs.get('name',None)
+      default=attrs.get('default',None)
+      if argname==None:
+        argname='param{0}'.format(len(self.method.args))
+      if typeid in config.types.keys():
+        typename=config.types[typeid].GetFullString(),
+      else:
+        typename=typeid,
+      utils.WarningMessage("\t\t {0} \t\t {1}".format(typename,argname))
+      # append argument to list
+      arg=arginfo.ArgInfo()
+      arg.name=argname
+      arg.typeid=typeid
+      if default != None:
+        arg.default=self.CheckEnumDefault(default)
+      else:
+        arg.default=None
+      self.args.append(arg)
+      return True
+    else:
+      utils.WarningMessage( "Non-argument in method: {0}\n".format(name))
+
+#---------------------------------------------
   def startElement(self, name, attrs):
     # Parse function arguments
     if self.infunc==1:
-      # process arguments
-      if name=='Argument':
-        typeid=attrs.get('type',None)
-        argname=attrs.get('name',None)
-        default=attrs.get('default',None)
-        if argname==None:
-          argname='param{0}'.format(len(self.method.args))
-        if typeid in config.types.keys():
-          typename=config.types[typeid].GetFullString(),
-        else:
-          typename=typeid,
-        utils.WarningMessage("\t\t {0} \t\t {1}".format(typename,argname))
-        # append argument to list
-        arg=arginfo.ArgInfo()
-        arg.name=argname
-        arg.typeid=typeid
-        if default != None:
-          arg.default=self.CheckEnumDefault(default)
-        else:
-          arg.default=None
-        self.args.append(arg)
-      else:
-        utils.sWarningMessage( "Non-argument in method: {0}\n".format(name))
+      return self.CheckArgument(name,attrs)
       
-    if (name != "Function"): return
+    if self.found or (name != "Function"): return
 
     funcname = attrs.get('name', None)
     demangled=attrs.get('demangled',None)

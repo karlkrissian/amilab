@@ -33,7 +33,8 @@ bool ImageProcessingPlugin::Execute(void)
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("ImageProcessing");
 
-    wrap_ImageProcessing_classes(  amiobject->GetContext());
+    wrap_ImageProcessing_classes  (  amiobject->GetContext());
+    wrap_ImageProcessing_functions(  amiobject->GetContext());
 
   // Add wx context to builtin
   // Could be in global with a default context

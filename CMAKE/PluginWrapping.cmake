@@ -63,8 +63,11 @@ EXECUTE_PROCESS(
 )
 
 IF(MYCOMMAND_RESULT)
-  MESSAGE(SEND_ERROR "Failed the generation of XML: ${MYCOMMAND_ERROR} - ${MYCOMMAND_RESULT}")
+
+    MESSAGE(SEND_ERROR "Failed the generation of XML: ${MYCOMMAND_ERROR} - ${MYCOMMAND_RESULT}")
+
 ELSE(MYCOMMAND_RESULT)
+
   MESSAGE("Generated XML file")
 
   MESSAGE("Find PYTHON...")
@@ -77,6 +80,14 @@ ELSE(MYCOMMAND_RESULT)
 
   FILE(READ "${WRAP_DIR}/classes.txt" classes_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+
+  IF(EXISTS ${WRAP_DIR}/functions.txt)
+    FILE(READ "${WRAP_DIR}/functions.txt" functions_txt)
+    STRING(REGEX REPLACE "[\r\n]" ";" functions_list ${functions_txt} )
+    SET(HAS_FUNCTIONS "1")
+  ENDIF(EXISTS ${WRAP_DIR}/functions.txt)
+
+
 
   SET(ANCESTORS_FILE "${GENERATED_DIR}/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
@@ -126,9 +137,28 @@ ELSE(MYCOMMAND_RESULT)
     LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
     MESSAGE(" NB_MISSING_CLASSES=${NB_MISSING_CLASSES}")
 
+    FOREACH( func ${functions_list})
+      ClassUsedName( func m_func )
+      SET(func_compilation_list ${compilation_list} ${m_func})
+      IF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_func}.cpp) OR
+          (NOT EXISTS ${GENERATED_DIR}/wrap_${m_func}.h) )
+        SET(OUTPUT_LIST
+          ${GENERATED_DIR}/wrap_${m_func}.cpp ${GENERATED_DIR}/wrap_${m_func}.h
+          ${OUTPUT_LIST}
+        )
+        SET(MISSING_FUNCTIONS ${func} ${MISSING_FUNCTIONS})
+      ENDIF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_func}.cpp) OR
+             (NOT EXISTS ${GENERATED_DIR}/wrap_${m_func}.h) )
+      SET(FUNC_LIST ${FUNC_LIST} ${func})
+    ENDFOREACH( func ${functions_list})
+
+    LIST(LENGTH MISSING_FUNCTIONS NB_MISSING_FUNCTIONS)
+    MESSAGE(" NB_MISSING_FUNCTIONS=${NB_MISSING_FUNCTIONS}")
+
     #IF( (${GCCXML_result} EQUAL 0) AND
     #    (DEFINED OUTPUT_LIST ) )
-    IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
+    IF ((${NB_MISSING_CLASSES}   GREATER 0) OR 
+        (${NB_MISSING_FUNCTIONS} GREATER 0) OR
         (NOT EXISTS ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.h) OR
         (NOT EXISTS ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.cpp))
 
@@ -145,6 +175,9 @@ ELSE(MYCOMMAND_RESULT)
         MESSAGE("***** available external classes *****")
         SET(MYCOMMAND_3 ${MYCOMMAND_3} "--available_external_classes" ${AVAILABLE_EXTERNAL_CLASSES})
       ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
+      IF(DEFINED HAS_FUNCTIONS)
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--functions" ${MISSING_FUNCTIONS})
+      ENDIF(DEFINED HAS_FUNCTIONS)
       #SET(MYCOMMAND_3 ${MYCOMMAND_3} "--wrap_includes" ${WrapWxWidgetsDir})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--outputdir" ${GENERATED_DIR})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--profile")
@@ -165,11 +198,12 @@ ELSE(MYCOMMAND_RESULT)
           ${WRAP_DIR}/classes.txt
         VERBATIM
       )
-    ENDIF ((${NB_MISSING_CLASSES} GREATER 0) OR 
+    ENDIF ((${NB_MISSING_CLASSES}   GREATER 0) OR 
+        (${NB_MISSING_FUNCTIONS} GREATER 0) OR
         (NOT EXISTS ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.h) OR
         (NOT EXISTS ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.cpp))
 
-    FOREACH( class ${ancestors_list} )
+    FOREACH( class ${ancestors_list} ${function} )
       ClassUsedName( class m_class )
       SET( ${CMAKE_PROJECT_NAME}_HDRS 
             ${GENERATED_DIR}/wrap_${m_class}.h ${${CMAKE_PROJECT_NAME}_HDRS})

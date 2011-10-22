@@ -228,10 +228,10 @@ varid {identifier}(<{identifier}(,{identifier})*>)?
   return(token::T_point_putimage); 
 } /*{.putimage,T_point_putimage}*/
 
-<point>SetName {
+<point>SetImageName {
   BEGIN(0);
-  return(token::T_point_SetName); 
-} /*{.SetName,T_point_SetName}*/
+  return(token::T_point_SetImageName); 
+} /*{.SetImageName,T_point_SetImageName}*/
 
 <point>end {
   BEGIN(0);

@@ -2,15 +2,15 @@
   table = vtk.vtkTable.New()
  
   arrX = vtk.vtkFloatArray.New()
-  arrX._SetName("X Axis")
+  arrX.SetName("X Axis")
   table.AddColumn(&arrX)
  
   arrC = vtk.vtkFloatArray.New()
-  arrC._SetName("Cosine")
+  arrC.SetName("Cosine")
   table.AddColumn(&arrC)
  
   arrS = vtk.vtkFloatArray.New()
-  arrS._SetName("Sine")
+  arrS.SetName("Sine")
   table.AddColumn(&arrS)
  
  printn "Fill in the table with some example values"

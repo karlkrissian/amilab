@@ -22,6 +22,7 @@ def get_include_file(classname, filename):
   if s.find("tbar")      !=-1:  s = "wx/toolbar.h"
   if s.find("panelg.h")  !=-1:  s = "wx/panel.h"
   if s.find("paletteg.h")!=-1:  s = "wx/palette.h"
+  if s.find("aboutdlgg.h")!=-1: s = "wx/aboutdlg.h"
   # AD-HOC fixes, can be improved ...
   if classname.find("Aui")!=-1: s = "wx/aui/aui.h"
   if classname=="wxDC":         s = "wx/dc.h"
@@ -45,6 +46,10 @@ def get_include_file(classname, filename):
   #if classname=="wxTextEntryBase":   s = "wx_includes.h"
   #print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)
   s1 = '#include "{0}"'.format(s)
+  if s.find("tipdlg.h"):
+    s1 = '#include <wx/window.h>\n'+s1
+  if s.find("aboutdlg.h"):
+    s1 = s1+'\n#include <wx/generic/aboutdlgg.h>'
   #print "s1 = ",s1
   #if classname=="wxScopedCharTypeBuffer<char>":
   #  s1 = '#include <wx/wx.h>\n'+s1

@@ -466,7 +466,7 @@ if (!exists(VolRenClass)) {
        mb = ami.MainFrame.GetMainBook()
 
       ::panel = wx.wxPanel(&ami.MainFrame)
-      #arreglar ::panel._SetName("VolRen panel")
+      ::panel.SetName("VolRen panel")
 
       # StaticBox gives problems on XP ..., avoid it ...
       sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)

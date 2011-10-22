@@ -486,7 +486,8 @@ if __name__ == '__main__':
       f.write("\n")
       f.write('#include "Variables.hpp"\n')
       f.write("\n")
-      f.write("void wrap_{0}_classes( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("void wrap_{0}_classes  ( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("void wrap_{0}_functions( Variables::ptr& context);\n".format(args.val.libname))
       f.write("\n")
       f.write("#endif // _addwrap_{0}_h_\n".format(args.val.libname))
       f.close()
@@ -518,14 +519,30 @@ if __name__ == '__main__':
 
       # sort alphabetically
       lib_classes.sort()
-
       f.write('#include "addwrap_{0}.h"\n'.format(args.val.libname))
       f.write('#include "{0}"\n'.format(include_file))
-      f.write('\n')
+
+      f.write("\n")
       f.write("// Currently {0} objects (classes,structures,typedefs,...) are wrapped \n".format(len(lib_classes)))
       for cl in lib_classes:
         #f.write('#include "wrap_{0}.h"\n'.format(cl))
         f.write('extern void WrapClass{0}_AddStaticMethods( Variables::ptr&);\n'.format(config.ClassUsedName(cl)))
+      f.write("\n")
+
+      # -- list the library functions (based on the filter)
+      lib_functions = []
+      for func in  args.val.available_functions:
+        # TODO: check that the function is valid
+        lib_functions.append(func)
+
+      # sort alphabetically
+      lib_functions.sort()
+
+      f.write('\n')
+      f.write("// Currently {0} functions are wrapped \n".format(len(lib_functions)))
+      for func in lib_functions:
+        f.write('#include "wrap_{0}.h"\n'.format(config.ClassUsedName(func)))
+        #f.write('extern void WrapClass{0}_AddStaticMethods( Variables::ptr&);\n'.format(config.ClassUsedName(cl)))
       f.write("\n")
 
       # Add an enumeration value
@@ -561,6 +578,21 @@ if __name__ == '__main__':
       f.write("  wrap_macros(context);\n")
       f.write("}\n")
       
+      # Wrap all functions in a context
+      f.write("/*\n")
+      f.write(" * Adding all the wrapped functions to the library context.\n")
+      f.write(" * @param context the library context.\n")
+      f.write(" */\n")
+      f.write("void wrap_{0}_functions( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("{\n")
+      f.write("\n")
+
+      f.write("\n")
+      for cl in lib_functions:
+        f.write("  AddVar_{0}( context);\n".format(config.ClassUsedName(cl)))
+        
+      f.write("\n")
+      f.write("}\n")
       
       f.write("static void wrap_enums( Variables::ptr& context)\n".format(args.val.libname))
       f.write("{\n")

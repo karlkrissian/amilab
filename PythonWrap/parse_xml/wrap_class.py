@@ -295,6 +295,21 @@ class PublicMembers:
     self.Enumerations=[]
     self.destructor=None
 
+class GlobalMembers:
+  def __init__(self):
+    self.MethodNames=[]
+    #self.StaticMethodNames=[]
+    #self.ConstructorNames=[]
+    self.OperatorMethodNames=[]
+    self.Methods=[]
+    #self.Constructors=[]
+    #self.StaticMethods=[]
+    self.OperatorMethods=[]
+    #self.Fields=[]
+    #self.Typedefs=[]
+    #self.Enumerations=[]
+    #self.destructor=None
+
 
 # Store Class information
 class ParsePublicMembers:
@@ -385,43 +400,49 @@ class ParsePublicMembers:
 
 
   #---------------------------------------------
+  def CheckArgument(self, name, attrs):
+    # process arguments
+    if name=='Argument':
+      typeid=attrs.get('type',None)
+      argname=attrs.get('name',None)
+      default=attrs.get('default',None)
+      if argname==None:
+        argname='param{0}'.format(len(self.method.args))
+      if typeid in config.types.keys():
+        typename=config.types[typeid].GetFullString(),
+      else:
+        typename=typeid,
+      utils.WarningMessage("\t\t {0} \t\t {1}".format(typename,argname))
+      # append argument to list
+      arg=arginfo.ArgInfo()
+      arg.name=argname
+      arg.typeid=typeid
+      if default != None:
+        arg.default=self.CheckEnumDefault(default)
+      else:
+        arg.default=None
+      self.method.args.append(arg)
+      return True
+    else:
+      utils.WarningMessage( "Non-argument in method: {0}\n".format(name))
+
+  #---------------------------------------------
+  def CheckEnum(self, name, attrs):
+    if name=="EnumValue":
+      #print "*"
+      valname=attrs.get('name',None)
+      valinit=attrs.get('init',None)
+      #if valname=="IsForward": print "******* Processing IsForward..."
+      if (valname!=None) and (valinit!=None):
+        self.enum.values[valname]=valinit
+    return False # allow further processing of the enumeration
+
+  #---------------------------------------------
   def startElement(self, name, attrs):
     if self.inmethod==1:
-      # process arguments
-      if name=='Argument':
-        typeid=attrs.get('type',None)
-        argname=attrs.get('name',None)
-        default=attrs.get('default',None)
-        if default=="IsForward": print "****** default=IsForward"
-        if argname==None:
-          argname='param{0}'.format(len(self.method.args))
-        if typeid in config.types.keys():
-          typename=config.types[typeid].GetFullString(),
-        else:
-          typename=typeid,
-        utils.WarningMessage("\t\t {0} \t\t {1}".format(typename,argname))
-        # append argument to list
-        arg=arginfo.ArgInfo()
-        arg.name=argname
-        arg.typeid=typeid
-        if default != None:
-          arg.default=self.CheckEnumDefault(default)
-        else:
-          arg.default=None
-        self.method.args.append(arg)
-        return True
-      else:
-        utils.WarningMessage( "Non-argument in method: {0}\n".format(name))
-        
+      return self.CheckArgument(name,attrs)
     if self.inenum:
-      if name=="EnumValue":
-        #print "*"
-        valname=attrs.get('name',None)
-        valinit=attrs.get('init',None)
-        #if valname=="IsForward": print "******* Processing IsForward..."
-        if (valname!=None) and (valinit!=None):
-          self.enum.values[valname]=valinit
-      return False # allow further processing of the enumeration
+      return self.CheckEnum(name,attrs)
     
     if (name not in ['Field','Enumeration','Typedef']) \
         and (name not in self.available_methods):
@@ -575,11 +596,13 @@ def AddParameters(method,numparam=-1):
 
 
 #------------------------------------------------------------------
-#  ImplementMethodDescription
+#  ImplementMethodDescription, 
+#  if classname="" then can be used for a standard function
 #------------------------------------------------------------------
 def ImplementMethodDescription(classname, method, constructor=False, methodcount=1):
   
-  wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
+  if classname!="":
+    wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
   wrapmethod_name = method.usedname
   if method.static=="1":
      wrapmethod_name = "static_"+wrapmethod_name
@@ -587,14 +610,19 @@ def ImplementMethodDescription(classname, method, constructor=False, methodcount
   res = "\n"
   res += "//---------------------------------------------------\n"
   res += "//  Wrapping of "
-  res += method.GetDescription(classname,constructor)+'\n'
+  if classname!="":
+    res += method.GetDescription(classname,constructor)+'\n'
+  else:
+    res += method.GetDescription()+'\n'
   res += "//---------------------------------------------------\n"
   # second implementation
   #   Documentation part
   #res += "\n"
   #res += "//  wrapping of {0}::{1}\n".format(classname,method.name)
   #res += "//---------------------------------------------------\n"
-  res += "void {0}::\n".format(wrapclass_name)
+  res += "void "
+  if classname!="":
+    res += "{0}::\n".format(wrapclass_name)
   res += "    wrap_{0}::SetParametersComments()\n".format(wrapmethod_name) 
   res += "{\n"
   for a in method.args:
@@ -628,13 +656,15 @@ def ImplementMethodDescription(classname, method, constructor=False, methodcount
 #------------------------------------------------------------------
 #  ImplementMethodCall
 #  with a given number of parameter, allowing to deal with default arguments
+#  if classname="" then can be used for a standard function
 #------------------------------------------------------------------
 def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''):
   
-  wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
   wrapmethod_name = method.usedname
-  if method.static=="1":
-     wrapmethod_name = "static_"+wrapmethod_name
+  if classname!="":
+    wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
+    if method.static=="1":
+      wrapmethod_name = "static_"+wrapmethod_name
   
   methodparams = AddParameters(method,numparam)
   if method.returntype!=None:
@@ -659,7 +689,7 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
     # Define the string containing the method call
     obj_ptr='this->_objectptr->GetObj()'
     # check for null object
-    if method.static!="1":
+    if method.static!="1" and classname!="":
       res += ident+"  if (!{0}.get()) return BasicVariable::ptr();\n".format(obj_ptr)
     if method.name in config.available_operators.keys():
       if len(method.args)>0:
@@ -679,7 +709,10 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
       if method.static=="1":
         methodcall = "{0}::{1}".format(classname,method.name)
       else:
-        methodcall = '{0}->{1}'.format(obj_ptr,method.name)
+        if classname!="":
+          methodcall = '{0}->{1}'.format(obj_ptr,method.name)
+        else:
+          methodcall = '{0}'.format(method.name)
       methodcall += methodparams;
     
     # not in constructor and returning void
@@ -748,13 +781,15 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
 
 #------------------------------------------------------------------
 #  ImplementMethodWrap
+#  if classname="" then can be used for a standard function
 #------------------------------------------------------------------
 def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
 
-  wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
   wrapmethod_name = method.usedname
-  if method.static=="1":
-     wrapmethod_name = "static_"+wrapmethod_name
+  if classname!="":
+    wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
+    if method.static=="1":
+      wrapmethod_name = "static_"+wrapmethod_name
 
   #
   # Implement the description/help part
@@ -774,8 +809,10 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
   #
   res += "\n"
   res += "//---------------------------------------------------\n"
-  res += "BasicVariable::ptr {0}::\n".format(wrapclass_name)
-  res += "    wrap_{0}::CallMember( ParamList* _p)\n".format(wrapmethod_name) 
+  res += "BasicVariable::ptr "
+  if classname!="":
+    res += "{0}::\n    ".format(wrapclass_name)
+  res += "wrap_{0}::CallMember( ParamList* _p)\n".format(wrapmethod_name) 
   res += "{\n"
   # check if there are arguments
   # never use arguments for ++ and -- operators
@@ -1031,7 +1068,7 @@ def WrapClass(classname,include_file,inputfile):
         implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(config.ClassTypeDef(classname))
     else:
       implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(config.ClassTypeDef(classname))
-      print "{0} is template {1}".format(classname,IsTemplate(classname))
+      #print "{0} is template {1}".format(classname,IsTemplate(classname))
       # need to implement CreateVar ...
       if (IsTemplate(classname) and args.val.templates) or IsWithinContext(classname):
         implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(config.ClassTypeDef(classname),config.ClassUsedName(classname))

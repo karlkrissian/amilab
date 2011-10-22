@@ -23,6 +23,9 @@ arg_parser.add_argument('--available_external_classes', nargs='*',  default=[], 
 arg_parser.add_argument('--functions', nargs='*', default=[],  \
   help='name of the function(s) to wrap' )
 
+arg_parser.add_argument('--available_functions', nargs='*', default=[],  \
+  help='name of the available wrapped function(s)' )
+
 arg_parser.add_argument('--methodpointers', nargs='*', default=[], \
   help='name of the method pointers to wrap' )
 

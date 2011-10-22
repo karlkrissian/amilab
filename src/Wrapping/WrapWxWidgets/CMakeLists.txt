@@ -83,6 +83,18 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
   STRING(REGEX REPLACE "[\r\n]" " " classes_string ${classes_txt} )
 
+  # Read list of functions to wrap
+  IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/functions.txt)
+    FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/functions.txt" functions_txt)
+    # skip comments
+    STRING(REGEX REPLACE "#[^\n]*\n" "\n"  functions_list_cleaned ${functions_txt} )
+    STRING(REGEX REPLACE "#[^\n]*$"  ""    functions_list_cleaned ${functions_list_cleaned} )
+    #STRING(REGEX REPLACE "\n#[^\n]*\n" "\n" functions_list_cleaned ${functions_list_cleaned} )
+    STRING(REGEX REPLACE "[\r\n]" ";" functions_list ${functions_list_cleaned} )
+    MESSAGE("functions_list = ${functions_list}")
+    SET(HAS_FUNCTIONS "1")
+  ENDIF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/functions.txt)
+
   SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
@@ -125,6 +137,20 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
         (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_class}.h))
   ENDFOREACH( class ${ancestors_list}) 
 
+  FOREACH( func ${functions_list})
+    ClassUsedName( func m_func )
+    SET(func_compilation_list ${compilation_list} ${m_func})
+    IF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_func}.cpp) OR
+        (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_func}.h) )
+      SET(OUTPUT_LIST
+        ${WRAPWX_OUTDIR}/wrap_${m_func}.cpp ${WRAPWX_OUTDIR}/wrap_${m_func}.h
+        ${OUTPUT_LIST}
+      )
+      SET(MISSING_FUNCTIONS ${func} ${MISSING_FUNCTIONS})
+    ENDIF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_func}.cpp) OR
+            (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_func}.h) )
+  ENDFOREACH( func ${functions_list})
+
   FOREACH( method ${methodpointers_list})
     IF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.cpp) OR
         (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h))
@@ -141,13 +167,16 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 
   LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
   LIST(LENGTH MISSING_METHODS NB_MISSING_METHODS)
+  LIST(LENGTH MISSING_FUNCTIONS NB_MISSING_FUNCTIONS)
 
-  MESSAGE("MISSING_CLASSES=${MISSING_CLASSES}")
-  MESSAGE("MISSING_METHODS=${MISSING_METHODS}")
+  MESSAGE("MISSING_CLASSES      = ${MISSING_CLASSES}")
+  MESSAGE("MISSING_METHODS      = ${MISSING_METHODS}")
+  MESSAGE("MISSING_FUNCTIONS    = ${MISSING_FUNCTIONS}")
 
   #MESSAGE("Processing class ${class}")
   IF ((${NB_MISSING_CLASSES} GREATER 0) OR
       (${NB_MISSING_METHODS} GREATER 0) OR
+      (${NB_MISSING_FUNCTIONS} GREATER 0) OR
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
       (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
 #     FOREACH( class ${MISSING_CLASSES})
@@ -168,6 +197,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
               --classes ${MISSING_CLASSES}
               --methodpointers ${MISSING_METHODS}
               --available_classes ${ancestors_list} ${methodpointers_list}
+              --functions ${MISSING_FUNCTIONS}
+              --available_functions ${functions_list}
               --outputdir "${WRAPWX_OUTDIR}"
               --addwrap
               --profile
@@ -192,6 +223,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
               --classes ${MISSING_CLASSES}
               --methodpointers ${MISSING_METHODS}
               --available_classes ${ancestors_list} ${methodpointers_list}
+              --functions ${MISSING_FUNCTIONS}
+              --available_functions ${functions_list}
               --outputdir "${WRAPWX_OUTDIR}"
               --addwrap
               --profile
@@ -205,13 +238,14 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
     ENDIF(GENERATE_HTML_HELP)
   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR
         (${NB_MISSING_METHODS} GREATER 0) OR
+        (${NB_MISSING_FUNCTIONS} GREATER 0) OR
         (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
         (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
 
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 
-FOREACH( class ${ancestors_list} ${methodpointers_list} )
+FOREACH( class ${ancestors_list} ${methodpointers_list} ${functions_list})
   ClassUsedName( class m_class )
   SET( wx_HDRS ${WRAPWX_OUTDIR}/wrap_${m_class}.h ${wx_HDRS})
   SET( wx_SRCS ${WRAPWX_OUTDIR}/wrap_${m_class}.cpp ${wx_SRCS})

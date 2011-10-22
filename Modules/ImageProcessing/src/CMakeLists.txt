@@ -79,12 +79,14 @@ ENDIF(ENABLE_WRAPPING)
 SET(${KIT}_HDRS
   ${${KIT}_HDRS}
   ImageDerivativesClass.h
+  TestFunction.h
   ${KIT}Plugin.h
 )
 
 SET(${KIT}_SRCS
   ${${KIT}_SRCS}
   ImageDerivativesClass.cpp
+  TestFunction.cpp
   ${KIT}Plugin.cpp
 )
 

@@ -453,7 +453,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_SPRINT
 %token ASHELL LS
 
-%token T_point_SetName
+%token T_point_SetImageName
 %token T_GetObjectName
 
 %token ASTRING ABLOCK NUMBER
@@ -3060,7 +3060,7 @@ command:
              (int) round((double)(tz2-tz1)/i1->VoxSizeZ()));
     }
     |
-    var_image T_point_SetName T_OP_PAR expr_string T_CL_PAR 
+    var_image T_point_SetImageName T_OP_PAR expr_string T_CL_PAR 
     {
       boost::shared_array<char> name($4);
       GET_VARSTACK_VALUE(InrImage, im);

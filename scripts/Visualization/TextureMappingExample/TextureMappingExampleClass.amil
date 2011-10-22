@@ -172,7 +172,7 @@ if (!exists(TextureMappingExampleClass)) {
        mb = ami.MainFrame.GetMainBook()
 
       ::panel = wx.wxPanel(&ami.MainFrame)
-      //::panel.SetName("VTK Texture Mapping panel")
+      ::panel.SetName("VTK Texture Mapping panel")
 
       # StaticBox gives problems on XP ..., avoid it ...
       # sbox = wx.wxStaticBox(&::panel,-1,"VTK-based Volume Rendering (GPU RayCasting)")
