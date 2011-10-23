@@ -3,6 +3,7 @@
 #define _ImageDerivativesClass_h_
 
 #include "inrimage.hpp"
+
 // deal with EXPORT...
 
 class ImageDerivativesClass {
@@ -18,54 +19,54 @@ private:
 
 public:
     /**
-    *  Structure Tensor computation
-    *   This function computes the structure tensor of the image I, defined by:
-    * \f[
-    * T_{\sigma, \rho}(I) = G_\rho * {\nabla_{\sigma} I  {\nabla_{\sigma} I}^t}
-    * \f]
-    * 
-    *   which is the convolution with a Gaussian kernel of standard deviation 
-    * \f$\rho\f$ of the matrix defined by the cross-product of the smoothed gradient of 
-    * the image (smoothed with a Gaussian convolution of standard deviation 
-    * sigma). 
-    * The function then computes the eigenvalues and the eigenvectors
-    * of this matrix, and saves them in the following  variables, in the case of
-    * 3D images:
-    * - imagename_STvep1: normalized eigenvector associated with the  maximal 
-    *                     eigenvalue
-    * - imagename_STvep2:
-    * - imagename_STvep3: normalized eigenvector associated with the minimal 
-    *                     eigenvalue
-    * - imagename_STvap1: maximal eigenvalue
-    * - imagename_STvap2:
-    * - imagename_STvap3: minimal eigenvalue
-    * where imagename is the name of the image variable given by  the first 
-    * parameter.
-    * 
-    * @param input  input scalar image (2D or 3D)
-    * @param name      string used to create the resulting images of 
-    *                  eigen(values/vectors) of the computed structure tensor.
-    * @param sigma  first Gaussian convolution
-    * @param rho    second Gaussian convolution
-    * @param mask   mask of the places to compute the tensor.
-
-    * \example:
-    * [AMILab] i = Image "tore.inr.gz"
-    *  [AMILab] StructTensor(i,1,2)
-    * [AMILab] Show vars
-    * VARIABLES:
-    * 0           i         image
-    * 1    i_STvep1         image
-    * 2    i_STvep2         image
-    * 3    i_STvep3         image
-    * 4    i_STvap1         image
-    * 5    i_STvap2         image
-    * 6    i_STvap3         image
-    * [AMILab] show i
-    * [AMILab] i_draw.setvector(1,&i_STvep1)
-    * [AMILab] i_draw.setvector(2,&i_STvep2)
-    * [AMILab] i_draw.setvector(3,&i_STvep3)
-    */
+     * @brief Structure Tensor computation
+     *   This function computes the structure tensor of the image I, defined by:
+     * \f[
+     * T_{\sigma, \rho}(I) = G_\rho * {\nabla_{\sigma} I  {\nabla_{\sigma} I}^t}
+     * \f]
+     * 
+     *   which is the convolution with a Gaussian kernel of standard deviation 
+     * \f$\rho\f$ of the matrix defined by the cross-product of the smoothed gradient of 
+     * the image (smoothed with a Gaussian convolution of standard deviation 
+     * sigma). 
+     * The function then computes the eigenvalues and the eigenvectors
+     * of this matrix, and saves them in the following  variables, in the case of
+     * 3D images:
+     * - imagename_STvep1: normalized eigenvector associated with the  maximal 
+     *                     eigenvalue
+     * - imagename_STvep2:
+     * - imagename_STvep3: normalized eigenvector associated with the minimal 
+     *                     eigenvalue
+     * - imagename_STvap1: maximal eigenvalue
+     * - imagename_STvap2:
+     * - imagename_STvap3: minimal eigenvalue
+     * where imagename is the name of the image variable given by  the first 
+     * parameter.
+     * 
+     * @param input  input scalar image (2D or 3D)
+     * @param name      string used to create the resulting images of 
+     *                  eigen(values/vectors) of the computed structure tensor.
+     * @param sigma  first Gaussian convolution
+     * @param rho    second Gaussian convolution
+     * @param mask   mask of the places to compute the tensor.
+     *
+     * Example:
+     * [AMILab] i = Image "tore.inr.gz"
+     *  [AMILab] StructTensor(i,1,2)
+     * [AMILab] Show vars
+     * VARIABLES:
+     * 0           i         image
+     * 1    i_STvep1         image
+     * 2    i_STvep2         image
+     * 3    i_STvep3         image
+     * 4    i_STvap1         image
+     * 5    i_STvap2         image
+     * 6    i_STvap3         image
+     * [AMILab] show i
+     * [AMILab] i_draw.setvector(1,&i_STvep1)
+     * [AMILab] i_draw.setvector(2,&i_STvep2)
+     * [AMILab] i_draw.setvector(3,&i_STvep3)
+    **/
     static void StructTensor(
                               InrImage::ptr input
                               ,
@@ -291,7 +292,7 @@ public:
    * @brief Image Gradient Norm based on convolution with Gaussian derivatives.
    *
    * @param input Input image
-   * @param sigma Gaussian standard deviation
+   * @param sigma   Gaussian standard deviation for convolution
    * @param support Gaussian convolution suppport size (number of times the standard deviation: support.sigma) Defaults to 4.
    * @return void
    **/
@@ -321,6 +322,96 @@ public:
                         InrImage::ptr input
                       );
   
+
+  /**
+   * @brief Computes a discrete laplacian (sum of second order derivatives),
+   *    in 2D or 3D depending on the image dimension.
+   * \f[
+   * \Delta I = \frac{\partial^2 I}{\partial x^2}+ \frac{\partial^2 I}{\partial y^2}+ %
+   *  \frac{\partial^2 I}{\partial z^2}.
+   * \f]
+   * 
+   * @param input Input image.
+   * @return Result Laplacian image.
+   **/
+  static InrImage::ptr Laplacian(
+                        InrImage::ptr input
+                      );
+
+  /**
+   * @brief Computes the second order derivative of the image intensity in the direction of the gradient.
+   *
+   * Take into account the voxel size, and computes the derivatives by 
+   * convolution with the derivatives of a Gaussian of standard deviation given 
+   * by the second parameter.
+   * 
+   * @param input Input image.
+   * @param sigma standard deviation of the Gaussian kernel.
+   * @return Result image of second order derivatives in the gradient direction.
+   * Example(s):
+   *  j = secdergrad(&i,1)
+   * 
+   * @sa filter normgrad secdergrad2
+   **/
+  static InrImage::ptr secdergrad(
+                                  InrImage::ptr input,
+                                  double sigma );
+
+  /**
+   * @brief Computes the second order derivative of the image intensity in the direction of the gradient.
+   *
+   * Use a voxel size of 1x1x1, and computes the derivatives by convolution with
+   * the derivatives of a Gaussian of standard deviation given by the second parameter.
+   * 
+   * @param input Input image.
+   * @param sigma standard deviation of the Gaussian kernel.
+   * @return Result image of second order derivatives in the gradient direction.
+   * Example(s):
+   *  j = secdergrad(&i,1)
+   * 
+   * @sa filter normgrad secdergrad
+   **/
+  static InrImage::ptr secdergrad2(
+                                  InrImage::ptr input,
+                                  double sigma );
+  
+  /**
+   * @brief Computes the Image gradient (vector field image).
+   *
+   * 
+   * @param input Input image.
+   * @param sigma standard deviation of the Gaussian kernel.
+   * @return Result image of second order derivatives in the gradient direction.
+   * Example(s):
+   *  j = gradient(&i,1)
+   * 
+   * @sa filter normgrad secdergrad secdergrad2
+   **/
+  static InrImage::ptr gradient(
+                                  InrImage::ptr input,
+                                  double sigma );
+
+
+  /**
+   * @brief Apply a Gaussian (or its derivatives) convolution to the input image
+   * @param im input image
+   * @param sigma Gaussian standard deviation
+   * @param derx derivation order in X (-1: no convolution, 0: Gaussian smoothing, 1: first order derivative, 2:second order der.)
+   * @param dery same in Y
+   * @param derz same in Z
+   * @return pointer to the resulting image
+   *        Example(s):
+   *        - Convolution with a Gaussian kernel:
+   *        i = Image(FLOAT,10,10,10)
+   *        j = filter(&i,1,0,0,0)
+   **/
+  static InrImage::ptr filter(
+                              InrImage::ptr input,
+                              double sigma,
+                              int derx = 0,
+                              int dery = 0,
+                              int derz = 0);
+
 };
 
 

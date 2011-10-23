@@ -79,27 +79,6 @@ InrImage* Func_OpImage( InrImage* im1, InrImage* im2, InrImage* im3,
             char* exprmath,
             int Format = WT_FLOAT);
 
-/**
- * Apply a Gaussian (or its derivatives) convolution to the input image
- * @param im input image
- * @param sigma Gaussian standard deviation
- * @param der_x derivation order in X (-1: no convolution, 0: Gaussian smoothing, 1: first order derivative, 2:second order der.)
- * @param der_y same in Y
- * @param der_z same in Z
- * @return pointer to the resulting image
- */
-InrImage* Func_Filter( InrImage* im, float sigma,
-               int der_x, int der_y, int der_z);
-
-InrImage* Func_Gradient( InrImage* im, float sigma );
-
-
-InrImage* Func_SecDerGrad( InrImage* im, float sigma );
-
-// Don't use voxel size
-InrImage* Func_SecDerGrad2( InrImage* im, float sigma );
-
-
 
 int AskImage   (  std::string& name);
 int AskFilename(  std::string& name);
@@ -187,8 +166,6 @@ InrImage*    Func_LocalExtrema( InrImage* im,
                 InrImage* mask,
                 int samples=16);
 
-InrImage*    Func_Laplacian(   InrImage* im);
-
 float         Func_PositiveArea(float val[4]);
 float         Func_ComputePositiveArea( InrImage* im);
 
@@ -242,10 +219,6 @@ void         Func_Pad( InrImage* im1, InrImage* im2,
 
 int          Func_GenRead(char* fname);
 
-InrImage*    Func_PropagationDistance(InrImage* input, float max_dist=1000);
-InrImage*    Func_PropagationDistance2(InrImage* input, float max_dist=1000);
-
-InrImage*    Func_PropagationDanielsson(InrImage* input, float max_dist=1000);
 
 InrImage*    Func_ReSlice( InrImage* im1, InrImage* im2, FloatMatrix& m);
 

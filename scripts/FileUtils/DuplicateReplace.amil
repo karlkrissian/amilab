@@ -98,8 +98,8 @@ proc CopyDir(STRING _from, STRING _to) \
       # and while there are still files to process
       while process {
 
-        printn "nextFile is %1%" % wx.FromWxString(&nextFile)
-        indent = "  "
+        printn "  nextFile is %1%" % wx.FromWxString(&nextFile)
+        indent = "    "
         inputfilename = wx.FromWxString(wx_from) + \
                         wx.FromWxString(myDirs[i]) + \
                         wx.FromWxString(nextFile)

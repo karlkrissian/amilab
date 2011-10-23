@@ -52,6 +52,9 @@ SET(Algorithms_SRCS
   NormGrad.cpp
   DiscNormGrad.cpp
   DiscMeanCurvature.cpp
+  ImageDerivatives.cpp
+  Chamfer.cpp
+  DistanceTransforms.cpp
 
   # files coming from previous Filtering directory
   bruit.cpp
@@ -114,6 +117,11 @@ SET(Algorithms_HDRS
   include/NormGrad.h
   include/DiscNormGrad.h
   include/DiscMeanCurvature.h
+  include/ImageDerivatives.h
+  include/FastVector.hpp
+  include/FastVector.tpp
+  include/Chamfer.h
+  include/DistanceTransforms.h
 
   # files coming from previous Filtering directory
   include/bruit.hpp

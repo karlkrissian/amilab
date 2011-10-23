@@ -12,7 +12,9 @@ type_shortname={
   'long unsigned int'  : 'luint',
   'std::string'        : 'string',
   'long long int'      : 'llint',
-  'short unsigned int' : 'suint'
+  'short unsigned int' : 'suint',
+  'short int'          : 'sint',
+  'signed char'        : 'schar',
 }
 
 # type substitution
@@ -23,7 +25,10 @@ type_substitute={
   'char'               : 'std::string',
   'wchar_t'            : 'std::string',
   'long long int'      : 'long',
-  'short unsigned int' : 'int'
+  'short unsigned int' : 'int',
+  'short int'          : 'int',
+  'signed char'        : 'int',
+  'void'               : 'unsigned char',
 }
 #'bool':'int',
 
@@ -248,6 +253,18 @@ def ConvertSmtPtrToPtr_wchar_t(typeid,substvar,typevar):
   #print "res = {0}".format(res)
   return res
   
+
+def ConvertSmtPtrToPtr_void(typeid,substvar,typevar):
+  #print "within ConvertSmtPtrToPtr_char()"
+  fulltypename=config.types[typeid].GetFullString()
+  res  = "void* {0} = (void*) {1}.get();\n".format(typevar,substvar)
+  return res
+
+def ConvertSmtPtrToDoublePtr_void(typeid,substvar,typevar):
+  #print "within ConvertSmtPtrToPtr_char()"
+  fulltypename=config.types[typeid].GetFullString()
+  res  = "void** {0} = (void**) {1}.get();\n".format(typevar,substvar)
+  return res
 
 #
 # Generic calls

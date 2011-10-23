@@ -37,9 +37,7 @@
 #include "Timing.hpp"
 #include "Chamfer.h"
 #include <iostream>
-//
-// Computes a Chamfer distance transform
-//
+
 InrImage* Func_Chamfer(InrImage* im, float a, float b, float c)
 {
   register int x,y,z,i,n;
@@ -161,10 +159,7 @@ InrImage* Func_Chamfer(InrImage* im, float a, float b, float c)
   }
 
   duree.Fin();
-  
-
- std::cout << duree << std::endl;
-
+  std::cout << duree << std::endl;
   return res;
   
 } // void Chamfer()

@@ -26,7 +26,7 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
-#include "fonctions.h"
+#include "DistanceTransforms.h"
 
 #define POINT_NOT_PARSED 0
 #define POINT_TRIAL      1

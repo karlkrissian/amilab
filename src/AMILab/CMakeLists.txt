@@ -26,7 +26,6 @@ INCLUDE(${wxWidgets_USE_FILE})
 
 SET(AMILab_SRCS
     amilab_global_export.cpp
-    Chamfer.cpp
     CircleIntegration.cpp
     ConnectLines.cpp
     ContinuousMorphology.cpp
@@ -40,7 +39,6 @@ SET(AMILab_SRCS
     LineRecons.cpp
     NormalSmoothField.cpp
     PositiveArea.cpp
-    PropagationDistance.cpp
     ReSlice.cpp
     ResampleLines.cpp
     Resize.cpp
@@ -69,7 +67,6 @@ SET(AMILab_SRCS
 
 SET (AMILab_HDRS
     amilab_global_import.h
-    Chamfer.h
     ContinuousMorphology.h
     EigenDecomp.h
     FluidProject.h
@@ -87,7 +84,6 @@ SET (AMILab_HDRS
     VectorImage2StructuredGrid.h
     dif_param.hpp
     DirPrincipales.hpp
-    FastVector.hpp
     func_isoline.hpp
     Resize.hpp
     xmtext.hpp

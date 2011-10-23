@@ -59,7 +59,9 @@
 #include "NormGrad.h"
 #include "DiscNormGrad.h"
 #include "DiscMeanCurvature.h"
+#include "ImageDerivatives.h"
 #include "func_isoline.hpp"
+#include "DistanceTransforms.h"
 
 #include "ami_function.h"
 #include "ami_class.h"

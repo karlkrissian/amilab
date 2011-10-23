@@ -90,6 +90,66 @@ if __name__ == "__main__":
     # --------- DiscMeanCurvature with 1 argument -------------
     (r"DiscMeanCurvature\(([^,\)]+)\)",
      r'ImageDerivativesClass.DiscMeanCurvature(&\1)')
+    ,
+    # --------- Laplacian with 1 argument -------------
+    (r"Laplacian\(([^,\)]+)\)",
+     r'ImageDerivativesClass.Laplacian(&\1)')
+    ,
+    # --------- secdergrad with 2 arguments -------------
+    (r"secdergrad\(([^,]+),([^,\)]+)\)",
+     r'ImageDerivativesClass.secdergrad(&\1,\2)')
+    ,
+    # --------- secdergrad2 with 2 arguments -------------
+    (r"secdergrad2\(([^,]+),([^,\)]+)\)",
+     r'ImageDerivativesClass.secdergrad2(&\1,\2)')
+    ,
+    # --------- gradient with 2 arguments -------------
+    (r"gradient\(([^,]+),([^,\)]+)\)",
+     r'ImageDerivativesClass.gradient(&\1,\2)')
+    ,
+    # --------- filter with 5 arguments -------------
+    (r"filter\(([^,]+),([^,]+),([^,]+),([^,]+),([^,\)]+)\)",
+     r'ImageDerivativesClass.filter(&\1,\2,\3,\4,\5)')
+    ,
+    # --------- localmean with 2 arguments -------------
+    (r"localmean\(([^,]+),([^,\)]+)\)",
+     r'LocalStatsClass.localmean(&\1,\2)')
+    ,
+    # --------- localmean2 with 2 arguments -------------
+    (r"localmean2\(([^,]+),([^,\)]+)\)",
+     r'LocalStatsClass.localmean2(&\1,\2)')
+    ,
+    # --------- localSD with 3 arguments -------------
+    (r"localSD\(([^,]+),([^,]+),([^,\)]+)\)",
+     r'LocalStatsClass.localSD(&\1,&\2,\3)')
+    ,
+    # --------- localSD2 with 3 arguments -------------
+    (r"localSD2\(([^,]+),([^,]+),([^,\)]+)\)",
+     r'LocalStatsClass.localSD2(&\1,&\2,\3)')
+    ,
+    # --------- BorgeforsDT with 2 arguments -------------
+    (r"BorgeforsDT\(([^,]+),([^,\)]+)\)",
+     r'DistanceTransformClass.BorgeforsDT(&\1,\2)')
+    ,
+    # --------- BorgeforsSDT with 2 arguments -------------
+    (r"BorgeforsSDT\(([^,]+),([^,\)]+)\)",
+     r'DistanceTransformClass.BorgeforsDT(&\1,\2)')
+    ,
+    # --------- ChamferDT with 4 arguments -------------
+    (r"ChamferDT\(([^,]+),([^,]+),([^,]+),([^,\)]+)\)",
+     r'DistanceTransformClass.ChamferDT(&\1,\2,\3,\4)')
+    ,
+    # --------- Chamfer2DT with 4 arguments -------------
+    (r"Chamfer2DT\(([^,]+),([^,]+),([^,]+),([^,\)]+)\)",
+     r'DistanceTransformClass.Chamfer2DT(&\1,\2,\3,\4)')
+    ,
+    # --------- Chamfer2DT with 5 arguments -------------
+    (r"Chamfer2DT\(([^,]+),([^,]+),([^,]+),([^,]+),([^,\)]+)\)",
+     r'DistanceTransformClass.Chamfer2DT(&\1,\2,\3,\4,\5)')
+    ,
+    # --------- PropagationDist with 2 arguments -------------
+    (r"PropagationDist\(([^,]+),([^,\)]+)\)",
+     r'DistanceTransformClass.PropagationDist(&\1,\2)')
     ]
     
   scripts=[]

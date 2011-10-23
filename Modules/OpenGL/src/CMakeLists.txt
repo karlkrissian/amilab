@@ -1,14 +1,14 @@
 #==============================================================================
-# ImageProcessing
+# OpenGL
 #
-# Description: ImageProcessing features moved out of the language grammar.
+# Description: OpenGL features moved out of the language grammar.
 #
 # Author: xXx <xXX>, (C) 2010
 #
 # Copyright: See COPYING file that comes with this distribution
 #==============================================================================
 
-project (ImageProcessing)
+project (OpenGL)
 
 SET(KIT ${CMAKE_PROJECT_NAME})
 
@@ -21,6 +21,10 @@ SET(CMAKE_MODULE_PATH  ${PROJECT_SOURCE_DIR}/../../../CMAKE  ${CMAKE_MODULE_PATH
 MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
+
+FIND_PACKAGE( OpenGL )
+FIND_PACKAGE( GLUT )
+
 
 # should get everything from amilab configuration but ok for the moment
 FIND_PACKAGE( ITK )
@@ -44,11 +48,18 @@ INCLUDE(${AMILAB_BINARY_DIR}/AMILabConfig.cmake)
 INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 
 
+SET(${KIT}_INCLUDE_PATHS 
+    ${GLUT_INCLUDE_DIR} 
+    ${GLUT_INCLUDE_DIR}/GL
+    ${OPENGL_INCLUDE_DIR}
+)
+
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}
                     ${PROJECT_SOURCE_DIR}/Wrapping
                     ${PROJECT_SOURCE_DIR}/Wrapping/Generated
                     ${AMILab_PATHS}
                     ${AMILAB_SOURCE_DIR}/Algorithms/include
+                    ${${KIT}_INCLUDE_PATHS}
  )
 
 OPTION(Boost_USE_STATIC_LIBS "Use Boost static libraries" ON)
@@ -78,19 +89,11 @@ ENDIF(ENABLE_WRAPPING)
 
 SET(${KIT}_HDRS
   ${${KIT}_HDRS}
-  ImageDerivativesClass.h
-  LocalStatsClass.h
-  DistanceTransformClass.h
-  TestFunction.h
   ${KIT}Plugin.h
 )
 
 SET(${KIT}_SRCS
   ${${KIT}_SRCS}
-  ImageDerivativesClass.cpp
-  LocalStatsClass.cpp
-  DistanceTransformClass.cpp
-  TestFunction.cpp
   ${KIT}Plugin.cpp
 )
 

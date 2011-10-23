@@ -7,6 +7,7 @@
 #include "NormGrad.h"
 #include "DiscNormGrad.h"
 #include "DiscMeanCurvature.h"
+#include "ImageDerivatives.h"
 
 //------------------------------------------------------------------------------
 void ImageDerivativesClass::StructTensor(InrImage::ptr input, std::string name, 
@@ -194,5 +195,52 @@ InrImage::ptr ImageDerivativesClass::discnormgrad(  InrImage::ptr input )
 InrImage::ptr ImageDerivativesClass::DiscMeanCurvature( InrImage::ptr input )
 {
   InrImage::ptr res (Func_DiscMeanCurvature( input.get()));
+  return res;
+}
+
+
+//------------------------------------------------------------------------------
+InrImage::ptr ImageDerivativesClass:: Laplacian( InrImage::ptr input )
+{
+  InrImage::ptr res ( Func_Laplacian(input.get()));
+  return res;
+}
+
+//------------------------------------------------------------------------------
+InrImage::ptr ImageDerivativesClass::secdergrad(
+                                                InrImage::ptr input,
+                                                double sigma )
+{
+  InrImage::ptr res (Func_SecDerGrad( input.get(), sigma));
+  return res;
+}
+
+//------------------------------------------------------------------------------
+InrImage::ptr ImageDerivativesClass::secdergrad2(
+                                                InrImage::ptr input,
+                                                double sigma )
+{
+  InrImage::ptr res (Func_SecDerGrad2( input.get(), sigma));
+  return res;
+}
+
+//------------------------------------------------------------------------------
+InrImage::ptr ImageDerivativesClass::gradient(
+                                                InrImage::ptr input,
+                                                double sigma )
+{
+  InrImage::ptr res (Func_Gradient( input.get(), sigma));
+  return res;
+}
+
+//------------------------------------------------------------------------------
+InrImage::ptr ImageDerivativesClass::filter(
+                      InrImage::ptr input,
+                      double sigma,
+                      int derx,
+                      int dery,
+                      int derz)
+{
+  InrImage::ptr res( Func_Filter( input.get(), sigma, derx, dery, derz));
   return res;
 }

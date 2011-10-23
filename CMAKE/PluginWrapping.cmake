@@ -55,6 +55,15 @@ SET(MYCOMMAND ${MYCOMMAND} "-I${Boost_INCLUDE_DIR}")
 SET(MYCOMMAND ${MYCOMMAND} "${VTK_INCLUDES}")
 SET(MYCOMMAND ${MYCOMMAND} ${XML_INPUT})
 
+IF(KIT)
+  IF(${KIT}_INCLUDE_PATHS)
+    MESSAGE("************** ${KIT}_INCLUDE_PATHS = ${${KIT}_INCLUDE_PATHS}")
+    foreach(path ${${KIT}_INCLUDE_PATHS})
+      SET(MYCOMMAND ${MYCOMMAND} "-I${path}")
+    endforeach(p ${${KIT}_INCLUDE_PATHS})
+  ENDIF(${KIT}_INCLUDE_PATHS)
+ENDIF(KIT)
+
 MESSAGE("COMMAND: ${MYCOMMAND}")
 EXECUTE_PROCESS(
   COMMAND ${MYCOMMAND}
@@ -81,11 +90,24 @@ ELSE(MYCOMMAND_RESULT)
   FILE(READ "${WRAP_DIR}/classes.txt" classes_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
 
+  # Read list of functions to wrap
   IF(EXISTS ${WRAP_DIR}/functions.txt)
     FILE(READ "${WRAP_DIR}/functions.txt" functions_txt)
-    STRING(REGEX REPLACE "[\r\n]" ";" functions_list ${functions_txt} )
+    # skip comments
+    STRING(REGEX REPLACE "#[^\n]*\n" "\n"  functions_list_cleaned ${functions_txt} )
+    STRING(REGEX REPLACE "#[^\n]*$"  ""    functions_list_cleaned ${functions_list_cleaned} )
+    #STRING(REGEX REPLACE "\n#[^\n]*\n" "\n" functions_list_cleaned ${functions_list_cleaned} )
+    STRING(REGEX REPLACE "[\r\n]" ";" functions_list ${functions_list_cleaned} )
+    MESSAGE("functions_list = ${functions_list}")
     SET(HAS_FUNCTIONS "1")
   ENDIF(EXISTS ${WRAP_DIR}/functions.txt)
+
+
+#   IF(EXISTS ${WRAP_DIR}/functions.txt)
+#     FILE(READ "${WRAP_DIR}/functions.txt" functions_txt)
+#     STRING(REGEX REPLACE "[\r\n]" ";" functions_list ${functions_txt} )
+#     SET(HAS_FUNCTIONS "1")
+#   ENDIF(EXISTS ${WRAP_DIR}/functions.txt)
 
 
 
@@ -116,8 +138,12 @@ ELSE(MYCOMMAND_RESULT)
   ELSE(MYCOMMAND_2_RESULT)
     MESSAGE("Generated ANCESTORS file: ancestors_result = ${ancestors_result}")
 
-    FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
-    STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
+    IF(EXISTS ${ANCESTORS_FILE})
+      FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
+      STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
+    ELSE(EXISTS ${ANCESTORS_FILE})
+      SET(ancestors_list "")
+    ENDIF(EXISTS ${ANCESTORS_FILE})
 
     FOREACH( class ${ancestors_list})
       ClassUsedName( class m_class )
@@ -177,6 +203,7 @@ ELSE(MYCOMMAND_RESULT)
       ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
       IF(DEFINED HAS_FUNCTIONS)
         SET(MYCOMMAND_3 ${MYCOMMAND_3} "--functions" ${MISSING_FUNCTIONS})
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--available_functions" ${functions_list})
       ENDIF(DEFINED HAS_FUNCTIONS)
       #SET(MYCOMMAND_3 ${MYCOMMAND_3} "--wrap_includes" ${WrapWxWidgetsDir})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--outputdir" ${GENERATED_DIR})
@@ -203,7 +230,7 @@ ELSE(MYCOMMAND_RESULT)
         (NOT EXISTS ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.h) OR
         (NOT EXISTS ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.cpp))
 
-    FOREACH( class ${ancestors_list} ${function} )
+    FOREACH( class ${ancestors_list} ${functions_list} )
       ClassUsedName( class m_class )
       SET( ${CMAKE_PROJECT_NAME}_HDRS 
             ${GENERATED_DIR}/wrap_${m_class}.h ${${CMAKE_PROJECT_NAME}_HDRS})

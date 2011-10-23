@@ -650,7 +650,7 @@ if __name__ == '__main__':
     needed_functions = args.val.functions
     wrapped_functions=[]
     while len(needed_functions)>0:
-      print "\n\n needed functions:", needed_functions, "\n\n"
+      #print "\n\n needed functions:", needed_functions, "\n\n"
       func = needed_functions.pop()
       print "Function: {0} ".format(func)
       config.include_list = []

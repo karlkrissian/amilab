@@ -167,18 +167,25 @@ def MissingTypes(classname,method,check_includes=False):
   for a in method.args:
     typename=config.types[a.typeid].GetDemangled()
     typefullname=config.types[a.typeid].GetFullString()
-    # discard triple pointers or double pointers with const (TODO: improve this part)
-    if (typefullname.endswith("* * *")) or (typefullname.endswith("* const *")):
-      missing_types.append(typefullname)
+    #
+    ispointer= config.types[a.typeid].GetType()=="PointerType"
+    isconstpointer = typefullname.endswith("const *")
+    if typename=='void' and ispointer:
+      print "need to deal with 'void pointer' here\n"
     else:
-      typeid=config.types[a.typeid].GetMainTypeId()
-      shared_type = config.IsSharedPtr(typename)
-      if shared_type!=None:
-        avail = AvailableType(shared_type,typeid,missing_types,check_includes)
+      #
+      # discard triple pointers or double pointers with const (TODO: improve this part)
+      if (typefullname.endswith("* * *")) or (typefullname.endswith("* const *")):
+        missing_types.append(typefullname)
       else:
-        avail = AvailableType(typename,typeid,missing_types,check_includes)
-      if (not avail):
-        utils.WarningMessage("type {0} not available: {1}".format(typename,config.types[typeid].GetType()))
+        typeid=config.types[a.typeid].GetMainTypeId()
+        shared_type = config.IsSharedPtr(typename)
+        if shared_type!=None:
+          avail = AvailableType(shared_type,typeid,missing_types,check_includes)
+        else:
+          avail = AvailableType(typename,typeid,missing_types,check_includes)
+        if (not avail):
+          utils.WarningMessage("type {0} not available: {1}".format(typename,config.types[typeid].GetType()))
   res = ""
   if len(missing_types)>0:
     for t in missing_types:
