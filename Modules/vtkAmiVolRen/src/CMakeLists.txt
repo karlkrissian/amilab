@@ -10,12 +10,17 @@
 
 project (vtkAmiVolRen)
 
-MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
+SET(KIT ${CMAKE_PROJECT_NAME})
+
+IF(POLICY CMP0017) 
+  CMAKE_POLICY(SET CMP0017 NEW)
+ENDIF(POLICY CMP0017)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
 
-SET(CMAKE_MODULE_PATH  ${AMILAB_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
+SET(CMAKE_MODULE_PATH  ${PROJECT_SOURCE_DIR}/../../../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
+MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
 # should get everything from amilab configuration but ok for the moment
 FIND_PACKAGE( ITK )
@@ -32,7 +37,9 @@ FIND_PACKAGE( VTK )
 OPTION(ENABLE_WRAPPING   "ENABLE MODULE WRAPPING" ON)
 OPTION(NEED_VTK_WRAPPING "NEED VTK WRAPPING" ON)
 
-INCLUDE(${PROJECT_SOURCE_DIR}/../../../CMAKE/AMILabConfig.cmake)
+FIND_PACKAGE(AMILab)
+
+INCLUDE(${AMILAB_BINARY_DIR}/AMILabConfig.cmake)
 INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}
@@ -50,7 +57,6 @@ FIND_PACKAGE( BZip2)
 FIND_PACKAGE( wxWidgets COMPONENTS adv html aui  gl core base stc net richtext)
 
 IF(ENABLE_WRAPPING)
-
   IF(VTK_FOUND)
     SET(AMI_VTK_VERSION "${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
   ENDIF(VTK_FOUND)
@@ -66,27 +72,27 @@ IF(ENABLE_WRAPPING)
   INCLUDE(${PROJECT_SOURCE_DIR}/../../../CMAKE/PluginWrapping.cmake)
 ENDIF(ENABLE_WRAPPING)
 
-SET(vtkAmiVolRen_HDRS
-  ${vtkAmiVolRen_HDRS}
+SET(${KIT}_HDRS
+  ${${KIT}_HDRS}
   vtkAMILabGPUMultiVolumeRayCastMapper.h
   vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.h
-  vtkAmiVolRenPlugin.h
+  ${KIT}Plugin.h
 )
 
-SET(vtkAmiVolRen_SRCS
-  ${vtkAmiVolRen_SRCS}
+SET(${KIT}_SRCS
+  ${${KIT}_SRCS}
   vtkAMILabGPUMultiVolumeRayCastMapper.cxx
   vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.cxx
-  vtkAmiVolRenPlugin.cpp
+  ${KIT}Plugin.cpp
 )
 
 IF(WIN32)
-  set_source_files_properties(${vtkAmiVolRen_SRCS} PROPERTIES COMPILE_FLAGS "-DvtkAmiVolRen_EXPORTS")
+  set_source_files_properties(${${KIT}_SRCS} PROPERTIES COMPILE_FLAGS "-D${KIT}_EXPORTS")
 ENDIF(WIN32)
 
-SET(vtkAmiVolRen_SRCS
-    ${vtkAmiVolRen_SRCS}
-    ${vtkAmiVolRen_HDRS}
+SET(${KIT}_SRCS
+    ${${KIT}_SRCS}
+    ${${KIT}_HDRS}
 )
 
 # Deal with GLSL files like in VTK
@@ -164,7 +170,36 @@ include_directories (
   ${Boost_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(vtkAmiVolRen MODULE ${vtkAmiVolRen_SRCS} ${Kit_EXTRA_SRCS})
+#Added
+# ---------- Setup output Directories -------------------------
+SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY
+  ${PROJECT_SOURCE_DIR}/bin
+  CACHE PATH
+  "Single Directory for all Libraries"
+)
+
+# --------- Setup the Executable output Directory -------------
+SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+  ${PROJECT_SOURCE_DIR}/bin
+  CACHE PATH
+  "Single Directory for all static libraries."
+)
+
+# --------- Setup the Executable output Directory -------------
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
+  ${PROJECT_SOURCE_DIR}/bin
+  CACHE PATH
+  "Single Directory for all Executables."
+)
+
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/dllpath.amil.in 
+    ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/dllpath.amil
+    )
+#endadded
+
+ADD_LIBRARY(${KIT} MODULE ${${KIT}_SRCS} ${Kit_EXTRA_SRCS})
 
 
 SET(amilab_ownlibs
@@ -192,27 +227,31 @@ SET(LINK_VTK
 )
 
 
-TARGET_LINK_LIBRARIES( vtkAmiVolRen
+TARGET_LINK_LIBRARIES( ${KIT}
     ${LINK_VTK}
 )
   
 IF(WIN32)
   # conflict between freetype and vtkfreetype
-  TARGET_LINK_LIBRARIES( vtkAmiVolRen
+  TARGET_LINK_LIBRARIES( ${KIT}
     ${amilab_ownlibs}
     ${LINK_VTK}
     ${wxWidgets_LIBRARIES}
     ${Boost_LIBRARIES}
     )
-  TARGET_LINK_LIBRARIES( vtkAmiVolRen
+  TARGET_LINK_LIBRARIES( ${KIT}
     ITKIO
     ITKAlgorithms
     itkvnl
     itkvnl_algo
   )
-  TARGET_LINK_LIBRARIES( vtkAmiVolRen ${ZLIB_LIBRARIES})
-  TARGET_LINK_LIBRARIES( vtkAmiVolRen ${BZIP2_LIBRARIES})
+  TARGET_LINK_LIBRARIES( ${KIT} ${ZLIB_LIBRARIES})
+  TARGET_LINK_LIBRARIES( ${KIT} ${BZIP2_LIBRARIES})
+ELSE(WIN32)
+  TARGET_LINK_LIBRARIES( ${KIT}
+    ${LINK_VTK}
+  )
 ENDIF(WIN32)
 
 
-MESSAGE("TARGET: vtkAmiVolRen")
+MESSAGE("TARGET: ${KIT}")

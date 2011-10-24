@@ -51,6 +51,7 @@ enum {
   wxID_AddControlledCurve,
   wxID_RemoveControlledCurve,
   wxID_ColormapControlledCurve,
+  wxID_LimitControlledCurve,
 //  wxID_ColormapPoint,
   wxID_VerticalLine,
   wxID_YLocked,
@@ -60,21 +61,24 @@ enum {
 
 BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_PAINT(        wxDrawingWindow::OnPaint)
-  EVT_SIZE        ( wxDrawingWindow::OnSize      )
-  EVT_RIGHT_DOWN(   wxDrawingWindow::OnRightDown )
-  EVT_LEFT_DOWN(    wxDrawingWindow::OnLeftDown )
-  EVT_LEFT_UP(      wxDrawingWindow::OnLeftUp )
-  EVT_MOTION(       wxDrawingWindow::OnMotion )
-  EVT_MOUSEWHEEL(   wxDrawingWindow::OnWheel )
+  EVT_SIZE(         wxDrawingWindow::OnSize)
+  EVT_RIGHT_DOWN(   wxDrawingWindow::OnRightDown)
+  EVT_LEFT_DOWN(    wxDrawingWindow::OnLeftDown)
+  EVT_LEFT_UP(      wxDrawingWindow::OnLeftUp)
+  EVT_MOTION(       wxDrawingWindow::OnMotion)
+  EVT_MOUSEWHEEL(   wxDrawingWindow::OnWheel)
   EVT_MENU(         wxID_AddControlPoint,    wxDrawingWindow::OnAddControlPoint)
   EVT_MENU(         wxID_AddControlledCurve, wxDrawingWindow::OnAddControlledCurve)
   EVT_MENU(         wxID_RemoveControlledCurve, wxDrawingWindow::OnRemoveControlledCurve)
   EVT_MENU(         wxID_ColormapControlledCurve, wxDrawingWindow::OnColormapControlledCurve)
+  
+  EVT_MENU(         wxID_LimitControlledCurve, wxDrawingWindow::OnLimitControlledCurve)
+  
   EVT_MENU(         wxID_RemoveControl,      wxDrawingWindow::OnRemoveControl)
-  EVT_MENU(         wxID_DuplicateControl,      wxDrawingWindow::OnDuplicateControl)
-//  EVT_MENU(         wxID_ColormapPoint,      wxDrawingWindow::OnColormapPoint)
+  EVT_MENU(         wxID_DuplicateControl,   wxDrawingWindow::OnDuplicateControl)
+//  EVT_MENU(         wxID_ColormapPoint,    wxDrawingWindow::OnColormapPoint)
   EVT_MENU(         wxID_VerticalLine,       wxDrawingWindow::OnVerticalLine)
-  EVT_MENU(         wxID_YLocked,       wxDrawingWindow::OnYLocked)
+  EVT_MENU(         wxID_YLocked,            wxDrawingWindow::OnYLocked)
   EVT_MENU(         wxID_SetControlColour,   wxDrawingWindow::OnControlColour)
   EVT_MENU(         wxID_ShowGrid,           wxDrawingWindow::OnShowGrid)
 END_EVENT_TABLE();
@@ -315,11 +319,13 @@ void wxDrawingWindow::DuplicateControl()
       double x1 = it->GetX();
       double y1 = it->GetY();
       it--;
-      it->SetX(x2+(x1-x2)/5.0);
-      it->SetY(y2+(y1-y2)/5.0);
+      SetCtrlPointPosition(*it,
+                           x2+(x1-x2)/5.0,
+                           y2+(y1-y2)/5.0);
     } else {
-      it->SetX( Window2WorldX( World2WindowX(x2)+it->GetRadius()));
-      it->SetY(y2);
+      SetCtrlPointPosition(*it,
+                           Window2WorldX( World2WindowX(x2)+it->GetRadius()),
+                           y2);
     }
   }
 }
@@ -592,9 +598,14 @@ void wxDrawingWindow::DrawAxes(  )
 
 }
 
-inline double InterpolateAlpha( const double& a1,  const double& a2)
+inline double InterpolateAlpha( const double& a1,  const double& w1,const double& a2,  const double& w2)
 {
-  return (a1*a1+a2*a2)/(a1+a2);
+  double sum = w1+w2;
+  if (sum==0){
+    //std::cout<< "Alpha == 0 " << std::endl;
+    return 0;
+  }
+  return (a1*w1+a2*w2)/sum;
 }
 
 
@@ -602,11 +613,30 @@ inline wxColour InterpolateColour( const wxColour& c1, const double& w1,
                             const wxColour& c2, const double& w2)
 {
   double sum = w1+w2;
-  if (sum==0) return *wxBLACK;
+  if (sum==0){ 
+    //std::cout<< "Colour == 0 " << std::endl;
+    return c1;
+  }
   return wxColour(  (unsigned char) ((w1*c1.Red()  +w2*c2.Red()  )/sum),
                     (unsigned char) ((w1*c1.Green()+w2*c2.Green())/sum),
                     (unsigned char) ((w1*c1.Blue() +w2*c2.Blue() )/sum)  );
 }
+
+
+/*
+void wxDrawingWindow::AppliedLimitColorCurve(  ){
+  
+  for(int c=0; c<(int) _controlled_curves->size();c++)
+  {
+    if (!((*_controlled_curves)[c].GetType()==colormap_curve))
+      continue;
+
+    _controlled_curves->
+  }  
+  
+}
+*/
+
 
 //------------------------------------------------
 // LinearColorMap wxDrawingWindow::GetLinearCM()
@@ -623,6 +653,7 @@ void wxDrawingWindow::DrawLinearCM(  )
   double coeff2;
   double w1;
   double w2;
+  double e=0.01;
 
   if (!_draw_linearCM) return;
 
@@ -639,12 +670,25 @@ void wxDrawingWindow::DrawLinearCM(  )
   {
     if (!((*_controlled_curves)[c].GetType()==colormap_curve))
       continue;
-    boost::shared_ptr<vector_dwControlPoint> points = (*_controlled_curves)[c].GetControlPoints();
-    for(int i = 0; i<(int) points->size(); i++) 
+    boost::shared_ptr<vector_dwControlPoint> points_ptr = (*_controlled_curves)[c].GetControlPoints();
+    vector_dwControlPoint points = (*points_ptr);
+    if ((*_controlled_curves)[c].isLimited())
+    {
+       //Add limits
+       dwControlPoint p_ant = points.front();
+       dwControlPoint p_post = points.back();
+       p_ant. SetPos(p_ant.GetX()-e,0.0);
+       p_post.SetPos(p_post.GetX()+e,0.0);
+       points.insert(points.begin(),p_ant);
+       points.push_back(p_post);
+    }
+  
+    
+    for(int i = 0; i<(int) points.size(); i++) 
     {  
 //||((*points)[i].GetType() == colormap_point))
-        _linearCM.AddPoint(LinearColorMapPoint((*points)[i].GetX(),(*points)[i].GetY(),
-                                              (*points)[i].GetColour()));
+        _linearCM.AddPoint(LinearColorMapPoint(points[i].GetX(),points[i].GetY(),
+                                              points[i].GetColour()));
     }
   }
   // second compute the left and right colours of each point
@@ -660,22 +704,38 @@ void wxDrawingWindow::DrawLinearCM(  )
       continue;
 
     //std::cout<< "c = " << c << std::endl;
-    boost::shared_ptr<vector_dwControlPoint> points = (*_controlled_curves)[c].GetControlPoints();
+    boost::shared_ptr<vector_dwControlPoint> points_ptr = (*_controlled_curves)[c].GetControlPoints();
+    vector_dwControlPoint points = (*points_ptr);
+    if ((*_controlled_curves)[c].isLimited())
+    {
+      //Add limits
+       dwControlPoint p_ant = points.front();
+       dwControlPoint p_post = points.back();
+       p_ant. SetPos(p_ant.GetX()-e,0.0);
+       p_post.SetPos(p_post.GetX()+e,0.0);
+       points.insert(points.begin(),p_ant);
+       points.push_back(p_post);
+       std::cout<< "Add limits = " << points_ptr->size() << " " << points.size() << std::endl;
+    }
 
     int cmpt_id   = 0; // colormap point id
     int curvpt_id = 0; // curve point id
     // while it is possible:
     // get the current segment
     // fill all the points within the current segment
-    while ((curvpt_id+1 < (int)points->size())&&(cmpt_id<cm_size)) {
+    while ((curvpt_id+1 < (int)points.size())&&(cmpt_id<cm_size)) {
       //std::cout<< "curvpt_id = " << curvpt_id << std::endl;
       // current segment is between points[curvpt_id] and points[curvpt_id+1]
-      dwControlPoint p1 = (*points)[curvpt_id];
-      dwControlPoint p2 = (*points)[curvpt_id+1];
+      dwControlPoint p1 = points[curvpt_id];
+      dwControlPoint p2 = points[curvpt_id+1];
       double pos = _linearCM.GetPoint(cmpt_id).GetPosition();
-      //std::cout<< "p1.GetX() = " << p1.GetX() << std::endl;
-      //std::cout<< "p2.GetX() = " << p2.GetX() << std::endl;
-      //std::cout<< "pos = " << pos << std::endl;
+      
+
+
+//       std::cout<< "p1.GetX() = " << p1.GetX() << std::endl;
+//       std::cout<< "p2.GetX() = " << p2.GetX() << std::endl;
+
+//      std::cout<< "pos = " << pos << std::endl;
       while ((pos<p1.GetX())&&(cmpt_id<cm_size)) {
         cmpt_id++;
         pos = _linearCM.GetPoint(cmpt_id).GetPosition();
@@ -694,7 +754,10 @@ void wxDrawingWindow::DrawLinearCM(  )
           if (w1<0) w1=0;
           if (w2<0) w2=0;
           wxColour current_colour = InterpolateColour(c1,coeff1,c2,coeff2);
-          double current_weight = (w1*coeff1+w2*coeff2)/(coeff1+coeff2);
+          
+          double current_weight;
+          if(coeff1+coeff2==0) current_weight=0;
+          else current_weight= (w1*coeff1+w2*coeff2)/(coeff1+coeff2);
           //std::cout << "cmpt_id = " << cmpt_id << std::endl;
           //std::cout<< "current_colour = " << current_colour.GetAsString().ToAscii() << std::endl;
           left_colours[cmpt_id] =
@@ -705,9 +768,11 @@ void wxDrawingWindow::DrawLinearCM(  )
               InterpolateColour(current_colour,current_weight,
                                 right_colours[cmpt_id], weights[cmpt_id]);
           //std::cout<< "right_colour = " << right_colours[cmpt_id].GetAsString().ToAscii() << std::endl;
-          
-          alphas[cmpt_id] =InterpolateAlpha(
-              InterpolateAlpha(w1,w2),alphas[cmpt_id]);
+   
+          std::cout<< "p1.GetY() = " << p1.GetY() << std::endl;
+          std::cout<< "p2.GetY() = " << p2.GetY() << std::endl;      
+              
+         alphas[cmpt_id] =InterpolateAlpha(current_weight,current_weight,alphas[cmpt_id], weights[cmpt_id]);
               
           weights[cmpt_id] += current_weight;
 
@@ -763,6 +828,10 @@ void wxDrawingWindow::DrawLinearCM(  )
     }
   }
 
+  if (_paint_callback.get()) {
+    bool ok = (*_paint_callback)();
+    if (!ok) _paint_callback.reset();
+  }
 }
 
 
@@ -836,6 +905,18 @@ void wxDrawingWindow::DrawControls()
 {
   DrawControlPoints();
 }
+
+//----------------------------------------------------------------------
+void wxDrawingWindow::SetCtrlPointPosition(dwControlPoint& p, 
+                                           double x, double y)
+{
+  p.SetX(x);
+  if (y<_y_epsilon) p.SetY(_y_epsilon);
+    else if (y>_ymax-_y_epsilon) p.SetY(_ymax-_y_epsilon);
+      else p.SetY(y);
+}
+
+  
 //---------------------------------------------------------------------
 void wxDrawingWindow::DrawingAreaDisplay( bool in_paint)
 //                  ------------------
@@ -913,9 +994,12 @@ void wxDrawingWindow::OnPaint(wxPaintEvent& event)
 {
   wxPaintDC pdc(this);
   PrepareDC(pdc);
-
   //DrawingAreaInit( );
   Paint(true);
+//   if (_paint_callback.get()) {
+//     bool ok = (*_paint_callback)();
+//     if (!ok) _paint_callback.reset();
+//   }
   event.Skip();
 }
 
@@ -967,6 +1051,9 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
 
       wxMenuItem* menu_cmcc = menu.AppendCheckItem(wxID_ColormapControlledCurve, wxT("&Colormap Curve"));
       menu_cmcc->Check(_focus_controlledcurve->GetType()==colormap_curve);
+      
+      wxMenuItem* menu_cmcc2 = menu.AppendCheckItem(wxID_LimitControlledCurve, wxT("&Limited Curve"));
+      menu_cmcc2->Check(_focus_controlledcurve->isLimited()==true);
     }
 /*
     wxMenuItem* menu_cm = menu.AppendCheckItem(wxID_ColormapPoint, wxT("&Colormap"));
@@ -1070,11 +1157,12 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
         shared_ptr<std::vector<dwControlPoint> > points = 
           _focus_controlledcurve->GetControlPoints();
         for(int i=0;i<(int)points->size();i++) {
-          (*points)[i].SetX((*points)[i].GetX()+new_x-x);
-          (*points)[i].SetY((*points)[i].GetY()+new_y-y);
+          SetCtrlPointPosition((*points)[i],
+                               (*points)[i].GetX()+new_x-x,
+                               (*points)[i].GetY()+new_y-y);
         }
       } else {
-        _focus_point->SetPos(new_x,new_y);
+        SetCtrlPointPosition(*_focus_point,new_x,new_y);
         _focus_point->SetwxPoint(wxPoint(_mouse_x,_mouse_y));
       }
 
@@ -1084,6 +1172,11 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
         bool ok = (*_ctrlpt_callback)();
         if (!ok) _ctrlpt_callback.reset();
       }
+
+    if (_paint_callback.get()) {
+      bool ok = (*_paint_callback)();
+      if (!ok) _paint_callback.reset();
+    }
 
       Refresh(false);
     }
@@ -1183,8 +1276,9 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
     for(int i=0; i<(int)points->size(); i++) {
       double x = (*points)[i].GetX();
       double y = (*points)[i].GetY();
-      (*points)[i].SetX(xref+(x-xref)*zoom_factor);
-      (*points)[i].SetY(yref+(y-yref)*zoom_factor);
+      SetCtrlPointPosition((*points)[i],
+                           xref+(x-xref)*zoom_factor,
+                           yref+(y-yref)*zoom_factor);
     }
   } else {
     wxClientDC dc(this);
@@ -1224,6 +1318,11 @@ void wxDrawingWindow::OnAddControlPoint(wxCommandEvent& event)
   double x,y;
   Window2World(_mouse_x,_mouse_y,x,y);
   AddControlPoint(dwControlPoint(dwPoint2D(x,y)));
+if (_paint_callback.get()) {
+  bool ok = (*_paint_callback)();
+  if (!ok) _paint_callback.reset();
+}  
+  
   Refresh(false);
 }
 
@@ -1238,6 +1337,12 @@ void wxDrawingWindow::OnAddControlledCurve(wxCommandEvent& event)
   c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x1,y)));
   c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x2,y)));
   _controlled_curves->push_back(c);
+  
+  if (_paint_callback.get()) {
+    bool ok = (*_paint_callback)();
+    if (!ok) _paint_callback.reset();
+  }
+
   Refresh(false);
 }
 
@@ -1247,6 +1352,11 @@ void wxDrawingWindow::OnRemoveControlledCurve(wxCommandEvent& event)
   if (_focus_controlledcurve.get())
       // TODO: fix remove feature
 //    _controlled_curves->erase(_controlled_curves->begin()+_focus_controlledcurve);
+// if (_paint_callback.get()) {
+//   bool ok = (*_paint_callback)();
+//   if (!ok) _paint_callback.reset();
+// }
+
   Refresh(false);
 }
 
@@ -1286,6 +1396,28 @@ void wxDrawingWindow::OnColormapControlledCurve(wxCommandEvent& event)
     _focus_controlledcurve->SetType(colormap_curve);
   else
     _focus_controlledcurve->SetType(normal_curve);
+
+  if (_paint_callback.get()) {
+    bool ok = (*_paint_callback)();
+    if (!ok) _paint_callback.reset();
+  }
+
+  Refresh(false);
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnLimitControlledCurve(wxCommandEvent& event)
+{
+  
+  if (event.IsChecked())
+    _focus_controlledcurve->SetLimits(true);
+  else
+    _focus_controlledcurve->SetLimits(false);
+  if (_paint_callback.get()) {
+    bool ok = (*_paint_callback)();
+    if (!ok) _paint_callback.reset();
+  }
+
   Refresh(false);
 }
 
@@ -1314,9 +1446,16 @@ void wxDrawingWindow::OnControlColour(wxCommandEvent& event)
   if ( dialog.ShowModal() == wxID_OK )
   {
     if (_focus_point.get())
-      _focus_point->SetColour( dialog.GetColourData().GetColour());
+    {
+      _focus_point->SetColour( dialog.GetColourData().GetColour());  
+    }
   }
-  Refresh(false);
+  if (_paint_callback.get()) {
+    bool ok = (*_paint_callback)();
+    if (!ok) _paint_callback.reset();
+  }
+   Refresh(false);
+  
 }
 
 //-------------------------------------------------

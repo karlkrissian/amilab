@@ -447,6 +447,30 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 }
 
 //---------------------------------------------------
+//  SetPaintCallback
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_SetPaintCallback::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(AMIFunction,"Callback function (AMIFunction)");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_SetPaintCallback::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  Variable<AMIFunction>::ptr varfunc;
+  int n=0;
+  if (!get_var_param<AMIFunction>(varfunc,p,n))  ClassHelpAndReturn;
+
+  AMIFunction::ptr func(varfunc->Pointer());
+  CallBackAMIFunction::ptr cb(new CallBackAMIFunction(func));
+  _objectptr->GetObj()->SetPaintCallback( cb );
+
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
 //  AddControlPoint
 //---------------------------------------------------
 void WrapClass_wxDrawingWindow::
@@ -607,6 +631,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 void WrapClass_wxDrawingWindow::
       wrap_GetColourlinearCM::SetParametersComments() 
 {
+  ADDPARAMCOMMENT_TYPE(int,"Index of the linearCM point.");
   return_comments = "Colour of the point as a wxColour object";
 }
 //---------------------------------------------------
@@ -627,6 +652,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 void WrapClass_wxDrawingWindow::
       wrap_GetAlphalinearCM::SetParametersComments() 
 {
+  ADDPARAMCOMMENT_TYPE(int,"Index of the linearCM point.");
   return_comments = "Alpha value of the point X as double";
 }
 //---------------------------------------------------
@@ -646,6 +672,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 void WrapClass_wxDrawingWindow::
       wrap_GetPoslinearCM::SetParametersComments() 
 {
+  ADDPARAMCOMMENT_TYPE(int,"Index of the linearCM point.");
   return_comments = "Pos value of the point X as double";
 }
 //---------------------------------------------------

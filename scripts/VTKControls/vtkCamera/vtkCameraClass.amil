@@ -14,6 +14,7 @@ Class vtkCameraClass \
   }
 
   proc ::SetCallback( VAR cb) {
+    del ::callback
     ::callback = &cb
   }
 
@@ -62,17 +63,21 @@ Class vtkCameraClass \
 
   proc ::SetCamera( OBJECT obj) {
     if obj.IsA("vtkCamera") {
+      del ::vtkcam
       ::vtkcam = &obj
     } else {
       if obj.IsA("vtkRenderer") {
+        del ::vtkcam
         ::vtkcam = obj.GetActiveCamera()
       } else {
         InfoDialog "vtkCameraClass.SetCamera(obj): wrong object type"
       }
     }
 
+    del ::init_cam
     ::init_cam = vtk.vtkCamera.New()
     ::init_cam.DeepCopy(&::vtkcam)
+    del ::last_cam
     ::last_cam = vtk.vtkCamera.New()
     ::last_cam.DeepCopy(&::vtkcam)
     # get the camera parameters: position, focal point and view up vector

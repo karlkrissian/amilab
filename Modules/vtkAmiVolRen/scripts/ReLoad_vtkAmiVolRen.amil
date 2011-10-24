@@ -1,0 +1,4 @@
+
+if exists(vtkAmiVolRen_obj) {
+  vtkAmiVolRen_obj.ReLoad()
+}

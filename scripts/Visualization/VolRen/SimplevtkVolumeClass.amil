@@ -143,34 +143,36 @@ if (!exists(SimplevtkVolumeClass)) {
       interact = vtk.vtkInteractorStyleTrackballCamera.New()
       ::renwininter.SetInteractorStyle(&interact)
       #This is the actor with the planes
-      #renderer.AddVolume(&vol_actor)
       ::renwin   = ::renwininter.GetRenderWindow()
+
       ::renwininter.SetRenderWindow(&::renwin)
-      ::AddAnnotatedCube()
+      //::AddAnnotatedCube()
       ::initialized = 1
     }
 
     #----------------------------
     proc ::AddAnnotatedCube(){
-      axesActor = vtk.vtkAnnotatedCubeActor.New()
-      axesActor.SetXPlusFaceText( "L")
-      axesActor.SetXMinusFaceText("R")
-      axesActor.SetYMinusFaceText("A")
-      axesActor.SetYPlusFaceText( "P")
-      axesActor.SetZMinusFaceText("I")
-      axesActor.SetZPlusFaceText( "S")
-      axesActor.GetTextEdgesProperty().SetColor(1,1,0)
-      axesActor.GetTextEdgesProperty().SetLineWidth(2)
-      axesActor.GetCubeProperty().SetColor(0,0,1)
-      ::axes = vtk.vtkOrientationMarkerWidget.New()
-      ::axes.SetOrientationMarker(&axesActor)
-      ::axes.SetInteractor(&::renwininter)
-      ::axes.EnabledOn()
-      //if (::interacCube ==1){
-      //   ::axes.InteractiveOn()
-      //}else{
-         ::axes.InteractiveOff()
-      //}
+      if (exists(::renwininter)){
+        axesActor = vtk.vtkAnnotatedCubeActor.New()
+        axesActor.SetXPlusFaceText( "L")
+        axesActor.SetXMinusFaceText("R")
+        axesActor.SetYMinusFaceText("A")
+        axesActor.SetYPlusFaceText( "P")
+        axesActor.SetZMinusFaceText("I")
+        axesActor.SetZPlusFaceText( "S")
+        axesActor.GetTextEdgesProperty().SetColor(1,1,0)
+        axesActor.GetTextEdgesProperty().SetLineWidth(2)
+        axesActor.GetCubeProperty().SetColor(0,0,1)
+        ::axes = vtk.vtkOrientationMarkerWidget.New()
+        ::axes.SetOrientationMarker(&axesActor)
+        ::axes.SetInteractor(&::renwininter)
+        ::axes.EnabledOn()
+        //if (::interacCube ==1){
+        //   ::axes.InteractiveOn()
+        //}else{
+          ::axes.InteractiveOff()
+        //}
+      }
     }
 
     #----------------------------

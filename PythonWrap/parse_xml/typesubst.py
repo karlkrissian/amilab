@@ -27,7 +27,7 @@ type_substitute={
   'long long int'      : 'long',
   'short unsigned int' : 'int',
   'short int'          : 'int',
-  'signed char'        : 'int',
+  'signed char'        : 'unsigned char',
   'void'               : 'unsigned char',
 }
 #'bool':'int',
@@ -266,6 +266,7 @@ def ConvertSmtPtrToDoublePtr_void(typeid,substvar,typevar):
   res  = "void** {0} = (void**) {1}.get();\n".format(typevar,substvar)
   return res
 
+
 #
 # Generic calls
 #
@@ -291,7 +292,7 @@ def ConvertPtrFrom(typeid,typevar,substvar):
     return eval("ConvertPtrFrom_{0}(typevar,substvar)".format(shorttypename))
   except NameError:
     print "Warning: pointer conversion failed for type {0}".format(typename)
-    res =  eval("ConvertValFrom_{0}('*'+typevar,substvar)".format(shorttypename))
+    res =  eval("ConvertValFrom(typeid,'*'+typevar,substvar)")
     return res
 
 def ConvertValTo(typeid,substvar,typevar):
@@ -317,4 +318,5 @@ def ConvertSmtPtrToDoublePtr(typeid,substvar,typevar):
   try:
     return eval("ConvertSmtPtrToDoublePtr_{0}(typeid,substvar,typevar)".format(shorttypename))
   except NameError:
-    return ""
+    res  = "{2}** {0} = ({2}**) {1}.get();\n".format(typevar,substvar,typename)
+    return res

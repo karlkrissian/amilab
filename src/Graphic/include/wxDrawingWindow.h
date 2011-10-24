@@ -50,6 +50,9 @@ class wxDrawingWindow : public wxScrolledWindow
 
   //! axis limits in Y
   double _ymin, _ymax;
+  
+  //! infinite displacement in Y (range/10000)
+  double _y_epsilon;
 
   //! position in Y of X axis
   double _xaxis;
@@ -99,7 +102,8 @@ class wxDrawingWindow : public wxScrolledWindow
 
   // Callback for the control point motion
   CallBackBase::ptr _ctrlpt_callback;
-
+  // Callback for point event
+  CallBackBase::ptr _paint_callback;
   void DrawingAreaInit( );
 
 public:
@@ -127,6 +131,9 @@ public:
     this->_ctrlpt_callback = callback;
   }
 
+  void SetPaintCallback( CallBackBase::ptr callback) {
+    this->_paint_callback = callback;
+  }
   int GetNumberOfCtrlPoints() const
   {
     return _controlpoints->size();
@@ -139,6 +146,12 @@ public:
     else 
       return dwControlPoint();
   }
+
+  /**
+   * Sets the control point position limiting its vertical position
+   * between +epsilon and ymax-epsilon
+   */
+  void SetCtrlPointPosition(dwControlPoint& p, double x, double y);
 
 /*
   void SetCtrlPointCallback( CallBackBase::ptr callback) {
@@ -187,6 +200,7 @@ public:
   {
     _ymin = ymin; _ymax = ymax;
     if (ymax<ymin+1E-5) _ymax = ymin+1E-5;
+    _y_epsilon = (_ymax-_ymin)/10000.0;
   }
 
   /**
@@ -388,6 +402,7 @@ public:
   void OnRemoveControl(           wxCommandEvent& event);
   void OnDuplicateControl(        wxCommandEvent& event);
 //  void OnColormapPoint(           wxCommandEvent& event);
+  void OnLimitControlledCurve(    wxCommandEvent& event);
   void OnColormapControlledCurve( wxCommandEvent& event);
   void OnVerticalLine(            wxCommandEvent& event);
   void OnYLocked(                 wxCommandEvent& event);

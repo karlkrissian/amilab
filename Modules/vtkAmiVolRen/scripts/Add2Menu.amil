@@ -1,2 +1,3 @@
 
-ami.MainFrame.AddToMenu("&Modules","&Visualization","&vtkAmiVolRen",  "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen")
+ami.MainFrame.AddToMenu("&Modules","&Visualization","&Load",  "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen")
+ami.MainFrame.AddToMenu("&Modules","&Visualization","&ReLoad",  "../Modules/vtkAmiVolRen/scripts/ReLoad_vtkAmiVolRen")

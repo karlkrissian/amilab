@@ -124,9 +124,11 @@ if (!exists(ImageHistogramClass)) {
         ::input_name = "::input"
         #::win.update
       }
+
       #::win.update
       ::UpdateImage()
       ::Update()
+      ::AddStandarColorMap()
       SetStatusText("LoadInput Finished")
     }
     Comments(::LoadInput,"Load and initialize input image.")
@@ -180,6 +182,7 @@ if (!exists(ImageHistogramClass)) {
       SetStatusText("UpdateImage OK")
     }
 
+
     #-------------------------------------------------------------------
     proc ::Update() {
       SetStatusText("Update")
@@ -196,26 +199,30 @@ if (!exists(ImageHistogramClass)) {
           ::dw->SetCurve(::h[n],n)
           ::dw->SetCurveProperties(n,::ColoursVector[n%6])
         }
-
-        # clear control points and add standard colormap
-        hmax = max(::h[0])
-        curve = ami.dwControlledCurve()
-
-        cp0 = ami.dwControlPoint(::minval,hmax/2)
-        cp0.SetColour(wx.wxColour(0,0,0))
-        #cp0.SetType(1)
-        cp1 = ami.dwControlPoint(::maxval,hmax/2)
-        cp1.SetColour(wx.wxColour(255,255,255))
-        #cp1.SetType(1)
-        # remove all control points
-        curve.GetControlPoints().push_back(&cp0)
-        curve.GetControlPoints().push_back(&cp1)
-        curve.SetType(1)
-       ::dw.GetControlledCurves().clear()
-       ::dw.GetControlledCurves().push_back(&curve)
       }
     }
     Comments(::Update,"Recomputes input image limits and resets the histogram.")
+
+
+    #-------------------------------------------------------------------
+    proc ::AddStandarColorMap() {
+      # clear control points and add standard colormap
+      hmax = max(::h[0])
+      curve = ami.dwControlledCurve()
+
+      cp0 = ami.dwControlPoint(::minval,hmax/2)
+      cp0.SetColour(wx.wxColour(0,0,0))
+      #cp0.SetType(1)
+      cp1 = ami.dwControlPoint(::maxval,hmax/2)
+      cp1.SetColour(wx.wxColour(255,255,255))
+      #cp1.SetType(1)
+      # remove all control points
+      curve.GetControlPoints().push_back(&cp0)
+      curve.GetControlPoints().push_back(&cp1)
+      curve.SetType(1)
+      ::dw.GetControlledCurves().clear()
+      ::dw.GetControlledCurves().push_back(&curve)
+    }
 
     #--------------------------------------------------
     proc ::ColormapMinMax() \
@@ -265,7 +272,7 @@ if (!exists(ImageHistogramClass)) {
           checknext = 0
         }
       }
-printn "found = %1%" % found
+      #printn "found = %1%" % found
       if (found) {
         # first get min and max of curve
         ctrlpts = curves[c].GetControlPoints()
@@ -282,8 +289,8 @@ printn "found = %1%" % found
             xmax = max(xmax,cp.GetX())
           } # end if
         } # end for
-printn "xmin = %1%" % xmin
-printn "xmax = %1%" % xmax
+        #printn "xmin = %1%" % xmin
+        #printn "xmax = %1%" % xmax
         if (xmax>xmin) {
           # second create image
           res = Image(FLOAT,256,1,1)
@@ -590,9 +597,9 @@ printn "xmax = %1%" % xmax
         ::win.Display()
       }
       ::win.Update(-1)
-
       ::dw.SetCtrlPointCallback(&::OnCtrlPoint)
-   }
+      ::dw.SetPaintCallback(&::OnCtrlPoint)   
+}
 
     ::Init()
   } 

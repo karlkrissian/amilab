@@ -40,6 +40,7 @@
 typedef enum {
  normal_curve = 0,
  colormap_curve,
+ //colormap_curveLimit,
 } ControlledCurveType;
 
 
@@ -58,6 +59,7 @@ class dwControlledCurve {
     */
   boost::shared_ptr<vector_dwControlPoint> _controlpoints;
 
+  bool appliedlimits;
   ControlledCurveType type;
 
   public:
@@ -69,6 +71,7 @@ class dwControlledCurve {
           new vector_dwControlPoint()
         );
       type = normal_curve;
+      appliedlimits=false;
     }
 
     //!copy Constructor
@@ -81,13 +84,15 @@ class dwControlledCurve {
       *_curve = *c._curve;
       *_controlpoints = *c._controlpoints; 
       type = c.type;
+      appliedlimits= c.appliedlimits;
     }
 
     dwControlledCurve& operator = (const dwControlledCurve& c)
     {
       *_curve = *c._curve;
       *_controlpoints = *c._controlpoints;
-      type = c.type;      
+      type = c.type; 
+      appliedlimits= c.appliedlimits;
       return *this;
     }
 
@@ -104,9 +109,14 @@ class dwControlledCurve {
      */
     void ComputeCurve();
 
-
-    int GetType() const { return (int)type; }
-    void SetType( const int t) { type = (ControlledCurveType)t; }
+    void  SetLimits( bool v) { appliedlimits = v; }
+    bool  isLimited() { return appliedlimits; }
+    int   GetType() const { return (int)type; }
+    void  SetType( const int t) 
+    { 
+      type = (ControlledCurveType)t; 
+      //if (type==colormap_curve) appliedlimits=true;
+    }
 };
 
 typedef std::vector<dwControlledCurve> vector_dwControlledCurve;

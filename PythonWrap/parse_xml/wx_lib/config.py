@@ -23,6 +23,9 @@ def get_include_file(classname, filename):
   if s.find("panelg.h")  !=-1:  s = "wx/panel.h"
   if s.find("paletteg.h")!=-1:  s = "wx/palette.h"
   if s.find("aboutdlgg.h")!=-1: s = "wx/aboutdlg.h"
+  if s.find("choicdgg.h")!=-1:  s = "wx/choicdlg.h"
+  if s.find("textdlgg.h")!=-1:  s = "wx/textdlg.h"
+  if s.find("numdlgg.h")!=-1:   s = "wx/numdlg.h"
   # AD-HOC fixes, can be improved ...
   if classname.find("Aui")!=-1: s = "wx/aui/aui.h"
   if classname=="wxDC":         s = "wx/dc.h"
@@ -42,6 +45,9 @@ def get_include_file(classname, filename):
   #if classname=="wxImageList": s = "wx_includes.h"
   if classname=="wxGDIImage": s = "wx/bitmap.h"
   if classname=="wxGDIImageHandler": s = "wx/bitmap.h"
+  if classname=="wxIcon": s = "wx/icon.h"
+  if classname=="wxPen": s = "wx/pen.h"
+  if classname=="wxSplitterWindow": s = "wx/splitter.h"
   #if classname=="wxTextEntry":       s = "wx_includes.h"
   #if classname=="wxTextEntryBase":   s = "wx_includes.h"
   #print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)

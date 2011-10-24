@@ -38,7 +38,7 @@ class dwControlPoint
   DEFINE_CLASS(dwControlPoint);
 
 private:
-  dwPoint2D       pos;
+  dwPoint2D        pos;
   wxPoint          winpos;
   bool             selected;
   bool             has_focus;

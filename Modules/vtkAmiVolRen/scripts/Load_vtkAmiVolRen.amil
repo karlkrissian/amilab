@@ -1,7 +1,10 @@
 
+del vtkAmiVolRenPlugin
+func "vtkAmiVolRenPlugin"
 
-plugin_mgr=wx.wxPluginManager()
-# Make this platform independent, using a .in file ?
-plugin_mgr.Load(op_system.GetCurrentScriptDir()+"/../src/build/release/libvtkAmiVolRen.so")
-vtkAmiVolRen_plugin=plugin_mgr.Getplugin()
-vtkAmiVolRen_plugin.Execute()
+if (!exists(vtkAmiVolRenPlugin_obj)) {
+  vtkAmiVolRenPlugin vtkAmiVolRenPlugin_obj
+  vtkAmiVolRenPlugin_obj.Load()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
