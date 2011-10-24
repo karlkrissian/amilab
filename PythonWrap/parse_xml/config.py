@@ -86,7 +86,7 @@ members_blacklist=[
   'vtkFixedPointVolumeRayCastMapper::GetGradientNormal', # double pointer pb
   'vtkCellArray::GetNextCell', # reference to pointer
   'vtkCellArray::GetCell', # reference to pointer
-  ]
+]
 
 
 class_types = ['Class','Struct']

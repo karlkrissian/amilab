@@ -314,9 +314,10 @@ def ConvertSmtPtrToPtr(typeid,substvar,typevar):
  
 def ConvertSmtPtrToDoublePtr(typeid,substvar,typevar):
   typename=config.types[typeid].GetString()
+  fulltypename=config.types[typeid].GetFullString()
   shorttypename=GetShortName(typename)
   try:
     return eval("ConvertSmtPtrToDoublePtr_{0}(typeid,substvar,typevar)".format(shorttypename))
   except NameError:
-    res  = "{2}** {0} = ({2}**) {1}.get();\n".format(typevar,substvar,typename)
+    res  = "{2} {0} = ({2}) {1}.get();\n".format(typevar,substvar,fulltypename)
     return res
