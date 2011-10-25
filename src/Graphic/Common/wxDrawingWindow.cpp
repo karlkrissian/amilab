@@ -828,10 +828,10 @@ void wxDrawingWindow::DrawLinearCM(  )
     }
   }
 
-  if (_paint_callback.get()) {
+/*  if (_paint_callback.get()) {
     bool ok = (*_paint_callback)();
     if (!ok) _paint_callback.reset();
-  }
+  }*/
 }
 
 
