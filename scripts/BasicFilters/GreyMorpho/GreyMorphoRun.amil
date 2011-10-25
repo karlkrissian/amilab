@@ -1,0 +1,42 @@
+
+#
+# Greyscale morphology
+#
+
+ami.MainFrame.Hide()
+
+
+if (argc!=1) {
+  InfoDialog "This filter needs 1 arguments"
+  quit
+}
+
+inputname=$1
+
+if (!exists(gmorpho)) {
+
+  GreyMorphoClass gmorpho
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image(inputname)
+    gmorpho->image_name = "input"
+    gmorpho->win.Update(-1)
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+
+#quit
+
+
+#sigma=atof($2)
+#xder=atof($3)
+#yder=atof($4)
+#outputname=$5
+
+#i = Image(inputname)
+#res = filter(i,sigma,xder,yder,-1)
+#res.save outputname
+#quit

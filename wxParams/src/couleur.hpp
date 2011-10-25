@@ -50,8 +50,8 @@
 
 //#include "style.hpp"
 //#include "palette.hpp"
-#include <iostream>
-using namespace std;
+//#include <iostream>
+//using namespace std;
 
 struct rgb_color { 
     unsigned char r,g,b; 

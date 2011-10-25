@@ -3,12 +3,8 @@
 
 if (!exists(BasicEdgeDetectionClass)) {
 
-  #Import filters
-  ami_import->Filters()
-
-	Class BasicEdgeDetectionClass{
+  Class BasicEdgeDetectionClass{
   
-    ::filters = &global::filters
     #-----------------------
     proc ::Init(){
       ::class_name = "global::BasicEdgeDetectionClass"
@@ -60,22 +56,22 @@ if (!exists(BasicEdgeDetectionClass)) {
       #::temp = norm(::input)
       #Apply the filter
       if (::filter_type==0) {
-        ::res <<= ::filters->Roberts(&::temp)
+        ::res <<= filters->Roberts(&::temp)
       }
       if (::filter_type==1) {
-        ::res <<= ::filters->PSF(&::temp, 1)
+        ::res <<= filters->PSF(&::temp, 1)
       }
       if (::filter_type==2) {
-        ::res <<= ::filters->PSF(&::temp, 2)
+        ::res <<= filters->PSF(&::temp, 2)
       }
       if (::filter_type==3) {
-        ::res <<= ::filters->PSF(&::temp, 3)
+        ::res <<= filters->PSF(&::temp, 3)
       }
       if (::filter_type==4) {
-        ::res <<= ::filters->Gradient(&::temp)
+        ::res <<= filters->Gradient(&::temp)
       }
       if (::filter_type==5) {
-        ::res <<= ::filters->Laplace(&::temp)
+        ::res <<= filters->Laplace(&::temp)
       }
       
       if (::reload) {
@@ -112,8 +108,7 @@ if (!exists(BasicEdgeDetectionClass)) {
     #-----------------------
     
     proc ::CreateGui() {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("BasicEdgeDetection")
+      ::win = ParamPanel("BasicEdgeDetection")
       
       ::win.BeginBook()
         ::win.AddPage("Parameters")

@@ -16,7 +16,7 @@
 #include "inrimage.hpp"
 #include "DefineClass.hpp"
 
-using namespace std;
+//using -- namespace std;
 
 #define GET_FIRST  1
 #define GET_SECOND 2

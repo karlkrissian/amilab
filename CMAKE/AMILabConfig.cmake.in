@@ -1,0 +1,32 @@
+#==============================================================================
+# AMILab configuration
+#
+# Author: xXx <xXX>, (C) 2010
+#
+# Copyright: See COPYING file that comes with this distribution
+#==============================================================================
+
+
+SET(AMILAB_VERSION_MAJOR  "@AMILAB_VERSION_MAJOR@")
+SET(AMILAB_VERSION_MINOR  "@AMILAB_VERSION_MINOR@")
+SET(AMILAB_VERSION_PATCH  "@AMILAB_VERSION_PATCH@")
+SET(AMILAB_VERSION        "@AMILAB_VERSION@")
+
+SET(AMILAB_SOURCE_DIR     "@AMILab_SOURCE_DIR@")
+SET(AMILAB_BINARY_DIR     "@AMILab_BINARY_DIR@")
+
+SET(AMI_VTK_VERSION       "@AMI_VTK_VERSION@")
+
+
+#SET(AMILab_PATHS
+#    ${AMILAB_SOURCE_DIR}/LanguageBase
+#    ${AMILAB_SOURCE_DIR}/Language
+#    ${AMILAB_SOURCE_DIR}/Common/include
+#    ${AMILAB_SOURCE_DIR}/CommonBase
+#    ${AMILAB_SOURCE_DIR}/Wrapping/include
+#    ${AMILAB_SOURCE_DIR}
+#    ${AMILAB_BINARY_DIR}
+#)
+
+#SET(AMILAB_USE_FILE "@AMILAB_USE_FILE@")
+

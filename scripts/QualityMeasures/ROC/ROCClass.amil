@@ -163,12 +163,15 @@ if (!exists(ROCClass)){
     proc ::Gui() {
       
       # parameters window
-      import = &global::ami_import
-      ::win = import.ParamPanel("ROC")
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("ROC",&::parent_panel)
+      } else {
+        ::win = ParamPanel("ROC")
+      }
       
       # add Drawing Window
       d = ::win.CurrentParent()
-      ::dw = import.wxDrawingWindow(&d)
+      ::dw = wxDrawingWindow(&d)
       ::dw.SetMinSize(&wx.wxSize(50,200))
       ::win.AddWidget(&::dw,0)
       ::dw.SetBackgroundColour(&wx.wxColour(255,255,255))
@@ -233,7 +236,11 @@ if (!exists(ROCClass)){
       ::AddStandardButtons(&::win)
 
       ::win.Update(-1)
-      ::win.Display()
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
     }
 
     ::Init()

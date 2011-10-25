@@ -68,7 +68,6 @@ if (!exists(SurfaceColorClass)) {
     proc ::LoadColorMap() {
       if (exists(::colormap)) { del ::colormap; }
 
-      global::ami_import.System();
       ::colormap = Image op_system.GetCurrentScriptDir()+"/CMrainbow1.ami.gz"
 
       # Flip in X
@@ -126,11 +125,10 @@ if (!exists(SurfaceColorClass)) {
     #-----------------------------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("SurfCol",&::parent_panel)
+        ::win = ParamPanel("SurfCol",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("SurfaceColor")
+        ::win = ParamPanel("SurfaceColor")
       }
       ::win.BeginBook()
         ::win.AddPage("Main")

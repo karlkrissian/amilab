@@ -13,6 +13,8 @@
 #ifndef _myButton_h_
 #define _myButton_h_
 
+#include <wx/button.h>
+
 //
 class myButton: public wxButton
 {

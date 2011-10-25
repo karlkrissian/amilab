@@ -28,6 +28,7 @@
 
 #include "fonctions.h"
 #include "localstats.h"
+#include "DiscNormGrad.h"
 
 #define MODE_LEE       0
 #define MODE_KUAN      1

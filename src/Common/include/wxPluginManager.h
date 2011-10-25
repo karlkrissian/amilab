@@ -12,6 +12,7 @@
 #ifndef wxPluginManager_H
 #define wxPluginManager_H
 
+#include "CommonConfigure.h"
 #include "wxPluginBase.h"
 
 #include <wx/dynlib.h>
@@ -20,7 +21,7 @@
 /**
  * @brief Class that manages the life-cycle of the plugins.
  **/
-class wxPluginManager
+class COMMON_EXPORT wxPluginManager
 {
   DEFINE_CLASS(wxPluginManager);
 public:

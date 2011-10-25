@@ -38,7 +38,8 @@
 #define MODE_2D 2
 #define MODE_3D 3
 
-extern  unsigned char       GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 //-------  Images
 static InrImage* image_entree  = NULL;

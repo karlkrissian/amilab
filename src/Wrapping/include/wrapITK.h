@@ -36,7 +36,6 @@
 /** function that add the wrapping from ITK library
  *  to the AMI language
  */
-void AddWrapITK(); 
-void wrap_ITK(ParamList* p);
+void AddWrapITK(AMIObject::ptr& obj); 
 
 #endif // _WRAPITK_H_

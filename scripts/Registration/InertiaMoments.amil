@@ -76,8 +76,6 @@ if (!exists(InertiaMoments)) {
       inertia.SetComponent( 4, I23)
       inertia.SetComponent( 5, I33)
 
-      import = &global::ami_import
-      import->Filters()
       mask = inertia[0]*0+1
       res = filters->EigenDecomp(&inertia,7,7,&mask)
       im_eval1 = &res[0]
@@ -148,9 +146,8 @@ if (!exists(InertiaMoments)) {
     # --------------------
     proc ::Gui() \
     {
-      import = &global::ami_import
       
-      ::win = import->ParamPanel("Inertia")
+      ::win = ParamPanel("Inertia")
   
       ::win.BeginBook()
       ::win.AddPage("IO")

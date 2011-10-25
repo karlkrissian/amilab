@@ -22,7 +22,7 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<dwPoint2D>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<dwPoint2D>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_dwPoint2D::wrap_dwPoint2D construct;
   return construct.CallMember(p);

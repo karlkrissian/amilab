@@ -1,0 +1,77 @@
+#
+#---- file functions
+#
+wxDos2UnixFilename
+wxFileExists
+wxFileModificationTime
+wxFileNameFromPath
+wxFindFirstFile
+wxFindNextFile
+wxGetDiskSpace
+#-- wxGetFileKind : missing _IO_FILE
+wxGetOSDirectory
+wxIsAbsolutePath
+wxDirExists
+wxPathOnly
+wxUnix2DosFilename
+#wxCHANGE_UMASK
+wxConcatFiles
+wxCopyFile
+wxGetCwd
+#-- wxGetWorkingDirectory : deprecated
+wxGetTempFileName
+wxIsWild
+wxMatchWild
+wxMkdir
+wxParseCommonDialogsFilter
+wxRemoveFile
+wxRenameFile
+wxRmdir
+wxSetWorkingDirectory
+wxSplitPath
+#-- wxTransferFileToStream : ostream
+#-- wxTransferStreamToFile : istream
+#
+# Dialog functions
+#
+#Below are a number of convenience functions for getting input from the user or displaying messages. Note that in #these functions the last three parameters are optional. However, it is recommended to pass a parent frame parameter, #or (in MS Windows or Motif) the wrong window frame may be brought to the front when the dialog box is popped up.
+#
+wxAboutBox
+wxBeginBusyCursor
+wxBell
+wxCreateFileTipProvider
+wxDirSelector
+wxFileSelector
+wxEndBusyCursor
+wxGenericAboutBox
+wxGetColourFromUser
+wxGetFontFromUser
+wxGetMultipleChoices
+wxGetNumberFromUser
+wxGetPasswordFromUser
+wxGetTextFromUser
+wxGetMultipleChoices
+wxGetSingleChoice
+wxGetSingleChoiceIndex
+#-- wxGetSingleChoiceData: void* pb
+wxIsBusy
+wxMessageBox
+wxShowTip
+#
+# Network, user and OS functions
+#
+#The functions in this section are used to retrieve information about the current computer and/or user characteristics.
+#
+wxGetEmailAddress
+wxGetFreeMemory
+wxGetFullHostName
+wxGetHomeDir
+wxGetHostName
+wxGetOsDescription
+wxGetOsVersion
+wxIsPlatformLittleEndian
+wxIsPlatform64Bit
+wxGetUserHome
+wxGetUserId
+wxGetUserName
+

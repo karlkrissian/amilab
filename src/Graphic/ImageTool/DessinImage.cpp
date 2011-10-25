@@ -188,7 +188,8 @@ typedef  unsigned long Dimension;
 extern MainFrame*   GB_main_wxFrame;
 
 //extern XtAppContext GB_contexte;
-extern unsigned char      GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 #define aff_err(mess) if (GB_debug) fprintf(stderr,mess);
 
@@ -761,8 +762,8 @@ void DessinImage::InitVoxelSize()
 
 
   // Conservation de l'isotropie de l'image
-  val1 = min( _size_x, _size_y);
-  val1 = min( val1, _size_z);
+  val1 = macro_min( _size_x, _size_y);
+  val1 = macro_min( val1, _size_z);
 
   // Calcul dans _size_x, _size_y et _size_z la taille
   // en pixels d'un voxel selon chaque dimension.
@@ -2544,13 +2545,15 @@ void DessinImage::CreateParamBook(wxWindow* parent)
    _param_book = new wxAuiNotebook(this, wxID_ANY,
                                     wxPoint(client_size.x, client_size.y),
                                     wxDefaultSize,
-                                    wxAUI_NB_TOP          |
+                                   wxAUI_NB_DEFAULT_STYLE);
+/*
+                                     wxAUI_NB_TOP          |
                                     wxAUI_NB_TAB_SPLIT    |
                                     wxAUI_NB_TAB_MOVE
                                     |wxAUI_NB_WINDOWLIST_BUTTON
                                     |wxAUI_NB_SCROLL_BUTTONS
                                   );
-
+*/
   _param_book->Fit();
 
 }  
@@ -2624,7 +2627,6 @@ DessinImage:: DessinImage(
   _voxelpos_statusid   = 1;
   _spatialpos_statusid = 2;
   
-  CreateParamBook(this);
   
   //Create image viewer toolbar
   Create_Toolbar();
@@ -2635,7 +2637,8 @@ DessinImage:: DessinImage(
                   wxAUI_MGR_ALLOW_FLOATING |
                   // Avoid problem with KDE desktop composing effect
                   #ifdef __WXGTK__ 
-                    wxAUI_MGR_RECTANGLE_HINT |
+                   wxAUI_MGR_VENETIAN_BLINDS_HINT |
+                   // wxAUI_MGR_RECTANGLE_HINT |
                   #else
                    wxAUI_MGR_TRANSPARENT_HINT |
                   #endif
@@ -2643,7 +2646,9 @@ DessinImage:: DessinImage(
                   wxAUI_MGR_NO_VENETIAN_BLINDS_FADE |
                   wxAUI_MGR_ALLOW_ACTIVE_PANE
                 ); 
-  
+
+    CreateParamBook(this);
+
   //Add image to manager
   manager.AddPane(this->_drawing_window, 
                 wxAuiPaneInfo()
@@ -3787,14 +3792,14 @@ void DessinImage::ApplyZoom( const ParamZoom& initial_zoom,
   Param._Zoom._ymin = macro_max( 0,
               (int) (y - 1.0*
                     ( y    - initial_zoom._ymin + 0.5)/zoom_factor));
-  Param._Zoom._ymax = min( _image->DimY() - 1,
+  Param._Zoom._ymax = macro_min( _image->DimY() - 1,
               (int) (y + 1.0*
                     ( initial_zoom._ymax - y    + 0.5)/zoom_factor));
 
-  Param._Zoom._zmin = max( 0,
+  Param._Zoom._zmin = macro_max( 0,
               (int) (z - 1.0*
                     ( z    - initial_zoom._zmin + 0.5)/zoom_factor));
-  Param._Zoom._zmax = min( _image->DimZ() - 1,
+  Param._Zoom._zmax = macro_min( _image->DimZ() - 1,
               (int) (z + 1.0*
                     ( initial_zoom._zmax - z    + 0.5)/zoom_factor));
 
@@ -4091,18 +4096,18 @@ void DessinImage::DeplaceSourisShiftBout1()
 
     // Deplacement
     // dx >= -_initial_zoom._xmin et dx <= _image->_tx - 1 - _initial_zoom._xmax
-    dx = max( dx, -_initial_zoom._xmin);
-    dx = min( dx, _image->_tx - 1 - _initial_zoom._xmax);
+    dx = macro_max( dx, -_initial_zoom._xmin);
+    dx = macro_min( dx, _image->_tx - 1 - _initial_zoom._xmax);
     Param._Zoom._xmin = (int) ( _initial_zoom._xmin + dx);
     Param._Zoom._xmax = (int) ( _initial_zoom._xmax + dx);
 
-    dy = max( dy, - _initial_zoom._ymin);
-    dy = min( dy, _image->_ty - 1 - _initial_zoom._ymax);
+    dy = macro_max( dy, - _initial_zoom._ymin);
+    dy = macro_min( dy, _image->_ty - 1 - _initial_zoom._ymax);
     Param._Zoom._ymin = (int) ( _initial_zoom._ymin + dy);
     Param._Zoom._ymax = (int) ( _initial_zoom._ymax + dy);
 
-    dz = max( dz, -_initial_zoom._zmin);
-    dz = min( dz, _image->_tz - 1 - _initial_zoom._zmax);
+    dz = macro_max( dz, -_initial_zoom._zmin);
+    dz = macro_min( dz, _image->_tz - 1 - _initial_zoom._zmax);
     Param._Zoom._zmin = (int) ( _initial_zoom._zmin + dz);
     Param._Zoom._zmax = (int) ( _initial_zoom._zmax + dz);
 
@@ -5798,7 +5803,7 @@ void DessinImage::CB_MIP_zoom_bounding_box( wxCommandEvent&)
 
   di->_MIP->Projection2( tx, 0, 0, &x, &y, &z);
   xmin = macro_min(xmin,x);  xmax = macro_max(xmax,x);
-  ymin = min(ymin,y);  ymax = macro_max(xmax,y);
+  ymin = macro_min(ymin,y);  ymax = macro_max(xmax,y);
 
   di->_MIP->Projection2( tx, ty, 0, &x, &y, &z);
   xmin = macro_min(xmin,x);  xmax = macro_max(xmax,x);

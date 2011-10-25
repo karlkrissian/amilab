@@ -84,8 +84,7 @@ if (!exists(GaussianFilterClass)) {
   #-----------------------------------------
   proc ::CreateGui() {
     # parameters window
-    import = &global::ami_import;
-    ::win = import->ParamPanel("GaussFilter")
+    ::win = ParamPanel("GaussFilter")
   
     ::win.BeginBook()
       ::win.AddPage("Param")

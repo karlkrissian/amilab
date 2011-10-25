@@ -3,26 +3,20 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
-  ${AMILAB_SOURCE_DIR}/Graphic/include
-  ${AMILAB_SOURCE_DIR}/Algorithms/include
-  ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Wrapping/include
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})
-
 INCLUDE( ${VTK_USE_FILE} )
+INCLUDE( ${USE_ITK_FILE} )
 
 SET(Common_SRCS
-  chaine.cpp 
-  Timing.cpp 
+  common_global_export.cpp
   Erreurs.cpp 
-  ficparam.cpp  
-  StringUtils.cpp
+  ficparam.cpp
   message_dialog.cpp
-  ami_format.cpp
-  amilab_messages.cpp
+  func_imagebasictools.cpp
 
   # coming from previous Math dir
   CurvaturasPrincipales.cpp
@@ -52,27 +46,26 @@ SET(Common_SRCS
 
   # from Plugin
   wxPluginManager.cpp
+
+  # ami_itk IO
+  ami_itkRead.cpp
+  ami_itkWrite.cpp
+
 )
 
 SET(Common_HDRS
-  include/amilab_messages.h
-	include/std_common.h
-	include/vtk_common.h
-	include/chaine.hpp
-	include/DefineClass.hpp
-	include/ensemble.hpp
-	include/Erreurs.hpp
-	include/Erreurs.Main.hpp
-	include/ficparam.hpp
-	include/MinHeap.hpp
-	include/Pile.hpp
-	include/StringUtils.hpp
-	include/style.hpp
-	include/TableauDyn.hpp
-	include/Timing.hpp
-	include/Voisins27.hpp
-  include/amilab_boost.h
-  include/ami_format.h
+	include/func_imagebasictools.h
+	include/CallBackBase.h
+  include/common_global_import.h
+  include/vtk_common.h
+  include/DefineClass.hpp
+  include/ensemble.hpp
+  include/Erreurs.hpp
+  include/Erreurs.Main.hpp
+  include/ficparam.hpp
+  include/MinHeap.hpp
+  include/TableauDyn.hpp
+  include/Voisins27.hpp
 
   # coming from previous Math dir
   include/complex.hpp
@@ -113,7 +106,18 @@ SET(Common_HDRS
   include/wxPluginInterface.h
   include/wxPluginManager.h
   include/wxPluginBase.h
+
+  # from ami_itk IO
+  include/ami_itkRead.h
+  include/ami_itkWrite.h
+  include/wrapConversion.h
+  include/wrapConversion.tpp
+
 )
+
+IF(WIN32)
+  set_source_files_properties(${Common_SRCS} PROPERTIES COMPILE_FLAGS "-DCOMMON_EXPORTS")
+ENDIF(WIN32)
 
 SET (Common_SRCS
      ${Common_SRCS}
@@ -124,4 +128,23 @@ SET (Common_SRCS
 
 # own macro to add the library and print the source files
 # using xxx_SRCS variable
+#my_add_shared_library (Common)
 my_add_library (Common)
+
+
+target_link_libraries(Common 
+  vtkIO 
+  vtkImaging
+  ITKIO
+  ${wxWidgets_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+
+IF(AMI_USE_BZIP2)
+  TARGET_LINK_LIBRARIES(Common ${BZIP2_LIBRARIES})
+ENDIF(AMI_USE_BZIP2)
+
+
+IF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)
+  SET_TARGET_PROPERTIES(Common PROPERTIES COMPILE_FLAGS -fPIC)
+ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)

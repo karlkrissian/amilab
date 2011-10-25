@@ -1,0 +1,9 @@
+
+func "SyntheticStenosis3DClass.amil"
+
+if (!exists(Stenosis3D_obj)) {
+  SyntheticStenosis3DClass Stenosis3D_obj
+  Stenosis3D_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

@@ -23,7 +23,6 @@ if (!exists(vtkIsoSurface_display)) {
     vtkIsoSurface_display.SetHelp("VTK-based isosurface visualization.")
     vtkIsoSurface_display.SetInMenus("Scripts","Visualization")
 
-    ami_import.System(); 
     vtkIsoSurface_display.SetIcon16( op_system.GetCurrentScriptDir()+"/vtkIsoSurface_icon16.png")
     vtkIsoSurface_display.SetIcon32( op_system.GetCurrentScriptDir()+"/vtkIsoSurface_icon32.png")
 

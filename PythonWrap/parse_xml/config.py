@@ -26,6 +26,9 @@ members_blacklist=[
   #'wxAuiManager::SetFrame', deprecated
   #'wxAuiManager::GetFrame', deprecated
   #'wxWindowBase::GetHelpTextAtPoint', 
+  'wxCmdLineParser::SetCmdLine(int, wchar_t**)', # pb with wchar_t** ...
+  'wxCmdLineParser::wxCmdLineParser(wxCmdLineEntryDesc const*, int, wchar_t**)', # idem
+  'wxCmdLineParser::wxCmdLineParser(int, wchar_t**)', # idem
   'wxWindowBase::GetToolTipText', # not implemented ...
   'wxStringBase::copy',
 #  'wxFileName::GetHumanReadableSize', #invalid cast
@@ -69,12 +72,23 @@ members_blacklist=[
   'wxListCtrl::ResetCurrent',      # idem
   'MacCreateUIFont',               #Mac problem
   'MacGetCTFont',                  #idem
+  'wxApp::Initialize',               # double pointer pb
+  'wxApp::InitialzeVisual',          # not implemented, static function
+  'wxApp::InitRichEdit',             # not implemented, static function
+  'wxAppBase::Initialize',           # double pointer pb
+  'wxAppConsole::Initialize',        # double pointer pb
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints',  # idem
   'vtkSource::GetOutputs',       # double pointer
   'vtkProcessObject::GetInputs', # idem
-  ]
+  'vtkPlot::GetProperty', # seems not implemented
+  'vtkPlot::SetProperty', # seems not implemented
+  'vtkFixedPointVolumeRayCastMapper::LookupAndCombineIndependentColorsUC', # gives an error: to check
+  'vtkFixedPointVolumeRayCastMapper::GetGradientNormal', # double pointer pb
+  'vtkCellArray::GetNextCell', # reference to pointer
+  'vtkCellArray::GetCell', # reference to pointer
+]
 
 
 class_types = ['Class','Struct']
@@ -87,28 +101,41 @@ incomplete_classes=[]
 new_needed_classes=[]
 
 # available builtin type
-available_types       = ['int','float','double','unsigned char','long','long int','std::string','bool','void', 'AMIFunction', 'InrImage', 'amilab::SurfacePoly']
+available_types       = [
+  'int',
+  'float',
+  'double',
+  'unsigned char',
+  'long',
+  'long int',
+  'std::string',
+  'bool',
+  'void',
+  'AMIFunction',
+  'InrImage'
+  ]
+available_builtin_classes     = ['amilab::SurfacePoly']
 
 # not used
 #available_pointertypes= ['int','float','double','unsigned char','long','long int','std::string','bool']
 
 available_operators={ \
-  '!=':'__not_equal__', \
-  '==':'__equal__', \
-  '[]':'__at__', \
-  '()':'__parenthesis__', \
-  '=':'__assign__',\
-  '-=':'__sub_assign__', \
-  '+':'__add__', \
-  '+=':'__add_assign__', \
-  '*':'__mult__', \
-  '*()':'__indirection__', \
-  '*=':'__mult_assign__', \
-  '/':'__div__', \
-  '/=':'__div_assign__', \
-  '-':'__substract__', \
-  '++':'__preinc__', \
-  '--':'__predec__', \
+  '!=' : '__not_equal__', \
+  '==' : '__equal__', \
+  '[]' : '__at__', \
+  '()' : '__parenthesis__', \
+  '='  : '__assign__',\
+  '-=' : '__sub_assign__', \
+  '+'  : '__add__', \
+  '+=' : '__add_assign__', \
+  '*'  : '__mult__', \
+  '*()': '__indirection__', \
+  '*=' : '__mult_assign__', \
+  '/'  : '__div__', \
+  '/=' : '__div_assign__', \
+  '-'  : '__substract__', \
+  '++' : '__preinc__', \
+  '--' : '__predec__', \
   '++(int)':'__postinc__', \
   '--(int)':'__postdec__', \
   }
@@ -119,24 +146,36 @@ declare_list = []
 #-------------------------------------------------------------
 def ClassUsedName(classname):
   res = classname
-  res = res.replace('<','__LT__')
-  res = res.replace('>','__GT__')
-  res = res.replace(',','__COMMA__')
-  res = res.replace('::','__NS__')
-  res = res.replace(' ','__SPACE__')
+  res = res.replace('<','_L_')
+  res = res.replace('>','_G_')
+  res = res.replace(',','_')
+  res = res.replace('::','_')
+  res = res.replace(' ','')
+  res = res.replace('unsignedchar', 'UC')
+  res = res.replace('unsignedshort','US')
+  res = res.replace('unsignedint',  'UI')
+  res = res.replace('unsignedlong', 'UL')
+  res = res.replace('itk_', '')
   return res
 
 #-------------------------------------------------------------
-def ClassShortName(classname):
+def ClassShortName(classname,libnamespace=""):
   res = classname
   # keep std::string as is
   if classname=="std::string":
     return res
+  if libnamespace!="":
+    res = res.replace(libnamespace+"::","")
   res = res.replace('<','_')
   res = res.replace('>','')
   res = res.replace(',','_')
   res = res.replace('::','_')
   res = res.replace(' ','')
+  res = res.replace('unsignedchar', 'UC')
+  res = res.replace('unsignedshort','US')
+  res = res.replace('unsignedint',  'UI')
+  res = res.replace('unsignedlong', 'UL')
+  res = res.replace('itk_', '')
   return res
 
 #-------------------------------------------------------------
@@ -197,9 +236,53 @@ def CreateIncludes():
 def IsSharedPtr(typename):
   res = re.match(r"boost::shared_ptr<(.*)>",typename)
   if res!=None:
-    return res.group(1)
+    # get rid of spaces with strip ...
+    return res.group(1).strip()
   else:
     return None
+
+#------------------------------------------------------------------
+# Recursively find all the types within the template expression
+#------------------------------------------------------------------
+def templatetypes(string, all_types):
+    #print "--------------"
+    #print " starting templatetypes for", string
+    #print ""
+    types = []
+    types.append("")
+    #index
+    idx = 0
+    template_level=0
+    intemplate=False
+    template=""
+    for char in string:
+      #print types, " ", template
+      if char == "<":
+        template_level += 1
+        if template_level == 1:
+          template=""
+        else:
+          template+=char
+      elif char == ">":
+        template_level -= 1
+        if template_level ==0:
+          types[idx] += "<" + template + ">"
+          templatetypes(template,all_types)
+        else:
+          template+=char
+      else:
+        if template_level>0:
+          template+=char
+        else:
+          if char==",":
+            types[idx] = types[idx].strip()
+            types.append("")
+            idx=idx+1
+          else:
+            types[idx] += char
+    types[idx] = types[idx].strip()
+    all_types +=  types
+
 
 #-------------------------------------------
 # Language tokens

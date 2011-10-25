@@ -66,9 +66,9 @@
 #include "vtk_common.h"
 
 #include <vector>
-using namespace std;
-typedef vector<float>     float_vec;
-typedef vector<float_vec> vec_float_vec;
+//using -- namespace std;
+typedef std::vector<float>     float_vec;
+typedef std::vector<float_vec> vec_float_vec;
 
 #define DER_DISCR 1
 #define DER_GAUSS 2
@@ -84,7 +84,7 @@ class VTK_FLUXDIFFUSION_EXPORT vtkAnisoGaussSeidel
 {
 public:
   vtkTypeMacro(vtkAnisoGaussSeidel,vtkImageToImageFilter);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  void PrintSelf(std::ostream& os, vtkIndent indent);
 
   // Description:
   // Construct object to extract all of the input data.

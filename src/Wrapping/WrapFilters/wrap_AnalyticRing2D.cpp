@@ -17,7 +17,7 @@
 //---------------------------------------------------
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<AnalyticRing2D>::CreateVar( ParamList* p )
+BasicVariable::ptr WrapClass<AnalyticRing2D>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_AnalyticRing2D::wrap_AnalyticRing2D construct;
   return construct.CallMember(p);

@@ -27,7 +27,7 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<wxDrawingWindow>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<wxDrawingWindow>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_wxDrawingWindow::wrap_wxDrawingWindow construct;
   return construct.CallMember(p);
@@ -447,6 +447,30 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 }
 
 //---------------------------------------------------
+//  SetPaintCallback
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_SetPaintCallback::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(AMIFunction,"Callback function (AMIFunction)");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_SetPaintCallback::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  Variable<AMIFunction>::ptr varfunc;
+  int n=0;
+  if (!get_var_param<AMIFunction>(varfunc,p,n))  ClassHelpAndReturn;
+
+  AMIFunction::ptr func(varfunc->Pointer());
+  CallBackAMIFunction::ptr cb(new CallBackAMIFunction(func));
+  _objectptr->GetObj()->SetPaintCallback( cb );
+
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
 //  AddControlPoint
 //---------------------------------------------------
 void WrapClass_wxDrawingWindow::
@@ -548,3 +572,115 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   return AMILabType<std::vector<dwControlledCurve> >::CreateVarFromSmtPtr(obj_ptr);
 }
 
+
+//---------------------------------------------------
+//  GetNumberOfCurves
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetNumberOfCurves::SetParametersComments() 
+{
+  return_comments = "Numbers of curves";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetNumberOfCurves::CallMember( ParamList* p)
+{
+  RETURN_VAR(int,this->_objectptr->GetObj()->GetNumberOfCurves());
+}
+
+//---------------------------------------------------
+//  Colour Map operations
+//---------------------------------------------------
+
+//---------------------------------------------------
+//  DrawLinearCM
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_DrawLinearCM::SetParametersComments() 
+{
+  return_comments = "Calculate linearCM vector";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_DrawLinearCM::CallMember( ParamList* p)
+{
+  this->_objectptr->GetObj()->DrawLinearCM();
+  return BasicVariable::ptr();
+}
+
+
+//---------------------------------------------------
+//  GetSizerlinearCM
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetSizelinearCM::SetParametersComments() 
+{
+  return_comments = "Colour of the point as a wxColour object";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetSizelinearCM::CallMember( ParamList* p)
+{
+  RETURN_VAR(int,this->_objectptr->GetObj()->GetSizelinearCM());
+}
+
+
+//---------------------------------------------------
+//  GetColourlinearCM
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetColourlinearCM::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"Index of the linearCM point.");
+  return_comments = "Colour of the point as a wxColour object";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetColourlinearCM::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  GET_PARAM(int,pos,0);  
+  wxColour* c = new wxColour(this->_objectptr->GetObj()->GetColourlinearCM(pos));
+  return AMILabType<wxColour>::CreateVar(c);
+}
+
+
+//---------------------------------------------------
+//  GetAlphalinearCM
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetAlphalinearCM::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"Index of the linearCM point.");
+  return_comments = "Alpha value of the point X as double";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetAlphalinearCM::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  GET_PARAM(int,pos,0);  
+  RETURN_VAR(double,this->_objectptr->GetObj()->GetAlphalinearCM(pos));
+}
+
+
+//---------------------------------------------------
+//  GetPoslinearCM
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetPoslinearCM::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"Index of the linearCM point.");
+  return_comments = "Pos value of the point X as double";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetPoslinearCM::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  GET_PARAM(int,pos,0);  
+  RETURN_VAR(double,this->_objectptr->GetObj()->GetPoslinearCM(pos));
+}

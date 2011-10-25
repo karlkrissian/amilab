@@ -53,6 +53,7 @@
 #include "LoadImage_Icon3.xpm"
 
 #include "amilab_messages.h"
+#include "about.xpm"
 
 #include "surface.hpp"
 using namespace amilab;
@@ -67,20 +68,28 @@ using namespace amilab;
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
-extern wxString        GB_help_dir;
-extern wxString        GB_scripts_dir;
-extern VarContexts  Vars;
+#include "AMILabConfigure.h"
+AMILab_VAR_IMPORT wxString    GB_scripts_dir;
+AMILab_VAR_IMPORT wxString    GB_help_dir;
+AMILab_VAR_IMPORT MainFrame*  GB_main_wxFrame;
+AMILab_VAR_IMPORT wxApp*      GB_wxApp;
+AMILab_VAR_IMPORT wxConfig*   GB_Config;
 
-extern MainFrame*    GB_main_wxFrame;
-extern wxApp*        GB_wxApp;
-extern wxConfig*     GB_Config;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
 
 
 // in function.cpp
 int AskScript(std::string& name);
 int AskImage(std::string& name);
-int AskVarName(wxWindow*,const string title, const string label,const string def, std::string& name);
+int AskVarName(wxWindow*,
+               const std::string title, 
+               const std::string label,
+               const std::string def, 
+               std::string& name);
 int AskSurface(     std::string& name);
+
 
 enum
 {
@@ -90,9 +99,6 @@ enum
     ID_File_OpenImage,
     ID_File_OpenPolydata,
     ID_File_LoadScript,
-//    ID_File_ImagesHistory,
-//    ID_File_ScriptsHistory,
-
     ID_View_Reset,
     ID_View_Output,
     ID_View_Param_book,
@@ -100,6 +106,7 @@ enum
     ID_View_Var_book,
     ID_View_aui_Main_bar,
     ID_View_aui_Script_bar,
+    ID_View_aui_Status_bar,
     wxID_HelpTokens,
     wxID_HelpRules,
     wxID_HelpScripts,
@@ -111,8 +118,9 @@ enum
     ID_Help_About,
 
     wxID_ProgressBar,
-    
+    ID_CloseAboutPanel,
     ID_kp_textCtrl,
+    ID_sample,
 };
 
 enum {
@@ -136,6 +144,142 @@ enum {
   wxID_VarList_Filter,
 };
 
+//========================================================================
+// CustomAboutMenu Class
+//========================================================================
+
+//------------------------------------------------------------------------
+void CustomAboutMenu::OnClose(wxCommandEvent& event )
+{
+  this->Show(false);
+}
+
+//------------------------------------------------------------------------
+CustomAboutMenu::CustomAboutMenu(wxWindow* parent)
+{
+    wxBoxSizer *BoxSizer1,*BoxSizer2,*BoxSizer4,*BoxSizer5,*BoxSizer6,*BoxSizer7;
+
+    Create(parent, wxID_ANY, _("About ..."), wxDefaultPosition, wxSize(-1,-1), 
+           wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
+
+    //dialogAbout->SetSize(wxSize(200,400));
+    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+
+    wxStaticBitmap* StaticBitmap1 = new wxStaticBitmap( 
+          this,
+          wxID_ANY, wxBitmap(about_xpm),  
+          // wxBitmap((wxImage(amilab_splash_xpm)).Rescale(350,200))*/
+          wxDefaultPosition, wxDefaultSize,
+          0, 
+          _T("ID_STATICBITMAP1"));
+
+    BoxSizer2->Add(StaticBitmap1, 1, 
+                   wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 
+                   5);
+    
+    BoxSizer1->Add(BoxSizer2,     0, 
+                   wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,
+                   4);
+
+    wxNotebook* Notebook1 = new wxNotebook(this, wxID_ANY, 
+                                           wxDefaultPosition, wxSize(-1,260), 
+                                           1, _T("ID_NOTEBOOK1"));
+    wxPanel* Panel1 = new wxPanel(Notebook1, wxID_ANY, 
+                                  wxDefaultPosition, 
+                                  wxDefaultSize, 
+                                  wxTAB_TRAVERSAL|wxRESIZE_BORDER, 
+                                  _T("ID_PANEL1"));
+    wxPanel* Panel2 = new wxPanel(Notebook1, wxID_ANY, 
+                                  wxDefaultPosition, 
+                                  wxDefaultSize, 
+                                  wxTAB_TRAVERSAL|wxRESIZE_BORDER, 
+                                  _T("ID_PANEL2"));
+    wxPanel* Panel3 = new wxPanel(Notebook1, wxID_ANY, 
+                                  wxDefaultPosition, wxDefaultSize, 
+                                  wxTAB_TRAVERSAL|wxRESIZE_BORDER, 
+                                  _T("ID_PANEL3"));
+    wxPanel* Panel4 = new wxPanel(Notebook1, wxID_ANY, 
+                                  wxDefaultPosition, wxDefaultSize, 
+                                  wxTAB_TRAVERSAL|wxRESIZE_BORDER, 
+                                  _T("ID_PANEL4"));
+       
+    Notebook1->AddPage(Panel1, _("Description"), false);
+    Notebook1->AddPage(Panel2, _("Info"),        false);
+    Notebook1->AddPage(Panel3, _("Thanks"),      false);
+    Notebook1->AddPage(Panel4, _("License"),     false);
+
+    BoxSizer1->Add(Notebook1, 1, 
+                   wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 
+                   5);
+
+    wxButton* Button2 = new wxButton(this, ID_CloseAboutPanel, _("Quit"));
+
+    BoxSizer1->Add(Button2, 0, 
+                   wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 
+                   4);
+
+    this->SetSizer(BoxSizer1);
+    BoxSizer1->SetSizeHints(this);
+
+
+    BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText *StaticText4 = new wxStaticText(Panel4, wxID_ANY, 
+          _("This program is licensed under the terms\nof the LGPL license"));
+    //GNU General Public License version 3\n\nAvailable online under:\nhttp://www.gnu.org/licenses/gpl-3.0.html"));
+    BoxSizer4->Add(StaticText4, 1, wxALL, 5);
+    Panel4->SetSizer(BoxSizer4);
+    
+    BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText *StaticText3 = new wxStaticText(Panel3, wxID_ANY, _(
+      "\n\
+    Active Developers:\n\
+        Karl Krissian      : Developer - Project leader\n\
+        Francisco Santana  : Developer\n\
+        Daniel E. Santana  : Developer\n\
+        Carlos M. Falcón   : Developer\n\
+        Sara Illera        : Developer\n\
+        \n\
+    Contributors and previous developers:\n\
+        Luis Álvarez\n\
+        Sara Arencibia\n\
+        Claire Chalopin\n\
+        Agustín Trujillo\n\
+        "));
+    BoxSizer5->Add(StaticText3, 1, wxALL, 5);
+    Panel3->SetSizer(BoxSizer5);
+
+    BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText *StaticText2 = new wxStaticText(Panel2, wxID_ANY,
+                                                 GetwxStr("Name: AMIlab\n")+
+                                                 GetwxStr("Version:")+GetwxStr(AMILAB_VERSION)+GetwxStr("\n")+
+                                                 GetwxStr("Author: AMILab Team\n")+
+                                                 GetwxStr("Contact: amilab@ctim.es\n")+
+                                                 GetwxStr("         www.amilab.org\n"));
+    BoxSizer6->Add(StaticText2, 1, wxALL, 5);
+    Panel2->SetSizer(BoxSizer6);
+    
+    BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText *StaticText1 = new wxStaticText(Panel1, wxID_ANY, _(
+      "AMILab is an interpreted language for image processing designed using:\n\
+      - C/C++\n\
+      - Flex and Bison (gnu versions of Lex and Yacc)\n\
+      - wxWidgets\n\
+      - OpenGL\n\
+      - VTK\n\
+      - ITK\n\
+      AMILab has a lot a features, and has been especially used for academic research in medical image processing. The tool is under development.\n\
+      Visit amilab.org for more information about AMILab\n"));
+    BoxSizer7->Add(StaticText1, 1, wxALL, 5);
+    Panel1->SetSizer(BoxSizer7);
+    
+    
+    Connect(ID_CloseAboutPanel,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CustomAboutMenu::OnClose);
+}
+
+
+
+
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
 /*EVT_TEXT_ENTER*/EVT_TEXT(ID_kp_textCtrl, MainFrame::OnFindKeywords)
@@ -150,21 +294,22 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(ID_Quit,              MainFrame::OnQuit)
 
     EVT_MENU(ID_View_Reset,        MainFrame::OnViewReset)
-    EVT_MENU(ID_View_Var_book,        MainFrame::OnViewVar_book)
-    EVT_MENU(ID_View_Main_book,        MainFrame::OnViewMain_book)
-    EVT_MENU(ID_View_Output,        MainFrame::OnViewOutput)
-    EVT_MENU(ID_View_Param_book,        MainFrame::OnViewParam_book)
+    EVT_MENU(ID_View_Var_book,     MainFrame::OnViewVar_book)
+    EVT_MENU(ID_View_Main_book,    MainFrame::OnViewMain_book)
+    EVT_MENU(ID_View_Output,       MainFrame::OnViewOutput)
+    EVT_MENU(ID_View_Param_book,   MainFrame::OnViewParam_book)
     
-    EVT_MENU(ID_View_aui_Main_bar, MainFrame::OnViewMain_bar)
-    EVT_MENU(ID_View_aui_Script_bar, MainFrame::OnViewScript_bar)
+    EVT_MENU(ID_View_aui_Main_bar,      MainFrame::OnViewMain_bar)
+    EVT_MENU(ID_View_aui_Status_bar,    MainFrame::OnViewMain_bar2)
+    EVT_MENU(ID_View_aui_Script_bar,    MainFrame::OnViewScript_bar)
     
-    EVT_MENU(ID_Help_Keywords, MainFrame::OnHelpKeywords)
+    EVT_MENU(ID_Help_Keywords,     MainFrame::OnHelpKeywords)
     
-    
+    EVT_MENU(ID_Help_About,        MainFrame::OnAbout)
     EVT_CLOSE(MainFrame::OnClose)
     
-   EVT_UPDATE_UI(wxID_ANY,MainFrame::OnUpdate)
-
+    EVT_UPDATE_UI(wxID_ANY,MainFrame::OnUpdate)
+   //EVT_BUTTON(ID_CloseAboutPanel, MainFrame::OnCloseAboutPanel) 
 //    EVT_BUTTON(wxID_ConsoleReset, MainFrame::ConsoleReset)
     EVT_TOOL(wxID_ToolLoadImage, MainFrame::OnFileOpenImage)
     EVT_TOOL(wxID_ConsoleClear, MainFrame::ConsoleClear)
@@ -265,6 +410,7 @@ void CustomStatusBar::Reposition()
 void MainFrame::CreateMenu()
 //            ----------
 {
+  dialogAbout= new CustomAboutMenu(this); 
   // Images and Scripts history
   images_history = boost::shared_ptr<wxFileHistory>(
     new wxFileHistory(9,wxID_Images_History));
@@ -303,10 +449,10 @@ void MainFrame::CreateMenu()
   menuView->InsertSeparator(1);
     
   menuView->AppendSubMenu(menuView2, GetwxStr("&Panels"));
-  menuView->AppendSubMenu(menuView3, GetwxStr("&Menu bars"));
+  menuView->AppendSubMenu(menuView3, GetwxStr("&Tool bars"));
     
-  menuView2->AppendCheckItem(ID_View_Main_book,  GetwxStr("&Main book"));
-  menuView2->Check(ID_View_Main_book, true);
+  //menuView2->AppendCheckItem(ID_View_Main_book,  GetwxStr("&Main book"));
+  //menuView2->Check(ID_View_Main_book, true);
   menuView2->AppendCheckItem(ID_View_Var_book,  GetwxStr("&Variables tree"));
   menuView2->Check(ID_View_Var_book, true);
   menuView2->AppendCheckItem(ID_View_Output,  GetwxStr("&Output"));
@@ -319,10 +465,14 @@ void MainFrame::CreateMenu()
   menuView3->AppendCheckItem(ID_View_aui_Script_bar,  GetwxStr("&Script toolbar"));
   menuView3->Check(ID_View_aui_Script_bar, true);
   
+  menuView3->AppendCheckItem(ID_View_aui_Status_bar,  GetwxStr("&Status toolbar"));
+  menuView3->Check(ID_View_aui_Status_bar, true);
+  
 
   menuHelp = new wxMenu;
-  menuHelp->Append( ID_Help_View, GetwxStr("What's This?") );
+  //menuHelp->Append( ID_Help_View, GetwxStr("What's This?") );
   menuHelp->Append( ID_Help_Keywords, GetwxStr("Keywords") );  
+  menuHelp->AppendSeparator();
   menuHelp->Append( ID_Help_About, GetwxStr("About ...") );  
   
   menuScripts = new wxMenu;
@@ -336,8 +486,6 @@ void MainFrame::CreateMenu()
   //menuBar->Append( menuScripts, GetwxStr("&Scripts") );
   menuBar->Append( menuHelp, GetwxStr("&Help") );
   SetMenuBar( menuBar );
-  
-
 
 } // CreateMenu()
 
@@ -397,7 +545,6 @@ MainFrame::MainFrame( const wxString& title,
 {
 
 //  CreateToolbar();
-
   m_mgr.SetManagedWindow(this);
 
   CreateMenu();
@@ -406,7 +553,8 @@ MainFrame::MainFrame( const wxString& title,
                   wxAUI_MGR_ALLOW_FLOATING |
                   // Avoid problem with KDE desktop composing effect
                   #ifdef __WXGTK__ 
-                    wxAUI_MGR_RECTANGLE_HINT |
+                   wxAUI_MGR_VENETIAN_BLINDS_HINT |
+                    //wxAUI_MGR_RECTANGLE_HINT |
                   #else
                    wxAUI_MGR_TRANSPARENT_HINT |
                   #endif
@@ -422,17 +570,9 @@ MainFrame::MainFrame( const wxString& title,
                   .Name(wxT("Main Book"))
                   //.MinSize(wxSize(200,200))
                   .Center()
+                  .CloseButton(false)
                   .MaximizeButton(true));
 
-/*
-  CreateVarListPanel(this);
-  m_mgr.AddPane(_varlist_panel,
-                  wxAuiPaneInfo()
-                  .Name(wxT("VariablesList"))
-                  .Caption(wxT("Variables List"))
-                  .Left().Layer(1)
-                  .MinimizeButton(true));
-*/
 /// @cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))
   CreateVarDataViewPanel(this);
@@ -455,7 +595,7 @@ MainFrame::MainFrame( const wxString& title,
                   .Caption(wxT("Output"))
                   .Bottom()
                   .MaximizeButton(true)
-				  .MinSize(wxSize(100,50)));
+                  .MinSize(wxSize(100,50)));
 
   CreateParamBook(this);
   m_mgr.AddPane(_param_book,
@@ -466,20 +606,17 @@ MainFrame::MainFrame( const wxString& title,
                   .BestSize(wxSize(300,100))
                   .Right().Layer(1)
                   .MaximizeButton(true)
+                  .PinButton(true)
                   .Hide());
   
-  
-  
-  
-  CreateKeywordsPanel(this); //carlos
+  CreateKeywordsPanel(this); 
   m_mgr.AddPane(_keywords_panel,
                   wxAuiPaneInfo()
                   .Name(wxT("Keywords"))
                   .Caption(wxT("Keywords"))
                   .MinSize(wxSize(220,300))
                   .BestSize(wxSize(220,300))
-                  //.Right().Layer(1)
-		  .Floatable()
+                  .Floatable()
                   .MaximizeButton(false)
                   .Hide());
   
@@ -491,61 +628,24 @@ MainFrame::MainFrame( const wxString& title,
                         wxDefaultPosition, wxDefaultSize,
                         wxAUI_TB_DEFAULT_STYLE |
                         wxAUI_TB_OVERFLOW);
-    
+   
+    tb2 = new wxAuiToolBar(this, ID_View_aui_Main_bar,
+                    wxDefaultPosition, wxDefaultSize,
+                    wxAUI_TB_DEFAULT_STYLE |
+                    wxAUI_TB_OVERFLOW);
     
   #else
-    tb1 = new wxAuiToolBar(this, ID_View_aui_Main_bar,//wxID_ANY,
+    tb1 = new wxAuiToolBar(this, ID_View_aui_Main_bar,
                         wxDefaultPosition, wxDefaultSize,
                         wxAUI_TB_DEFAULT_STYLE |
                         wxAUI_TB_OVERFLOW);
+    tb2 = new wxAuiToolBar(this, ID_View_aui_Status_bar,
+                        wxDefaultPosition, wxDefaultSize,
+                        wxAUI_TB_DEFAULT_STYLE |
+                        wxAUI_TB_OVERFLOW); 
   #endif
   /// @endcond
-//     tb1->SetToolBitmapSize(wxSize(32,32));
-// //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
-// //    tb1->AddSeparator();
-//     ::wxInitAllImageHandlers();
-//     //wxImage loadim(wxT("MRA_32_39.png"));
-//     //wxBitmap a(_("/Icons/png/32x32/Wait.png"),wxBITMAP_TYPE_PNG/*wxBitmap(LoadImage_Icon3_xpm)*/ );
-//     //std::cout << a.IsOk()<<endl;
-//     tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap(GB_scripts_dir+_("/Icons/png/32x32/Add.png"),wxBITMAP_TYPE_PNG/*wxBitmap(LoadImage_Icon3_xpm)*/ ),
-//         wxT("Load Image"));
-// 
-//     tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),
-//         wxT("Update variables"));
-//     tb1->AddSeparator();
-//    
-//     tb1->AddTool(wxID_ConsoleClear, wxT("Clear console"), wxBitmap(gtk_clear),
-//         wxT("Console: left button -> clear last command, right button-> clear all"));
-// 
-// //   wxBitmapButton* but_clear = new wxBitmapButton(_prompt_panel,
-// //           wxID_ConsoleClear,
-// //           wxBitmap(gtk_clear));
-// //   wxToolTip::Enable(true);
-// //   but_clear->SetToolTip(GetwxStr("Clear current line"));
-//     tb1->AddSeparator();
-//     tb1->AddTool(wxID_ToolHelp, wxT("Help"), wxArtProvider::GetBitmap(wxART_HELP),
-//         wxT("Help (load in default browser)"));
-// 
-//     tb1->AddTool(wxID_ToolQuit, wxT("Quit"), wxArtProvider::GetBitmap(wxART_QUIT),
-//         wxT("Quit AMILab"));
-// 
-// 
-// //    tb1->AddTool(ID_SampleItem+3, wxT("Test"), wxArtProvider::GetBitmap(wxART_INFORMATION));
-// //    tb1->AddTool(ID_SampleItem+4, wxT("Test"), wxArtProvider::GetBitmap(wxART_WARNING));
-// //    tb1->AddTool(ID_SampleItem+5, wxT("Test"), wxArtProvider::GetBitmap(wxART_MISSING_IMAGE));
-// //    tb1->SetCustomOverflowItems(prepend_items, append_items);
-//     tb1->Realize();
-// 
-//     // add the toolbars to the manager
-//     m_mgr.AddPane(tb1, wxAuiPaneInfo().
-//                   Name(wxT("tb1")).Caption(wxT("Big Toolbar")).
-//                   ToolbarPane().Top().
-//                   LeftDockable(false).RightDockable(false));
-// 
-//   // tell the manager to "commit" all the changes just made
-//   m_mgr.Update();
 
-  _initial_perspective = m_mgr.SavePerspective();
 
   _status_bar = new CustomStatusBar(this,wxID_ANY);
   SetStatusBar(_status_bar);
@@ -564,7 +664,6 @@ wxStcFrame* MainFrame::GetAmilabEditor()
   }
   return amilab_editor;  
 }
-
 
 //------------------------------------------------------------------------
 void MainFrame::CreateMainBook(wxWindow* parent)
@@ -594,13 +693,6 @@ void MainFrame::CreateMainBook(wxWindow* parent)
 
   CreateSettingsPanel(this);
   _main_book->AddPage( _settings_panel , wxT("Paths") );
-
-  //Carlos CreateKeywordsPanel(this);
-  //carlos _main_book->AddPage( _keywords_panel , wxT("Keywords") );
-
-//  CreateDrawingPanel(this);
-//  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
-
   _main_book->Fit();
 
 }
@@ -723,18 +815,6 @@ void MainFrame::CreateVarListPanel ( wxWindow* parent)
 
     _var_list->SetColumnWidth( 0, wxLIST_AUTOSIZE_USEHEADER );
     _var_list->SetColumnWidth( 1, wxLIST_AUTOSIZE_USEHEADER );
-
-
-//  wxButton* but_upvar = new wxButton(_varlist_panel, wxID_UpdateVars,GetwxStr("Update"));
-/*
-  wxBitmapButton* but_upvar = new wxBitmapButton(_varlist_panel, wxID_UpdateVars,
-      wxBitmap(reload));
-
-  wxBoxSizer* buttons_sizer = new wxBoxSizer(wxHORIZONTAL);
-  buttons_sizer->Add(but_upvar,   0, wxEXPAND , 5);
-
-  varlistpanel_sizer->Add(buttons_sizer, 0, wxEXPAND , 5);
-*/
 
   // ComboBox to select the type of variables
   wxString filter_choices[] = {
@@ -2032,14 +2112,7 @@ void MainFrame::SetStatusText( const std::string& text )
 //---------------------------------------------------------------
 void MainFrame::OnViewReset( wxCommandEvent& event )
 {
- // m_mgr.GetPane(_main_book).Show(); carlos
- // m_mgr.GetPane(_log_text).Show(); carlos
- // m_mgr.GetPane(_var_panel).Show(); carlos
-
   m_mgr.LoadPerspective(_initial_perspective);
-
-// std::cout << _param_book->GetPageCount()>0 << std::endl;
- // m_mgr.GetPane(_param_book).Show(_param_book->GetPageCount()>0); carlos
   m_mgr.Update();
 }
 
@@ -2068,15 +2141,35 @@ void MainFrame::OnViewMain_bar( wxCommandEvent& event )
 {
   if ( !m_mgr.GetPane(this->tb1).IsShown())
   {
-     m_mgr.GetPane(this->tb1).Show(); 
-  
+    m_mgr.GetPane(this->tb1).Show(); 
     m_mgr.GetPane(this->tb1).Top();
     m_mgr.GetPane(this->tb1).Dock(); 
+//     m_mgr.GetPane(this->tb1).Position(pos++);
+//     if (m_mgr.GetPane(this->tb2).IsShown())
+//       m_mgr.GetPane(this->tb2).Position(pos++);
   }
   else
      m_mgr.GetPane(this->tb1).Hide(); 
   m_mgr.Update();
 }
+
+//---------------------------------------------------------------
+void MainFrame::OnViewMain_bar2( wxCommandEvent& event )
+{
+  if ( !m_mgr.GetPane(this->tb2).IsShown())
+  {
+    m_mgr.GetPane(this->tb2).Show(); 
+    m_mgr.GetPane(this->tb2).Top();
+    m_mgr.GetPane(this->tb2).Dock(); 
+//     if (m_mgr.GetPane(this->tb1).IsShown())
+//       m_mgr.GetPane(this->tb1).Position(pos++);
+//     m_mgr.GetPane(this->tb1).Position(pos++);
+  }
+  else
+     m_mgr.GetPane(this->tb2).Hide(); 
+  m_mgr.Update();
+}
+
 
 //---------------------------------------------------------------
 void MainFrame::OnViewMain_book( wxCommandEvent& event )
@@ -2117,8 +2210,8 @@ void MainFrame::OnViewScript_bar( wxCommandEvent& event )
 void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
 {
   int res;
-  string name;
-  string varname;
+  std::string name;
+  std::string varname;
 //  string cmd; // increment the command line string
 
   res=AskImage(name);
@@ -2156,8 +2249,8 @@ bool MainFrame::TryToOpenImage( const wxString& string_filename)
     st = std::string("_")+st;
 
   int res=AskVarName( this,
-                  string("Image variable name"),
-                  string("Enter name:"),
+                  std::string("Image variable name"),
+                  std::string("Enter name:"),
                   st,
                   varname);
   if (!res) {
@@ -2199,7 +2292,7 @@ bool MainFrame::TryToOpenImage( const wxString& string_filename)
 void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
 {
 //  string cmd; // increment the command line string
-  string varname;
+  std::string varname;
   size_t pos = event.GetId() - wxID_Images_History;
   wxString filename(images_history->GetHistoryFile(pos));
   
@@ -2215,7 +2308,7 @@ void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
 void MainFrame::OnFileOpenScriptHistory ( wxCommandEvent& event )
 {
 //  string cmd; // increment the command line string
-  string varname;
+  std::string varname;
   size_t pos = event.GetId() - wxID_Scripts_History;
   wxString filename(scripts_history->GetHistoryFile(pos));
 
@@ -2237,8 +2330,8 @@ void MainFrame::OnFileOpenScriptHistory ( wxCommandEvent& event )
 void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
 {
   int res;
-  string name;
-  string varname;
+  std::string name;
+  std::string varname;
 //  string cmd; // increment the command line string
 
   res=AskSurface(name);
@@ -2261,9 +2354,9 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
   possible_name.Replace(wxT(")"),wxT("_"));
 
   res=AskVarName(this,
-        string("Surface variable name"),
-        string("Enter name:"),
-        string(possible_name.mb_str(wxConvUTF8)),
+        std::string("Surface variable name"),
+        std::string("Enter name:"),
+        std::string(possible_name.mb_str(wxConvUTF8)),
         varname);
   if (!res) {
     std::cerr << " Var name error " << std::endl;
@@ -2291,7 +2384,7 @@ void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
 {
   //cout << "Load script" << std::endl;
   int res;
-  string name;
+  std::string name;
 //  string cmd; // increment the command line string
 
   res=AskScript(name);
@@ -2539,7 +2632,7 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
   }
   
   wxMenu* current_menu = menuBar->GetMenu(menuid); // current main menu
-  wxMenu* cat_menu; // category menu
+  wxMenu* cat_menu = NULL; // category menu
 
   usermenu_id++;
   usermenu_scripts[usermenu_id] = script_name;
@@ -2586,7 +2679,7 @@ void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
   //cout << "MainFrame::OnUserMenuScript() ";
   //cout << "GetId() = "<< event.GetId() << std::endl;
   //cout << "script = " << usermenu_scripts[event.GetId()] << std::endl;
-  string cmd; // increment the command line string
+  std::string cmd; // increment the command line string
 
   
   wxString filename(usermenu_scripts[event.GetId()].c_str(),wxConvUTF8);
@@ -2605,76 +2698,202 @@ void MainFrame::OnUpdate(wxUpdateUIEvent& event)
 {
 
   //Check Panels Status
-  menuView2->Check(ID_View_Output, m_mgr.GetPane(_log_text).IsShown());
-  menuView2->Check(ID_View_Param_book, m_mgr.GetPane(/*_param_book*/this->_param_book).IsShown());
-  menuView2->Check(ID_View_Main_book, m_mgr.GetPane(_main_book).IsShown());
-  menuView2->Check(ID_View_Var_book, m_mgr.GetPane(_var_book).IsShown());
-  menuView3->Check(ID_View_aui_Main_bar, m_mgr.GetPane(this->tb1).IsShown());  
-  menuView3->Check(ID_View_aui_Script_bar, m_mgr.GetPane(_("scripts_tb")).IsShown());  
- 
- //this->Refresh(-1); //repaint gnome
+  tb2->ToggleTool(ID_View_Output,m_mgr.GetPane(_log_text).IsShown());
+  tb2->ToggleTool(ID_View_Param_book,m_mgr.GetPane(_param_book).IsShown());
+  //tb2->ToggleTool(ID_View_Main_book,m_mgr.GetPane(_main_book).IsShown());
+  tb2->ToggleTool(ID_View_Var_book,m_mgr.GetPane(_var_book).IsShown());
+
+  tb2->ToggleTool(ID_View_aui_Main_bar,m_mgr.GetPane(this->tb1).IsShown());
+  tb2->ToggleTool(ID_View_aui_Script_bar,m_mgr.GetPane(_("scripts_tb")).IsShown());
+  tb2->ToggleTool(ID_View_aui_Status_bar,m_mgr.GetPane(this->tb2).IsShown());
   
+  menuView2->Check(ID_View_Output, m_mgr.GetPane(_log_text).IsShown());
+  menuView2->Check(ID_View_Param_book, m_mgr.GetPane(_param_book).IsShown());
+  //menuView2->Check(ID_View_Main_book, m_mgr.GetPane(_main_book).IsShown());
+  menuView2->Check(ID_View_Var_book, m_mgr.GetPane(_var_book).IsShown());
+
+  menuView3->Check(ID_View_aui_Main_bar, m_mgr.GetPane(this->tb1).IsShown());
+  menuView3->Check(ID_View_aui_Script_bar, m_mgr.GetPane(_("scripts_tb")).IsShown());  
+  menuView3->Check(ID_View_aui_Status_bar,m_mgr.GetPane(this->tb2).IsShown());
+//   if (!toolbar_status ==m_mgr.GetPane(this->tb1).IsShown())
+//   {
+//     int pos=1;
+//     if (!toolbar_status)
+//     {
+//        m_mgr.GetPane(this->tb1).Position(pos++);
+//        m_mgr.GetPane(this->tb2).Position(pos++);
+//     }
+//     else
+//        m_mgr.GetPane(this->tb2).Position(pos++);
+//     m_mgr.Update();
+//       
+//   }
+//   toolbar_status= m_mgr.GetPane(this->tb1).IsShown();
+
+  
+ 
+ //this->Refresh(-1); //force repaint gnome (it's not a good idea)
+  
+}
+
+
+// //helper functions
+// enum wxbuildinfoformat {
+//     short_f, long_f };
+// wxString wxbuildinfo(wxbuildinfoformat format)
+// {
+//     wxString wxbuild(wxVERSION_STRING);
+// 
+//     if (format == long_f )
+//     {
+// #if defined(__WXMSW__)
+//         wxbuild << _T("-Windows");
+// #elif defined(__WXMAC__)
+//         wxbuild << _T("-Mac");
+// #elif defined(__UNIX__)
+//         wxbuild << _T("-Linux");
+// #endif
+// 
+// #if wxUSE_UNICODE
+//         wxbuild << _T("-Unicode build");
+// #else
+//         wxbuild << _T("-ANSI build");
+// #endif // wxUSE_UNICODE
+//     }
+// 
+//     return wxbuild;
+// }
+
+void MainFrame::OnAbout(wxCommandEvent &event)
+{
+  dialogAbout->Show();
+    //wxMessageBox(_("AMILab is an interpreted language for image processing designed using:\n   - C/C++\n   - Flex and Bison (gnu versions of Lex and Yacc)\n   - wxWidgets\n   - OpenGL\n   - VTK (not for rendering at the moment)\n   - ITK (not used much now, but will be more in the future)\nAMILab has a lot a features, and has been especially used for academic research in medical image processing. The tool is under development.\nVisit http://www.ctm.ulpgc.es/amilab_dokuwiki/ for more information about AMILab\n"), _("About AMILab"));
 }
 
 
 //--------------------------------------------------
 void MainFrame::LoadToolBar   ( )
 {
-    tb1->SetToolBitmapSize(wxSize(16,16));
+  toolbar_status=true;
+  tb1->SetToolBitmapSize(wxSize(16,16));
 //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
 //    tb1->AddSeparator();
-    ::wxInitAllImageHandlers();
+  ::wxInitAllImageHandlers();
     //wxImage loadim(wxT("MRA_32_39.png"));
     //wxBitmap a(_("/Icons/png/32x32/Wait.png"),wxBITMAP_TYPE_PNG/*wxBitmap(LoadImage_Icon3_xpm)*/ );
     //std::cout << a.IsOk()<<endl;
     ;
 
+  #define BITMAP_16x16(bmp_filename)\
+    wxBitmap((wxImage(GB_scripts_dir+_T(bmp_filename),\
+                      wxBITMAP_TYPE_PNG)).Rescale(16,16))
 
-    tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap((wxImage(GB_scripts_dir+_("/Icons/png/32x32/Open.png"),wxBITMAP_TYPE_PNG)).Rescale(16,16)), wxT("Load Image"));
-
-    tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),
-        wxT("Update variables"));
-    tb1->AddSeparator();
+  tb1->AddTool( wxID_ToolLoadImage,
+                wxT("Load Image"),
+                BITMAP_16x16("/Icons/png/32x32/Open.png"),
+                wxT("Load Image"));
+  tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),wxT("Update variables"));
+  tb1->AddSeparator();
    
-    tb1->AddTool(wxID_ConsoleClear, wxT("Clear console"), wxBitmap(gtk_clear),
-        wxT("Console: left button -> clear last command, right button-> clear all"));
+  tb1->AddTool(wxID_ConsoleClear, wxT("Clear console"), wxBitmap(gtk_clear),
+      wxT("Console: left button -> clear last command, right button-> clear all"));
 
 //   wxBitmapButton* but_clear = new wxBitmapButton(_prompt_panel,
 //           wxID_ConsoleClear,
 //           wxBitmap(gtk_clear));
 //   wxToolTip::Enable(true);
 //   but_clear->SetToolTip(GetwxStr("Clear current line"));
-    tb1->AddSeparator();
-    tb1->AddTool(wxID_ToolHelp, wxT("Help"), wxArtProvider::GetBitmap(wxART_HELP),
-        wxT("Help (load in default browser)"));
+  tb1->AddSeparator();
+  tb1->AddTool(wxID_ToolHelp, wxT("Help"), wxArtProvider::GetBitmap(wxART_HELP),
+      wxT("Help (load in default browser)"));
 
-    tb1->AddTool(wxID_ToolQuit, wxT("Quit"), wxArtProvider::GetBitmap(wxART_QUIT),
-        wxT("Quit AMILab"));
+  tb1->AddTool(wxID_ToolQuit, wxT("Quit"), wxArtProvider::GetBitmap(wxART_QUIT),
+      wxT("Quit AMILab"));
 
 
 //    tb1->AddTool(ID_SampleItem+3, wxT("Test"), wxArtProvider::GetBitmap(wxART_INFORMATION));
 //    tb1->AddTool(ID_SampleItem+4, wxT("Test"), wxArtProvider::GetBitmap(wxART_WARNING));
 //    tb1->AddTool(ID_SampleItem+5, wxT("Test"), wxArtProvider::GetBitmap(wxART_MISSING_IMAGE));
 //    tb1->SetCustomOverflowItems(prepend_items, append_items);
-    tb1->Realize();
+  tb1->Realize();
     
      // add the toolbars to the manager
-    m_mgr.AddPane(tb1, wxAuiPaneInfo().
+  m_mgr.AddPane(tb1, wxAuiPaneInfo().
                   Name(wxT("tb1")).Caption(wxT("Big Toolbar")).
-                  ToolbarPane().Top().
+                  ToolbarPane().Top().Position(1).
                   LeftDockable(false).RightDockable(false));
+    
+
+  tb2->Realize();
+
+  //carlos
+  tb2->AddTool( ID_View_Output, 
+                BITMAP_16x16("/Icons/png/32x32/Writing pencil.png"),
+                BITMAP_16x16("/Icons/png/32x32/Writing pencil.png"),
+                true,NULL,
+                _("Show/Hide Output") );
+//   tb2->AddTool( ID_View_Main_book,   
+//                 BITMAP_16x16("/Icons/png/32x32/Console.png"),
+//                 BITMAP_16x16("/Icons/png/32x32/Console.png"),
+//                 true,NULL,
+//                 _("Show/Hide Main book") );
+  tb2->AddTool( ID_View_Var_book,
+                BITMAP_16x16("/Icons/png/32x32/Flow block.png"),
+                BITMAP_16x16("/Icons/png/32x32/Flow block.png"),
+                true,
+                NULL,
+                _("Show/Hide Var book") );
+  tb2->AddTool( ID_View_Param_book,
+                BITMAP_16x16("/Icons/png/32x32/Script.png"),
+                BITMAP_16x16("/Icons/png/32x32/Script.png"),
+                true,
+                NULL,
+                _("Show/Hide Param book") );
+  tb2->AddSeparator();
+  tb2->AddTool( ID_View_aui_Main_bar,
+                BITMAP_16x16("/Icons/png/32x32/Tools.png"),
+                BITMAP_16x16("/Icons/png/32x32/Tools.png"),
+                true,
+                NULL,
+                _("Show/Hide Main toolbar") );
+  tb2->AddTool( ID_View_aui_Script_bar,  
+                BITMAP_16x16("/Icons/png/32x32/ToolsScript.png"),
+                BITMAP_16x16("/Icons/png/32x32/ToolsScript.png"),
+               true,
+               NULL,
+               _("Show/Hide Script toolbar") );
+  tb2->AddSeparator();
+  tb2->AddTool( ID_View_aui_Status_bar,
+                BITMAP_16x16("/Icons/png/32x32/ToolsView.png"),
+                BITMAP_16x16("/Icons/png/32x32/ToolsView.png"),
+               true,NULL,_("Show/Hide Status toolbar") );
+  tb2->AddSeparator();
+  tb2->AddTool( ID_View_Reset,  
+                BITMAP_16x16("/Icons/png/32x32/ResetView.png"),
+                BITMAP_16x16("/Icons/png/32x32/ResetView.png"),
+                false,NULL,
+                _("Reset view") );
+
+     // add the toolbars to the manager
+  m_mgr.AddPane(tb2, wxAuiPaneInfo().
+                  Name(wxT("tb2")).Caption(wxT("View Toolbar")).
+                  ToolbarPane().Bottom()./*Position(2).*/
+                  LeftDockable(false).RightDockable(false));
+  
 
   // tell the manager to "commit" all the changes just made
+  _initial_perspective = m_mgr.SavePerspective();
   m_mgr.Update();
+
+  #undef BITMAP_16x16
 }
 
 //--------------------------------------------------
 void MainFrame::OnHelpKeywords( wxCommandEvent& event )
 {
- if ( !m_mgr.GetPane(_keywords_panel).IsShown())
+  if ( !m_mgr.GetPane(_keywords_panel).IsShown())
   {
      m_mgr.GetPane(_keywords_panel).Show(); 
-  
   }
   else
      m_mgr.GetPane(_keywords_panel).Hide(); 

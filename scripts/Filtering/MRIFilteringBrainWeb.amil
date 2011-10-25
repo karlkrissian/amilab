@@ -228,8 +228,7 @@ proc BrainWeb_CreateWindow() {
     global
 print "1\n"
     # parameters window
-    import = &global::ami_import;
-    BW_win = import->ParamPanel("Computing Statistics for Filtering MRI BrainWeb Simulation")
+    BW_win = ParamPanel("Computing Statistics for Filtering MRI BrainWeb Simulation")
     
     BW_win.BeginBoxPanel("Controls")
         #BW_win.BeginHorizontal

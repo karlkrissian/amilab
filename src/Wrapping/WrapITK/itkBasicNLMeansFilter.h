@@ -31,6 +31,7 @@
 #ifndef __itkBasicNLMeansFilter_h
 #define __itkBasicNLMeansFilter_h
 
+#include <stddef.h>
 #include "itkImageToImageFilter.h"
 #include "itkImage.h"
 #include "itkNumericTraits.h"

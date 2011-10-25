@@ -2,18 +2,11 @@
 
 func "Common/ScriptGui"
 
-#For use VTK
-import_vtk
 
 if (!exists(Subvoxel3DClass)){
 
-	#Import filters
-  ami_import->Filters()
-
-	Class Subvoxel3DClass : public ScriptGui{
+  Class Subvoxel3DClass : public ScriptGui{
   
-    ::filters = &global::filters
-    
     #-----------------------
     proc ::Init(){
       ::class_name  = "global::Subvoxel3DClass"
@@ -100,7 +93,7 @@ if (!exists(Subvoxel3DClass)){
           #Drawing the input image
           ::vol_isosurf = isosurf(::input, (max(::input)+min(::input))/2)
           #Create the polydata and compute the normals
-          vol_polydata = global::ToVtkPolyData(::vol_isosurf)
+          vol_polydata = vtktools.ToVtkPolyData(::vol_isosurf)
           vol_normals = vtk.vtkPolyDataNormals.New()
           vol_normals.SetInput(&vol_polydata)
           vol_normals.SetFeatureAngle(60.0)
@@ -251,7 +244,7 @@ if (!exists(Subvoxel3DClass)){
       if (exists(::res))  { del ::res; }
       if (exists(::sv3D)) { del ::sv3D; }
       #Build a SubVoxel3D object
-      ::sv3D = ::import->SubVoxel3D(&::norm_input,::threshold)
+      ::sv3D = SubVoxel3D(&::norm_input,::threshold)
       
       if (::alg_type == 0) {
         ::res = ::sv3D->GradienteCurvo3D()
@@ -289,8 +282,7 @@ if (!exists(Subvoxel3DClass)){
 
       sbox_sizer.Add( &::flex_sizer, 1, wx.wxALL | wx.wxEXPAND,2)
       # create widget here
-      import_vtk
-      ::renwin_interact = wxVTKRenderWindowInteractor(&::panel,-1)
+      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,-1)
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.Enable(true)
       # Still drawing problem (missed exposed events???)
@@ -327,8 +319,8 @@ if (!exists(Subvoxel3DClass)){
     #-----------------------
     
     proc ::CreateGui() {
-      ::import = &global::ami_import;
-      ::win = ::import->ParamPanel("Subvoxel 3D")
+
+      ::win = ParamPanel("Subvoxel 3D")
       
       ::win.BeginBook()
         #Main parameters page

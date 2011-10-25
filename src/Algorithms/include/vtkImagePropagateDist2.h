@@ -61,10 +61,10 @@
 #include "vtkFloatArray.h"
 
 #include <list>
-using namespace std;
+//using -- namespace std;
 
-typedef list<int> int_list;
-typedef list<int>::iterator int_list_it;
+typedef std::list<int> int_list;
+typedef std::list<int>::iterator int_list_it;
 
 //BTX
 class PD_element2 {

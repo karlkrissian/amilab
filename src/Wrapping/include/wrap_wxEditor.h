@@ -18,13 +18,13 @@
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
-#include "wrap_wxWindow.h"
+#include "wrap_wxStyledTextCtrl.h"
 
 #include "wxEditor.h"
 
 AMI_DECLARE_TYPE(wxEditor)
 
-class WrapClass_wxEditor : public WrapClass<wxEditor>, public WrapClass_wxWindow
+class WrapClass_wxEditor : public WrapClass<wxEditor>, public WrapClass_wxStyledTextCtrl
 {
   DEFINE_CLASS(WrapClass_wxEditor);
 
@@ -35,7 +35,7 @@ class WrapClass_wxEditor : public WrapClass<wxEditor>, public WrapClass_wxWindow
 
   public:
     /// Constructor
-    WrapClass_wxEditor(boost::shared_ptr<wxEditor> si):  WrapClass<wxEditor>(si), WrapClass_wxWindow(si)
+    WrapClass_wxEditor(boost::shared_ptr<wxEditor> si):  WrapClass<wxEditor>(si), WrapClass_wxStyledTextCtrl(si)
     {}
 
     /// Wrapping of the constructor
@@ -49,12 +49,24 @@ class WrapClass_wxEditor : public WrapClass<wxEditor>, public WrapClass_wxWindow
 
     void AddMethods(WrapClass<wxEditor>::ptr this_ptr )
     {
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
-      parent_obj->AddMethods(parent_obj);
 
       AddVar_LoadFile(         this_ptr);
       AddVar_ShowLineNumbers(  this_ptr);
+
+      // Add public fields 
+      AMIObject::ptr tmpobj(amiobject.lock());
+      if (!tmpobj.get()) return;
+      Variables::ptr context(tmpobj->GetContext());
+
+      // Add base parent wxStyledTextCtrl
+      boost::shared_ptr<wxStyledTextCtrl > parent_wxStyledTextCtrl(  boost::dynamic_pointer_cast<wxStyledTextCtrl >(this_ptr->GetObj()));
+      BasicVariable::ptr var_wxStyledTextCtrl = AMILabType<wxStyledTextCtrl>::CreateVarFromSmtPtr(parent_wxStyledTextCtrl);
+      context->AddVar("wxStyledTextCtrl",var_wxStyledTextCtrl);
+      // Set as a default context
+      Variable<AMIObject>::ptr obj_wxStyledTextCtrl = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxStyledTextCtrl);
+      context->AddDefault(obj_wxStyledTextCtrl->Pointer()->GetContext());
+      
+      
     }
 
 };

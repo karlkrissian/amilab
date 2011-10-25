@@ -21,12 +21,14 @@
 
 #include "DessinImage.hpp"
 #include "wrap_FenetreDessin.h"
+#include "wrap_ImageViewerBase.h"
+
 #include "wrap_wxWindow.h"
 #include "wrap_Viewer3D.h"
 
 AMI_DECLARE_TYPE(DessinImage);
 
-class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_FenetreDessin
+class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_FenetreDessin, public WrapClass_ImageViewerBase
 {
   DEFINE_CLASS(WrapClass_DessinImage);
 
@@ -39,7 +41,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
     const boost::shared_ptr<DessinImage>& GetObj() const { return WrapClass<DessinImage>::GetObj(); }
 
     /// Constructor
-    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si):  WrapClass<DessinImage>(si), WrapClass_FenetreDessin(si) 
+    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si):  WrapClass<DessinImage>(si), WrapClass_FenetreDessin(si), WrapClass_ImageViewerBase(si)
     {}
 
     /// Destructor
@@ -110,10 +112,6 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
 
     void AddMethods(WrapClass<DessinImage>::ptr this_ptr )
     {
-      // Add members from wxWindow
-      WrapClass_FenetreDessin::ptr parent_obj(
-        boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
-      parent_obj->AddMethods(parent_obj);
 
       AddVar___reference__(             this_ptr);
       AddVar_setpos(                this_ptr, "_setpos");
@@ -158,6 +156,25 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
       AddVar_getimage(              this_ptr);
       AddVar_DrawLineZ(             this_ptr);
       AddVar_SetIntensityRange(     this_ptr);
+      
+      // Adding Bases
+//       WrapClass_FenetreDessin::ptr parent_obj(
+//         boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
+//       parent_obj->AddMethods(parent_obj);
+
+      // Add public fields 
+      AMIObject::ptr tmpobj(amiobject.lock());
+      if (!tmpobj.get()) return;
+      Variables::ptr context(tmpobj->GetContext());
+
+      // Add base parent FenetreDessin
+      boost::shared_ptr<FenetreDessin > parent_FenetreDessin(  boost::dynamic_pointer_cast<FenetreDessin >(this_ptr->GetObj()));
+      BasicVariable::ptr var_FenetreDessin = AMILabType<FenetreDessin>::CreateVarFromSmtPtr(parent_FenetreDessin);
+      context->AddVar("FenetreDessin",var_FenetreDessin);
+      // Set as a default context
+      Variable<AMIObject>::ptr obj_FenetreDessin = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_FenetreDessin);
+      context->AddDefault(obj_FenetreDessin->Pointer()->GetContext());
+      
     };
 };
 

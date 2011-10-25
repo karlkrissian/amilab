@@ -26,7 +26,9 @@ INCLUDE( ${wxWidgets_USE_FILE})
 # if automatic wrapping, generate source files
 IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   # Generate XML file
-  MESSAGE("Generate XML file for VTK")
+  MESSAGE("***************************")
+  MESSAGE(" Generate XML file for VTK")
+  MESSAGE("***************************")
   #
   IF   (VTK_FOUND)
     IF   (VTK_INCLUDE_DIRS)
@@ -74,16 +76,17 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 #     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
 #     DEPENDS ${XML_INPUT}
 #   )
-  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}   ${XML_INPUT}")
+  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${CMAKE_CURRENT_SOURCE_DIR} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}   ${XML_INPUT}")
   execute_process(
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}   ${XML_INPUT}
+    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${CMAKE_CURRENT_SOURCE_DIR}
+ -I${AMILAB_SOURCE_DIR}/Wrapping/include -I${AMILAB_SOURCE_DIR}/CommonBase -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}   ${XML_INPUT}
   )
    
   # Generate the classes list
 
   # Read list of classes to wrap
-  FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt" classes_txt)
-  STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+  FILE(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt" classes_list REGEX "[^#].*")
+  MESSAGE("classes_list = ${classes_list}")
 
   SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
@@ -96,9 +99,9 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
       ERROR_VARIABLE ancestors_error
     )
   ELSE(GENERATE_HTML_HELP)
-    MESSAGE("COMMAND IS: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE}  --templates --templatefile_dir ${AMILAB_SOURCE_DIR}/../PythonWrap/ -q")
+    MESSAGE("COMMAND IS: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" --ancestors-file ${ANCESTORS_FILE} -q")
     EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE}  --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q
+      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --libname vtk --ancestors ${classes_list}  --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" --ancestors-file ${ANCESTORS_FILE} -q
       OUTPUT_VARIABLE ancestors_result
       ERROR_VARIABLE ancestors_error
     )
@@ -222,7 +225,8 @@ SET(WrapVTK_SRCS
      ${vtk_HDRS}
 )
 
-#MESSAGE("WrapVTK_SRCS =  ${WrapVTK_SRCS}")
+MESSAGE("WrapVTK_SRCS =  ${WrapVTK_SRCS}")
+
 
 my_add_library ( WrapVTK)
 add_dependencies ( WrapVTK WrapWxWidgets )

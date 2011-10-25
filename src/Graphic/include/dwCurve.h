@@ -152,6 +152,16 @@ class dwCurve {
     {
       points.push_back(p);
     }
+    
+    dwCurve& operator=(const dwCurve& c1)
+    {
+      points      = c1.points;
+      color       = c1.color;
+      style       = c1.style;
+      width       = c1.width;
+      drawlines   = c1.drawlines;
+      drawpoints  = c1.drawpoints;
+    }
 };
 
 typedef std::vector<dwCurve>           vector_dwCurve;

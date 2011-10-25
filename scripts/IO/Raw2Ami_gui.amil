@@ -35,7 +35,7 @@ if (!exists(Raw2AmiClass)) {
       if (::typePix == 2) { imtype = INT.val;    }
       if (::typePix == 3) { imtype = FLOAT.val;  }
       if (::typePix == 4) { imtype = DOUBLE.val; }
-      ::im = ReadRawImages(::dimx,::dimy,::dimz,imtype,::dimv,::endianess,::input_filename)
+      ::im = IO.ReadRawVectImages3D(::dimx,::dimy,::dimz,imtype,::dimv,::endianess,::input_filename)
       ::im.setvoxelsize(::voxSizeX, ::voxSizeY, ::voxSizeZ)
       eval ::output_varname+"<<= ::im;"
     }
@@ -52,9 +52,7 @@ if (!exists(Raw2AmiClass)) {
 
     proc ::Gui( ) {
     
-      import = &global::ami_import
-      
-      ::win = import->ParamPanel("Read Raw 2")
+      ::win = ParamPanel("Read Raw 2")
   
       ::win.BeginBook()
       ::win.AddPage("IO")

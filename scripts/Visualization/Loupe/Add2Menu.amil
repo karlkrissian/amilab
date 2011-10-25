@@ -23,7 +23,6 @@ if (!exists(loupe_display)) {
     loupe_display.SetHelp("Add a Loupe the image viewer.")
     loupe_display.SetInMenus("Scripts","Visualization")
 
-    ami_import.System(); 
     loupe_display.SetIcon16( op_system.GetCurrentScriptDir()+"/loupe_icon16.png")
     loupe_display.SetIcon32( op_system.GetCurrentScriptDir()+"/loupe_icon32.png")
 

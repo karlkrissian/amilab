@@ -5,10 +5,31 @@ import config
 type_equivalence={}
 
 # convenient shortname
-type_shortname={ 'unsigned char':'uchar', 'unsigned int':'uint', 'long int':'lint', 'long unsigned int':'luint', 'std::string':'string', 'long long int':'llint', 'short unsigned int':'suint'}
+type_shortname={
+  'unsigned char'      : 'uchar',
+  'unsigned int'       : 'uint',
+  'long int'           : 'lint',
+  'long unsigned int'  : 'luint',
+  'std::string'        : 'string',
+  'long long int'      : 'llint',
+  'short unsigned int' : 'suint',
+  'short int'          : 'sint',
+  'signed char'        : 'schar',
+}
 
 # type substitution
-type_substitute={  'unsigned int':'long', 'long int':'long', 'long unsigned int':'long', 'char':'std::string', 'wchar_t':'std::string', 'long long int':'long', 'short unsigned int':'int'}
+type_substitute={
+  'unsigned int'       : 'long',
+#  'long int'          : 'long',
+  'long unsigned int'  : 'long',
+  'char'               : 'std::string',
+  'wchar_t'            : 'std::string',
+  'long long int'      : 'long',
+  'short unsigned int' : 'int',
+  'short int'          : 'int',
+  'signed char'        : 'unsigned char',
+  'void'               : 'unsigned char',
+}
 #'bool':'int',
 
 def GetShortName(typename):
@@ -233,6 +254,19 @@ def ConvertSmtPtrToPtr_wchar_t(typeid,substvar,typevar):
   return res
   
 
+def ConvertSmtPtrToPtr_void(typeid,substvar,typevar):
+  #print "within ConvertSmtPtrToPtr_char()"
+  fulltypename=config.types[typeid].GetFullString()
+  res  = "void* {0} = (void*) {1}.get();\n".format(typevar,substvar)
+  return res
+
+def ConvertSmtPtrToDoublePtr_void(typeid,substvar,typevar):
+  #print "within ConvertSmtPtrToPtr_char()"
+  fulltypename=config.types[typeid].GetFullString()
+  res  = "void** {0} = (void**) {1}.get();\n".format(typevar,substvar)
+  return res
+
+
 #
 # Generic calls
 #
@@ -258,7 +292,7 @@ def ConvertPtrFrom(typeid,typevar,substvar):
     return eval("ConvertPtrFrom_{0}(typevar,substvar)".format(shorttypename))
   except NameError:
     print "Warning: pointer conversion failed for type {0}".format(typename)
-    res =  eval("ConvertValFrom_{0}('*'+typevar,substvar)".format(shorttypename))
+    res =  eval("ConvertValFrom(typeid,'*'+typevar,substvar)")
     return res
 
 def ConvertValTo(typeid,substvar,typevar):
@@ -280,8 +314,10 @@ def ConvertSmtPtrToPtr(typeid,substvar,typevar):
  
 def ConvertSmtPtrToDoublePtr(typeid,substvar,typevar):
   typename=config.types[typeid].GetString()
+  fulltypename=config.types[typeid].GetFullString()
   shorttypename=GetShortName(typename)
   try:
     return eval("ConvertSmtPtrToDoublePtr_{0}(typeid,substvar,typevar)".format(shorttypename))
   except NameError:
-    return ""
+    res  = "{2} {0} = ({2}) {1}.get();\n".format(typevar,substvar,fulltypename)
+    return res

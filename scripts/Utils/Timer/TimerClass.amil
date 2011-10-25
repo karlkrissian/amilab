@@ -89,7 +89,7 @@ if (!exists(TimerClass)) {
     #------------------------------------
     proc ::Gui() \
     {
-      ::win = global::ami_import.ParamPanel("Timer")
+      ::win = ParamPanel("Timer")
       
       ::win.BeginBook()
         ::win.AddPage("Run")

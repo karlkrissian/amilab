@@ -8,13 +8,8 @@ func "Common/ScriptGui"
 
 if (!exists(itkCreateProbabilityClass)) {
 
-  global::ami_import.Filters()
-  global::ami_import.ITK()
-  
   Class itkCreateProbabilityClass : public ScriptGui \
   {
-    ::filters=&global::filters
-    ::itk=&global::itk
     
     #--------------------------
     proc ::Init() \
@@ -53,7 +48,7 @@ if (!exists(itkCreateProbabilityClass)) {
       #}
 
       # compute local mean intensity
-      ::lm = ::itk->LocalMeanImageFilter3D(::input,::localstats_winsize)
+      ::lm = itk.LocalMeanImageFilter3D(::input,::localstats_winsize)
 
       # Create local mean intensity map
       # will map intensity from 0 to 10000
@@ -91,11 +86,10 @@ if (!exists(itkCreateProbabilityClass)) {
     #--------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("Local Stats",&::parent_panel)
+        ::win = ParamPanel("Local Stats",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("Local Stats")
+        ::win = ParamPanel("Local Stats")
       }
           
       ::win.BeginBook()

@@ -10,9 +10,10 @@
 //
 
 #include "Plugin.h"
-#include "VarContexts.hpp"
 
-extern VarContexts  Vars;
+#include "VarContexts.hpp"
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts Vars;
 
 PLUGIN_ENTRY_FUNCTION(Plugin);
 
@@ -33,9 +34,9 @@ bool Plugin::Execute(void)
   // Add classes to plugin context
   WrapClassExamplePlugin_AddStaticMethods(amiobject->GetContext());
 
-  WrapClassFoo__LT__int__COMMA____SPACE__10__GT___AddStaticMethods( amiobject->GetContext() );
+  WrapClassFoo_L_int_10_G__AddStaticMethods( amiobject->GetContext() );
 
-  WrapClassFoo2__LT__int__COMMA____SPACE__float__COMMA____SPACE__bool__GT___AddStaticMethods( amiobject->GetContext() );
+  WrapClassFoo2_L_int_float_bool_G__AddStaticMethods( amiobject->GetContext() );
 
   // Add wx context to builtin
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),

@@ -4,13 +4,9 @@ func "Common/ScriptGui"
 
 if (!exists(Subpixel2DClass)){
 
-	#Import filters
-  ami_import->Filters()
 
-	Class Subpixel2DClass : public ScriptGui{
+  Class Subpixel2DClass : public ScriptGui{
   
-    ::filters = &global::filters
-    
     #-----------------------
     proc ::Init(){
       ::class_name  = "global::Subpixel2DClass"
@@ -340,7 +336,7 @@ if (!exists(Subpixel2DClass)){
       if (exists(::res))  { del ::res; }
       if (exists(::sp2D)) { del ::sp2D; }
       #Build a SubPixel2D object
-      ::sp2D = ::import->SubPixel2D(&::norm_input,::threshold,::linear)
+      ::sp2D = SubPixel2D(&::norm_input,::threshold,::linear)
       
       if (::alg_type == 0) {
         ::res = ::sp2D->SuperGradienteCurvo()
@@ -502,8 +498,8 @@ if (!exists(Subpixel2DClass)){
     #-----------------------
     
     proc ::CreateGui() {
-      ::import = &global::ami_import;
-      ::win = ::import->ParamPanel("Subpixel 2D")
+
+      ::win = ParamPanel("Subpixel 2D")
       
       ::win.BeginBook()
         ::win.AddPage("Param.")

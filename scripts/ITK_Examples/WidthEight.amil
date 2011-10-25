@@ -1,0 +1,42 @@
+
+# Converted from C++ example
+printn "***"
+printn argc
+if( argc < 1 )  {
+  printn "Usage: " 
+  printn $0 + " inputImageFile"
+  quit
+}
+
+reader_ptr = itk.ImageFileReader_Image_float_2u_DefaultConvertPixelTraits_float.New()
+reader=reader_ptr.GetPointer()
+
+printn $1
+reader.SetFileName( $1 );
+reader.Update();
+
+res = reader.GetOutput()
+print res.GetLargestPossibleRegion().GetSize()[0]
+print " x "
+print res.GetLargestPossibleRegion().GetSize()[1]
+print " pixels"
+
+## An example image had w = 200 and h = 100 (it is wider than it is tall). The above output
+## 200 100
+## so w = GetSize()[0]
+## and h = GetSize()[1]
+
+## A pixel inside the region
+indexInside = itk.Index_2u.Index()
+indexInside[0] = 150
+indexInside[1] = 50
+printn res.GetLargestPossibleRegion().IsInside(&indexInside) 
+
+## A pixel outside the region
+indexOutside = itk.Index_2u.Index()
+indexOutside[0] = 50
+indexOutside[1] = 550
+printn  res.GetLargestPossibleRegion().IsInside(&indexOutside) 
+
+## This means that the [0] component of the index is referencing the left to right (x) value
+## and the [1] component of Index is referencing the top to bottom (y) value

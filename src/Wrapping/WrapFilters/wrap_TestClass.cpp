@@ -27,7 +27,7 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<TestClass>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<TestClass>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_TestClass::wrap_TestClass construct;
   return construct.CallMember(p);

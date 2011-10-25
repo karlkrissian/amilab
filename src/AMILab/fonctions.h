@@ -57,8 +57,6 @@
 #include "VectorImage2StructuredGrid.h"
 #include "InterpolateTransform.h"
 #include "Resize.hpp"
-
-#include "StructureTensor.h"
 #include "Curvatures.h"
 
 #include "Chamfer.h"
@@ -69,7 +67,9 @@
 
 
 extern int yyERROR;
-extern unsigned char GB_debug;
+
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 #include "imageextent.h"
 
@@ -79,38 +79,14 @@ InrImage* Func_OpImage( InrImage* im1, InrImage* im2, InrImage* im3,
             char* exprmath,
             int Format = WT_FLOAT);
 
-/**
- * Apply a Gaussian (or its derivatives) convolution to the input image
- * @param im input image
- * @param sigma Gaussian standard deviation
- * @param der_x derivation order in X (-1: no convolution, 0: Gaussian smoothing, 1: first order derivative, 2:second order der.)
- * @param der_y same in Y
- * @param der_z same in Z
- * @return pointer to the resulting image
- */
-InrImage* Func_Filter( InrImage* im, float sigma,
-               int der_x, int der_y, int der_z);
-
-InrImage* Func_NormGrad( InrImage* im, float sigma, int support=4 );
-
-InrImage* Func_DiscNormGrad( InrImage* im );
-
-InrImage* Func_DiscMeanCurvature( InrImage* im );
-
-InrImage* Func_Gradient( InrImage* im, float sigma );
-
-
-InrImage* Func_SecDerGrad( InrImage* im, float sigma );
-
-// Don't use voxel size
-InrImage* Func_SecDerGrad2( InrImage* im, float sigma );
-
-void      Func_DiscSecDerGrad( InrImage* im, InrImage* Isecder, InrImage* Inormgrad = NULL);
-
 
 int AskImage   (  std::string& name);
 int AskFilename(  std::string& name);
-int AskVarName (   wxWindow* parent, const string title, const string label, const string def, std::string& name);
+int AskVarName (   wxWindow* parent, 
+                   const std::string title, 
+                   const std::string label, 
+                   const std::string def, 
+                   std::string& name);
 int AskSurface (  std::string& name);
 int AskScript  (  std::string& name);
 
@@ -162,37 +138,9 @@ amilab::SurfacePoly* Func_isosurf( InrImage::ptr im, float Threshold, InrImage* 
                int coord_system=0);
 
 
-unsigned char      Func_HessianMatrix( InrImage* image_initiale, const char* varname,
-                 float Sigma,  float Gamma, InrImage* mask);
-
-
-//
-// Get first and second order derivatives:
-// H1: 1st eigenvector or eigenvalue of the Hessian matrix
-// H2: 2nd eigenvector or eigenvalue of the Hessian matrix
-// H3: 3rd eigenvector or eigenvalue of the Hessian matrix
-// G : gradient vector
-// values: 0 do not save
-//         1 save the eigenvector (or vector)
-//         2 save the eigenvalue
-//         3 save both
-//
-unsigned char      Func_Derivatives( InrImage* image_initiale,
-                   const char* varname,
-                   float Sigma,
-                   float Gamma,
-                   InrImage* mask,
-                   int _H1,
-                   int _H2,int _H3,int _G);
-
-
-unsigned char      Func_HessianVap( InrImage* image_initiale, const char* varname,
-                  float Sigma,  float Gamma,
-                  InrImage* mask, int vap_num);
-
 InrImage* Func_2DFlux( InrImage* vectors, float radius);
 
-#include "reponse_cercle.hpp"
+#include "CalculRepCercle.hpp"
 
 InrImage*    Func_CircleIntegration( InrImage* grad, InrImage* vep0,
                      InrImage* vep1, float radius,
@@ -217,8 +165,6 @@ InrImage*    Func_LocalExtrema( InrImage* im,
                 InrImage* vep1,
                 InrImage* mask,
                 int samples=16);
-
-InrImage*    Func_Laplacian(   InrImage* im);
 
 float         Func_PositiveArea(float val[4]);
 float         Func_ComputePositiveArea( InrImage* im);
@@ -273,20 +219,6 @@ void         Func_Pad( InrImage* im1, InrImage* im2,
 
 int          Func_GenRead(char* fname);
 
-unsigned char      Func_Eigen2D( char* varname,
-               InrImage* Mxx, InrImage* Mxy,
-               InrImage* Myy,
-               InrImage* mask = NULL);
-
-unsigned char      Func_Eigen3D( char* varname,
-               InrImage* Mxx, InrImage* Mxy, InrImage* Mxz,
-               InrImage* Myy, InrImage* Myz, InrImage* Mzz,
-               InrImage* mask = NULL);
-
-InrImage*    Func_PropagationDistance(InrImage* input, float max_dist=1000);
-InrImage*    Func_PropagationDistance2(InrImage* input, float max_dist=1000);
-
-InrImage*    Func_PropagationDanielsson(InrImage* input, float max_dist=1000);
 
 InrImage*    Func_ReSlice( InrImage* im1, InrImage* im2, FloatMatrix& m);
 

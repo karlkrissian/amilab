@@ -30,6 +30,9 @@
    The full GNU Lesser General Public License file is in vtkLevelSets/LesserGPL_license.txt
 */
 
+#if defined(WIN32)
+  #define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include "vtkImagePropagateDist2.h"
 #include "vtkObjectFactory.h"
@@ -749,7 +752,7 @@ void vtkImagePropagateDist2::PropagateDanielsson2D( )
     }
     list_remaining_trial.clear();
 
-    list<int>::iterator it;
+    std::list<int>::iterator it;
     for ( it = list0.begin(); it != list0.end(); it++ ) {
       p    = *it;
       pt0  = list_elts[p];
@@ -1111,7 +1114,7 @@ void vtkImagePropagateDist2::PropagateDanielsson3D( )
     }
     list_remaining_trial.clear();
 
-    list<int>::iterator it;
+    std::list<int>::iterator it;
     for(it=list0.begin();it!=list0.end();it++) {
       p    = *it;
       pt0  = list_elts[p];

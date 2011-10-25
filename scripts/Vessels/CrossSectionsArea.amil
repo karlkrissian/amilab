@@ -1,6 +1,4 @@
 
-printn "Import filters (ami_import->Filters()).\n"
-ami_import.Filters()
 
 proc CrossSectionsArea( IMAGE _sec, STRING st, NUM center_cc ) {
 
@@ -9,7 +7,7 @@ proc CrossSectionsArea( IMAGE _sec, STRING st, NUM center_cc ) {
   file_area   = File(st+"_area.dat","w")
   file_radius = File(st+"_radius.dat","w")
 
-  morph = global::filters.ContinuousMorphology()
+  morph = filters.ContinuousMorphology()
 
   voxarea = _sec.vx*_sec.vy
 

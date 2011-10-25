@@ -43,7 +43,7 @@
 #endif
 
 wxString GetwxStr(const char* str);
-wxString GetwxStr(const string& str);
+wxString GetwxStr(const std::string& str);
 
 //==============================================================================
 //      wxEnumerationParameter
@@ -206,16 +206,16 @@ void wxEnumerationParameter::SetChoices( const boost::shared_ptr<wxArrayString>&
   // get the current selected name
   wxString currentselection = GetStringSelection();
   
-  std::cout << "wxEnumerationParameter::SetChoices"
-            << " Current Item: "
-            << currentselection << std::endl;
+//   std::cout << "wxEnumerationParameter::SetChoices"
+//             << " Current Item: "
+//             << currentselection << std::endl;
 
   this->_choice->Clear();
   for(int i=0;i<(int)choices->GetCount();i++) {
     this->_choice->Append((*choices)[i]);
-    std::cout << "wxEnumerationParameter::SetChoices"
+/*    std::cout << "wxEnumerationParameter::SetChoices"
               << " Added Item:"
-              << (*choices)[i] << std::endl;
+              << (*choices)[i] << std::endl;*/
   }
 
   if (!this->_choice->SetStringSelection(currentselection))
@@ -270,7 +270,7 @@ void wxEnumerationParameter::OnEnumUpdate(void* data)
   if (_this->_selection_param.get()) 
   {
     std::string res = std::string(_this->_choice->GetStringSelection().mb_str(wxConvUTF8));
-    cout << __func__ << "setting selection string to " << res << endl;
+    std::cout << __func__ << "setting selection string to " << res << std::endl;
     *_this->_selection_param = res;
   }
   _this->Callback();
@@ -302,7 +302,7 @@ wxString wxEnumerationParameter::GetAbsoluteName(const wxString& Name)
   wxString Result= wxT("");
   wxString Text;
   wxArrayString choices;
-  string Simb;
+  std::string Simb;
   int Pos, Size;
 
   // eventually call update button callback function
@@ -338,9 +338,9 @@ wxString wxEnumerationParameter::GetAbsoluteName(const wxString& Name)
         }
       }
   }
-  std::cout << "wxEnumerationParameter::GetAbsoluteName->Obtained name: "
+/*  std::cout << "wxEnumerationParameter::GetAbsoluteName->Obtained name: "
             << Result.ToAscii()
-            << std::endl;
+            << std::endl;*/
   return Result;
 }
 #endif

@@ -3,11 +3,8 @@ func "Common/ScriptGui"
 
 if (!exists(itkNLMeansClass)) {
   
-  ami_import->ITK()
   
   Class itkNLMeansClass  : public ScriptGui{
-    
-    ::itk=&global::itk
     
     proc ::Init() \
     {
@@ -49,10 +46,10 @@ if (!exists(itkNLMeansClass)) {
     proc ::Run() \
     {
       if (::dim==0) {
-        ::nlm = ::itk->BasicNLMeans2D(::input,::searching_window,::pattern_window,::threshold,::noise)
-        ::n = 1			
+        ::nlm = itk.BasicNLMeans2D(::input,::searching_window,::pattern_window,::threshold,::noise)
+        ::n = 1
       } else {
-        ::nlm = ::itk->BasicNLMeans3D(::input,::searching_window,::pattern_window,::threshold,::noise)
+        ::nlm = itk.BasicNLMeans3D(::input,::searching_window,::pattern_window,::threshold,::noise)
         ::n = 1
       }
     } 
@@ -80,8 +77,7 @@ if (!exists(itkNLMeansClass)) {
   
     proc ::Gui() \
     {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("itkNL-Means")
+      ::win = ParamPanel("itkNL-Means")
       ::win.BeginBook()
       
         ::win.AddPage("Init")

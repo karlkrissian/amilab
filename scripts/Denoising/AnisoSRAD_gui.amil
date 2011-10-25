@@ -83,7 +83,7 @@ if (!exists(AnisoSRADClass)) {
     }
     if exists(::res) {
       show ::res
-      ::input_draw.compare(::res_draw)
+      ::input_draw.compare(&::res_draw)
     }
   }
   
@@ -96,8 +96,7 @@ if (!exists(AnisoSRADClass)) {
   proc ::CreateGui() {
   
     # parameters window
-    import = &global::ami_import;
-    ::win = import->ParamPanel("SRAD")
+    ::win = ParamPanel("SRAD")
 
     ::win.BeginBook()
       ::win.AddPage("Param")

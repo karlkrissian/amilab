@@ -17,7 +17,7 @@
 //---------------------------------------------------
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<AnalyticStraightVessel2D>::CreateVar( ParamList* p )
+BasicVariable::ptr WrapClass<AnalyticStraightVessel2D>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_AnalyticStraightVessel2D::wrap_AnalyticStraightVessel2D construct;
   return construct.CallMember(p);

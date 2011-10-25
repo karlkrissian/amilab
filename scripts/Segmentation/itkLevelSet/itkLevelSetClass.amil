@@ -4,8 +4,6 @@ func "Common/ScriptGui"
 
 if (!exists(itkLevelSetClass)) {
 
-  global::ami_import.ITK()
-
   #*********************************************************#
   #***************LEVELSET**********************************#
   #*********************************************************#
@@ -18,17 +16,9 @@ if (!exists(itkLevelSetClass)) {
     func "Segmentation/itkFastMarching/itkFastMarchingClass.amil"
     itkFastMarchingClass ::FAST
 
-    #global::itkSigmoidClass ::SIG
-    
-    ::itk=&global::itk
-    ::class_name="global::itkLevelSetClass"
-  
     #------------------------------------------------------
-    proc ::Init() {
-      
-      #global::itkSigmoidClass ::sig
-      #global::itkFastMarchingClass ::fast
-            
+    proc ::Init() \
+    {
       ::min = 0.0
       ::max = 1.0
       
@@ -79,9 +69,9 @@ if (!exists(itkLevelSetClass)) {
     proc ::Run() {
       if(exists (level)) {del level;}
       if (::dim == 0) {
-        ::level <<= ::itk->LevelSetFilter2D(::initial,::em,::curScaling,::proScaling,::advScaling,::error,::iterations)
+        ::level <<= itk.LevelSetFilter2D(::initial,::em,::curScaling,::proScaling,::advScaling,::error,::iterations)
       } else {
-        ::level <<= ::itk->LevelSetFilter3D(::initial,::em,::curScaling,::proScaling,::advScaling,::error,::iterations)
+        ::level <<= itk.LevelSetFilter3D(::initial,::em,::curScaling,::proScaling,::advScaling,::error,::iterations)
       }
     }
     
@@ -90,9 +80,9 @@ if (!exists(itkLevelSetClass)) {
       // ::sigm = ::FAST->SIG.sigmoid
       // if (exists (::level)) {del level;}
       // if (::FAST->dim==0) {
-        // ::level <<= ::itk->LevelSetFilter2D(::FAST->fast,::sigm,::curScaling,::proScaling,::advScaling,::error,::iterations)
+        // ::level <<= itk.LevelSetFilter2D(::FAST->fast,::sigm,::curScaling,::proScaling,::advScaling,::error,::iterations)
       // } else {
-        // ::level <<= ::itk->LevelSetFilter3D(::FAST->fast,::sigm,::curScaling,::proScaling,::advScaling,::error,::iterations)
+        // ::level <<= itk.LevelSetFilter3D(::FAST->fast,::sigm,::curScaling,::proScaling,::advScaling,::error,::iterations)
       // }
     // }
     
@@ -139,11 +129,10 @@ if (!exists(itkLevelSetClass)) {
     
     #------------------------------------------------------
     proc ::Gui() {
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("itkLS",&::parent_panel)
+        ::win = ParamPanel("itkLS",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("itkLS")
+        ::win = ParamPanel("itkLS")
       }
 
       ::win.BeginBook()

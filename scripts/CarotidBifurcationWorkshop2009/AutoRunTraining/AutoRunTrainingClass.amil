@@ -23,7 +23,6 @@ if (!exists(AutoRunTrainingClass)) {
       if (!exists(::carotid_challenge)) {
         if (::path=="") {
           script="CarotidBifurcationWorkshop2009/RunExperiments/RunExperimentsClass.amil"
-          global::ami_import.System()
           ::path=op_system.GetGlobalScriptDir()+script;
         }
         func ::path
@@ -211,11 +210,10 @@ if (!exists(AutoRunTrainingClass)) {
     #-----------------------------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("Training",&::parent_panel)
+        ::win = ParamPanel("Training",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("AutoRunTraining")
+        ::win = ParamPanel("AutoRunTraining")
       }
       ::win.BeginBook()
         ::win.AddPage("Main")

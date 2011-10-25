@@ -49,7 +49,7 @@
 
 
 #include "style.hpp"
-#include <iostream>
+#include <iosfwd>
 #include "math1.hpp"
 #include "chaine.hpp"
 
@@ -88,9 +88,9 @@ extern Chaine    nom_image_resultat;
 extern float      pas_abscisse;
 extern int    contour_choisi;
 
-
-extern unsigned char verbose;
-extern unsigned char GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_verbose;
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 
 

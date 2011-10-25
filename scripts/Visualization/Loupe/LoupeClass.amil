@@ -6,8 +6,6 @@ if (!exists(LoupeClass)) {
   #----------------------------
   Class LoupeClass : public ScriptGui {
 
-    ::ami_import = &global::ami_import
-
     #----------------------------
     proc ::Init() {
       ::input_name =  "", "name of the input image, the drawing window of this image will be used"
@@ -130,7 +128,7 @@ printn "min w = %1%" % min(w)
     #----------------------------
     proc ::Gui() {
       
-      ::win = global::ami_import.ParamPanel("Loupe")
+      ::win = ParamPanel("Loupe")
 
       ::win.BeginBook()
     

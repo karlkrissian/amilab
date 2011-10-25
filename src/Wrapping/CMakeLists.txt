@@ -5,8 +5,10 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/include
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
-  ${AMILAB_SOURCE_DIR}/Language
+  ${AMILAB_SOURCE_DIR}/LanguageBase
+  #${AMILAB_SOURCE_DIR}/Language
   ${Boost_INCLUDE_DIR}
   )
 
@@ -27,12 +29,13 @@ add_subdirectory ( WrapWxWidgets      )
 add_subdirectory ( WrapIO             )
 add_subdirectory ( WrapImage          )
 add_subdirectory ( WrapSurface        )
-add_subdirectory ( WrapDessinImage    )
-add_subdirectory ( WrapViewer3D       )
+#add_subdirectory ( WrapDessinImage    )
+#add_subdirectory ( WrapViewer3D       )
 add_subdirectory ( WrapGLTransfMatrix )
 add_subdirectory ( WrapWxVTK          )
 add_subdirectory ( WrapExamples       )
 add_subdirectory ( WrapAlgorithms     )
+add_subdirectory ( WrapLanguage       )
 IF (AMI_WRAP_MICRONTRACKER)
   add_subdirectory ( WrapMicronTracker  )
 ENDIF(AMI_WRAP_MICRONTRACKER)

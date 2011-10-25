@@ -30,7 +30,7 @@ GB_mask <<= (UCHAR) (GB_mask>0.1)*255
 
 result=Image(FLOAT,1,input_image)
 result.initvalue(0)
-result.SetName(output_name)
+result.SetImageName(output_name)
 
 maxres = result
 radim = result

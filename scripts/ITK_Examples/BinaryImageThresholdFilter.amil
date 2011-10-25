@@ -1,0 +1,31 @@
+
+printn "Starting ..."
+
+input="tmp.png"
+output="tmp2.png"
+ 
+# need to keep the Smart Pointer alive
+# TODO: -> operator !!!
+reader_sp  = itk.ImageFileReader_Image_uchar_2u_DefaultConvertPixelTraits_uchar.New()
+reader = reader_sp.GetPointer()
+writer_sp  = itk.ImageFileWriter_Image_uchar_2u.New()
+writer = writer_sp.GetPointer()
+
+
+#filter is a keyword ...
+filter_sp  = itk.BinaryThresholdImageFilter_Image_uchar_2u_Image_uchar_2u.New()
+filter1 = filter_sp.GetPointer()
+reader.SetFileName_1( input )
+reader.Update()
+
+filter1.SetInput( &reader.GetOutput() )
+filter1.SetLowerThreshold( 50  )
+filter1.SetUpperThreshold( 255 )
+filter1.SetOutsideValue(   0  )
+filter1.SetInsideValue(    255  )
+
+filter1.Update()
+
+writer.SetFileName( output )
+writer.SetInput( &filter1.GetOutput() )
+writer.Update()

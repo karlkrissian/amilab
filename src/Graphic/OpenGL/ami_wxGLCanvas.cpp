@@ -19,10 +19,11 @@ using namespace amilab;
 
 #include "Viewer3D_PointParam.h"
 
-#include "driver.h"
 #include "amilab_messages.h"
 
-extern yyip::Driver GB_driver;
+#include "driver.h"
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT yyip::Driver GB_driver;
 
 #define CLASS_GL_MESSAGE(m) \
   if (GB_debug_opengl) { \
@@ -46,8 +47,11 @@ extern yyip::Driver GB_driver;
 //#define NEW_METHOD
 
 
+#include "CommonConfigure.h"
 //extern unsigned char      GB_debug;
-extern unsigned char      GB_debug_opengl;
+
+COMMON_VAR_IMPORT unsigned char      GB_debug_opengl;
+
 //extern unsigned char      GB_verbose;
 extern wxApp*    GB_wxApp;
 

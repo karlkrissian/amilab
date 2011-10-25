@@ -1,0 +1,11 @@
+
+func "Visualization/Povray/PovrayClass"
+
+#----------------------------
+if (!exists(Povray_obj)) {
+  PovrayClass Povray_obj
+  Povray_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+

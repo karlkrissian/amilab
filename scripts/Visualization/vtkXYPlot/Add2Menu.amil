@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuvtkXYPlot() \
+{
+  category = "&PDI"
+  script = "PDI/vtkXYPlot/vtkXYPlotGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&vtkXYPlot",script)
+}
+
+AddMenuvtkXYPlot()
+del AddMenuvtkXYPlot

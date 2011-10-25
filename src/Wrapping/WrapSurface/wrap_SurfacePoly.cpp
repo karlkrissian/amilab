@@ -29,20 +29,19 @@
 
 
 #include "driver.h"
-
 extern yyip::Driver GB_driver;
 
 //
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_SurfacePoly::wrap_SurfacePoly construct;
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE_NOCOPY(SurfacePoly);
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(SurfacePoly);
 AMI_DEFINE_VARFROMSMTPTR(SurfacePoly);
 
 //
@@ -56,6 +55,21 @@ Variable<AMIObject>::ptr WrapClass_SurfacePoly::CreateVar( SurfacePoly* sp)
       new WrapClass_SurfacePoly(_obj_ptr));
 }
 
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassamilab__NS__SurfacePoly_AddStaticMethods( Variables::ptr& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("SurfacePoly");
+  WrapClass_SurfacePoly::AddVar_SurfacePoly(amiobject->GetContext());
+
+  //  add it to the given context
+  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  
+}
 
 //---------------------------------------------------
 //  SurfacePoly Constructor
@@ -130,7 +144,7 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   SurfacePoly::ptr s(this->_objectptr->GetObj());
   std::string filename;
   int n=0;
-  if (!get_val_param<string>( filename, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string>( filename, p, n)) ClassHelpAndReturn;
 
   s->Write(filename.c_str());
   return BasicVariable::ptr();
@@ -171,7 +185,7 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   SurfacePoly::ptr s(this->_objectptr->GetObj());
   std::string filename;
   int n=0;
-  if (!get_val_param<string>( filename, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<std::string>( filename, p, n)) ClassHelpAndReturn;
 
   Func_WriteCTALine(s.get(),filename.c_str());
   return BasicVariable::ptr();

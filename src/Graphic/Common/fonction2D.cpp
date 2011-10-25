@@ -41,6 +41,9 @@
  *
  ***************************************************************************/
 
+#ifdef _MSC_VER
+  #define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include "math1.hpp"
 #include "fonction2D.hpp"
@@ -377,7 +380,7 @@ float Fonction2D :: operator()( float x)
   FinSi
 
   c1 = (_points[i].x - x)/c;
-  c2 = 1.0 - c1;
+  c2 = (float) (1.0 - c1);
 
   return _points[i-1].y  *c1 + 
            _points[i].y    *c2;

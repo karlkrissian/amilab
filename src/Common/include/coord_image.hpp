@@ -26,9 +26,10 @@
 #include "Coordonnees.hpp"
 #include "inrimage.hpp"
 #include "Point3D.hpp"
+#include "CommonConfigure.h"
 
 ///
-class CoordImage
+class COMMON_EXPORT CoordImage
 //
 {
 

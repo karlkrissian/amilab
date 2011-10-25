@@ -58,9 +58,6 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxFram
 
     void AddMethods(WrapClass<MainFrame>::ptr this_ptr )
     {
-      // Add members from wxFrame
-      WrapClass_wxFrame::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxFrame>(this_ptr));
-      parent_obj->AddMethods(parent_obj);
 
       AddVar_GetAmilabEditor(  this_ptr);
       AddVar_AddMenuScript(    this_ptr);
@@ -68,6 +65,21 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxFram
       AddVar_GetAuiManager(    this_ptr);
       AddVar_GetMainBook(      this_ptr);
       AddVar_GetAuiPaneInfo(   this_ptr);
+
+      // Add public fields 
+      AMIObject::ptr tmpobj(amiobject.lock());
+      if (!tmpobj.get()) return;
+      Variables::ptr context(tmpobj->GetContext());
+
+      // Add base parent wxFrame
+      boost::shared_ptr<wxFrame > parent_wxFrame(  boost::dynamic_pointer_cast<wxFrame >(this_ptr->GetObj()));
+      BasicVariable::ptr var_wxFrame = AMILabType<wxFrame>::CreateVarFromSmtPtr(parent_wxFrame);
+      context->AddVar("wxFrame",var_wxFrame);
+      // Set as a default context
+      Variable<AMIObject>::ptr obj_wxFrame = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxFrame);
+      context->AddDefault(obj_wxFrame->Pointer()->GetContext());
+      
+      
     }
 
 };

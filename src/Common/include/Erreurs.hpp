@@ -33,21 +33,21 @@
 // Karl Krissian        Sophia Antipolis le 15-08-98
 //
 
-
+#pragma once
 #ifndef _ERREURS_HPP
 #define _ERREURS_HPP
 
 
 #include "style.hpp"
 
-#include <iostream>
-using namespace std;
+#include <iosfwd>
+//using -- namespace std;
 
 #include "chaine.hpp"
 #include <string>
 #include "Pile.hpp"
 
-
+#include "CommonConfigure.h"
 
 class ExceptionErreur;
 class NomMethode;
@@ -60,12 +60,14 @@ class NomMethode;
 /*
   pile des methodes utilisees
  */
-///
-extern Pile<NomMethode*> GB_pile_nom_methode;
-///
-extern unsigned char GB_AfficheWarning;
-///
-extern unsigned char GB_AfficheErreur;
+
+
+#include "CommonConfigure.h"
+
+#include "common_global_import.h"
+//COMMON_EXPORT Pile<NomMethode*> GB_pile_nom_methode;
+//COMMON_EXPORT unsigned char GB_AfficheWarning;
+//COMMON_EXPORT unsigned char GB_AfficheErreur;
 
 ///
 void AffichePileNomMethode();
@@ -152,7 +154,7 @@ public:
   {}
 
   /// Message
-  friend ostream& operator<<(ostream&, const NomMethode&);
+  friend COMMON_EXPORT std::ostream& operator<<(std::ostream&, const NomMethode&);
 
 };
 
@@ -161,8 +163,8 @@ public:
 /**
 class Exception
  */
-class Exception 
-//     ---------
+class COMMON_EXPORT Exception 
+//                  ---------
 {
 
 protected:
@@ -191,8 +193,8 @@ public:
 /**
 class ExceptionErreur
  */
-class ExceptionErreur : public Exception
-//     ---------------
+class COMMON_EXPORT ExceptionErreur : public Exception
+//                  ---------------
 {
 
 protected:
@@ -208,7 +210,7 @@ public:
   }
 
   /// Message
-  friend ostream& operator<<(ostream&, const ExceptionErreur&);
+  friend COMMON_EXPORT std::ostream& operator<<(std::ostream&, const ExceptionErreur&);
 
 }; // ExceptionErreur
 
@@ -216,7 +218,7 @@ public:
 /**
 class ExceptionWarning
  */
-class ExceptionWarning : public Exception
+class COMMON_EXPORT ExceptionWarning : public Exception
 //     ---------------
 {
 
@@ -233,70 +235,60 @@ public:
   }
 
   /// Message
-  friend ostream& operator<<(ostream&, const ExceptionWarning&);
+  friend COMMON_EXPORT std::ostream& operator<<(std::ostream&, const ExceptionWarning&);
 
 }; // ExceptionWarning
 
 
 /**
  */
-class WarningDivers: public ExceptionWarning
+class COMMON_EXPORT WarningDivers: public ExceptionWarning
 //     -------------
 {
 
 public:
 
   ///
-   WarningDivers( const Chaine& mess) :   ExceptionWarning(mess)
-  {
-   _type = WARNING_DIVERS;
-    Si GB_AfficheWarning AlorsFait std::cerr << *this;
-  }
+   WarningDivers( const Chaine& mess);
 
 }; // WarningDivers
 
 
 /**
  */
-class ErreurDivers: public ExceptionErreur
+class COMMON_EXPORT ErreurDivers: public ExceptionErreur
 //     ------------
 {
 
 public:
 
   ///
-   ErreurDivers( const Chaine& mess) : 
-    ExceptionErreur(mess)
-  {
-    _type = ERREUR_DIVERS; 
-    Si GB_AfficheErreur AlorsFait std::cerr << *this;
-  }
+   ErreurDivers( const Chaine& mess);
+//   {
+//     _type = ERREUR_DIVERS; 
+//     Si GB_AfficheErreur AlorsFait std::cerr << *this;
+//   }
 
 }; // ErreurDivers
 
 
 /**
  */
-class ErreurParametres: public ExceptionErreur
+class COMMON_EXPORT ErreurParametres: public ExceptionErreur
 //     ----------------
 {
 
 public:
 
   ///
-   ErreurParametres( const Chaine& mess) : 
-    ExceptionErreur(mess)
-  {
-    _type = ERREUR_PARAMETRES;
-    Si GB_AfficheErreur AlorsFait std::cerr << *this;
-  }
+  ErreurParametres( const Chaine& mess);
 
 }; // ErreurParametres
 
 
 /**
  */
-class ErreurAllocation: public ExceptionErreur
+class COMMON_EXPORT ErreurAllocation: public ExceptionErreur
 //     ----------------
 {
 
@@ -315,19 +307,18 @@ public:
 
 /**
  */
-class ErreurCalcul: public ExceptionErreur
+class COMMON_EXPORT ErreurCalcul: public ExceptionErreur
 //     ------------
 {
 
 public:
 
   ///
-   ErreurCalcul( Chaine& mess) : 
-    ExceptionErreur(mess)
-  {
-     _type = ERREUR_CALCUL;
-    Si GB_AfficheErreur AlorsFait std::cerr << *this;
-  }
+   ErreurCalcul( Chaine& mess);
+//   {
+//      _type = ERREUR_CALCUL;
+//     Si GB_AfficheErreur AlorsFait std::cerr << *this;
+//   }
 
 }; // ErreurParametres
 
@@ -337,8 +328,8 @@ public:
 //---------------------------------------------------------------------
 /** class de Gestion des Erreurs
  */
-class GestionErreurs
-//     --------------
+class COMMON_EXPORT GestionErreurs
+//                  --------------
 {
 
   ///

@@ -321,8 +321,7 @@ if (!exists(ParametricSurfaceClass)) {
   #--------------------------------------------------------------
   proc ::Gui(){
   
-    import = &global::ami_import;
-    ::win = import->ParamPanel("Param. Surf.")
+    ::win = ParamPanel("Param. Surf.")
 
     ::type_id  = ::win.AddEnum( &::type)
       ::win.AddEnumChoice(::type_id,"SuperQuadric")

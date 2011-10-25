@@ -20,13 +20,13 @@
 #include "ami_object.h"
 
 #include "Viewer3D.hpp"
-#include "wrap_wxWindow.h"
+#include "wrap_wxFrame.h"
 #include "wrap_SurfacePoly.h"
 #include "wrap_GLTransfMatrix.h"
 
 AMI_DECLARE_TYPE(Viewer3D);
 
-class WrapClass_Viewer3D:  public WrapClass<Viewer3D>,  public  WrapClass_wxWindow
+class WrapClass_Viewer3D:  public WrapClass<Viewer3D>,  public  WrapClass_wxFrame
 {
   DEFINE_CLASS(WrapClass_Viewer3D);
 
@@ -40,7 +40,7 @@ class WrapClass_Viewer3D:  public WrapClass<Viewer3D>,  public  WrapClass_wxWind
     const boost::shared_ptr<Viewer3D>& GetObj() const { return WrapClass<Viewer3D>::GetObj(); }
 
     /// Constructor
-    WrapClass_Viewer3D(boost::shared_ptr<Viewer3D > si): WrapClass<Viewer3D>(si), WrapClass_wxWindow(si)
+    WrapClass_Viewer3D(boost::shared_ptr<Viewer3D > si): WrapClass<Viewer3D>(si), WrapClass_wxFrame(si)
     { }
 
     /// Wrapping of the constructor
@@ -76,13 +76,10 @@ class WrapClass_Viewer3D:  public WrapClass<Viewer3D>,  public  WrapClass_wxWind
     ADD_CLASS_METHOD(SetWindowSize,     "Set the dimension of the drawing window, for either images or surfaces.");
     ADD_CLASS_METHOD(getimage,          "Save the snapshot as a 2D image of format RGB. In the case of an image, the snapshot is taken from X11 and it includes potential colorbar and axes, in the case of a surface, it is taken from OpenGL.");
     ADD_CLASS_METHOD(GetImageFromX,     "Save the snapshot as a 2D image of format RGB. In the case of an image, the snapshot is taken from X11 as opposed to getimage, which takes the image using OpenGL.");
-    ADD_CLASS_METHOD(GetTransform,      "TODO");
+    ADD_CLASS_METHOD(GetTransform,      "Gets the transform corresponding to the current 3D view.");
 
     void AddMethods(WrapClass<Viewer3D>::ptr this_ptr )
     {
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
-      parent_obj->AddMethods(parent_obj);
 
       AddVar_rotate(            this_ptr);
       AddVar_AddObject(         this_ptr);
@@ -113,6 +110,21 @@ class WrapClass_Viewer3D:  public WrapClass<Viewer3D>,  public  WrapClass_wxWind
       AddVar_add_assign(        this_ptr);
       AddVar_sub_assign(        this_ptr);
       AddVar___reference__(         this_ptr);
+
+      // Add public fields 
+      AMIObject::ptr tmpobj(amiobject.lock());
+      if (!tmpobj.get()) return;
+      Variables::ptr context(tmpobj->GetContext());
+
+      // Add base parent wxFrame
+      boost::shared_ptr<wxFrame > parent_wxFrame(  boost::dynamic_pointer_cast<wxFrame >(this_ptr->GetObj()));
+      BasicVariable::ptr var_wxFrame = AMILabType<wxFrame>::CreateVarFromSmtPtr(parent_wxFrame);
+      context->AddVar("wxFrame",var_wxFrame);
+      // Set as a default context
+      Variable<AMIObject>::ptr obj_wxFrame = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxFrame);
+      context->AddDefault(obj_wxFrame->Pointer()->GetContext());
+      
+      
     };
 };
 

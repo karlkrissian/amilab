@@ -8,12 +8,38 @@ MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
 cmake_minimum_required(VERSION 2.6.4)
 
-#if(POLICY CMP0017) 
-#  cmake_policy(SET CMP0017 NEW)
-#endif(POLICY CMP0017)
+if(POLICY CMP0017) 
+  cmake_policy(SET CMP0017 NEW)
+endif(POLICY CMP0017)
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
+#-------------------------------------------------------------
+#  CONFIGURE OUTPUT DIRECTORIES FOR WINDOWS BECAUSE OF DLL
+#-------------------------------------------------------------
+
+IF (WIN32)
+  # ---------- Setup output Directories -------------------------
+  SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Bin
+    CACHE PATH
+    "Single Directory for all Libraries"
+  )
+
+  # --------- Setup the Executable output Directory -------------
+  SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Bin
+    CACHE PATH
+    "Single Directory for all static libraries."
+  )
+ENDIF(WIN32)
+
+# --------- Setup the Executable output Directory -------------
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
+  ${PROJECT_BINARY_DIR}
+  CACHE PATH
+  "Single Directory for all Executables."
+)
 
 #-----------------------------------------------------
 # VERSION information
@@ -21,7 +47,7 @@ SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH}
 
 SET(AMILAB_VERSION_MAJOR "3")
 SET(AMILAB_VERSION_MINOR "1")
-SET(AMILAB_VERSION_PATCH "0")
+SET(AMILAB_VERSION_PATCH "1")
 SET(AMILAB_VERSION "${AMILAB_VERSION_MAJOR}.${AMILAB_VERSION_MINOR}.${AMILAB_VERSION_PATCH}")
 
 
@@ -89,6 +115,8 @@ IF(CMAKE_BUILD_TYPE)
 ELSE(CMAKE_BUILD_TYPE)
   string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
 ENDIF(CMAKE_BUILD_TYPE)
+MESSAGE("AMILAB_BIN=${AMILAB_BIN}")
+
 
 #
 # DEB configuration
@@ -202,7 +230,6 @@ INCLUDE(CPack)
 #  Configuration files
 #-------------------------------------------------------------------------------
 
-
 #
 # Configuration of Linux Desktop
 #
@@ -240,6 +267,7 @@ CONFIGURE_FILE(
 #-------------------------------------------------------------------------------
 
 OPTION(AMI_USE_STATIC_LIBS     "Look for static libraries" ON)
+OPTION(AMI_USE_DOXYGEN         "Look for doxygen" OFF)
 OPTION(AMI_USE_PRECOMP_HEADERS "Use precompiled headers when available" OFF)
 
 
@@ -301,13 +329,14 @@ IF(AMI_CHECK_BRANCH)
   
 ENDIF(AMI_CHECK_BRANCH)
 
-OPTION(AMI_ENABLE_WRAPPING "Enable Automatic Wrapping: need gccxml, python, ..." OFF)
+OPTION(AMI_ENABLE_WRAPPING "Enable Automatic Wrapping: need gccxml, python, ..." ON)
 
 IF(AMI_ENABLE_WRAPPING)
   FIND_PACKAGE( GCCXML REQUIRED)
   FIND_PACKAGE( PythonInterp REQUIRED)
-  OPTION(AMI_WRAP_WXWIDGETS "Enable Automatic Wrapping OF WXWIDGETS" OFF)
-  OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       OFF)
+  OPTION(AMI_WRAP_WXWIDGETS "Enable Automatic Wrapping OF WXWIDGETS" ON)
+  OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       ON)
+  OPTION(AMI_WRAP_ITK       "Enable Automatic Wrapping OF ITK"       ON)
   OPTION(AMI_WRAP_EXAMPLES  "Enable Automatic Wrapping OF EXAMPLES"  OFF)
   OPTION(AMI_WRAP_MICRONTRACKER "Enable Automatic Wrapping of MicronTracker library for stereo camera tracking" OFF)
   OPTION(AMI_WRAP_ULTRASOUND "Enable Automatic Wrapping of Ultrasound library for get ultrasound images" OFF)
@@ -337,13 +366,16 @@ OPTION(AMI_USE_ITK "Use ITK: recommended" ON)
 
 IF(AMI_USE_ITK)
   FIND_PACKAGE ( ITK )
+  IF(ITK_FOUND)
+    SET(AMI_ITK_VERSION "${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}")
+  ENDIF(ITK_FOUND)
 ENDIF(AMI_USE_ITK)
 
 FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
 #FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net )
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net richtext)
 
 OPTION(GENERATE_HTML_HELP "Generate HTML file help")
 
@@ -497,7 +529,6 @@ SET(AMI_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/AMILabConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/AMILabConfig.h)
 
-
 include(amilab_macros)
 
 include(PCH_GCC4_v2)
@@ -510,6 +541,7 @@ set(  wxParams_INCLUDE_DIRS
 #MESSAGE(wxParams_INCLUDE_DIRS=${wxParams_INCLUDE_DIRS})
 MESSAGE(FLEX_INCLUDE_DIR=${FLEX_INCLUDE_DIR})
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE/AMILabConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/AMILabConfig.cmake)
 
 include_directories (
   ${Boost_INCLUDE_DIR}
@@ -526,6 +558,7 @@ include_directories (
 # for compatibility with previous name
 SET( AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR} )
 
+add_subdirectory (CommonBase)
 add_subdirectory (Common)
 #add_subdirectory (DistTransf)
 add_subdirectory (Graphic)
@@ -548,6 +581,7 @@ ENDIF(AMI_USE_PLUGINS)
 #add_subdirectory (WrapITK)
 add_subdirectory (Wrapping)
 
+add_subdirectory (LanguageBase)
 add_subdirectory (Language)
 
 #IF(AMI_USE_FASTNLMEANS)
@@ -556,8 +590,10 @@ add_subdirectory (Algorithms)
 
 include_directories (
   ${wxParams_INCLUDE_DIRS}
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Plugins/
@@ -610,8 +646,20 @@ endif (WIN32)
 
 
 include_directories (
+  ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
 )
+
+#add_library( AMILab_lib ${amilab_bin_SRCS})
+# target_link_libraries(AMILab_lib
+#   Language
+#   vtkIO 
+#   vtkImaging
+#   ITKIO
+#   ${wxWidgets_LIBRARIES}
+#   ${Boost_LIBRARIES}
+# )
+
 
 add_executable (${AMILAB_BIN} WIN32
   # MACOSX_BUNDLE
@@ -626,27 +674,31 @@ SET(amilab_ownlibs
   WrapSystem
   WrapAMIFluid
   WrapSurface
-  WrapDessinImage
-  WrapViewer3D
+#  WrapDessinImage
+#  WrapViewer3D
   WrapGLTransfMatrix
   WrapInterface
   WrapWxWidgets
   WrapAlgorithms
+  WrapLanguage
   WrapBasicTypes
   WrapCommon
   WrapIO
   WrapImage
+  LanguageBase
   Language
   WrapVTK
   WrapWxVTK
   WrapWII
   WrapITK
   AMILab
+  LanguageBase
   Language
   Algorithms
   Graphic
   wxParams
   Common
+  CommonBase
 # wrapped wxwidgets samples
   penguin
   wxStcFrame
@@ -692,6 +744,8 @@ IF(AMI_USE_VTK)
     vtkRendering 
     vtkVolumeRendering 
     vtkWidgets
+    vtkViews
+    vtkCharts
   )
 
 ELSE(AMI_USE_VTK)
@@ -763,6 +817,21 @@ endif (WIN32)
 
 
 IF(MSVC)
+  SET(CMAKE_DEBUG_POSTFIX  _debug)
+  SET(CMAKE_RELEASE_POSTFIX _release)
+  SET(CMAKE_MINSIZEREL_POSTFIX _minsizerel)
+  SET(CMAKE_RELWITHDEBINFO_POSTFIX _relwithdebinfo)
+  
+  SET_TARGET_PROPERTIES( ${AMILAB_BIN}
+    PROPERTIES 
+      DEBUG_POSTFIX  _debug
+      RELEASE_POSTFIX _release
+      MINSIZEREL_POSTFIX _minsizerel
+      RELWITHDEBINFO_POSTFIX _relwithdebinfo
+  )
+ENDIF(MSVC)
+
+IF(MSVC)
   # NEED TO SPECIFY FOR EACH POSSIBLE CONFIGURATION
   set_target_properties( ${AMILAB_BIN} 
     PROPERTIES LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD /NODEFAULTLIB:MSVCRTD /INCREMENTAL:NO")
@@ -808,7 +877,8 @@ ENDIF(APPLE)
 #ENDIF(APPLE)
 
 
-INSTALL(TARGETS ${AMILAB_BIN}
+INSTALL(TARGETS ${AMILAB_BIN} 
+#LanguageBase
   RUNTIME DESTINATION bin
   #  COMPONENT applications
   #  BUNDLE DESTINATION 
@@ -833,6 +903,22 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
                     GROUP_EXECUTE GROUP_READ
 #"*.amil" -o -name  "*.sh" -o -name "*.html"
         )
+
+# Install the Matlab utilities
+install(DIRECTORY ${AMILAB_SOURCE_DIR}/../MatlabUtils
+        DESTINATION share/amilab-${AMILAB_VERSION}
+        FILES_MATCHING PATTERN "*.m" PATTERN "*.amil"
+         PATTERN "*.sh"
+         PATTERN "*.py"
+         PATTERN "*.png"         
+         PATTERN "*.txt"
+         PATTERN "*.sh"
+         PATTERN "*.html"
+        PATTERN ".svn" EXCLUDE
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                    GROUP_EXECUTE GROUP_READ
+        )
+
 
 # Install the documentation
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../doc
@@ -868,7 +954,41 @@ endif(UNIX)
 INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
 
 
-#Test for amilab.
-#INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
+if (GENERATE_HTML_HELP)
+  # check if doxygen is even installed
+  find_package(Doxygen)
+  if (DOXYGEN_FOUND STREQUAL "NO")
+    message(FATAL_ERROR "Doxygen not found. Please get a copy http://www.doxygen.org")
+  endif (DOXYGEN_FOUND STREQUAL "NO")
+
+  # prepare doxygen configuration file
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../Doxygen/doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
+
+  # add doxygen as target
+  add_custom_target(doxygen ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
+
+  # cleanup $build/api-doc on "make clean"
+  set_property(DIRECTORY APPEND PROPERTY
+       ADDITIONAL_MAKE_CLEAN_FILES api-doc)
+
+  # add doxygen as dependency to doc-target
+  get_target_property(DOC_TARGET doc TYPE)
+  if(NOT DOC_TARGET)
+    add_custom_target(doc)
+  endif()
+  add_dependencies(doc doxygen)
+
+  # install HTML API documentation and manual pages
+  set(DOC_PATH "share/amilab-${AMILAB_VERSION}")
+
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/html
+           DESTINATION ${DOC_PATH}
+         )
+
+  # install man pages into packages, scope is now project root..
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3
+         DESTINATION share/man/man3/
+       )
+endif (GENERATE_HTML_HELP)
 
 PrintSources(${AMILAB_BIN})

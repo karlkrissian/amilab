@@ -1,0 +1,8 @@
+VarContexts
+BasicVariable
+Variables
+AMIObject
+WrapClassMember
+WrapClassBase
+Variable<AMIObject>
+Variable<WrapClassMember>

@@ -9,7 +9,8 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-extern unsigned char GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 #include "paramlist.h"
 #include "ParamPanel.hpp"
@@ -50,6 +51,7 @@ extern unsigned char GB_debug;
 #include "Viewer3D_LineParam.h"
 #include "Viewer3D_PointParam.h"
 
+//#include "myAuiNotebook.h"
 
 /*
 // Pixmaps for setting 3D view

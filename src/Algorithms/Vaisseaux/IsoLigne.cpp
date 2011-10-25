@@ -85,7 +85,7 @@ float IsoLigne :: Distance( PtPosition& pt1, PtPosition& pt2)
 //
 {
 
-  return sqrt( (pt1.x-pt2.x)*(pt1.x-pt2.x) +
+  return (float) sqrt( (pt1.x-pt2.x)*(pt1.x-pt2.x) +
                  (pt1.y-pt2.y)*(pt1.y-pt2.y) +
                  (pt1.z-pt2.z)*(pt1.z-pt2.z) 
                );
@@ -101,7 +101,7 @@ float IsoLigne :: Distance( PtFace& pt1, PtFace& pt2)
 //
 {
 
-  return sqrt( (pt1.x-pt2.x)*(pt1.x-pt2.x) +
+  return (float) sqrt( (pt1.x-pt2.x)*(pt1.x-pt2.x) +
                  (pt1.y-pt2.y)*(pt1.y-pt2.y) 
                );
 

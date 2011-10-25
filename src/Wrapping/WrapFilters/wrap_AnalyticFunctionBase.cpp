@@ -17,7 +17,7 @@
 //---------------------------------------------------
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<AnalyticFunctionBase>::CreateVar( ParamList* p )
+BasicVariable::ptr WrapClass<AnalyticFunctionBase>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_AnalyticFunctionBase::wrap_AnalyticFunctionBase construct;
   return construct.CallMember(p);

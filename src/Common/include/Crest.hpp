@@ -78,7 +78,7 @@
 #include <string.h>
 #include <math.h>
 #include <iostream>
-using namespace std;
+//using -- namespace std;
 
 
 
@@ -86,6 +86,7 @@ using namespace std;
 #include "TableauDyn.hpp"
 #include "Coordonnees.hpp"
 #include "Point3D.hpp"
+#include "CommonConfigure.h"
 
 #ifndef _WITHOUT_VTK_
 class vtkPolyData;
@@ -162,8 +163,8 @@ public:
 /**
   Gestion des lignes et des fichiers au format {\it crest}
  */
-class Crest
-//     -----
+class COMMON_EXPORT Crest
+//                  -----
 {
 
 public:

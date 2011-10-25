@@ -26,13 +26,14 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<FenetreDessin>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<FenetreDessin>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_FenetreDessin::wrap_FenetreDessin construct;
   return construct.CallMember(p);
 }
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(FenetreDessin);
+AMI_DEFINE_VARFROMSMTPTR(FenetreDessin);
 
 //
 // static member for creating a variable from a pointer to wxHtmlWindow

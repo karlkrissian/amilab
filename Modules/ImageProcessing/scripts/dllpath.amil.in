@@ -1,0 +1,2 @@
+
+dllpath="@CMAKE_LIBRARY_OUTPUT_DIRECTORY@"

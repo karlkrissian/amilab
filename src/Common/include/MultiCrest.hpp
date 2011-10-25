@@ -134,7 +134,7 @@ public:
   int Ensemble() const { return num; }
   
   ///
-  friend ostream& operator<<(ostream& o, const multiligne& p);
+  friend std::ostream& operator<<(std::ostream& o, const multiligne& p);
 
 } multiligne;
 
@@ -188,7 +188,7 @@ public:
   int Ensemble(const multipoint& l) { return num; }
 
   ///
-  friend ostream& operator<<(ostream& o, const multipoint& p);
+  friend std::ostream& operator<<(std::ostream& o, const multipoint& p);
 
 } multipoint;
 
@@ -237,7 +237,7 @@ public:
   }
 
   ///
-  friend ostream& operator<<(ostream& o, const multipoint_ligne& p);
+  friend std::ostream& operator<<(std::ostream& o, const multipoint_ligne& p);
 
 } multipoint_ligne;
 
@@ -335,7 +335,7 @@ protected:
       {
         std::cerr << "BadPointNumber " << p.mpoint << "\t" << pt << std::endl;
         std::cerr << e._p << e._lmax << std::endl;
-        cin >> pt.num;
+        std::cin >> pt.num;
       }
     FinSi
     return Point(p.mpoint);

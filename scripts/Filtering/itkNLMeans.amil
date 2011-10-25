@@ -3,15 +3,10 @@ func "Common/ScriptGui"
 
 if (!exists(itkNLMeansClass)) {
   
-  ami_import->ITK()
-  
   Class itkNLMeansClass : public ScriptGui {
-    
-    ::itk=&global::itk
     
     proc ::Init() \
     {
-      ::class_name="global::itkNLMeansClass"
       ::input_name   = "","Name of the input image variable"
       # t
       ::searching_window = INT(7), "Searching window size."
@@ -49,10 +44,10 @@ if (!exists(itkNLMeansClass)) {
     proc ::Run() \
     {
       if (::dim==0) {
-        ::nlm = ::itk->BasicNLMeans2D(::input,::searching_window,::pattern_window,::threshold,::noise)
-        ::n = 1			
+        ::nlm = itk.BasicNLMeans2D(::input,::searching_window,::pattern_window,::threshold,::noise)
+        ::n = 1
       } else {
-        ::nlm = ::itk->BasicNLMeans3D(::input,::searching_window,::pattern_window,::threshold,NL_noise)
+        ::nlm = itk.BasicNLMeans3D(::input,::searching_window,::pattern_window,::threshold,NL_noise)
         ::n = 1
       }
       
@@ -76,8 +71,7 @@ if (!exists(itkNLMeansClass)) {
   
     proc ::Gui() \
     {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("itkNL-Means")
+      ::win = ParamPanel("itkNL-Means")
       ::win.BeginBook()
       
         ::win.AddPage("Init")

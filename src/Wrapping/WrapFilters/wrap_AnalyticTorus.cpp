@@ -17,7 +17,7 @@
 //---------------------------------------------------
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<AnalyticTorus>::CreateVar( ParamList* p )
+BasicVariable::ptr WrapClass<AnalyticTorus>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_AnalyticTorus::wrap_AnalyticTorus construct;
   return construct.CallMember(p);

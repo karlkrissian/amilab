@@ -33,10 +33,12 @@
 #ifndef _Eigen_hpp_
 #define _Eigen_hpp_
 
+#include "CommonConfigure.h"
+
 //======================================================================
 // For any dimension
 
-int jacobi(float** a, int n, float d[], float** v, int *nrot);
+COMMON_EXPORT int jacobi(float** a, int n, float d[], float** v, int *nrot);
 //
 //
 // Computes all eigenvalues and eigenvectors of a real symmetric matrix
@@ -51,12 +53,12 @@ int jacobi(float** a, int n, float d[], float** v, int *nrot);
 
 // same as previous function, but to avoid allocation,
 // we give 2 vectors of size n as parameters
-int jacobi2(  float** a, int n, float d[], float** v, int *nrot, 
+COMMON_EXPORT int jacobi2(  float** a, int n, float d[], float** v, int *nrot, 
               float* tmp_b,
               float* tmp_z);
 
 
-void eigsrt(float d[], float** v, int n);
+COMMON_EXPORT void eigsrt(float d[], float** v, int n);
 //
 // Given the eigenvalues d[0..n-1] and the eigenvectors
 // v[0..n-1][0..n-1] as output from jacobi or tqli,
@@ -64,10 +66,10 @@ void eigsrt(float d[], float** v, int n);
 // and rearranges the columns of v correspondingly.
 //
 
-void eigsrt_abs(float d[], float** v, int n);
+COMMON_EXPORT void eigsrt_abs(float d[], float** v, int n);
 // use absolute values for sorting
 
-void eigsrt_inc(float d[], float** v, int n);
+COMMON_EXPORT void eigsrt_inc(float d[], float** v, int n);
 //
 // Given the eigenvalues d[0..n-1] and the eigenvectors
 // v[0..n-1][0..n-1] as output from jacobi or tqli,

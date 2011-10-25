@@ -37,16 +37,17 @@
 
 #include "style.hpp"
 #include "Erreurs.hpp"
-#include <iostream.h>
+#include <iosfwd>
 
 
 //-------------------------------------------------------------------
 // VARIABLES GLOBALES
 //-------------------------------------------------------------------
 
-Pile<NomMethode*> GB_pile_nom_methode((NomMethode*)NULL);
-unsigned char GB_AfficheWarning = false;
-unsigned char GB_AfficheErreur  = false;
+#include "amilab_global_import.h"
+//Pile<NomMethode*> GB_pile_nom_methode((NomMethode*)NULL);
+//unsigned char GB_AfficheWarning = false;
+//unsigned char GB_AfficheErreur  = false;
 
 
 

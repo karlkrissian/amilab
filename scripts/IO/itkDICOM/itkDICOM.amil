@@ -6,11 +6,8 @@ func "Common/ScriptGui"
 
 if (!exists(DICOMClass)) {
   
-  ami_import.ITK()
   
   Class DICOMClass : public ScriptGui {
-  
-    ::itk=&global::itk
   
     proc ::Init() {
       
@@ -29,14 +26,14 @@ if (!exists(DICOMClass)) {
     #---------------------------
     proc ::Run() \
     {   
-      ::out <<= ::itk->DICOMRead(::dicom_folder+"/")
+      ::out <<= itk.DICOMRead(::dicom_folder+"/")
       eval "global::"+::image_name+"<<= ::out;"
     }
     
     #---------------------------
     proc ::Save() \
     {   
-      ::itk->Write(::out, ::dicom_save+"\\"+::image_save)
+      itk.Write(::out, ::dicom_save+"\\"+::image_save)
     }
 
     #---------------------------
@@ -44,21 +41,11 @@ if (!exists(DICOMClass)) {
       eval "show "+"global::"+::image_name+";"
     }
     
-    #---------------------------
-#    proc ::LaunchHelp() {
-#      import = &global::ami_import
-#      wx1 = import->WxFunctions()
-#      res = wx1->LaunchDefaultBrowser(::help1)
-#      wx2 = import->WxFunctions()
-#      res2 = wx2->LaunchDefaultBrowser(::help2)
-#    }
-#    Comments( ::LaunchHelp, "Launch the corresponding help tutorial page on the default browser.")
-    
     
     #---------------------------
-    proc ::Gui() {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("DICOM")
+    proc ::Gui() \
+    {
+      ::win = ParamPanel("DICOM")
       ::win.BeginBook()
       
         ::win.AddPage("Init")

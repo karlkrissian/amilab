@@ -17,9 +17,10 @@
 //---------------------------------------------------
 //AnalyticFunctionBase Wrapping
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<AnalyticFunctionBase>::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<AnalyticFunctionBase>::CreateVar( ParamList* p, bool quiet);
 
 AMI_DECLARE_TYPE(AnalyticFunctionBase);
+
 
 class WrapClass_AnalyticFunctionBase : public WrapClass<AnalyticFunctionBase> {
   DEFINE_CLASS(WrapClass_AnalyticFunctionBase);

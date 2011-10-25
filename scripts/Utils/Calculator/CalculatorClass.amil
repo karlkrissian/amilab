@@ -241,7 +241,7 @@ if (!exists(CalculatorClass)) {
     #------------------------------------
     proc ::Gui() {
       
-      ::win = global::ami_import.ParamPanel("Calc")
+      ::win = ParamPanel("Calc")
       
       ::win.BeginBook()
     

@@ -3,7 +3,7 @@
 #
 # Adding main GUI scripts to the menu interface
 #
-
+printn "Main Add2Menu begin"
 for dir in  "BasicFilters","Filtering","Denoising",\
             "Noise","Segmentation","SyntheticImages",\
             "Visualization","IO","Centerlines",\
@@ -12,7 +12,8 @@ for dir in  "BasicFilters","Filtering","Denoising",\
             "CarotidBifurcationWorkshop2009", \
             "Utils", \
             "Vessels", \
-            "Subpixel" \
+            "Subpixel", \
+            "Variable" \
 {
   local_f = wx.wxFileName(GetScriptsDir)
   local_f.AppendDir(dir)
@@ -25,5 +26,9 @@ for dir in  "BasicFilters","Filtering","Denoising",\
   del local_f
 }
 
+func "../Modules/Add2Menu"
+
 #quit
+
+
 

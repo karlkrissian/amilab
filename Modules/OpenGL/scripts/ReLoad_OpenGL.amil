@@ -1,0 +1,4 @@
+
+if exists(OpenGL_obj) {
+  OpenGL_obj.ReLoad()
+}

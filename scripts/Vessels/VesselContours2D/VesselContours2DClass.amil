@@ -1,0 +1,200 @@
+
+func "Common/ScriptGui"
+
+if (!exists(VesselContours2DClass)) {
+
+  Class VesselContours2DClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+        ::input_name   = "","Name of the input image variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+        
+        # minimum scale
+        ::sigma_min = 0.6
+        # maximum scale
+        ::sigma_max = 3
+        # scale step
+        ::sigma_step = 0.2
+
+        ::UseZoom  = UCHAR(false), "Run on displayed zoom"
+        ::BlackDisk = UCHAR(false), "Invert Image for black disk"
+
+        ::html_filename = GetScriptsDir+"/VesselContours2D/Doc/VesselContours2D/index.html"
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    #-----------------------------------------------
+    proc ::Display() \
+    {
+      show ::input
+    }
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+        if ::UseZoom \
+        {
+          if (exists(::input_draw)) {
+            input_image <<= ::input[::input_draw]
+          } else {
+            InfoDialog "Input image not displayed, taking full extent"
+            input_image <<= ::input
+          }
+        } \
+        else \
+        {
+          input_image <<= ::input
+        }
+        if ::BlackDisk { input_image=-input_image; }
+        n = round((::sigma_max-::sigma_min)/::sigma_step)+1
+        ::curve  <<= Image(DOUBLE,n,1,1,2)
+        ::curve2 <<= Image(DOUBLE,n,1,1,2)
+        # store resulting images
+        ::results <<= Image(FLOAT,input_image.tx,input_image.ty,n)
+        ::results2 <<= Image(FLOAT,input_image.tx,input_image.ty,n)
+        s = ::sigma_min
+        for k=0 to n-1 \
+        {
+          cont = -secdergrad(input_image,s)
+          ::results.putimage(cont,0,0,k)
+          cont_area = posarea(cont)
+
+          cont_cc    = CC(cont)
+          component = (FLOAT) (cont_cc==(cont_cc(cont.tx/2,cont.ty/2)))
+          morph = filters.ContinuousMorphology()
+          component_d = morph.Dilate(component,1,0.5)
+          component_e = morph.Erode(component,1,0.5)
+          component = (component_e>0.5)*10+(component_d<0.5)*-10+(component_e<=0.5)*(component_d>=0.5)*cont
+          
+          ::results2.putimage(component,0,0,k)
+
+          #cont_area2 = count(component)
+          cont_area2 = posarea(component)
+
+          # First curve
+          cont_rad = sqrt(cont_area/Pi)
+          printn "sigma = %1%" % s + " estimated radius = %1%" % cont_rad
+          ::curve.setpos(k,0,0)
+          ::curve.set(0,s)
+          ::curve.set(1,cont_rad)
+
+          # Second curve
+          cont_rad2 = sqrt(cont_area2/Pi)
+          printn "sigma = %1%" % s + " estimated radius2 = %1%" % cont_rad2
+          ::curve2.setpos(k,0,0)
+          ::curve2.set(0,s)
+          ::curve2.set(1,cont_rad2)
+
+          s = s+::sigma_step
+        }
+        ::dw.SetXLimits(::sigma_min-::sigma_step,::sigma_max+::sigma_step)
+        ::dw.SetYLimits(min(::curve2[1]),max(::curve2[1]))
+        ::dw.SetCurve(&::curve)
+        ::dw.SetCurve(&::curve2,1)
+        ::dw.SetCurveProperties(1,"#0000FF")
+        #
+        # Deducing the sigma_0
+        #
+        c1 = ::curve2[1]
+        c0 = ::curve2[0]
+        pos = argmax(-c1)
+        rad_min = c1(pos,0)
+        s_min = c0(pos,0)
+        printn "Minimum sigma is %1%" % s_min
+        rad = rad_min/0.9
+        printn "Estimated radius = %1%" % rad
+        total_s = rad*0.55
+        sigma_0 = 0
+        if total_s>s_min {
+          sigma_0 = sqrt(total_s*total_s-s_min*s_min)
+        }
+        printn "Estimated sigma_0 = %1%" % sigma_0
+      }
+
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("VesselContours2D",&::parent_panel)
+      } else {
+        ::win = ParamPanel("VesselContours2D")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+          ::win.BeginBoxPanel("Sigma range")
+            ::win.AddFloat(&::sigma_min,"min",0.1,3)
+            ::win.AddFloat(&::sigma_max,"max",1,20)
+            ::win.AddFloat(&::sigma_step,"step",0.01,2)
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Run")
+          ::win.AddBoolean(&::UseZoom, "Use Zoom" )
+          ::win.AddBoolean(&::BlackDisk, "Black disk" )
+          ::win.AddButton("Display",&::Display)
+          ::win.AddButton("Run Filter",&::Run)
+          # add a Curve Drawing Window
+          ::dw = wxDrawingWindow(&::win.CurrentParent())
+          ::dw.SetMinSize(&wx.wxSize(50,100))
+          ::dw.SetBackgroundColour(\
+              &wx.wxColour(255,255,255))
+          ::win.AddWidget(&::dw,0)
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

@@ -60,15 +60,17 @@ if (!exists(RoutinesTestClass)) {
 
     #------------------------------------
     proc ::GreatestCommonDivisor(NUM x, NUM y) {
-      x = (x < 0) ? (-x):x
-      y = (y < 0) ? (-y):y
+      x = abs(x)
+      y = abs(y)
       t = (x < y) ? x:y
 
       Condition=( (x % t) || (y % t) )
+      printn "t = %1%" %t + " res = %1%" %Condition
 
       while Condition {
         --t
         Condition=( (x % t) || (y % t) )
+        printn "t = %1%" %t + " res = %1%" %Condition
       }
       return=&t;
     }
@@ -149,5 +151,5 @@ if (!exists(RoutinesTest)) {
 }
 RoutinesTest.Execute()
 
-quit
+#quit
 

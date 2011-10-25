@@ -1,0 +1,10 @@
+
+del vtkAmiVolRenPlugin
+func "vtkAmiVolRenPlugin"
+
+if (!exists(vtkAmiVolRenPlugin_obj)) {
+  vtkAmiVolRenPlugin vtkAmiVolRenPlugin_obj
+  vtkAmiVolRenPlugin_obj.Load()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}

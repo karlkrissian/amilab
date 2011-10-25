@@ -1,0 +1,497 @@
+#!/usr/bin/amilab
+
+#
+# Script for Volume Rendering using VTK
+#
+
+
+del PreviewerClass
+
+#-----------------------------------------------------------------
+Class PreviewerClass \
+{
+  func "SimplevtkVolumeClass.amil"
+  # volume
+  ::svc = &SimplevtkVolumeClass 
+
+  func "vtkCurveClass.amil"
+  # curve
+  ::vtkcurve = &vtkCurveClass 
+
+  #-----------------------------
+  #proc ::Curve() \
+  #{
+     #del aux_curve2
+    #::vtkcurve aux_curve2
+    #aux_curve2.Load("/home/carlos/Devel/amilab_trunk/scripts/Visualization/VolRen/Curves/MIP/MIP.txt")
+
+      #printn aux_curve2.descripcion
+      #aux_curve2.type = "MIP"
+      #aux_curve2.category = "MIP"
+      #aux_curve2.max_x=100
+
+      #aux_curve2.norm_x()
+      #aux_curve2.norm_x()
+       #aux_curve2.Save("/home/carlos/Escritorio/")
+  #}
+
+  #----------------------------
+  proc ::Init() \
+  {
+    printn "PreviewerClass::Init()"
+    ::LoadCurves()
+    ::cols=2
+    ::files=2
+    ::x_min=0
+    ::x_max=0
+    ::active_window=0
+    ::apply_window=::active_window
+
+    //::Gui()
+  }
+
+  proc ::PostGuiInit(){
+    ::isAvailable=  vector_int(::files*::cols,0)
+    ::InfoTextVector[::active_window].SetForegroundColour( wx.wxColour(255,0,0))
+    ::SVCVector = VarVector()
+    for n=0 to ::RWIVector.size()-1 {
+      del aux_svc
+      ::svc aux_svc
+      ::SVCVector.push_back(&aux_svc)
+      ::SVCVector[n].Init()
+      #init renderer 
+      ::SVCVector[n].InitManager(&::RWIVector[n])
+    }
+    for n = 0 to ::listCategory.Count()-1 {
+      ::choice1.Append(::listCategory[n])
+    }
+    ::choice1.SetSelection(0)
+  }
+
+  #----------------------------
+  proc ::ReduceImage(IMAGE im) \
+  {
+    numvox = im.tx*im.ty*im.tz
+    ratio = exp(ln(1000000.0/numvox)/3.0)
+    SetStatusText("Reduction factor = %1%" % ratio)
+    if (ratio<1) {
+      return = Resize(im, ratio*im.tx, ratio*im.ty, ratio*im.tz, 1)
+    } else {
+      return = &im
+    }
+  }
+
+  #----------------------------
+  proc ::SetInput(IMAGE image) {
+    printn "PreviewerClass::SetInput()"
+    del ::input
+    # limit the preview image size to 1 million voxels ?
+    ::input = ::ReduceImage(&image)
+    ::Render()
+  }
+
+  #----------------------------
+  proc ::LoadCurves() \
+  {
+    #::pathname=wx.FromWxString(wx.wxFileName.GetCwd())
+    pathname=GetScriptsDir+"Visualization"+\
+            wx.FromWxString(wx.wxFileName.GetPathSeparator())\
+            +"VolRen"+wx.FromWxString(wx.wxFileName.GetPathSeparator())
+    #printn pathname
+    defaultdir= "Curves/"
+    path=pathname+defaultdir
+    #printn path
+    dir=wx.wxDir(path)
+    nelem=0
+    if ( dir.IsOpened() ){
+     del list
+     list=wx.wxArrayString()
+     nelem=wx.wxDir.GetAllFiles(path,&list,"*.txt")
+    }
+
+    list.Sort()
+    #printn  "File(s) number %1%" %nelem 
+    ::listCategory=wx.wxArrayString()
+    ::numElemCategory= VarVector() 
+
+    wxSD= wx.wxString(path)
+    lenghdir=wxSD.Len()  
+    ::CurveVector= VarVector() 
+    del categoryPre
+    categoryPre=""
+    i=-1
+    for n=0 to nelem-1 {
+      # text preprocessing
+      del aux
+      aux=wx.wxString()
+      aux=list[n].SubString(lenghdir,list[n].Len())
+      #printn wx.FromWxString(aux)
+      bar=aux.Find(wx.wxFileName.GetPathSeparator())
+      category= wx.FromWxString(aux.SubString(0,bar-1))
+      #printn category
+      if (categoryPre!=category){
+        ::numElemCategory.push_back(0)
+        categoryPre=category
+        ::listCategory.Add(category)
+        #::choice1.Append(category)
+        i=i+1
+      }
+      ::numElemCategory[i] = ::numElemCategory[i]+1
+
+      type =wx.FromWxString(aux.SubString(bar+1,aux.Len()-5))
+      # create curve
+      del aux_curve
+      ::vtkcurve aux_curve
+      aux_curve.Load(wx.FromWxString(list[n]))
+      aux_curve.SetCategory(category)
+      aux_curve.SetType(type)
+      ::CurveVector.push_back(&aux_curve)
+      #aux_curve.Save("/home/carlos/Escritorio/")
+    }
+  }
+  #----------------------------
+  proc ::SetIntensityValues(NUM xmin, NUM xmax){
+    ::x_min= xmin
+    ::x_max= xmax
+  }
+
+  #----------------------------
+  proc ::GetCurveIndex(NUM i){
+    nelem=0
+    #printn "i= %1%" %i
+    for n=0 to i-1{
+      nelem=nelem+::numElemCategory[n]
+    }
+    #printn "nelem= %1%" %nelem
+    return= &(nelem)
+  }
+  #----------------------------
+  proc ::Render() \
+  {
+    if (exists(::input)) {
+      del ::isAvailable
+      ::isAvailable = vector_int(::files*::cols,0)
+      index = ::choice1.GetCurrentSelection()
+      for n=0 to ::RWIVector.size()-1 {
+        ::SVCVector[n].DelVTK()
+        ::SVCVector[n].SetBackground(0,0,0,0,0,0,0 )
+        ::InfoTextVector[n].SetLabel(" ")
+        if (n<::numElemCategory[index]){
+          ::isAvailable[n]=1
+          #printn index
+          indexCurve= ::GetCurveIndex(index)+n
+          #printn "Index of curve %1%" %indexCurve
+          ::CurveVector[indexCurve].min_x=::x_min
+          ::CurveVector[indexCurve].max_x=::x_max
+          ::CurveVector[indexCurve].Norm_x()
+          ::InfoTextVector[n].SetLabel(::CurveVector[indexCurve].descripcion)
+          ::SVCVector[n].SetBlendMode(  ::CurveVector[indexCurve].blend_mode)
+          ::SVCVector[n].SetColorFun(  &::CurveVector[indexCurve].GetColorFun())
+          ::SVCVector[n].SetOpacityFun(&::CurveVector[indexCurve].GetOpacityFun())
+          ::SVCVector[n].SetProperty(  &::CurveVector[indexCurve].GetPropertyFun())
+          ::SVCVector[n].SetBackground(::CurveVector[indexCurve].r1, \
+                    ::CurveVector[indexCurve].g1, ::CurveVector[indexCurve].b1, \
+                    ::CurveVector[indexCurve].r2, ::CurveVector[indexCurve].g2, \
+                    ::CurveVector[indexCurve].b2, ::CurveVector[indexCurve].Gradient )
+          #Create & addvolume
+          ::SVCVector[n].CreateVTK( &::input)
+          ::SVCVector[n].OnRender()
+          ::SVCVector[n].InitRenderer()
+          ::RWIVector[n].Render()
+          #::RWIVector[n].Refresh()
+        } # end if
+      } # end for
+    } # end if
+  } # end Render()
+
+  #----------------------------
+  proc ::Load() { #obsolete method you should use ::Render()
+    if (exists(::input)) {
+#Visualize
+      for n=0 to ::RWIVector.size()-1 {  
+      #Create & addvolume
+      ::SVCVector[n].CreateVTK( &::input)
+      #carlos renderer.AddVolume(&::SVCVector[n].vol)
+      ::SVCVector[n].OnRender()
+      ::SVCVector[n].InitRenderer()
+      ::RWIVector[n].Render()
+      #::RWIVector[n].Refresh()
+     }
+  }
+ }
+
+  #----------------------------
+  proc ::AddVolume(IMAGE image, NUM n) \
+  {
+    del a
+    a <<= ::ReduceImage(&image)
+    del aux_svc
+    ::svc aux_svc
+
+    aux_svc.SetInteractor(&::SVCVector[n].renwininter)
+    aux_svc.SetRenderer(&::SVCVector[n].renderer)
+    aux_svc.SetRenderWindow(&::SVCVector[n].renwin)
+
+    aux_svc.Init()
+    #init renderer 
+    #aux_svc.cpManager(&::SVCVector[n])
+    aux_svc.CreateVTK( &a)
+    aux_svc.OnRender()
+    #::RWIVector[n].Render()
+    #::RWIVector[n].Refresh()
+  }
+  #----------------------------
+  proc ::Show() \
+  {
+    ::frame.Show()
+    wait(33)
+  }
+  #----------------------------
+  proc ::Hide() \
+  {
+    ::frame.Hide()
+  }
+  #----------------------------
+  proc ::Refresh() \
+  {
+    for n=0 to ::RWIVector.size()-1 {
+     ::RWIVector[n].Render()
+   }
+  }
+  #----------------------------
+  proc ::ResetView() \
+  {
+    for n=0 to ::RWIVector.size()-1 {
+     ::SVCVector[n].ResetCamera()
+   }
+   ::Refresh()
+  }
+
+  #----------------------------
+  proc ::Destroy(){
+   del ::vtkcurve
+   del ::SVCVector
+   del ::RWIVector
+    ::frame.Destroy()
+  }
+
+  #----------------------------
+  proc ::Close(){
+    ::Hide()
+  }
+  #----------------------------
+  proc ::GetSelection(){
+    index= ::choice1.GetCurrentSelection()
+    indexCurve= ::GetCurveIndex(index)+::apply_window
+    ::Rotate(::apply_window)
+    return = &::CurveVector[indexCurve]
+    ::Hide()
+    //::Close()
+  }
+
+  #----------------------------
+  # sets an object that contains a method named call()
+  proc ::SetApplyCallback( VAR cb) \
+  {
+    del ::apply_cb
+    ::apply_cb = &cb
+  }
+
+  #----------------------------
+  proc ::Apply(){
+    if exists(::apply_cb) {
+      ::apply_cb()
+    }
+  }
+  #----------------------------
+  proc ::Rotate(NUM n){
+   rend=::RWIVector[n].GetRenderWindow().GetRenderers().GetFirstRenderer()
+   for i=0 to 10 {
+      wait(33)
+      rend.GetActiveCamera().Azimuth( 10 )
+      ::RWIVector[n].Render()
+    }
+
+  }
+  #----------------------------
+  proc ::Rotate2(NUM n){
+   for i=0 to 35 {
+      wait(33)
+      ::SVCVector[n].Rotate()
+    }
+  }
+  #----------------------------
+  proc ::MultView(){
+   del angle
+   angle=360/::cols
+   for i=0 to ::cols-1 {
+    ::SVCVector[i].Azimuth(angle*i)
+   }
+   del i
+   for i=::cols to ::cols*::files-1 {
+    ::SVCVector[i].Elevation(angle*i)
+   }
+   ::Refresh()
+  }
+  #----------------------------
+  proc ::ChangeViewConfiguration(NUM index){
+    ::Render()
+    ::Refresh()
+  }
+
+  #--------------------------- event procedures
+  proc ::ChoiceSelected( OBJECT event ) \
+  {
+    index = event.GetSelection()
+    ::ChangeViewConfiguration(index)
+      for n=0 to ::RWIVector.size()-1 {
+        ::InfoTextVector[n].SetForegroundColour( wx.wxColour(0,0,0))
+      }
+    ::active_window=0
+    ::apply_window=::active_window
+    ::InfoTextVector[::active_window].SetForegroundColour( wx.wxColour(255,0,0))
+     event.Skip()
+  }
+
+  #----------------------------
+  proc ::cpView(OBJECT event) \
+  { 
+    del cam
+    cam = vtk.vtkCamera.New()
+    cam.DeepCopy(&::SVCVector[::active_window].camera)
+    for n=0 to ::RWIVector.size()-1 {
+      ::SVCVector[n].camera.ShallowCopy(&cam) 
+    }
+    ::Refresh()
+    event.Skip()
+   }
+
+  #----------------------------
+  proc ::OnEnter1( OBJECT event) \
+  {
+    ::active_window=event.GetId()-10000
+    event.Skip()
+  }
+
+  #----------------------------
+  proc ::OnChoiceW(OBJECT event) \
+  {
+    if (::isAvailable[::active_window]){
+      if(::apply_window!=::active_window){
+
+        for n=0 to ::RWIVector.size()-1 {
+          ::InfoTextVector[n].SetForegroundColour( wx.wxColour(0,0,0))
+        }
+        ::InfoTextVector[::active_window].SetForegroundColour( wx.wxColour(255,0,0))
+        ::apply_window=::active_window
+
+      }
+        event.Skip()
+      }
+  }
+
+  #----------------------------
+  proc ::Gui() \
+  {
+    printn "PreviewerClass::Gui()"
+    # Create a Frame
+    ::frame = wx.wxFrame( &ami.MainFrame,wx.wxID_ANY,"Previewer", \
+                          wx.wxPoint(100,100),wx.wxSize(300,300),\
+                          wx.wxRESIZE_BORDER|wx.wxMAXIMIZE_BOX,\
+                          "test")
+   ::frame.CenterOnParent()
+    # Create a panel with a sizer
+    ::panel = wx.wxPanel(&::frame)
+    # Create a BoxSizer
+    ::boxsizerM = wx.wxBoxSizer(wx.wxVERTICAL)
+    gridsizer = wx.wxGridSizer(::cols)
+    boxsizerB = wx.wxBoxSizer(wx.wxHORIZONTAL)
+    #choice
+    ::choice1 = wx.wxChoice.wxChoice_2(&::panel, wx.wxID_ANY)
+    ::choice1.SetSelection(0)
+    #event choice
+    ::evh_selected = wx.wxAmiEventHandler(&::ChoiceSelected)
+    ::evh_selected.SetSendListEvent(true)
+    ::choice1.Connect( wx.wxEVT_COMMAND_CHOICE_SELECTED,\
+                       &::evh_selected.GetEventFunction(),\
+                       &NULL,&::evh_selected)
+    #button
+    ::b_Apply = wx.wxButton(&::panel,wx.wxID_ANY,"Apply")
+    ::b_Close = wx.wxButton(&::panel,wx.wxID_ANY,"Close")
+    #button event 
+    evh1 = wx.wxAmiEventHandler(&::Apply)
+    ::b_Apply.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,\
+                      &evh1.GetEventFunction(),&NULL,&evh1)
+
+    evh2 = wx.wxAmiEventHandler(&::Close)
+    ::b_Close.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,\
+                      &evh2.GetEventFunction(),&NULL,&evh2)
+    #line separator
+    line=wx.wxStaticLine(&::panel,wx.wxID_ANY)
+
+    #wxVTKRenderWindowInteractor events
+    evh_cpV     = wx.wxAmiEventHandler(&::cpView)
+    evh_EnterW1 = wx.wxAmiEventHandler(&::OnEnter1)
+    evh_ChoiceW = wx.wxAmiEventHandler(&::OnChoiceW)
+
+    #wxVTKRenderWindowInteractor
+    ::wxvtk_id = 10000
+    #wxvtkIterator vector
+    ::RWIVector= VarVector()
+    ::InfoTextVector=VarVector()
+
+
+    for n=0 to ::cols*::files-1 {
+      del wxvtkI
+      wxvtkI =  vtktools.wxVTKRenderWindowInteractor(&::panel,::wxvtk_id+n)
+      #event copy view
+      wxvtkI.Connect( wx.wxEVT_LEFT_UP,\
+                      &evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
+      wxvtkI.Connect( wx.wxEVT_MOUSEWHEEL,\
+                      &evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
+      #event onenter window
+      wxvtkI.Connect( wx.wxEVT_ENTER_WINDOW,\
+                      &evh_EnterW1.GetMouseEventFunction(),&NULL,&evh_EnterW1)
+      #choice window
+      #wxvtkI.Connect( wx.wxEVT_RIGHT_DOWN,\
+      #                  &evh_ChoiceW.GetMouseEventFunction(),&NULL,&evh_ChoiceW)
+      wxvtkI.Connect( wx.wxEVT_LEFT_DOWN,\
+                      &evh_ChoiceW.GetMouseEventFunction(),&NULL,&evh_ChoiceW)
+      #add vector
+      ::RWIVector.push_back(&wxvtkI)
+      del boxsizer
+      boxsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+      del text
+      text=wx.wxStaticText.wxStaticText_2(&::panel,wx.wxID_ANY,"")
+      ::InfoTextVector.push_back(&text)
+
+      boxsizer.Add(&::RWIVector[n], 1, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,    1)
+      boxsizer.Add(&::InfoTextVector[n], 0,  wx.wxALL,    1)
+      #add to gridsizer
+      #gridsizer.Add(  &::RWIVector[n],\
+                      #&wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
+      gridsizer.Add(  &boxsizer,\
+                      &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
+    }
+
+    //boxsizerB.Add(&::b_Apply,wx.wxLEFT)
+    //boxsizerB.Add(&::b_Close,wx.wxRIGHT)
+    boxsizerB.Add(&::b_Apply, 0, wx.wxLEFT,    1)
+    boxsizerB.Add(&::b_Close, 0, wx.wxRIGHT,   1)
+    ::boxsizerM.Add(&::choice1, 0, wx.wxALL | wx.wxEXPAND | wx.wxLEFT,    1)
+    ::boxsizerM.Add(&gridsizer, 1, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,  1)
+    ::boxsizerM.Add(&line,      0, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,  1)
+    ::boxsizerM.Add(&boxsizerB, 0, wx.wxALL | wx.wxEXPAND | wx.wxCENTER,  1)
+    #panel
+
+    ::panel.SetSizer(&::boxsizerM ) 
+    ::frame.SetMinSize(wx.wxSize(300,300))
+    ::PostGuiInit()
+  }
+
+  ::Init()
+}
+
+#if (exists(Previewer_obj)) { Previewer_obj.Close(); del Previewer_obj; }
+#PreviewerClass Previewer_obj
+#Previewer_obj.Gui()

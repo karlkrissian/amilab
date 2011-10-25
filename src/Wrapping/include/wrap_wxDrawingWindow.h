@@ -59,8 +59,11 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
     ADD_CLASS_METHOD(SetCtrlPointX,        "Sets the X position a given control point.");
     ADD_CLASS_METHOD(SetCtrlPointY,        "Sets the Y position a given control point.");
     ADD_CLASS_METHOD(SetCtrlPointCallback, "Callback for motion of a control point.");
-
-    ADD_CLASS_METHOD(AddControlPoint,      "Adds a control point.");
+    ADD_CLASS_METHOD(SetPaintCallback,     "Callback for paint event.");
+    
+    ADD_CLASS_METHOD(AddControlPoint,       "Add control point.");
+    
+    ADD_CLASS_METHOD(GetNumberOfCurves,     "Returns the number of curves.");
 //    ADD_CLASS_METHOD(RemoveControl,        "Removes a control point.");
 
     ADD_CLASS_METHOD(GetColormapImage,     "Returns the image representing the colormap.");
@@ -70,12 +73,16 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
     ADD_CLASS_METHOD(GetCurves,            "Returns a reference to the std::vector of the curves.");
 
     ADD_CLASS_METHOD(GetControlledCurves,  "Returns a reference to the std::vector of the controlled curves.");
-
+    
+    //Color maps operations
+    ADD_CLASS_METHOD(GetSizelinearCM,      "Gets the sizer of the LienarCM vector.");
+    ADD_CLASS_METHOD(GetColourlinearCM,    "Gets the colour of point x of the LienarCM vector.");
+    ADD_CLASS_METHOD(GetPoslinearCM,       "Gets the pos value of point x of the LienarCM vector.");
+    ADD_CLASS_METHOD(GetAlphalinearCM,     "Gets the alpha value of point x of the LienarCM vector.");
+    ADD_CLASS_METHOD(DrawLinearCM,         "Calculate LienarCM vector.");
+    
     void AddMethods(WrapClass<wxDrawingWindow>::ptr this_ptr )
     {
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
-      parent_obj->AddMethods(parent_obj);
 
       AddVar_SetXLimits(            this_ptr);
       AddVar_SetYLimits(            this_ptr);
@@ -92,7 +99,8 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
       AddVar_SetCtrlPointX(         this_ptr);
       AddVar_SetCtrlPointY(         this_ptr);
       AddVar_SetCtrlPointCallback(  this_ptr);
-
+      AddVar_SetPaintCallback(      this_ptr);
+      
       AddVar_AddControlPoint(       this_ptr);
 //      AddVar_RemoveControl(         this_ptr);
 
@@ -101,6 +109,28 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
       AddVar_GetControlPoints(      this_ptr);
       AddVar_GetCurves(             this_ptr);
       AddVar_GetControlledCurves(   this_ptr);
+      
+      AddVar_GetNumberOfCurves(     this_ptr);
+
+      AddVar_GetSizelinearCM(       this_ptr);
+      AddVar_GetColourlinearCM(     this_ptr);
+      AddVar_GetPoslinearCM(        this_ptr);
+      AddVar_GetAlphalinearCM(      this_ptr);
+      AddVar_DrawLinearCM(          this_ptr);
+      
+      // Add public fields 
+      AMIObject::ptr tmpobj(amiobject.lock());
+      if (!tmpobj.get()) return;
+      Variables::ptr context(tmpobj->GetContext());
+
+      // Add base parent wxWindow
+      boost::shared_ptr<wxWindow > parent_wxWindow(  boost::dynamic_pointer_cast<wxWindow >(this_ptr->GetObj()));
+      BasicVariable::ptr var_wxWindow = AMILabType<wxWindow>::CreateVarFromSmtPtr(parent_wxWindow);
+      context->AddVar("wxWindow",var_wxWindow);
+      // Set as a default context
+      Variable<AMIObject>::ptr obj_wxWindow = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxWindow);
+      context->AddDefault(obj_wxWindow->Pointer()->GetContext());
+
     }
 
 };

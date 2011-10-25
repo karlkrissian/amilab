@@ -4,10 +4,12 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/AMILab
+  ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}
@@ -23,23 +25,20 @@ INCLUDE( ${VTK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
 
 SET(AMILab_SRCS
-    Chamfer.cpp
+    amilab_global_export.cpp
     CircleIntegration.cpp
     ConnectLines.cpp
     ContinuousMorphology.cpp
-    Eigen3D.cpp
     EigenDecomp.cpp
     FluidProject.cpp
     Func_ReadCTALine.cpp
     GenRead.cpp
-    HessianMatrix.cpp
     InterpolateTransform.cpp
     LevelSetsCURVES.cpp
     LineCC.cpp
     LineRecons.cpp
     NormalSmoothField.cpp
     PositiveArea.cpp
-    PropagationDistance.cpp
     ReSlice.cpp
     ResampleLines.cpp
     Resize.cpp
@@ -49,13 +48,11 @@ SET(AMILab_SRCS
     Skeleton2lines.cpp
     SmoothLines.cpp
     SmoothLinesToSplines.cpp
-    StructureTensor.cpp
     Thinning.cpp
     VectorImage2StructuredGrid.cpp
     Weickert.cpp
     fonctions.cpp
     func_globalstats.cpp
-    func_imagebasictools.cpp
     func_isoline.cpp
 #    func_shortestpath.cpp
 #    localstats.cpp
@@ -69,31 +66,32 @@ SET(AMILab_SRCS
 )
 
 SET (AMILab_HDRS
-	Chamfer.h
+    amilab_global_import.h
     ContinuousMorphology.h
-	EigenDecomp.h
-	FluidProject.h
-	fonctions.h
-	func_globalstats.h
-	func_imagebasictools.h
-	Func_ReadCTALine.h
-	InterpolateTransform.h
-	LevelSetsCURVES.h
-	LineCC.h
-	LineRecons.h
-	messages.h
-	myscan.h
-	Rudin.h
-	StructureTensor.h
-	token_list.h
-	VectorImage2StructuredGrid.h
-	dif_param.hpp
-	DirPrincipales.hpp
-	FastVector.hpp
-	func_isoline.hpp
-	Resize.hpp
-	xmtext.hpp
+    EigenDecomp.h
+    FluidProject.h
+    fonctions.h
+    func_globalstats.h
+    Func_ReadCTALine.h
+    InterpolateTransform.h
+    LevelSetsCURVES.h
+    LineCC.h
+    LineRecons.h
+    messages.h
+    myscan.h
+    Rudin.h
+    token_list.h
+    VectorImage2StructuredGrid.h
+    dif_param.hpp
+    DirPrincipales.hpp
+    func_isoline.hpp
+    Resize.hpp
+    xmtext.hpp
 )
+
+IF(WIN32)
+  set_source_files_properties(${AMILab_SRCS} PROPERTIES COMPILE_FLAGS "-DAMILab_EXPORTS")
+ENDIF(WIN32)
 
 SET (AMILab_SRCS
      ${AMILab_SRCS}
@@ -101,3 +99,8 @@ SET (AMILab_SRCS
 )
 
 my_add_library ( AMILab)
+
+target_link_libraries(AMILab
+  Common
+  Algorithms
+)

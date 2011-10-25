@@ -95,8 +95,9 @@ using namespace amilab;
 
 //#include "FloatMatrix.hpp"
 
-extern unsigned char      GB_debug;
-extern unsigned char      GB_verbose;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char      GB_debug;
+COMMON_VAR_IMPORT unsigned char      GB_verbose;
 
 //extern std::ostream  out;
 
@@ -1203,7 +1204,7 @@ SurfacePoly :: operator vtkPolyData* (void) const
     vtkPolyData*       vtk_surf;
     vtkDataArray       *vtk_normals;
     vtkDataArray       *vtk_colors;
-    vector<vtkIdType>  pts;
+    std::vector<vtkIdType>  pts;
 
     // Renumerotation pour ne sauver que les points utilises
     unsigned char       show_poly;
@@ -2201,7 +2202,7 @@ void SurfacePoly :: CalculCC()
     int         nb_cc_displayed;
 
 
-  Si _cc_calculees == true AlorsFait return;
+  Si (bool)_cc_calculees == true AlorsFait return;
 
   _tab_cc.VideTableau();
   _nb_cc = 0;
@@ -4236,7 +4237,7 @@ void SurfacePoly :: SaveSelectedLines( char* name)
     SurfPoly           poly;
     vtkPolyData*       vtk_lines;
     vtkPolyDataWriter* writer;
-    vector<vtkIdType>  pts;
+    std::vector<vtkIdType>  pts;
 
     // Renumerotation pour ne sauver que les points utilises
 
@@ -4415,7 +4416,7 @@ void SurfacePoly::SelectMinPath(int pt)
 
   // find the line of the current point
   if (path.distance[current_point]==
-      numeric_limits<weight_type>::max())
+      std::numeric_limits<weight_type>::max())
   {
     std::cerr << "SurfacePoly::SelectMinPath() \tNo path between points " << std::endl;
     return;

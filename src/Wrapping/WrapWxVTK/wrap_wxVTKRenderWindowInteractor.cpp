@@ -39,7 +39,7 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<wxVTKRenderWindowInteractor>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<wxVTKRenderWindowInteractor>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_wxVTKRenderWindowInteractor::wrap_wxVTKRenderWindowInteractor construct;
   return construct.CallMember(p);

@@ -4,8 +4,6 @@
 
 func "Common/ScriptGui"
 
-import_filters
-
 if (!exists(Lines2D)) {
 
 Class Lines2D  : public ScriptGui \
@@ -18,7 +16,7 @@ Class Lines2D  : public ScriptGui \
     ::sigma_max = 4, "maximal scale"
     ::sigma_nb  = INT(10), "number of scales"
     ::black = UCHAR(1), "detect 1:black or 0:white lines?"
-    ::mode = INT(0), "0: Hessian eigenvalues, 1: Contour-based"
+    ::mode = INT(0), "0: Hessian eigenvalues, 1: Contour-based 2: Experimental"
     ::weak_gradients=UCHAR(0), "0: keep maximal Hessian eigenvalue, 1: apply a function based on gradient norm and maximal eigenvalue."
     ::keep_all=UCHAR(0), "if true, save all responses in a 3D image"
 
@@ -53,7 +51,7 @@ Class Lines2D  : public ScriptGui \
     if (!exists(::input)) {
       InfoDialog "Load input image first!"
     } else {
-      morph = global::filters.ContinuousMorphology()
+      morph = filters.ContinuousMorphology()
       mask = morph.Close(&::input,::close_size,::close_step)
       ::mask <<= (UCHAR) (mask>::mask_threshold)
     }
@@ -131,6 +129,39 @@ Class Lines2D  : public ScriptGui \
         delvars "H_E*"
       }
 
+      if (::mode==2) {
+        # 1. get vessel direction from Hessian matrix
+        # does filter normalize??
+        # H matrix
+        hxx = filter(::input,sigma,2,0,0)
+        hxy = filter(::input,sigma,1,1,0)
+        hyy = filter(::input,sigma,0,2,0)
+        # G matrix
+        gx = filter(::input,sigma,1,0,0)
+        gy = filter(::input,sigma,0,1,0)
+
+        # H^2 matrix
+        h2xx = hxx*hxx+hxy*hxy
+        h2xy = hxx*hxy+hxy*hyy
+        h2yy = hxy*hxy+hyy*hyy
+
+
+        # G^2 matrix
+        g2xx = gx*gx
+        g2xy = gx*gy
+        g2yy = gy*gy
+        
+        # new matrix
+        s2 = (sigma/2)*(sigma/2)
+        #s2 = sigma*sigma
+        Mxx = s2*h2xx-g2xx
+        Mxy = s2*h2xy-g2xy
+        Myy = s2*h2yy-g2yy
+
+        Eigen2D("M",Mxx,Mxy,Myy)
+        resp = max(M_Evap1,M_Evap2)
+        delvars "M_*"
+      }
 
       if ::keep_all {
         ::all_responses.putimage(resp,0,0,n)
@@ -186,8 +217,7 @@ Class Lines2D  : public ScriptGui \
   #----------------------------
   proc ::Gui() \
   {
-    import = &global::ami_import;
-    ::win = import->ParamPanel("Lines2D")
+    ::win = ParamPanel("Lines2D")
     ::win.BeginBook()
       ::win.AddPage("IO")
         ::win.BeginBoxPanel("Input Image")
@@ -211,6 +241,7 @@ Class Lines2D  : public ScriptGui \
         ::modeid = ::win.AddEnum( &::mode)
           ::win.AddEnumChoice(::modeid,"Hessian")
           ::win.AddEnumChoice(::modeid,"Contours")
+          ::win.AddEnumChoice(::modeid,"Exper")
 
 
         ::win.BeginBoxPanel("Scales")

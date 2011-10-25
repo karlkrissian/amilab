@@ -162,6 +162,7 @@ float roundf(const float& a);
 //@Include: /u/broca/0/kkrissia/Sources/Prog/Commun/include/chaine.doc  /user/jmontagn/src/Zinrimage/*.h
 
 #include "AMILabConfig.h"
+#include "CommonConfigure.h"
 
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
@@ -175,6 +176,9 @@ float roundf(const float& a);
 #include "ImageLinearInterpolator.h"
 
 #include <math.h>
+
+// for memcpy
+#include <string.h>
 
 // taken from Zinrimage.h
 typedef enum {
@@ -287,8 +291,8 @@ int IM_WriteImage ( const char *name,
 /**
  Image Class, not templated
  */
-class InrImage
-//    ========
+class COMMON_EXPORT InrImage
+//                  ========
 {
 
   DEFINE_CLASS(InrImage);
@@ -1169,13 +1173,13 @@ public:
 }; // InrImage
 
 
-InrImage* operator-(  InrImage& i1,  InrImage& i2);
+COMMON_EXPORT InrImage* operator-(  InrImage& i1,  InrImage& i2);
 //
 
-InrImage* operator-(  InrImage& i, double r );
+COMMON_EXPORT InrImage* operator-(  InrImage& i, double r );
 //
 
-InrImage* operator+(  InrImage& i1,  InrImage& i2);
+COMMON_EXPORT InrImage* operator+(  InrImage& i1,  InrImage& i2);
 //
 
 
@@ -1185,21 +1189,21 @@ InrImage* operator+(  InrImage& i1,  InrImage& i2);
  * @param i2 second image
  * @return possibly modified i1
  */
-InrImage& operator +=(  InrImage& i1,  InrImage& i2);
+COMMON_EXPORT InrImage& operator +=(  InrImage& i1,  InrImage& i2);
 
 
-InrImage* operator*( const InrImage& i1, const InrImage& i2);
+COMMON_EXPORT InrImage* operator*( const InrImage& i1, const InrImage& i2);
 //
 
-InrImage* operator/(  InrImage& i1,  InrImage& i2);
+COMMON_EXPORT InrImage* operator/(  InrImage& i1,  InrImage& i2);
 //
 
 // Vectorial product
-InrImage* operator^(  InrImage& i1,  InrImage& i2);
+COMMON_EXPORT InrImage* operator^(  InrImage& i1,  InrImage& i2);
 //
 
 // Norm (for vectorial images) or absolute value for scalars
-InrImage* Norm(  InrImage& i1);
+COMMON_EXPORT InrImage* Norm(  InrImage& i1);
 
 //
 //

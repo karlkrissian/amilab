@@ -19,21 +19,21 @@
 // need to instanciate for each type ...
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<std::vector<int> >::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<std::vector<int> >::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_StdVector<int>::wrap_StdVector construct;
   return construct.CallMember(p);
 }
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<std::vector<float> >::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<std::vector<float> >::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_StdVector<float>::wrap_StdVector construct;
   return construct.CallMember(p);
 }
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<std::vector<double> >::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<std::vector<double> >::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_StdVector<double>::wrap_StdVector construct;
   return construct.CallMember(p);

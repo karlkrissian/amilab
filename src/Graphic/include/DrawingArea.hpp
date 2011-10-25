@@ -49,7 +49,7 @@
 #include "widget.hpp"
 #include "palette.hpp"
 
-#include <iostream.h>
+#include <iosfwd.h>
 
 // TYPES DE DESSIN
 //

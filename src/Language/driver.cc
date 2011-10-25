@@ -22,11 +22,16 @@
 #include "wxStcFrame.h"
 
 #include <wx/filename.h>
+#include "CommonConfigure.h"
 
-extern VarContexts    Vars;
-extern wxString       GB_scripts_dir;
-extern MainFrame*     GB_main_wxFrame;
-extern unsigned char  GB_nofile;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
+#include "AMILabConfigure.h"
+AMILab_VAR_IMPORT wxString    GB_scripts_dir;
+AMILab_VAR_IMPORT MainFrame*  GB_main_wxFrame;
+
+COMMON_VAR_IMPORT unsigned char  GB_nofile;
 
 namespace yyip {
 
@@ -187,7 +192,8 @@ void Driver::ParseClassBody(const AMIClass::ptr& oclass)
   string previous_filename = this->current_file;
   if (oclass.get()) {
     // recursive call to possible parent
-    this->ParseClassBody(oclass->GetParentClass());
+    for(int i=0;i<oclass->GetNumberOfParentClasses();i++)
+      this->ParseClassBody(oclass->GetParentClass(i));
     // call to its body after setting the current filename
     this->SetCurrentFile(oclass->GetFileName().c_str());
     parse_block(oclass->GetBody());

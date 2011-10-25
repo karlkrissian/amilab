@@ -31,13 +31,13 @@
 AMI_DECLARE_TYPE(dwControlPoint);
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<dwControlPoint>::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<dwControlPoint>::CreateVar( ParamList* p, bool quiet );
 
 // allow wrapping of std::vector<dwControlPoint>
 AMI_DECLARE_TYPE(std::vector<dwControlPoint>);
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<std::vector<dwControlPoint> >::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<std::vector<dwControlPoint> >::CreateVar( ParamList* p, bool quiet );
 
 
 class WrapClass_dwControlPoint: public WrapClass<dwControlPoint>
@@ -55,6 +55,9 @@ class WrapClass_dwControlPoint: public WrapClass<dwControlPoint>
     // wrapping of other methods
     ADD_CLASS_SETGET(float,X,"X position");
     ADD_CLASS_SETGET(float,Y,"Y position");
+
+    ADD_CLASS_SETGET(double,midpoint, "midpoint for curve interpolation (see vtkPiecewiseFunction)");
+    ADD_CLASS_SETGET(double,sharpness,"sharpness for curve interpolation (see vtkPiecewiseFunction)");
 
     ADD_CLASS_SETGET(unsigned char,HorizontalLine,
                       "horizontal line property: 0 or 1.");
@@ -76,6 +79,8 @@ class WrapClass_dwControlPoint: public WrapClass<dwControlPoint>
     {
       AddVar_SetGetX(              this_ptr);
       AddVar_SetGetY(              this_ptr);
+      AddVar_SetGetmidpoint(       this_ptr);
+      AddVar_SetGetsharpness(      this_ptr);
       AddVar_SetGetHorizontalLine( this_ptr);
       AddVar_SetGetVerticalLine(   this_ptr);
       AddVar_SetGetType(           this_ptr);

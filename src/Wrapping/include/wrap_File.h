@@ -44,6 +44,8 @@ class WrapClass_File: public WrapClass<FILE>
     ADD_CLASS_METHOD(read,        "Reads a float of a string from a file.");
     ADD_CLASS_METHOD(read_float,  "Read a float number from a file.");
     ADD_CLASS_METHOD(read_string, "Read a string from a file.");
+    ADD_CLASS_METHOD(read_line,   "Read a line from a file.");
+    ADD_CLASS_METHOD(eof,         "Check End-of-File.");
 
     void AddMethods(WrapClass<FILE>::ptr this_ptr )
     {
@@ -55,6 +57,8 @@ class WrapClass_File: public WrapClass<FILE>
       AddVar_read(        this_ptr);
       AddVar_read_float(  this_ptr);
       AddVar_read_string( this_ptr);
+      AddVar_read_line(   this_ptr);
+      AddVar_eof(         this_ptr);
     };
 
 };

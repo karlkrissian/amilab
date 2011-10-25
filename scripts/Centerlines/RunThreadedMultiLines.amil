@@ -17,7 +17,7 @@ GB_mask=Image($6)
 
 result=Image(FLOAT,input_image.tx,input_image.ty,input_image.tz)
 result.initvalue(0)
-result.SetName(output_name)
+result.SetImageName(output_name)
 
 
 step=exp((ln(radmax)-ln(radmin))/(numrad-1))

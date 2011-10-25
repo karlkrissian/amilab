@@ -28,6 +28,9 @@ class ArgTypeBase:
     
   def SetName(self,n):
     self._name=n
+
+  def GetName(self):
+    return self._name
   
   def GetAbstract(self):
     return None
@@ -188,6 +191,7 @@ class StructInfo(ArgTypeBase):
     self.bases=[]
     self.incomplete="0"
     self.fileid=""
+    self.abstract='0'
     self.public_members=wrap_class.PublicMembers()
 
 #------------------------------

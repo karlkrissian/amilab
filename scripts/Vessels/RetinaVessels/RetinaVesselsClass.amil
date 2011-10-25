@@ -1,0 +1,198 @@
+
+func "Common/ScriptGui"
+
+if (!exists(RetinaVesselsClass)) {
+
+  Class RetinaVesselsClass : public ScriptGui \
+  {
+    
+    # load the current configuration
+    #func "BasicFilters/GreyMorphoClass.amil"
+    #GreyMorphoClass ::GM
+
+    func "QualityMeasures/ROC/ROCClass.amil"
+    ROCClass ::ROC
+
+    //---------------------------------------------------
+    proc ::Init() {
+      
+
+        ::input_database = INT(0), "Name of the input database: 0->STARE 1->DRIVE"
+        ::input_number = INT(0), "Index of the input image"
+        ::homedir = wx.FromWxString(wx.wxFileName.GetHomeDir())
+        ::STARE_path = "/home/karl/projects/data/Retinal/STARE/", "Path to STARE database"
+printn ""
+printn "***** ::STARE_path = "+::STARE_path
+printn ""
+        ::DRIVE_path = ::homedir+"/projects/data/Retinal/DRIVE/", "Path to DRIVE database"
+        ::STARE_init()
+
+        ::input_name   = "","Name of the input image variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::display_input = UCHAR(1), "Display input image"
+        ::display_obs1  = UCHAR(1), "Display first observer"
+        ::display_obs2  = UCHAR(1), "Display second observer"
+
+        ::html_filename = GetScriptsDir+"/RetinaVessels/Doc/RetinaVessels/index.html"
+    }
+
+
+    #-----------------------------------------------
+    proc ::STARE_init() \
+    {
+      ::STARE_image_numbers = vector_int()
+      ::STARE_image_numbers.push_back(1)
+      ::STARE_image_numbers.push_back(2)
+      ::STARE_image_numbers.push_back(3)
+      ::STARE_image_numbers.push_back(4)
+      ::STARE_image_numbers.push_back(5)
+      ::STARE_image_numbers.push_back(44)
+      ::STARE_image_numbers.push_back(77)
+      ::STARE_image_numbers.push_back(81)
+      ::STARE_image_numbers.push_back(82)
+      ::STARE_image_numbers.push_back(139)
+      ::STARE_image_numbers.push_back(162)
+      ::STARE_image_numbers.push_back(163)
+      ::STARE_image_numbers.push_back(235)
+      ::STARE_image_numbers.push_back(236)
+      ::STARE_image_numbers.push_back(239)
+      ::STARE_image_numbers.push_back(240)
+      ::STARE_image_numbers.push_back(255)
+      ::STARE_image_numbers.push_back(291)
+      ::STARE_image_numbers.push_back(319)
+      ::STARE_image_numbers.push_back(324)
+    }
+
+    #-----------------------------------------------
+    proc ::load_input() \
+    {
+    printn "::load_input"
+      ::input <<=  Image(::input_name)
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    #-----------------------------------------------
+    proc ::ReadInput() \
+    {
+      n = ::STARE_image_numbers[::input_number]
+      ::input_name = ::STARE_path+"im%04d.png" % n
+      ::load_input()
+
+      ::observer1 = Image(::STARE_path+"im%04d.ah.png" % n)
+      ::observer2 = Image(::STARE_path+"im%04d.vk.png" % n)
+    }
+
+    #-----------------------------------------------
+    proc ::Display() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+        del ::input_draw
+        del ::observer1_draw
+        del ::observer2_draw
+        if (::display_input) { show ::input; }
+        if (::display_obs1) { show ::observer1; }
+        if (::display_obs2) { show ::observer2; }
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+        InfoDialog "Filtro fantastico :) !!!"
+      }
+    }
+
+    #---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("RetinaVessels",&::parent_panel)
+      } else {
+        ::win = ParamPanel("RetinaVessels")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Input")
+
+          ::db_id = ::win.AddEnum(&::input_database,"Database")
+            ::win.AddEnumChoice(::db_id,"STARE")
+            ::win.AddEnumChoice(::db_id,"DRIVE")
+
+          ::win.BeginBoxPanel("STARE image")
+            ::STARE_path_id = ::win.AddDirname(&::STARE_path,"Dir. Path")
+            ::input_number_id = ::win.AddEnum(&::input_number,"index")
+              for n=0 to ::STARE_image_numbers.size()-1 {
+                imname = "im%04d" % ::STARE_image_numbers[n]
+                ::win.AddEnumChoice(::input_number_id,imname)
+              }
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("DRIVE image")
+            ::win.AddDirname(&::DRIVE_path,"Dir. Path")
+          ::win.EndBoxPanel()
+
+          ::win.AddButton("Read Input", &::ReadInput)
+
+        ::win.AddPage("Param")
+          ::win.AddLabel("Info:","Set your parameters here")
+
+        ::win.AddPage("Run")
+          ::win.BeginBoxPanel("Display")
+            ::win.BeginHorizontal()
+              ::win.AddBoolean(&::display_input,"Input")
+              ::win.AddBoolean(&::display_obs1,"Obs1")
+              ::win.AddBoolean(&::display_obs2,"Obs2")
+            ::win.EndHorizontal()
+            ::win.AddButton("Display",::Display)
+          ::win.EndBoxPanel()
+          ::win.AddButton("Run Filter",::Run)
+
+        ::config_advanced_page = ::win.AddPage("Adv")
+          ::win.BeginBook()
+          
+            ::ROC.SetParentPanel(&::win)
+            ::ROC.Gui()
+            ::win.AddPage("ROC",&::ROC.win)
+                       
+          ::win.EndBook()
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

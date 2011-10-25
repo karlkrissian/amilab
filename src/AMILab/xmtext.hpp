@@ -21,8 +21,8 @@
 //#include "wx/richtext/richtextctrl.h"
 
 #include <string>
-#include <iostream>
-//using namespace std;
+#include <iosfwd>
+//using -- namespace std;
 
 #include "DefineClass.hpp"
 

@@ -14,7 +14,9 @@ OK = 1 # The test was successful
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Check the wxFileName wrapping.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MyFileName = wx.wxFileName("c","/tmp/ticket", "ticket", "txt")
+MyFileName = wx.wxFileName()
+MyFileName.AssignTempFileName("ticket")
+MyFileName.AppendDir("CTEST_path")
 
 printn "Summary:"
 printn "Full path: %1%" % wx.FromWxString(MyFileName.GetFullPath())

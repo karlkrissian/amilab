@@ -10,6 +10,8 @@
 //
 //
 
+#pragma once
+
 #ifndef _AMILabConfig_h_
 #define _AMILabConfig_h_
 

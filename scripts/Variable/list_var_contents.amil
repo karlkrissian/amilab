@@ -1,0 +1,448 @@
+#!/home/karl/projects/Sourceforge/amilab/trunk/src/build_debug/amilab_3.1.0_debug 
+
+del VariablesUtilsClass
+
+Class VariablesUtilsClass {
+
+  ::const_name=""
+
+  #----------------------------------------------------------
+  proc ::SetConstructorContext( OBJECT cc) \
+  {
+    del ::cv
+    del ::const_builtin
+    del ::cc
+    ::cc = &cc
+  }
+
+  #----------------------------------------------------------
+  proc ::SetConstructorVar( OBJECT cv) \
+  {
+    del ::cc
+    del ::const_builtin
+    ::cv = &cv
+  }
+
+  #----------------------------------------------------------
+  proc ::SetConstructorBuiltin( ) \
+  {
+    del ::cc
+    del ::cv
+    ::const_builtin = true
+  }
+
+  #----------------------------------------------------------
+  proc ::SetConstructorName( STRING name ) \
+  {
+    ::const_name = name
+  }
+
+  #----------------------------------------------------------
+  proc ::ListVariables( OBJECT v) \
+  {
+    # 1. wrap the variable
+    wv = language.WrapVariable(&v)
+    # 2. convert it to Variable<AMIObject>
+    ov = language.Variable_AMIObject.DynCast(&wv)
+    # 3. get the AMIObject context
+    oc = ov.Pointer().GetContext()
+
+    # list variables in the context
+    for n=0 to oc.GetSize()-1 {
+      printn "name: %1%" % oc[n].Name() + "\ttype: %1%" % oc[n].GetTypeName() + "\tvalue: %1%" % oc[n].GetValueAsString()
+    }
+  }
+
+
+  #----------------------------------------------------------
+  proc ::MemberSignature( OBJECT m) \
+  {
+    # 1. main comments
+    res = "# %1%\n" % m.GetDescription()
+    # 2. return type
+    res += "%1% " % m.get_return_type()
+    res += "%1%(" % m.GetFunctionName()
+    # 3. list parameters
+    for n=0 to m.get_parameters_comments_size()-1 {
+      res += " %1% " % m.get_paramtypes(n) + "p%1%, " % n
+    }
+    res = res-", "+")"
+    return=res
+  }
+
+  #----------------------------------------------------------
+  proc ::ListCPPMethods( OBJECT v)  \
+  {
+    # 1. wrap the variable
+    wv = language.WrapVariable(&v)
+    # 2. convert it to Variable<AMIObject>
+    ov = language.Variable_AMIObject.DynCast(&wv)
+    # 3. get the AMIObject context
+    oc = ov.Pointer().GetContext()
+
+    # list variables in the context
+    for n=0 to oc.GetSize()-1 {
+      typestr = oc[n].GetTypeName()
+      if typestr=="wrap_WrapClassMember" \
+      {
+        # Convert it to Variable<WrapClassMember>
+        del wcmv
+        wcmv = language.Variable_WrapClassMember.DynCast(&oc[n])
+        del wcm
+        wcm = wcmv.Pointer()
+        printn "\n"
+        printn ::MemberSignature(&wcm)
+        # Print comments on the different variables
+        for k=0 to wcm.get_parameters_comments_size()-1 {
+          printn "  p%1%: " % k + "%1%" % wcm.get_parameters_comments(k)
+        }
+      }
+    }
+  }
+
+  #----------------------------------------------------------
+  proc ::WriteTextColor( OBJECT rtc, STRING s, OBJECT col)  \
+  {
+    rtc.BeginTextColour(&col)
+    rtc.WriteText(s)
+    rtc.EndTextColour()
+  }
+
+  #----------------------------------------------------------
+  proc ::ListCPPMethodsRTC( OBJECT v)  \
+  {
+    # 1. wrap the variable
+    wv = language.WrapVariable(&v)
+    # 2. convert it to Variable<AMIObject>
+    ov = language.Variable_AMIObject.DynCast(&wv)
+    # 3. get the AMIObject context
+    oc = ov.Pointer().GetContext()
+
+    # Create a window with Rich Text content
+    f2 = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,wv.Name(),\
+      wx.wxPoint(100,100),wx.wxSize(300,300),\
+      wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX,"test")
+    f2.Show()
+    topsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+    rtc = wx.wxRichTextCtrl(&f2)
+    rtc.SetMinSize(&wx.wxSize(400,600));
+    topsizer.Add(&rtc,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 10))
+    f2.SetSizer( &topsizer )      # use the sizer for layout
+    topsizer.SetSizeHints( &f2 )   # set size hints to honour minimum size
+
+    rtc.BeginFontSize(20)
+    rtc.BeginAlignment(wx.wxTEXT_ALIGNMENT_CENTER)
+    rtc.WriteText( " %1% " % wv.Name() )
+    rtc.WriteText( "("+oc._GetName()+")")
+    rtc.EndAlignment()
+    rtc.EndFontSize()
+
+    # list variables in the context
+    for n=0 to oc.GetSize()-1 {
+      typestr = oc[n].GetTypeName()
+      if typestr=="wrap_WrapClassMember" \
+      {
+        # Convert it to Variable<WrapClassMember>
+        del wcmv
+        wcmv = language.Variable_WrapClassMember.DynCast(&oc[n])
+        del wcm
+        wcm = wcmv.Pointer()
+        rtc.Newline()
+        commentcolor = wx.wxColour(20,155,20)
+        # 1. main comments
+        ::WriteTextColor(&rtc,"# %1%\n" % wcm.GetDescription(),&wx.wxColour(20,155,20))
+        # 2. return type
+        rtc.WriteText( "%1% " % wcm.get_return_type())
+        ::WriteTextColor( &rtc, "%1%" % wcm.GetFunctionName(), &wx.wxColour(0,0,255))
+        rtc.WriteText("(")
+        # 3. list parameters
+        for k=0 to wcm.get_parameters_comments_size()-1 {
+          rtc.WriteText( " %1% " % wcm.get_paramtypes(k) + "p%1%" % k)
+          if k<wcm.get_parameters_comments_size()-1 {
+            rtc.WriteText(", ")
+          }
+        }
+        rtc.WriteText(")")
+        rtc.Newline()
+        #rtc.WriteText(::MemberSignature(&wcm))
+        # Print comments on the different variables
+        
+        rtc.BeginTextColour(&commentcolor)
+        for k=0 to wcm.get_parameters_comments_size()-1 {
+          rtc.WriteText( "  p%1%: " % k + "%1%" % wcm.get_parameters_comments(k))
+          rtc.Newline()
+        }
+        rtc.EndTextColour()
+      }
+    }
+
+    return=&rtc
+  }
+
+
+  #----------------------------------------------------------
+  proc ::StripWrap( STRING s ) \
+  {
+    res = wx.wxString()
+    ok = wx.wxString(s).StartsWith("wrap_",&res)
+    if ok { return=res.c_str(); } else { return=s; }
+  }
+
+  #----------------------------------------------------------
+  proc ::StripStart( STRING s , STRING startst) \
+  {
+    res = wx.wxString()
+    ok = wx.wxString(s).StartsWith(startst,&res)
+    if ok { return=res.c_str(); } else { return=s; }
+  }
+
+  #----------------------------------------------------------
+  proc ::ClassMember2HTML( OBJECT var) \
+  {
+    wcmv = language.Variable_WrapClassMember.DynCast(&var)
+    wcm = wcmv.Pointer()
+    text = "<BR>\n"
+    commentcolor = wx.wxColour(20,155,20)
+    fname= wcmv.Name() # it is better to use the variable name because it may have been changed 
+    #fname=::StripStart(wcm.GetFunctionName(),oc._GetName()+"::")
+    #fname=::StripWrap(wcm.GetFunctionName())
+
+    text += "<A NAME=\"%1%\">" % fname
+    text += "</A>" 
+    #  return type
+    text += "%1% " % wcm.get_return_type()
+    text += "<font color=\"#2222AA\">"
+    text +=  "%1%" % fname
+    text += "</font>\n"
+    text += "("
+    #  list parameters
+    for k=0 to wcm.get_parameters_comments_size()-1 {
+      text += " %1% " % ::StripWrap(wcm.get_paramtypes(k)) + "<i> p%1% </i>" % k
+      if k<wcm.get_parameters_comments_size()-1 {
+        text +=", "
+      }
+    }
+    text +=")<BR>\n"
+    #  main comments
+    #rtc.WriteText(::MemberSignature(&wcm))
+    # Print comments on the different variables
+    
+    text += "<table border=0 cellpadding=1 cellspacing=1>\n"
+
+    text+="<tr>\n"
+    text += "<td width=50>  </td>" 
+    text += "<td colspan=2><font color=\"#22AA22\">"
+    text += "%1%" % wcm.GetDescription()
+    text += "</font></td>\n"
+    text += "<tr>\n"
+
+    for k=0 to wcm.get_parameters_comments_size()-1 {
+      text+="<tr>\n"
+      text += "<td width=50>  </td>" 
+      text += "<td width=100> <i> p%1% </i> </td>" % k 
+      text += "<td width=400> %1% </td>" % wcm.get_parameters_comments(k)
+      text += "<tr>\n"
+    }
+    returntext = wcm.get_return_comments()
+    if (returntext!="") {
+      text+="<tr>\n"
+      text += "<td width=50>  </td>" 
+      text += "<td width=100>  Returns</td>"
+      text += "<td width=400>"+returntext+"</td>\n"
+      text += "<tr>\n"
+    }
+    text += "</table>\n"
+    #text += "<BR>\n"
+    return=text
+  }
+
+  #----------------------------------------------------------
+  proc ::ListCPPMethodsHTMLText( OBJECT v)  \
+  {
+    # 1. wrap the variable
+    wv = language.WrapVariable(&v)
+    # 2. convert it to Variable<AMIObject>
+    ov = language.Variable_AMIObject.DynCast(&wv)
+    # 3. get the AMIObject context
+    oc = ov.Pointer().GetContext()
+
+    text=""
+    text+="<html>\n"
+    text+="<head>\n"
+    text+="<title>\n"
+    if ::const_name!="" {
+      title = "%1% Documentation" % ::const_name
+    } else {
+      title = "%1% Documentation" % ::StripWrap(oc._GetName())
+    }
+    text+=title
+    text+="</title>\n"
+    text+="</head>\n"
+    text+="<body>\n"
+
+    text+="<H1>\n"
+    text += title+"\n"
+    text+="</H1>\n"
+
+    objsize = oc.GetSize()
+    # list variables in the context
+    tabletext = "<table border=1 cellpadding=4 cellspacing=0>\n"
+    tableindex=0
+    tablecol=0
+    tablecols=4
+    
+    basestext = "<strong>Bases: </strong>"
+    basescount = 0
+
+    for n=0 to oc.GetSize()-1 {
+      typestr = oc[n].GetTypeName()
+      if typestr=="wrap_AMIObject" \
+      {
+        del wov
+        wov = language.Variable_AMIObject.DynCast(&oc[n])
+        # todo: check for inheritence properly
+        printn " inherit = %1%" % (ov.Equal(&wov))
+        basestext += "<strong> %1% </strong> " % wov.Name()
+        basescount++
+      }
+      if (typestr=="wrap_WrapClassMember") \
+      {
+        if tablecol==0 {
+          tabletext += "<tr>\n"
+        }
+        del wcmv
+        wcmv = language.Variable_WrapClassMember.DynCast(&oc[n])
+        del wcm
+        wcm = wcmv.Pointer()
+        fname= wcmv.Name() # it is better to use the variable name because it may have been changed 
+        #::StripStart(wcm.GetFunctionName(),oc._GetName()+"::")
+        tabletext += "<td>\n"
+        tabletext += "<A href=\"#%1%\">"% fname
+        tabletext +=  "%1%" % fname
+        tabletext += "</A>"
+        tabletext += "</td>\n"
+        tablecol = (tablecol+1)%tablecols
+        if tablecol==0 {
+          tabletext += "<tr>\n"
+        }
+      }
+    }
+
+    if basescount>0 {
+      text += basestext+"<BR><BR>\n"
+    }
+
+    if (::const_name!="") {
+      constname=::const_name
+    } else {
+      constname=::StripWrap(oc._GetName())
+    }
+    # Check for constructor
+    if exists(::cc) {
+      wcc = language.WrapVariable(&::cc)
+      #  convert it to Variable<AMIObject>
+      vcc = language.Variable_AMIObject.DynCast(&wcc)
+      #  get the AMIObject context
+      occ = vcc.Pointer().GetContext()
+      # looking for the constructor
+      for n=0 to occ.GetSize()-1 {
+        if occ[n].GetTypeName()=="wrap_WrapClassMember" \
+        {
+          del var
+          var = language.Variable_WrapClassMember.DynCast(&occ[n])
+          if var.Name()== constname  {
+            text+="<strong>Constructor</strong> in <strong>%1%</strong> context: <BR>\n" % (occ._GetName())
+            text+=::ClassMember2HTML(&occ[n])
+          }
+        }
+      }
+    } else {
+      if exists(::cv) {
+        text+="<strong>Constructor</strong> <BR>\n" 
+        del var
+        var = language.WrapVariable(&::cv)
+        text+=::ClassMember2HTML(&var)
+      } else {
+        if exists(::const_builtin) {
+          builtin = language.Vars.GetBuiltinContext()
+          printn "looking in builtin for %1%" % constname
+          if builtin.ExistVar(constname) {
+            del var
+            var = builtin.GetVar(constname)
+            text+="<strong>Constructor</strong> in <strong>builtin</strong> context <BR>\n" 
+            text+=::ClassMember2HTML(&var)
+            }
+        }
+      }
+    }
+
+    tabletext += "</table>\n"
+    text += "<strong>Methods:</strong>  <BR>\n" 
+    text += tabletext
+
+    #text += "<BR>\n"
+
+    # list variables in the context
+    for n=0 to oc.GetSize()-1 {
+      typestr = oc[n].GetTypeName()
+      if typestr=="wrap_WrapClassMember" \
+      {
+        # Convert it to Variable<WrapClassMember>
+        text += ::ClassMember2HTML(&oc[n])
+      }
+    }
+
+    text+="</body></html>"
+    text += "<BR>\n"
+
+    return=&text
+  }
+
+  #----------------------------------------------------------
+  proc ::ListCPPMethodsHTML( OBJECT v)  \
+  {
+    # 1. wrap the variable
+    wv = language.WrapVariable(&v)
+    # Create a window with Rich Text content
+    f2 = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,wv.Name(),\
+      wx.wxPoint(100,100),wx.wxSize(600,600),\
+      wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX,"Class Documentation")
+    f2.Show()
+    topsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+    html = wx.wxHtmlWindow(&f2)
+    html.SetMinSize(&wx.wxSize(500,400));
+    topsizer.Add(&html,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 10))
+    f2.SetSizer( &topsizer )      # use the sizer for layout
+    topsizer.SetSizeHints( &f2 )   # set size hints to honour minimum size
+
+    text = ::ListCPPMethodsHTMLText(&v)
+    html.SetPage(text)
+    return=&html
+  }
+
+  #----------------------------------------------------------
+  proc ::SaveCPPMethodsHTML( OBJECT v, STRING filename)  \
+  {
+    if (filename=="") {
+      wv = language.WrapVariable(&v)
+      ov = language.Variable_AMIObject.DynCast(&wv)
+      oc = ov.Pointer().GetContext()
+      if ::const_name!="" {
+        filename =  op_system.GetHomeDir()+"/amilab_%1%.html" % ::const_name
+      } else {
+        filename =  op_system.GetHomeDir()+"/amilab_%1%.html" % ::StripWrap(oc._GetName())
+      }
+      SetStatusText("Saving documentation as '%1%'" % filename)
+    }
+    f = File(filename,"w")
+    text = ::ListCPPMethodsHTMLText(&v)
+    f._print(text)
+    f.close()
+    SetStatusText("'%1%' saved." % filename)
+  }
+
+}
+
+del VarUtils
+VariablesUtilsClass VarUtils
+del VariablesUtilsClass

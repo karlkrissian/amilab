@@ -40,6 +40,13 @@ MACRO( my_add_library var)
 ENDMACRO(my_add_library)
 #-------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+MACRO( my_add_shared_library var)
+#-------------------------------------------------------------------------------
+  ADD_LIBRARY (${var} SHARED  ${${var}_SRCS})
+  PrintSources(${var})
+ENDMACRO(my_add_shared_library)
+#-------------------------------------------------------------------------------
 
 
 #-------------------------------------------------------------------------------
@@ -208,11 +215,16 @@ ENDMACRO( GenerateSourcesWrapping)
 MACRO( ClassUsedName input_name output_name )
 #-------------------------------------------------------------------------------
 
-  STRING(REGEX REPLACE "<" "__LT__"     ${output_name} ${${input_name}} )
-  STRING(REGEX REPLACE ">" "__GT__"     ${output_name} ${${output_name}} )
-  STRING(REGEX REPLACE "," "__COMMA__"  ${output_name} ${${output_name}} )
-  STRING(REGEX REPLACE "::" "__NS__"    ${output_name} ${${output_name}} )
-  STRING(REGEX REPLACE " " "__SPACE__"  ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "<" "_L_"                ${output_name} ${${input_name}} )
+  STRING(REGEX REPLACE ">" "_G_"                ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "," "_"                  ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "::" "_"                 ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE " " ""                   ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsignedchar"  "UC"  ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsignedshort" "US" ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsignedint"   "UI"   ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsignedlong"  "uL"  ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "itk_"           ""      ${output_name} ${${output_name}} )
 
 ENDMACRO( ClassUsedName)
 #-------------------------------------------------------------------------------

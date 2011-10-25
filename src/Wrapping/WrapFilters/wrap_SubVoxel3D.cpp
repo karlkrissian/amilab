@@ -5,7 +5,7 @@
 
 #include "wrap_SubVoxel3D.h"
 
-#include "VarContexts.hpp"c
+#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
@@ -19,7 +19,7 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<SubVoxel3D>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<SubVoxel3D>::CreateVar( ParamList* p, bool quiet)
 {
   WrapClass_SubVoxel3D::wrap_SubVoxel3D construct;
   return construct.CallMember(p);

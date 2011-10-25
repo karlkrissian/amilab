@@ -29,12 +29,14 @@
 class LinearColorMapPoint
 {
   double pos;
+  double alpha;
   wxColour left_colour;
   wxColour right_colour;
 
 public:
-  LinearColorMapPoint( const double& p=0, const wxColour& c = *wxBLACK ) {
+  LinearColorMapPoint( const double& p=0, const double& a=0, const wxColour& c = *wxBLACK ) {
     pos = p;
+    alpha =a;
     left_colour =  c;
     right_colour =  c;
   }
@@ -45,6 +47,13 @@ public:
   }
 
   double GetPosition() const { return pos; }
+  
+  void SetAlpha(const double& opacity)
+  {
+    alpha = opacity;
+  }
+
+  double GetAlpha() const { return alpha; }
 
   void SetColour(const wxColour& c)
   {

@@ -18,7 +18,7 @@
 //ComputePV Wrapping
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<ComputePV>::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<ComputePV>::CreateVar( ParamList* p, bool quiet);
 
 AMI_DECLARE_TYPE(ComputePV);
 

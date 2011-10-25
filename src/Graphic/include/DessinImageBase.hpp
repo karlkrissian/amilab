@@ -114,6 +114,7 @@
 // Sophia Antipolis le 20-10-97
 //
 
+#pragma once
 #ifndef _DESSIN_IMAGE_BASE_HPP
 #define _DESSIN_IMAGE_BASE_HPP
 
@@ -455,7 +456,7 @@ Visual*      _visual;
 #endif
    */
     // new way
-    vector<wxImage_info> _tab_slices;
+    std::vector<wxImage_info> _tab_slices;
     wxImage_ptr           _current_slice;
 
    //------ Memorisation de toutes les images XY (pour accelerer les animations)
@@ -535,7 +536,7 @@ int        _nb_images_XY;
    //------ Optimisation de l'affichage
 
    float                    _rapport_intensite;
-   vector<ClasseCouleur>    _tab_intensite_couleur;
+   std::vector<ClasseCouleur>    _tab_intensite_couleur;
 
    //----- Couleurs pour le cas RGB
    ClasseCouleur  _couleur_fond;

@@ -6,8 +6,10 @@ MESSAGE("***** Boost_INCLUDE_DIR=${Boost_INCLUDE_DIR}")
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${wxParams_INCLUDE_DIRS}
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/AMILab
+  ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/wxParams
@@ -113,4 +115,12 @@ SET(WrapFilters_SRCS
 )
 
 my_add_library ( WrapFilters)
-add_dependencies ( WrapFilters WrapWxWidgets )
+
+#
+#add_dependencies ( WrapFilters WrapWxWidgets )
+#
+target_link_libraries(WrapFilters
+  Common
+  WrapCommon
+  ${Boost_LIBRARIES}
+)

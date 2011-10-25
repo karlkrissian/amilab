@@ -307,8 +307,8 @@ if (!exists(BasicEdgeDetection3DClass)){
     #-----------------------
     
     proc ::CreateGui() {
-      ::import = &global::ami_import;
-      ::win = ::import->ParamPanel("3D Basic Edge Detection")
+
+      ::win = ParamPanel("3D Basic Edge Detection")
       
       ::win.BeginBook()
         ::win.AddPage("Param.")

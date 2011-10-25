@@ -167,7 +167,7 @@ proc CB_InitOF() {
 }
 
 
-w1 = global::ami_import.ParamPanel("Synthetic Images for registration")
+w1 = ParamPanel("Synthetic Images for registration")
 image_type_id=w1.AddEnum( &image_type)
 w1.AddEnumChoice(image_type_id,"Line")
 w1.AddEnumChoice(image_type_id,"Rectangle")

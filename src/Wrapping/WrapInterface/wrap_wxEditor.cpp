@@ -23,7 +23,7 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<wxEditor>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<wxEditor>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_wxEditor::wrap_wxEditor construct;
   return construct.CallMember(p);

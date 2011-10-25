@@ -6,13 +6,8 @@ func "Common/ScriptGui"
 
 if (!exists(thickTADClass)){
 
-	#Import filters
-  ami_import->Filters()
-
-	Class thickTADClass : public ScriptGui{
+  Class thickTADClass : public ScriptGui{
   
-    ::filters = &global::filters
-    
     #-----------------------
     proc ::Init(){
       ::class_name  = "global::Subpixel2DClass"
@@ -105,7 +100,7 @@ if (!exists(thickTADClass)){
     proc ::ComputeSubpixel(IMAGE res_image) {
       #if(exists(::res)) {
         if (exists(::spResult)) { del ::spResult; }
-        spObject = ::import->SubPixel2D(&res_image, 25, 0)
+        spObject = SubPixel2D(&res_image, 25, 0)
         ::spResult = spObject.DenoisingGus()
       #} else {
       #  InfoDialog "You must create first the image"
@@ -134,11 +129,11 @@ if (!exists(thickTADClass)){
     {
       ::CreateInputImage()
       #create a compute partial volume object
-      pv     = ::import->ComputePV()
+      pv     = ComputePV()
       pv->setInputImage(&::input)
       pv->setSubdiv(::subdiv)
-      circle = ::import->AnalyticCircle()
-      ring   = ::import->AnalyticRing2D()
+      circle = AnalyticCircle()
+      ring   = AnalyticRing2D()
       circle->setCenter(::cx, ::cy)
       circle->setRadius(::cr)
       #Create the circle
@@ -289,13 +284,12 @@ if (!exists(thickTADClass)){
     #-----------------------
     
     proc ::CreateGui() {
-      ::import = &global::ami_import;
-      ::win = ::import->ParamPanel("ADThicknessTest")
+      ::win = ParamPanel("ADThicknessTest")
       
       #add Drawing Window
       #::win.BeginBoxPanel("Thickness error graph")
         d = ::win.CurrentParent()
-        ::dwt = ::import->wxDrawingWindow(&d)
+        ::dwt = wxDrawingWindow(&d)
         ::dwt.SetMinSize(&wx.wxSize(50, 100))
         ::dwt.SetBackgroundColour(&wx.wxColour(255,255,255))
         ::dwt.SetXLimits(0,   5)
@@ -306,7 +300,7 @@ if (!exists(thickTADClass)){
       
       #::win.BeginBoxPanel("Noise error graph")
         d = ::win.CurrentParent()
-        ::dwn = ::import->wxDrawingWindow(&d)
+        ::dwn = wxDrawingWindow(&d)
         ::dwn.SetMinSize(&wx.wxSize(50, 100))
         ::dwn.SetBackgroundColour(&wx.wxColour(255,255,255))
         #Faltan poner los límites

@@ -69,7 +69,8 @@ extern "C" {
 #include "FloatMatrix.hpp"
 
 
-extern unsigned char    GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 ///
 class CalculIsoLignes : public GestionErreurs

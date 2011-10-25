@@ -30,6 +30,7 @@
 //#include "DessinImage.hpp"
 #include "inrimage.hpp"
 #include "math1.hpp"
+#include <iostream>
 
 // spline interpolation
 extern "C" {
@@ -37,7 +38,8 @@ extern "C" {
 #include    "interpol.h"
 }
 
-extern unsigned char GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 /*
 //#define MacroInterpoleCoeff2D( xr,yr, coeff)                           \

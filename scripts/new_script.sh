@@ -6,6 +6,7 @@ scriptname=$3
 if [[ ! -d ${category} ]]
 then
   echo "The directory ${category} does not exists, create it first !!"
+  exit 1
 fi
 
 cd ${category}

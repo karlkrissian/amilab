@@ -48,6 +48,11 @@
 #ifndef _GNUPLOT_HPP
 #define _GNUPLOT_HPP
 
+#ifdef _MSC_VER
+  #define _CRT_SECURE_NO_WARNINGS
+  #pragma warning( disable : 4290 )
+#endif 
+
 #include "style.hpp"
 extern "C" {
 #include <stdlib.h>
@@ -58,7 +63,7 @@ extern "C" {
 #define TYPE_GNUPLOT 0
 #define TYPE_SECTION 1
 
-using namespace std;
+// using -- namespace std;
 
 ///----------------------------------------------------------------------
 class GnuPlot
@@ -71,10 +76,10 @@ public:
   class ErreurLecture
   {
   public:
-    ErreurLecture( Chaine message)
-      {
-	std::cerr << "GnuPlot Erreur de Lecture " << message << std::endl;
-      }
+    ErreurLecture( Chaine message);
+/*      {
+        std::cerr << "GnuPlot Erreur de Lecture " << message << std::endl;
+      }*/
   };
 
 private:

@@ -5,13 +5,4 @@ vtkLevelSetFastMarching
 Gradient
 vtkFastMarching_nD_plus
 Curvatures
-vnl_matrix<double>
-vnl_vector<double>
-vnl_symmetric_eigensystem<double>
-vnl_vector_fixed<double, 3u>
-itk::Image<float, 2u>
-itk::SmartPointer<itk::Image<float, 2u> >
-itk::ImageRegion<2u>
-itk::Size<2u>
-itk::Index<2u>
-itk::DefaultPixelAccessor<float>
+ShortestPathClass

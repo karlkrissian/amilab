@@ -1,0 +1,140 @@
+
+func "Common/ScriptGui"
+
+if (!exists(vtkImageViewerClass)) {
+
+  Class vtkImageViewerClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+        ::input_name   = "","Name of the input image variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::html_filename = GetScriptsDir+"/vtkImageViewer/Doc/vtkImageViewer/index.html"
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        InfoDialog "First load the input image !"
+      } else {
+        # convert input image to VTK
+        ::vtkinput  = vtktools.ToVtkImageData(&::input)
+        # display image viewer
+        ::viewer = vtk.vtkImageViewer.New()
+        ::viewer.SetInput(&::vtkinput)
+        ::renwin   = ::viewer.GetRenderWindow()
+        ::renwin_interact.SetRenderWindow(&::renwin);
+        ::viewer.SetupInteractor(&::renwin_interact)
+        #::renwin.AddRenderer(&::viewer.GetRenderer())
+        ::renwin_interact.Render()
+#::viewer.Render()
+      }
+    }
+
+    #----------------------------
+    proc ::MainBook_AddTab()  \
+    {
+      mb = ami.MainFrame.GetMainBook()
+
+      ::panel = wx.wxPanel(&ami.MainFrame)
+      ::sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+      ::panel.SetSizer(&::sbox_sizer)
+      # create widget here
+
+      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,-1)
+
+      ::renwin_interact.UseCaptureMouseOn()
+      ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
+      # Still drawing problem (missed exposed events???)
+      ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
+      ::AttachRenWinInt()
+
+      #::icons.LoadIconPNG2("Transparent background","Transparent_background")
+
+      # Add to main book
+      mb.AddPage( &::panel,  "ImView",1)
+#, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+      ::imview_pageindex = mb.GetPageIndex(&::panel)
+      #mb.SetSelection(::volren_pageindex)
+    }
+
+    #----------------------------
+    proc ::AttachRenWinInt()  \
+    {
+      ::renwin_interact.Reparent(&::panel)
+      ::sbox_sizer.Add(&::renwin_interact, wx.wxSizerFlags().Expand().Proportion(1) )
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("vtkImageViewer",&::parent_panel)
+      } else {
+        ::win = ParamPanel("vtkImageViewer")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+          ::win.AddLabel("Info:","Set your parameters here")
+
+        ::win.AddPage("Run")
+          ::win.AddButton("Run Filter",::Run)
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+      ::MainBook_AddTab()
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

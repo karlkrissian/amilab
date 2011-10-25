@@ -40,13 +40,15 @@
 #include <Xm/Xm.h>
 */
 
-#include "wx/wxprec.h"
+/*
+ * #include "wx/wxprec.h"
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+*/
 
 //#include "style.hpp"
 //#include <X11/Intrinsic.h>
@@ -56,7 +58,7 @@
 #define PALETTE_TC   2
 
 #include "couleur.hpp"
-
+#include <wx/window.h>
 
 namespace amilab {
   

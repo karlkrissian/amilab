@@ -33,7 +33,12 @@
  */
 
 
+#ifdef _MSC_VER
+  #define _CRT_SECURE_NO_WARNINGS
+#endif // _MSC_VER
+
 #include "style.hpp"
+
 
 extern "C" {
 #include <stdio.h>
@@ -203,8 +208,9 @@ float puis( float a, float b)
     puis1 = 0;
 
   Otherwise
-  If (a<0) And (1/b == roundf(1.0/b))
-  And ( roundf(1.0/b)/2 != roundf(roundf(1.0/b)/2) ) Then
+  If (a<0) And 
+      (1/b == roundf((float)(1.0/b)))
+  And ( roundf((float)(1.0/b))/2 != roundf(roundf((float)(1.0/b))/2) ) Then
     puis1 = -exp(b*log(-a));
 
   Else
@@ -335,7 +341,7 @@ CompileExpr :: ~CompileExpr()
 
 
 #define InitPile()  Pile_Pos = 0
-#define Empile( a ) Pile[Pile_Pos++] = a
+#define Empile( a ) Pile[Pile_Pos++] = (float) (a)
 #define Depile()    Pile[--Pile_Pos]
 
 // -------------------------------------------------------------------------------
@@ -548,20 +554,20 @@ float CompileExpr :: Resultat()
 
       case Tok_round :
       //     -----------
-        term1 = Depile();
-        Empile( round( term1));
+        term1 = (float)Depile();
+        Empile( (float)round( term1));
       break;
 
       case Tok_cosinus_hyperbolique :
       //     --------------------------
-	term1 = Depile();
-        Empile( 0.5*(exp(term1)+exp(-1*term1)) );
+      	term1 = Depile();
+        Empile( (float) (0.5*(exp(term1)+exp(-1*term1))) );
       break;
 
       case Tok_sinus_hyperbolique :
       //     ------------------------
-	term1 = Depile();
-        Empile( 0.5*(exp(term1)-exp(-1*term1)) );
+	      term1 = Depile();
+        Empile( (float) (0.5*(exp(term1)-exp(-1*term1))) );
       break;
 
       case Tok_valeur_entiere :
@@ -754,7 +760,7 @@ void ExprMath::HigherLevel()
   ;  i < NumberOfParameters
   ;  i++ Faire
     Si ch == Parameter[i] Alors
-      AjouteNombre( i);
+      AjouteNombre( (float)i);
       AjouteInstruction( Tok_parametre);
       return;
     FinSi
@@ -817,7 +823,7 @@ void ExprMath::HigherLevel()
 
   If ch == "pi" Then
     pos += 2;
-    AjouteNombre( PI);
+    AjouteNombre( (float)PI);
     AjouteInstruction( Tok_nombre);
     return;
   EndIf

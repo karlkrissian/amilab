@@ -49,10 +49,11 @@
 
 
 #include "style.hpp"
-#include <iostream>
+#include <iosfwd>
 
-extern unsigned char verbose;
-extern unsigned char GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT unsigned char GB_verbose;
 
 //======================================================================
 class PropagePoints
@@ -114,7 +115,7 @@ private:
       unsigned char* new_point_traite;
       int   i,j,k;
 
-cout << "Resize() \n";
+    std::cout << "Resize() \n";
 
     new_size = _taille_max * 2;
 
@@ -227,7 +228,7 @@ public:
   //
   {
 
-    TantQue (point_traite[_pos_depart] == true) Et (_depart<=_fin) Faire 
+    TantQue ((bool)point_traite[_pos_depart] == true) Et (_depart<=_fin) Faire 
       _depart++;
       _pos_depart++;
       Si _pos_depart == _taille_max AlorsFait _pos_depart = 0;

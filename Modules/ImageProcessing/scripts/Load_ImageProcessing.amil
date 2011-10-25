@@ -1,0 +1,10 @@
+
+del ImageProcessingPlugin
+func "ImageProcessingPlugin"
+
+if (!exists(ImageProcessing_obj)) {
+  ImageProcessingPlugin ImageProcessing_obj
+  ImageProcessing_obj.Load()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}

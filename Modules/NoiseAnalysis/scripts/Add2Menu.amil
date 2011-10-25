@@ -1,0 +1,3 @@
+
+ami.MainFrame.AddToMenu("&Modules","&Noise Analysis","&Load",    "../Modules/NoiseAnalysis/scripts/Load_NoiseAnalysis")
+ami.MainFrame.AddToMenu("&Modules","&Noise Analysis","&ReLoad",  "../Modules/NoiseAnalysis/scripts/ReLoad_NoiseAnalysis")

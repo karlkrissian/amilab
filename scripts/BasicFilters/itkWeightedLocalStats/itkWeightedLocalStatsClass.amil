@@ -8,12 +8,9 @@ func "Common/ScriptGui"
 
 if (!exists(itkWeightedLocalStatsCLass)) {
 
-  ami_import->ITK()
 
   Class itkWeightedLocalStatsCLass : public ScriptGui {
   
-    ::itk=&global::itk
-
     #--------------------------
     proc ::Init() \
     {
@@ -55,8 +52,8 @@ if (!exists(itkWeightedLocalStatsCLass)) {
       if (::dim == 0){
       
         # compute weighted local mean intensity
-        ::lm = ::itk->LocalMeanImageFilter2D(::input*::weights,::localstats_winsize)
-        ::w_lm    = ::itk->LocalMeanImageFilter2D(::weights,::localstats_winsize)
+        ::lm = itk.LocalMeanImageFilter2D(::input*::weights,::localstats_winsize)
+        ::w_lm    = itk.LocalMeanImageFilter2D(::weights,::localstats_winsize)
 
         # set minimal weight, and divide by weights
         ::w_lm = (::w_lm>::min_weight)*::w_lm+(::w_lm<=::min_weight)*::min_weight
@@ -66,7 +63,7 @@ if (!exists(itkWeightedLocalStatsCLass)) {
         eval "global::"+::output_prefix+"lm <<= ::lm;"
 
         # compute weighted local standard deviation of intensity
-        ::var = ::itk->LocalMeanImageFilter2D(::input*::input*::weights,::localstats_winsize)
+        ::var = itk.LocalMeanImageFilter2D(::input*::input*::weights,::localstats_winsize)
         ::var = ::var/::w_lm 
         ::var = (::w_lm>2*::min_weight)*::var
         ::var = ::var-::lm*::lm
@@ -87,8 +84,8 @@ if (!exists(itkWeightedLocalStatsCLass)) {
         if (::dim == 1) {
         
           # compute weighted local mean intensity
-          ::lm = ::itk->LocalMeanImageFilter3D(::input*::weights,::localstats_winsize)
-          ::w_lm    = ::itk->LocalMeanImageFilter3D(::weights,::localstats_winsize)
+          ::lm = itk.LocalMeanImageFilter3D(::input*::weights,::localstats_winsize)
+          ::w_lm    = itk.LocalMeanImageFilter3D(::weights,::localstats_winsize)
 
           # set minimal weight, and divide by weights
           ::w_lm = (::w_lm>::min_weight)*::w_lm+(::w_lm<=::min_weight)*::min_weight
@@ -98,7 +95,7 @@ if (!exists(itkWeightedLocalStatsCLass)) {
           eval "global::"+::output_prefix+"lm <<= ::lm;"
 
           # compute weighted local standard deviation of intensity
-          ::var = ::itk->LocalMeanImageFilter3D(::input*::input*::weights,::localstats_winsize)
+          ::var = itk.LocalMeanImageFilter3D(::input*::input*::weights,::localstats_winsize)
           ::var = ::var/::w_lm 
           ::var = (::w_lm>2*::min_weight)*::var
           ::var = ::var-::lm*::lm
@@ -136,8 +133,7 @@ if (!exists(itkWeightedLocalStatsCLass)) {
     #--------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("Prob")
+      ::win = ParamPanel("Prob")
 
       ::win.BeginBook()
         ::win.AddPage("Init")

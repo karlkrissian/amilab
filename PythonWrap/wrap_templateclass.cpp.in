@@ -34,7 +34,7 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<${TEMPLATE} >::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<${TEMPLATE} >::CreateVar( ParamList* p, bool quiet)
 {
 ${IMPLEMENT_CREATEVAR}
 }
@@ -80,6 +80,7 @@ void WrapClass${TEMPLATENAME}_AddStaticMethods( Variables::ptr& context)
   ${AddVar_constructor}
   ${AddVar_static_methods}
   ${AddPublicEnums}
+  ${AddPublicTypedefs}
 
   //  add it to the given context
   context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);

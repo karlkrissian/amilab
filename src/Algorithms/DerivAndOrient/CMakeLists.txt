@@ -1,8 +1,10 @@
 
 include_directories (
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
   )
 

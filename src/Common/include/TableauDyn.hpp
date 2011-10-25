@@ -73,7 +73,7 @@ template < class T > class TableauDyn;
 /**
  */
 template<class T>
-ostream& operator<< (ostream&, const TableauDyn<T>& p);
+std::ostream& operator<< (std::ostream&, const TableauDyn<T>& p);
 
 
 //===========================================================================
@@ -164,11 +164,11 @@ public:
   /**
     Acc�s � l'�l�ment n
    */
-#ifdef _MSC_VER
-  T& operator[](int n) const; //throw(OutOfArray);
-#else
+//#ifdef _MSC_VER
+//  T& operator[](int n) const; //throw(OutOfArray);
+//#else
   T& operator[](int n) const throw(OutOfArray);
-#endif
+//#endif
   // ----------
 
 
@@ -236,10 +236,10 @@ public:
 // && !(defined(_linux_))
   /**
    */
-  friend ostream& operator << <>(ostream&, const TableauDyn<T>& p);
+  friend std::ostream& operator << <>(std::ostream&, const TableauDyn<T>& p);
 #else
 
-  friend ostream& operator << (ostream&, const TableauDyn<T>& p);
+  friend std::ostream& operator << (std::ostream&, const TableauDyn<T>& p);
 #endif
 
 }; // TableauDyn<T>
@@ -484,7 +484,7 @@ int TableauDyn<T> :: Position( const T& elt)
 /**
  */
 template<class T>
-ostream& operator << (ostream& os, const TableauDyn<T>& p)
+std::ostream& operator << (std::ostream& os, const TableauDyn<T>& p)
 //       -----------
 {
 

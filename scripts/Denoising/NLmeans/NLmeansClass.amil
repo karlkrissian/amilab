@@ -17,14 +17,9 @@
 func "Common/ScriptGui"
 
 if (!exists(NLmeansClass)) {
-
-  ami_import->Filters()
     
   Class NLmeansClass : public ScriptGui{
   
-    ::class_name ="global::NLmeansClass"
-    ::filters=&global::filters
-            
     #----------------------------
     proc ::Init() \
     {
@@ -152,7 +147,7 @@ if (!exists(NLmeansClass)) {
   
         if (::res0.vdim == 1) {
           InitTime
-          ::res_roi = ::filters->NLmeans((FLOAT)::res0,\
+          ::res_roi = filters.NLmeans((FLOAT)::res0,\
                                 ::t,::f,::h,\
                                 ::noisetype,\
                                 ::threads,\
@@ -167,7 +162,7 @@ if (!exists(NLmeansClass)) {
           ::res_roi.info
           for n=0 to ::res0.vdim-1 {
             printn "** n=%1%" % n
-            ::res_roi.SetComponent( n, ::filters->NLmeans( (FLOAT)::res0[n],\
+            ::res_roi.SetComponent( n, filters.NLmeans( (FLOAT)::res0[n],\
                                       ::t,::f,::h,\
                                       ::noisetype,\
                                       ::threads,\
@@ -189,7 +184,7 @@ if (!exists(NLmeansClass)) {
   
         if (::res0.vdim == 1) {
 
-          printn "running ::filters->NLmeans() with"
+          printn "running NLmeans() with"
           printn "t = %1%" % ::t
           printn "f = %1%" % ::f
           printn "h = %1%" % ::h
@@ -199,7 +194,7 @@ if (!exists(NLmeansClass)) {
           printn "presmooth_SD = %1%" % ::presmooth_SD
           printn "pattern_weight_param = %1%" % ::pattern_weight_param
 
-          ::res = ::filters->NLmeans(::res0,\
+          ::res = filters.NLmeans(::res0,\
                           ::t,::f,::h,\
                           ::noisetype,::threads,\
                           ::filter_type,\
@@ -207,7 +202,7 @@ if (!exists(NLmeansClass)) {
                           ::pattern_weight_param)
         } else {
           for n=0 to ::res0.vdim-1 {
-            ::res.SetComponent( 0, ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
+            ::res.SetComponent( 0, filters.NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
                                   ::filter_type,\
                                   ::presmooth_SD,\
                                   ::pattern_weight_param))
@@ -273,13 +268,13 @@ if (!exists(NLmeansClass)) {
           ::roi.info
           if (::res0.vdim == 1) {
             InitTime
-            ::res_roi = ::filters->NLmeans_fast((FLOAT)::res0,::mf0,::t,::h,::noisetype,::threads)
+            ::res_roi = filters.NLmeans_fast((FLOAT)::res0,::mf0,::t,::h,::noisetype,::threads)
             EndTime
             printn "processing time: "+TimeSpent
           } else {
             ::res_roi = ::res0
             for n=0 to ::res0.vdim-1 {
-              ::res_roi.SetComponent( n, ::filters->NLmeans_fast((FLOAT) ::res0[n],::mf0,::t,::h,::noisetype,::threads))
+              ::res_roi.SetComponent( n, filters.NLmeans_fast((FLOAT) ::res0[n],::mf0,::t,::h,::noisetype,::threads))
             }
           }
           ::res0.info
@@ -303,7 +298,7 @@ if (!exists(NLmeansClass)) {
             printn  sprint(" min=%f ",min(::matchfield))+\
                     sprint(" max=%f ",max(::matchfield))
     
-            ::res = ::filters->NLmeans_fast( ::res0,\
+            ::res = filters.NLmeans_fast( ::res0,\
                                     ::matchfield,\
                                     ::t,\
                                     ::h,\
@@ -312,7 +307,7 @@ if (!exists(NLmeansClass)) {
           } else {
             ::res = ::res0
             for n=0 to ::res0.vdim-1 {
-              ::res.SetComponent( n, ::filters->NLmeans_fast((FLOAT)::res0[n],::matchfield,::t,::h,::noisetype,::threads))
+              ::res.SetComponent( n, filters.NLmeans_fast((FLOAT)::res0[n],::matchfield,::t,::h,::noisetype,::threads))
             }
           }
     
@@ -341,11 +336,11 @@ if (!exists(NLmeansClass)) {
     { 
       InitTime
       if (::res.vdim==1) {
-      ::res <<= ::filters->NewNLmeans(&::res,::t,::f,::h,::threads,::minweight)
+      ::res <<= filters.NewNLmeans(&::res,::t,::f,::h,::threads,::minweight)
       } else {
         for k = 0 to ::res.vdim-1 {
           c = ::res[k]
-          ::res.SetComponent( k, ::filters->NewNLmeans(&c,::t,::f,::h,::threads,::minweight))
+          ::res.SetComponent( k, filters.NewNLmeans(&c,::t,::f,::h,::threads,::minweight))
         }
       }
       EndTime
@@ -359,7 +354,7 @@ if (!exists(NLmeansClass)) {
       InitTime
       if (exists(::noise_roi)) {
     
-          ::res = ::filters->NLmeans_MRI(::res,::noise_roi,\
+          ::res = filters.NLmeans_MRI(::res,::noise_roi,\
                         ::t,::h,::sigma,\
                         ::iterations,::threads)
     
@@ -455,7 +450,7 @@ if (!exists(NLmeansClass)) {
     #----------------------------
     proc ::DisplaySurfaces() \
     {
-      if (::input.tz==1)&&(::input.GetFormat.val != RGB.val) {
+      if (::input.tz==1)&&(::input.GetFormat != RGB.val) {
         if (exists(::input_surf_draw)) { del ::input_surf_draw; }
         if (exists(::res_surf_draw))   { del ::res_surf_draw; }
         if (exists(::input_surf)) { del ::input_surf; }
@@ -513,11 +508,10 @@ if (!exists(NLmeansClass)) {
     proc ::Gui() {
     
       # parameters window
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("NLM",&::parent_panel)
+        ::win = ParamPanel("NLM",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("NLM")
+        ::win = ParamPanel("NLM")
       }
       
       # parameters window

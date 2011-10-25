@@ -3,12 +3,9 @@ func "Common/ScriptGui"
 
 if (!exists(itkSigmoidFilterClass)) {
   
-  global::ami_import.ITK()
   
   Class itkSigmoidFilterClass : public ScriptGui {
     
-    ::itk=&global::itk
-  
     #------------------------------------
     proc ::Init() {
       
@@ -50,9 +47,9 @@ if (!exists(itkSigmoidFilterClass)) {
       ::grad = normgrad(::input,::stand)
       ::g = 1
       if (::dim==0) {
-        ::sigmoid = ::itk->SigmoidImageFilter2D(::grad,::min,::max,::alpha,::beta)			
+        ::sigmoid = itk.SigmoidImageFilter2D(::grad,::min,::max,::alpha,::beta)			
       } else {
-        ::sigmoid = ::itk->SigmoidImageFilter3D(::grad,::min,::max,::alpha,::beta)
+        ::sigmoid = itk.SigmoidImageFilter3D(::grad,::min,::max,::alpha,::beta)
       }      
     }
     
@@ -78,13 +75,13 @@ if (!exists(itkSigmoidFilterClass)) {
     }
     
     #---------------------------------------------------
-    proc ::Gui() {
-      import = &global::ami_import;
+    proc ::Gui() \
+    {
       
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("itkSig",&::parent_panel)
+        ::win = ParamPanel("itkSig",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("itkSig")
+        ::win = ParamPanel("itkSig")
       }
       ::win.BeginBook()
       

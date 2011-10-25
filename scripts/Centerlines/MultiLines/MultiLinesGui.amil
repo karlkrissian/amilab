@@ -6,8 +6,8 @@ func "Centerlines/MultiLines/MultiLinesClass"
 #----------------------------
 
 if (!exists(multilines)) {
-  MultiLinesClass multilines
-  multilines.Gui()
+  MultiLinesClass MultiLines_obj
+  MultiLines_obj.Gui()
   
 } else {
   InfoDialog "The script seems to be already loaded." 

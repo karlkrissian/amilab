@@ -65,10 +65,12 @@
 #ifndef COORDONNEES_HPP
 #define COORDONNEES_HPP
 
-
+#ifdef _MSC_VER
+  #pragma warning(disable:4290)
+#endif // _MSC_VER
 
 #include <iostream>
-using namespace std;
+//using -- namespace std;
 
 #include "math.h"
 #include "style.hpp"
@@ -93,7 +95,7 @@ template <class T>
  Vect2D<T> operator-( Point2D<T>& p1, Point2D<T>& p2);
 
 template <class T>
-ostream& operator<<( ostream&s, Point2D<T>& pt);
+std::ostream& operator<<( std::ostream&s, Point2D<T>& pt);
 
 //==============================================================
 /**
@@ -156,7 +158,7 @@ public:
 
   /**
    */
-  friend ostream& operator<< <> ( ostream&s, Point2D<T>& pt);
+  friend std::ostream& operator<< <> ( std::ostream&s, Point2D<T>& pt);
 
 #else
 
@@ -170,7 +172,7 @@ public:
   /**
    */
   friend 
-  ostream& operator<<  ( ostream&s, Point2D<T>& pt);
+  std::ostream& operator<<  ( std::ostream&s, Point2D<T>& pt);
 
 #endif
 
@@ -183,7 +185,7 @@ template <class T> T Norme( Vect2D<T>&);
 
 /**
  */
-template <class T> ostream& operator<<( ostream&s, Vect2D<T>& pt);
+template <class T> std::ostream& operator<<( std::ostream&s, Vect2D<T>& pt);
 
 /**
   soustraction de 2 Vecteurs
@@ -280,7 +282,7 @@ public:
 
   /**
    */
-  friend ostream& operator<< <>( ostream&s, Vect2D<T>& pt);
+  friend std::ostream& operator<< <>( std::ostream&s, Vect2D<T>& pt);
 
   /**
     soustraction de 2 Vecteurs
@@ -322,7 +324,7 @@ public:
 
   /**
    */
-  friend ostream& operator<< ( ostream&s, Vect2D<T>& pt);
+  friend std::ostream& operator<< ( std::ostream&s, Vect2D<T>& pt);
 
   /**
     soustraction de 2 Vecteurs
@@ -373,7 +375,7 @@ Vect2D<T> operator-( Point2D<T>& p1, Point2D<T>& p2)
 /**
  */
 template < class T >
-ostream& operator<<( ostream&s, Point2D<T>& pt)
+std::ostream& operator<<( std::ostream&s, Point2D<T>& pt)
 //       ----------
 {
   return s << '(' << pt.x << ',' << pt.y << ')';
@@ -402,7 +404,7 @@ T  Norme( Vect2D<T>& v)
 /**
  */
 template < class T >
-ostream& operator<<( ostream&s, Vect2D<T>& v)
+std::ostream& operator<<( std::ostream&s, Vect2D<T>& v)
 //       ----------
 {
   return s << '(' << v.x << ',' << v.y << ')';
@@ -518,7 +520,7 @@ template <class T>
 /**
  */
 template <class T>
-  ostream& operator<<( ostream&s, Point_3D<T>& pt);
+  std::ostream& operator<<( std::ostream&s, Point_3D<T>& pt);
 
 
 //==============================================================
@@ -630,7 +632,7 @@ public:
 
   /**
    */
-  friend ostream& operator<< <>( ostream&s, Point_3D<T>& pt);
+  friend std::ostream& operator<< <>( std::ostream&s, Point_3D<T>& pt);
 
 #else
   /**
@@ -654,7 +656,7 @@ public:
 
   /**
    */
-  friend ostream& operator<< ( ostream&s, Point_3D<T>& pt);
+  friend std::ostream& operator<< ( std::ostream&s, Point_3D<T>& pt);
 
 #endif
 
@@ -679,7 +681,7 @@ template <class T>
 /**
  */
 template <class T>
-  ostream& operator<<( ostream& s, const Vect3D<T>& pt);
+  std::ostream& operator<<( std::ostream& s, const Vect3D<T>& pt);
 
 /**
     soustraction de 2 Vecteurs
@@ -825,7 +827,7 @@ public:
 
   /**
    */
-  friend ostream& operator<< <>( ostream&s, const Vect3D<T>& pt);
+  friend std::ostream& operator<< <>( std::ostream&s, const Vect3D<T>& pt);
 
   /**
     soustraction de 2 Vecteurs
@@ -883,7 +885,7 @@ friend Vect3D<T> operator* <>( const Vect3D<T>&, T);
 
   /**
    */
-  friend ostream& operator<< ( ostream&s, const Vect3D<T>& pt);
+  friend std::ostream& operator<< ( std::ostream&s, const Vect3D<T>& pt);
 
   /**
     soustraction de 2 Vecteurs
@@ -970,7 +972,7 @@ Vect3D<T> operator-( const Point_3D<T>& p1, const Point_3D<T>& p2)
 /**
  */
 template < class T >
-ostream& operator<<( ostream&s, Point_3D<T>& pt)
+std::ostream& operator<<( std::ostream&s, Point_3D<T>& pt)
 //       ----------
 {
   return s << '(' 
@@ -1010,7 +1012,7 @@ T  Norme2( const Vect3D<T>& v)
 /**
  */
 template < class T >
-ostream& operator<<( ostream&s, const Vect3D<T>& v)
+std::ostream& operator<<( std::ostream&s, const Vect3D<T>& v)
 //       ----------
 {
   return s << '(' 

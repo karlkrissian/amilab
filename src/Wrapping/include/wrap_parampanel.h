@@ -23,13 +23,14 @@
 
 #include "ParamPanel.hpp"
 
+#include "wrap_wxScrolledWindow.h"
 #include "wrap_wxWindow.h"
 #include "wrap_wxNotebook.h"
 
 AMI_DECLARE_TYPE(ParamPanel)
 
 
-class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWindow
+class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxScrolledWindow
 {
   DEFINE_CLASS(WrapClass_ParamPanel);
 
@@ -40,7 +41,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
 
   public:
     /// Constructor
-    WrapClass_ParamPanel(boost::shared_ptr<ParamPanel> pp):  WrapClass<ParamPanel>(pp), WrapClass_wxWindow(pp)
+    WrapClass_ParamPanel(boost::shared_ptr<ParamPanel> pp):  WrapClass<ParamPanel>(pp), WrapClass_wxScrolledWindow(pp)
     {}
 
     /// Create a variable from a standard pointer
@@ -104,9 +105,6 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
 
     void AddMethods(WrapClass<ParamPanel>::ptr this_ptr )
     {
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
-      parent_obj->AddMethods(parent_obj);
 
       AddVar_GetBookCtrl(       this_ptr);
       AddVar_BeginBook(         this_ptr);
@@ -155,6 +153,26 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
       AddVar_CurrentParent(    this_ptr);
       AddVar_GetCurrentSizer(  this_ptr);
       AddVar_AddWidget(        this_ptr);
+
+      // Adding Bases
+//       // Add members from wxWindow
+//       WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
+//       parent_obj->AddMethods(parent_obj);
+
+      // Add public fields 
+      AMIObject::ptr tmpobj(amiobject.lock());
+      if (!tmpobj.get()) return;
+      Variables::ptr context(tmpobj->GetContext());
+
+      // Add base parent wxScrolledWindow
+      boost::shared_ptr<wxScrolledWindow > parent_wxScrolledWindow(  boost::dynamic_pointer_cast<wxScrolledWindow >(this_ptr->GetObj()));
+      BasicVariable::ptr var_wxScrolledWindow = AMILabType<wxScrolledWindow>::CreateVarFromSmtPtr(parent_wxScrolledWindow);
+      context->AddVar("wxScrolledWindow",var_wxScrolledWindow);
+      // Set as a default context
+      Variable<AMIObject>::ptr obj_wxScrolledWindow = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxScrolledWindow);
+      context->AddDefault(obj_wxScrolledWindow->Pointer()->GetContext());
+
+      
     }
 
 };

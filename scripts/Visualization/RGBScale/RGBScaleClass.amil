@@ -14,7 +14,6 @@ if (!exists(RGBScaleClass)) {
 
   Class RGBScaleClass : public ScriptGui {
 
-    ::ami_import = &global::ami_import
     #----------------------------
     proc ::Init() \
     {
@@ -114,8 +113,7 @@ if (!exists(RGBScaleClass)) {
     proc ::Gui() {
     
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("RGB")
+      ::win = ParamPanel("RGB")
       
       ::win.BeginBook()
     

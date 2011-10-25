@@ -39,8 +39,8 @@
 #define vector(b,e) new float[e-b+2];
 #define free_vector(v) delete [] v;
 
-#define ROTATE(a,i,j,k,l) g=a[i][j]; h=a[k][l]; a[i][j]=g-s*(h+g*tau); \
-  a[k][l]=h+s*(g-h*tau);
+#define ROTATE(a,i,j,k,l) g=a[i][j]; h=a[k][l]; a[i][j]=(float)(g-s*(h+g*tau)); \
+  a[k][l]=(float)(h+s*(g-h*tau));
 
 
 int jacobi(float** a, int n, float d[], float** v, int *nrot)
@@ -74,8 +74,8 @@ int jacobi2(float** a, int n, float d[], float** v, int *nrot,
 
 {
   int   j,iq,ip,i;
-  float tresh,theta,tau,t,sm,s,h,c;
-  float g;
+  double tresh,theta,tau,t,sm,s,h,c;
+  double g;
 
   // Initialize to identity matrix
   for(ip=0;ip<n; ip++) {
@@ -140,11 +140,11 @@ int jacobi2(float** a, int n, float d[], float** v, int *nrot,
     s=t*c;
     tau=s/(1.0+c);
     h=t*a[ip][iq];
-    z[ip] -= h;
-    z[iq] += h;
-    d[ip] -= h;
-    d[iq] += h;
-    a[ip][iq] = 0.0;
+    z[ip] -= (float)h;
+    z[iq] += (float)h;
+    d[ip] -= (float)h;
+    d[iq] += (float)h;
+    a[ip][iq] = (float)0.0;
     for(j=0;j<=ip-1;j++) {
       // Case of rotations 1<=j<p
       ROTATE(a,j,ip,j,iq)

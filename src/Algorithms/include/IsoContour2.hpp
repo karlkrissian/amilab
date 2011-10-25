@@ -71,7 +71,7 @@
 #define TOPOLOGY_THINNING            1
 
 //#include <WinNt>
-#include <iostream>
+#include <iosfwd>
 //#include "style.hpp"
 #include "math1.hpp"
 #include "chaine.hpp"

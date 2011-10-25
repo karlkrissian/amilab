@@ -25,7 +25,7 @@
 #include "wrapfunction_class.h"
 
 
-#include "driver.h"
+//#include "driver.h"
 
 
 extern void CB_delete_variable( void* var);
@@ -35,7 +35,7 @@ extern void CB_delete_varlist( void* var);
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<GLTransfMatrix>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<GLTransfMatrix>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_GLTransfMatrix::wrap_GLTransfMatrix construct;
   return construct.CallMember(p);
@@ -102,7 +102,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 void WrapClass_GLTransfMatrix::
       wrap_save::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"Image name.");
+  ADDPARAMCOMMENT_TYPE(std::string,"Image name.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_GLTransfMatrix::
@@ -113,7 +113,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sImageName,"");
+  GET_PARAM(std::string,sImageName,"");
 
   if(sImageName != "")
   {
@@ -135,7 +135,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 void WrapClass_GLTransfMatrix::
       wrap_read::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"Image name.");
+  ADDPARAMCOMMENT_TYPE(std::string,"Image name.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_GLTransfMatrix::
@@ -146,7 +146,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sImageName,"");
+  GET_PARAM(std::string,sImageName,"");
 
   if(sImageName != "")
   {

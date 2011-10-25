@@ -56,6 +56,7 @@ class ArgInfo:
     substvar = self.GetSubstName()
     res = "  "
     required="true"
+    noconstr="false"
     if self.default!=None and self.implement_default:
       if config.types[self.typeid].GetContext()!=None:
         contextid = config.types[self.typeid].GetContext()
@@ -70,8 +71,8 @@ class ArgInfo:
     else:
       res +=   "{0} {1}".format(substype,substvar)
     res += ";\n"
-    res +=  "  if (!AMILabType<{0} >::get_val_param({1},_p,_n,{3},{4})) {2};\n".format( \
-        substype,substvar,self.returnstring,required,self.quiet)
+    res +=  "  if (!AMILabType<{0} >::get_val_param({1},_p,_n,{3},{4},{5})) {2};\n".format( \
+        substype,substvar,self.returnstring,required,noconstr,self.quiet)
     res +=  "  "+typesubst.ConvertValTo(self.typeid,substvar,self.name)+"\n"
     #{1} {0} = ({1}) ({2}>0.5);\n".format(self.name,typename,substvar)
     return res
@@ -87,9 +88,13 @@ class ArgInfo:
         required="false"
       res += ";\n"
       shared_type = config.IsSharedPtr(self.typename)
+      if noconstructor_call:
+        noconstr="true"
+      else:
+        noconstr="false"
       if shared_type==None:
-        res += "  if (!AMILabType<{0} >::get_val_param({1},_p,_n,{3},{4})) {2};\n".format(\
-          self.typename,self.name,self.returnstring,required,self.quiet)
+        res += "  if (!AMILabType<{0} >::get_val_param({1},_p,_n,{3},{4},{5})) {2};\n".format(\
+          self.typename,self.name,self.returnstring,required,noconstr,self.quiet)
       else:
         # false parameter value to keep smart pointer deleter
         res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1},_p,_n,{3},false,{4})) {2};\n".format(\
@@ -263,7 +268,7 @@ class ArgInfo:
     if config.types[self.typeid].GetRealType()=="PointerType":
       if config.types[self.typeid].GetFullString().endswith("* *"):
         res =  self.WrapGetParamDoublePointer(noconstructor_call)
-        print "res= ",res
+        #print "res= ",res
         return res
       else:
         return self.WrapGetParamPointer(noconstructor_call)

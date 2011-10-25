@@ -13,7 +13,6 @@ if (!exists(SyntheticPVEImages_display)) {
     SyntheticPVEImages_display.SetDisplayedName("&SyntheticPVEImages")
     SyntheticPVEImages_display.SetHelp("Create synthetic images with partial effect (2D & 3D)")
 
-    ami_import.System(); 
     SyntheticPVEImages_display.SetIcon16( op_system.GetCurrentScriptDir()+"/PVEicon16.png")
     SyntheticPVEImages_display.SetIcon32( op_system.GetCurrentScriptDir()+"/PVEicon32.png")
 

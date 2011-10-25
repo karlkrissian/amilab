@@ -357,7 +357,7 @@ void IsoContour :: RechercheContours( InrImage* image)
 
     FinPour
     FinPour
-    Si verbose Alors
+    Si GB_verbose Alors
       Si x > 0 Alors
         printf("\b\b\b");
       Sinon
@@ -388,7 +388,7 @@ void IsoContour :: ParcoursContour( int x, int y, int z,  int num,  int* taille)
 
   max_points = 0;
 
-//  Si verbose AlorsFait
+//  Si GB_verbose AlorsFait
 //   std::cout << "Parcours du contour numero " << num << std::endl;
 
   propage.Init( x,y,z);
@@ -852,7 +852,7 @@ catch (CalculAireSection::LimitesAtteintes)
 
       rayon      = sqrt(surf_interp[p]/PI);
 
-      Si verbose Alors
+      Si GB_verbose Alors
        std::cout << "=============================" << std::endl;
        std::cout << " z = " << p << "\t";
        std::cout << " rayon 3D = " << rayon << std::endl;
@@ -868,7 +868,7 @@ catch (CalculAireSection::LimitesAtteintes)
           diam_2D[p] = 0;
         FinSi
 
-        Si verbose Alors
+        Si GB_verbose Alors
          std::cout << std::endl;
          std::cout << " diam initial = " << diam_3D[p]
     	       << " diam corrige = " << diam_2D[p]
@@ -1065,7 +1065,7 @@ catch (CalculAireSection::LimitesAtteintes)
 {
   rayon = sigma0 = 0;
 }
-  Si verbose Alors
+  Si GB_verbose Alors
 
     Si ( (0.55*rayon)*(0.55*rayon) -
          _sigma_correction*_sigma_correction) > 0

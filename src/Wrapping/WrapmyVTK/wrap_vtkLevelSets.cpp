@@ -16,6 +16,13 @@
 //#include "wrapfunctions_draw.h"
 #include "ami_class.h"
 #include "ami_object.h"
+
+#ifndef AMIObject_declared
+  #define AMIObject_declared
+  AMI_DECLARE_TYPE(AMIObject);
+#endif
+
+
 #include "vtkLevelSets.h"
 #include "wrap_vtkLevelSets.h"
 #include "MainFrame.h"
@@ -52,7 +59,7 @@ static vtkUpdateProgressBar update_progressbar;
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<vtkLevelSets>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<vtkLevelSets>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_vtkLevelSets::wrap_vtkLevelSets construct;
   return construct.CallMember(p);

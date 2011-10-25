@@ -33,6 +33,7 @@
 
 #ifdef AMI_USE_ITK
 
+#include <stddef.h>
 #include "itkImage.h"
 #include "itkImageIOBase.h"
 #include "itkImageFileReader.h"

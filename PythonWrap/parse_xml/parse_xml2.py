@@ -38,6 +38,7 @@ import wrap_class
 import parse_function
 import wrap_function
 
+import generate_html #HTML generate file functions
 import pickle
   
 def FindAvailableClasses():
@@ -158,6 +159,7 @@ def WrapMethodTypePointer(typedefname,include_file):
     line = line.replace("${AddVar_constructor}",  "")
     line = line.replace("${AddVar_static_methods}",  "")
     line = line.replace("${WRAP_PUBLIC_METHODS}",impl)
+    line = line.replace("${AddPublicTypedefs}","")
     print line,
   wrap_class.BackupFile(header_filename)
   wrap_class.BackupFile(impl_filename)
@@ -173,6 +175,10 @@ if __name__ == '__main__':
     # add the user defined classes
     for cl in args.val.available_classes:
       config.available_classes.append(cl)
+    for cl in args.val.available_external_classes:
+      config.available_classes.append(cl)
+    for cl in config.available_builtin_classes:
+      config.available_classes.append(cl)
     FindAvailableClasses()
     print "available classes:", config.available_classes
     
@@ -182,7 +188,14 @@ if __name__ == '__main__':
 
 
     if not(os.path.exists(args.val.outputdir)):
-      os.mkdir(args.val.outputdir)
+      try:
+        os.mkdir(args.val.outputdir)
+      except:
+        # create temporary directory
+        prev = args.val.outputdir
+        import tempfile
+        args.val.outputdir=tempfile.mkdtemp("wrap")
+        print "{0} failed: switch to temporary output directory {1}".format(prev,args.val.outputdir)
 
     # Create a parser
     parser = make_parser()
@@ -194,6 +207,9 @@ if __name__ == '__main__':
     if args.val.libname=="vtk":
       import vtk_lib
       config.libmodule = vtk_lib.config
+    if args.val.libname=="itk":
+      import itk_lib
+      config.libmodule = itk_lib.config
     if args.val.libname=="mt":
       import mt_lib
       config.libmodule = mt_lib.config
@@ -243,10 +259,32 @@ if __name__ == '__main__':
         #print "typedef : {0}".format(typedef_dict[f])
       #print typedef_dict
       
+      #print "--------------------"
+      #print classes_dict.values()
+      #print "--------------------"
+      
       print "Creating ancestors"
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
-      for b in args.val.ancestors:
+      # 3. expand ancestor to classes within templates
+      ancestors_templates = ancestors[:]
+      for b in ancestors:
+        if wrap_class.IsTemplate(b):
+          #print "Looking for additional types in ", b
+          ttypes=[]
+          config.templatetypes(b,ttypes)
+          #print ttypes
+          for nt in ttypes:
+            #print "  Searching for '{0}'".format(nt)
+            if nt not in ancestors_templates:
+              if nt in classes_dict.values():
+                ancestors_templates.append(nt)
+                #print "    added ..."
+              #else:
+                #print "    not in classes_dict.values()"
+      print "New ancestors list = ",ancestors_templates
+      ancestors = ancestors_templates[:]
+      for b in ancestors:
         #print "b=",b
         # find the class corresponding to typedefs
         #for k in typedef_dict.keys():
@@ -283,6 +321,8 @@ if __name__ == '__main__':
                 #print classes_dict[anc_id] not in config.classes_blacklist
                 if  classes_dict[anc_id] not in ancestors and  \
                     classes_dict[anc_id] not in config.classes_blacklist and\
+                    (classes_dict[anc_id] not in args.val.available_external_classes) and \
+                    (classes_dict[anc_id] not in config.available_builtin_classes) and\
                     ( (not wrap_class.IsTemplate(classes_dict[anc_id])) \
                       or args.val.templates ):
                   m = re.match(args.val.filter, classes_dict[anc_id])
@@ -308,8 +348,12 @@ if __name__ == '__main__':
       for a in ancestors:
         f.write(a+"\n")
       if(args.val.generate_html):
-        wrap_class.generate_html.Initialization(args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
-        wrap_class.generate_html.GenerateHTMLClassesFile(ancestors)
+        generate_html.obj.Initialization( args.val.templatefile_dir, \
+                                          args.val.outputhtmldir,\
+                                          "index.html",\
+                                          args.val.url,\
+                                          args.val.libname)
+        generate_html.obj.GenerateHTMLClassesFile(ancestors)
       sys.exit(0)
 
     if (args.val.profile):
@@ -342,7 +386,15 @@ if __name__ == '__main__':
     #WrapMethodTypePointer("wxCommandEventFunction",include_file)
     #WrapMethodTypePointer("wxObjectEventFunction",include_file)
     
-    config.needed_classes = args.val.classes
+    config.needed_classes = []
+    
+    #if the needed class is already available, don't wrap it
+    for cl in args.val.classes:
+      if  (cl not in args.val.available_external_classes) and \
+          (cl not in config.available_builtin_classes):
+        config.needed_classes.append(cl)
+        #print "Adding class {0}".format(cl)
+    
     # in case of update option, add all the classes found in the files
     # and that match the library filter
     if args.val.update:
@@ -359,29 +411,41 @@ if __name__ == '__main__':
   
     n=0
     nmax=args.val.max
+    #print "Maximum classes set to {0}".format(nmax)
     while (len(config.needed_classes)>0) and (n<nmax):
       #print "\n\n needed classes:", config.needed_classes, "\n\n"
       cl = config.needed_classes.pop()
       #print "Class: {0} \t usedname: {1}".format(cl,wrap_class.ClassUsedName(cl))
       config.include_list = []
       config.declare_list = []
-      wrap_class.HTMLInitialization(args.val.generate_html,args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
+      wrap_class.HTMLInitialization(  args.val.generate_html, \
+                                      args.val.templatefile_dir, \
+                                      args.val.outputhtmldir, \
+                                      "index.html", \
+                                      args.val.url, \
+                                      args.val.libname)
       wrap_class.WrapClass(cl,include_file,inputfile)
       config.wrapped_classes.append(cl)
       if args.val.r:
         for c in config.new_needed_classes:
           # check if templates are discarded
           if (not wrap_class.IsTemplate(c)) or args.val.templates:
-            if (c != cl) and (c not in config.incomplete_classes) and (c not in config.needed_classes):
+            if  (c != cl) and \
+                (c not in config.incomplete_classes) and \
+                (c not in config.needed_classes):
               m = re.match(args.val.filter, c)
               if m != None:
-                if c not in config.available_classes: number_of_newclasses = number_of_newclasses + 1
+                if c not in config.available_classes: 
+                  number_of_newclasses = number_of_newclasses + 1
                 config.needed_classes.append(c)
         config.new_needed_classes=[]
       #print "*** "
       utils.WarningMessage( "*** Wrapped Class Number: {0}".format(n))
       #print "*** "
       n = n+1
+
+    if n>=nmax:
+      print "WARNING: Exceeding the maximum number of classes to wrap which is set to {0} !!\n".format(nmax)
 
     utils.WarningMessage( "new classes: {0}".format(number_of_newclasses))
     if number_of_newclasses > 0:
@@ -390,7 +454,12 @@ if __name__ == '__main__':
         for cl in config.wrapped_classes:
           config.include_list = []
           config.declare_list = []
-          wrap_class.HTMLInitialization(args.val.generate_html,args.val.templatefile_dir, args.val.outputhtmldir, "index.html", args.val.url, args.val.libname)
+          wrap_class.HTMLInitialization(  args.val.generate_html,\
+                                          args.val.templatefile_dir, \
+                                          args.val.outputhtmldir, \
+                                          "index.html", \
+                                          args.val.url, \
+                                          args.val.libname)
           wrap_class.WrapClass(cl,include_file,inputfile)
 
     utils.WarningMessage( "Wrapped classes: {0}".format(config.wrapped_classes))
@@ -417,7 +486,8 @@ if __name__ == '__main__':
       f.write("\n")
       f.write('#include "Variables.hpp"\n')
       f.write("\n")
-      f.write("void wrap_{0}_classes( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("void wrap_{0}_classes  ( Variables::ptr& context);\n".format(args.val.libname))
+      f.write("void wrap_{0}_functions( Variables::ptr& context);\n".format(args.val.libname))
       f.write("\n")
       f.write("#endif // _addwrap_{0}_h_\n".format(args.val.libname))
       f.close()
@@ -442,20 +512,37 @@ if __name__ == '__main__':
       # -- list the library classes (based on the filter)
       lib_classes = []
       for cl in config.available_classes:
-        m = re.match(args.val.filter, cl)
-        if m != None:
-          lib_classes.append(cl)
+        if  (cl not in args.val.available_external_classes) and (cl not in config.available_builtin_classes):
+          m = re.match(args.val.filter, cl)
+          if m != None:
+            lib_classes.append(cl)
 
       # sort alphabetically
       lib_classes.sort()
-
       f.write('#include "addwrap_{0}.h"\n'.format(args.val.libname))
       f.write('#include "{0}"\n'.format(include_file))
-      f.write('\n')
+
+      f.write("\n")
       f.write("// Currently {0} objects (classes,structures,typedefs,...) are wrapped \n".format(len(lib_classes)))
       for cl in lib_classes:
         #f.write('#include "wrap_{0}.h"\n'.format(cl))
         f.write('extern void WrapClass{0}_AddStaticMethods( Variables::ptr&);\n'.format(config.ClassUsedName(cl)))
+      f.write("\n")
+
+      # -- list the library functions (based on the filter)
+      lib_functions = []
+      for func in  args.val.available_functions:
+        # TODO: check that the function is valid
+        lib_functions.append(func)
+
+      # sort alphabetically
+      lib_functions.sort()
+
+      f.write('\n')
+      f.write("// Currently {0} functions are wrapped \n".format(len(lib_functions)))
+      for func in lib_functions:
+        f.write('#include "wrap_{0}.h"\n'.format(config.ClassUsedName(func)))
+        #f.write('extern void WrapClass{0}_AddStaticMethods( Variables::ptr&);\n'.format(config.ClassUsedName(cl)))
       f.write("\n")
 
       # Add an enumeration value
@@ -491,6 +578,21 @@ if __name__ == '__main__':
       f.write("  wrap_macros(context);\n")
       f.write("}\n")
       
+      # Wrap all functions in a context
+      f.write("/*\n")
+      f.write(" * Adding all the wrapped functions to the library context.\n")
+      f.write(" * @param context the library context.\n")
+      f.write(" */\n")
+      f.write("void wrap_{0}_functions( Variables::ptr& context)\n".format(args.val.libname))
+      f.write("{\n")
+      f.write("\n")
+
+      f.write("\n")
+      for cl in lib_functions:
+        f.write("  AddVar_{0}( context);\n".format(config.ClassUsedName(cl)))
+        
+      f.write("\n")
+      f.write("}\n")
       
       f.write("static void wrap_enums( Variables::ptr& context)\n".format(args.val.libname))
       f.write("{\n")
@@ -535,6 +637,8 @@ if __name__ == '__main__':
       # Add variables and macros
       if args.val.libname=="wx":
         wx_lib.create_macros.CreateMacros(inputfile,f)
+      if args.val.libname=="vtk":
+        vtk_lib.create_macros.CreateMacros(inputfile,f)
       f.write("}\n")
       f.write("\n")
       
@@ -546,7 +650,7 @@ if __name__ == '__main__':
     needed_functions = args.val.functions
     wrapped_functions=[]
     while len(needed_functions)>0:
-      print "\n\n needed functions:", needed_functions, "\n\n"
+      #print "\n\n needed functions:", needed_functions, "\n\n"
       func = needed_functions.pop()
       print "Function: {0} ".format(func)
       config.include_list = []

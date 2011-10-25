@@ -77,7 +77,7 @@ image_series=image_series+"_CLA_"
 print "*\n"
 
 # for raw data
-#i48_0 = ReadRawImages(1024,1024,USHORT,0, \
+#i48_0 = ReadRawImages(1024,1024,USHORT.val,0, \
 #                      sprint(visualimageformat,image_number),\
 ##                      "WP01/package_02_LMD/images/NAtl_c0.81."+image_number,\
 #                      0,0)
@@ -100,7 +100,7 @@ sgm = 1
 global_mask.putimage(sgm)
 del sgm
 
-#i48 = ReadRawImages(1024,1024,USHORT,0,dir+,0,0)
+#i48 = ReadRawImages(1024,1024,USHORT.val,0,dir+,0,0)
 c48_0 = IO.ReadRawImages2D( 1024, 1024, UCHAR.val,  0,  dir+image_series+"scene_analysis."+image_number, 0, 0 )
 c48=c48_0[i48]
 t48_0 = IO.ReadRawImages2D( 1024, 1024, SHORT.val, 0,  dir+ image_series+"cloud_top_temp."+image_number, 0, 0 )
@@ -701,8 +701,7 @@ proc CB_mask() {
 }
 
 # Arrow Parameters
-win_import = &global::ami_import;
-arrow = import->ParamPanel("Arrow Parameters")
+arrow = ParamPanel("Arrow Parameters")
 arrowstyle_id     = win_arrow.AddInt( &arrow_style,  "arrow_style", 0,2)
 arrowbasesize_id  = win_arrow.AddFloat( &arrow_basesize,  "arrow_basesize", 0.01,0.4)
 arrowheadsize_id  = win_arrow.AddFloat( &arrow_headsize,  "arrow_headsize", 0.01,0.4)
@@ -712,8 +711,7 @@ win_arrow.Update()
 proc CB_ArrowParam() {  win_arrow.Display(); }
 
 # Vector Parameters
-win_import = &global::ami_import;
-vectors = import->ParamPanel("Vector Parameters")
+vectors = ParamPanel("Vector Parameters")
 dense_id           =  win_vectors.AddBoolean( &densevectors)
 vector_scale_id    =  win_vectors.AddInt( &vector_scale,  "vector_scale", 1,20)
 vectorspacingx_id  =  win_vectors.AddInt( &vector_spacing_x,  "vector_spacing_x", 1,20)

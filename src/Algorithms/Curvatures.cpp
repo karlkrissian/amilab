@@ -137,7 +137,7 @@ void Curvatures::ComputeCurvatures( InrImage* image_initiale,
 
   
     InrImage* image_entree;
-    char      resname[100];
+    //char      resname[100];
     DeriveesLissees* DerLiss;
 
 

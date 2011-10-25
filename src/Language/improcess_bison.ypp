@@ -16,7 +16,9 @@
 #include "MainFrame.h"
 
 // use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
-#define NOMINMAX
+#ifndef NOMINMAX
+  #define NOMINMAX
+#endif
 
 #include <iomanip>
 #include <cassert>
@@ -50,7 +52,16 @@
 
 #include "CoutwxString.h"
 #include "fonctions.h"
+#include "StructureTensor.h"
+#include "HessianMatrix.h"
+#include "Eigen3D.h"
+#include "DiscSecDerGrad.h"
+#include "NormGrad.h"
+#include "DiscNormGrad.h"
+#include "DiscMeanCurvature.h"
+#include "ImageDerivatives.h"
 #include "func_isoline.hpp"
+#include "DistanceTransforms.h"
 
 #include "ami_function.h"
 #include "ami_class.h"
@@ -63,7 +74,7 @@
 #include "wrapAMIFluid.h"
 #include "wrapVTK.h"
 #include "wrapITK.h"
-#include "wrap_wxfunctions.h"
+//#include "wrap_wxfunctions.h"
 //#include "wrap_MainFrame.h"
 //#include "wrap_imagedraw.h"
 #include "itkCannyEdgeDetector.h"
@@ -99,7 +110,7 @@
 #include "CompareImage.hpp"
 #include "bruit.hpp"
 #include "CalculAireSection.hpp"
-#include "reponse_cercle.hpp"
+#include "CalculRepCercle.hpp"
 #include "ShortestPathClass.h"
 #include "WrapOld_AnisoGS.h"
 #include "LevelSetsCURVES.h"
@@ -112,18 +123,28 @@
 //#include "histo.hpp"
 
 
-extern VarContexts       Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 //Duree            IP_time;
 
-extern MainFrame*   GB_main_wxFrame;
-extern wxApp*       GB_wxApp;
-extern int          GB_argc;
+/*
+#if defined(WIN32)
+  #define AMILAB_VAR_IMPORT __declspec( dllimport )
+#else
+  #define AMILAB_VAR_IMPORT extern
+#endif
 
-extern int       GB_num_arg_parsed;
-extern wxString  GB_scripts_dir;
-extern wxString  GB_help_dir;
+AMILAB_VAR_IMPORT MainFrame*   GB_main_wxFrame;
+AMILAB_VAR_IMPORT wxApp*       GB_wxApp;
+AMILAB_VAR_IMPORT int          GB_argc;
 
+AMILAB_VAR_IMPORT int       GB_num_arg_parsed;
+AMILAB_VAR_IMPORT wxString  GB_scripts_dir;
+AMILAB_VAR_IMPORT wxString  GB_help_dir;
+*/
+
+#include "amilab_global_import.h"
 
 namespace AMIFluid {
 extern char* FLUID_NAVIGATION_FILE;
@@ -134,12 +155,13 @@ DessinImage* CreateIDraw(  const std::string& title, InrImage::ptr image);
 // Creation of a DessinImage pointer
 // this function is distinct if compiling with all amilab
 
-extern yyip::Driver GB_driver;
+#include "language_global_import.h"
 
-extern unsigned char        GB_debug;
-extern unsigned char        GB_verbose;
-extern unsigned char        verbose;
-extern unsigned char        GB_nofile;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT unsigned char GB_verbose;
+COMMON_VAR_IMPORT unsigned char GB_nofile;
+
 
 extern char program[80];
 
@@ -372,8 +394,9 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
   int                     aint;
   ParamList*              paramlist; // here smart pointer
                             // not allowed in union ...
-  ParamListDecl*          paramlistdecl;
-  std::list<std::string>* string_list;
+  ParamListDecl*              paramlistdecl;
+  std::list<std::string>*     string_list;
+  std::vector<AMIClass::ptr>* class_list;
 }
 
 %token LEX_ERROR
@@ -398,7 +421,6 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_AND
 %token T_OR
 
-%token T_POINT
 %token T_COMMA
 %token T_QUEST
 %token T_COLON
@@ -424,7 +446,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token END_INSTRUCTION
 
 %token T_Image T_BrowseImage
-%token T_ReadRawImages
+//%token T_ReadRawImages
 //%token T_Transform
 %token SHOW HELP QUIT T_HIDE
 %token PRINT PRINTN
@@ -433,12 +455,12 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_SPRINT
 %token ASHELL LS
 
-%token T_SetName
-%token T_GetName
+%token T_point_SetImageName
 %token T_GetObjectName
 
 %token ASTRING ABLOCK NUMBER
 %token IDENTIFIER
+%token POINT_IDENTIFIER
 %token PROCESSED_VAR
 %token VAR_IMAGE  VAR_STRING
 //%token VAR_SURFDRAW VAR_MATRIX
@@ -466,8 +488,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_wait
 %token T_schedule
 
-%token T_SetComponent
-%token T_GetExtent
+%token T_point_SetComponent
 
 %token RIGHT_ASSIGN LEFT_ASSIGN ADD_ASSIGN
 %token SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN
@@ -485,7 +506,8 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_MEDIAN
 
 %token OpImage  FILTER NormGrad T_DiscNormGrad T_gradient
-%token SecDerGrad SecDerGrad2 SubImage PutImage
+%token SecDerGrad SecDerGrad2 SubImage 
+%token T_point_putimage
 %token T_AutoCrop
 %token T_DiscSecDerGrad
 //%token T_EDPdilate T_EDPerode T_EDPopen T_EDPclose
@@ -514,12 +536,14 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_AnisoDPAD2
 %token T_AnisoNRAD
 %token T_AnisoRudinMult
-%token TInit TIterate TEnd TAddGaussNoise T_SNR
+%token T_point_Init 
+%token T_point_iterate T_point_end 
+%token TAddGaussNoise T_SNR
 %token T_info
-%token T_save
-%token T_normalize
-%token T_OrientField
-%token T_OrientPositive
+%token T_point_info
+%token T_point_save
+%token T_point_OrientField
+%token T_point_OrientPositive
 %token T_2DFlux
 %token T_OutFlux
 %token T_OutFluxScalar
@@ -547,9 +571,10 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_HessianEVal
 %token T_Derivatives
 %token T_Laplacian
+%token T_point_setvoxelsize
 %token T_setvoxelsize
-%token T_settranslation
-%token T_setendianness
+%token T_point_settranslation
+%token T_point_setendianness
 
 %token T_Skeleton2lines
 %token T_SmoothLines
@@ -619,35 +644,14 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 
 %token T_vtkDist T_AndreDist
 %token T_Surface
-//%token T_getimage
-//%token T_GetImageFromX
-//%token T_rotate
-//%token T_computeCC T_drawCC
 %token T_computeCC
-//%token T_addobj T_setcurrentobj
 %token T_writeVRML T_writeVTK
-//%token T_Paint
 %token T_SetLight T_SetLightPos
-//%token T_SetLightAmbient T_SetLightDiffuse T_SetLightSpecular
-//%token T_SetBackground
-//%token T_Normalize T_Center
 
-//%token T_Remove
-//%token T_SwapBuffers
+%token T_point_setpos
+%token T_point_set
 
-//%token T_SetOpacityImage
-
-//%token T_GetTransform T_SetTransform
-//%token T_Interpolate
-
-
-//%token T_PrintMatrices
-
-//%token SET SETPOS SHOWCURSOR T_update COMPARE SETVECTOR
-//%token SET SETPOS COMPARE SETVECTOR
-%token SET SETPOS
-
-%token T_lininterp
+//%token T_lininterp
 //%token T_SetCompareDisplacement
 //%token T_DrawVector
 //%token T_DisplayVectors
@@ -660,7 +664,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 //%token T_SetColormap
 //%token T_drawcircle
 //%token T_setGLwin
-%token T_initvalue
+%token T_point_initvalue
 //%token T_ShowSection
 //%token T_HideSection
 
@@ -672,7 +676,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_LONG   // New (added: 27/05/2010)
 %token T_FLOAT T_DOUBLE
 %token T_RGB  T_FLOAT_VECTOR
-%token T_GetFormat
+%token T_BasicType
 
 %token T_atof
 
@@ -706,11 +710,6 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token FUNCTION
 %token T_eval
 
-%token T_tx T_ty T_tz
-%token T_trx T_try T_trz
-%token T_vx T_vy T_vz
-%token T_vdim T_inc T_val
-
 %token T_exists
 %token T_FileExists
 %token T_slice
@@ -722,6 +721,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_STRING
 %token T_TRANSFORM
 %token T_OBJECT
+%token T_VAR
 
 %token T_PROC
 %token T_Class T_public
@@ -758,9 +758,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 
 %token T_SaveStructuredGrid
 
-%token T_import_vtk
 %token T_import_wii
-%token T_import_filters
 
 %token T_amiOFCorr2D
 %token T_amiOFVar2D
@@ -783,11 +781,12 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %left T_MOD T_DIV T_MULT
 %right prefix
 //%nonassoc INC_OP DEC_OP TRANSPOSE_OP T_OP_BR T_ADD T_SUB T_QUEST T_POINT
-%nonassoc INC_OP DEC_OP TRANSPOSE_OP T_OP_BR  T_QUEST T_POINT
+%nonassoc INC_OP DEC_OP TRANSPOSE_OP T_OP_BR  T_QUEST POINT_IDENTIFIER
 %nonassoc postfix
 
 %type <ident>          identifier
 %type <ident>          IDENTIFIER
+%type <ident>          POINT_IDENTIFIER
 %type <aint>           basic_type
 %type <astring>        ASTRING
 %type <astring>        primary_expr_string
@@ -800,13 +799,14 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %type <adouble>         NUMBER
 %type <paramlist>      param_list
 %type <paramlistdecl>  param_list_decl
-%type <string_list>     stringlist
-%type <string_list>     exprstringlist
+%type <string_list>    exprstringlist
+%type <class_list>     var_ami_class_list
 
 %destructor { delete [] $$; } ASTRING primary_expr_string expr_string
-%destructor { delete  $$; } identifier IDENTIFIER
+%destructor { delete  $$; } identifier IDENTIFIER POINT_IDENTIFIER
 %destructor { delete  $$; } instr_block
 %destructor { delete  $$; } exprstringlist
+%destructor { delete  $$; } var_ami_class_list
 
 
 
@@ -857,10 +857,12 @@ loop_inst :
 
       int_ptr varint(new int);
       Vars.AddVar<int>(ident,varint);
+      //bool goon=true;
 
       for(*varint = (int) $4; *varint <= (int) $6; (*varint)++)
         {
           driver.yyiplineno = block->GetStartingLine();
+          //goon=
           driver.parse_block(block);
         }
       Vars.deleteVar(ident->GetName().c_str());
@@ -878,12 +880,13 @@ loop_inst :
 
       float_ptr var(new float);
       Vars.AddVar<float>(ident,var);
+      bool goon=true;
 
-      for(*var = $4; *var <= $6; (*var)+=$8)
+      for(*var = $4; goon&&(*var <= $6); (*var)+=$8)
       {
         driver.yyiplineno = block->GetStartingLine();
         //driver.yyiplineno=previous_lineno;
-        driver.parse_block(block);
+        goon=driver.parse_block(block);
       }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
@@ -911,7 +914,9 @@ loop_inst :
       //cout << " *** Create temporary variable " << ident->GetName() << std::endl;
 
       std::list<std::string>::iterator sl_it;
-      for (sl_it=sl->begin(); sl_it!=sl->end(); sl_it++) {
+      bool goon=true;
+      
+      for (sl_it=sl->begin(); goon&&(sl_it!=sl->end()); sl_it++) {
 
         // assign new value to the variable
         //string_ptr newval( new std::string(*sl_it));
@@ -919,7 +924,7 @@ loop_inst :
 
         driver.yyiplineno = block->GetStartingLine();
         //driver.yyiplineno=previous_lineno;
-        driver.parse_block(block);
+        goon = driver.parse_block(block);
 
       }
       // should not delete based on the name !!!
@@ -975,18 +980,22 @@ loop_inst :
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
   
         float res;
+        bool goon=true;
         if (var->IsNumeric()) 
           res = var->GetValueAsDouble();
         else {
           res = 0;
           driver.yyiperror(" while needs a numerical variable as condition \n");
         }
+        goon=(res!=0);
   
-        while (res) {
+        while (goon) {
           //driver.yyiplineno=previous_lineno;
           driver.yyiplineno = block->GetStartingLine();
           res=driver.parse_block(block);
+          goon=res;
           res = var->GetValueAsDouble();
+          goon=goon&&(res!=0);
         } 
         driver.yyiplineno = previous_lineno;
         driver.yyiplineno_lastparser = previous_lineno_lastparser;
@@ -1129,11 +1138,12 @@ class_decl:
 
     }
     |
-    T_Class  identifier T_COLON T_public VAR_AMI_CLASS
+    T_Class  identifier T_COLON T_public var_ami_class_list
         instr_block end_instr
     {
-      Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
-      AMIClass::ptr parent = var->Pointer();
+      //Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
+      //AMIClass::ptr parent = var->Pointer();
+      std::vector<AMIClass::ptr>* classlist = $5;
 
       AmiInstructionBlock::ptr body($6);
       IdentifierInfo::ptr ident($2);
@@ -1142,13 +1152,15 @@ class_decl:
 
       amiclass->SetName(ident->GetName());
       amiclass->SetFileName(driver.current_file);
-      amiclass->Inherit(parent);
+      amiclass->Inherit(*classlist);
       amiclass->SetBody(     body);
       if (GB_debug) printf("%s body = %s\n", ident->GetName().c_str(),body->GetBody().c_str());
 
       Vars.AddVar<AMIClass>(ident, amiclass);
+      //del classlist; Bison does it, no?
 
     };
+    
 
 object_decl:
     VAR_AMI_CLASS  identifier
@@ -1778,6 +1790,18 @@ command:
         Vars.AddVar<int>(ident,varint);
       }
       |
+      identifier ASSIGN_OP T_LONG T_OP_PAR expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Creates a variable of type long
+      **/
+        IdentifierInfo::ptr ident($1);
+
+        long_ptr varlong (new long((long)$5));
+        Vars.AddVar<long>(ident,varlong);
+      }
+      |
       identifier ASSIGN_OP T_DOUBLE T_OP_PAR expr T_CL_PAR
       {
       /**
@@ -1820,6 +1844,25 @@ command:
   
         int_ptr varint( new int((int)$5));
         BasicVariable::ptr var=Vars.AddVar<int>(ident,varint);
+        if (var.get())
+          var->SetComments(comments.get());
+      }
+      |
+      identifier ASSIGN_OP T_LONG T_OP_PAR expr T_CL_PAR T_COMMA expr_string
+      {
+      /**
+      Parameters:
+        - identifier: name of the new variable
+        - expr: value of the new variable
+        - expr_string: short description of the new variable
+        Description: 
+          Creates a variable of type long
+      **/
+        IdentifierInfo::ptr ident($1);
+        boost::shared_array<char> comments( $8);
+  
+        long_ptr varlong( new long((long)$5));
+        BasicVariable::ptr var=Vars.AddVar<long>(ident,varlong);
         if (var.get())
           var->SetComments(comments.get());
       }
@@ -1971,12 +2014,6 @@ command:
                     $5,$7);
           }
         }
-        | VAR_FILE T_POINT T_rewind
-        {
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file(varfile->Pointer());
-          rewind(file.get());
-        }
 */
         |  T_SetDebugOn
         {
@@ -2003,7 +2040,6 @@ command:
     |  T_SetVerboseOn
     {
       GB_verbose = 1;
-      verbose = 1;
     }
     |  T_SetVerboseOff
     {
@@ -2212,7 +2248,7 @@ command:
           }
 
         }
-        |  var_image T_POINT T_SetComponent T_OP_PAR expr T_COMMA expr_var T_CL_PAR
+        |  var_image  T_point_SetComponent T_OP_PAR expr T_COMMA expr_var T_CL_PAR
         {
           /**
           Parameters:
@@ -2224,7 +2260,7 @@ command:
             assigns the number or the image to the component 'n' of the input image
           **/
 
-          int comp = (int) $5;
+          int comp = (int) $4;
           BasicVariable::ptr param2(driver.var_stack.GetLastBasicVar());
           GET_VARSTACK_VALUE(InrImage, i1);
   
@@ -2343,6 +2379,14 @@ command:
           BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
           boost::shared_array<char> comments( $5);
           var->SetComments(comments.get());
+        }
+        | T_del identifier
+        {
+        /**
+          Description: 
+            Delete an identifier: nothing to do ...
+        **/
+          IdentifierInfo::ptr ident($2);
         }
         | T_del variable
         {
@@ -2728,64 +2772,6 @@ command:
       Si GB_debug AlorsFait fprintf(stderr,"6\n");
 
         }
-/* deprecated
-        | VAR_FILE T_POINT PRINT expr_string
-        {
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-          boost::shared_array<char> text( $4);
-
-          fprintf(file.get(),"%s",text.get());
-          fflush(file.get());
-        }
-      | VAR_FILE T_POINT PRINT expr_var
-      {
-          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-
-          if (var.get()) {
-            fprintf(file.get(),var->GetValueAsString().c_str());
-            fflush(file.get());
-          }
-          else
-            driver.err_print("empty variable");
-
-      }
-      | VAR_FILE T_POINT PRINTN expr_var
-      {
-          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-
-          if (var.get()) {
-            fprintf(file.get(),var->GetValueAsString().c_str());
-            fprintf(file.get(),"\n");
-            fflush(file.get());
-          }
-          else
-            driver.err_print("empty variable");
-
-      }
-
-      | VAR_FILE T_POINT PRINT expr
-      {
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-
-          fprintf(file.get(),"%5.10f",$4);
-          fflush(file.get());
-      }
-      | VAR_FILE T_POINT PRINTN expr_string
-      {
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-          boost::shared_array<char> text( $4);
-
-          fprintf(file.get(),"%s\n",text.get());
-          fflush(file.get());
-      }
-*/
         | PRINT expr_var
         {
          /**
@@ -2810,35 +2796,6 @@ command:
           else
             driver.err_print("empty variable");
         }
-/* Deprecated
-        | PRINT expr_string
-        {
-         /**
-          Description:
-            Print a string
-          **
-          driver.res_print($2);
-          delete [] $2;
-        }
-        | PRINTN expr_string
-          {
-         /**
-          Description:
-            Print a string and newline
-          **
-        driver.res_print($2);
-        driver.res_print("\n");
-        delete [] $2;
-      }
-*/
-/* Deprecated
-      | PRINT expr_matrix
-      {
-        FloatMatrix* mat=driver.matrix_stack.GetLastMatrix();
-        mat->PrintSelf();
-        delete mat;
-      }
-*/
       | T_InfoDialog expr_string
       {
          /**
@@ -2858,34 +2815,8 @@ command:
         delete mat;
       }
 
-        | VAR_FILE T_POINT T_CLOSE
-        {
-          driver.var_stack.GetLastBasicVar();
-          printf("Deprecated: No need to close files explicitly, since we use smart pointers, they will be closed when the variable is deleted. \n");
-        }
-
-        | PRINT expr
-        {
-        /**
-          Description:
-            Prints a numerical value.
-        **
-          string st;
-          st = str(format("%5.10f") % $2);
-          driver.res_print(st.c_str());
-        }
-        | PRINTN expr
-        {
-        /**
-          Description:
-            Prints a numerical value and a newline.
-        **
-          string st;
-          st = str(format("%5.10f\n") %$2);
-          driver.res_print(st.c_str());
-        }
 */
-        | var_image T_POINT TInit
+        | var_image T_point_Init
         {
           /**
           Description:
@@ -2907,7 +2838,7 @@ command:
           GET_VARSTACK_VALUE(InrImage, im);
           im->InitBuffer();
         }
-        | var_image T_POINT T_info
+        | var_image T_point_info
         {
             /**
               Description:
@@ -2953,7 +2884,7 @@ command:
           o->GetContext()->display();
     */
         }
-        | var_image T_POINT T_initvalue T_OP_PAR expr T_CL_PAR
+        | var_image T_point_initvalue T_OP_PAR expr T_CL_PAR
         {
         /**
         Parameters:
@@ -2963,9 +2894,9 @@ command:
           Set the whole image to the same vector value .
         **/
           GET_VARSTACK_VALUE(InrImage, im);
-          (im)->InitImage($5);
+          (im)->InitImage($4);
         }
-        | var_image T_POINT T_initvalue T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+        | var_image T_point_initvalue T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
         /**
         Parameters:
@@ -2977,9 +2908,9 @@ command:
           Set the whole image to the same value.
         **/
           GET_VARSTACK_VALUE(InrImage,    im);
-          im->InitImage($5,$7,$9);
+          im->InitImage($4,$6,$8);
         }
-        | var_image T_POINT SET T_OP_PAR expr T_CL_PAR
+        | var_image T_point_set T_OP_PAR expr T_CL_PAR
         {
         /**
         Parameters:
@@ -2996,9 +2927,9 @@ command:
                 setpos
         **/
           GET_VARSTACK_VALUE(InrImage, im);
-          im->FixeValeur($5);
+          im->FixeValeur($4);
         }
-        | var_image T_POINT SET T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+        | var_image T_point_set T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
 
         /**
@@ -3018,9 +2949,9 @@ command:
                 setpos
         **/
           GET_VARSTACK_VALUE(InrImage, im);
-          im->VectFixeValeurs($5,$7,$9);
+          im->VectFixeValeurs($4,$6,$8);
         }
-        | var_image T_POINT SET T_OP_PAR expr T_COMMA expr  T_CL_PAR
+        | var_image T_point_set T_OP_PAR expr T_COMMA expr  T_CL_PAR
         {
 
         /**
@@ -3039,9 +2970,9 @@ command:
                 setpos
         **/
           GET_VARSTACK_VALUE(InrImage, im);
-          im->VectFixeValeur($5,$7);
+          im->VectFixeValeur($4,$6);
         }
-        | var_image T_POINT SETPOS T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+        | var_image T_point_setpos T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
         /**
         Parameters:
@@ -3057,20 +2988,20 @@ command:
           set
         **/
           GET_VARSTACK_VALUE(InrImage, im);
-          int x = (int) round((double)$5);
-          int y = (int) round((double)$7);
-          int z = (int) round((double)$9);
+          int x = (int) round((double)$4);
+          int y = (int) round((double)$6);
+          int z = (int) round((double)$8);
           Si im->CoordOK( x,y,z)
           Alors
             im->BufferPos(x,y,z);
           Sinon
             std::string tmp_string;
-            tmp_string = (boost::format("setpos \t coord = (%1% %2% %3%) from (%4% %5% %6%) \n")%x%y%z % $5 % $7 % $9).str();
+            tmp_string = (boost::format("setpos \t coord = (%1% %2% %3%) from (%4% %5% %6%) \n")%x%y%z % $4 % $6 % $8).str();
           driver.err_print(tmp_string);
           FinSi
         }
         |
-        var_image T_POINT PutImage
+        var_image T_point_putimage
         T_OP_PAR  var_image T_COMMA
            expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
@@ -3096,10 +3027,10 @@ command:
           Variable<InrImage>::ptr  varim1( driver.var_stack.GetLastVar<InrImage>());
           InrImage::ptr  i1(varim1->Pointer());
           InrImage::ptr  i2(varim2->Pointer());
-          Func_PutImage( i1.get(), i2.get(), (int) $7, (int) $9, (int) $11);
+          Func_PutImage( i1.get(), i2.get(), (int) $6, (int) $8, (int) $10);
         }
         |
-        var_image T_POINT PutImage  T_OP_PAR  var_image T_CL_PAR
+        var_image T_point_putimage  T_OP_PAR  var_image T_CL_PAR
         {
         /**
         Parameters:
@@ -3131,36 +3062,34 @@ command:
              (int) round((double)(tz2-tz1)/i1->VoxSizeZ()));
     }
     |
-    var_image T_POINT T_SetName T_OP_PAR expr_string T_CL_PAR 
+    var_image T_point_SetImageName T_OP_PAR expr_string T_CL_PAR 
     {
-      boost::shared_array<char> name($5);
+      boost::shared_array<char> name($4);
       GET_VARSTACK_VALUE(InrImage, im);
       im->FixeNom( name.get());
     }
-        |
-        T_AnisoWeickert T_POINT TIterate
-        {
+    |
+    T_AnisoWeickert T_point_iterate
+    {
       Func_IterateWeickert();
     }
-        |
-    T_AnisoWeickert T_POINT TEnd
-        {
-
+    |
+    T_AnisoWeickert T_point_end
+    {
       Func_EndWeickert();
-
     }
-        |
-        T_AnisoCW T_POINT TIterate
-        {
+    |
+    T_AnisoCW T_point_iterate
+    {
       Func_IterateWeickert();
     }
-        |
-    T_AnisoCW T_POINT TEnd
-        {
+    |
+    T_AnisoCW T_point_end
+    {
       Func_EndWeickert();
     }
-        | var_image T_POINT T_save expr_string
-        {
+    | var_image T_point_save expr_string
+    {
         /**
         Parameters
           (4) expr_string:  image name
@@ -3184,9 +3113,10 @@ command:
           image_cast
         **/
           GET_VARSTACK_VALUE(InrImage, im);
-          boost::shared_array<char> filename($4);
+          boost::shared_array<char> filename($3);
           im->Sauve(filename.get());
         }
+/* deprecated
         | var_image T_POINT T_normalize
         {
         /**
@@ -3196,19 +3126,20 @@ command:
         Example(s):
           v1.normalize
 
-        **/
+        ** /
       GET_VARSTACK_VALUE(InrImage, im);
       Func_Normalize((im.get()));
     }
+    */
     |
-    var_image T_POINT T_OrientField T_OP_PAR var_image T_CL_PAR
+    var_image T_point_OrientField T_OP_PAR var_image T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im2);
       GET_VARSTACK_VALUE(InrImage, im1);
       Func_OrientField( im1.get() , im2.get() );
     }
     |
-    var_image T_POINT T_OrientPositive T_OP_PAR var_image T_CL_PAR
+    var_image T_point_OrientPositive T_OP_PAR var_image T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im2);
       GET_VARSTACK_VALUE(InrImage, im1);
@@ -3457,7 +3388,7 @@ command:
           // TODO: wrap HessianMatrix and get rid of this conflict ...
           if (param3.get()) {
             if (param3->IsNumeric())  {
-              gamma = param3->GetValueAsDouble();
+              gamma =  param3->GetValueAsDouble();
             } else {
               if (param3->Type()==type_image)  {
                 DYNAMIC_CAST_VARIABLE(InrImage,param3,maskvar) 
@@ -3471,7 +3402,7 @@ command:
           Func_HessianMatrix(im.get(),
                  varim->Name().c_str(),
                  $5,   // sigma
-                 0,   // gamma
+                 gamma,   // gamma
                  mask.get()  // mask
                  );
         }
@@ -3662,13 +3593,13 @@ command:
       im->SetVoxelSize($5, $7, $9);
     }
     |
-    var_image T_POINT T_setvoxelsize T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+    var_image T_point_setvoxelsize T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
-      im->SetVoxelSize($5, $7, $9);
+      im->SetVoxelSize($4, $6, $8);
     }
     |
-    var_image T_POINT T_setvoxelsize T_OP_PAR var_image T_CL_PAR
+    var_image T_point_setvoxelsize T_OP_PAR var_image T_CL_PAR
     {
       Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1( driver.var_stack.GetLastVar<InrImage>());
@@ -3679,13 +3610,13 @@ command:
                                    im->VoxSizeZ());
     }
     |
-    var_image T_POINT T_settranslation T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+    var_image T_point_settranslation T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage,im);
-      im->SetTranslation($5, $7, $9);
+      im->SetTranslation($4, $6, $8);
     }
     |
-    var_image T_POINT T_settranslation T_OP_PAR var_image T_CL_PAR
+    var_image T_point_settranslation T_OP_PAR var_image T_CL_PAR
     {
       Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1( driver.var_stack.GetLastVar<InrImage>());
@@ -3693,7 +3624,7 @@ command:
       varim1->Pointer()->SetVoxelSize( im->TrX(), im->TrY(), im->TrZ());
     }
     |
-    var_image T_POINT T_setendianness T_OP_PAR expr  T_CL_PAR
+    var_image T_point_setendianness T_OP_PAR expr  T_CL_PAR
     {
     /**
       Parameters:
@@ -3705,7 +3636,7 @@ command:
         are swapped before writting, and there are swapped back after.
     **/
       GET_VARSTACK_VALUE(InrImage, im);
-      ((amimage*) (*(im)) )->SetEndianness((AMIENDIANNESS)(int)$5);
+      ((amimage*) (*(im)) )->SetEndianness((AMIENDIANNESS)(int)$4);
     }
     |
     T_DiscSecDerGrad T_OP_PAR var_image T_COMMA var_image T_CL_PAR
@@ -3776,7 +3707,7 @@ command:
       float* tabx;
       float* taby;
       GnuPlot   gnuplot;
-      int x,num_courbe;
+      int x;
       std::string name;
 
       tabx = new float[image->_tx];
@@ -3789,7 +3720,8 @@ command:
           //cout << boost::format("%1%,%2% --> %3%")%x%y%taby[x] << std::endl;
         FinPour
         name =  (boost::format("%s_%02d")%$5%y).str();
-        num_courbe = gnuplot.AddCourbe( image->_tx, tabx, taby, name.c_str());
+        //num_courbe = 
+        gnuplot.AddCourbe( image->_tx, tabx, taby, name.c_str());
       }
 
       name =  (boost::format("%s.gnuplot")%$5).str();
@@ -3888,35 +3820,10 @@ command:
           GET_VARSTACK_VALUE(InrImage, i);
           Func_VectorImage2StructuredGrid(i.get(),filename.get());
         }
-/*
-        |
-        VAR_GLTRANSFORM T_POINT PRINT
-        {
-          GET_VARSTACK_VALUE(GLTransfMatrix, glmat);
-          glmat->Print();
-        }
-        |
-        VAR_GLTRANSFORM T_POINT T_save expr_string
-        {
-          boost::shared_array<char> filename( $4);
-          GET_VARSTACK_VALUE(GLTransfMatrix, glmat);
-          Func_SaveTransform(glmat.get(),filename.get());
-        }
-*/
-        |
-        T_import_vtk
-        {
-          AddWrapVTK();
-        }
         |
         T_import_wii
         {
           AddWrapWII();
-        }
-        |
-        T_import_filters
-        {
-          AddWrapFilters();
         }
         |
         T_amiOFCorr2D T_OP_PAR var_image T_COMMA var_image T_COMMA
@@ -4037,6 +3944,25 @@ command:
 
 
 
+var_ami_class_list:
+  VAR_AMI_CLASS
+  {
+    Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
+    AMIClass::ptr c = var->Pointer();
+    std::vector<AMIClass::ptr>* cl = new std::vector<AMIClass::ptr>();
+    cl->push_back(c);
+    $$ = cl;
+  }
+  |
+  var_ami_class_list T_COMMA VAR_AMI_CLASS
+  {
+    Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
+    AMIClass::ptr c = var->Pointer();
+    std::vector<AMIClass::ptr>* cl = $1;
+    cl->push_back(c);
+    $$ = cl;
+  }
+
 exprstringlist: 
         expr_string 
         {
@@ -4053,13 +3979,6 @@ exprstringlist:
             delete [] $3;
             $$ = sl;
         }
-
-//Esta regla esta huerfana, nadie la llama.
-stringlist:
-      T_OP_BR exprstringlist T_CL_BR
-      {
-        $$=$2;
-      }
 
 
 param_list:
@@ -4185,8 +4104,8 @@ param_list_decl:
     | T_NUM IDENTIFIER
     {
       IdentifierInfo::ptr ident($2);
-     std::cout << "param_list_decl: T_NUM IDENTIFIER" << std::endl;
-     std::cout << ident->GetName().c_str() << std::endl;
+      //std::cout << "param_list_decl: T_NUM IDENTIFIER" << std::endl;
+      //std::cout << ident->GetName().c_str() << std::endl;
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_float);
       $$ = pl;
@@ -4196,6 +4115,13 @@ param_list_decl:
       IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_ami_object);
+      $$ = pl;
+    }
+    | T_VAR IDENTIFIER
+    {
+      IdentifierInfo::ptr ident($2);
+      ParamListDecl* pl = new ParamListDecl;
+      pl->AddParam(ident->GetName(),type_any);
       $$ = pl;
     }
     | T_STRING IDENTIFIER
@@ -4233,6 +4159,13 @@ param_list_decl:
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
       pl->AddParam(ident->GetName(),type_ami_object);
+      $$ = pl;
+    }
+    | param_list_decl T_COMMA T_VAR IDENTIFIER
+    {
+      IdentifierInfo::ptr ident($4);
+      ParamListDecl* pl = (ParamListDecl*) $1;
+      pl->AddParam(ident->GetName(),type_any);
       $$ = pl;
     }
     | param_list_decl T_COMMA T_NUM IDENTIFIER
@@ -4383,6 +4316,7 @@ primary_expr_string: ASTRING
       strcpy(reschar,res.c_str());
       $$= reschar;
     }
+/*
     |
     var_image T_POINT T_GetName {
       GET_VARSTACK_VALUE(InrImage, im);
@@ -4394,13 +4328,14 @@ primary_expr_string: ASTRING
     /**
       Description:
         Returns the name of the variable as a string
-    **/
+    ** /
       BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
       char* resstr = (char*) var->Name().c_str();
       char* res = new char[strlen(resstr)+1];
       strcpy(res,resstr);
       $$= res;
     }
+    */
     |
     T_GetObjectName T_OP_PAR variable T_CL_PAR {
     /**
@@ -4531,7 +4466,8 @@ float_variable:
           (int) round($7));
       ADD_VARSTACK_FLOAT(val);
     }
-    | var_image T_POINT T_lininterp T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+/*
+     | var_image T_POINT T_lininterp T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
       /**
         Parameters:
@@ -4540,7 +4476,7 @@ float_variable:
         Description:
           returns the pixel intensity at the given position
           the position using linear interpolation
-      **/
+      ** /
       GET_VARSTACK_VALUE(InrImage, im);
       float val=im->InterpLinIntensite(
           $5,
@@ -4548,6 +4484,7 @@ float_variable:
           $9);
       ADD_VARSTACK_FLOAT(val);
     }
+    */
     | var_image T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
       /**
@@ -4617,6 +4554,7 @@ float_variable:
       FinSi
       ADD_VARSTACK_FLOAT(val);
     }
+/* deprecated
     | var_image T_POINT T_tx
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
@@ -4653,7 +4591,9 @@ float_variable:
       float val = im->TrZ();
       ADD_VARSTACK_FLOAT(val);
     }
-    | var_image T_POINT T_vx
+    */
+/*
+ *    | var_image T_POINT T_vx
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->VoxSizeX();
@@ -4689,6 +4629,7 @@ float_variable:
       float val = im->ValeurBuffer();
       ADD_VARSTACK_FLOAT(val);
     }
+    */
     |
     T_SNR T_OP_PAR var_image  T_COMMA var_image T_CL_PAR
     {
@@ -5021,16 +4962,16 @@ float_variable:
       // create a reference with a smart pointer without deleter ???
       ADD_VARSTACK_FLOAT(val);
     }
-    | matrix_variable T_POINT SET T_OP_PAR expr T_COMMA expr  T_COMMA expr T_CL_PAR
+    | matrix_variable T_point_set T_OP_PAR expr T_COMMA expr  T_COMMA expr T_CL_PAR
     {
       /**
         Description
       **/
       Variable<FloatMatrix>::ptr varmat(driver.var_stack.GetLastVar<FloatMatrix>());
       FloatMatrix::ptr mat (varmat->Pointer());
-      int i = (int)$5;
-      int j = (int)$7;
-      float val  =  ((*mat)[i][j] = $9);
+      int i = (int)$4;
+      int j = (int)$6;
+      float val  =  ((*mat)[i][j] = $8);
       ADD_VARSTACK_FLOAT(val);
     }
     | T_exists T_OP_PAR identifier T_CL_PAR
@@ -5067,13 +5008,18 @@ float_variable:
       ADD_VARSTACK_FLOAT(val);
     }
 */
-    | basic_type T_POINT T_val
+
+    | basic_type POINT_IDENTIFIER
     {
       /**
-        Description: returns the value of the pixel format type in float format
+        Description: returns the value of the pixel format type in float format,
+        identifier must be equal to 'val'
       **/
-      float val = (int) $1;
-      ADD_VARSTACK_FLOAT(val);
+      IdentifierInfo::ptr ident($2);
+      if (ident->GetName()=="val") {
+        float val = (int) $1;
+        ADD_VARSTACK_FLOAT(val);
+      }
     }
     ;
 
@@ -5189,13 +5135,18 @@ basic_type:
        {
      $$=WT_FLOAT_VECTOR;
        }
-       | var_image T_POINT T_GetFormat
+       | T_BasicType T_OP_PAR expr T_CL_PAR
+       {
+        $$=(int)$3;
+       }
+/*
+ *       | var_image T_POINT T_GetFormat
       {
          //        printf("format %d \n",(int) ( *(InrImage::ptr*) $1->Pointer())->GetFormat());
         GET_VARSTACK_VALUE(InrImage, im);
         $$ = (int) im->GetFormat();
       };
-
+*/
 var_image:
         VAR_IMAGE
         |
@@ -6410,7 +6361,7 @@ image:
       // 5: number of iterations
       //
       int        nb_iter,i;
-      float       error;
+      //float      error;
 
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -6422,7 +6373,8 @@ image:
       if (nb_iter < 1) nb_iter = 1;
 
       Pour(i,1,nb_iter)
-        error = Func_ItereFlux(varim2->Pointer().get(),$9);
+        //error = 
+        Func_ItereFlux(varim2->Pointer().get(),$9);
       FinPour
 
       InrImage::ptr res ( Func_AnisoGS_GetOutput());
@@ -6465,13 +6417,13 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
 
     }
-        |
-        AnisoSmoothGS
-        T_OP_PAR var_image
-        T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    |
+    AnisoSmoothGS
+    T_OP_PAR var_image
+    T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       int        nb_iter,i;
-      float       error;
+      //float       error;
 
       GET_VARSTACK_VALUE(InrImage, im);
       Func_InitAnisoGS( im.get(), $5,  $7, $9);
@@ -6483,7 +6435,8 @@ image:
       if (nb_iter < 1) nb_iter = 1;
 
       Pour(i,1,nb_iter)
-        error = Func_ItereAnisoGS();
+        //error = 
+        Func_ItereAnisoGS();
       FinPour
       InrImage::ptr res ( Func_AnisoGS_GetOutput());
       Si !res.get() Alors
@@ -6494,13 +6447,13 @@ image:
 
     }
         |
-        T_AnisoWeickert T_POINT TInit
+        T_AnisoWeickert T_point_Init
         T_OP_PAR var_image
         T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_InitWeickert( im.get(),
-                $7,  $9, $11));
+                $6,  $8, $10));
 
       Si !res.get() Alors
         fprintf(stderr,"Func_InitWeickert() erreur ... \n");
@@ -6508,13 +6461,13 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
         }
         |
-        T_AnisoCW        T_POINT TInit
+        T_AnisoCW        T_point_Init
         T_OP_PAR var_image
         T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_InitWeickertCoherence( im.get(),
-                $7,  $9, $11, $13, $15));
+                $6,  $8, $10, $12, $14));
 
       Si !res.get() Alors
         fprintf(stderr,"Func_InitWeickert() erreur ... \n");
@@ -6552,7 +6505,7 @@ image:
     }
     |
     T_AnisoSRAD
-    T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6571,7 +6524,7 @@ image:
     }
     |
     T_AnisoSRAD
-    T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6591,7 +6544,7 @@ image:
     }
     |
     T_AnisoSRAD2
-    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6613,7 +6566,7 @@ image:
     |
       T_AnisoSRAD2
       T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA
-      expr T_COMMA image_extent T_CL_PAR
+      expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6633,7 +6586,7 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
     }
     |
-    T_AnisoLeeAdd2 T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_AnisoLeeAdd2 T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6652,7 +6605,7 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
     }
     |
-    T_AnisoDPAD T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_AnisoDPAD T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6672,7 +6625,7 @@ image:
     }
     |
     T_AnisoDPAD2
-    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6692,7 +6645,7 @@ image:
     }
     |
     T_AnisoNRAD
-    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
     /**
       Parameters:
@@ -8011,36 +7964,132 @@ postfix_var:
       |
         image_extent
       |
-        postfix_var T_POINT identifier
+        postfix_var POINT_IDENTIFIER %prec postfix
       {
+        /**
+           Description:
+           if the first variable is an AMIObject, then look for the variable
+             corresponding to the identifier in its context.
+           if the first variable is of IMAGE type, then apply on of the following
+             functions:
+             tx,ty,tz    : image dimensions
+             trx,try,trz : image translations
+             vx,vy,vz    : voxel size
+             vdim        : number of components
+             inc         : increment current buffer
+             val         : returns the value at the current buffer
+             GetName     : return image name on disk if available
+             GetFormat   : return image format
+             GetExtent   : return image extent
+         **/
           // todo ... 
           // 1. check if identifier belongs to the object
           // 2. if so return corresponding variable
-          IdentifierInfo::ptr ident($3);
-          Variable<AMIObject>::ptr var(driver.var_stack.GetLastVar<AMIObject>());
-          if (!var.get()) {
-            driver.err_print("operator . (Element selection) is only available for variables of type AMIObject");
-            YYABORT;
-          }
-          AMIObject::ptr object(var->Pointer());
+          IdentifierInfo::ptr ident($2);
 
-          if (!object.get()) {
-            driver.err_print("operator . object points to NULL.");
+          BasicVariable::ptr bvar(driver.var_stack.GetLastBasicVar());
+          if (!bvar.get()) {
+            driver.err_print("operator . (Element selection) empty variable");
             YYABORT;
           }
-          // here, need to do our own checking ...
-          BasicVariable::ptr newvar( 
-            object->GetContext()->GetVar(ident->GetName().c_str()));
-    
-          if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
-            //cout << "returning variable" << std::endl;
-            //newvar->display();
-            driver.var_stack.AddVar(newvar);
+          
+          // try to convert to AMIObject
+          boost::shared_ptr<Variable<AMIObject> > var( boost::dynamic_pointer_cast<Variable<AMIObject> >(bvar));
+          if (var.get()) {
+            AMIObject::ptr object(var->Pointer());
+            if (!object.get()) {
+              driver.err_print("operator . object points to NULL.");
+              YYABORT;
+            }
+            // here, need to do our own checking ...
+            BasicVariable::ptr newvar( 
+              object->GetContext()->GetVar(ident->GetName().c_str()));
+      
+            if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
+              //cout << "returning variable" << std::endl;
+              //newvar->display();
+              driver.var_stack.AddVar(newvar);
+            } else {
+              // error message here
+              driver.yyiperror("Identifier does not belong to object context \n");
+              YYABORT;
+              //driver.var_stack.AddVar(BasicVariable::ptr());
+            }
           } else {
-            // error message here
-            driver.yyiperror("Identifier does not belong to object context \n");
-            YYABORT;
-            //driver.var_stack.AddVar(BasicVariable::ptr());
+            // try to convert of InrImage
+            boost::shared_ptr<Variable<InrImage> > var( boost::dynamic_pointer_cast<Variable<InrImage> >(bvar));
+            if (var.get()) {
+              // here need to process the rules with var_image.identifier
+              // for the moment, a hack ...
+              boost::shared_ptr<InrImage> im(var->Pointer());
+              if (!im.get()) {
+                driver.yyiperror("'image . identifier' image variable has null pointer.\n");
+                YYABORT;
+              }
+              std::string id = ident->GetName();
+              if (id=="tx") {
+                ADD_VARSTACK_FLOAT(im->DimX());
+              } else 
+              if (id=="ty") {
+                ADD_VARSTACK_FLOAT(im->DimY());
+              } else 
+              if (id=="tz") {
+                ADD_VARSTACK_FLOAT(im->DimZ());
+              } else 
+              if (id=="trx") {
+                ADD_VARSTACK_FLOAT(im->TrX());
+              } else 
+              if (id=="try") {
+                ADD_VARSTACK_FLOAT(im->TrY());
+              } else 
+              if (id=="trz") {
+                ADD_VARSTACK_FLOAT(im->TrZ());
+              } else 
+              if (id=="vx") {
+                ADD_VARSTACK_FLOAT(im->VoxSizeX());
+              } else
+              if (id=="vy") {
+                ADD_VARSTACK_FLOAT(im->VoxSizeY());
+              } else
+              if (id=="vz") {
+                ADD_VARSTACK_FLOAT(im->VoxSizeZ());
+              } else
+              if (id=="vdim") {
+                ADD_VARSTACK_FLOAT(im->GetVDim());
+              } else
+              if (id=="inc") {
+                ADD_VARSTACK_FLOAT(im->IncBuffer());
+              } else
+              if (id=="val") {
+                ADD_VARSTACK_FLOAT(im->ValeurBuffer());
+              } else
+              if (id=="GetName") {
+                ADD_VARSTACK(std::string,new std::string(im->GetName()));
+              } else
+              if (id=="GetFormat") {
+                ADD_VARSTACK(int,new int(im->GetFormat()));
+              } else
+              if (id=="GetExtent") {
+                ImageExtent<float>* extent=new ImageExtent<float>();
+                extent->SetMode(0); // absolute
+                extent->SetXmin( im->SpacePosX(0));
+                extent->SetXmax( im->SpacePosX(im->DimX()-1));
+                extent->SetYmin( im->SpacePosY(0));
+                extent->SetYmax( im->SpacePosY(im->DimY()-1));
+                extent->SetZmin( im->SpacePosZ(0));
+                extent->SetZmax( im->SpacePosZ(im->DimZ()-1));
+                //extent->print();
+                BasicVariable::ptr res(CreateVar_ImageExtent(extent));
+                driver.var_stack.AddVar(res);
+              } else
+              {
+                driver.yyiperror("'image . identifier' operation not available.\n");
+                YYABORT;
+              }
+            } else {
+              driver.err_print("operator . (Element selection) is only available for variables of type AMIObject");
+              YYABORT;
+            }
           }
         }
       |
@@ -9519,6 +9568,7 @@ surface:
 ;
 
 
+
 identifier
         : IDENTIFIER
         ;
@@ -9642,6 +9692,7 @@ image_extent:
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
       driver.var_stack.AddVar(res);
     }
+    /*
     |
     var_image T_POINT T_GetExtent
     {
@@ -9659,6 +9710,7 @@ image_extent:
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
       driver.var_stack.AddVar(res);
     }
+    */
 /*
     |
     VAR_IMAGEDRAW

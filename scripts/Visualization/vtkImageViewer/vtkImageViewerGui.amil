@@ -1,0 +1,11 @@
+
+func "vtkImageViewerClass"
+
+if (!exists(vtkImageViewer_obj)) {
+  vtkImageViewerClass vtkImageViewer_obj
+  vtkImageViewer_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

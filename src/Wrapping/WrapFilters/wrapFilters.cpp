@@ -21,6 +21,7 @@
 #include "wrap_StructureTensor.h"
 #include "RegionGrowingTest.h"
 #include <pthread.h>
+#include "ImageDerivatives.h"
 
 #include "AMILabConfig.h"
 #ifdef AMI_USE_FASTNLMEANS
@@ -52,10 +53,12 @@
 #include "wrap_ClassBase2.h"
 #include "wrap_ClassBase3.h"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 //---------------------------------------------------------
-void AddWrapFilters(){
+void AddWrapFilters(AMIObject::ptr& obj)
+{
 
   // Create new instance of the class
   AMIObject::ptr amiobject (new AMIObject);
@@ -133,7 +136,7 @@ void AddWrapFilters(){
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
+  obj->GetContext()->AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject,obj->GetContext());
 
 }
 
@@ -142,18 +145,18 @@ void AddWrapFilters(){
  * Adds the Filters wrapping
  * @param p 
  */
-void wrap_Filters( ParamList* p)
-{
 /*
-  char functionname[] = "Filters";
-  char description[]=" \n\
-    Adds wrapping for Filters. \n\
-          ";
-  char parameters[] =" \n\
-          ";
-*/
-  AddWrapFilters();
-}
+ void wrap_Filters( ParamList* p)
+ {
+   char functionname[] = "Filters";
+   char description[]=" \n\
+     Adds wrapping for Filters. \n\
+           ";
+   char parameters[] =" \n\
+           ";
+   AddWrapFilters();
+ }
+ */
 
 
 /* neighborhood similarity ...
@@ -640,12 +643,12 @@ void* thread_NLmeans_MRI( void* threadarg)
   float* noise_reduction_buf;
   float* input_lmean_buf;  // points to the current voxel
   float* input_lmean_buf_d; // points to the displaced voxel in the searching window
-  float* input_lsd_buf;  // points to the current voxel
+  //float* input_lsd_buf;  // points to the current voxel
   float* input_lsd_buf_d; // points to the displaced voxel in the searching window
 
   float* input_float_buf_d;  // points to the displaced voxel in the searching window
   double intensity;
-  double c_mean,c_var,d_mean,d_var; // central and displaced means and variances
+  //double c_mean,c_var,d_mean,d_var; // central and displaced means and variances
 
   printf("Thread %d / %d \n",args->thread_id+1,args->total_threads);
 
@@ -694,7 +697,7 @@ void* thread_NLmeans_MRI( void* threadarg)
 
     // position at (x,y,z) for the central voxel
     input_lmean_buf = (float*)input_lmean->Buffer()+point_index;
-    input_lsd_buf   = (float*)input_lsd->Buffer()  +point_index;
+    //input_lsd_buf   = (float*)input_lsd->Buffer()  +point_index;
 
     // moving position at (x+dx,y+dy,z+dz)
     point_index_window = (dz_min*ty+dy_min)*tx+dx_min;
@@ -709,8 +712,8 @@ void* thread_NLmeans_MRI( void* threadarg)
 #define MAX(a,b) ((a)>(b)?(a):(b))
 
     // compute estimated denoised mean and sd at central point
-    c_mean = *input_lmean_buf;
-    c_var  = (*input_lsd_buf)*(*input_lsd_buf);
+    //c_mean = *input_lmean_buf;
+    //c_var  = (*input_lsd_buf)*(*input_lsd_buf);
     //c_mean = MAX(0,*input_lmean_buf-2*var_noise);
     //c_var  = MAX(0,(*input_lsd_buf)*(*input_lsd_buf)-4*var_noise*(*input_lmean_buf-var_noise));
 
@@ -723,8 +726,8 @@ void* thread_NLmeans_MRI( void* threadarg)
                 if ((dx!=0)||(dy!=0)||(dz!=0)) {
                     //dist = 0;
                     // computes estimated local sd
-                    d_mean = *input_lmean_buf_d;
-                    d_var  = (*input_lsd_buf_d)*(*input_lsd_buf_d);
+                    //d_mean = *input_lmean_buf_d;
+                    //d_var  = (*input_lsd_buf_d)*(*input_lsd_buf_d);
                     //d_mean = MAX(0,*input_lmean_buf_d-2*var_noise);
                     //d_var  = MAX(0,(*input_lsd_buf_d)*(*input_lsd_buf_d)-
                     //         4*var_noise*(*input_lmean_buf_d-var_noise));
@@ -1020,7 +1023,7 @@ BasicVariable::ptr Wrap_EigenDecomp(ParamList* p) {
   if (!get_val_ptr_param<InrImage>( mask,        p, n,false))   HelpAndReturnVarPtr;
 
 
-  vector<InrImage::ptr> result;
+  std::vector<InrImage::ptr> result;
 
   // how to do with smart pointers ???
   // should be managed by ParamList ...

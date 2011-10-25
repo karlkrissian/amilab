@@ -29,7 +29,7 @@ using namespace amilab;
 AMI_DECLARE_TYPE(SurfacePoly)
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p, bool quiet );
 
 
 class WrapClass_SurfacePoly : public WrapClass<SurfacePoly>
@@ -179,6 +179,11 @@ class WrapClass_SurfacePoly : public WrapClass<SurfacePoly>
 
     }
 };
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClassamilab__NS__SurfacePoly_AddStaticMethods( Variables::ptr& context);
 
 
 #endif // _wrap_SurfacePoly_h_

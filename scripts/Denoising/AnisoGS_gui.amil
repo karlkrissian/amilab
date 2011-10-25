@@ -14,6 +14,9 @@ if (!exists(AnisoGSClass)) {
   proc ::Init() {
 
     ::input_name  = ""
+    ::mask_name  = "", "mask image to compute the data attachment"
+    ::use_mask = UCHAR(0), "use mask image"
+    
     ::result_name = "AnisoGS_result"
     ::result_filename = "AnisoGS_result.ami.gz"
     ::sigma=1
@@ -37,36 +40,47 @@ if (!exists(AnisoGSClass)) {
     } else {
       eval "::input <<="+::input_name+";"
     }
+    printn "exists input %1%" % exists(::input)
+  }
+
+  #------------------------------------
+  proc ::load_mask() {
+    if (::mask_name=="Image") {
+      # read image using browser
+      ::mask <<= Image
+      ::mask_name = "::mask"
+      ::win.Update(-1)
+    } else {
+      eval "::mask <<="+::mask_name+";"
+    }
   }
 
   #------------------------------------
   proc ::Restart() {
 
-    if (::started) {
-      AnisoGS.end
-      if exists(::res_draw) {
-        del ::res_draw
-      }
-      if exists(::res) {
-        del ::res
-      }
-      if exists(::input) {
-        del ::input
-      }
+    del ::input
+    ::load_input()
+    if (::use_mask) {
+        del ::mask
+        ::load_mask()
     }
-    if (!exists(NRAD_input)) {
-      ::load_input
-    }
+    del ::res_draw
+    del ::res
     if (::use_zoom)&&(exists(::input_draw)) {
-      ::input_roi <<= (FLOAT) ::input[::input_draw.GetXmin() : ::input_draw.GetXmax(),\
-                            ::input_draw.GetYmin() : ::input_draw.GetYmax(),\
-                            ::input_draw.GetZmin() : ::input_draw.GetZmax() ]
+      ::input_roi <<= (FLOAT) ::input[(::input_draw.GetXmin()):(::input_draw.GetXmax()),\
+                            (::input_draw.GetYmin()):(::input_draw.GetYmax()),\
+                            (::input_draw.GetZmin()):(::input_draw.GetZmax()) ]
     } else {
       ::input_roi <<= (FLOAT) ::input
     }
-    AnisoGS.init(::input_roi,::sigma,::threshold,::datacoeff)
+    del ::aniso
+    ::aniso = filters.AnisoGS()
+    ::aniso.Init(::input_roi,::sigma,::threshold,::datacoeff)
+    if (::use_mask) {
+      ::aniso.SetAttachMask(&::mask)
+    }
     ::started=1
-    ::res <<= AnisoGS.GetOutput
+    ::res <<= ::aniso.GetOutput()
   }
   
   #------------------------------------
@@ -78,13 +92,14 @@ if (!exists(AnisoGSClass)) {
     }
     SetProgress(0)
     for k=1 to ::niter {
-      AnisoGS.iterate
-      SetProgress(k/::niter*100)
+      ::aniso.Iterate()
+      ::res = ::aniso.GetOutput()
+      SetProgress((FLOAT)k/::niter*100)
       if exists(::res_draw) {
         show ::res
       }
     }
-    ::res = AnisoGS.GetOutput
+    ::res = ::aniso.GetOutput()
     SetProgress(0)
   }
   
@@ -92,6 +107,9 @@ if (!exists(AnisoGSClass)) {
   
   proc ::Display() {
     show ::input
+    if (::use_mask) {
+      ::input_draw.SetIsoContour(0,&::mask,0.5)
+    }
     if exists(::res) {
         show ::res
         ::input_draw.compare(&::res_draw)
@@ -108,12 +126,13 @@ if (!exists(AnisoGSClass)) {
   proc ::CreateWindow() {
 
     # parameters window
-    import = &global::ami_import;
-    ::win = import->ParamPanel("AnisoGS")
+    ::win = ParamPanel("AnisoGS")
 
     ::win.BeginBook() 
     ::win.AddPage("Param")
         ::win.AddImageChoice( &::input_name, "Input")
+        ::win.AddImageChoice( &::mask_name, "Mask")
+        ::win.AddBoolean( &::use_mask,"Use Mask")
     
         ::win.AddFloat( &::sigma,  "::sigma", 0.01,10)
         ::win.AddFloat( &::threshold,  "::threshold", 0,100)
@@ -125,10 +144,10 @@ if (!exists(AnisoGSClass)) {
         
         ::win.BeginBoxPanel("Controls")
           ::win.BeginHorizontal()
-            ::win.AddButton("Restart",    ::Restart)
-            ::win.AddButton("Filter",     ::Filter)
-            ::win.AddButton("Display",    ::Display)
-            ::win.AddButton("Save",       ::Save)
+            ::win.AddButton("Restart",    &::Restart)
+            ::win.AddButton("Filter",     &::Filter)
+            ::win.AddButton("Display",    &::Display)
+            ::win.AddButton("Save",       &::Save)
           ::win.EndHorizontal()
         ::win.EndBoxPanel()
       ::win.AddPage("Contour Smoothing")

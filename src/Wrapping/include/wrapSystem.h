@@ -22,8 +22,7 @@
 /** function that add the wrapping of system information
  *  to the AMI language
  */
-void AddWrapSystem();
-void wrap_System(ParamList* p);
+void AddWrapSystem(AMIObject::ptr& obj);
 
 BasicVariable::ptr wrap_GetFreeMemory(   ParamList* p);
 BasicVariable::ptr wrap_GetFullHostName( ParamList* p);

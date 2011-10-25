@@ -17,8 +17,14 @@ arg_parser.add_argument('--classes', nargs='*',  default=[],  \
 arg_parser.add_argument('--available_classes', nargs='*',  default=[],  \
   help='Lists available classes' )
 
+arg_parser.add_argument('--available_external_classes', nargs='*',  default=[],  \
+  help='Lists available classes from other libraries' )
+
 arg_parser.add_argument('--functions', nargs='*', default=[],  \
   help='name of the function(s) to wrap' )
+
+arg_parser.add_argument('--available_functions', nargs='*', default=[],  \
+  help='name of the available wrapped function(s)' )
 
 arg_parser.add_argument('--methodpointers', nargs='*', default=[], \
   help='name of the method pointers to wrap' )
@@ -72,7 +78,7 @@ arg_parser.add_argument('--addwrap',  action='store_true',  help='Generates the 
 arg_parser.add_argument('--update', action='store_true',   \
   help='re-generate all currently wrapped classes')
 
-arg_parser.add_argument('--max', type=int,default=200,   \
+arg_parser.add_argument('--max', type=int,default=500,   \
   help='maximum number of files generated')
 
 arg_parser.add_argument('-gccxml',       action='store_true',    \

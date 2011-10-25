@@ -7,6 +7,7 @@ INCLUDE( ${wxWidgets_USE_FILE})
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
@@ -14,9 +15,11 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapAlgorithms/Generated
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapLanguage/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapExamples/Generated
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapLanguage/Generated
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Algorithms/Others
+  #${AMILAB_SOURCE_DIR}/Algorithms/Others
   ${AMILAB_SOURCE_DIR}/Algorithms/Segmentation
   ${AMILAB_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -67,7 +70,7 @@ SET(WrapImports_SRCS
 )
 
 my_add_library ( WrapImports)
-add_dependencies ( WrapImports WrapWxWidgets WrapAlgorithms)
+add_dependencies ( WrapImports WrapWxWidgets WrapAlgorithms WrapLanguage)
 
 IF(AMI_WRAP_MICRONTRACKER)
   add_dependencies( WrapImports WrapMicronTracker )

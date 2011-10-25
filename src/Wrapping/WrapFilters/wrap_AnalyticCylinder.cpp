@@ -17,7 +17,7 @@
 //---------------------------------------------------
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<AnalyticCylinder>::CreateVar( ParamList* p )
+BasicVariable::ptr WrapClass<AnalyticCylinder>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_AnalyticCylinder::wrap_AnalyticCylinder construct;
   return construct.CallMember(p);

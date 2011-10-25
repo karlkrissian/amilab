@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuGreyMorpho() \
+{
+  category = "&PDI"
+  script = "PDI/GreyMorpho/GreyMorphoGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&GreyMorpho",script)
+}
+
+AddMenuGreyMorpho()
+del AddMenuGreyMorpho

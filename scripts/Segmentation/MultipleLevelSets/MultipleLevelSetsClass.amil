@@ -207,7 +207,7 @@ if (!exists(MultipleLevelSetsClass)) {
     #-----------------------------------------------
     proc ::Gui() \
     {
-      ::win = global::ami_import.ParamPanel("MultLS")
+      ::win = ParamPanel("MultLS")
       ::win.BeginBook()
       ::win.AddPage("Input")
         ::win.BeginBoxPanel("Input Image")

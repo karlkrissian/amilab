@@ -32,6 +32,7 @@
 #include "style.hpp"
 #include <stdio.h>
 #include "boost/shared_ptr.hpp"
+#include "CommonConfigure.h"
 
 //class FloatMatrix;
 
@@ -39,7 +40,7 @@
 #include <string>
 
 //==================================================
-class FloatMatrix 
+class COMMON_EXPORT FloatMatrix 
 //
 {
 
@@ -123,7 +124,7 @@ public:
 
   void PrintSelf() const;
 
-  friend FloatMatrix* Multiply(FloatMatrix*, FloatMatrix*);
+  friend COMMON_EXPORT FloatMatrix* Multiply(FloatMatrix*, FloatMatrix*);
 
 
 }; // end class FloatMatrix

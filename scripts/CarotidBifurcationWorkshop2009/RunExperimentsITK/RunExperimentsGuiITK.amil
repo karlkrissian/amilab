@@ -4,9 +4,6 @@ func "Common/ScriptGui"
 
 if (!exists(RunExperimentsGuiITKClass)){
 
-  global::ami_import.ITK()
-  global::ami_import.Filters()
-
   
   Class RunExperimentsGuiITKClass : public ScriptGui {
   
@@ -42,9 +39,6 @@ if (!exists(RunExperimentsGuiITKClass)){
     func "../carotidchallenge_config.amil"  
     config ::CONFIG
 
-    ::itk=&global::itk
-    ::filters=&global::filters
-    
     #------------------------------------------
     proc ::Init() \
     {
@@ -113,7 +107,7 @@ if (!exists(RunExperimentsGuiITKClass)){
         inputname = ::current_datadir + "/cta"+::datanumber_str+"r.mhd"
       }
       printn "inputname="+inputname
-      ::input <<= ::itk->Read(inputname)
+      ::input <<= itk->Read(inputname)
     
       # read input points
       pointsname = ::current_datadir + "/points"+::datanumber_str+".txt"
@@ -139,7 +133,7 @@ if (!exists(RunExperimentsGuiITKClass)){
         GTname = ::current_gtdir + "/pv"+::datanumber_str+".mhd"
         printn "Reading itk image "+GTname
         if (wx.wxFileName(GTname).FileExists()) {
-          ::GT <<= ::itk->Read(GTname)
+          ::GT <<= itk->Read(GTname)
       
           # read the ROI information
           ROIname = ::current_gtdir + "/roi"+::datanumber_str+".txt"
@@ -152,7 +146,7 @@ if (!exists(RunExperimentsGuiITKClass)){
       
           # Read the Exterior image
           extname = ::current_gtdir + "/ext"+::datanumber_str+".mhd"
-          ::ext <<= ::itk->Read(extname)
+          ::ext <<= itk->Read(extname)
       
           # Read the GT Isosurface
           isoname = ::current_gtdir + "/iso"+::datanumber_str+".vtp"
@@ -796,7 +790,6 @@ if (!exists(RunExperimentsGuiITKClass)){
     #-----------------------------------------
     proc ::CarotidExperiments_PathsDisplay() \
     {
-      import_vtk
       ::CarotidExperiments_ReadGT()
     
       if (!exists(::Jx)) {
@@ -806,7 +799,7 @@ if (!exists(RunExperimentsGuiITKClass)){
       } else {
         ::junction_display_size    = 0.6
         if (exists(::junc_sphere)) { del ::junc_sphere; }
-        ::junc_sphere = vtkSphere(::junction_display_size,8,8,::Jx,::Jy,::Jz)
+        ::junc_sphere = vtktools.vtkSphere(::junction_display_size,8,8,::Jx,::Jy,::Jz)
       
         # create empty surface for display
         if (exists(::surf)) { del ::surf; }
@@ -1026,7 +1019,7 @@ if (!exists(RunExperimentsGuiITKClass)){
         }
     
         # create the image with partial volume effect
-        pvim = ::filters->ComputePV_subdiv(::inls,4)
+        pvim = filters.ComputePV_subdiv(::inls,4)
         if (0) {
           # put in bigger image
           pvim_big <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
@@ -1037,7 +1030,7 @@ if (!exists(RunExperimentsGuiITKClass)){
           pvim_big = pvim
         }
         del pvim
-        ::itk->Write(&pvim_big,::current_resultsdir+"/pv"+::datanumber_str+".mhd")
+        itk.Write(&pvim_big,::current_resultsdir+"/pv"+::datanumber_str+".mhd")
     
         # 2. Save ROI text file
         roi_file = File(::current_resultsdir+"/roi"+::datanumber_str+".txt","w")
@@ -1089,8 +1082,7 @@ if (!exists(RunExperimentsGuiITKClass)){
     #------------------------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("Carotid09")
+      ::win = ParamPanel("Carotid09")
       ::win.BeginBook()
     
         #----- Input Page

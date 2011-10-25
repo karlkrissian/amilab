@@ -29,7 +29,8 @@
 #include "ContinuousMorphology.h"
 
 
-extern unsigned char GB_debug; 
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 static const float c0 = (1.-sqrt(2.0)/2.0)*(1.-sqrt(2.0)/2.0);
 static const float c1 = (2.*sqrt(2.0)-2.)/4.0;

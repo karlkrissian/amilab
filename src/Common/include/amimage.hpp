@@ -44,8 +44,15 @@
 
 #include <sstream>
 #include <boost/scoped_ptr.hpp>
-#include <boost/iostreams/filtering_stream.hpp>
-#include <boost/iostreams/filtering_streambuf.hpp>
+
+// gccxml compilation pb
+#ifndef __GCCXML__
+  #include <boost/iostreams/filtering_stream.hpp>
+  #include <boost/iostreams/filtering_streambuf.hpp>
+#endif
+
+#include "CommonConfigure.h"
+
 /*
 #include <fstream>
 #include <iostream>
@@ -53,7 +60,7 @@
 //using namespace boost::iostreams;
 //using namespace boost;
 
-//using namespace std;
+//using -- namespace std;
 */
 
 #include <stdio.h>
@@ -180,7 +187,7 @@ unsigned char WriteAMI(const char* name,
 */
 
 //----------------------------------------------------------------------
-class amimage
+class COMMON_EXPORT amimage
 {
 
   DEFINE_CLASS(amimage)
@@ -369,12 +376,15 @@ public:
 
   unsigned char readdata();
 
+#ifndef __GCCXML__
+
   unsigned char writeheader(const char* filename,
       boost::iostreams::filtering_ostream& out,
       bool include_header=true);
 
   unsigned char writedata(boost::iostreams::filtering_ostream& out);
-
+#endif
+  
   unsigned char read(const char* filename);
 
   unsigned char write(const char* filename, bool include_header=true);

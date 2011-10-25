@@ -47,6 +47,12 @@
 
 
 #include "gnuplot.hpp"
+#include <iostream>
+
+GnuPlot::ErreurLecture::ErreurLecture( Chaine message)
+{
+  std::cerr << "GnuPlot Erreur de Lecture " << message << std::endl;
+}
 
 //----------------------------------------------------------------------
 GnuPlot ::  GnuPlot( )

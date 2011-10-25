@@ -14,7 +14,6 @@ if (!exists(ImageGridClass)) {
 
   Class ImageGridClass : public ScriptGui {
 
-    ::ami_import = &global::ami_import
     #----------------------------
     proc ::Init() \
     {
@@ -89,8 +88,7 @@ if (!exists(ImageGridClass)) {
     proc ::CreateWindow() {
     
       # parameters window
-      import = &global::ami_import;
-      ::win = import->ParamPanel("ImGrid")
+      ::win = ParamPanel("ImGrid")
       
       ::win.BeginBook()
     

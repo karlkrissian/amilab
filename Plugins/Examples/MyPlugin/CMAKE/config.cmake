@@ -20,16 +20,37 @@ FIND_PATH(AMILAB_BINARY_DIR
     DOC "AMILab binary path"
 )
 
-SET(AMILab_Header
+SET(AMILab_PATHS
+    ${AMILAB_SOURCE_DIR}/LanguageBase
     ${AMILAB_SOURCE_DIR}/Language
     ${AMILAB_SOURCE_DIR}/Common/include
+    ${AMILAB_SOURCE_DIR}/CommonBase
     ${AMILAB_SOURCE_DIR}/Wrapping/include
-    ${AMILAB_SOURCE_DIR}/Graphic/include
-    ${AMILAB_SOURCE_DIR}/Algorithms/include
-    ${AMILAB_SOURCE_DIR}/wxParams
-    ${AMILAB_SOURCE_DIR}/../wxParams/src
-    ${AMILAB_SOURCE_DIR}/AMILab
     ${AMILAB_SOURCE_DIR}
-
     ${AMILAB_BINARY_DIR}
 )
+
+FIND_LIBRARY(CommonBase CommonBase
+    DOC "AMILab CommonBase library"
+    PATHS ${AMILAB_BINARY_DIR}
+    PATH_SUFFIXES CommonBase/Debug CommonBase/Release)
+
+FIND_LIBRARY(Common Common
+    DOC "AMILab Common library"
+    PATHS ${AMILAB_BINARY_DIR}
+    PATH_SUFFIXES Common/Debug Common/Release)
+
+FIND_LIBRARY(LanguageBase LanguageBase
+    DOC "AMILab LanguageBase library"
+    PATHS ${AMILAB_BINARY_DIR}
+    PATH_SUFFIXES LanguageBase/Debug LanguageBase/Release)
+
+FIND_LIBRARY(WrapCommon WrapCommon
+    DOC "AMILab WrapCommon library"
+    PATHS ${AMILAB_BINARY_DIR}
+    PATH_SUFFIXES Wrapping/WrapCommon/Debug Wrapping/WrapCommon/Release)
+
+FIND_LIBRARY(WrapLanguage WrapLanguage
+    DOC "AMILab WrapLanguage library"
+    PATHS ${AMILAB_BINARY_DIR}
+    PATH_SUFFIXES Wrapping/WrapLanguage/Debug Wrapping/WrapLanguage/Release)

@@ -1,0 +1,4 @@
+
+if exists(ImageProcessing_obj) {
+  ImageProcessing_obj.ReLoad()
+}

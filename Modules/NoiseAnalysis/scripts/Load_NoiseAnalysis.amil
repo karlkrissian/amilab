@@ -1,0 +1,10 @@
+
+del NoiseAnalysisPlugin
+func "NoiseAnalysisPlugin"
+
+if (!exists(NoiseAnalysis_obj)) {
+  NoiseAnalysisPlugin NoiseAnalysis_obj
+  NoiseAnalysis_obj.Load()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}

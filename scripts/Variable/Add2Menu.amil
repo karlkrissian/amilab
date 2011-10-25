@@ -1,0 +1,3 @@
+
+ ami.MainFrame.AddToMenu("&Language","&Variable","&ParseVar",  "Variable/ParseVar/ParseVarGui")
+

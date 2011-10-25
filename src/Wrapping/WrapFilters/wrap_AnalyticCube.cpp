@@ -17,7 +17,7 @@
 //---------------------------------------------------
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<AnalyticCube>::CreateVar( ParamList* p )
+BasicVariable::ptr WrapClass<AnalyticCube>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_AnalyticCube::wrap_AnalyticCube construct;
   return construct.CallMember(p);

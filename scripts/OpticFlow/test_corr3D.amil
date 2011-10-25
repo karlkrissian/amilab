@@ -1,7 +1,5 @@
 # command line: ./amilab 
 
-ami_import->AMIFluid()
-
 func "Common/ScriptGui"
 
 if (!exists(Corr3DTest)) {
@@ -58,7 +56,6 @@ if (!exists(Corr3DTest)) {
     #--------------------------------------------------
     proc ::amicorr3D(IMAGE _im1, IMAGE _im2, IMAGE _res) \
     {
-      AMIFluid = &global::AMIFluid
       wsx = exp(ln(2.0)*::winsize_x)
       wsy = exp(ln(2.0)*::winsize_y)
       wsz = exp(ln(2.0)*::winsize_z)
@@ -153,7 +150,7 @@ if (!exists(Corr3DTest)) {
     #--------------------------------------------------
     proc ::Gui() \
     {
-      ::win = global::ami_import.ParamPanel("3D Corr")
+      ::win = ParamPanel("3D Corr")
 
       ::win.BeginBook()
 

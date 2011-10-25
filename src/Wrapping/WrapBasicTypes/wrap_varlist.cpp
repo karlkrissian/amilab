@@ -27,7 +27,8 @@
   return varres;
 
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 AMIObject* AddWrapVarList( const VarList::ptr& objectptr)
 {

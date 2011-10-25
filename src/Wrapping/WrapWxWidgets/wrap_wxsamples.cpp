@@ -25,14 +25,16 @@
 #include "wxStcFrame.h"
 #include "MainFrame.h"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
 extern MainFrame*   GB_main_wxFrame;
 
-void AddWrapWXSamples()
+void AddWrapWXSamples(AMIObject::ptr & obj)
 {
   // Create new instance of the class
   AMIObject::ptr amiobject (new AMIObject);
-  amiobject->SetName("wx");
+  amiobject->SetName("wxutils");
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
@@ -45,25 +47,9 @@ void AddWrapWXSamples()
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
+  obj->GetContext()->AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject, obj->GetContext());
 }
 
-/**
- * Adds the wxwidgets sample wrapping
- * @param p 
- */
-void wrap_wxsamples( ParamList* p)
-{
-/*
-    char functionname[] = "wx";
-    char description[]=" \n\
-      Adds wrapping for the wxwidgets samples and functions. \n\
-            ";
-    char parameters[] =" \n\
-            ";
-*/
-  AddWrapWXSamples();
-}
 
 
 /**
@@ -117,7 +103,7 @@ void wrap_wxStcFrame( ParamList* p)
   std::string* filename = NULL;
   int line_number = 0;
   
-  if (!get_val_ptr_param<string>( filename,    p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<std::string>( filename,    p, n)) HelpAndReturn;
   if (!get_int_param( line_number,    p, n)) HelpAndReturn;
 
   // create application frame

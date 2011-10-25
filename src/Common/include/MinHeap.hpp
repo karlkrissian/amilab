@@ -38,7 +38,7 @@
 
 
 #include "style.hpp"
-#include <iostream.h>
+#include <iosfwd>
 #include <stdio.h>
 
 // Template ??
@@ -106,11 +106,11 @@ public:
 
   void ChangeValue(int n, const T& elt);
 
-#if !(defined(_sgi_)) 
-  friend ostream& operator << <>(ostream&, const MinHeap<T>& p);
-#else
-  friend ostream& operator << (ostream&, const MinHeap<T>& p);
-#endif
+//#if !(defined(_sgi_)) 
+//  friend std::ostream& operator << <>(std::ostream&, const MinHeap<T>& p);
+//#else
+  friend std::ostream& operator << (std::ostream&, const MinHeap<T>& p);
+//#endif
 
 };
 
@@ -294,7 +294,7 @@ template<class T> void MinHeap<T>::ChangeValue( int pos, const T& elt)
 
 //--------------------------------------------------
 template<class T>
-ostream& operator << (ostream& os, const MinHeap<T>& p)
+std::ostream& operator << (std::ostream& os, const MinHeap<T>& p)
 //       -----------
 {
   

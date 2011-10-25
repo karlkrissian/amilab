@@ -1,0 +1,35 @@
+#
+# ITK/VNL Wrapping in AMILab
+#
+#-----------------
+# VNL Classes
+#-----------------
+vnl_matrix<double>
+vnl_vector<double>
+vnl_symmetric_eigensystem<double>
+vnl_vector_fixed<double, 3u>
+#
+#
+#-----------------
+# ITK Classes
+#-----------------
+itk::SmartPointer<itk::Image<float, 2u> >
+itk::SmartPointer<itk::Image<unsigned char, 2u> >
+itk::ImageRegion<2u>
+itk::Size<2u>
+itk::Index<2u>
+itk::DefaultPixelAccessor<float>
+itk::SmartPointer<itk::ImageFileReader<itk::Image<unsigned char, 2u>, itk::DefaultConvertPixelTraits<unsigned char> > >
+itk::SmartPointer<itk::ImageFileWriter<itk::Image<unsigned char, 2u> > >
+itk::SmartPointer<itk::ImageFileReader<itk::Image<float, 2u>, itk::DefaultConvertPixelTraits<float> > >
+itk::SmartPointer<itk::ImageFileWriter<itk::Image<float, 2u> > >
+itk::SmartPointer<itk::BinaryThresholdImageFilter<itk::Image<unsigned char, 2u>, itk::Image<unsigned char, 2u> > >
+itk::Vector<double, 2u>
+itk::SmartPointer<itk::TranslationTransform<double, 2u> >
+itk::SmartPointer<itk::ResampleImageFilter<itk::Image<unsigned char, 2u>, itk::Image<unsigned char, 2u>, double> >
+#
+#----------------
+# ITK Image - AMImage convertion
+#----------------
+itk::amiConvert
+#

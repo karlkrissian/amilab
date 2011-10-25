@@ -33,6 +33,7 @@
 
 #ifndef _WIDGET_HPP
 #define _WIDGET_HPP
+/*
 // includes for wxWidgets
 #include "wx/wxprec.h"
 
@@ -44,7 +45,8 @@
 #include "wx/wx.h"
 #endif
 #include "wx/propdlg.h"
-
+*/
+#include <cstddef>
 
 //--------------------------------------------------
 

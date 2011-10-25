@@ -1,0 +1,100 @@
+#!/usr/bin/amilab
+
+
+func "AnisoNRADClass.amil"
+
+# Command line arguments
+#
+# - name of input image
+# - name of output image
+# - name of ROI sub-image
+# - use Graphics or not (1/0)
+
+# using the Structure Tensor mode with default values
+
+printn "Number of arguments = %1% " % argc
+
+# use wxCmdLineParser to parse arguments:
+
+printn "'%1%'" % ami.CommandLine
+
+cmdline = wx.wxString(ami.CommandLine)
+cmdlineparser = wx.wxCmdLineParser(&cmdline)
+
+scriptname = op_system.GetCurrentFilename()
+cmdlineparser.SetLogo("Current script is %1%" % scriptname)
+
+cmdlineparser.AddParam("Input_image",     wx.wxCMD_LINE_VAL_STRING,\
+                        wx.wxCMD_LINE_OPTION_MANDATORY)
+
+cmdlineparser.AddParam("Output_image",    wx.wxCMD_LINE_VAL_STRING,\
+                        wx.wxCMD_LINE_OPTION_MANDATORY)
+
+cmdlineparser.AddOption("r","roi","Region of Interest given as an image")
+
+cmdlineparser.AddOption("nsd","noise_sd","Force noise standard deviation value")
+
+cmdlineparser.AddSwitch("h","hide","Hide AMILab main frame")
+cmdlineparser.AddSwitch("q","quit","Leave AMILab when finished")
+
+cmdlineparser.AddOption("rv","roi_voxels",\
+    "Region of Interest given as a rectangular region with"+\
+    " xmin, xmax, ymin, ymax, zmin, zmax values in voxel coordinates,"+\
+    " syntax is \"xmin:xmax,ymin:ymax,zmin:zmax\" ")
+
+#cmdlineparser.Usage()
+
+res =  cmdlineparser.Parse()
+
+if (res!=0) { quit; }
+
+input_name    = cmdlineparser.GetParam(0).c_str()
+inputim = Image(input_name)
+
+output_name   = cmdlineparser.GetParam(1).c_str()
+
+roi = wx.wxString(); 
+if cmdlineparser.Found("r",&roi) {
+  subimage_name = roi.c_str()
+  roiimage = Image(subimage_name)
+} else {
+  if cmdlineparser.Found("rv",&roi) {
+    cmd = "roiimage = inputim[%1%];" % roi.c_str()
+    printn "evaluating '%1%'" % cmd
+    eval cmd
+  }
+}
+
+
+nsd = wx.wxString()
+if cmdlineparser.Found("nsd",&nsd) {
+  noise_sd = atof(nsd.c_str())
+  # we could multiply the STD by 2.55 if it is in percentage like in BrainWeb 
+  # application
+}
+
+
+# hide main window ?
+ami.MainFrame.Show(!cmdlineparser.Found("h"))
+
+AnisoNRADClass anisoNRAD
+
+anisoNRAD->input_name      = "global::inputim"
+anisoNRAD->result_filename = output_name
+
+anisoNRAD.equation_type   = 1
+anisoNRAD.load_input()
+
+anisoNRAD.SetRoiImage(&roiimage)
+if exists(noise_sd) {
+  anisoNRAD.SetNoiseStandardDeviation(noise_sd)
+}
+
+anisoNRAD.Filter()
+anisoNRAD.Save()
+
+
+if cmdlineparser.Found("q") {
+  quit
+}
+

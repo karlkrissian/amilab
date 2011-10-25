@@ -15,6 +15,7 @@
 
 #include "paramlist.h"
 #include "DefineClass.hpp"
+#include "WrapCommonConfigure.h"
 
 // new includes needed for WrapClass<T>
 #include "ami_object.h"
@@ -37,6 +38,7 @@ class wrap_##classname##methodname : public WrapClassMember { \
     wrap_##classname##methodname(const classname::ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -65,6 +67,7 @@ class wrap_##methodname : public WrapClassMember { \
     wrap_##methodname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -99,6 +102,7 @@ class wrap_Set##varname : public WrapClassMember { \
     wrap_Set##varname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       ADDPARAMCOMMENT_TYPE(type,description_str); \
     } \
     BasicVariable::ptr CallMember(ParamList* p) { \
@@ -126,6 +130,7 @@ class wrap_Get##varname : public WrapClassMember { \
     wrap_Get##varname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       ami::format f("Returns a variable of type %1%."); \
       return_comments = (f % AMILabType<type>::name_as_string().c_str()).GetString(); \
     } \
@@ -163,6 +168,7 @@ class wrap_##methodname : public WrapClassMember { \
   public: \
     wrap_##methodname() { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -189,6 +195,7 @@ class wrap_static_##methodname : public WrapClassMember { \
   public: \
     wrap_static_##methodname() { \
       Set_arg_failure(false);\
+      Set_quiet(false);\
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
@@ -228,6 +235,7 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 // simple return with empty variable for a class member
 #define ClassReturnEmptyVar  {\
     Set_arg_failure(true);\
+    Set_quiet(false);\
     return BasicVariable::ptr();\
     }
 
@@ -264,10 +272,26 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 
 class AMIObject;
 
+// needed to compare objects pointers
+class GenericPointer{
+  void* p;
+  public:
+    GenericPointer(void* p1)
+    {
+      p=p1;
+    }
+    void* GetPointer() const { return p;}
+    bool operator == ( const GenericPointer  & gp1){
+      return p==gp1.GetPointer();
+    }
+};
+
+std::string GetPointerAsString(void*);
+
 /**
  Base class for class wrapping
  **/
-class  WrapClassBase
+class WrapCommon_DECLARE WrapClassBase
 {
   DEFINE_CLASS(WrapClassBase);
 
@@ -285,6 +309,10 @@ class  WrapClassBase
     }
 
     virtual int GetObjCounter() { return 0; }
+
+//    virtual std::string ObjPointerAsString() { return ""; }
+    
+//    virtual GenericPointer GetGenericPointer() { return GenericPointer(NULL); }
 
 };
 
@@ -308,13 +336,21 @@ class WrapClass: public virtual WrapClassBase
     typedef boost::shared_ptr<WrapClass<T> > ptr;
 
 
-    /// Stores a pointer to an object of type File.
+    /// Return the pointer to the wrapped object
     boost::shared_ptr<T> _obj;
     const boost::shared_ptr<T>& GetObj() const { return _obj; }
+
+// ambiguity pb
+//    virtual GenericPointer GetGenericPointer() { return GenericPointer((void*)GetObj().get()); }
 
     virtual int GetObjCounter() const
     {
       return _obj.use_count();
+    }
+
+    virtual std::string ObjPointerAsString()
+    {
+      return GetPointerAsString((void*)_obj.get());
     }
 
     /// Constructor
@@ -332,7 +368,7 @@ class WrapClass: public virtual WrapClassBase
     /// and avoid multiple smart pointers inside
 
     // Will call the constructor based on a ParamList
-    static BasicVariable::ptr CreateVar(ParamList*);
+    static BasicVariable::ptr CreateVar(ParamList*, bool quiet=false);
     
     //
     virtual void AddMethods(boost::shared_ptr<WrapClass<T> > this_ptr ) = 0;
@@ -372,7 +408,7 @@ class WrapClass: public virtual WrapClassBase
 /**
  * Basic class for wrapping class function members.
  **/
-class WrapClassMember {
+class WrapCommon_DECLARE WrapClassMember {
 
   DEFINE_CLASS(WrapClassMember);
 
@@ -384,6 +420,7 @@ class WrapClassMember {
     std::string return_comments;
     std::string return_type;
     bool arg_failure;
+    bool quiet;
 
   public:
     virtual ~WrapClassMember() = 0;
@@ -395,12 +432,22 @@ class WrapClassMember {
      * Display the function help in an information dialog.
      */
     void ShowHelp();
+    
+    // for access in scripting language
+    std::string get_return_comments() { return return_comments; }
+    std::string get_return_type() { return return_type;}
+    int get_parameters_comments_size() { return parameters_comments.size(); }
+    std::string get_parameters_comments( int n) { return parameters_comments[n]; }
+    std::string get_paramtypes( int n) { return paramtypes[n]; }
     //void ParamError(int n);
     
     void Set_arg_failure(bool const & f) { arg_failure=f;}
     bool Get_arg_failure() { return arg_failure;}
-    virtual const std::string GetDescription() = 0;
-    virtual const std::string GetFunctionName() = 0;
+
+    void Set_quiet(bool const & q) { quiet=q;}
+
+    virtual const std::string GetDescription()  { return std::string();};
+    virtual const std::string GetFunctionName() { return std::string();};
 };
  
 inline WrapClassMember::~WrapClassMember() { }  // defined even though it's pure virtual; it's faster this way; 

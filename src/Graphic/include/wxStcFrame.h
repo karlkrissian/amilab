@@ -45,7 +45,7 @@
 
 #include <wx/aui/auibook.h> //wxAuiNotebook for editor
 #include <vector>
-using namespace std;
+// using -- namespace std;
 
 
 //----------------------------------------------------------------------------
@@ -147,7 +147,7 @@ public:
   wxWindow* getPage (wxEditor* ed);
   
 private:
-  vector<epf> vec;
+  std::vector<epf> vec;
 };
 //----------------------------------------------------------------------------
 //! frame of the application APP_VENDOR-APP_NAME.

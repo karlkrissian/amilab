@@ -206,6 +206,26 @@ BasicVariable::ptr WrapClass_AnisoGS::
 }
 
 //---------------------------------------------------
+//  SetAttachMask
+//---------------------------------------------------
+void WrapClass_AnisoGS::
+      wrap_SetAttachMask::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("image: Attachment mask, only apply attachment data to pixels/voxels with mask value >0.5 .");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_AnisoGS::
+      wrap_SetAttachMask::CallMember( ParamList* p)
+{
+  int n = 0;
+  InrImage::ptr mask;
+  if (!get_val_smtptr_param<InrImage>
+                           (  mask,   p, n)) ClassHelpAndReturn;
+  this->_objectptr->_obj->Setattach_mask( mask);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
 //  SetSRADROI
 //---------------------------------------------------
 void WrapClass_AnisoGS::

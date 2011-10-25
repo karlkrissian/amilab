@@ -19,21 +19,20 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
-//#include "vtkwrap.h"
-//#include "FluidProject.h"
-//#include "Func_ReadCTALine.h"
-//#include "fonctions.h"
+#ifndef BasicVariable_declared
+  #define BasicVariable_declared
+  AMI_DECLARE_TYPE(BasicVariable);
+#endif
 
-
-#include "driver.h"
-
-extern yyip::Driver GB_driver;
+#include "DriverBase.h"
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
 
 //
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<FILE>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<FILE>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_File::wrap_File construct;
   return construct.CallMember(p);
@@ -41,6 +40,53 @@ BasicVariable::ptr WrapClass<FILE>::CreateVar( ParamList* p)
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(FILE);
 
+/*
+ * readline.h
+ *
+ * Graham Watt
+*/
+
+#include <stdlib.h>
+#include <stdio.h>
+
+std::string readline(FILE* f)
+{
+  /*
+   * calloc is like malloc, except it allocates cleared memory
+   * so you don't have random bytes in the memory space 
+  */
+  char* line = NULL;
+  std::string res;
+  char c;
+  int len = 0;
+  
+  /*
+   * If the readline reaches the end of a file,
+   * I want it to stop just the same
+  */
+  while ( (c = fgetc(f) ) != EOF && c != '\n')
+  {
+    /*
+     * The actual size allocated needs to be 1 more
+     * character than the string itself because '\0'
+     * needs to be added to the end of the string
+     * to prevent garbage
+    */
+    if (line==NULL) 
+        line = (char*) calloc(sizeof(char) * (len + 2), sizeof(char) );
+    else
+        line = (char*) realloc(line, sizeof(char) * (len + 2) );
+    line[len++] = c;
+  }
+  if (line!=NULL) 
+  {
+    line[len] = '\0';
+    res = line;
+    delete line;
+  }
+  
+  return res;
+}
 
 //---------------------------------------------------
 // Method that adds wrapping of File
@@ -48,8 +94,8 @@ AMI_DEFINE_WRAPPEDTYPE_NOCOPY(FILE);
 
 void  WrapClass_File::wrap_File::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"The name of the file to be opened.");
-  ADDPARAMCOMMENT_TYPE(string,"The file access modes (def: w).");
+  ADDPARAMCOMMENT_TYPE(std::string,"The name of the file to be opened.");
+  ADDPARAMCOMMENT_TYPE(std::string,"The file access modes (def: w).");
   return_comments = "A wrapped File object.";
 }
 
@@ -58,8 +104,8 @@ BasicVariable::ptr WrapClass_File::wrap_File::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sFileName,"");
-  GET_PARAM(string,sMode,"w");
+  GET_PARAM(std::string,sFileName,"");
+  GET_PARAM(std::string,sMode,"w");
 
   if ((sMode == "") || (sFileName == "")) {
     ClassHelpAndReturn;
@@ -128,7 +174,7 @@ BasicVariable::ptr WrapClass_File::
       fflush(file.get());
     }
     else
-      GB_driver.err_print("empty variable");
+      GB_DriverBase->err_print("empty variable");
   }
 
   return BasicVariable::ptr();
@@ -162,7 +208,7 @@ BasicVariable::ptr WrapClass_File::
       fflush(file.get());
     }
     else
-      GB_driver.err_print("empty variable");
+      GB_DriverBase->err_print("empty variable");
   }
 
   return BasicVariable::ptr();
@@ -189,7 +235,7 @@ BasicVariable::ptr WrapClass_File::
 void WrapClass_File::
       wrap_scan_float::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"Indicates a format specifier.");
+  ADDPARAMCOMMENT_TYPE(std::string,"Indicates a format specifier.");
   return_comments = "The float number that has been read from the file.";
 }
 //---------------------------------------------------
@@ -202,7 +248,7 @@ BasicVariable::ptr WrapClass_File::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sFormatSpecifier,"");
+  GET_PARAM(std::string,sFormatSpecifier,"");
 
   /**
     Description:
@@ -219,7 +265,7 @@ BasicVariable::ptr WrapClass_File::
       float res;
       setlocale(LC_NUMERIC, "C");
       if(fscanf(file.get(),sFormatSpecifier.c_str(),&res) == 0) {
-        GB_driver.err_print("Unable to read value from file");
+        GB_DriverBase->err_print("Unable to read value from file");
         val = 0;
       }
       else
@@ -255,7 +301,7 @@ BasicVariable::ptr WrapClass_File::
       int res;
       setlocale(LC_NUMERIC, "C");
       if (fscanf(file.get(),"%d",&res) == 0) {
-        GB_driver.err_print("Unable to read integer value from file");
+        GB_DriverBase->err_print("Unable to read integer value from file");
       }
       else
         *intparam->Pointer() =  res;
@@ -268,7 +314,7 @@ BasicVariable::ptr WrapClass_File::
       float res;
       setlocale(LC_NUMERIC, "C");
       if (fscanf(file.get(),"%f",&res) == 0) {
-        GB_driver.err_print("Unable to read float value from file");
+        GB_DriverBase->err_print("Unable to read float value from file");
       }
       else
         *floatparam->Pointer() =  res;
@@ -279,7 +325,7 @@ BasicVariable::ptr WrapClass_File::
     char res[512];
     //setlocale(LC_NUMERIC, "C");
     if (fscanf(file.get(),"%s",res) == 0)
-      GB_driver.err_print("Unable to read string value from file");
+      GB_DriverBase->err_print("Unable to read string value from file");
     else
         *stringparam->Pointer() =  res;
   } else 
@@ -309,7 +355,7 @@ BasicVariable::ptr WrapClass_File::
     float res;
     setlocale(LC_NUMERIC, "C");
     if (fscanf(file.get(),"%f",&res) == 0) {
-      GB_driver.err_print("Unable to read value from file (needs float variable)");
+      GB_DriverBase->err_print("Unable to read value from file (needs float variable)");
       val = 0;
     }
     else
@@ -333,18 +379,61 @@ BasicVariable::ptr WrapClass_File::
 {
   FILE_ptr file(this->_objectptr->GetObj());
 
-  string val = "";
+  std::string val = "";
 
   if (file.get())
   {
     char res[512];
     //setlocale(LC_NUMERIC, "C");
     if (fscanf(file.get(),"%s",res) == 0)
-      GB_driver.err_print("Unable to read value from file (needs string variable)");
+      GB_DriverBase->err_print("Unable to read value from file (needs string variable)");
     else
       val = res;
 
  }
 
-  RETURN_VAR(string,val);
+  RETURN_VAR(std::string,val);
 }
+
+//---------------------------------------------------
+//  read_string
+//---------------------------------------------------
+void WrapClass_File::
+      wrap_read_line::SetParametersComments() 
+{
+  return_comments = "The current line as a string.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_File::
+      wrap_read_line::CallMember( ParamList* p)
+{
+  FILE_ptr file(this->_objectptr->GetObj());
+
+  std::string val = "";
+
+  if (file.get())
+  {
+    //setlocale(LC_NUMERIC, "C");
+    val = readline(file.get());
+ }
+
+  RETURN_VAR(std::string,val);
+}
+
+//---------------------------------------------------
+//  eof
+//---------------------------------------------------
+void WrapClass_File::
+      wrap_eof::SetParametersComments() 
+{
+  return_comments = "The boolean for end of file.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_File::
+      wrap_eof::CallMember( ParamList* p)
+{
+  FILE_ptr file(this->_objectptr->GetObj());
+  bool res = (feof(file.get())!=0);
+  return AMILabType<bool>::CreateVar(res);
+}
+

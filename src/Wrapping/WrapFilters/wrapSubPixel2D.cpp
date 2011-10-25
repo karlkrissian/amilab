@@ -22,7 +22,7 @@
 // static member for creating a variable from a ParamList
 //
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<SubPixel2D>::CreateVar( ParamList* p)
+BasicVariable::ptr WrapClass<SubPixel2D>::CreateVar( ParamList* p, bool quiet)
 {
   WrapClass_SubPixel2D::wrap_SubPixel2D construct;
   return construct.CallMember(p);

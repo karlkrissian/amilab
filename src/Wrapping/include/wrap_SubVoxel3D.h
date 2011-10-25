@@ -15,7 +15,7 @@
 #include "SubVoxel3D.h"
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<SubVoxel3D>::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<SubVoxel3D>::CreateVar( ParamList* p, bool quiet);
 
 AMI_DECLARE_TYPE(SubVoxel3D)
 

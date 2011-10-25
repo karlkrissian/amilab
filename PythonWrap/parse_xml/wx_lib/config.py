@@ -22,32 +22,53 @@ def get_include_file(classname, filename):
   if s.find("tbar")      !=-1:  s = "wx/toolbar.h"
   if s.find("panelg.h")  !=-1:  s = "wx/panel.h"
   if s.find("paletteg.h")!=-1:  s = "wx/palette.h"
+  if s.find("aboutdlgg.h")!=-1: s = "wx/aboutdlg.h"
+  if s.find("choicdgg.h")!=-1:  s = "wx/choicdlg.h"
+  if s.find("textdlgg.h")!=-1:  s = "wx/textdlg.h"
+  if s.find("numdlgg.h")!=-1:   s = "wx/numdlg.h"
   # AD-HOC fixes, can be improved ...
   if classname.find("Aui")!=-1: s = "wx/aui/aui.h"
-  if classname=="wxDC":         s = "wx_includes.h"
-  if classname=="wxListCtrl":   s = "wx_includes.h"
-  if classname=="wxBitmap":     s = "wx_includes.h"
-  if classname=="wxRegionBase": s = "wx_includes.h"
-  if classname=="wxFontBase":   s = "wx_includes.h"
-  if classname=="wxBrush":      s = "wx_includes.h"
-  if classname=="wxGenericImageList": s = "wx_includes.h"
-  if classname=="wxMouseState": s = "wx_includes.h"
-  if classname=="wxPen":        s = "wx_includes.h"
+  if classname=="wxDC":         s = "wx/dc.h"
+  #if classname=="wxListCtrl":   s = "wx_includes.h"
+  #if classname=="wxBitmap":     s = "wx_includes.h"
+  #if classname=="wxRegionBase": s = "wx_includes.h"
+  #if classname=="wxFontBase":   s = "wx_includes.h"
+  #if classname=="wxBrush":      s = "wx_includes.h"
+  #if classname=="wxGenericImageList": s = "wx_includes.h"
+  #if classname=="wxMouseState": s = "wx_includes.h"
+  #if classname=="wxPen":        s = "wx_includes.h"
   if classname=="wxWritableWCharBuffer":   s = "wx/string.h"
   if classname=="wxWritableCharBuffer":   s = "wx/string.h"
   if classname=="wxWCharBuffer":   s = "wx/string.h"
   if classname=="wxCharBuffer":   s = "wx/string.h"
   if classname=="wxStatusBar": s = "wx/statusbr.h"
-  if classname=="wxImageList": s = "wx_includes.h"
+  #if classname=="wxImageList": s = "wx_includes.h"
   if classname=="wxGDIImage": s = "wx/bitmap.h"
   if classname=="wxGDIImageHandler": s = "wx/bitmap.h"
+  if classname=="wxIcon": s = "wx/icon.h"
+  if classname=="wxPen": s = "wx/pen.h"
+  if classname=="wxSplitterWindow": s = "wx/splitter.h"
+  #if classname=="wxTextEntry":       s = "wx_includes.h"
+  #if classname=="wxTextEntryBase":   s = "wx_includes.h"
   #print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)
   s1 = '#include "{0}"'.format(s)
+  if s.find("tipdlg.h"):
+    s1 = '#include <wx/window.h>\n'+s1
+  if s.find("aboutdlg.h"):
+    s1 = s1+'\n#include <wx/generic/aboutdlgg.h>'
   #print "s1 = ",s1
-  if classname=="wxScopedCharTypeBuffer<char>":
-    s1 = '#include <wx/wx.h>\n'+s
-  if classname=="wxFormatString":
-    s1 = '#include <wx/string.h>\n'+s
+  #if classname=="wxScopedCharTypeBuffer<char>":
+  #  s1 = '#include <wx/wx.h>\n'+s1
+  #if classname=="wxEventTypeTag<wxTimerEvent>":
+  #  s1 = '#include <wx/timer.h>\n'+s1
+  #if classname=="wxEventTypeTag<wxListEvent>":
+  #  s1 = '#include <wx/listctrl.h>\n'+s1
+  #if classname=="wxFormatString":
+  #  s1 = '#include <wx/string.h>\n'+s1
+
+  # include platform.h to avoid problems
+  s1 = '#include <wx/platform.h>\n' + s1
+
   return s1
  
 def get_var_filter():

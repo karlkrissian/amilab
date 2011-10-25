@@ -144,8 +144,7 @@ if (!exists(SyntheticPVEImagesClass)) {
   
     if(exists(::input)){
       #Create a compute partial volume object
-      import = &global::ami_import;
-      ::pv = import->ComputePV()
+      ::pv = ComputePV()
       
       #Analytic function recursive for a surface
       if(::pv_type == 0) {
@@ -246,8 +245,7 @@ if (!exists(SyntheticPVEImagesClass)) {
   #LINE
   #--------------------------------------------------------------
   proc ::GenerateLine() {
-    import = &global::ami_import;
-    ::line = import->AnalyticLine()
+    ::line = AnalyticLine()
     ::line->setAngle(::line_angle)
     ::line->set_n(::n)
     ::win.EnablePanel(::cm_id, 1)
@@ -272,8 +270,7 @@ if (!exists(SyntheticPVEImagesClass)) {
   #CIRCLE
   #--------------------------------------------------------------
   proc ::GenerateCircle() {
-    import = &global::ami_import;
-    ::circle = import->AnalyticCircle()
+    ::circle = AnalyticCircle()
     ::circle->setCenter(::cx,::cy)
     ::circle->setRadius(::cr)
     ::win.EnablePanel(::cm_id, 1)
@@ -294,8 +291,7 @@ if (!exists(SyntheticPVEImagesClass)) {
   #VESSEL 2D
   #--------------------------------------------------------------
   proc ::GenerateVessel2D() {
-    import = &global::ami_import;
-    ::vessel2D = import->AnalyticStraightVessel2D()
+    ::vessel2D = AnalyticStraightVessel2D()
     ::vessel2D->setCenter(::vessel_cx, ::vessel_cy)
     ::vessel2D->setAngle(::vessel_angle)
     ::vessel2D->setThickness(::vessel_thick)
@@ -317,8 +313,7 @@ if (!exists(SyntheticPVEImagesClass)) {
   #RING
   #--------------------------------------------------------------
   proc ::GenerateRing2D() {
-    import = &global::ami_import;
-    ::ring2D = import->AnalyticRing2D()
+    ::ring2D = AnalyticRing2D()
     ::ring2D->setCenter(::ring_cx, ::ring_cy)
     ::ring2D->setRadius(::ring_radius)
     ::ring2D->setThickness(::ring_thick)
@@ -340,8 +335,7 @@ if (!exists(SyntheticPVEImagesClass)) {
   #CUBE
   #--------------------------------------------------------------
   proc ::GenerateCube() {
-    import = &global::ami_import;
-    ::cube = import->AnalyticCube()
+    ::cube = AnalyticCube()
     ::cube->setCenter(::cube_cx, ::cube_cy, ::cube_cz)
     ::cube->setDimX(::cube_dimx)
     ::cube->setDimY(::cube_dimy)
@@ -367,8 +361,7 @@ if (!exists(SyntheticPVEImagesClass)) {
   #CYLINDER
   #--------------------------------------------------------------
   proc ::GenerateCylinder() {
-    import = &global::ami_import;
-    ::cylinder = import->AnalyticCylinder()
+    ::cylinder = AnalyticCylinder()
     ::cylinder->setRadius(::cylinder_r)
     ::cylinder->setXdir(::cylinder_xdir)
     ::cylinder->setYdir(::cylinder_ydir)
@@ -392,8 +385,7 @@ if (!exists(SyntheticPVEImagesClass)) {
   #SPHERE
   #--------------------------------------------------------------
   proc ::GenerateSphere() {
-    import = &global::ami_import;
-    ::sphere = import->AnalyticSphere()
+    ::sphere = AnalyticSphere()
     ::sphere->setCenter(::sx,::sy,::sz)
     ::sphere->setRadius(::sr)
     ::win.EnablePanel(::cm_id, 1)
@@ -415,8 +407,7 @@ if (!exists(SyntheticPVEImagesClass)) {
   #TORUS
   #--------------------------------------------------------------
   proc ::GenerateTorus() {
-    import = &global::ami_import;
-    ::torus = import->AnalyticTorus()
+    ::torus = AnalyticTorus()
     ::torus->setCenter(::tx,::ty,::tz)
     ::torus->set_rmin(::tr)
     ::torus->set_rmax(::tR)
@@ -569,8 +560,7 @@ if (!exists(SyntheticPVEImagesClass)) {
   #--------------------------------------------------------------
   proc ::Gui(){
   
-    import = &global::ami_import;
-    ::win = import->ParamPanel("Synth.Im.")
+    ::win = ParamPanel("Synth.Im.")
 
     ::win.BeginBook()
       #Main tab

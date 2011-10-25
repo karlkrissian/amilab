@@ -53,11 +53,13 @@
 
 #include "ami_object.h"
 
+#include "addwrap_itk.h"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 //---------------------------------------------------------
-void AddWrapITK(){
+void AddWrapITK(AMIObject::ptr& obj){
 
   // Create new instance of the class
   AMIObject::ptr amiobject (new AMIObject);
@@ -100,16 +102,10 @@ void AddWrapITK(){
   Vars.SetObjectContext(previous_ocontext);
 
   // Add the new object (namespace)
-  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
+  obj->GetContext()->AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject,obj->GetContext());
+
+  // Add classes to itk classes to context
+  wrap_itk_classes(amiobject->GetContext());
+
 }
 
-
-/**
- * Adds the ITK wrapping
- * @param p 
- */
-void wrap_ITK( ParamList* p)
-{
-
-  AddWrapITK();
-}

@@ -314,7 +314,7 @@ void IsoContour2D :: RechercheContours( )
       FinSi
 
     FinPour
-    Si verbose Et Non(_silencieux) Alors
+    Si GB_verbose Et Non(_silencieux) Alors
       Si x > 0 Alors
         printf("\b\b\b");
       Sinon
@@ -354,7 +354,7 @@ void IsoContour2D :: ParcoursContour( int x, int y, int z,
 
   max_points = 0;
 
-//  Si verbose AlorsFait
+//  Si GB_verbose AlorsFait
 //   std::cout << "Parcours du contour numero " << num << std::endl;
 
 
@@ -933,7 +933,7 @@ void IsoContour2D :: CalculImageContours( float sigma)
   FinPour
   FinPour
 
-   Si (verbose) Et Non(_silencieux) Alors
+   Si (GB_verbose) Et Non(_silencieux) Alors
       Si z > 0 Alors
         printf("\b\b\b");
       Sinon

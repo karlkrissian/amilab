@@ -10,8 +10,6 @@
 
 func "carotidchallenge_config.amil"
 func "ReadPoints.amil"
-import_vtk
-
 DR_datanum_str = $1
 emptyargs
 
@@ -33,9 +31,9 @@ pointsname = DR_data_dir + "/points"+DR_datanum_str+".txt"
 ReadPoints(pointsname)
 
 DR_ptsize = 1
-DR_pt1_sphere = vtkSphere(DR_ptsize,8,8,p1x,p1y,p1z)
-DR_pt2_sphere = vtkSphere(DR_ptsize,8,8,p2x,p2y,p2z)
-DR_pt3_sphere = vtkSphere(DR_ptsize,8,8,p3x,p3y,p3z)
+DR_pt1_sphere = vtktools.vtkSphere(DR_ptsize,8,8,p1x,p1y,p1z)
+DR_pt2_sphere = vtktools.vtkSphere(DR_ptsize,8,8,p2x,p2y,p2z)
+DR_pt3_sphere = vtktools.vtkSphere(DR_ptsize,8,8,p3x,p3y,p3z)
 
 
 DR_pt1_sphere.SetDiffuse(250,5,5)
@@ -49,7 +47,7 @@ DR_surf_draw += DR_pt3_sphere
 # draw the junction
 if (wx.wxFileName(DR_result_dir+"/junction.txt").FileExists()) {
   func DR_result_dir+"/junction.txt"
-  DR_junc_sphere = vtkSphere(DR_ptsize,8,8,CE_Jx,CE_Jy,CE_Jz)
+  DR_junc_sphere = vtktools.vtkSphere(DR_ptsize,8,8,CE_Jx,CE_Jy,CE_Jz)
   DR_surf_draw += DR_junc_sphere
   DR_junc_sphere.SetOpacity(0.5)
   DR_junc_sphere.SetDiffuse(250,250,5)
@@ -162,8 +160,7 @@ proc DR_Save() \
 {
 }
 
-  import = &global::ami_import;
-  DR_win = import->ParamPanel("Visual Inspection")
+  DR_win = ParamPanel("Visual Inspection")
   DR_win.AddLabel("Data = ",DR_datanum_str)
   DR_win.AddLabel("Side = ",DR_side)
 

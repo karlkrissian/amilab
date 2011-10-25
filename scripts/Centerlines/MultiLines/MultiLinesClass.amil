@@ -37,8 +37,6 @@ if (!exists(MultiLinesClass)) {
   
   Class MultiLinesClass : public ScriptGui {
   
-    global::ami_import.Filters()
-    ::filters=&filters
 
     func "Centerlines/Skeleton/SkeletonClass"
     SkeletonClass ::skeleton_obj
@@ -100,6 +98,9 @@ if (!exists(MultiLinesClass)) {
 
       ::smoothradii_std = 1, "Gaussian standard deviation for smoothing the lines radii"
       #::Gui()
+      ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/MultiLines/index.html"
+      ::wiki_help = "http://www.ctm.ulpgc.es/amilab/doku.php?id=tutorial-mainalgorithms-multilines"
+
     }
 
         
@@ -116,6 +117,7 @@ if (!exists(MultiLinesClass)) {
         ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
       }
     }
+    Comments(::load_input,"Loads the selected input image, making a local copy in float voxel type.")
     
     //---------------------------------------------------
     proc ::GuiUpdateIntensityLimits( NUM _min, NUM _max) {
@@ -285,14 +287,14 @@ if (!exists(MultiLinesClass)) {
     
       # Compute Structure Tensor
       printn "Structure Tensor"
-      sth = ::filters->StructureTensorH(&::input,sigma,1,&::mask)
+      sth = filters.StructureTensorH(&::input,sigma,1,&::mask)
     
       SetProgress(::current_progress+::current_step*0.25)
     
       # EigenDecomp, parameters:  the structure tensor,
       # the eigenvalues flag: 0
       # the eigenvectors flag 3
-      eig = ::filters->EigenDecomp(&sth,0,3,&::mask)
+      eig = filters.EigenDecomp(&sth,0,3,&::mask)
       SetProgress(::current_progress+::current_step*0.5)
       del sth
     
@@ -515,6 +517,7 @@ if (!exists(MultiLinesClass)) {
       if (!exists(::input)) {
         ::load_input()
       }
+      
       if (!exists(::mask)) {
         ::update_mask()
       }
@@ -792,18 +795,17 @@ if (!exists(MultiLinesClass)) {
     #-----------------------------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("MultiLines",&::parent_panel)
+        ::win = ParamPanel("MultiLines",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("MultiLines")
+        ::win = ParamPanel("MultiLines")
       }
       ::win.BeginBook()
         ::win.AddPage("IO")
           # set the input image
           ::win.BeginHorizontal()
             ::win.AddImageChoice( &::input_name, "Input")
-            ::AddBitmapButton(&::win, &::icons._Copy,   32, "load_input")
+            ::AddBitmapButton(&::win, &::icons._Copy,   16, "load_input")
             ::win.SetPositionProp(-1,0)
           ::win.EndHorizontal()
 

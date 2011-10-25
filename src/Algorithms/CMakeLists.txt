@@ -8,8 +8,10 @@ add_subdirectory (DerivAndOrient)
 include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/AMILab
+  ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
@@ -56,6 +58,16 @@ SET(Algorithms_SRCS
   AnalyticSphere.cpp
   AnalyticTorus.cpp
   ComputePartialVolume.cpp
+  StructureTensor.cpp
+  HessianMatrix.cpp
+  Eigen3D.cpp
+  DiscSecDerGrad.cpp
+  NormGrad.cpp
+  DiscNormGrad.cpp
+  DiscMeanCurvature.cpp
+  ImageDerivatives.cpp
+  Chamfer.cpp
+  DistanceTransforms.cpp
 
   # files coming from previous Filtering directory
   bruit.cpp
@@ -65,7 +77,7 @@ SET(Algorithms_SRCS
   GeneralGaussianFilter.cpp
 
   # files coming from previous Line directory
-  reponse_cercle.cpp
+  CalculRepCercle.cpp
   CircleBoundaries3D.cpp
 
   Gradient.cpp
@@ -123,6 +135,18 @@ SET(Algorithms_HDRS
   include/AnalyticSphere.h
   include/AnalyticTorus.h
   include/ComputePartialVolume.h
+  include/StructureTensor.h
+  include/HessianMatrix.h
+  include/Eigen3D.h
+  include/DiscSecDerGrad.h
+  include/NormGrad.h
+  include/DiscNormGrad.h
+  include/DiscMeanCurvature.h
+  include/ImageDerivatives.h
+  include/FastVector.hpp
+  include/FastVector.tpp
+  include/Chamfer.h
+  include/DistanceTransforms.h
 
   # files coming from previous Filtering directory
   include/bruit.hpp
@@ -133,7 +157,7 @@ SET(Algorithms_HDRS
   include/filtre_param.hpp
 
   # files coming from previous Line directory
-  include/reponse_cercle.hpp
+  include/CalculRepCercle.hpp
   include/CircleBoundaries3D.h
 
   include/Gradient.h
@@ -166,9 +190,13 @@ SET(Algorithms_HDRS
   include/dijkstra.h
 )
 
-SET(OpenGL_SRCS
-     ${OpenGL_SRCS}
-     ${OpenGL_HDRS}
+IF(WIN32)
+  set_source_files_properties(${Algorithms_SRCS} PROPERTIES COMPILE_FLAGS "-DAlgorithms_EXPORTS")
+ENDIF(WIN32)
+
+SET(Algorithms_SRCS
+     ${Algorithms_SRCS}
+     ${Algorithms_HDRS}
 )
 
 my_add_library ( Algorithms)

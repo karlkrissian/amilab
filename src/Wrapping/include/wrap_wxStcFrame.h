@@ -18,13 +18,13 @@
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
-#include "wrap_wxWindow.h"
+#include "wrap_wxFrame.h"
 
 #include "wxStcFrame.h"
 
 AMI_DECLARE_TYPE(wxStcFrame)
 
-class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxWindow
+class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxFrame
 {
   DEFINE_CLASS(WrapClass_wxStcFrame);
 
@@ -36,7 +36,7 @@ class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxWi
   public:
 
     /// Constructor
-    WrapClass_wxStcFrame(boost::shared_ptr<wxStcFrame> si):  WrapClass<wxStcFrame>(si), WrapClass_wxWindow(si)
+    WrapClass_wxStcFrame(boost::shared_ptr<wxStcFrame> si):  WrapClass<wxStcFrame>(si), WrapClass_wxFrame(si)
     {}
 
     /// Wrapping of the constructor
@@ -50,12 +50,22 @@ class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxWi
 
     void AddMethods(WrapClass<wxStcFrame>::ptr this_ptr )
     {
-      // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
-      parent_obj->AddMethods(parent_obj);
 
       AddVar_GetActiveEditor(  this_ptr);
       AddVar_FileOpen(         this_ptr);
+
+      // Add public fields 
+      AMIObject::ptr tmpobj(amiobject.lock());
+      if (!tmpobj.get()) return;
+      Variables::ptr context(tmpobj->GetContext());
+
+      // Add base parent wxFrame
+      boost::shared_ptr<wxFrame > parent_wxFrame(  boost::dynamic_pointer_cast<wxFrame >(this_ptr->GetObj()));
+      BasicVariable::ptr var_wxFrame = AMILabType<wxFrame>::CreateVarFromSmtPtr(parent_wxFrame);
+      context->AddVar("wxFrame",var_wxFrame);
+      // Set as a default context
+      Variable<AMIObject>::ptr obj_wxFrame = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxFrame);
+      context->AddDefault(obj_wxFrame->Pointer()->GetContext());
     }
 
 };

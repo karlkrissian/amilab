@@ -314,8 +314,7 @@ w2.Display()
 #-------------------------------------------------
 # Creating parameter window for test on alpha
 #-------------------------------------------------
-import = &global::ami_import;
-alphatests_win = import->ParamPanel("test sequence on alpha")
+alphatests_win = ParamPanel("test sequence on alpha")
 alfa_min_id     = alphatests_win.AddFloat( &alfa_min,  "alfa_min", 0.01,10)
 alfa_max_id     = alphatests_win.AddFloat( &alfa_max,  "alfa_max", 0.01,20)
 alfa_step_id    = alphatests_win.AddFloat( &alfa_step,  "alfa_step", 0.01,1)

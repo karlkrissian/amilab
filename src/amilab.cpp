@@ -58,40 +58,36 @@
 
 #include <wx/config.h>
 
-Pile<NomMethode*> GB_pile_nom_methode((NomMethode*)NULL);
-unsigned char GB_AfficheWarning = false;
-unsigned char GB_AfficheErreur  = false;
+
+#include "common_global_import.h"
+#include "amilab_global_import.h"
 
 //XtAppContext  GB_contexte;
-unsigned char       GB_debug;
-unsigned char       GB_debug_opengl;
-unsigned char       GB_verbose;
-unsigned char       GB_nofile;
 
 
-yyip::Driver  GB_driver;
-VarContexts   Vars;
+#include "LanguageConfigure.h"
+Language_VAR_IMPORT yyip::Driver  GB_driver;
 
-MainFrame*    GB_main_wxFrame;
-wxApp*        GB_wxApp;
-wxConfig*     GB_Config;
+#include "DriverBase.h"
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
 
-wxString        GB_help_dir;
-wxString        GB_scripts_dir;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
+
 
 unsigned char DELETE_IDRAW;
 
-extern VarContexts  Vars;
-
-
-int        GB_argc;
-wxChar**   GB_argv;
-int        GB_num_arg_parsed;
+#include "amilab_global_import.h"
 
 char program[80];
-unsigned char verbose;
+
+//COMMON_EXPORT unsigned char GB_verbose;
 
 #include "xmtext.hpp"
+/*
+#include <boost/format/format_implementation.hpp>
+boost::format test;*/
 
 //-----------------------------------------
 bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookforfile = wxEmptyString)
@@ -315,25 +311,11 @@ bool MyApp::OnInitGui()
 //-----------------------------------------
 bool MyApp::OnInit()
 {
-
+  // Initialize GB_DriverBase
+  GB_DriverBase = DriverBase::ptr(&GB_driver,smartpointer_nodeleter<DriverBase>());
 
  ::wxInitAllImageHandlers();
 
-  //wxBitmap bitmap;
-  wxBitmap bitmap(amilab_splash_xpm );
-  if (bitmap.IsOk())
-  {
-  wxSplashScreen *splash;
-  splash = new wxSplashScreen(bitmap,
-      wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-      1500, NULL, -1, wxDefaultPosition, wxDefaultSize,
-      wxSIMPLE_BORDER|wxSTAY_ON_TOP);
-  }
-  wxYield();
- 
-  
-  
-  
   config = new wxConfig(wxT("AMILab"));
 /*
                         wxEmptyString,
@@ -360,6 +342,7 @@ bool MyApp::OnInit()
   int  n;
   bool no_interaction = false;
   bool hide_mainframe = false;
+  bool noscriptsmenu = false;
   std::string cmd_line;
 
   GB_debug = false;
@@ -368,6 +351,7 @@ bool MyApp::OnInit()
 
   GB_argc  = argc;
   GB_argv  = argv;
+  GB_cmdline = "";
 
   // print the command line as a comment in the cmdhistory
   //  if (argv[0][0]!='/') {
@@ -385,8 +369,9 @@ bool MyApp::OnInit()
     }
   cmd_line += "\n";
 
-  std::cout << argc << std::endl;
-  std::cout << cmd_line << std::endl;
+  
+  std::cout << "Number of arguments: "<< argc << std::endl;
+  std::cout << "Command line: "<< cmd_line << std::endl;
 
   GB_num_arg_parsed = 1;
   Si  argc>GB_num_arg_parsed Et
@@ -405,6 +390,13 @@ bool MyApp::OnInit()
   FinSi
 
   Si  argc>GB_num_arg_parsed Et
+      strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-noscriptsmenu")==0
+  Alors
+    noscriptsmenu = true;
+    GB_num_arg_parsed++;
+  FinSi
+
+  Si  argc>GB_num_arg_parsed Et
       strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-nofile")==0
   Alors
     GB_nofile = true;
@@ -419,6 +411,21 @@ bool MyApp::OnInit()
     no_interaction = true;
     GB_num_arg_parsed++;
   FinSi
+
+  if (!hide_mainframe) {
+    //wxBitmap bitmap;
+    wxBitmap bitmap(amilab_splash_xpm );
+    if (bitmap.IsOk())
+    {
+    wxSplashScreen *splash;
+    splash = new wxSplashScreen(bitmap,
+        wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+        1500, NULL, -1, wxDefaultPosition, wxDefaultSize,
+        wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+    }
+    wxYield();
+  }
+
 
   // Get environment variables
   CheckEnvDir( _T("AMI_HELP"),    GB_help_dir,    _T("tokens.html"));
@@ -508,7 +515,7 @@ bool MyApp::OnInit()
     amilab_menuscripts.AssignDir(GB_scripts_dir);
     amilab_menuscripts.SetFullName(wxT("Add2Menu.amil"));
 
-    if (amilab_menuscripts.FileExists())
+    if (amilab_menuscripts.FileExists()&&(!noscriptsmenu))
     try {
         GB_driver.parse_file(string(amilab_menuscripts.GetFullPath().mb_str(wxConvUTF8)));
         GB_main_wxFrame->GetConsole()->ProcessReturn();
@@ -521,6 +528,13 @@ bool MyApp::OnInit()
       try {
         wxString input_file(argv[GB_num_arg_parsed]);
         GB_num_arg_parsed++;
+
+        // Create command line arguments
+        for(n=GB_num_arg_parsed;n<argc;n++)
+          {
+            GB_cmdline += wxString(argv[n]).mb_str(wxConvUTF8);
+            GB_cmdline += " ";
+          }
 
         // run the file
         /*

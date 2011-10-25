@@ -5,13 +5,8 @@ func "Subpixel/subpixel2D.amil"
 
 if (!exists(syntheticADClass)){
 
-	#Import filters
-  ami_import->Filters()
-
 	Class syntheticADClass : public ScriptGui{
   
-    ::filters = &global::filters
-    
     #-----------------------
     proc ::Init(){
       ::class_name  = "global::Subpixel2DClass"
@@ -73,12 +68,11 @@ if (!exists(syntheticADClass)){
     proc ::Run() {
     	if (exists(::input)) {
         #create a compute partial volume object
-        import   = &global::ami_import;
-        ::pv     = import->ComputePV()
+        ::pv     = ComputePV()
         ::pv->setInputImage(&::input)
         ::pv->setSubdiv(::subdiv)
-        ::circle = import->AnalyticCircle()
-        ::ring   = import->AnalyticRing2D()
+        ::circle = AnalyticCircle()
+        ::ring   = AnalyticRing2D()
         ::circle->setCenter(::cx, ::cy)
         ::circle->setRadius(::cr)
         ::ring->setCenter(::ring_cx, ::ring_cy)
@@ -188,7 +182,7 @@ if (!exists(syntheticADClass)){
     proc ::ComputeSubpixel() {
       if(exists(::res)) {
         if (exists(::spResult)) { del ::spResult; }
-        spObject = ::import->SubPixel2D(&::res, 25, 0)
+        spObject = SubPixel2D(&::res, 25, 0)
         ::spResult = spObject->DenoisingGus()
       } else {
         InfoDialog "You must create first the image"
@@ -227,8 +221,7 @@ if (!exists(syntheticADClass)){
     #-----------------------
     
     proc ::CreateGui() {
-      ::import = &global::ami_import;
-      ::win = ::import->ParamPanel("SyntheticAD")
+      ::win = ParamPanel("SyntheticAD")
       
       ::win.BeginBook()
         ::win.AddPage("Main.")

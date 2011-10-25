@@ -44,11 +44,10 @@ if (!exists(ScriptExampleClass)) {
     //---------------------------------------------------
     proc ::Gui() {
     
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("ScriptExample",&::parent_panel)
+        ::win = ParamPanel("ScriptExample",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("ScriptExample")
+        ::win = ParamPanel("ScriptExample")
       }
       
       ::win.BeginBook()

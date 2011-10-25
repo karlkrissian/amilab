@@ -1,0 +1,10 @@
+# Points (IRGBOMS)
+2
+100	0	0	0	0	0.5	0.0 
+255	1	1	1	1	0.5	0.0
+# Property shadeon/off Ambient Diffuse Specular SpecularPower OpacityUnitDistance Blendmode Normalize
+0	0.15	0.9	0.3	15.0	0.8919	0	1
+# Background RGB RGB UseGradientBackground 
+0	0	0	0	0	0	0
+# Description
+Ramp

@@ -1,0 +1,11 @@
+
+func "vtkXYPlotClass"
+
+if (!exists(vtkXYPlot_obj)) {
+  vtkXYPlotClass vtkXYPlot_obj
+  vtkXYPlot_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

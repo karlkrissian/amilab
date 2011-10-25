@@ -216,7 +216,7 @@ void tabsVector::addTab (wxEditor* editor, wxWindow* page, const wxString& filen
 }
 
 void tabsVector::delTab (wxWindow* page) {
-  vector<epf>::iterator it;
+  std::vector<epf>::iterator it;
   for (it = vec.begin(); it != vec.end(); it++) {
     if (page == it->getPag()) {
       it = vec.erase(it);
@@ -226,7 +226,7 @@ void tabsVector::delTab (wxWindow* page) {
 }
 
 wxEditor* tabsVector::getEdit (wxWindow* page) {
-  vector<epf>::iterator it;
+  std::vector<epf>::iterator it;
   for (it = vec.begin(); it != vec.end() ; it++) {
     if (page == it->getPag()) {
       return it->getEd();
@@ -236,7 +236,7 @@ wxEditor* tabsVector::getEdit (wxWindow* page) {
 }
 
 wxWindow* tabsVector::getPage (const wxString& filename) {
-  vector<epf>::iterator it;
+  std::vector<epf>::iterator it;
   for (it = vec.begin(); it != vec.end(); it++) {
     if (filename == it->getFilena()) {
       return it->getPag();
@@ -246,7 +246,7 @@ wxWindow* tabsVector::getPage (const wxString& filename) {
 }
 
 wxWindow* tabsVector::getPage (wxEditor* ed) {
-  vector<epf>::iterator it;
+  std::vector<epf>::iterator it;
   for (it = vec.begin(); it != vec.end(); it++) {
     if (ed == it->getEd()) {
       return it->getPag();

@@ -15,7 +15,7 @@
 
 #include "AMILabConfig.h"
 #include "paramlist.h"
-
+#include "ami_object.h"
 
 /** function that adds an import object to import all the code wrapping
  */
@@ -24,7 +24,7 @@ void AddWrapImports();
 /**
  * Adding wrapped classes from wxwidgets library.
  */
-void AddWrapWxWidgets();
+void AddWrapWxWidgets(AMIObject::ptr& obj);
 
 #ifdef AMI_WRAP_MICRONTRACKER
   void AddWrapMicronTracker();
@@ -40,51 +40,59 @@ void AddWrapWxWidgets();
 /**
  * Adding wrapped classes from Algorithms
  */
-void AddWrapAlgorithms();
+void AddWrapAlgorithms(AMIObject::ptr& obj);
+
+/**
+ * Wraps a variable: Variable<T> to Variable<BasicVariable>.
+ * @param p
+ */
+BasicVariable::ptr wrap_WrapVariable( ParamList* p);
+
+
+/**
+ * Adding wrapped classes from Language
+ */
+void AddWrapLanguage(AMIObject::ptr& obj);
 
 /**
  * Adding wrapped classes from amilab.
  */
-void AddWrapAmilab();
+void AddWrapAmilab(AMIObject::ptr& obj);
 
 /**
  * Adding wrapped classes and methods for IO.
  */
-void AddWrapIO();
+void AddWrapIO(AMIObject::ptr& obj);
 
 /**
  * Adding wrapped classes and methods for Image.
  */
-void AddWrapImage();
+void AddWrapImage(AMIObject::ptr& obj);
 
 /**
  * Adding wrapped classes and methods for Surfaces.
  */
-void AddWrapSurface();
+void AddWrapSurface(AMIObject::ptr& obj);
 
 /**
  * Adding wrapped classes and methods for DessinImage.
  */
-void AddWrapDessinImage();
+void AddWrapDessinImage(AMIObject::ptr& obj);
 
 /**
  * Adding wrapped classes and methods for Viewer3D.
  */
-void AddWrapViewer3D();
+void AddWrapViewer3D(AMIObject::ptr& obj);
 
 /**
  * Adding wrapped classes and methods for WrapGLTransfMatrix.
  */
-void AddWrapGLTransfMatrix();
+void AddWrapGLTransfMatrix(AMIObject::ptr& obj);
 
 /**
  * Adding wrapped classes and methods for basic types (VarVector, VarList, etc ..).
  */
-void AddWrapBasicTypes();
+void AddWrapBasicTypes(AMIObject::ptr& obj);
 
-/**
- * Adding wrapped classes and methods for basic types (VarVector, VarList, etc ..).
- */
-void AddWrapTestTemplateClass();
 
 #endif //  _wrap_MainFrame_h_

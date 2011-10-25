@@ -53,7 +53,7 @@
 
 
 #include "style.hpp"
-#include <iostream>
+#include <iosfwd>
 #include "math1.hpp"
 #include "chaine.hpp"
 #include "GeneralGaussianFilter.h"
@@ -76,8 +76,10 @@
 #define EffaceTabEntier(im) if ( im!= (int*)  NULL) { delete[] im; im = (int*)NULL;}
 
 
-extern unsigned char verbose; 
-extern unsigned char GB_debug;
+
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
+COMMON_VAR_IMPORT unsigned char GB_verbose;
 
 
 

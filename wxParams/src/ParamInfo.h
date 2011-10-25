@@ -13,6 +13,8 @@
 #ifndef _ParamInfo_h_
 #define _ParamInfo_h_
 
+#include <wx/sizer.h>
+
 class ParamInfo {
   int               _type;      // precise le type du n-ieme 
   wxGenericWidget*  _wxparam;     // list of wxwidgets used

@@ -12,6 +12,7 @@ add_subdirectory (wxVTKSamples)
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${wxParams_INCLUDE_DIRS}
+  ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
@@ -19,6 +20,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/wxVTK
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_SOURCE_DIR}/AMILab
+  ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}
   ${GLEXT_INCLUDE_DIR}
@@ -31,6 +33,8 @@ INCLUDE(${wxWidgets_USE_FILE})
 
 
 SET(Graphic_HDRS
+    #include/myAuiNotebook.h
+
     include/FenetreDessin.hpp
     include/fonction2D.hpp
     include/gnuplot.hpp
@@ -158,3 +162,11 @@ SET(Graphic_SRCS
 )
 
 my_add_library (Graphic)
+
+target_link_libraries(Graphic
+  Common
+  wxParams
+  vtkGraphics
+  ${wxWidgets_LIBRARIES}
+  ${Boost_LIBRARIES}
+)

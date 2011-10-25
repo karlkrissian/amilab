@@ -47,7 +47,7 @@
 
 
 #include <iostream>
-using namespace std;
+//using -- namespace std;
 
 #include <stdio.h>
 
@@ -72,7 +72,7 @@ class vtkMinHeap;
 
 // Template ??
 //
-template<class T> ostream& operator << (ostream& os, const vtkMinHeap<T>& p);
+template<class T> std::ostream& operator << (std::ostream& os, const vtkMinHeap<T>& p);
 
 //----------------------------------------------------------------------
 template < class T > class /* VTK_LEVELSETS_EXPORT */ vtkMinHeap
@@ -149,9 +149,9 @@ public:
   //#ifdef _WIN32
 
 #if defined(IS_VC60) || defined(IS_VC50) 
-  friend ostream& operator << (ostream&, const vtkMinHeap<T>& p);
+  friend std::ostream& operator << (std::ostream&, const vtkMinHeap<T>& p);
 #else
-  friend ostream& operator << <>(ostream&, const vtkMinHeap<T>& p);
+  friend std::ostream& operator << <>(std::ostream&, const vtkMinHeap<T>& p);
 #endif
 
 };
@@ -341,7 +341,7 @@ template<class T> void vtkMinHeap<T>::ChangeValue( int pos, const T& elt)
 
 //--------------------------------------------------
 template<class T>
-ostream& operator << (ostream& os, const vtkMinHeap<T>& p)
+std::ostream& operator << (std::ostream& os, const vtkMinHeap<T>& p)
 //       -----------
 {
   int i,j,n;

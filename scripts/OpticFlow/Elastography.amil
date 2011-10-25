@@ -1,8 +1,5 @@
 # command line: ./amilab 
 
-ami_import->AMIFluid()
-printn "Import filters (ami_import->Filters()).\n"
-ami_import->Filters()
 
 symmetric         = UCHAR(0)
 inverse_upsample  = INT(1)
@@ -178,7 +175,7 @@ proc LoadRFImage() {
 
 proc InverseFlow( IMAGE _flow, NUM scale_factor) {
   flow1 = Resize(_flow,_flow.tx*scale_factor,_flow.ty*scale_factor,1,2)
-  flow1 = AMIFluid->amiInverseFlow(flow1/2)
+  flow1 = AMIFluid.amiInverseFlow(flow1/2)
   _flow = Resize(flow1,_flow.tx,_flow.ty,_flow.tz,2)
 }
 
@@ -197,11 +194,11 @@ proc invert_flow_2d_t(IMAGE _flow) {
 #--------------------------------------------------
 proc call_amiOFPDE_temp(IMAGE _im, IMAGE _res) {
 
-  AMIFluid->amiOFSetSymmetric(symmetric)
+  AMIFluid.amiOFSetSymmetric(symmetric)
   
   Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
   Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
-  AMIFluid->amiOF_2D_T(_im,&_res,beta,beta,2,2,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
+  AMIFluid.amiOF_2D_T(_im,&_res,beta,beta,2,2,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
   
   if (symmetric) {
     // invert flux
@@ -220,7 +217,7 @@ proc call_amiOFPDE_Zoom(IMAGE _im1,IMAGE _im2, IMAGE _res) {
   _resx=_res[0]
   _resy=_res[1]
 
-  AMIFluid->amiOFVar2DZoom(_im1,_im2,OFzoom_sigma,OFzoom_T,OFzoom_alpha,OFzoom_dtype,OFzoom_quantile,OFzoom_ht,&_resx,&_resy,OFzoom_nbiter,OFzoom_zoom);
+  AMIFluid.amiOFVar2DZoom(_im1,_im2,OFzoom_sigma,OFzoom_T,OFzoom_alpha,OFzoom_dtype,OFzoom_quantile,OFzoom_ht,&_resx,&_resy,OFzoom_nbiter,OFzoom_zoom);
 
   _res.SetComponent( 0, _resx)
   _res.SetComponent( 1, _resy)
@@ -237,7 +234,7 @@ proc call_amiOFPDE_Vorticity(IMAGE _im1,IMAGE _im2, IMAGE _res) {
   _resy=_res[1]
   _vort=_resx;
 
-  AMIFluid->amiGradVorticity(_im1,_im2,&_resx,&_resy,vort_grid,vort_winsize,vort_sigma,vort_alpha,vort_TOL,&_vort)
+  AMIFluid.amiGradVorticity(_im1,_im2,&_resx,&_resy,vort_grid,vort_winsize,vort_sigma,vort_alpha,vort_TOL,&_vort)
 
   _res.SetComponent( 0, _resx)
   _res.SetComponent( 1, _resy)
@@ -254,7 +251,7 @@ proc call_amiCorr2D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   corr=_im1*0
   cx = _im1*0
   cy = _im1*0
-  AMIFluid->amiOFCorr2D(_im1,_im2,_u,_v,corr,cx,cy,0,0,corr_step_x,corr_step_y,wsx,wsy,1);
+  AMIFluid.amiOFCorr2D(_im1,_im2,_u,_v,corr,cx,cy,0,0,corr_step_x,corr_step_y,wsx,wsy,1);
   _res.SetComponent( 0, _u;)
   _res.SetComponent( 1, _v;)
 }
@@ -283,7 +280,7 @@ proc call_OFPDE(IMAGE _im1, IMAGE _im2, IMAGE _res) {
 #--------------------------------------------------
 proc call_amiOFPDE_GaussSc(IMAGE _im1, IMAGE _im2, IMAGE _res) {
 
-  AMIFluid->amiOFSetSymmetric(symmetric)
+  AMIFluid.amiOFSetSymmetric(symmetric)
   zoom_z = 1+_im1.tz>1;
   Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
   Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
@@ -299,8 +296,8 @@ proc call_amiOFPDE_GaussSc(IMAGE _im1, IMAGE _im2, IMAGE _res) {
     print sprint("\n sigma = %0.2f \n",_sigma)
     _im1s = filter(_im1,_sigma,0,0,0)
     _im2s = filter(_im2,_sigma,0,0,0)
-    AMIFluid->amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,1,Conv_Scales,gradtype,smoothfunction)
-    AMIFluid->amiOFPDE(_im1s,_im2s,&_res)
+    AMIFluid.amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,1,Conv_Scales,gradtype,smoothfunction)
+    AMIFluid.amiOFPDE(_im1s,_im2s,&_res)
   }
 
   if (symmetric==1) {
@@ -317,13 +314,13 @@ proc call_amiOFPDE(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   if (Gaussian_scales==1) {
     call_amiOFPDE_GaussSc(_im1,_im2,&_res)
   } else {
-    AMIFluid->amiOFSetSymmetric(symmetric)
+    AMIFluid.amiOFSetSymmetric(symmetric)
     zoom_z = 1+_im1.tz>1;
     Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
     Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
 
-    AMIFluid->amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
-    AMIFluid->amiOFPDE(_im1,_im2,&_res)
+    AMIFluid.amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
+    AMIFluid.amiOFPDE(_im1,_im2,&_res)
 
     if (symmetric==1) {
       // inverse flow
@@ -495,14 +492,14 @@ proc CB_Iterate() {
   alpha_epsilon  = exp(ln(10)*alpha_norm_epsilon)
 
   #print sprint("global smoothing = %01.0f \n",global_smoothing)
-  AMIFluid->amiOFSetGlobalConstraint(global_smoothing)
-  AMIFluid->amiOFSetSmoothGradient(smoothgradient)
-  AMIFluid->amiOFSetGradient(gradcomputation)
-  AMIFluid->amiOFSetBoundaryType(boundarytype)
-  AMIFluid->amiOFSetAlphaNormEpsilon(alpha_epsilon)
-  AMIFluid->amiOFSetNormalizeAlpha(alpha_normalization)
+  AMIFluid.amiOFSetGlobalConstraint(global_smoothing)
+  AMIFluid.amiOFSetSmoothGradient(smoothgradient)
+  AMIFluid.amiOFSetGradient(gradcomputation)
+  AMIFluid.amiOFSetBoundaryType(boundarytype)
+  AMIFluid.amiOFSetAlphaNormEpsilon(alpha_epsilon)
+  AMIFluid.amiOFSetNormalizeAlpha(alpha_normalization)
 
-  AMIFluid->amiOFSetInterpolation(use_splines)
+  AMIFluid.amiOFSetInterpolation(use_splines)
   if (temporal==1) {
     CB_IterateTemporal()
   } else {
@@ -755,7 +752,7 @@ proc CB_RunAlphaTests() {
 #--------------------------------------------------
 # Input Images
 #
-winput = global::ami_import.ParamPanel("Input images for Optical Flow")
+winput = ParamPanel("Input images for Optical Flow")
 winput.BeginBoxPanel("Elastography B mode")
 restart_id         = winput.AddButton("ReLoad", CB_ReLoad)
 winput.EndBoxPanel()
@@ -770,7 +767,7 @@ winput.Update()
 #--------------------------------------------------
 # Window of Parameters for 2D cross-correlation code
 #
-wcorr = global::ami_import.ParamPanel("Cross-Correlation 2D")
+wcorr = ParamPanel("Cross-Correlation 2D")
 
 corr_step_x_id = wcorr.AddInt( &corr_step_x,  "corr_step_x", 1,20)
 corr_step_y_id = wcorr.AddInt( &corr_step_y,  "corr_step_y", 1,20)
@@ -787,7 +784,7 @@ wcorr.Update()
 #--------------------------------------------------
 # Parameters for libami's code
 #
-wamiOF = global::ami_import.ParamPanel("libamiFluid: PDE Optical Flow Parameters")
+wamiOF = ParamPanel("libamiFluid: PDE Optical Flow Parameters")
 
 presmoothing_id    = wamiOF.AddFloat( &presmoothing,  "presmoothing", 0,3)
 beta_id            = wamiOF.AddFloat( &beta,  "beta", 0.01,5)
@@ -826,7 +823,7 @@ wamiOF.Update()
 #--------------------------------------------------
 # Parameters for Vorticity code
 #
-wVort = global::ami_import.ParamPanel("Vorticity Optical Flow parameters")
+wVort = ParamPanel("Vorticity Optical Flow parameters")
 vort_grid_id       = wVort.AddInt( &vort_grid,  "vort_grid",    1,10)
 vort_winsize_id    = wVort.AddInt( &vort_winsize,  "vort_winsize", 3,10)
 vort_sigma_id      = wVort.AddFloat( &vort_sigma,  "vort_sigma", 0.1,5)
@@ -837,7 +834,7 @@ wVort.Update()
 #--------------------------------------------------
 # Parameters for optic_flow_zoom code
 #
-wOFzoom = global::ami_import.ParamPanel("Optic Flow PDE 2D parameters")
+wOFzoom = ParamPanel("Optic Flow PDE 2D parameters")
 
 OFzoom_sigma_id    = wOFzoom.AddFloat( &OFzoom_sigma,  "OFzoom_sigma", 0.5,5)
 OFzoom_T_id        = wOFzoom.AddFloat( &OFzoom_T,  "OFzoom_T", 1,1000)
@@ -853,7 +850,7 @@ wOFzoom.Update()
 #--------------------------------------------------
 # Parameters for continous Gaussian multiscale
 #
-wGaussSc = global::ami_import.ParamPanel("Continous Gaussian Scales")
+wGaussSc = ParamPanel("Continous Gaussian Scales")
 sigma_min_id      = wGaussSc.AddFloat( &sigma_min,  "sigma_min", 0.01,5)
 sigma_max_id      = wGaussSc.AddFloat( &sigma_max,  "sigma_max", 0.01,15)
 sigma_N_id        = wGaussSc.AddInt( &sigma_N,  "sigma_N",   2,20)
@@ -862,7 +859,7 @@ wGaussSc.Update()
 #--------------------------------------------------
 # Main Parameters
 #
-w1 = global::ami_import.ParamPanel("Optic Flow Experiments: main parameters ")
+w1 = ParamPanel("Optic Flow Experiments: main parameters ")
 
 input_id = w1.AddButton("Input Images", CB_InputImages)
 amiCorr_id = w1.AddButton("2D correlation",CB_corr_param)
@@ -906,7 +903,7 @@ w1.Display()
 #-------------------------------------------------
 # Creating parameter window for test on alpha
 #-------------------------------------------------
-w2 = global::ami_import.ParamPanel("test sequence on alpha")
+w2 = ParamPanel("test sequence on alpha")
 alfa_min_id     = w2.AddFloat( &alfa_min,  "alfa_min", 0.01,10)
 alfa_max_id     = w2.AddFloat( &alfa_max,  "alfa_max", 0.01,20)
 alfa_step_id    = w2.AddFloat( &alfa_step,  "alfa_step", 0.01,1)

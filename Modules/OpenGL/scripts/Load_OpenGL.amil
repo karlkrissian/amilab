@@ -1,0 +1,10 @@
+
+del OpenGLPlugin
+func "OpenGLPlugin"
+
+if (!exists(OpenGL_obj)) {
+  OpenGLPlugin OpenGL_obj
+  OpenGL_obj.Load()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}

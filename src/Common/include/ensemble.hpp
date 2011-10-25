@@ -67,7 +67,7 @@ public:
 
   ///
   void MetSucc(liste_base<T> * lbt) { suivant = lbt; }
-}
+};
 
 /**
   classe ensemble 

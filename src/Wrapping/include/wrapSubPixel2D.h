@@ -14,7 +14,7 @@
 #include "SubPixel2D.h"
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<SubPixel2D>::CreateVar( ParamList* p);
+BasicVariable::ptr WrapClass<SubPixel2D>::CreateVar( ParamList* p, bool quiet);
 
 AMI_DECLARE_TYPE(SubPixel2D)
 

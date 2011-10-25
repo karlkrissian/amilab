@@ -16,7 +16,7 @@
 //AnalyticCircle Wrapping
 //---------------------------------------------------
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<AnalyticCircle>::CreateVar( ParamList* p )
+BasicVariable::ptr WrapClass<AnalyticCircle>::CreateVar( ParamList* p, bool quiet )
 {
   WrapClass_AnalyticCircle::wrap_AnalyticCircle construct;
   return construct.CallMember(p);

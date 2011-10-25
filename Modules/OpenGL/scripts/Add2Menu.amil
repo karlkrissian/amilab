@@ -1,0 +1,3 @@
+
+ami.MainFrame.AddToMenu("&Modules","&Image Processing","&Load",    "../Modules/OpenGL/scripts/Load_OpenGL")
+ami.MainFrame.AddToMenu("&Modules","&Image Processing","&ReLoad",  "../Modules/OpenGL/scripts/ReLoad_OpenGL")

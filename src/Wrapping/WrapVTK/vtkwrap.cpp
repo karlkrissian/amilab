@@ -35,7 +35,8 @@ using namespace amilab;
 
 #endif // AMI_USE_VTK
 
-extern unsigned char GB_debug;
+#include "CommonConfigure.h"
+COMMON_VAR_IMPORT unsigned char GB_debug;
 
 //---------------------------------------------------------------------------
 InrImage* Func_vtkMedianFilter3D( InrImage* im, int kx, int ky, int kz)
