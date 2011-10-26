@@ -39,6 +39,14 @@ IF(AMILab_FOUND)
     MESSAGE(" VTK wrapping path is ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated")
   ENDIF(NEED_VTK_WRAPPING)
 
+  IF (NEED_WX_WRAPPING)
+    SET(AMILab_PATHS
+      ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
+      ${AMILab_PATHS}
+      )
+    MESSAGE(" WxWidgets wrapping path is ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_WXWIDGETS_VERSION}/Generated")
+  ENDIF(NEED_WX_WRAPPING)
+
   MESSAGE("AMILab_PATHS = ${AMILab_PATHS}")
 
   FIND_LIBRARY(CommonBase CommonBase
@@ -98,4 +106,24 @@ IF(AMILab_FOUND)
         Algorithms 
         Algorithms/Debug 
         Algorithms/Release)
+
+  FIND_LIBRARY(Graphic Graphic
+      DOC "AMILab Graphic library"
+      PATHS ${AMILAB_BINARY_DIR}
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        Graphic 
+        Graphic/Debug 
+        Graphic/Release)
+
+  FIND_LIBRARY(wxParams wxParams
+      DOC "AMILab wxParams library"
+      PATHS ${AMILAB_BINARY_DIR}
+      PATH_SUFFIXES 
+        binary_dir
+        binary_dir/Debug
+        binary_dir/Release
+      )
+
 ENDIF(AMILab_FOUND)

@@ -124,12 +124,14 @@
 
 //#include "ParamBox.hpp"
 //#include "boutton.hpp"
-#include "palette.hpp"
+//#include "palette.hpp"
 #include "FenetreDessin.hpp"
 #include "inrimage.hpp"
+#include <wxParamTypes.hpp>
 //#include "BarreDefil.hpp"
 
-#include "wxParamTypes.hpp"
+//#include "wxParamTypes.hpp"
+class wxMenuEnum;
 
 #include "ImageMIP.hpp"
 #include "Crest.hpp"

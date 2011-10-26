@@ -48,8 +48,8 @@ wxDirnameParameter::wxDirnameParameter( wxWindow* parent,
   this->_label     = new wxStaticText(this->_parent,
                                       wxID_ANY,
                                       wxString::FromAscii(label));
-  _path = wxString::FromAscii(param->c_str());
-  std::cout << "wxDirnameParameter, param = " << _path << std::endl;
+  _path = wxString(param->c_str(), wxConvUTF8);
+  std::cout << "wxDirnameParameter, param = '" << _path.mb_str() <<"'" << std::endl;
   this->_dir_ctrl = new myDirPickerCtrl(this->_parent,
             wxID_DIRPATH,
             _path, 
@@ -84,7 +84,7 @@ void wxDirnameParameter::SetToolTip( const wxString& tt)
 void wxDirnameParameter::Update()
 //   ------
 {
-  _path = wxString::FromAscii(this->_parameter->c_str());
+  _path = wxString(this->_parameter->c_str(), wxConvUTF8);
   this->_dir_ctrl->SetPath(_path);
   this->_dir_ctrl->Update();
   this->_dir_ctrl->Refresh();

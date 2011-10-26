@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage{/Applications/Tex/html}
+\usepackage[latin1]{inputenc}
+
+
+\begin{document}
+
+% Title Page
+\title{Subvoxel 3D Gui}
+\author{Daniel El\'ias Santana Cedr\'es}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Centro de Tecnolog\'ias de la Imagen (CTIM)\\
+Escuela de Ingenier\'ia Inform\'atica (EIIN). Universidad de Las Palmas de Gran Canaria (ULPGC)\\
+email: dsantana@ctim.es
+}
+
+
+\maketitle
+
+\begin{abstract}
+This script provides a user interface to detect edges with subvoxel accuracy in 3D images.
+\end{abstract}
+
+
+\section{Quick Start}
+
+For detect the edges in a 3D image follow this steps:
+\begin{enumerate}
+  \item Select a 3D input image on \emph{Param.} tab.
+  \item Select the threshold value in the same tab.
+  \item Select the method to apply and if you want to draw the the volume, edges or normals.
+  \item Press the run button.
+\end{enumerate}
+
+\section{Interface tabs}
+
+The interface is divided into several tabs.
+
+\subsection{\emph{Param.} tab}
+In the \emph{Param.} tab you can select an input image for the subvoxel edges detection. Is necessary to set a threshold value for the detection (25 by default).
+
+After to select these parameters, you can choose the method to apply, to check if you want to draw the volume, the edges or the normals of the edges.
+
+In the visualization box panel you can check draw: 
+\begin{itemize}
+	\item Volume.
+	\item Edges.
+	\item Normals.
+\end{itemize}
+
+At the bottom of this tab is the run button. Also, you can find in the right of the button run, the button reload. You can use it if you change any parameter of the \emph{Set.} tab.
+
+\subsection{\emph{Set.} tab}
+In the \emph{Set.} tab you can change some parameters of the visualization. The settings are divided in four parts:
+\begin{itemize}
+	\item Volume: You can set the opacity of the volume. For now, the volume charged in the vtk viewer is an isosurface of the 3D input image.
+	\item Planes: The planes represent the edges detected in the image. In every voxel the algorithm draws a little plane in the subvoxel position obtained by the detection. You can set the opacity and the color (in RGB). By default the planes are opaques and the color is red (255,0,0).
+	\item Normals: Same as the previous item, here you can choose the opacity and color of the normals of the edges. By default the normals are opaques and the color is blue (0,0,255).
+	\item Background: The background color of the viewer is customizable. You can set an alternative color in RGB in the background box panel. 
+\end{itemize} 
+
+\subsection{\emph{Help} tab}
+This help.
+
+
+\end{document}          

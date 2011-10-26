@@ -124,6 +124,7 @@
 
 #include "DessinImageBase.hpp"
 #include "DessinImageMenu.h"
+#include "wxParamTypes.hpp"
 
 #include "amilab_messages.h"
 

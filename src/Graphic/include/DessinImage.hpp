@@ -146,7 +146,8 @@
 #define  SAUVE_PS_COULEUR 2
 
 #include "ImageViewerBase.h"
-#include "ParamBox.hpp"
+class ParamBox;
+//#include "ParamBox.hpp"
 #include "DessinImageBase.hpp"
 //#include "BarreDefil.hpp"
 

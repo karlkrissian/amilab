@@ -4,3 +4,4 @@
 func "ImageProcessing/scripts/Add2Menu"
 func "vtkAmiVolRen/scripts/Add2Menu"
 func "NoiseAnalysis/scripts/Add2Menu"
+func "SubPixel/scripts/Add2Menu"

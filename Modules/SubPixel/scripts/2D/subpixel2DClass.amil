@@ -1,0 +1,676 @@
+#Interface for sub-pixel 2D detection
+
+func "Common/ScriptGui"
+if (!exists(SubPixel)) {
+  func "../Load_SubPixel"
+}
+
+if (!exists(Subpixel2DClass)){
+
+
+  Class Subpixel2DClass : public ScriptGui{
+  
+    #-----------------------
+    proc ::Init(){
+      ::class_name  = "global::Subpixel2DClass"
+      ::input_name  = "",                "Input image"
+      ::output_name = "subpixel2D_edge", "Output image name"
+      ::threshold   = 25,                "Gradient threshold"
+      ::average     = UCHAR(0),          "Average the input image"
+      ::show_averaged= UCHAR(0),          "Show the averaged image"
+      ::draw_on_averaged= UCHAR(0),       "Draw edge on averaged image"
+      ::show_restored = UCHAR(0),        "Show the restored image"
+      ::draw_on_restored = UCHAR(0),     "Draw edges on restored image"
+      ::dynamic     = UCHAR(0),          "Use a dynamic window"
+      ::subden      = UCHAR(0),          "Use subpixel denoising restoration"
+      ::linear      = UCHAR(0),          "First or second order"
+      ::reload      = UCHAR(0),          "Reload automatically"
+      ::normals     = UCHAR(0),          "Draw edge normals"
+      ::change      = UCHAR(0),          "Change contour's default values"
+      ::niter       = INT(10),            "Number of iterations for subpixel denoising"
+      ::alg_type    = INT(0),            "Sub-pixel 2D algorithm type"
+      ::alg_enum    = INT(0),            "Enumeration of algorithms"
+      #Edge parameters
+      ::Ered        = INT(255),          "Red contour value"
+      ::Egreen      = INT(0),            "Green contour value"
+      ::Eblue       = INT(0),            "Blue contour value"
+      ::Ealpha      = INT(255),          "Alpha contour component"
+      ::Ethickness  = INT(1),            "Contour thickness"
+      ::Estyle      = INT(0),            "Contour line style"
+      #Normal parameters
+      ::Nred        = INT(0),            "Red normal value"
+      ::Ngreen      = INT(0),            "Green normal value"
+      ::Nblue       = INT(255),          "Blue normal value"
+      ::Nalpha      = INT(255),          "Alpha normal component"
+      ::Nthickness  = INT(1),            "Normal thickness"
+      ::Nstyle      = INT(0),            "Normal line style"
+      #Statistics parameters
+      ::s_modmin    = "",                "Minimum intensity difference"
+      ::s_cumin     = "",                "Minimum radius"
+      ::s_bmin      = "",                "Minimum slope"
+      ::s_modmax    = "",                "Maximum intensity difference"
+      ::s_cumax     = "",                "Maximum radius"
+      ::s_bmax      = "",                "Maximum slope"
+      ::s_modmed    = "",                "Intensity difference mean"
+      ::s_cumed     = "",                "Radius mean"
+      ::s_bmed      = "",                "Slope mean"
+      ::s_modvar    = "",                "Intensity difference variance"
+      ::s_cuvar     = "",                "Radius variance"
+      ::s_bvar      = "",                "Slope variance"
+      ::s_modsd     = "",                "Intensiti difference standard deviation"
+      ::s_cusd      = "",                "Radius standard deviation"
+      ::s_bsd       = "",                "Slope standard deviation"
+      #Method
+      ::s_method    = "",                "Sub-pixel 2D method applicated"
+      #Border pixel information
+      ::s_pos        = "",               "Pixel (x,y) position (if it's a border pixel)"
+      ::s_mod       = "",                "Intensity difference"
+      ::s_rad       = "",                "Radius"
+      ::s_slope     = "",                "Slope"
+      ::s_disp      = "",                "Displacement (the a coefficient of the equation)"
+      
+      #Help
+      ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
+      ::html_filename = op_system.GetCurrentScriptDir() +"/Doc/subpixel2D/index.html"
+    }
+    
+
+    #-----------------------
+    
+    proc ::load_input() {
+      if (exists(::input_draw))    { del ::input_draw; }
+      if (exists(::averaged_draw)) { del ::averaged_draw; }
+      if (exists(::restored_draw)) { del ::restored_draw; }
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+    }
+    Comments(::load_input, "Load the input image")
+    
+    #-----------------------
+    
+    proc ::Statistics() {
+      if (exists(::res)) {
+        #A-B difference
+        modmax    = 0.0
+        modmin    = 0.0
+        modmed    = 0.0
+        modvar    = 0.0
+        modsum    = 0.0
+        #Curvature radius
+        cumax    = 0.0
+        cumin    = 0.0
+        cumed    = 0.0
+        cuvar    = 0.0
+        cusum    = 0.0
+        #Slope
+        bmax    = 0.0
+        bmin    = 0.0
+        bmed    = 0.0
+        bvar    = 0.0
+        bsum    = 0.0
+        
+        #Diference image and curvature
+        diff = ::res->aintensity - ::res->bintensity
+        r = 1/::res->curvature
+        
+        #mins and maxs
+        modmin = min(diff)
+        cumin  = min(r)
+        bmin   = min(::res->bcoef)
+        modmax = max(diff)
+        cumax  = max(r)
+        
+        #Calculate means
+        modmed = mean(diff)
+        cumed  = mean(r)
+        bmed   = mean(::res->bcoef)
+        
+        
+        #Variances (because we need the means)
+        modsumvar = (diff - modmed) * (diff - modmed)
+        cusumvar  = (r - cumed) * (r - cumed)
+        bsumvar   = (::res->bcoef - bmed) * (::res->bcoef - bmed)
+        #Calculate variances
+        modvar = mean(modsumvar)
+        cuvar  = mean(cusumvar)
+        bvar   = mean(bsumvar)
+        
+        #OUTPUT
+        #Minimums
+        ::s_modmin = sprint("%f", modmin)
+        ::s_cumin  = sprint("%f", cumin)
+        ::s_bmin   = sprint("%f", bmin)
+        #Maximums
+        ::s_modmax = sprint("%f", modmax)
+        ::s_cumax  = sprint("%f", cumax)
+        ::s_bmax   = sprint("%f", bmax)
+        #Means
+        ::s_modmed = sprint("%f", modmed)
+        ::s_cumed  = sprint("%f", cumed)
+        ::s_bmed   = sprint("%f", bmed)
+        #Variances
+        ::s_modvar = sprint("%f", modvar)
+        ::s_cuvar  = sprint("%f", cuvar)
+        ::s_bvar   = sprint("%f", bvar)
+        #Standard deviations
+        ::s_modsd  = sprint("%f", sqrt(modvar))
+        ::s_cusd   = sprint("%f", sqrt(cuvar))
+        ::s_bsd    = sprint("%f", sqrt(bvar))
+       
+        ::win.Update(-1)
+        
+      } else {
+        InfoDialog "You must apply the sub-pixel 2D method first"
+      }
+    }
+    Comments(::Statistics, "Calculate edge pixels statistics")
+    
+    #-----------------------
+    
+    proc ::getBorderPixelInfo() {
+      if (exists(::input_draw) && exists(::res)) {
+        imx = ::input_draw.GetXPos()
+        imy = ::input_draw.GetYPos()
+        #Initialize pos to a value higer than the maximum position
+        pos = ::res->border.tx + 1
+        #First, find the position of the pixel inside the border pixel position
+        for i=0 to ::res->border.tx-1 {
+          if ((::res->xpos(i,0) == imx) && (::res->ypos(i,0) == imy)) {
+            pos = i
+            break
+          }
+        }
+        #Successfull??
+        if (pos != ::res->border.tx+1) {
+          #Show pixel information
+          if (::res->border(pos,0) == 2) {
+            ::s_pos = sprint("(%g,", ::res->xpos(pos,0))+\
+                      sprint("%g): HORIZONTAL", ::res->ypos(pos,0))
+          } else {
+            ::s_pos = sprint("(%g,", ::res->xpos(pos,0))+\
+                      sprint("%g): VERTICAL", ::res->ypos(pos,0))
+          }
+          
+          ::s_mod   = sprint("%f", ::res->aintensity(pos,0)-::res->bintensity(pos,0))
+          ::s_rad   = sprint("%f", 1/::res->curvature(pos,0))
+          ::s_slope = sprint("%f", ::res->bcoef(pos,0))
+          ::s_disp  = sprint("%f", ::res->acoef(pos,0))
+        } else {
+          #Is not a border pixel
+          ::s_pos = sprint("(%g,", imx)+\
+                    sprint("%g): NO EDGE", imy)
+          ::s_mod   = ""
+          ::s_rad   = ""
+          ::s_slope = ""
+          ::s_disp  = ""
+        }
+        ::win.Update(-1)
+      } else {
+        InfoDialog "You must apply the sub-pixel 2D method first"
+      }
+    }
+    Comments(::getBorderPixelInfo, "Border pixel information")
+    
+    #-----------------------
+    
+    proc ::drawBorder() {
+      if(exists(::res) && exists(::sp2D)){
+        if (::draw_on_averaged) {
+          image_draw = &::averaged_draw
+        } else {
+          if (::draw_on_restored) {
+            image_draw = &::restored_draw
+          } else {
+            image_draw = &::input_draw
+          }
+        }
+        #InitTime
+        #Catch visualization region limits
+        xmin = image_draw.GetXmin()
+        xmax = image_draw.GetXmax()
+        ymin = image_draw.GetYmin()
+        ymax = image_draw.GetYmax()
+        #Create four new images for displacements inside pixel
+        dx1 = Image(DOUBLE,::res->xpos.tx,1,1)
+        dy1 = Image(DOUBLE,::res->xpos.tx,1,1)
+        dx2 = Image(DOUBLE,::res->xpos.tx,1,1)
+        dy2 = Image(DOUBLE,::res->xpos.tx,1,1)
+        dx1 = -0.4
+        #y = a + b*x + c*x*x
+        dy1 = ::res->acoef + ::res->bcoef*dx1 + ::res->ccoef*dx1*dx1
+        dy1 = -dy1
+        dx2 = 0.4
+        dy2 = ::res->acoef + ::res->bcoef*dx2 + ::res->ccoef*dx2*dx2
+        dy2 = -dy2
+        #Create images for draw points (draw line from x1,y1 to x2,y2)
+        x1pos = ((DOUBLE)::res->xpos+dx1)*(::res->border==2)+((DOUBLE)::res->xpos+dy1)*(::res->border!=2)
+        y1pos = ((DOUBLE)::res->ypos+dy1)*(::res->border==2)+((DOUBLE)::res->ypos+dx1)*(::res->border!=2)
+        x2pos = ((DOUBLE)::res->xpos+dx2)*(::res->border==2)+((DOUBLE)::res->xpos+dy2)*(::res->border!=2)
+        y2pos = ((DOUBLE)::res->ypos+dy2)*(::res->border==2)+((DOUBLE)::res->ypos+dx2)*(::res->border!=2)
+        #inside delimits the draw area inside the region defined by xmin,xmax,ymin and ymax
+        inside = (::res->xpos>=xmin)*(::res->xpos<=xmax)*(::res->ypos>=ymin)*(::res->ypos<=ymax)
+        
+        #Create the border points image
+        border_pts = Image(DOUBLE,x1pos.tx,1,1,4)
+        border_pts.SetComponent(0,x1pos)
+        border_pts.SetComponent(1,y1pos)
+        border_pts.SetComponent(2,x2pos)
+        border_pts.SetComponent(3,y2pos)
+        
+        #If draw normals is active, calculate normals
+        if (::normals==1) {
+          #Edge central point
+          px = (x1pos+x2pos) / 2
+          py = (y1pos+y2pos) / 2
+          #Calculate normal point
+          div = (::res->aintensity - ::res->bintensity) / sqrt(1+::res->bcoef*::res->bcoef)
+          sign = (div>=0)*1 + (div<0)*-1
+          nx = ::res->bcoef * sign
+          ny = Image(DOUBLE,nx.tx,1,1)
+          ny = sign * 1
+          
+          normx = (px+nx)*(::res->border==2)+(px+ny)*(::res->border!=2)
+          normy = (py+ny)*(::res->border==2)+(py+nx)*(::res->border!=2)
+          
+          #Create the normal points image
+          norm_pts = Image(DOUBLE,px.tx,1,1,4)
+          norm_pts.SetComponent(0,px)
+          norm_pts.SetComponent(1,py)
+          norm_pts.SetComponent(2,normx)
+          norm_pts.SetComponent(3,normy)
+        }
+        
+        #Standard color (red), thickness and style
+        std_color = &wx.wxColour(255,0,0)
+        std_thickness = INT(1)
+        std_style = INT(0)
+        
+        if (::change==0) {
+          if(::normals==0) {
+            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
+                               std_color, std_thickness, std_style,\
+                               ::normals)
+          } else {
+            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
+                               std_color, std_thickness, std_style,\
+                               ::normals, norm_pts, std_color, std_thickness,\
+                               std_style)
+          }
+        } else {
+          bcolor = &wx.wxColour(::Ered, ::Egreen, ::Eblue, ::Ealpha)
+          ncolor = &wx.wxColour(::Nred, ::Ngreen, ::Nblue, ::Nalpha)
+          if(::normals==0) {
+            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
+                               bcolor, ::Ethickness, ::Estyle, ::normals)
+          } else {
+            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
+                               bcolor, ::Ethickness, ::Estyle, ::normals,\
+                               norm_pts, ncolor, ::Nthickness, ::Nstyle)
+          }
+        }
+      } else {
+        InfoDialog "Before draw the border, you must apply the method."
+      }
+    }
+    Comments(::drawBorder, "Draw the sub-pixel border")
+    
+    #-----------------------
+    
+    proc ::Run() {
+      if (!exists(::input)) {
+        ::load_input()
+      }
+      ::thresholds_crossed = 0
+      #Erase the draw objects
+     # if (exists(::input_draw))    { del ::input_draw; }
+     # if (exists(::averaged_draw)) { del ::averaged_draw; }
+     # if (exists(::restored_draw)) { del ::restored_draw; }
+      #
+      if (::input.vdim==1) {
+        ::input <<= (DOUBLE) ::input
+        ::norm_input <<= (::input<=1)*1 + (::input>1)*::input
+        ::norm_input.info
+      } else {
+      	::norm_input <<= (DOUBLE) norm(::input)
+        ::norm_input.info
+      }
+      #Erase the subpixel object and the result if it exists
+      if (exists(::res))  { del ::res; }
+      if (exists(::sp2D)) { del ::sp2D; }
+      #Build a SubPixel2D object
+      ::sp2D = SubPixel2D(&::norm_input,::threshold,::linear)
+      
+      if (::alg_type == 0) {
+        ::res = ::sp2D->SuperGradienteCurvo()
+        ::s_method = "Basic method"
+      }
+      if (::alg_type == 1) {
+        ::res = ::sp2D->DenoisingGus()
+        ::s_method = "Averaged method"
+      }
+      if (::alg_type == 2) {
+        ::res = ::sp2D->SubpixelDenoising(::niter)
+        ::s_method = "Subpixel denoising"
+      }
+			if (::alg_type != 2 || (::alg_type == 2 && ::thresholds_crossed==0)) {
+        ::win.Update(-1)
+        ::win.EnablePanel(::pxinf_panel, 1)
+        ::win.EnablePanel(::stat_panel, 1)
+        
+        ::Display()
+        
+        if (::draw_on_averaged) {
+          ::averaged_draw.Paint()
+          ::averaged_draw.PaintCallback(&::drawBorder)
+        } else {
+          if (::draw_on_restored) {
+            ::restored_draw.Paint()
+            ::restored_draw.PaintCallback(&::drawBorder)
+          } else {
+            ::input_draw.Paint()
+            ::input_draw.PaintCallback(&::drawBorder)
+          }
+        }
+        
+        ::drawBorder()
+
+      }
+     
+    }
+    Comments(::Run, "Detects edges with Subpixel2D methods")
+    
+    #-----------------------
+    
+    proc ::Display() {
+      global
+      if (exists(::input)) {
+        if (::show_averaged || ::draw_on_averaged) {
+          if (exists(::res)) {
+            ::averaged <<= ::res->denoised
+            show ::averaged
+            if(::show_averaged) {
+              show ::input
+              ::averaged_draw.compare(&::input_draw)
+            }
+          }
+        } else {
+          if (::show_restored || ::draw_on_restored) {
+            if (exists(::res)) {
+              ::restored <<= ::res->restored
+              show ::restored
+              if (::show_restored) {
+                show ::input
+                ::restored_draw.compare(&::input_draw)
+              }
+            }
+          } else {
+            show ::input
+          }
+        }
+      } 
+    }
+    Comments(::Display, "Show the result image")
+    
+    #-----------------------
+    
+    proc ::AutoRun() {
+      if(::reload) {
+        ::Run
+      }
+    }
+    Comments(::AutoRun, "Updates image automatically when parameters change.")
+    
+    #-----------------------
+    
+    proc ::Save() {
+      eval "global::" + ::output_name + "<<=::res;"
+    }
+    Comments(::Save, "Save output image as global variable")
+    
+    #-----------------------
+    
+    proc ::Enable() {
+      if(::change == 1) {
+        ::win.EnablePanel(::color_edge_panel, 1)
+        ::win.EnablePanel(::prop_edge_panel, 1)
+        ::win.EnablePanel(::color_normal_panel, 1)
+        ::win.EnablePanel(::prop_normal_panel, 1)
+      } else {
+        ::win.EnablePanel(::color_edge_panel, 0)
+        ::win.EnablePanel(::prop_edge_panel, 0)
+        ::win.EnablePanel(::color_normal_panel, 0)
+        ::win.EnablePanel(::prop_normal_panel, 0)
+      }
+    }
+    
+    #-----------------------
+    
+    #proc ::CheckAverage() {
+    #  if (::average == 0 && ::dynamic == 1) {
+    #    ::average = 1
+    #    ::win.Update(-1)
+    #  }
+    #  if (::average == 0 && ::show_averaged == 1) {
+    #    ::average = 1
+    #    ::win.Update(-1)
+    #  }
+    #}
+    
+    #-----------------------
+    
+    #proc ::CheckShowAndDynamic() {
+    #  if (::show_averaged == 1 || ::dynamic == 1) {
+    #    InfoDialog("For show the average image and/or apply the method with dynamic window, you must check average.")
+    #    ::average = 1
+    #    ::win.Update(-1)
+    #  }
+    #}
+    
+    #-----------------------
+    
+    #proc ::CheckSD() {
+    #  if(::subden == 1) {
+    #    ::win.EnablePanel(::niter_panel,1)
+    #  } else {
+    #    ::win.EnablePanel(::niter_panel,0)
+    #  }
+    #}
+    
+    #-----------------------
+    
+    proc ::UpdateBoxPanel() {
+      #Reset boolean variables
+      ::show_averaged    = 0
+      ::draw_on_averaged = 0
+      ::show_restored    = 0
+      ::draw_on_restored = 0
+      #Basic
+      if (::alg_type == 0) {
+        ::win.EnablePanel(::averaged_panel,0)
+        ::win.EnablePanel(::restoration_panel,0)
+      }
+      #Averaged
+      if (::alg_type == 1) {
+        ::win.EnablePanel(::averaged_panel,1)
+        ::win.EnablePanel(::restoration_panel,0)
+      }
+      #Restoration
+      if (::alg_type == 2) {
+        ::win.EnablePanel(::averaged_panel,0)
+        ::win.EnablePanel(::restoration_panel,1)
+      }
+      ::win.Update(-1)
+    }
+    
+    #-----------------------
+    
+    proc ::CreateGui() {
+
+      ::win = ParamPanel("Subpixel 2D")
+      
+      ::win.BeginBook()
+        ::win.AddPage("Param.")
+        
+          #Global parameters panel
+          ::win.BeginBoxPanel("Global parameters")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice(&::input_name, "In.")
+              ::AddBitmapButton(&::win, &::icons._New_image, 16, "load_input")
+            ::win.EndHorizontal()
+            #::win.AddString(&::output_name, "Out.")
+            #Edge detection parameters
+            ::win.AddFloat(&::threshold, "Thr.", 0, 100)
+            ::win.SetCallback(&::AutoRun)
+            ::win.AddBoolean(&::linear, "1st order")
+            ::win.SetCallback(&::AutoRun)
+          ::win.EndBoxPanel()
+          
+          #Method panel
+          ::win.BeginBoxPanel("Subpixel detection method")
+            ::alg_enum = ::win.AddEnum(&::alg_type, "Method")
+              ::win.AddEnumChoice(::alg_enum, "Basic detector")
+              ::win.AddEnumChoice(::alg_enum, "Averaged detector")
+              ::win.AddEnumChoice(::alg_enum, "Subpixel denoising")
+            ::win.SetCallback(&::UpdateBoxPanel)
+          ::win.EndBoxPanel()
+          
+          #Visualization panel
+          ::win.BeginBoxPanel("Visualization")
+            #General
+            ::win.BeginBoxPanel("General")
+              ::win.AddBoolean(&::normals, "Draw normals")
+            ::win.EndBoxPanel()
+            #Averaged
+            ::averaged_panel = ::win.BeginBoxPanel("Averaged")
+              ::win.AddBoolean(&::show_averaged, "Compare with averaged")
+              ::win.AddBoolean(&::draw_on_averaged, "Draw on averaged")
+            ::win.EndBoxPanel()
+            ::win.EnablePanel(::averaged_panel,0)
+            #Restoration
+            ::restoration_panel = ::win.BeginBoxPanel("Restoration")
+              ::win.AddInt(&::niter, "Niter", 1, 100)
+              ::win.AddBoolean(&::show_restored, "Compare with restored")
+              ::win.AddBoolean(&::draw_on_restored, "Draw on restored")
+            ::win.EndBoxPanel()
+            ::win.EnablePanel(::restoration_panel,0)
+          ::win.EndBoxPanel()
+ 
+          #::win.EndBoxPanel()
+          
+        #New page for border pixel info.
+        ::win.AddPage("Px.Info.")
+          ::pxinf_panel = ::win.BeginBoxPanel("Pixel Information")
+            ::icons.LoadIconPNG("Info")
+            ::AddBitmapButton(&::win, &::icons._Info, 16, "getBorderPixelInfo")
+            ::win.AddString(&::s_pos,   "Pixel")
+            ::win.AddString(&::s_mod,   "Mod.")
+            ::win.AddString(&::s_rad,   "Rad.")
+            ::win.AddString(&::s_slope, "Slo.")
+            ::win.AddString(&::s_disp,  "Dis.")
+          ::win.EndBoxPanel()
+          ::win.EnablePanel(::pxinf_panel, 0)
+        
+        #New page for calculate statistics
+        ::win.AddPage("Stat.")
+          ::win.AddString(&::s_method, "Method")
+          ::stat_panel = ::win.BeginBoxPanel("Statistics")
+            ::icons.LoadIconPNG2("Pie chart", "Pie_chart")
+            ::AddBitmapButton(&::win, &::icons._Pie_chart, 32, "Statistics")
+            ::win.BeginBoxPanel("Minimum")
+              ::win.AddString(&::s_modmin, "dif.")
+              ::win.AddString(&::s_cumin,  "rad.")
+              ::win.AddString(&::s_bmin,   "slo.")
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("Maximum")
+              ::win.AddString(&::s_modmax, "dif.")
+              ::win.AddString(&::s_cumax,  "rad.")
+              ::win.AddString(&::s_bmax,   "slo.")
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("Mean")
+              ::win.AddString(&::s_modmed, "dif.")
+              ::win.AddString(&::s_cumed,  "rad.")
+              ::win.AddString(&::s_bmed,   "slo.")
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("Variance")
+              ::win.AddString(&::s_modvar, "dif.")
+              ::win.AddString(&::s_cuvar,  "rad.")
+              ::win.AddString(&::s_bvar,   "slo.")
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("Standard Deviation")
+              ::win.AddString(&::s_modsd, "dif.")
+              ::win.AddString(&::s_cusd,  "rad.")
+              ::win.AddString(&::s_bsd,   "slo.")
+            ::win.EndBoxPanel()
+          ::win.EndBoxPanel()
+          ::win.EnablePanel(::stat_panel, 0)
+          
+        #New page for change contour and normals parameters
+        ::win.AddPage("Set.")
+          ::win.AddBoolean(&::change, "Change default settings")
+          ::win.SetCallback(&::Enable)
+          #New book for edge and normals parameters
+          ::win.BeginBook()
+            #Edge parameters
+            ::win.AddPage("Edge")
+              ::color_edge_panel = ::win.BeginBoxPanel("Color")
+                ::win.AddInt(&::Ered, "R", 0, 255)
+                ::win.AddInt(&::Egreen, "G", 0, 255)
+                ::win.AddInt(&::Eblue, "B", 0, 255)
+                ::win.AddInt(&::Ealpha, "A", 0, 255)
+              ::win.EndBoxPanel()
+              ::win.EnablePanel(::color_edge_panel, 0)
+              ::prop_edge_panel = ::win.BeginBoxPanel("Properties")
+                ::win.AddInt(&::Ethickness, "Thick.",1, 5)
+                ::style_type = ::win.AddEnum(&::Estyle, "Style")
+                ::win.AddEnumChoice(::style_type, "______")
+                ::win.AddEnumChoice(::style_type, "..........")
+              ::win.EndBoxPanel()
+              ::win.EnablePanel(::prop_edge_panel, 0)
+            #Normals parameters
+            ::win.AddPage("Normals")
+              ::color_normal_panel = ::win.BeginBoxPanel("Color")
+                  ::win.AddInt(&::Nred, "R", 0, 255)
+                  ::win.AddInt(&::Ngreen, "G", 0, 255)
+                  ::win.AddInt(&::Nblue, "B", 0, 255)
+                  ::win.AddInt(&::Nalpha, "A", 0, 255)
+                ::win.EndBoxPanel()
+                ::win.EnablePanel(::color_normal_panel, 0)
+                ::prop_normal_panel = ::win.BeginBoxPanel("Properties")
+                  ::win.AddInt(&::Nthickness, "Thick.",1, 5)
+                  ::style_type = ::win.AddEnum(&::Nstyle, "Style")
+                  ::win.AddEnumChoice(::style_type, "______")
+                  ::win.AddEnumChoice(::style_type, "..........")
+                ::win.EndBoxPanel()
+                ::win.EnablePanel(::prop_normal_panel, 0)
+          ::win.EndBook()
+      
+        #Help tab
+        ::AddHelpPage(&::win)
+          
+      ::win.EndBook()
+      ::icons.LoadIconPNG("Play")
+      ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+
+      ::AddStandardButtons(&::win)
+      ::win.Update(-1)
+      ::win.Display
+    }
+    
+    ::Init()
+
+  } #end Class
+
+} #end If
+
+
+#----------------
+# Main (moved to subpixel2DGui)
+#----------------
+#if (!exists(subp2D)) {
+#  Subpixel2DClass subp2D
+#} else {
+#  InfoDialog "The script for subpixel edge detection in 2D images seems to be already loaded."
+#}

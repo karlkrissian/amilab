@@ -1,0 +1,25 @@
+if (!exists(subvoxel3D_display)) {
+
+  proc AddScript() {
+    global
+    func "Common/ScriptDisplayClass"
+
+    ScriptDisplayClass subvoxel3D_display
+
+    subvoxel3D_display.SetScript( op_system.GetCurrentScriptDir() + "/subvoxel3DGui.amil")
+    subvoxel3D_display.SetScriptObjName("global::subvoxel3D_obj")
+
+    subvoxel3D_display.SetInMenus("Modules","SubPixel")
+    subvoxel3D_display.SetDisplayedName("&subvoxel3D")
+    subvoxel3D_display.SetHelp("Detects edges with subvoxel accuracy in 3D images")
+
+    subvoxel3D_display.SetIcon16( op_system.GetCurrentScriptDir()+"/Subvoxel3DIcon16.png")
+    subvoxel3D_display.SetIcon32( op_system.GetCurrentScriptDir()+"/Subvoxel3DIcon32.png")
+
+    subvoxel3D_display.Add2Menu()
+    subvoxel3D_display.Add2Toolbar()
+  }
+  AddScript()
+  del AddScript
+
+}
