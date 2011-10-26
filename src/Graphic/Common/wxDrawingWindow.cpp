@@ -827,11 +827,6 @@ void wxDrawingWindow::DrawLinearCM(  )
       x1 = x2;
     }
   }
-
-/*  if (_paint_callback.get()) {
-    bool ok = (*_paint_callback)();
-    if (!ok) _paint_callback.reset();
-  }*/
 }
 
 
@@ -996,10 +991,10 @@ void wxDrawingWindow::OnPaint(wxPaintEvent& event)
   PrepareDC(pdc);
   //DrawingAreaInit( );
   Paint(true);
-//   if (_paint_callback.get()) {
-//     bool ok = (*_paint_callback)();
-//     if (!ok) _paint_callback.reset();
-//   }
+  if (_paint_callback.get()) {
+    bool ok = (*_paint_callback)();
+    if (!ok) _paint_callback.reset();
+  }
   event.Skip();
 }
 
@@ -1337,12 +1332,6 @@ void wxDrawingWindow::OnAddControlledCurve(wxCommandEvent& event)
   c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x1,y)));
   c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x2,y)));
   _controlled_curves->push_back(c);
-  
-  if (_paint_callback.get()) {
-    bool ok = (*_paint_callback)();
-    if (!ok) _paint_callback.reset();
-  }
-
   Refresh(false);
 }
 
@@ -1396,12 +1385,6 @@ void wxDrawingWindow::OnColormapControlledCurve(wxCommandEvent& event)
     _focus_controlledcurve->SetType(colormap_curve);
   else
     _focus_controlledcurve->SetType(normal_curve);
-
-  if (_paint_callback.get()) {
-    bool ok = (*_paint_callback)();
-    if (!ok) _paint_callback.reset();
-  }
-
   Refresh(false);
 }
 
@@ -1413,11 +1396,6 @@ void wxDrawingWindow::OnLimitControlledCurve(wxCommandEvent& event)
     _focus_controlledcurve->SetLimits(true);
   else
     _focus_controlledcurve->SetLimits(false);
-  if (_paint_callback.get()) {
-    bool ok = (*_paint_callback)();
-    if (!ok) _paint_callback.reset();
-  }
-
   Refresh(false);
 }
 
@@ -1450,11 +1428,7 @@ void wxDrawingWindow::OnControlColour(wxCommandEvent& event)
       _focus_point->SetColour( dialog.GetColourData().GetColour());  
     }
   }
-  if (_paint_callback.get()) {
-    bool ok = (*_paint_callback)();
-    if (!ok) _paint_callback.reset();
-  }
-   Refresh(false);
+  Refresh(false);
   
 }
 
