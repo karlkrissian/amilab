@@ -175,6 +175,16 @@ if (!exists(vtkVolumeClass)) {
       #::Draw_opacityFun()
     }
 
+    #---------------------------
+    proc ::OnPaint() \
+    {
+      //::imhisto1.dw._Paint()
+      //::imhisto1.ColormapMinMax()
+      //::imhisto1.UpdateCM()
+      ::OnRender()
+      #::Draw_opacityFun()
+    }
+    
     #----------------------------
     proc ::SaveCurve(  ) \
     {
@@ -280,7 +290,7 @@ if (!exists(vtkVolumeClass)) {
         curve.SetType(1) # solid
         ::SetLinearCurve(&curve)
         #::imhisto1.dw.SetCtrlPointCallback(&::OnCtrlPoint)
-        ::imhisto1.dw.SetPaintCallback(&::OnCtrlPoint)
+        ::imhisto1.dw.SetPaintCallback(&::OnPaint)
         ::use_shade=1
       } else {
         InfoDialog "No histogram available."

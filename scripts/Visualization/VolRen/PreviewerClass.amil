@@ -376,6 +376,8 @@ Class PreviewerClass \
   #----------------------------
   proc ::OnChoiceW(OBJECT event) \
   {
+    w= event.GetWindow()
+    ::active_window=w.GetId()-10000
     if (::isAvailable[::active_window]){
       if(::apply_window!=::active_window){
 
@@ -431,7 +433,7 @@ Class PreviewerClass \
 
     #wxVTKRenderWindowInteractor events
     evh_cpV     = wx.wxAmiEventHandler(&::cpView)
-    evh_EnterW1 = wx.wxAmiEventHandler(&::OnEnter1)
+    //evh_EnterW1 = wx.wxAmiEventHandler(&::OnEnter1)
     evh_ChoiceW = wx.wxAmiEventHandler(&::OnChoiceW)
 
     #wxVTKRenderWindowInteractor
@@ -449,14 +451,9 @@ Class PreviewerClass \
                       &evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
       wxvtkI.Connect( wx.wxEVT_MOUSEWHEEL,\
                       &evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
-      #event onenter window
-      wxvtkI.Connect( wx.wxEVT_ENTER_WINDOW,\
-                      &evh_EnterW1.GetMouseEventFunction(),&NULL,&evh_EnterW1)
-      #choice window
-      #wxvtkI.Connect( wx.wxEVT_RIGHT_DOWN,\
-      #                  &evh_ChoiceW.GetMouseEventFunction(),&NULL,&evh_ChoiceW)
-      wxvtkI.Connect( wx.wxEVT_LEFT_DOWN,\
-                      &evh_ChoiceW.GetMouseEventFunction(),&NULL,&evh_ChoiceW)
+      #event onenter window and choice
+      wxvtkI.Connect( wx.wxEVT_CHILD_FOCUS,\
+                      &evh_ChoiceW.GetChildFocusEventFunction(),&NULL,&evh_ChoiceW)
       #add vector
       ::RWIVector.push_back(&wxvtkI)
       del boxsizer
