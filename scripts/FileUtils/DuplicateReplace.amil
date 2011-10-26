@@ -167,162 +167,204 @@ proc CopyDir(STRING _from, STRING _to) \
 }
 
 
-proc CopyDirAndReplace( STRING _from, STRING _to, \
-                        STRING repl_in, STRING repl_out) \
+#-------------------------------------------------------------------------------
+Class CopyDirAndReplace 
 {
-  wx_from = wx.wxString(_from)
-  wx_to   = wx.wxString(_to)
-  SLASH = wx.wxString("/")
 
-  # append a slash if there is not one (for easier parsing)
-  # because who knows what people will pass to the function.
-  if (SLASH.Cmp(wx_to[wx_to.length()-1]) != 0) {
-    wx_to += SLASH
-  }
-  # for both dirs
-  if (SLASH.Cmp(wx_from[wx_from.length()-1]) != 0) {
-    wx_from += SLASH
+  #-------------------------------------
+  proc ::Init() {
+    ::_from    = ""
+    ::_to      = ""
+    ::repl_in  = ""
+    ::repl_out = ""
   }
 
-  # first make sure that the source dir exists
-  if(!wx.wxDir.Exists(wx_from)) \
+  #-------------------------------------
+  proc ::Run() \
   {
-    InfoDialog wx.wxFromWxString(wx_from) + " does not exist.  Can not copy directory."
-    #wxLogError(from + " does not exist.  Can not copy directory.");
-  }  else \
-  {
-    # check on the destination dir
-    # if it doesn't exist...
-    if(!wx.wxDir.Exists(wx_to)) {
-        # if it doesn't get created
-        if(!wx.wxFileName.Mkdir(wx_to, 0777, wx.wxPATH_MKDIR_FULL)) {
-          # Send an error
-          InfoDialog wx.wxFromWxString(wx_to) + " could not be created."
-          # And exit gracefully
-          # don't have return like C in amilab ...
-          #return false;
-        }
+    wx_from = wx.wxString(::_from)
+    wx_to   = wx.wxString(::_to)
+    SLASH = wx.wxString("/")
+
+    # append a slash if there is not one (for easier parsing)
+    # because who knows what people will pass to the function.
+    if (SLASH.Cmp(wx_to[wx_to.length()-1]) != 0) {
+      wx_to += SLASH
     }
-    #printn "*"
-    # The directories to traverse
-    myDirs = wx.wxArrayString()
-    # Initially we want one pass
-    myDirs.Add("")
-    #printn "*"
-    
-    # loop through each directory.. storing all sub directories
-    # and copying over all files.. the final iteration of one loop
-    # should begin an iteration for any subdirectories discovered
-    # on the previous pass
-    # (rather than pragma, unsigned int will shut the MS compiler up)
-    processdirs = (myDirs.size()>0)
-    i=0
-    #printn "* %1%" % processdirs
-    while processdirs \
+    # for both dirs
+    if (SLASH.Cmp(wx_from[wx_from.length()-1]) != 0) {
+      wx_from += SLASH
+    }
+
+    # first make sure that the source dir exists
+    if(!wx.wxDir.Exists(wx_from)) \
     {
-      # get the next directory
-      del nextDir
-      # amilab don't have '+' operator for wxString
-      
-      nextDir = wx.wxDir(wx.FromWxString(wx_from) + wx.FromWxString(myDirs[i]))
-      nextdir_str = wx.FromWxString(nextDir.GetName())
-      printn "nextDir is %1%" % nextdir_str
-
-      # check that it exists in destination form
-      if(!wx.wxDir.Exists(wx.FromWxString(wx_to) + wx.FromWxString(myDirs[i]))) {
-        # if it doesn't, then create it
-        del newdir
-        newdir = wx.wxString(myDirs[i])
-        newdir.Replace(repl_in,repl_out)
-        if(!wx.wxFileName.Mkdir(wx.FromWxString(wx_to) + wx.FromWxString(newdir), \
-                                0777, wx.wxPATH_MKDIR_FULL)) {
-            # If it doesn't create, error
-            wxLogError( wx.FromWxString(wx_to) + wx.FromWxString(newdir) +\
-                        " could not be created.")
+      InfoDialog wx.wxFromWxString(wx_from) + " does not exist.  Can not copy directory."
+      #wxLogError(from + " does not exist.  Can not copy directory.");
+    }  else \
+    {
+      # check on the destination dir
+      # if it doesn't exist...
+      if(!wx.wxDir.Exists(wx_to)) {
+          # if it doesn't get created
+          if(!wx.wxFileName.Mkdir(wx_to, 0777, wx.wxPATH_MKDIR_FULL)) {
+            # Send an error
+            InfoDialog wx.wxFromWxString(wx_to) + " could not be created."
             # And exit gracefully
-            #return false
-        }
+            # don't have return like C in amilab ...
+            #return false;
+          }
       }
+      #printn "*"
+      # The directories to traverse
+      myDirs = wx.wxArrayString()
+      # Initially we want one pass
+      myDirs.Add("")
+      #printn "*"
+      
+      # loop through each directory.. storing all sub directories
+      # and copying over all files.. the final iteration of one loop
+      # should begin an iteration for any subdirectories discovered
+      # on the previous pass
+      # (rather than pragma, unsigned int will shut the MS compiler up)
+      processdirs = (myDirs.size()>0)
+      i=0
+      #printn "* %1%" % processdirs
+      while processdirs \
+      {
+        # get the next directory
+        del nextDir
+        # amilab don't have '+' operator for wxString
+        
+        nextDir = wx.wxDir(wx.FromWxString(wx_from) + wx.FromWxString(myDirs[i]))
+        nextdir_str = wx.FromWxString(nextDir.GetName())
+        printn "nextDir is %1%" % nextdir_str
 
-      # get the first file in the next directory
-      nextFile = wx.wxString()
-      process = nextDir.GetFirst(&nextFile)
-
-      # and while there are still files to process
-      while process {
-
-        printn "nextFile is %1%" % wx.FromWxString(&nextFile)
-        indent = "  "
-        inputfilename = wx.FromWxString(wx_from) + \
-                        wx.FromWxString(myDirs[i]) + \
-                        wx.FromWxString(nextFile)
-
-        if !( nextFile.EndsWith("kdev4") || \
-              nextFile.EndsWith("~")        \
-            )                               \
-        {
-          # If this file is a directory
-          if(wx.wxDir.Exists(inputfilename)) {
-              if !( nextFile.EndsWith(".svn")     ||  \
-                    nextFile.EndsWith("build")    ||  \
-                    nextFile.EndsWith("Generated"))   \
-              {
-                # then append it for creation/copying
-                newdir=wx.FromWxString(nextFile) + wx.FromWxString(SLASH)
-                printn indent+"adding dir %1%" % newdir
-                myDirs.Add(newdir)
-                for n=0 to myDirs.size()-1 {
-                  str= wx.FromWxString(myDirs[n])
-                  print indent+"%1%;" % str
-                }
-                printn ""
-                # only add the difference
-              } else {
-                printn indent+"Not incluing '%1%' directory" % wx.FromWxString(nextFile)
-              }
-          } \
-          else {
-            # otherwise just go ahead and copy the file over
-            #
-            # Assume text file and copy
-            #
-            printn indent+"copying %1%" % inputfilename
-            del inputfile
-            inputfile = wx.wxFFile( inputfilename,"r")
-
-            inputcontents = wx.wxString("a")
-            ok = inputfile.ReadAll(&inputcontents)
-            tmpstr = wx.FromWxString(&inputcontents)
-            if (ok) {
-              del outputfilename
-              outputfilename = wx.FromWxString(wx_to) + \
-                               wx.FromWxString(myDirs[i]) + \
-                               wx.FromWxString(nextFile)
-              # replacing (a bit heavy synthax)
-              del tmp
-              tmp = wx.wxString(outputfilename)
-              tmp.Replace(repl_in,repl_out)
-              outputfilename = wx.FromWxString(tmp)
-              printn indent+"output filename is "+outputfilename
-              del outputfile
-              outputfile = wx.wxFFile(outputfilename ,"w")
-              #tmpstr = wx.FromWxString(&inputcontents)
-              inputcontents.Replace(repl_in,repl_out)
-              wok = outputfile.Write(&inputcontents)
-              clok = outputfile.Close()
-            }
+        # check that it exists in destination form
+        if(!wx.wxDir.Exists(wx.FromWxString(wx_to) + wx.FromWxString(myDirs[i]))) {
+          # if it doesn't, then create it
+          del newdir
+          newdir = wx.wxString(myDirs[i])
+          newdir.Replace(::repl_in,::repl_out)
+          if(!wx.wxFileName.Mkdir(wx.FromWxString(wx_to) + wx.FromWxString(newdir), \
+                                  0777, wx.wxPATH_MKDIR_FULL)) {
+              # If it doesn't create, error
+              wxLogError( wx.FromWxString(wx_to) + wx.FromWxString(newdir) +\
+                          " could not be created.")
+              # And exit gracefully
+              #return false
           }
         }
-        # and get the next file
-        process = nextDir.GetNext(&nextFile);
+
+        # get the first file in the next directory
+        nextFile = wx.wxString()
+        process = nextDir.GetFirst(&nextFile)
+
+        # and while there are still files to process
+        while process {
+
+          printn "nextFile is %1%" % wx.FromWxString(&nextFile)
+          indent = "  "
+          inputfilename = wx.FromWxString(wx_from) + \
+                          wx.FromWxString(myDirs[i]) + \
+                          wx.FromWxString(nextFile)
+
+          if !( nextFile.EndsWith("kdev4") || \
+                nextFile.EndsWith("~")        \
+              )                               \
+          {
+            # If this file is a directory
+            if(wx.wxDir.Exists(inputfilename)) {
+                if !( nextFile.EndsWith(".svn")     ||  \
+                      nextFile.EndsWith("build")    ||  \
+                      nextFile.EndsWith("Generated"))   \
+                {
+                  # then append it for creation/copying
+                  newdir=wx.FromWxString(nextFile) + wx.FromWxString(SLASH)
+                  printn indent+"adding dir %1%" % newdir
+                  myDirs.Add(newdir)
+                  for n=0 to myDirs.size()-1 {
+                    str= wx.FromWxString(myDirs[n])
+                    print indent+"%1%;" % str
+                  }
+                  printn ""
+                  # only add the difference
+                } else {
+                  printn indent+"Not incluing '%1%' directory" % wx.FromWxString(nextFile)
+                }
+            } \
+            else {
+              # otherwise just go ahead and copy the file over
+              #
+              # Assume text file and copy
+              #
+              printn indent+"copying %1%" % inputfilename
+              del inputfile
+              inputfile = wx.wxFFile( inputfilename,"r")
+
+              inputcontents = wx.wxString("a")
+              ok = inputfile.ReadAll(&inputcontents)
+              tmpstr = wx.FromWxString(&inputcontents)
+              if (ok) {
+                del outputfilename
+                outputfilename = wx.FromWxString(wx_to) + \
+                                wx.FromWxString(myDirs[i]) + \
+                                wx.FromWxString(nextFile)
+                # replacing (a bit heavy synthax)
+                del tmp
+                tmp = wx.wxString(outputfilename)
+                tmp.Replace(::repl_in,::repl_out)
+                outputfilename = wx.FromWxString(tmp)
+                printn indent+"output filename is "+outputfilename
+                del outputfile
+                outputfile = wx.wxFFile(outputfilename ,"w")
+                #tmpstr = wx.FromWxString(&inputcontents)
+                inputcontents.Replace(::repl_in,::repl_out)
+                wok = outputfile.Write(&inputcontents)
+                clok = outputfile.Close()
+              }
+            }
+          }
+          # and get the next file
+          process = nextDir.GetNext(&nextFile);
+      }
+      i++
+      processdirs = (i<myDirs.size())
     }
-    i++
-    processdirs = (i<myDirs.size())
-  }
-  
-    return=true
+    
+      return=true
+    }
+
+    return=false
   }
 
-  return=false
+  #-------------------------------------
+  proc ::Gui() \
+  {
+    ::win = ParamPanel("CopyRepl")
+
+    ::win.BeginBook()
+      ::win.AddPage("Param")
+        ::win.BeginBoxPanel("Paths")
+          ::win.AddDirname( &::_from, "From:")
+          ::win.AddDirname( &::_to,   "To:")
+        ::win.EndBoxPanel()
+
+        ::win.BeginBoxPanel("Replacement")
+          ::win.AddString( &::repl_in,"Find:")
+          ::win.AddString( &::repl_to,"Replace:")
+        ::win.EndBoxPanel()
+
+      ::AddHelpPage(&::win)
+
+    ::win.EndBook()
+
+    ::AddStandardButtons(&::win)
+    
+    ::win.Display()
+    ::win.Update(-1)
+  }
+
+  ::Init()
 }
 
