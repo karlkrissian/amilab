@@ -12,6 +12,16 @@
   AMI_DECLARE_TYPE(wxCommandEvent)
 #endif
 
+#ifndef wxChildFocusEvent_declared
+  #define wxChildFocusEvent_declared
+  AMI_DECLARE_TYPE(wxChildFocusEvent)
+#endif    
+  
+#ifndef wxFocusEvent_declared
+  #define wxFocusEvent_declared
+  AMI_DECLARE_TYPE(wxFocusEvent)
+#endif  
+  
 #ifndef wxMouseEvent_declared
   #define wxMouseEvent_declared
   AMI_DECLARE_TYPE(wxMouseEvent)
@@ -111,7 +121,38 @@ class wxAmiEventHandler: public wxEvtHandler
       // try commenting out this line and see what changes
       event.Skip();
     }
+   
+   
+    void OnFocusEvent(wxFocusEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxFocusEvent>::CreateVar((wxFocusEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+   
+   
+    void OnChildFocusEvent(wxChildFocusEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxChildFocusEvent>::CreateVar((wxChildFocusEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
     
+
     void OnMouseEvent(wxMouseEvent& event)
     {
       if (callback_function!=NULL)
@@ -213,6 +254,18 @@ class wxAmiEventHandler: public wxEvtHandler
       return eventfunc;
     }
 
+    wxObjectEventFunction* GetFocusEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxFocusEventHandler(wxAmiEventHandler::OnFocusEvent));
+      return eventfunc;
+    }
+
+    wxObjectEventFunction* GetChildFocusEventFunction() {
+      // TODO: delete the new allocation wxChildFocusEvent
+      eventfunc = new wxObjectEventFunction(wxChildFocusEventHandler(wxAmiEventHandler::OnChildFocusEvent));
+      return eventfunc;
+    }
+    
     wxObjectEventFunction* GetMouseEventFunction() {
       // TODO: delete the new allocation
       eventfunc = new wxObjectEventFunction(wxMouseEventHandler(wxAmiEventHandler::OnMouseEvent));
