@@ -69,6 +69,7 @@
 #endif
 
 #include "palette.hpp"
+
 #include "chaine.hpp"
 #include "DefineClass.hpp"
 #include "inrimage.hpp"

@@ -1,0 +1,10 @@
+
+del SubPixelPlugin
+func "SubPixelPlugin"
+
+if (!exists(SubPixel_obj)) {
+  SubPixelPlugin SubPixel_obj
+  SubPixel_obj.Load()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}

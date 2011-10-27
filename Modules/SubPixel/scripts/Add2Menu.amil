@@ -1,0 +1,10 @@
+
+ami.MainFrame.AddToMenu("&Modules","&SubPixel","&Load",    "../Modules/SubPixel/scripts/Load_SubPixel")
+ami.MainFrame.AddToMenu("&Modules","&SubPixel","&ReLoad",  "../Modules/SubPixel/scripts/ReLoad_SubPixel")
+
+func "2D/Add2Menu.amil"
+func "3D/Add2Menu.amil"
+
+if exists(global::scripts_toolbar) {
+  global::scripts_toolbar.AddSeparator()
+}

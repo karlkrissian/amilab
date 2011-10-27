@@ -6,10 +6,10 @@ if (!exists(subvoxel3D_display)) {
 
     ScriptDisplayClass subvoxel3D_display
 
-    subvoxel3D_display.SetScript("Subpixel/3D/subvoxel3DGui.amil")
+    subvoxel3D_display.SetScript( op_system.GetCurrentScriptDir() + "/subvoxel3DGui.amil")
     subvoxel3D_display.SetScriptObjName("global::subvoxel3D_obj")
 
-    subvoxel3D_display.SetInMenus("Scripts","Subpixel edge detection")
+    subvoxel3D_display.SetInMenus("Modules","SubPixel")
     subvoxel3D_display.SetDisplayedName("&subvoxel3D")
     subvoxel3D_display.SetHelp("Detects edges with subvoxel accuracy in 3D images")
 

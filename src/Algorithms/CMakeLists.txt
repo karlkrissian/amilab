@@ -48,15 +48,6 @@ SET(Algorithms_SRCS
   Segmentation/SubVoxel3D.cpp
 
   AnalyticFunctionBase.cpp
-  AnalyticLine.cpp
-  AnalyticCircle.cpp
-  AnalyticStraightVessel2D.cpp
-  AnalyticRing2D.cpp
-  AnalyticPlane.cpp
-  AnalyticCube.cpp
-  AnalyticCylinder.cpp
-  AnalyticSphere.cpp
-  AnalyticTorus.cpp
   ComputePartialVolume.cpp
   StructureTensor.cpp
   HessianMatrix.cpp
@@ -125,15 +116,6 @@ SET(Algorithms_HDRS
   include/SubVoxel3D.h
 
   include/AnalyticFunctionBase.h
-  include/AnalyticLine.h
-  include/AnalyticCircle.h
-  include/AnalyticStraightVessel2D.h
-  include/AnalyticRing2D.h
-  include/AnalyticPlane.h
-  include/AnalyticCube.h
-  include/AnalyticCylinder.h
-  include/AnalyticSphere.h
-  include/AnalyticTorus.h
   include/ComputePartialVolume.h
   include/StructureTensor.h
   include/HessianMatrix.h

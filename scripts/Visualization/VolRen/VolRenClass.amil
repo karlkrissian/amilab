@@ -400,7 +400,7 @@ if (!exists(VolRenClass)) {
         ::hist_mode = 1
         ::ShowHistogram()
         ::hist_mode = 0
-        ::volVector[0].OnCtrlPoint()
+        ::volVector[0].OnLinearColormap()
 
         # TODO: fix the dependency of the renderer for the volVector[0] ...
         ::vtk_camera_gui.SetCamera(&::volVector[0].camera)

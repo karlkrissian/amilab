@@ -1,0 +1,262 @@
+
+func "Common/ScriptGui"
+
+if (!exists(CopyDirAndReplaceClass)) {
+
+  Class CopyDirAndReplaceClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+      ::_from       = "/home/" # GetScriptsDir+"/../"
+      ::_to         = GetScriptsDir+"/../"
+      ::_newdirname = "NewModule"
+      ::repl_in     = "ModuleExample"
+      ::repl_out    = "NewModule"
+
+      ::dry_run     = UCHAR(0)
+
+      ::html_filename = GetScriptsDir+"/CopyDirAndReplace/Doc/CopyDirAndReplace/index.html"
+    }
+
+
+    #-----------------------------------------------
+    proc ::AddwxStr( OBJECT wxst1, OBJECT wxst2) \
+    {
+      return = wxst1
+      return += wxst2
+    }
+
+    #-----------------------------------------------
+    proc ::_Str( OBJECT wxst1) \
+    {
+      return = wx.FromWxString(&wxst1)
+    }
+
+    #-----------------------------------------------
+    proc ::Mkdir( OBJECT wxst) \
+    {
+      printn "Creating dir %1%" % ::_Str(wxst)
+      return=wx.wxFileName.Mkdir(wxst, 0777, wx.wxPATH_MKDIR_FULL)
+    }
+
+    #-----------------------------------------------
+    proc ::CopyFileAndReplace( STRING inputfilename, STRING outputfilename) \
+    {
+      printn ::indent+"copying %1%" % inputfilename
+      del inputfile
+      inputfile = wx.wxFFile( inputfilename,"r")
+
+      inputcontents = wx.wxString("a")
+      ok = inputfile.ReadAll(&inputcontents)
+      tmpstr = ::_Str(&inputcontents)
+      if (ok) {
+        # replacing (a bit heavy synthax)
+        del tmp
+        tmp = wx.wxString(outputfilename)
+        tmp.Replace(::repl_in,::repl_out)
+        outputfilename = ::_Str(tmp)
+        printn ::indent+"output filename is "+outputfilename
+        del outputfile
+        outputfile = wx.wxFFile(outputfilename ,"w")
+        #tmpstr = ::_Str(&inputcontents)
+        inputcontents.Replace(::repl_in,::repl_out)
+        wok = outputfile.Write(&inputcontents)
+        clok = outputfile.Close()
+      }
+    }
+
+  
+    #-----------------------------------------------
+    proc ::CheckFilename( OBJECT wxfname) \
+    {
+      exclude = wxfname.EndsWith("kdev4") || \
+                wxfname.EndsWith("~")
+      return = !exclude
+    }
+
+    #-----------------------------------------------
+    proc ::CheckDirname( OBJECT wxfname) \
+    {
+      exclude = wxfname.EndsWith(".svn")     ||  \
+                wxfname.EndsWith("build")    ||  \
+                wxfname.EndsWith("Generated")
+      return = !exclude
+    }
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      wx_from = wx.wxString(::_from)
+      wx_to   = wx.wxString(::_to+"/"+::_newdirname)
+      SLASH = wx.wxString("/")
+
+      # append a slash if there is not one (for easier parsing)
+      # because who knows what people will pass to the function.
+      if (SLASH.Cmp(wx_to[wx_to.length()-1]) != 0) {
+        wx_to += SLASH
+      }
+      # for both dirs
+      if (SLASH.Cmp(wx_from[wx_from.length()-1]) != 0) {
+        wx_from += SLASH
+      }
+
+      # first make sure that the source dir exists
+      if(!wx.wxDir.Exists(wx_from)) \
+      {
+        InfoDialog ::_Str(wx_from) + " does not exist.  Can not copy directory."
+        #wxLogError(from + " does not exist.  Can not copy directory.");
+      }  else \
+      {
+        # check on the destination dir
+        # if it doesn't exist...
+        if(!wx.wxDir.Exists(wx_to)) {
+            # if it doesn't get created
+            if(!::Mkdir(wx_to)) {
+              # Send an error
+              InfoDialog ::_Str(wx_to) + " could not be created."
+              # And exit gracefully
+              # don't have return like C in amilab ...
+              #return false;
+            }
+        }
+        #printn "*"
+        # The directories to traverse
+        myDirs = wx.wxArrayString()
+        # Initially we want one pass
+        myDirs.Add("")
+        #printn "*"
+        
+        # loop through each directory.. storing all sub directories
+        # and copying over all files.. the final iteration of one loop
+        # should begin an iteration for any subdirectories discovered
+        # on the previous pass
+        processdirs = (myDirs.size()>0)
+        i=0
+        #printn "* %1%" % processdirs
+        while processdirs {
+          # get the next directory
+          del nextDir
+          nextDir = wx.wxDir(::AddwxStr(&wx_from,&myDirs[i]))
+          nextdir_str = ::_Str(nextDir.GetName())
+          printn "i = %1%, " % i +"processing %1% " % ::_Str(myDirs[i])
+          printn "nextDir is %1%" % nextdir_str 
+
+          # check that it exists in destination form
+          if(!wx.wxDir.Exists(::AddwxStr(&wx_to,&myDirs[i]))) {
+            # if it doesn't, then create it
+            del newdir
+            newdir = wx.wxString(myDirs[i])
+            newdir.Replace(::repl_in,::repl_out)
+            if (!::Mkdir(::AddwxStr(&wx_to,&newdir))) {
+                # If it doesn't create, error
+                wxLogError( ::_Str(wx_to) + ::_Str(newdir) +\
+                            " could not be created.")
+                #return false
+            }
+          }
+
+          # get the first file in the next directory
+          nextFile = wx.wxString()
+          process = nextDir.GetFirst(&nextFile)
+
+          # and while there are still files to process
+          while process {
+
+            printn "nextFile is %1%" % ::_Str(&nextFile)
+            ::indent = "  "
+            inputfilename = ::_Str(wx_from)+::_Str(myDirs[i])+::_Str(nextFile)
+
+            if ::CheckFilename(&nextFile) \
+            {
+              # If this file is a directory
+              if(wx.wxDir.Exists(inputfilename)) {
+                  if ::CheckDirname( &nextFile)  \
+                  {
+                    # then append it for creation/copying
+                    # cannot add wx_from here ...
+                    newdir= ::_Str(myDirs[i])+::_Str(nextFile) + ::_Str(SLASH)
+                    printn ::indent+"adding dir %1%" % newdir
+                    myDirs.Add(newdir)
+                    for n=0 to myDirs.size()-1 {
+                      str= ::_Str(myDirs[n])
+                      print ::indent+"%1%;" % str
+                    }
+                    printn ""
+                    # only add the difference
+                  } else {
+                    printn ::indent+"Not incluing '%1%' directory" % ::_Str(nextFile)
+                  }
+              } else {
+                # otherwise just go ahead and copy the file over
+                # Assume text file and copy
+                outputfilename = ::_Str(wx_to)+::_Str(myDirs[i])+::_Str(nextFile)
+                ::CopyFileAndReplace(inputfilename,outputfilename)
+              }
+            }
+            # and get the next file
+            process = nextDir.GetNext(&nextFile);
+        }
+        i++
+        processdirs = (i<myDirs.size())
+      }
+      
+        return=true
+      }
+
+      return=false
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("CopyDirAndReplace",&::parent_panel)
+      } else {
+        ::win = ParamPanel("CopyDirAndReplace")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Run")
+
+        ::win.BeginBoxPanel("Paths")
+          ::win.AddDirname( &::_from, "From:")
+          ::win.AddDirname( &::_to,   "To:")
+          ::win.AddString(  &::_newdirname,"New Dir:")
+          ::win.AddBoolean( &::dry_run, "Dry Run")
+        ::win.EndBoxPanel()
+
+        ::win.BeginBoxPanel("Replacement")
+          ::win.AddString( &::repl_in,"Find:")
+          ::win.AddString( &::repl_out,"Replace:")
+        ::win.EndBoxPanel()
+
+        #::win.AddPage("Run")
+        ::win.AddButton("Run Filter",::Run)
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

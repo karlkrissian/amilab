@@ -125,7 +125,7 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
       #  print "AddDeclare..."
       config.AddDeclare(typename)
       if typename==config.types[typeid].GetDemangled():
-        #print "{0}".format(typename)
+        #print "AvailableType for {0}".format(typename)
         fileid = config.types[typeid].fileid
         to_include_file = FindIncludeFile(typename,fileid)
         if to_include_file!="":

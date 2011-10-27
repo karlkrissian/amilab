@@ -6,10 +6,10 @@ if (!exists(subpixel2D_display)) {
 
     ScriptDisplayClass subpixel2D_display
 
-    subpixel2D_display.SetScript("Subpixel/2D/subpixel2DGui.amil")
+    subpixel2D_display.SetScript( op_system.GetCurrentScriptDir() +"/subpixel2DGui.amil")
     subpixel2D_display.SetScriptObjName("global::subpixel2D_obj")
 
-    subpixel2D_display.SetInMenus("Scripts","Subpixel edge detection")
+    subpixel2D_display.SetInMenus("Modules","SubPixel")
     subpixel2D_display.SetDisplayedName("&subpixel2D")
     subpixel2D_display.SetHelp("Detects edges with subpixel accuracy in 2D images")
 

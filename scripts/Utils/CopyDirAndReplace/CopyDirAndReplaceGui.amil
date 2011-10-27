@@ -1,0 +1,11 @@
+
+func "CopyDirAndReplaceClass"
+
+if (!exists(CopyDirAndReplace_obj)) {
+  CopyDirAndReplaceClass CopyDirAndReplace_obj
+  CopyDirAndReplace_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

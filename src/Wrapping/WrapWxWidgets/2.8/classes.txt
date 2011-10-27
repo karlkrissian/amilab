@@ -55,6 +55,7 @@ wxFileSystemHandler
 wxFFile
 wxFlexGridSizer
 wxFocusEvent
+wxChildFocusEvent
 wxFont
 wxFrame
 wxFSFile

@@ -1,6 +1,9 @@
 #Interface for sub-pixel 2D detection
 
 func "Common/ScriptGui"
+if (!exists(SubPixel)) {
+  func "../Load_SubPixel"
+}
 
 if (!exists(Subpixel2DClass)){
 
@@ -68,7 +71,7 @@ if (!exists(Subpixel2DClass)){
       
       #Help
       ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
-      ::html_filename = GetScriptsDir+"/Subpixel/2D/Doc/subpixel2D/index.html"
+      ::html_filename = op_system.GetCurrentScriptDir() +"/Doc/subpixel2D/index.html"
     }
     
 
@@ -317,7 +320,9 @@ if (!exists(Subpixel2DClass)){
     #-----------------------
     
     proc ::Run() {
-      ::load_input()
+      if (!exists(::input)) {
+        ::load_input()
+      }
       ::thresholds_crossed = 0
       #Erase the draw objects
      # if (exists(::input_draw))    { del ::input_draw; }
@@ -356,17 +361,22 @@ if (!exists(Subpixel2DClass)){
         ::win.EnablePanel(::stat_panel, 1)
         
         ::Display()
-        ::drawBorder()
         
         if (::draw_on_averaged) {
+          ::averaged_draw.Paint()
           ::averaged_draw.PaintCallback(&::drawBorder)
         } else {
           if (::draw_on_restored) {
+            ::restored_draw.Paint()
             ::restored_draw.PaintCallback(&::drawBorder)
           } else {
+            ::input_draw.Paint()
             ::input_draw.PaintCallback(&::drawBorder)
           }
         }
+        
+        ::drawBorder()
+
       }
      
     }
@@ -548,8 +558,6 @@ if (!exists(Subpixel2DClass)){
             ::win.EnablePanel(::restoration_panel,0)
           ::win.EndBoxPanel()
  
-          ::icons.LoadIconPNG("Play")
-          ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
           #::win.EndBoxPanel()
           
         #New page for border pixel info.
@@ -643,6 +651,8 @@ if (!exists(Subpixel2DClass)){
         ::AddHelpPage(&::win)
           
       ::win.EndBook()
+      ::icons.LoadIconPNG("Play")
+      ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
 
       ::AddStandardButtons(&::win)
       ::win.Update(-1)

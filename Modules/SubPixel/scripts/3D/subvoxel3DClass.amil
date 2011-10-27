@@ -1,6 +1,9 @@
 #Interface for subvoxel 3D detection
 
 func "Common/ScriptGui"
+if (!exists(SubPixel)) {
+  func "../Load_SubPixel"
+}
 
 
 if (!exists(Subvoxel3DClass)){
@@ -39,7 +42,7 @@ if (!exists(Subvoxel3DClass)){
       
       #Help
     ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
-    ::html_filename = GetScriptsDir+"/Subpixel/3D/Doc/subvoxel3D/index.html"
+    ::html_filename = op_system.GetCurrentScriptDir() + "/Doc/subvoxel3D/index.html"
     }
     
 
@@ -271,7 +274,7 @@ if (!exists(Subvoxel3DClass)){
        mb = ami.MainFrame.GetMainBook()
 
       ::panel = wx.wxPanel(&ami.MainFrame)
-      ::panel._SetName("SubV3D")
+      ::panel.SetName("SubV3D")
 
       sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel.SetSizer(&sbox_sizer)

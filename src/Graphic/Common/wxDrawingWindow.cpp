@@ -95,6 +95,8 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
     , 
     name) 
 {
+  this->_linearCM_uptodate = false;
+  
   this->SetScrollbars(3,3,10,10);
   this->EnableScrolling(true,true);
 
@@ -663,134 +665,144 @@ void wxDrawingWindow::DrawLinearCM(  )
   // 1: sort the points
   // 2: draw each rectangle between 2 successive points
 
-  // Add 2 points to the linearcolormap
-  _linearCM.clear();
-  // first fill the current colormap control points with their positions
-  for(int c=0; c<(int) _controlled_curves->size();c++)
-  {
-    if (!((*_controlled_curves)[c].GetType()==colormap_curve))
-      continue;
-    boost::shared_ptr<vector_dwControlPoint> points_ptr = (*_controlled_curves)[c].GetControlPoints();
-    vector_dwControlPoint points = (*points_ptr);
-    if ((*_controlled_curves)[c].isLimited())
+  if (!_linearCM_uptodate) {
+    // Add 2 points to the linearcolormap
+    _linearCM.clear();
+    // first fill the current colormap control points with their positions
+    for(int c=0; c<(int) _controlled_curves->size();c++)
     {
-       //Add limits
-       dwControlPoint p_ant = points.front();
-       dwControlPoint p_post = points.back();
-       p_ant. SetPos(p_ant.GetX()-e,0.0);
-       p_post.SetPos(p_post.GetX()+e,0.0);
-       points.insert(points.begin(),p_ant);
-       points.push_back(p_post);
-    }
-  
+      if (!((*_controlled_curves)[c].GetType()==colormap_curve))
+        continue;
+      boost::shared_ptr<vector_dwControlPoint> points_ptr = (*_controlled_curves)[c].GetControlPoints();
+      vector_dwControlPoint points = (*points_ptr);
+      if ((*_controlled_curves)[c].isLimited())
+      {
+        //Add limits
+        dwControlPoint p_ant = points.front();
+        dwControlPoint p_post = points.back();
+        p_ant. SetPos(p_ant.GetX()-e,0.0);
+        p_post.SetPos(p_post.GetX()+e,0.0);
+        points.insert(points.begin(),p_ant);
+        points.push_back(p_post);
+      }
     
-    for(int i = 0; i<(int) points.size(); i++) 
-    {  
-//||((*points)[i].GetType() == colormap_point))
-        _linearCM.AddPoint(LinearColorMapPoint(points[i].GetX(),points[i].GetY(),
-                                              points[i].GetColour()));
-    }
-  }
-  // second compute the left and right colours of each point
-  int cm_size = _linearCM.size();
-  //std::cout<< "cm_size = " << cm_size << std::endl;
-  std::vector<wxColour> left_colours(cm_size,*wxBLACK);
-  std::vector<wxColour> right_colours(cm_size,*wxBLACK);
-  std::vector<double> alphas(cm_size,0.0); //Alpha
-  std::vector<double> weights(cm_size,0.0);
-  for(int c=0; c<(int) _controlled_curves->size();c++)
-  {
-    if (!((*_controlled_curves)[c].GetType()==colormap_curve))
-      continue;
-
-    //std::cout<< "c = " << c << std::endl;
-    boost::shared_ptr<vector_dwControlPoint> points_ptr = (*_controlled_curves)[c].GetControlPoints();
-    vector_dwControlPoint points = (*points_ptr);
-    if ((*_controlled_curves)[c].isLimited())
-    {
-      //Add limits
-       dwControlPoint p_ant = points.front();
-       dwControlPoint p_post = points.back();
-       p_ant. SetPos(p_ant.GetX()-e,0.0);
-       p_post.SetPos(p_post.GetX()+e,0.0);
-       points.insert(points.begin(),p_ant);
-       points.push_back(p_post);
-       std::cout<< "Add limits = " << points_ptr->size() << " " << points.size() << std::endl;
-    }
-
-    int cmpt_id   = 0; // colormap point id
-    int curvpt_id = 0; // curve point id
-    // while it is possible:
-    // get the current segment
-    // fill all the points within the current segment
-    while ((curvpt_id+1 < (int)points.size())&&(cmpt_id<cm_size)) {
-      //std::cout<< "curvpt_id = " << curvpt_id << std::endl;
-      // current segment is between points[curvpt_id] and points[curvpt_id+1]
-      dwControlPoint p1 = points[curvpt_id];
-      dwControlPoint p2 = points[curvpt_id+1];
-      double pos = _linearCM.GetPoint(cmpt_id).GetPosition();
       
-
-
-//       std::cout<< "p1.GetX() = " << p1.GetX() << std::endl;
-//       std::cout<< "p2.GetX() = " << p2.GetX() << std::endl;
-
-//      std::cout<< "pos = " << pos << std::endl;
-      while ((pos<p1.GetX())&&(cmpt_id<cm_size)) {
-        cmpt_id++;
-        pos = _linearCM.GetPoint(cmpt_id).GetPosition();
+      for(int i = 0; i<(int) points.size(); i++) 
+      {  
+  //||((*points)[i].GetType() == colormap_point))
+          _linearCM.AddPoint(LinearColorMapPoint(points[i].GetX(),points[i].GetY(),
+                                                points[i].GetColour()));
       }
-      //std::cout<< "cmpt_id = " << cmpt_id << std::endl;
-      //std::cout<< "pos = " << pos << std::endl;
-      if (cmpt_id<cm_size) {
-        while ((pos<=p2.GetX())&&(cmpt_id<cm_size)) {
-          // pos is within p1 and p2, interpolate colour and weight
-          c1 = p1.GetColour();
-          c2 = p2.GetColour();
-          coeff1 = p2.GetX()-pos;
-          coeff2 = pos-p1.GetX();
-          w1 = p1.GetY();
-          w2 = p2.GetY();
-          if (w1<0) w1=0;
-          if (w2<0) w2=0;
-          wxColour current_colour = InterpolateColour(c1,coeff1,c2,coeff2);
-          
-          double current_weight;
-          if(coeff1+coeff2==0) current_weight=0;
-          else current_weight= (w1*coeff1+w2*coeff2)/(coeff1+coeff2);
-          //std::cout << "cmpt_id = " << cmpt_id << std::endl;
-          //std::cout<< "current_colour = " << current_colour.GetAsString().ToAscii() << std::endl;
-          left_colours[cmpt_id] =
-              InterpolateColour(current_colour,current_weight,
-                                left_colours[cmpt_id], weights[cmpt_id]);
-          //std::cout<< "left_colour = " << left_colours[cmpt_id].GetAsString().ToAscii() << std::endl;
-          right_colours[cmpt_id] =
-              InterpolateColour(current_colour,current_weight,
-                                right_colours[cmpt_id], weights[cmpt_id]);
-          //std::cout<< "right_colour = " << right_colours[cmpt_id].GetAsString().ToAscii() << std::endl;
-   
-          std::cout<< "p1.GetY() = " << p1.GetY() << std::endl;
-          std::cout<< "p2.GetY() = " << p2.GetY() << std::endl;      
-              
-         alphas[cmpt_id] =InterpolateAlpha(current_weight,current_weight,alphas[cmpt_id], weights[cmpt_id]);
-              
-          weights[cmpt_id] += current_weight;
-
-          cmpt_id++;
-		  if (cmpt_id<cm_size)
-	        pos = _linearCM.GetPoint(cmpt_id).GetPosition();
-        }
-      }
-      curvpt_id++;
     }
-  }
+    // second compute the left and right colours of each point
+    int cm_size = _linearCM.size();
+    //std::cout<< "cm_size = " << cm_size << std::endl;
+    std::vector<wxColour> left_colours(cm_size,*wxBLACK);
+    std::vector<wxColour> right_colours(cm_size,*wxBLACK);
+    std::vector<double> alphas(cm_size,0.0); //Alpha
+    std::vector<double> weights(cm_size,0.0);
+    for(int c=0; c<(int) _controlled_curves->size();c++)
+    {
+      if (!((*_controlled_curves)[c].GetType()==colormap_curve))
+        continue;
 
-  // now fill the colours
-  for (int c=0; c<cm_size; c++)
-  {
-    _linearCM.GetPoint(c).SetLeftColour (left_colours [c]);
-    _linearCM.GetPoint(c).SetRightColour(right_colours[c]);
-    _linearCM.GetPoint(c).SetAlpha      (alphas[c]);
+      //std::cout<< "c = " << c << std::endl;
+      boost::shared_ptr<vector_dwControlPoint> points_ptr = (*_controlled_curves)[c].GetControlPoints();
+      vector_dwControlPoint points = (*points_ptr);
+      if ((*_controlled_curves)[c].isLimited())
+      {
+        //Add limits
+        dwControlPoint p_ant = points.front();
+        dwControlPoint p_post = points.back();
+        p_ant. SetPos(p_ant.GetX()-e,0.0);
+        p_post.SetPos(p_post.GetX()+e,0.0);
+        points.insert(points.begin(),p_ant);
+        points.push_back(p_post);
+        std::cout<< "Add limits = " << points_ptr->size() << " " << points.size() << std::endl;
+      }
+
+      int cmpt_id   = 0; // colormap point id
+      int curvpt_id = 0; // curve point id
+      // while it is possible:
+      // get the current segment
+      // fill all the points within the current segment
+      while ((curvpt_id+1 < (int)points.size())&&(cmpt_id<cm_size)) {
+        //std::cout<< "curvpt_id = " << curvpt_id << std::endl;
+        // current segment is between points[curvpt_id] and points[curvpt_id+1]
+        dwControlPoint p1 = points[curvpt_id];
+        dwControlPoint p2 = points[curvpt_id+1];
+        double pos = _linearCM.GetPoint(cmpt_id).GetPosition();
+        
+
+
+  //       std::cout<< "p1.GetX() = " << p1.GetX() << std::endl;
+  //       std::cout<< "p2.GetX() = " << p2.GetX() << std::endl;
+
+  //      std::cout<< "pos = " << pos << std::endl;
+        while ((pos<p1.GetX())&&(cmpt_id<cm_size)) {
+          cmpt_id++;
+          pos = _linearCM.GetPoint(cmpt_id).GetPosition();
+        }
+        //std::cout<< "cmpt_id = " << cmpt_id << std::endl;
+        //std::cout<< "pos = " << pos << std::endl;
+        if (cmpt_id<cm_size) {
+          while ((pos<=p2.GetX())&&(cmpt_id<cm_size)) {
+            // pos is within p1 and p2, interpolate colour and weight
+            c1 = p1.GetColour();
+            c2 = p2.GetColour();
+            coeff1 = p2.GetX()-pos;
+            coeff2 = pos-p1.GetX();
+            w1 = p1.GetY();
+            w2 = p2.GetY();
+            if (w1<0) w1=0;
+            if (w2<0) w2=0;
+            wxColour current_colour = InterpolateColour(c1,coeff1,c2,coeff2);
+            
+            double current_weight;
+            if(coeff1+coeff2==0) current_weight=0;
+            else current_weight= (w1*coeff1+w2*coeff2)/(coeff1+coeff2);
+            //std::cout << "cmpt_id = " << cmpt_id << std::endl;
+            //std::cout<< "current_colour = " << current_colour.GetAsString().ToAscii() << std::endl;
+            left_colours[cmpt_id] =
+                InterpolateColour(current_colour,current_weight,
+                                  left_colours[cmpt_id], weights[cmpt_id]);
+            //std::cout<< "left_colour = " << left_colours[cmpt_id].GetAsString().ToAscii() << std::endl;
+            right_colours[cmpt_id] =
+                InterpolateColour(current_colour,current_weight,
+                                  right_colours[cmpt_id], weights[cmpt_id]);
+            //std::cout<< "right_colour = " << right_colours[cmpt_id].GetAsString().ToAscii() << std::endl;
+    
+            std::cout<< "p1.GetY() = " << p1.GetY() << std::endl;
+            std::cout<< "p2.GetY() = " << p2.GetY() << std::endl;      
+                
+          alphas[cmpt_id] =InterpolateAlpha(current_weight,current_weight,alphas[cmpt_id], weights[cmpt_id]);
+                
+            weights[cmpt_id] += current_weight;
+
+            cmpt_id++;
+        if (cmpt_id<cm_size)
+            pos = _linearCM.GetPoint(cmpt_id).GetPosition();
+          }
+        }
+        curvpt_id++;
+      }
+      
+    }
+
+    // now fill the colours
+    for (int c=0; c<cm_size; c++)
+    {
+      _linearCM.GetPoint(c).SetLeftColour (left_colours [c]);
+      _linearCM.GetPoint(c).SetRightColour(right_colours[c]);
+      _linearCM.GetPoint(c).SetAlpha      (alphas[c]);
+    }
+
+    // Call the events related to the update of the colormap
+    _linearCM_uptodate = true;
+    if (_linearcolormap_callback.get()) {
+      bool ok = (*_linearcolormap_callback)();
+      if (!ok) _linearcolormap_callback.reset();
+    }
   }
   
   // the points are already sorted
@@ -826,11 +838,6 @@ void wxDrawingWindow::DrawLinearCM(  )
       }
       x1 = x2;
     }
-  }
-
-  if (_paint_callback.get()) {
-    bool ok = (*_paint_callback)();
-    if (!ok) _paint_callback.reset();
   }
 }
 
@@ -992,14 +999,11 @@ void wxDrawingWindow::Paint( bool in_paint)
 //-------------------------------------------------
 void wxDrawingWindow::OnPaint(wxPaintEvent& event)
 {
+  std::cout << "OnPaint" << std::endl;
   wxPaintDC pdc(this);
   PrepareDC(pdc);
   //DrawingAreaInit( );
   Paint(true);
-//   if (_paint_callback.get()) {
-//     bool ok = (*_paint_callback)();
-//     if (!ok) _paint_callback.reset();
-//   }
   event.Skip();
 }
 
@@ -1172,11 +1176,7 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
         bool ok = (*_ctrlpt_callback)();
         if (!ok) _ctrlpt_callback.reset();
       }
-
-    if (_paint_callback.get()) {
-      bool ok = (*_paint_callback)();
-      if (!ok) _paint_callback.reset();
-    }
+      _linearCM_uptodate = false;
 
       Refresh(false);
     }
@@ -1306,6 +1306,7 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
     _xmax = x + (_xmax - x)/zoom_factor;
   }
 
+  _linearCM_uptodate = false;
   Refresh(false);
   // capture event ...
   //event.Skip();
@@ -1318,11 +1319,6 @@ void wxDrawingWindow::OnAddControlPoint(wxCommandEvent& event)
   double x,y;
   Window2World(_mouse_x,_mouse_y,x,y);
   AddControlPoint(dwControlPoint(dwPoint2D(x,y)));
-if (_paint_callback.get()) {
-  bool ok = (*_paint_callback)();
-  if (!ok) _paint_callback.reset();
-}  
-  
   Refresh(false);
 }
 
@@ -1337,12 +1333,6 @@ void wxDrawingWindow::OnAddControlledCurve(wxCommandEvent& event)
   c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x1,y)));
   c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x2,y)));
   _controlled_curves->push_back(c);
-  
-  if (_paint_callback.get()) {
-    bool ok = (*_paint_callback)();
-    if (!ok) _paint_callback.reset();
-  }
-
   Refresh(false);
 }
 
@@ -1352,10 +1342,6 @@ void wxDrawingWindow::OnRemoveControlledCurve(wxCommandEvent& event)
   if (_focus_controlledcurve.get())
       // TODO: fix remove feature
 //    _controlled_curves->erase(_controlled_curves->begin()+_focus_controlledcurve);
-// if (_paint_callback.get()) {
-//   bool ok = (*_paint_callback)();
-//   if (!ok) _paint_callback.reset();
-// }
 
   Refresh(false);
 }
@@ -1397,11 +1383,7 @@ void wxDrawingWindow::OnColormapControlledCurve(wxCommandEvent& event)
   else
     _focus_controlledcurve->SetType(normal_curve);
 
-  if (_paint_callback.get()) {
-    bool ok = (*_paint_callback)();
-    if (!ok) _paint_callback.reset();
-  }
-
+  _linearCM_uptodate = false;
   Refresh(false);
 }
 
@@ -1413,11 +1395,8 @@ void wxDrawingWindow::OnLimitControlledCurve(wxCommandEvent& event)
     _focus_controlledcurve->SetLimits(true);
   else
     _focus_controlledcurve->SetLimits(false);
-  if (_paint_callback.get()) {
-    bool ok = (*_paint_callback)();
-    if (!ok) _paint_callback.reset();
-  }
 
+  _linearCM_uptodate = false;
   Refresh(false);
 }
 
@@ -1450,12 +1429,8 @@ void wxDrawingWindow::OnControlColour(wxCommandEvent& event)
       _focus_point->SetColour( dialog.GetColourData().GetColour());  
     }
   }
-  if (_paint_callback.get()) {
-    bool ok = (*_paint_callback)();
-    if (!ok) _paint_callback.reset();
-  }
-   Refresh(false);
-  
+  _linearCM_uptodate = false;
+  Refresh(false);
 }
 
 //-------------------------------------------------

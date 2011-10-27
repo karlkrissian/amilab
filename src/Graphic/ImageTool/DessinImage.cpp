@@ -173,6 +173,7 @@
 #include "VolumeRender.hpp"
 //#include "math1.hpp"
 #include "Viewer3D.hpp"
+#include "ParamBox.hpp"
 
 #ifndef macro_min
   #define macro_min(a,b) ( (a)<(b) ? (a) : (b))

@@ -75,6 +75,10 @@ class wxDrawingWindow : public wxScrolledWindow
   //! LinearColorMap functionality
   LinearColorMap _linearCM;
   bool   _draw_linearCM;
+
+  //! this variable tells if the linear Colormap needs to be updated
+  bool   _linearCM_uptodate;
+
   wxSize _linearCM_margin_size;
 
 //  //! index of the control point having the focus if any, -1 otherwise
@@ -102,8 +106,9 @@ class wxDrawingWindow : public wxScrolledWindow
 
   // Callback for the control point motion
   CallBackBase::ptr _ctrlpt_callback;
-  // Callback for point event
-  CallBackBase::ptr _paint_callback;
+
+  // Callback for update of the linear colormap
+  CallBackBase::ptr _linearcolormap_callback;
   void DrawingAreaInit( );
 
 public:
@@ -131,8 +136,8 @@ public:
     this->_ctrlpt_callback = callback;
   }
 
-  void SetPaintCallback( CallBackBase::ptr callback) {
-    this->_paint_callback = callback;
+  void SetLinearColormapCallback( CallBackBase::ptr callback) {
+    this->_linearcolormap_callback = callback;
   }
   int GetNumberOfCtrlPoints() const
   {
