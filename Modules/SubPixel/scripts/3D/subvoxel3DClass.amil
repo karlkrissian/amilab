@@ -1,6 +1,9 @@
 #Interface for subvoxel 3D detection
 
 func "Common/ScriptGui"
+if (!exists(SubPixel)) {
+  func "../Load_SubPixel"
+}
 
 
 if (!exists(Subvoxel3DClass)){

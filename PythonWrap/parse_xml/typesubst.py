@@ -9,6 +9,7 @@ type_shortname={
   'unsigned char'      : 'uchar',
   'unsigned int'       : 'uint',
   'long int'           : 'lint',
+  'long long int'      : 'llint',
   'long unsigned int'  : 'luint',
   'std::string'        : 'string',
   'long long int'      : 'llint',
@@ -306,11 +307,13 @@ def ConvertValTo(typeid,substvar,typevar):
  
 def ConvertSmtPtrToPtr(typeid,substvar,typevar):
   typename=config.types[typeid].GetString()
+  fulltypename=config.types[typeid].GetFullString()
   shorttypename=GetShortName(typename)
   try:
     return eval("ConvertSmtPtrToPtr_{0}(typeid,substvar,typevar)".format(shorttypename))
   except NameError:
-    return ""
+    res  = "{2} {0} = ({2}) {1}.get();\n".format(typevar,substvar,fulltypename)
+    return res
  
 def ConvertSmtPtrToDoublePtr(typeid,substvar,typevar):
   typename=config.types[typeid].GetString()
