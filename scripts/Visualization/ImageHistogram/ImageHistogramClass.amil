@@ -97,15 +97,12 @@ if (!exists(ImageHistogramClass)) {
     proc ::OnCtrlPoint() \
     {
       ::DrawIsoContours();
-      ::DrawMinMax();
     }
 
     #---------------------------
-    proc ::OnPaint() \
+    proc ::OnUpdateColormap() \
     {
-      if (exists(::input_draw)) {
-        ::input_draw.Paint()
-      }
+      ::DrawMinMax();
     }
 
     #---------------------------
@@ -606,7 +603,7 @@ if (!exists(ImageHistogramClass)) {
       }
       ::win.Update(-1)
       ::dw.SetCtrlPointCallback(&::OnCtrlPoint)
-      ::dw.SetPaintCallback(&::OnPaint)   
+      ::dw.SetLinearColormapCallback(&::OnUpdateColormap)
     }
 
     ::Init()

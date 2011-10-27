@@ -447,16 +447,16 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 }
 
 //---------------------------------------------------
-//  SetPaintCallback
+//  SetLinearColormapCallback
 //---------------------------------------------------
 void WrapClass_wxDrawingWindow::
-      wrap_SetPaintCallback::SetParametersComments() 
+      wrap_SetLinearColormapCallback::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(AMIFunction,"Callback function (AMIFunction)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxDrawingWindow::
-      wrap_SetPaintCallback::CallMember( ParamList* p)
+      wrap_SetLinearColormapCallback::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   Variable<AMIFunction>::ptr varfunc;
@@ -465,7 +465,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
   AMIFunction::ptr func(varfunc->Pointer());
   CallBackAMIFunction::ptr cb(new CallBackAMIFunction(func));
-  _objectptr->GetObj()->SetPaintCallback( cb );
+  _objectptr->GetObj()->SetLinearColormapCallback( cb );
 
   return BasicVariable::ptr();
 }

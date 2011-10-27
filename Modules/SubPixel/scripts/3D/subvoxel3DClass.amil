@@ -271,7 +271,7 @@ if (!exists(Subvoxel3DClass)){
        mb = ami.MainFrame.GetMainBook()
 
       ::panel = wx.wxPanel(&ami.MainFrame)
-      ::panel._SetName("SubV3D")
+      ::panel.SetName("SubV3D")
 
       sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel.SetSizer(&sbox_sizer)

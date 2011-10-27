@@ -166,21 +166,12 @@ if (!exists(vtkVolumeClass)) {
     }
 
     #---------------------------
-    proc ::OnCtrlPoint() \
+    proc ::OnLinearColormap() \
     {
+      printn "::OnLinearColormap()"
       ::imhisto1.dw._Paint()
       ::imhisto1.ColormapMinMax()
       ::imhisto1.UpdateCM()
-      ::OnRender()
-      #::Draw_opacityFun()
-    }
-
-    #---------------------------
-    proc ::OnPaint() \
-    {
-      //::imhisto1.dw._Paint()
-      //::imhisto1.ColormapMinMax()
-      //::imhisto1.UpdateCM()
       ::OnRender()
       #::Draw_opacityFun()
     }
@@ -290,7 +281,7 @@ if (!exists(vtkVolumeClass)) {
         curve.SetType(1) # solid
         ::SetLinearCurve(&curve)
         #::imhisto1.dw.SetCtrlPointCallback(&::OnCtrlPoint)
-        ::imhisto1.dw.SetPaintCallback(&::OnPaint)
+        ::imhisto1.dw.SetLinearColormapCallback(&::OnLinearColormap)
         ::use_shade=1
       } else {
         InfoDialog "No histogram available."
@@ -328,7 +319,7 @@ if (!exists(vtkVolumeClass)) {
         # Create colors based on the curve
         hmax = max(::imhisto1.h[0])
         for n=0 to ::imhisto1.dw.GetSizelinearCM()-1 {
-          printn "point number %1%" %n
+          printn "-point number %1%" %n
           y =  ::opacity_attenuation/hmax*::imhisto1.dw.GetAlphalinearCM(n)
           pos = ::imhisto1.dw.GetPoslinearCM(n)
           col = ::imhisto1.dw.GetColourlinearCM(n)
@@ -401,22 +392,23 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::ReCompute() \
     {
-        del ::colorFun
-        del ::opacityFun
-        del ::property
-        ::colorFun=vtk.vtkColorTransferFunction.New()
-        ::opacityFun=vtk.vtkPiecewiseFunction.New()
-        # Create the property and attach the transfer functions
-        ::property = vtk.vtkVolumeProperty.New()
-        ::property.SetIndependentComponents(1)
-        ::property.SetColor( &::colorFun )
-        ::property.SetScalarOpacity( &::opacityFun )
-        ::property.SetInterpolationTypeToLinear()
+      printn "::Recompute"
+      del ::colorFun
+      del ::opacityFun
+      del ::property
+      ::colorFun=vtk.vtkColorTransferFunction.New()
+      ::opacityFun=vtk.vtkPiecewiseFunction.New()
+      # Create the property and attach the transfer functions
+      ::property = vtk.vtkVolumeProperty.New()
+      ::property.SetIndependentComponents(1)
+      ::property.SetColor( &::colorFun )
+      ::property.SetScalarOpacity( &::opacityFun )
+      ::property.SetInterpolationTypeToLinear()
 
-        # connect up the volume to the property and the mapper
-        ::vol.SetProperty( &::property )
-        ::BlendLinearCurve1()       
-        ::volmapper.SetBlendMode(::blend_mode)
+      # connect up the volume to the property and the mapper
+      ::vol.SetProperty( &::property )
+      ::BlendLinearCurve1()       
+      ::volmapper.SetBlendMode(::blend_mode)
     }
 
     #----------------------------

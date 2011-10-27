@@ -59,7 +59,7 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
     ADD_CLASS_METHOD(SetCtrlPointX,        "Sets the X position a given control point.");
     ADD_CLASS_METHOD(SetCtrlPointY,        "Sets the Y position a given control point.");
     ADD_CLASS_METHOD(SetCtrlPointCallback, "Callback for motion of a control point.");
-    ADD_CLASS_METHOD(SetPaintCallback,     "Callback for paint event.");
+    ADD_CLASS_METHOD(SetLinearColormapCallback, "Callback for linear colormap update event.");
     
     ADD_CLASS_METHOD(AddControlPoint,       "Add control point.");
     
@@ -99,7 +99,7 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
       AddVar_SetCtrlPointX(         this_ptr);
       AddVar_SetCtrlPointY(         this_ptr);
       AddVar_SetCtrlPointCallback(  this_ptr);
-      AddVar_SetPaintCallback(      this_ptr);
+      AddVar_SetLinearColormapCallback( this_ptr);
       
       AddVar_AddControlPoint(       this_ptr);
 //      AddVar_RemoveControl(         this_ptr);
