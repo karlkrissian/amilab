@@ -6,10 +6,11 @@ if (!exists(SyntheticPVEImages_display)) {
 
     ScriptDisplayClass SyntheticPVEImages_display
 
-    SyntheticPVEImages_display.SetScript("SyntheticImages/SyntheticPVEImages/SyntheticPVEImagesGui.amil")
+    SyntheticPVEImages_display.SetScript( op_system.GetCurrentScriptDir()+"/SyntheticPVEImagesGui.amil")
     SyntheticPVEImages_display.SetScriptObjName("global::SyntheticPVEImages_obj")
 
-    SyntheticPVEImages_display.SetInMenus("Scripts","Synthetic PVE Images")
+    #SyntheticPVEImages_display.SetInMenus("Scripts","Synthetic PVE Images")
+    SyntheticPVEImages_display.SetInMenus("Modules","SubPixel")
     SyntheticPVEImages_display.SetDisplayedName("&SyntheticPVEImages")
     SyntheticPVEImages_display.SetHelp("Create synthetic images with partial effect (2D & 3D)")
 

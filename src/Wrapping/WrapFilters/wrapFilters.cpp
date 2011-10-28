@@ -42,7 +42,6 @@
 //Basic Edge Detection Filters added
 #include "wrapBasicEdgeDetection.h"
 
-#include "wrapSubPixel2D.h"
 #include "wrapGenerateRamp.h"
 #include "wrap_SurfacePoly.h"
 
@@ -109,11 +108,6 @@ void AddWrapFilters(AMIObject::ptr& obj)
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Gradient", wrapGradient);
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",	wrapLaplace);
   
-  //2D SUBPIXEL METHOD
- // ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
-//  ADDOBJECTVAR_NAME(C_wrap_varfunction, "Subpixel2D", wrapSubpixel2D);
-//  ADDOBJECTVAR_NAME(C_wrap_varfunction, "GaussianSubpixel2D", wrapGaussianSubpixel2D);
-//  ADDOBJECTVAR_NAME(C_wrap_procedure, "DrawSubPixelBorder", wrapDrawBorder);
 
   // Add AnisoGS
   AddVar_AnisoGS( amiobject->GetContext());

@@ -1,6 +1,10 @@
 # Generating synthetic images (with analytic function)
 #
 func "Common/ScriptGui"
+if (!exists(SubPixel)) {
+  func "../Load_SubPixel"
+}
+
 
 if (!exists(SyntheticPVEImagesClass)) {
   Class SyntheticPVEImagesClass  : public ScriptGui{
@@ -8,10 +12,13 @@ if (!exists(SyntheticPVEImagesClass)) {
   #---------------------------------------------
   proc ::Init() \
   {
+    ::ImageDim   = INT(0), "0: 2D, 1: 3D"
     ::type2D     = INT(0), "Analytic 2D function type"
     ::type3D     = INT(0), "Analytic 3D function type"
-    ::pv_type    = INT(0), "Compute partial effect function"
-    ::subdiv     = INT(6), "Subdivision level for recursive functions"
+    #::pv_type    = INT(0), "Compute partial effect function"
+    ::subdiv2D   = INT(6), "Subdivision level for 2D functions"
+    ::subdiv3D   = INT(4), "Subdivision level for 3D functions"
+    ::autodisplay = UCHAR(1), "Display image after computation"
     ::output_name= "synthetic_res", "Output image name"
     
     ::reloadLine     = UCHAR(0), "Reload the analytic line"
@@ -78,7 +85,7 @@ if (!exists(SyntheticPVEImagesClass)) {
     
     #Help
     ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
-    ::html_filename = GetScriptsDir+"/SyntheticImages/SyntheticPVEImages/Doc/SyntheticPVEImages/index.html"
+    ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/SyntheticPVEImages/index.html"
     
     #Image intensities
     ::A = 200.0
@@ -121,12 +128,24 @@ if (!exists(SyntheticPVEImagesClass)) {
   
   #----------------------------------------------------------
   proc ::CreateInputImage() {
-    if(exists(::res_draw)) { del ::res_draw; }
     #Create the image with the parameters and enable the compute method panel
-    ::input <<= Image(FLOAT,::dimx,::dimy,::dimz)
+    if (::ImageDim==0) {
+      dimz=1
+    } else {
+      dimz=::dimz
+    }
+    recompute=true
+    if (exists(::input)) {
+      recompute =  (::input.tx!=::dimx)||(::input.ty!=::dimy)||(::input.tz!=dimz)
+    }
+    printn "dimz = %1%" % dimz
+    if (recompute) {
+      ::input <<= Image(FLOAT,::dimx,::dimy,dimz)
+    }
     ::input = 0
+    if recompute { del ::res_draw; }
     #Enable functions page
-    ::win.EnablePanel(::functions_page, 1)
+    #::win.EnablePanel(::functions_page, 1)
   }
   Comments(::CreateInputImage, "Create the input image for compute partial volume")
   
@@ -139,96 +158,88 @@ if (!exists(SyntheticPVEImagesClass)) {
   }
   Comments(::ResetInputImage, "Reset the input image values (dimx, dimy, dimz)")
   
+
   #----------------------------------------------------------
   proc ::Compute() {
   
-    if(exists(::input)){
+    ::CreateInputImage()
+    
       #Create a compute partial volume object
       ::pv = ComputePV()
       
       #Analytic function recursive for a surface
-      if(::pv_type == 0) {
-        if(::dimz == 1) {
-          if(!exists(::line) && !exists(::circle) && \
-             !exists(::vessel2D) && !exists(::ring2D)) {
-            InfoDialog "You must create a 2D analytic object (line, circle or vessel)"
-          } else {
+      if(::ImageDim == 0) {
+        if(::input.tz == 1) {
             ::pv->setInputImage(&::input)
-            ::pv->setSubdiv(::subdiv)
+            ::pv->setSubdiv(::subdiv2D)
             if(::type2D == 0){
+              ::GenerateLine()
               ::pv->setAnalyticFunction(&::line)
-              InitTime
-              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
-              printn "Tiempo = " + TimeSpent
-              EndTime
-              RestartTime
               ::output_name = "line"
             }
             if(::type2D == 1) {
+              ::GenerateCircle()
               ::pv->setAnalyticFunction(&::circle)
-              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
               ::output_name = "circle"
             }
             if(::type2D == 2) {
+              ::GenerateVessel2D()
               ::pv->setAnalyticFunction(&::vessel2D)
-              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
               ::output_name = "vessel2D"
             }
             if(::type2D == 3) {
+              ::GenerateRing2D()
               ::pv->setAnalyticFunction(&::ring2D)
-              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
               ::output_name = "ring2D"
             }
-          }
+            InitTime
+            ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
+            printn "Tiempo = " + TimeSpent
+            EndTime
+            RestartTime
         } else {
           InfoDialog "Compute analytic surface only in 2D images."
         }
       }
       
       #Analytic function recursive for a volume
-      if(::pv_type == 1) {
-        if(!exists(::sphere) && !exists(::torus) && !exists(::cube) && \
-           !exists(::cylinder)) {
-          InfoDialog "You must create a 3D analytic object (sphere or torus)"
-        } else {
+      if(::ImageDim == 1) {
           ::pv->setInputImage(&::input)
-          ::pv->setSubdiv(::subdiv)
-          if(::dimz > 1) {
+          ::pv->setSubdiv(::subdiv3D)
+          if(::input.tz > 1) {
             if(::type3D == 0) {
+              ::GenerateCube()
               ::pv->setAnalyticFunction(&::cube)
-              InitTime
-              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
-              printn "Tiempo = " + TimeSpent
-              EndTime
-              RestartTime
               ::output_name = "cube"
             }
             if(::type3D == 1) {
+              ::GenerateCylinder()
               ::pv->setAnalyticFunction(&::cylinder)
-              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
               ::output_name = "cylinder"
             }
             if(::type3D == 2) {
+              ::GenerateSphere()
               ::pv->setAnalyticFunction(&::sphere)
-              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
               ::output_name = "sphere"
             }
             if(::type3D == 3) {
+              ::GenerateTorus()
               ::pv->setAnalyticFunction(&::torus)
-              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
               ::output_name = "torus"
             }
+            InitTime
+            ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
+            printn "Tiempo = " + TimeSpent
+            EndTime
+            RestartTime
           } else {
             InfoDialog "Compute analytic volume only in 3D images."
           }
-        }
       }
       #Enable the save box
       ::win.EnablePanel(::save_box, 1)
-      ::win.Update(-1)
-    } else {
-      InfoDialog "You must create an input image."
-    }
+      ::win.Update(::save_box)
+      if (::autodisplay) { ::Display(); }
   }
   Comments(::Compute, "Compute the partial volume effect")
   
@@ -248,7 +259,6 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::line = AnalyticLine()
     ::line->setAngle(::line_angle)
     ::line->set_n(::n)
-    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateLine, "Generate analytic line")
   #--------------------------------------------------------------
@@ -273,7 +283,6 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::circle = AnalyticCircle()
     ::circle->setCenter(::cx,::cy)
     ::circle->setRadius(::cr)
-    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateCircle, "Generate analytic circle")
   #--------------------------------------------------------------
@@ -295,7 +304,6 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::vessel2D->setCenter(::vessel_cx, ::vessel_cy)
     ::vessel2D->setAngle(::vessel_angle)
     ::vessel2D->setThickness(::vessel_thick)
-    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateVessel2D, "Generate an analytic 2D straight vessel")
   #--------------------------------------------------------------
@@ -317,7 +325,6 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::ring2D->setCenter(::ring_cx, ::ring_cy)
     ::ring2D->setRadius(::ring_radius)
     ::ring2D->setThickness(::ring_thick)
-    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateRing2D, "Generate an analytic 2D ring")
   #--------------------------------------------------------------
@@ -340,7 +347,6 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::cube->setDimX(::cube_dimx)
     ::cube->setDimY(::cube_dimy)
     ::cube->setDimZ(::cube_dimz)
-    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateCube, "Generate analytic cube")
   #--------------------------------------------------------------
@@ -366,7 +372,6 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::cylinder->setXdir(::cylinder_xdir)
     ::cylinder->setYdir(::cylinder_ydir)
     ::cylinder->setZdir(::cylinder_zdir)
-    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateCylinder, "Generate analytic cylinder")
   #--------------------------------------------------------------
@@ -388,7 +393,6 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::sphere = AnalyticSphere()
     ::sphere->setCenter(::sx,::sy,::sz)
     ::sphere->setRadius(::sr)
-    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateSphere, "Generate analytic sphere")
   #--------------------------------------------------------------
@@ -411,7 +415,6 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::torus->setCenter(::tx,::ty,::tz)
     ::torus->set_rmin(::tr)
     ::torus->set_rmax(::tR)
-    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateTorus, "Generate analytic torus")
   #--------------------------------------------------------------
@@ -558,6 +561,14 @@ if (!exists(SyntheticPVEImagesClass)) {
   Comments(::Save, "Save the result image")
   
   #--------------------------------------------------------------
+  proc ::OnImageDim(){
+    ::win.Enable(::dimz_id, (::ImageDim==1))
+    #::win.Update(::dimz_id)
+    ::win.EnablePanel(::functions_2D, ::ImageDim==0)
+    ::win.EnablePanel(::functions_3D, ::ImageDim==1)
+  }
+  
+  #--------------------------------------------------------------
   proc ::Gui(){
   
     ::win = ParamPanel("Synth.Im.")
@@ -565,33 +576,29 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::win.BeginBook()
       #Main tab
       ::win.AddPage("Main")
-        #Configure input image
+
         ::win.BeginBoxPanel("Input image")
           ::win.BeginBoxPanel("Size")
             ::win.AddInt(&::dimx, "x", 1, 800)
             ::win.AddInt(&::dimy, "y", 1, 800)
-            ::win.AddInt(&::dimz, "z", 1, 800)
+            ::dimz_id = ::win.AddInt(&::dimz, "z", 1, 800)
           ::win.EndBoxPanel()
           ::win.BeginHorizontal()
-            ::AddBitmapButton(&::win, &::icons._New_image, 16, "CreateInputImage")
+            #::AddBitmapButton(&::win, &::icons._New_image, 16, "CreateInputImage")
             ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetInputImage")
           ::win.EndHorizontal()
         ::win.EndBoxPanel()
-        
+
         ::cm_id = ::win.BeginBoxPanel("Partial volume parameters")
-          ::win.AddInt(&::subdiv,   "Subdivision" , 1, 10)
+          ::win.AddInt(&::subdiv2D,   "2D Subdivision" , 1, 10)
+          ::win.AddInt(&::subdiv3D,   "3D Subdivision" , 1, 10)
           #Method for compute partial volume
-          ::pv_id = ::win.AddEnum(&::pv_type, "Method")
-            ::win.AddEnumChoice(::pv_id, "Analytic PS")
-            ::win.AddEnumChoice(::pv_id, "Analytic PV")
-          ::win.BeginHorizontal()
-            ::icons.LoadIconPNG("Play")
-            ::AddBitmapButton(&::win, &::icons._Play, 16, "Compute")
-            ::AddBitmapButton(&::win, &::icons._Show, 16, "Display")
-          ::win.EndHorizontal()
+          #::pv_id = ::win.AddEnum(&::pv_type, "Method")
+          #  ::win.AddEnumChoice(::pv_id, "Analytic PS")
+          #  ::win.AddEnumChoice(::pv_id, "Analytic PV")
         ::win.EndBoxPanel()
-        ::win.EnablePanel(::cm_id, 0)
         
+        ::win.AddBoolean(&::autodisplay,"Auto Display")
         ::save_box = ::win.BeginBoxPanel("Save output")
           ::win.BeginHorizontal()
             ::win.AddString(&::output_name, "Name")
@@ -603,7 +610,7 @@ if (!exists(SyntheticPVEImagesClass)) {
       #Function tab
       ::functions_page = ::win.AddPage("Func")
         ::win.BeginBook()
-          ::win.AddPage("2D")
+          ::functions_2D = ::win.AddPage("2D")
             ::type_id2D = ::win.AddEnum(&::type2D, "Function type")
               ::win.AddEnumChoice(::type_id2D, "Line")
               ::win.AddEnumChoice(::type_id2D, "Circle")
@@ -684,7 +691,7 @@ if (!exists(SyntheticPVEImagesClass)) {
                 
               ::win.EndBook()
               
-          ::win.AddPage("3D")
+          ::functions_3D = ::win.AddPage("3D")
             
             ::type_id3D = ::win.AddEnum(&::type3D, "Function type")
               ::win.AddEnumChoice(::type_id3D, "Cube")
@@ -782,7 +789,7 @@ if (!exists(SyntheticPVEImagesClass)) {
               ::win.EndBook()
         ::win.EndBoxPanel()
         
-        ::win.EnablePanel(::functions_page, 0)
+        #::win.EnablePanel(::functions_page, 0)
         ::win.EndBook()
         ::win.BeginBoxPanel("Intensity")
           ::win.AddFloat(&::A, "A", 0, 255)
@@ -794,6 +801,20 @@ if (!exists(SyntheticPVEImagesClass)) {
       
     ::win.EndBook()
 
+    ::win.BeginHorizontal()
+        #Configure input image
+        ::ImageDim_id = ::win.AddEnum(&::ImageDim, "dim")
+          ::win.AddEnumChoice(::ImageDim_id, "2D")
+          ::win.AddEnumChoice(::ImageDim_id, "3D")
+        ::win.SetCallback(&::OnImageDim)
+      ::icons.LoadIconPNG("Play")
+      ::AddBitmapButton(&::win, &::icons._Play, 16, "Compute")
+      ::AddBitmapButton(&::win, &::icons._Show, 16, "Display")
+    ::win.EndHorizontal()
+
+    # Update Image dim
+    ::OnImageDim()
+        
     ::AddStandardButtons(&::win)
     ::win.Update(-1)
     ::win.Display()

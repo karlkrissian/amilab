@@ -1,7 +1,0 @@
-
-func "2D/Add2Menu.amil"
-func "3D/Add2Menu.amil"
-
-if exists(global::scripts_toolbar) {
-  global::scripts_toolbar.AddSeparator()
-}

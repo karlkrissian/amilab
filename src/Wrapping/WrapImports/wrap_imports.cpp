@@ -78,8 +78,6 @@
 // include SubPixel and SubVoxel wrapped classes
 #include "wrap_AnalyticFunctionBase.h"
 #include "wrap_ComputePartialVolume.h"
-#include "wrapSubPixel2D.h"
-#include "wrap_SubVoxel3D.h"
 
 #include "wrap_Viewer3D.h"
 #include "wrap_GLTransfMatrix.h"
@@ -177,8 +175,6 @@ void AddWrapImports()
     // Putting SubPixel and SubVoxel classes here in Algorithms
     WrapClass_AnalyticFunctionBase::AddVar_AnalyticFunctionBase(amiobject->GetContext());
     WrapClass_ComputePV:: AddVar_ComputePV(                     amiobject->GetContext());  
-    WrapClass_SubPixel2D::AddVar_SubPixel2D(amiobject->GetContext());
-    WrapClass_SubVoxel3D::AddVar_SubVoxel3D(amiobject->GetContext());
 
     WrapClass_vtkLevelSets  ::AddVar_vtkLevelSets(amiobject->GetContext());
 
