@@ -178,7 +178,7 @@ public:
   void DrawAxes( );
 
   void DrawLinearCM( );
-
+  
   /**
    * Seach for the closest control point within a list
    * and return its id or -1 if no control point is found
@@ -249,7 +249,21 @@ public:
   {
     return _curves->size();
   }
-
+  
+  /**
+   * 
+   * @return the current number of curves
+   */
+  int GetNumberOfColourCurves(){
+    int n=0;
+    for(int c=0; c<(int) _controlled_curves->size();c++)
+    {
+      if (!((*_controlled_curves)[c].GetType()==colormap_curve))
+        continue;
+      n++;
+    }
+    return n;
+  }
   /**
    * Adds the image points to the given curve,
    * if the image is scalar, use X world coordinates in abscissa

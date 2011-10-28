@@ -589,6 +589,21 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 }
 
 //---------------------------------------------------
+//  GetNumberOfColourCurves
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetNumberOfColourCurves::SetParametersComments() 
+{
+  return_comments = "Numbers of colour curves";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetNumberOfColourCurves::CallMember( ParamList* p)
+{
+  RETURN_VAR(int,this->_objectptr->GetObj()->GetNumberOfColourCurves());
+}
+
+//---------------------------------------------------
 //  Colour Map operations
 //---------------------------------------------------
 

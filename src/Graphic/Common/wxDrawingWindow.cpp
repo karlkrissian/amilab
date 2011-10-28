@@ -1,5 +1,5 @@
 //
-// C++ Implementation: wxDrawingWindow
+// C++ Implementati/*on*/: wxDrawingWindow
 //
 // Description: 
 //
@@ -625,21 +625,6 @@ inline wxColour InterpolateColour( const wxColour& c1, const double& w1,
 }
 
 
-/*
-void wxDrawingWindow::AppliedLimitColorCurve(  ){
-  
-  for(int c=0; c<(int) _controlled_curves->size();c++)
-  {
-    if (!((*_controlled_curves)[c].GetType()==colormap_curve))
-      continue;
-
-    _controlled_curves->
-  }  
-  
-}
-*/
-
-
 //------------------------------------------------
 // LinearColorMap wxDrawingWindow::GetLinearCM()
 // {
@@ -669,10 +654,12 @@ void wxDrawingWindow::DrawLinearCM(  )
     // Add 2 points to the linearcolormap
     _linearCM.clear();
     // first fill the current colormap control points with their positions
+    int ncolourcurves=0;
     for(int c=0; c<(int) _controlled_curves->size();c++)
     {
       if (!((*_controlled_curves)[c].GetType()==colormap_curve))
         continue;
+      ncolourcurves++;
       boost::shared_ptr<vector_dwControlPoint> points_ptr = (*_controlled_curves)[c].GetControlPoints();
       vector_dwControlPoint points = (*points_ptr);
       if ((*_controlled_curves)[c].isLimited())
@@ -685,11 +672,9 @@ void wxDrawingWindow::DrawLinearCM(  )
         points.insert(points.begin(),p_ant);
         points.push_back(p_post);
       }
-    
-      
+   
       for(int i = 0; i<(int) points.size(); i++) 
       {  
-  //||((*points)[i].GetType() == colormap_point))
           _linearCM.AddPoint(LinearColorMapPoint(points[i].GetX(),points[i].GetY(),
                                                 points[i].GetColour()));
       }
@@ -798,10 +783,12 @@ void wxDrawingWindow::DrawLinearCM(  )
     }
 
     // Call the events related to the update of the colormap
-    _linearCM_uptodate = true;
-    if (_linearcolormap_callback.get()) {
-      bool ok = (*_linearcolormap_callback)();
-      if (!ok) _linearcolormap_callback.reset();
+    if (ncolourcurves>0){
+      _linearCM_uptodate = true;
+      if (_linearcolormap_callback.get()) {
+        bool ok = (*_linearcolormap_callback)();
+        if (!ok) _linearcolormap_callback.reset();
+      }
     }
   }
   
@@ -1002,7 +989,7 @@ void wxDrawingWindow::OnPaint(wxPaintEvent& event)
   std::cout << "OnPaint" << std::endl;
   wxPaintDC pdc(this);
   PrepareDC(pdc);
-  //DrawingAreaInit( );
+
   Paint(true);
   event.Skip();
 }

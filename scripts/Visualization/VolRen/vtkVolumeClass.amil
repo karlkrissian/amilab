@@ -173,6 +173,7 @@ if (!exists(vtkVolumeClass)) {
       ::imhisto1.ColormapMinMax()
       ::imhisto1.UpdateCM()
       ::OnRender()
+
       #::Draw_opacityFun()
     }
     

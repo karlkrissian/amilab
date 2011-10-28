@@ -59,12 +59,13 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
     ADD_CLASS_METHOD(SetCtrlPointX,        "Sets the X position a given control point.");
     ADD_CLASS_METHOD(SetCtrlPointY,        "Sets the Y position a given control point.");
     ADD_CLASS_METHOD(SetCtrlPointCallback, "Callback for motion of a control point.");
-    ADD_CLASS_METHOD(SetLinearColormapCallback, "Callback for linear colormap update event.");
+    ADD_CLASS_METHOD(SetLinearColormapCallback,  "Callback for linear colormap update event.");
     
     ADD_CLASS_METHOD(AddControlPoint,       "Add control point.");
     
     ADD_CLASS_METHOD(GetNumberOfCurves,     "Returns the number of curves.");
-//    ADD_CLASS_METHOD(RemoveControl,        "Removes a control point.");
+    ADD_CLASS_METHOD(GetNumberOfColourCurves,    "Returns the number of curves.");
+    //    ADD_CLASS_METHOD(RemoveControl,        "Removes a control point.");
 
     ADD_CLASS_METHOD(GetColormapImage,     "Returns the image representing the colormap.");
 
@@ -111,6 +112,7 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
       AddVar_GetControlledCurves(   this_ptr);
       
       AddVar_GetNumberOfCurves(     this_ptr);
+      AddVar_GetNumberOfColourCurves(this_ptr);
 
       AddVar_GetSizelinearCM(       this_ptr);
       AddVar_GetColourlinearCM(     this_ptr);
