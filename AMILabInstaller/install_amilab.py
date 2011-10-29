@@ -81,7 +81,7 @@ def install_packages(pkgname):
 
   if packages == "TOCOMPILE":
     print "Compiling {0} from source".format(pkgname)
-    #eval "source $1_COMPILE.sh"
+    exec("{0}_COMPILE.py".format(pkgname))
     #if [ $? != 0 ]
       #print "Installation of $1 failed"
       #exit $?
