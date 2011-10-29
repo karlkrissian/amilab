@@ -1,0 +1,2 @@
+
+PYSVN_PACKAGES="pysvn"
