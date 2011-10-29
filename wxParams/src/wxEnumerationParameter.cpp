@@ -35,6 +35,7 @@
 #include "wxParamTypes.hpp"
 
 #include "DndChoiceTextDropTarget.h"
+#include <iostream>
 
 //#include "slick/16x16/actions/reload.xpm"
 

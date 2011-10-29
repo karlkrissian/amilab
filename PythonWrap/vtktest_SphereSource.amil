@@ -5,7 +5,6 @@
 
 # This simple example shows how to do basic texture mapping.
 
-import_vtk
 func "Common/ScriptGui"
 
 Class vtktest_SphereSourceClass : public ScriptGui \
@@ -54,12 +53,13 @@ Class vtktest_SphereSourceClass : public ScriptGui \
     ::panel.SetScrollbars(20, 20, 50, 50);
     ::panel.SetMinSize(&wx.wxSize(50,50))
 
-    sbox = wx.wxStaticBox(&::panel,wx.wxID_ANY,"VTK-test")
-    ::sbox_sizer = wx.wxStaticBoxSizer(&sbox,wx.wxVERTICAL)
+    #sbox = wx.wxStaticBox(&::panel,wx.wxID_ANY,"VTK-test")
+    #::sbox_sizer = wx.wxStaticBoxSizer(&sbox,wx.wxVERTICAL)
+    ::sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
     ::panel.SetSizer(&::sbox_sizer)
     # create widget here
 
-    ::renwin_interact = global::wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+    ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
       #::renwin_interact = wxVTKFrame(&panel,-1)
 
     ::renwin_interact.UseCaptureMouseOn()
@@ -67,7 +67,7 @@ Class vtktest_SphereSourceClass : public ScriptGui \
     # Still drawing problem (missed exposed events???)
     ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
 
-    ::renwin_interact.Reparent(&::panel)
+    #::renwin_interact.Reparent(&::panel)
     ::sbox_sizer.Add(&::renwin_interact, wx.wxSizerFlags().Expand().Proportion(1) )
 
     ::sizer.Add(&::panel, wx.wxSizerFlags().Expand().Proportion(1) )
@@ -98,7 +98,7 @@ Class vtktest_SphereSourceClass : public ScriptGui \
     # is not of this type, you will have to map it through a lookup table
     # or by using vtkImageShiftScale.
 
-    vtkinput  = global::ToVtkImageData(&::input)
+    vtkinput  = vtktools.ToVtkImageData(&::input)
 
     #bmpReader = vtk.vtkBMPReader.New()
     #bmpReader.SetFileName(::texture_filename)
@@ -161,7 +161,7 @@ Class vtktest_SphereSourceClass : public ScriptGui \
     #----------------------------
     proc ::Gui() {
     
-      ::win = global::ami_import.ParamPanel("vtkTexture 2D")
+      ::win = ParamPanel("vtkTexture 2D")
       
       ::win.BeginBook()
     

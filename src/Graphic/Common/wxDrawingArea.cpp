@@ -12,6 +12,7 @@
 
 #include "wxDrawingArea.h"
 #include "FenetreDessin.hpp"
+#include <iostream>
 
 #include "CommonConfigure.h"
 COMMON_VAR_IMPORT unsigned char GB_debug;
