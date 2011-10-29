@@ -44,7 +44,7 @@ SET(Algorithms_SRCS
 
   RegionGrowingTest.cpp
 
-  AnalyticFunctionBase.cpp
+  #AnalyticFunctionBase.cpp
   ComputePartialVolume.cpp
   StructureTensor.cpp
   HessianMatrix.cpp

@@ -28,7 +28,7 @@ LanguageBase_VAR_IMPORT VarContexts Vars;
 #include "wrap_AnalyticCylinder.h"
 #include "wrap_AnalyticSphere.h"
 #include "wrap_AnalyticTorus.h"
-//#include "wrap_ComputePartialVolume.h"
+#include "wrap_ComputePartialVolume.h"
 #include "wrap_SubPixel2D.h"
 #include "wrap_SubVoxel3D.h"
 
@@ -66,20 +66,20 @@ bool SubPixelPlugin::Execute(void)
       amiobject->GetContext());
     WrapClass_AnalyticStraightVessel2D::AddVar_AnalyticStraightVessel2D(  
       amiobject->GetContext());
-    WrapClass_AnalyticRing2D          ::AddVar_AnalyticRing2D(            
+    WrapClass_AnalyticRing2D          ::AddVar_AnalyticRing2D(
       amiobject->GetContext());
-    WrapClass_AnalyticPlane           ::AddVar_AnalyticPlane(             
+    WrapClass_AnalyticPlane           ::AddVar_AnalyticPlane(
       amiobject->GetContext());
-    WrapClass_AnalyticCube            ::AddVar_AnalyticCube(              
+    WrapClass_AnalyticCube            ::AddVar_AnalyticCube(
       amiobject->GetContext());
-    WrapClass_AnalyticCylinder        ::AddVar_AnalyticCylinder(          
+    WrapClass_AnalyticCylinder        ::AddVar_AnalyticCylinder(
       amiobject->GetContext());
-    WrapClass_AnalyticSphere          ::AddVar_AnalyticSphere(            
+    WrapClass_AnalyticSphere          ::AddVar_AnalyticSphere(
       amiobject->GetContext());
-    WrapClass_AnalyticTorus           ::AddVar_AnalyticTorus(             
+    WrapClass_AnalyticTorus           ::AddVar_AnalyticTorus(
       amiobject->GetContext());
-/*    WrapClass_ComputePV:: AddVar_ComputePV(                     amiobject->GetContext());  
- */
+    WrapClass_ComputePartialVolume    :: AddVar_ComputePartialVolume(
+      amiobject->GetContext());
     WrapClass_SubPixel2D              ::AddVar_SubPixel2D(
       amiobject->GetContext());
     WrapClass_SubVoxel3D              ::AddVar_SubVoxel3D(
