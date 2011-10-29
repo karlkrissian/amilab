@@ -6,6 +6,7 @@
 # typical root dirs of installations, exactly one of them is used
 SET (OPTICFLOW_POSSIBLE_ROOT_DIRS
   "$ENV{ProgramFiles}/libAMIOpticalFlow"
+  "$ENV{HOME}/usr/local"
   /usr/local
   /usr
   )

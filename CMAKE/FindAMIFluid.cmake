@@ -17,10 +17,10 @@ MESSAGE( " FindAMIFluid.cmake")
 # typical root dirs of installations, exactly one of them is used
 SET (AMIFLUID_POSSIBLE_ROOT_DIRS
   "$ENV{ProgramFiles}/libAMIFluid"
+  "$ENV{HOME}/usr/local"
   /usr/local
   /usr
   )
-
 
 #
 #
