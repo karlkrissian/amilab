@@ -90,20 +90,20 @@ SET(LanguageBase_HDRS
 
 
  
-IF(WIN32)
+IF(WIN32 OR APPLE)
   set_source_files_properties(${Language_SRCS} PROPERTIES COMPILE_FLAGS "-DLanguageBase_EXPORTS")
-ENDIF(WIN32)
+ENDIF(WIN32 OR APPLE)
 
 SET(LanguageBase_SRCS
  ${LanguageBase_SRCS}
  ${LanguageBase_HDRS}
 )
  
-IF(WIN32)
+IF(WIN32 OR APPLE)
   OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" ON)
 ELSE(WIN32)
   OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" OFF)
-ENDIF(WIN32)
+ENDIF(WIN32 OR APPLE)
 
 IF (LanguageBase_SHARED)
   my_add_shared_library ( LanguageBase)
