@@ -15,32 +15,32 @@
 #include "ComputePartialVolume.h"
 
 //---------------------------------------------------
-//ComputePV Wrapping
+//ComputePartialVolume Wrapping
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<ComputePV>::CreateVar( ParamList* p, bool quiet);
+BasicVariable::ptr WrapClass<ComputePartialVolume>::CreateVar( ParamList* p, bool quiet);
 
-AMI_DECLARE_TYPE(ComputePV);
+AMI_DECLARE_TYPE(ComputePartialVolume);
 
-class WrapClass_ComputePV : public WrapClass<ComputePV> {
+class WrapClass_ComputePartialVolume : public WrapClass<ComputePartialVolume> {
   
-  DEFINE_CLASS(WrapClass_ComputePV);
+  DEFINE_CLASS(WrapClass_ComputePartialVolume);
   
 public:
   //Constructor
-  WrapClass_ComputePV(boost::shared_ptr<ComputePV> si):
-                        WrapClass<ComputePV>(si)
+  WrapClass_ComputePartialVolume(boost::shared_ptr<ComputePartialVolume> si):
+                        WrapClass<ComputePartialVolume>(si)
   {}
   
-  ADD_CLASS_CONSTRUCTOR(ComputePV, "Wrapping of ComputePV");
+  ADD_CLASS_CONSTRUCTOR(ComputePartialVolume, "Wrapping of ComputePartialVolume");
   
   ADD_CLASS_METHOD(ComputeAnalyticPartialSurfaceSubdiv,
                    "Compute the partial effect with analytic function on a surface.");
-  ADD_CLASS_METHOD(ComputeAnalyticPartialVolumeSubdiv,   
+  ADD_CLASS_METHOD(RunAnalyticSubdiv,   
                    "Compute the partial effect with analytic function on a volume.");
-  ADD_CLASS_METHOD(ComputePartialVolume,                
-                   "Compute partial effect with linear interpolation interatively.");
-  ADD_CLASS_METHOD(ComputePartialVolumeSubdiv,          
+  ADD_CLASS_METHOD(Run,                
+                   "Compute partial effect with linear interpolation iteratively.");
+  ADD_CLASS_METHOD(RunSubdiv,          
                    "Compute partial effect with linear interpolation.");
   ADD_CLASS_METHOD(setSubdiv,                           
                    "Set the subdivision level.");
@@ -59,20 +59,20 @@ public:
   ADD_CLASS_METHOD(getResolution,                       
                    "Get the resolution level.");
   
-  void AddMethods(WrapClass<ComputePV>::ptr this_ptr)
+  void AddMethods(WrapClass<ComputePartialVolume>::ptr this_ptr)
   {
-    AddVar_ComputeAnalyticPartialSurfaceSubdiv(this_ptr);
-    AddVar_ComputeAnalyticPartialVolumeSubdiv( this_ptr);
-    AddVar_ComputePartialVolume(               this_ptr);
-    AddVar_ComputePartialVolumeSubdiv(         this_ptr);
-    AddVar_setSubdiv(                          this_ptr);
-    AddVar_getSubdiv(                          this_ptr);
-    AddVar_setAnalyticFunction(                this_ptr);
-    AddVar_getAnalyticFunction(                this_ptr);
-    AddVar_setInputImage(                      this_ptr);
-    AddVar_getInputImage(                      this_ptr);
-    AddVar_setResolution(                      this_ptr);
-    AddVar_getResolution(                      this_ptr);
+    AddVar_ComputeAnalyticPartialSurfaceSubdiv( this_ptr);
+    AddVar_RunAnalyticSubdiv(                   this_ptr);
+    AddVar_Run(                                 this_ptr);
+    AddVar_RunSubdiv(                           this_ptr);
+    AddVar_setSubdiv(                           this_ptr);
+    AddVar_getSubdiv(                           this_ptr);
+    AddVar_setAnalyticFunction(                 this_ptr);
+    AddVar_getAnalyticFunction(                 this_ptr);
+    AddVar_setInputImage(                       this_ptr);
+    AddVar_getInputImage(                       this_ptr);
+    AddVar_setResolution(                       this_ptr);
+    AddVar_getResolution(                       this_ptr);
   }
 };
 

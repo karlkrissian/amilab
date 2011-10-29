@@ -18,13 +18,13 @@
 #include "AnalyticFunctionBase.h"
 
 /**
- *  ComputePV class.
+ *  ComputePartialVolume class.
  *  @author Karl Krissian (krissian@dis.ulpgc.es)
  */
 //---------------------------------------------------------------------
-class ComputePV {
+class ComputePartialVolume {
   
-  DEFINE_CLASS(ComputePV);
+  DEFINE_CLASS(ComputePartialVolume);
   
 private:
   //Subdivision level
@@ -79,10 +79,10 @@ protected:
   
 public:
   /**
-   *  Creates a ComputePV object. Sets subdivision level at 2, resolution at 3,
+   *  Creates a ComputePartialVolume object. Sets subdivision level at 2, resolution at 3,
    *  f and input at NULL.
    */
-  ComputePV()
+  ComputePartialVolume()
   {
     subdiv       = 2;
 //    analyticfunc = NULL;
@@ -90,7 +90,7 @@ public:
     resolution   = 3;
   }
   
-  virtual ~ComputePV(){}
+  virtual ~ComputePartialVolume(){}
   
   //Analytic functions
   /**
@@ -103,20 +103,20 @@ public:
    *  Computes the analytic partial volume subdivision.
    *  @return InrImage* A pointer to an InrImage object.
    */
-  InrImage::ptr ComputeAnalyticPartialVolumeSubdiv(float ipos, float ineg);
+  InrImage::ptr RunAnalyticSubdiv(float ipos, float ineg);
 
   //Linear interpolation functions
   /**
    *  Compute partial volume iteratively.
    *  @return InrImage* A pointer to an InrImage object.
    */
-  InrImage::ptr ComputePartialVolume();
+  InrImage::ptr Run();
   
   /**
    *  Compute partial volume (linear interpolation).
    *  @return InrImage* A pointer to an InrImage object.
    */
-  InrImage::ptr ComputePartialVolumeSubdiv();
+  InrImage::ptr RunSubdiv();
   
   //Get and set methods
   /**

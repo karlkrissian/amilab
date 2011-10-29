@@ -8,7 +8,6 @@
 #include "amilab_splash.xpm"
 
 // configuration information, including version number ..
-//#include "/Users/administrador/Desktop/mi_rama_AMILab/Project/AMILabConfig.h"
 #include "AMILabConfig.h"
 
 #include "MainFrame.h"

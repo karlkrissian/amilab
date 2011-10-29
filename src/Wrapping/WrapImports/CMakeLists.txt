@@ -19,8 +19,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapExamples/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapLanguage/Generated
   ${AMILAB_SOURCE_DIR}/AMILab
-  #${AMILAB_SOURCE_DIR}/Algorithms/Others
-  ${AMILAB_SOURCE_DIR}/Algorithms/Segmentation
   ${AMILAB_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
   ${wxParams_INCLUDE_DIRS}

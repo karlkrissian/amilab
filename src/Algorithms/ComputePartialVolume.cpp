@@ -26,7 +26,7 @@ using namespace std;
 //2D analytic sinthetic images
 //---------------------------------------------------------------------
 // volume is the volume of cube
-double ComputePV::AnalyticRecursivePositiveSurface( double val[4], double subvols[4], double size, int subdiv_level,
+double ComputePartialVolume::AnalyticRecursivePositiveSurface( double val[4], double subvols[4], double size, int subdiv_level,
                                                     double x, double y)
 {
   int i,j,n;
@@ -90,7 +90,7 @@ double ComputePV::AnalyticRecursivePositiveSurface( double val[4], double subvol
 //
 // subdiv is the number of subdivisions
 //
-InrImage::ptr ComputePV::ComputeAnalyticPartialSurfaceSubdiv(float ipos, float ineg)
+InrImage::ptr ComputePartialVolume::ComputeAnalyticPartialSurfaceSubdiv(float ipos, float ineg)
 {
   int x,y,n;
   int z = 0;
@@ -166,13 +166,13 @@ InrImage::ptr ComputePV::ComputeAnalyticPartialSurfaceSubdiv(float ipos, float i
     return InrImage::ptr();
   }
   return InrImage::ptr();
-} // ComputePartialVolumeSubdiv()
+} // RunSubDiv()
 
 
 //3D analytic sinthetic images
 //---------------------------------------------------------------------
 // volume is the volume of cube
-double ComputePV::AnalyticRecursivePositiveVolume( double val[8], double subvols[8], double size, int subdiv_level,
+double ComputePartialVolume::AnalyticRecursivePositiveVolume( double val[8], double subvols[8], double size, int subdiv_level,
                                         double x, double y, double z)
 {
   int i,j,k,n;
@@ -239,7 +239,7 @@ double ComputePV::AnalyticRecursivePositiveVolume( double val[8], double subvols
 //
 // subdiv is the number of subdivisions
 //
-InrImage::ptr ComputePV::ComputeAnalyticPartialVolumeSubdiv(float ipos, float ineg)
+InrImage::ptr ComputePartialVolume::RunAnalyticSubdiv(float ipos, float ineg)
 {
   int x,y,z,n;
   int i,j,k;
@@ -326,11 +326,11 @@ InrImage::ptr ComputePV::ComputeAnalyticPartialVolumeSubdiv(float ipos, float in
     return InrImage::ptr();
   }
   return InrImage::ptr();
-} // ComputePartialVolumeSubdiv()
+} // RunAnalyticSubdiv()
 
 
 // volume is the volume of cube
-double ComputePV::RecursivePositiveVolume( double val[8], double subvols[8], double volume, int subdiv_level )
+double ComputePartialVolume::RecursivePositiveVolume( double val[8], double subvols[8], double volume, int subdiv_level )
 {
   int i,j,k,n;
   int i1,j1,k1;
@@ -404,7 +404,7 @@ double ComputePV::RecursivePositiveVolume( double val[8], double subvols[8], dou
 //
 // subdiv is the number of subdivisions
 //
-InrImage::ptr ComputePV::ComputePartialVolumeSubdiv()
+InrImage::ptr ComputePartialVolume::RunSubdiv()
 {
   int x,y,z,n;
   int i,j,k;
@@ -469,14 +469,14 @@ InrImage::ptr ComputePV::ComputePartialVolumeSubdiv()
     cerr << "It isn't posible to get the image smart pointer." << endl;
     return InrImage::ptr();
   }
-} // ComputePartialVolumeSubdiv()
+} // RunSubdiv()
 
 
 //---------------------------------------------------------------------
 //
 // resolution is the number of subdivision along each axis
 //
-InrImage::ptr ComputePV::ComputePartialVolume()
+InrImage::ptr ComputePartialVolume::Run()
 {
   int x,y,z;
   int n=resolution,n3;
@@ -583,48 +583,48 @@ InrImage::ptr ComputePV::ComputePartialVolume()
     cerr << "It isn't possible to get the image smart pointer." << endl;
     return InrImage::ptr();
   }
-} // ComputePartialVolume
+} // Run
 
 //Set and get subdivision level methods
-void ComputePV::setSubdiv(int s)
+void ComputePartialVolume::setSubdiv(int s)
 {
   subdiv = s;
 }
 
-int  ComputePV::getSubdiv()
+int  ComputePartialVolume::getSubdiv()
 {
   return subdiv;
 }
 
 //Set and get AnalyticFunction methods
-void ComputePV::setAnalyticFunction(AnalyticFunctionBase::ptr fun)
+void ComputePartialVolume::setAnalyticFunction(AnalyticFunctionBase::ptr fun)
 {
   analyticfunc = AnalyticFunctionBase::wptr(fun);
 }
 
-AnalyticFunctionBase::wptr ComputePV::getAnalyticFunction()
+AnalyticFunctionBase::wptr ComputePartialVolume::getAnalyticFunction()
 {
   return analyticfunc;
 }
 
 //Set and get InputImage methods
-void ComputePV::setInputImage(InrImage::ptr input_image)
+void ComputePartialVolume::setInputImage(InrImage::ptr input_image)
 {
   input = InrImage::wptr(input_image);
 }
 
-InrImage::wptr ComputePV::getInputImage()
+InrImage::wptr ComputePartialVolume::getInputImage()
 {
   return input;
 }
 
 //Set and get Resolution methods
-void ComputePV::setResolution(int resol)
+void ComputePartialVolume::setResolution(int resol)
 {
   resolution = resol;
 }
 
-int ComputePV::getResolution()
+int ComputePartialVolume::getResolution()
 {
   return resolution;
 }

@@ -39,10 +39,10 @@ BasicVariable::ptr wrapComputePV(ParamList* p)
   if (!input.get()) HelpAndReturnVarPtr;
   get_val_param<int>(    resolution,   p, n);
 
-  ComputePV::ptr pv(new ComputePV());
+  ComputePartialVolume::ptr pv(new ComputePartialVolume());
   pv->setInputImage(input);
   pv->setResolution(resolution);
-  result = pv->ComputePartialVolume();
+  result = pv->Run();
 
   Variable<InrImage>::ptr output(
     new Variable<InrImage>(result));
@@ -77,10 +77,10 @@ BasicVariable::ptr wrapComputePV_subdiv(ParamList* p)
 
   get_val_param<int>(    subdiv_levels, p, n); // parameter not required
 
-  ComputePV::ptr pv(new ComputePV());
+  ComputePartialVolume::ptr pv(new ComputePartialVolume());
   pv->setInputImage(input);
   pv->setSubdiv(subdiv_levels);
-  result = pv->ComputePartialVolumeSubdiv();
+  result = pv->RunSubdiv();
 
   Variable<InrImage>::ptr output(
     new Variable<InrImage>(result));
@@ -90,7 +90,8 @@ BasicVariable::ptr wrapComputePV_subdiv(ParamList* p)
 } // wrapComputePV_subdiv()
 
 
-//double analytic_plane(double x, double y, double z)
+/*
+ * //double analytic_plane(double x, double y, double z)
 //{
 //  double x1 = x-50.0;
 //  double y1 = y-50.0;
@@ -103,15 +104,15 @@ BasicVariable::ptr wrapComputePV_subdiv(ParamList* p)
 //InrImage* wrapComputeAnalyticPV(ParamList* p)
 //{
 //    char functionname[] = "wrapComputeAnalyticPV";
-//    char description[]=" \n\
-//        Compute an estimation of percentage of positive intensity \n\
-//        for each voxel, by recursive subdivision of the volume.\n\
-//        \n\
+//    char description[]=" \n
+//        Compute an estimation of percentage of positive intensity \n
+//        for each voxel, by recursive subdivision of the volume.\n
+//        \n
 //            ";
-//    char parameters[] =" \n\
-//          Parameters:\n\
-//              input image: Scalar float input image\n\
-//              subdiv_levels (def:2): number of subdivision levels \n\
+//    char parameters[] =" \n
+//          Parameters:\n
+//              input image: Scalar float input image\n
+//              subdiv_levels (def:2): number of subdivision levels \n
 //            ";
 //
 //    InrImage* input;
@@ -123,7 +124,7 @@ BasicVariable::ptr wrapComputePV_subdiv(ParamList* p)
 //  if (!get_val_ptr_param<InrImage>(  input,  p, n)) HelpAndReturnNULL;
 //  get_int_param(    subdiv_levels, p, n,false); // parameter not required
 //
-//  result = ComputeAnalyticPartialVolumeSubdiv(input,subdiv_levels,analytic_plane);
+//  result = RunAnalyticSubdiv(input,subdiv_levels,analytic_plane);
 //
 //  return result;
 //} // wrapComputePV_subdiv()
@@ -133,15 +134,15 @@ BasicVariable::ptr wrapComputePV_subdiv(ParamList* p)
 //  double x1 = x-50.0;
 //  double y1 = y-50.0;
 //  return 20.0*20.0-(x1*x1+y1*y1);
-////  return (x-50)/2 - y;//*(y-50);
+////  return (x-50)/2 - y;// *(y-50);
 //}
 //
 ////---------------------------------------------------------------
 //InrImage* wrapComputeAnalyticPS(ParamList* p)
 //{
 //    char functionname[] = "wrapComputeAnalyticPS";
-//    char description[]=" \n\
-//        Compute an estimation of percentage of positive intensity \n\
+//    char description[]=" \n
+//        Compute an estimation of percentage of positive intensity \n
 //        for each pixel, by recursive subdivision of the surface.\n\
 //        \n\
 //            ";
@@ -164,3 +165,4 @@ BasicVariable::ptr wrapComputePV_subdiv(ParamList* p)
 //
 //  return result;
 //} // wrapComputePS_subdiv()
+*/

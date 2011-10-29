@@ -165,7 +165,7 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::CreateInputImage()
     
       #Create a compute partial volume object
-      ::pv = ComputePV()
+      ::pv = ComputePartialVolume()
       
       #Analytic function recursive for a surface
       if(::ImageDim == 0) {
@@ -228,7 +228,7 @@ if (!exists(SyntheticPVEImagesClass)) {
               ::output_name = "torus"
             }
             InitTime
-            ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
+            ::res <<= ::pv->RunAnalyticSubdiv(::A,::B)
             printn "Tiempo = " + TimeSpent
             EndTime
             RestartTime

@@ -68,7 +68,7 @@ if (!exists(syntheticADClass)){
     proc ::Run() {
     	if (exists(::input)) {
         #create a compute partial volume object
-        ::pv     = ComputePV()
+        ::pv     = ComputePartialVolume()
         ::pv->setInputImage(&::input)
         ::pv->setSubdiv(::subdiv)
         ::circle = AnalyticCircle()
