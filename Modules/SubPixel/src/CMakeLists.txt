@@ -177,6 +177,10 @@ SET(${KIT}_SRCS
   ${KIT}Plugin.cpp
 )
 
+SET(${KIT}_scripts
+  ../scripts/SyntheticPVEImages/SyntheticPVEImagesClass.amil
+)
+
 IF(WIN32)
   set_source_files_properties(${${KIT}_SRCS} PROPERTIES COMPILE_FLAGS "-D${KIT}_EXPORTS")
 ENDIF(WIN32)
