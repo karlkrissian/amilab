@@ -52,7 +52,7 @@ SET(AMILab_SRCS
     VectorImage2StructuredGrid.cpp
     Weickert.cpp
     fonctions.cpp
-    func_globalstats.cpp
+#    func_globalstats.cpp
     func_isoline.cpp
 #    func_shortestpath.cpp
 #    localstats.cpp
@@ -71,7 +71,7 @@ SET (AMILab_HDRS
     EigenDecomp.h
     FluidProject.h
     fonctions.h
-    func_globalstats.h
+ #   func_globalstats.h
     Func_ReadCTALine.h
     InterpolateTransform.h
     LevelSetsCURVES.h

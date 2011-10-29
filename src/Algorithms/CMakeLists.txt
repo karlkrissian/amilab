@@ -55,6 +55,7 @@ SET(Algorithms_SRCS
   ImageDerivatives.cpp
   Chamfer.cpp
   DistanceTransforms.cpp
+  func_globalstats.cpp
 
   # files coming from previous Filtering directory
   bruit.cpp
@@ -122,6 +123,7 @@ SET(Algorithms_HDRS
   include/FastVector.tpp
   include/Chamfer.h
   include/DistanceTransforms.h
+  include/func_globalstats.h
 
   # files coming from previous Filtering directory
   include/bruit.hpp
