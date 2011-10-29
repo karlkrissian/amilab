@@ -1,0 +1,159 @@
+#Interface for basic edge detection
+
+
+if (!exists(BasicEdgeDetectionClass)) {
+
+  Class BasicEdgeDetectionClass{
+  
+    #-----------------------
+    proc ::Init(){
+      ::class_name = "global::BasicEdgeDetectionClass"
+      ::input_name = ""
+      ::output_name = "edge_output"
+      #Type of filter
+      ::filter_type = INT(0)
+      #Boolean variable for reload when apply another filter
+      ::reload = UCHAR(0)
+      ::CreateGui()
+    }
+    
+    #-----------------------
+
+    proc ::Close() {
+      ::win.HidePanel
+      delvars GetObjectName(::Close)
+    }
+    Comments(::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #-----------------------
+    
+    proc ::CloseAll() {
+      eval "if (exists(%1%)) { del %1%; };" % ::class_name 
+      ::Close
+    }
+    Comments(::CloseAll, "Call ::Close() method and delete the class variable")
+
+    #-----------------------
+    
+    proc ::load_input() {
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+    }
+    
+    #-----------------------
+    
+    proc ::Run() {
+      ::load_input()
+      #Normalize the input image
+      if (::input.vdim==1) {
+        ::temp <<= (::input<=1)*1 + (::input>1)*::input
+      } else {
+      	::temp <<= norm(::input)
+      }
+      #::temp = norm(::input)
+      #Apply the filter
+      if (::filter_type==0) {
+        ::res <<= filters->Roberts(&::temp)
+      }
+      if (::filter_type==1) {
+        ::res <<= filters->PSF(&::temp, 1)
+      }
+      if (::filter_type==2) {
+        ::res <<= filters->PSF(&::temp, 2)
+      }
+      if (::filter_type==3) {
+        ::res <<= filters->PSF(&::temp, 3)
+      }
+      if (::filter_type==4) {
+        ::res <<= filters->Gradient(&::temp)
+      }
+      if (::filter_type==5) {
+        ::res <<= filters->Laplace(&::temp)
+      }
+      
+      if (::reload) {
+        ::Display()
+      }
+    }
+    
+    #-----------------------
+    
+    proc ::Display() {
+      global
+      show ::input
+      if (exists(::res)) {
+        show ::res
+        ::input_draw.compare(&::res_draw)
+      }
+    }
+    
+    #-----------------------
+    
+    proc ::AutoRun() {
+      if(::reload) {
+        ::Run
+      }
+    }
+    Comments(::AutoRun, "Apply basic edge detection if reload is enabled")
+    
+    #-----------------------
+    
+    proc ::Save() {
+      eval "global::" + ::output_name + "<<=::res;"
+    }
+    
+    #-----------------------
+    
+    proc ::CreateGui() {
+      ::win = ParamPanel("BasicEdgeDetection")
+      
+      ::win.BeginBook()
+        ::win.AddPage("Parameters")
+          ::win.AddImageChoice(&::input_name, "Choose image")
+          ::win.AddButton("Load", ::load_input)
+          ::win.AddString(::output_name, "Output name")
+          #Select the filter
+          filter_type_id = ::win.AddEnum(&::filter_type, "Filter type")
+            ::win.AddEnumChoice(filter_type_id, "Roberts")
+            ::win.AddEnumChoice(filter_type_id, "Prewitt")
+            ::win.AddEnumChoice(filter_type_id, "Sobel")
+            ::win.AddEnumChoice(filter_type_id, "Frei-Chen")
+            ::win.AddEnumChoice(filter_type_id, "Gradient")
+            ::win.AddEnumChoice(filter_type_id, "Laplace")
+          ::win.SetCallback(&::AutoRun)
+          ::win.BeginHorizontal
+          ::win.AddBoolean(&::reload, "Reload")
+          #Run and display buttons
+            ::win.AddButton("Run",     ::Run)
+            ::win.AddButton("Display", ::Display)
+          ::win.EndHorizontal
+      ::win.EndBook()
+      #Save and close buttons
+      ::win.BeginHorizontal
+        ::win.AddButton("Save",      ::Save)
+        ::win.AddButton("Close",     ::Close)
+        ::win.AddButton("Close All", ::CloseAll)
+      ::win.EndHorizontal
+      
+      ::win.Update(-1)
+      ::win.Display
+    }
+    
+    ::Init
+
+  } #end Class
+
+} #end If
+
+
+#----------------
+# Main
+#----------------
+if (!exists(bedfilter)) {
+  BasicEdgeDetectionClass bedfilter
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

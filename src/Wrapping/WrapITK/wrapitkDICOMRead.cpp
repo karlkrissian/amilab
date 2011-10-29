@@ -35,6 +35,7 @@
 #include "boost/format.hpp"
 
 #ifndef _WITHOUT_ITK_
+#include <stddef.h>
 #include "itkOrientedImage.h"
 #include "itkImageSeriesReader.h"
 #include "itkDICOMImageIO2.h"

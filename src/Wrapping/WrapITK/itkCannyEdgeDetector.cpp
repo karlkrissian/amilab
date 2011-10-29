@@ -28,6 +28,7 @@
 
 #include "AMILabConfig.h"
 
+#include <stddef.h>
 #include "itkCannyEdgeDetector.h"
 
 #ifdef USE_ITK

@@ -1,0 +1,355 @@
+#Interface for basic 3D edge detection
+
+func "Common/ScriptGui"
+
+
+if (!exists(BasicEdgeDetection3DClass)){
+
+
+	Class BasicEdgeDetection3DClass : public ScriptGui{
+    
+    #-----------------------
+    
+    proc ::Init(){
+      ::class_name   = "global::BasicEdgeDetection3DClass"
+      ::input_name   = "",           "Input image."
+      #::output_name  = "bed3D_edge", "Output image name."
+      ::show_compare = UCHAR(0),    "Show the input and the result comparison."
+      #Masks
+      ::xMask = Image(DOUBLE, 3, 3, 3), "Mask in X."
+      ::xMask = 0
+      ::yMask = Image(DOUBLE, 3, 3, 3), "Mask in Y."
+      ::yMask = 0
+      ::zMask = Image(DOUBLE, 3, 3, 3), "Mask in Z."
+      ::zMask = 0
+      #Coefficients of the masks
+      ::alpha = 0.0
+      ::beta  = 0.0
+      #Method selection
+      ::mask_type = INT(0), "The method selected for the edge detection"
+    }
+    
+    #-----------------------
+    
+    proc ::load_input() {
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+    }
+    Comments(::load_input, "Loads the input image.")
+
+    #-----------------------
+    
+    proc ::InitMasks() {
+      a = ::alpha
+      b = ::beta
+      #XMASK
+      #Front
+      ::xMask.setpos(0,0,0)
+      ::xMask.set(-b/4)
+      ::xMask.setpos(1,0,0)
+      ::xMask.set(0)
+      ::xMask.setpos(2,0,0)
+      ::xMask.set(b/4)
+      ::xMask.setpos(0,1,0)
+      ::xMask.set(-a/4)
+      ::xMask.setpos(1,1,0)
+      ::xMask.set(0)
+      ::xMask.setpos(2,1,0)
+      ::xMask.set(a/4)
+      ::xMask.setpos(0,2,0)
+      ::xMask.set(-b/4)
+      ::xMask.setpos(1,2,0)
+      ::xMask.set(0)
+      ::xMask.setpos(2,2,0)
+      ::xMask.set(b/4)
+      #Middle
+      ::xMask.setpos(0,0,1)
+      ::xMask.set(-a/4)
+      ::xMask.setpos(1,0,1)
+      ::xMask.set(0)
+      ::xMask.setpos(2,0,1)
+      ::xMask.set(a/4)
+      ::xMask.setpos(0,1,1)
+      ::xMask.set(-(1-a-b))
+      ::xMask.setpos(1,1,1)
+      ::xMask.set(0)
+      ::xMask.setpos(2,1,1)
+      ::xMask.set(1-a-b)
+      ::xMask.setpos(0,2,1)
+      ::xMask.set(-a/4)
+      ::xMask.setpos(1,2,1)
+      ::xMask.set(0)
+      ::xMask.setpos(2,2,1)
+      ::xMask.set(-a/4)
+      #Back
+      ::xMask.setpos(0,0,2)
+      ::xMask.set(-b/4)
+      ::xMask.setpos(1,0,2)
+      ::xMask.set(0)
+      ::xMask.setpos(2,0,2)
+      ::xMask.set(b/4)
+      ::xMask.setpos(0,1,2)
+      ::xMask.set(-a/4)
+      ::xMask.setpos(1,1,2)
+      ::xMask.set(0)
+      ::xMask.setpos(2,1,2)
+      ::xMask.set(a/4)
+      ::xMask.setpos(0,2,2)
+      ::xMask.set(-b/4)
+      ::xMask.setpos(1,2,2)
+      ::xMask.set(0)
+      ::xMask.setpos(2,2,2)
+      ::xMask.set(b/4)
+      
+      ::xMask = ::xMask * (1/2)
+      
+      #YMASK
+      #Front
+      ::yMask.setpos(0,0,0)
+      ::yMask.set(-b/4)
+      ::yMask.setpos(1,0,0)
+      ::yMask.set(-a/4)
+      ::yMask.setpos(2,0,0)
+      ::yMask.set(-b/4)
+      ::yMask.setpos(0,1,0)
+      ::yMask.set(0)
+      ::yMask.setpos(1,1,0)
+      ::yMask.set(0)
+      ::yMask.setpos(2,1,0)
+      ::yMask.set(0)
+      ::yMask.setpos(0,2,0)
+      ::yMask.set(b/4)
+      ::yMask.setpos(1,2,0)
+      ::yMask.set(a/4)
+      ::yMask.setpos(2,2,0)
+      ::yMask.set(b/4)
+      #Middle
+      ::yMask.setpos(0,0,1)
+      ::yMask.set(-a/4)
+      ::yMask.setpos(1,0,1)
+      ::yMask.set(-(1-a-b))
+      ::yMask.setpos(2,0,1)
+      ::yMask.set(-a/4)
+      ::yMask.setpos(0,1,1)
+      ::yMask.set(0)
+      ::yMask.setpos(1,1,1)
+      ::yMask.set(0)
+      ::yMask.setpos(2,1,1)
+      ::yMask.set(0)
+      ::yMask.setpos(0,2,1)
+      ::yMask.set(a/4)
+      ::yMask.setpos(1,2,1)
+      ::yMask.set(1-a-b)
+      ::yMask.setpos(2,2,1)
+      ::yMask.set(a/4)
+      #Back
+      ::yMask.setpos(0,0,2)
+      ::yMask.set(-b/4)
+      ::yMask.setpos(1,0,2)
+      ::yMask.set(-a/4)
+      ::yMask.setpos(2,0,2)
+      ::yMask.set(-b/4)
+      ::yMask.setpos(0,1,2)
+      ::yMask.set(0)
+      ::yMask.setpos(1,1,2)
+      ::yMask.set(0)
+      ::yMask.setpos(2,1,2)
+      ::yMask.set(0)
+      ::yMask.setpos(0,2,2)
+      ::yMask.set(b/4)
+      ::yMask.setpos(1,2,2)
+      ::yMask.set(a/4)
+      ::yMask.setpos(2,2,2)
+      ::yMask.set(b/4)
+      
+      ::yMask = ::yMask * (1/2)
+
+      #ZMASK
+      #Front
+      ::zMask.setpos(0,0,0)
+      ::zMask.set(-b/4)
+      ::zMask.setpos(1,0,0)
+      ::zMask.set(-a/4)
+      ::zMask.setpos(2,0,0)
+      ::zMask.set(-b/4)
+      ::zMask.setpos(0,1,0)
+      ::zMask.set(-a/4)
+      ::zMask.setpos(1,1,0)
+      ::zMask.set(-(1-a-b))
+      ::zMask.setpos(2,1,0)
+      ::zMask.set(-a/4)
+      ::zMask.setpos(0,2,0)
+      ::zMask.set(-b/4)
+      ::zMask.setpos(1,2,0)
+      ::zMask.set(-a/4)
+      ::zMask.setpos(2,2,0)
+      ::zMask.set(-b/4)
+      #Middle
+      ::zMask.setpos(0,0,1)
+      ::zMask.set(0)
+      ::zMask.setpos(1,0,1)
+      ::zMask.set(0)
+      ::zMask.setpos(2,0,1)
+      ::zMask.set(0)
+      ::zMask.setpos(0,1,1)
+      ::zMask.set(0)
+      ::zMask.setpos(1,1,1)
+      ::zMask.set(0)
+      ::zMask.setpos(2,1,1)
+      ::zMask.set(0)
+      ::zMask.setpos(0,2,1)
+      ::zMask.set(0)
+      ::zMask.setpos(1,2,1)
+      ::zMask.set(0)
+      ::zMask.setpos(2,2,1)
+      ::zMask.set(0)
+      #Back
+      ::zMask.setpos(0,0,2)
+      ::zMask.set(b/4)
+      ::zMask.setpos(1,0,2)
+      ::zMask.set(a/4)
+      ::zMask.setpos(2,0,2)
+      ::zMask.set(b/4)
+      ::zMask.setpos(0,1,2)
+      ::zMask.set(a/4)
+      ::zMask.setpos(1,1,2)
+      ::zMask.set(1-a-b)
+      ::zMask.setpos(2,1,2)
+      ::zMask.set(a/4)
+      ::zMask.setpos(0,2,2)
+      ::zMask.set(b/4)
+      ::zMask.setpos(1,2,2)
+      ::zMask.set(a/4)
+      ::zMask.setpos(2,2,2)
+      ::zMask.set(b/4)
+      
+      ::zMask = ::zMask * (1/2)
+    }
+    Comments(::InitMasks, "Inits the masks asociated to the selected method.")
+    
+    #-----------------------
+    
+    proc ::SetCoefficients(){
+      #Prewitt
+      if (::mask_type == 0) {
+        ::alpha = 4/9
+        ::beta  = 4/9
+      }
+      #Sobel
+      if (::mask_type == 1) {
+        ::alpha = 8/15
+        ::beta  = 4/15
+      }
+      #Álvarez
+      if (::mask_type == 2) {
+        ::alpha = (2*sqrt(2)) - ((4/3) * sqrt(3))
+        ::beta  = 2 - (2*sqrt(2)) + (2/3) * sqrt(3)
+      }
+    }
+    
+    #-----------------------
+    
+    proc ::Run() {
+    	::load_input()
+      ::SetCoefficients()
+      ::InitMasks()
+      #Compute the convolution between the input image and every one of the masks
+      #First, if the image has more than one component, we normalize the input
+      if (::input.vdim != 1) {
+        ::norm_input <<= (DOUBLE) norm(::input)
+      } else {
+        ::norm_input <<= (DOUBLE) ::input
+      }
+
+      #Make the convolution
+      #In x
+      resX = Convolve(::norm_input, ::xMask)
+      #In y
+      resY = Convolve(::norm_input, ::yMask)
+      #In z
+      resZ = Convolve(::norm_input, ::zMask)
+      
+      #Compute the module
+      ::res = sqrt(resX*resX + resY*resY + resZ*resZ)
+      
+      #Display the result
+      ::Display()
+    }
+    Comments(::Run, "Detects the edges using the selected method.")
+    
+    #-----------------------
+    
+    proc ::Display() {
+      #Show the input image and the result in comparison
+      if (::show_compare) {
+        if (exists(::input) && exists(::res)) {
+          show ::input
+          show ::res
+          ::input_draw.compare(&::res_draw)
+        } else {
+          InfoDialog("You must compute the detection before to show the result.")
+        }
+
+      } else {
+        #Only show the result image
+        if (exists(::res)) {
+          show ::res
+        } else {
+          InfoDialog("You must compute the detection before to show the result.")
+        }
+      }
+    }
+    Comments(::Display, "Show the result image")
+    
+    #-----------------------
+    
+    proc ::CreateGui() {
+
+      ::win = ParamPanel("3D Basic Edge Detection")
+      
+      ::win.BeginBook()
+        ::win.AddPage("Param.")
+        
+          #Global parameters panel
+          ::win.BeginBoxPanel("Global parameters")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice(&::input_name, "In.")
+              ::AddBitmapButton(&::win, &::icons._New_image, 16, "load_input")
+            ::win.EndHorizontal()
+            #::win.AddString(&::output_name, "Out.")
+          ::win.EndBoxPanel()
+          
+          #Method panel
+          ::win.BeginBoxPanel("Edge detection method")
+            ::alg_enum = ::win.AddEnum(&::mask_type, "Method")
+              ::win.AddEnumChoice(::alg_enum, "Prewitt")
+              ::win.AddEnumChoice(::alg_enum, "Sobel")
+              ::win.AddEnumChoice(::alg_enum, "Alvarez")
+          ::win.EndBoxPanel()
+      
+          #Visualization panel
+          ::win.BeginBoxPanel("Visualization")
+            ::win.AddBoolean(&::show_compare, "Show in comparison.")
+          ::win.EndBoxPanel()
+          
+ 
+          ::icons.LoadIconPNG("Play")
+          ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+          
+      
+      ::win.EndBook()
+
+      ::AddStandardButtons(&::win)
+      ::win.Update(-1)
+      ::win.Display
+      
+    }
+    
+    ::Init
+
+  } #end Class
+
+} #end If

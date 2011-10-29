@@ -31,6 +31,7 @@
 #include "AMILabConfig.h"
 
 #ifndef _WITHOUT_ITK_
+#include <stddef.h>
 #include "itkBinaryThresholdImageFilter.h"
 #endif // _WITHOUT_ITK_
 

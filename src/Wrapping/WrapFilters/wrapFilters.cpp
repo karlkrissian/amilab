@@ -42,7 +42,6 @@
 //Basic Edge Detection Filters added
 #include "wrapBasicEdgeDetection.h"
 
-#include "wrapSubPixel2D.h"
 #include "wrapGenerateRamp.h"
 #include "wrap_SurfacePoly.h"
 
@@ -89,8 +88,11 @@ void AddWrapFilters(AMIObject::ptr& obj)
     ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NewNLmeans",    Wrap_NewNLmeans);
   #endif // AMI_USE_FASTNLMEANS
 
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputePV",       wrapComputePV);
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputePV_subdiv",wrapComputePV_subdiv);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"ComputePV",       wrapComputePV);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"ComputePV_subdiv",wrapComputePV_subdiv);
+//  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputeAnalyticPV",wrapComputeAnalyticPV);
+//  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputeAnalyticPS",wrapComputeAnalyticPS);
+
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"DirSum",          wrap_DirSum);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ImTranslate",     wrap_ImTranslate);
 
@@ -106,9 +108,6 @@ void AddWrapFilters(AMIObject::ptr& obj)
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Gradient", wrapGradient);
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",	wrapLaplace);
   
-  //2D SUBPIXEL METHOD
- // ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction, "Subpixel2D", wrapSubpixel2D);
 
   // Add AnisoGS
   AddVar_AnisoGS( amiobject->GetContext());

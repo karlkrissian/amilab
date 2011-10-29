@@ -70,6 +70,8 @@ members_blacklist=[
   'wxListCtrl::ConvertToMSWStyle', # linking problem MacOS
   'wxListCtrl::ChangeCurrent',     # idem
   'wxListCtrl::ResetCurrent',      # idem
+  'MacCreateUIFont',               #Mac problem
+  'MacGetCTFont',                  #idem
   'wxApp::Initialize',               # double pointer pb
   'wxApp::InitialzeVisual',          # not implemented, static function
   'wxApp::InitRichEdit',             # not implemented, static function

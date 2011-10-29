@@ -74,6 +74,8 @@
 #include "wrap_ImageExtent.h"
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
+
+
 #include "wrap_Viewer3D.h"
 #include "wrap_GLTransfMatrix.h"
 
@@ -166,6 +168,7 @@ void AddWrapImports()
     // Add Wrapped classes and functions
     AddWrapAlgorithms(  amiobject);
     AddWrapFilters(     amiobject);
+
     WrapClass_vtkLevelSets  ::AddVar_vtkLevelSets(amiobject->GetContext());
 
     // Add context to builtin as 'default' context

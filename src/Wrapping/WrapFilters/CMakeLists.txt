@@ -47,7 +47,6 @@ SET(  WrapFilters_SRCS
   wrap_ImageAddScalar.cpp
   wrap_ImageCos.cpp
 	wrapBasicEdgeDetection.cpp
-  wrapSubPixel2D.cpp
   wrapGenerateRamp.cpp
   wrap_AnisoGS.cpp
   wrap_ContinuousMorphology.cpp
@@ -73,7 +72,6 @@ SET(WrapFilters_HDRS
   ../include/wrap_ImageAddScalar.h
   ../include/wrap_ImageCos.h
 	../include/wrapBasicEdgeDetection.h
-  ../include/wrapSubPixel2D.h
   ../include/wrapGenerateRamp.h
   ../include/wrap_AnisoGS.h
   ../include/wrap_ContinuousMorphology.h
@@ -91,6 +89,9 @@ SET(WrapFilters_SRCS
 
 my_add_library ( WrapFilters)
 
+#
+#add_dependencies ( WrapFilters WrapWxWidgets )
+#
 target_link_libraries(WrapFilters
   Common
   WrapCommon

@@ -13,7 +13,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}
   ${AMIFLUID_INCLUDE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -44,6 +44,7 @@ SET(Algorithms_SRCS
 
   RegionGrowingTest.cpp
 
+  #AnalyticFunctionBase.cpp
   ComputePartialVolume.cpp
   StructureTensor.cpp
   HessianMatrix.cpp
@@ -110,6 +111,7 @@ SET(Algorithms_HDRS
 
   include/RegionGrowingTest.h
 
+  include/AnalyticFunctionBase.h
   include/ComputePartialVolume.h
   include/StructureTensor.h
   include/HessianMatrix.h

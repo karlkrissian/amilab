@@ -11,7 +11,7 @@ for dir in  "BasicFilters","Filtering","Denoising",\
             "OpticFlow", \
             "CarotidBifurcationWorkshop2009", \
             "Utils", \
-            "Vessels",\
+            "Vessels", \
             "Variable" \
 {
   local_f = wx.wxFileName(GetScriptsDir)

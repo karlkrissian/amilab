@@ -6,5 +6,5 @@ if (!exists(SubPixel_obj)) {
   SubPixelPlugin SubPixel_obj
   SubPixel_obj.Load()
 } else {
-  InfoDialog "The script seems to be already loaded." 
+  InfoDialog "The script class SubPixelPlugin to be already instanciated." 
 }

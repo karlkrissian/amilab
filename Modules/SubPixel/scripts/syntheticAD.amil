@@ -1,0 +1,325 @@
+#Interface for synthetic aortic dissection
+
+func "Common/ScriptGui"
+func "Subpixel/subpixel2D.amil"
+
+if (!exists(syntheticADClass)){
+
+	Class syntheticADClass : public ScriptGui{
+  
+    #-----------------------
+    proc ::Init(){
+      ::class_name  = "global::Subpixel2DClass"
+      ::output_name = "synthAD_result", "Output image name"
+      
+      #Input image parameters
+      ::dimx = INT(100), "Input image X size"
+      ::dimy = INT(100), "Input image Y size"
+      
+      #Intensity values inside and outside of the figures
+      ::A  = 200.0, "A intensity value" 
+      ::B  = 100.0, "B intensity value"
+      
+      #Circle parameters
+      ::cx = 50.0, "X component of the center of the circle"
+      ::cy = 50.0, "Y component of the center of the circle"
+      ::cr = 20.0, "Radius of the circle"
+      
+      #Ring 2D parameters
+      ::ring_cx     = 80.0, "X component of the center of the ring"
+      ::ring_cy     = 50.0, "Y component of the center of the ring"
+      ::ring_radius = 30.0, "Ring internal radius"
+      ::ring_thick  = 2.0, "Thickness of the ring"
+      
+      ::reload = UCHAR(0), "Reload the image"
+      
+      ::subdiv = INT(6), "Subdivision level"
+      
+      ::mean_str     = "", "Average error of subpixel method"
+      ::variance_str = "", "Variance of subpixel method"
+      
+      ::CreateGui()
+    }
+    
+
+    #-----------------------
+    
+    proc ::CreateInputImage() {
+      #if(exists(::res_draw)) { del ::res_draw; }
+      #Create the image with the parameters and enable the compute method panel
+      ::input <<= Image(FLOAT,::dimx,::dimy,1)
+      ::input   = 0
+      ::win.EnablePanel(::fun_page, 1)
+      ::win.EnablePanel(::isPanel, 1)
+    }
+    Comments(::CreateInputImage, "Create the input image.")
+    
+    #-----------------------
+    
+    proc ::ResetInputImage() {
+      ::dimx = 100
+      ::dimy = 100
+      ::win.Update(-1)
+    }
+    Comments(::ResetInputImage, "Reset the size of the input image.")
+    
+    #-----------------------
+
+    proc ::Run() {
+    	if (exists(::input)) {
+        #create a compute partial volume object
+        ::pv     = ComputePartialVolume()
+        ::pv->setInputImage(&::input)
+        ::pv->setSubdiv(::subdiv)
+        ::circle = AnalyticCircle()
+        ::ring   = AnalyticRing2D()
+        ::circle->setCenter(::cx, ::cy)
+        ::circle->setRadius(::cr)
+        ::ring->setCenter(::ring_cx, ::ring_cy)
+        ::ring->setRadius(::ring_radius)
+        ::ring->setThickness(::ring_thick)
+        
+        #Create the circle
+        ::pv->setAnalyticFunction(&::circle)
+        ::resC <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A, ::B)
+        
+        #Create the ring
+        ::pv->setAnalyticFunction(&::ring)
+        ::resR <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
+        
+        #The result image
+        ::res <<= ::resC
+        for i=0 to ::resR.tx-1 {
+          for j=0 to ::resR.ty-1 {
+            if(::resC(i,j,0)!=::B && ::resR(i,j,0)!=::A) {
+              ::res.setpos(i,j,0)
+              ::res.set(::resR(i,j,0))
+            }
+          }
+        }
+        
+        #Enable the save and statistics panels
+        ::win.EnablePanel(::savePanel, 1)
+        ::win.EnablePanel(::stat_page, 1)
+      } else {
+        InfoDialog "You must create first the input image."
+      }
+    }
+    Comments(::Run, "Generate the syntheticAD image.")
+    
+    #-----------------------
+    
+    proc ::Display() {
+      global
+      if (exists(::res)) {
+          show ::res
+      } 
+    }
+    Comments(::Display, "Show the result image")
+    
+    #-----------------------
+    
+    proc ::AutoRun() {
+      if(::reload) {
+        ::Run()
+        ::Display()
+      }
+    }
+    Comments(::AutoRun, "Updates image automatically when parameters change.")
+    
+    #-----------------------
+    
+    proc ::Statistics() {
+      #Firstly, the subpixel detection result is needed, for compute the distance
+      ::ComputeSubpixel()
+      #Take the position of subpixel components and make a cast to double
+      #x <<= (DOUBLE)::spResult->xpos
+      x = ((DOUBLE)::spResult->xpos)*(::spResult->border==2)+((DOUBLE)::spResult->xpos-::spResult->acoef)*(::spResult->border!=2)
+      #Similar to the equation, but with x=0. It is the subpixel position
+      #y <<= (DOUBLE)::spResult->ypos + ::spResult->acoef
+      y = ((DOUBLE)::spResult->ypos-::spResult->acoef)*(::spResult->border==2)+((DOUBLE)::spResult->ypos)*(::spResult->border!=2)
+      #Distance for the circle
+      modC <<= sqrt((x-::cx)*(x-::cx)+(y-::cy)*(y-::cy))
+      #and for the ring
+      modR <<= sqrt((x-::ring_cx)*(x-::ring_cx)+(y-::ring_cy)*(y-::ring_cy))
+      
+      #Now, calculate the diference with the real position, using the radius
+      #Use the abs value, because the sign it does not matter
+      #Circle
+      dis1 <<= abs(modC - ::cr)
+      #Internal circle of the ring
+      dis2 <<= abs(modR - ::ring_radius)
+      #External circle of the ring
+      dis3 <<= abs(modR - (::ring_radius+::ring_thick))
+      
+      #The distance will be the minimum of the three distances calculated
+      resDis <<= -max(max(-dis1,-dis2),-dis3)
+      
+      #Calculate statistics of subpixel position
+      dis_mean = mean(resDis)
+      var <<= (resDis - dis_mean)*(resDis - dis_mean)
+      #Mean
+      ::mean_str     = sprint("%f",dis_mean)
+      #Variance
+      ::variance_str = sprint("%e",mean(var))
+      ::win.Update(-1)
+      
+      #Generate the image of the error
+      ::error_image = Image(FLOAT, ::dimx, ::dimy, 1)
+      #Initialize to a negative value
+      ::error_image = -1
+      #And now, fill it
+      for i=0 to resDis.tx-1 {
+        ::error_image.setpos(x(i,0,0), y(i,0,0), 0)
+        ::error_image.set(resDis(i,0,0))
+      }
+      show ::error_image
+    }
+    Comments(::Statistics, "Calculate statistics of subpixel detection")
+    
+    #-----------------------
+    
+    proc ::ComputeSubpixel() {
+      if(exists(::res)) {
+        if (exists(::spResult)) { del ::spResult; }
+        spObject = SubPixel2D(&::res, 25, 0)
+        ::spResult = spObject->DenoisingGus()
+      } else {
+        InfoDialog "You must create first the image"
+      }
+    }
+    
+    #-----------------------
+    
+    proc ::Save() {
+      if(exists(::res)) {
+        eval "global::" + ::output_name + "<<=::res;"
+      }
+    }
+    Comments(::Save, "Save output image as global variable")
+    
+    #-----------------------
+   
+    proc ::ResetAll() {
+      #Reset all parameters
+      #Intensity
+      ::A  = 200.0
+      ::B  = 100.0
+      #Circle
+      ::cx = 50.0
+      ::cy = 50.0
+      ::cr = 20.0
+      #Ring
+      ::ring_cx     = 80.0
+      ::ring_cy     = 50.0
+      ::ring_radius = 30.0
+      ::ring_thick  = 2.0
+      
+      ::win.Update(-1)
+    }
+    
+    #-----------------------
+    
+    proc ::CreateGui() {
+      ::win = ParamPanel("SyntheticAD")
+      
+      ::win.BeginBook()
+        ::win.AddPage("Main.")
+          #Image size
+          ::win.BeginBoxPanel("Image size")
+            ::win.AddInt(&::dimx, "x", 1, 800)
+            ::win.AddInt(&::dimy, "y", 1, 800)
+          ::win.BeginHorizontal()
+            ::AddBitmapButton(&::win, &::icons._New_image, 16, "CreateInputImage")
+            ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetInputImage")
+          ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+          
+          #Intensity
+          ::isPanel = ::win.BeginBoxPanel("Intensity and subdivision")
+            ::win.AddFloat(&::A, "A", 0, 255)
+            ::win.SetCallback(&::AutoRun)
+            ::win.AddFloat(&::B, "B", 0, 255)
+            ::win.SetCallback(&::AutoRun)
+            
+            ::win.AddInt(&::subdiv, "Sub.", 1, 20)
+          
+            ::win.BeginHorizontal()
+              ::icons.LoadIconPNG("Play")
+              ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+              ::AddBitmapButton(&::win, &::icons._Show, 16, "Display")
+              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetAll")
+              ::win.AddBoolean(&::reload, "Reload")
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+          ::win.EnablePanel(::isPanel, 0)
+          
+          ::savePanel = ::win.BeginBoxPanel("Save output")
+            ::win.BeginHorizontal()
+              ::win.AddString(&::output_name, "Name")
+              ::AddBitmapButton(&::win, &::icons._Save, 16, "Save")
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+          ::win.EnablePanel(::savePanel, 0)
+          
+          ::fun_page = ::win.AddPage("Func.")
+            #Circle parameters
+            ::win.BeginBoxPanel("Circle parameters")
+              ::win.BeginBoxPanel("Center")
+                ::win.AddFloat(&::cx, "x", 1, 800)
+                ::win.SetCallback(&::AutoRun)
+                ::win.AddFloat(&::cy, "y", 1, 800)
+                ::win.SetCallback(&::AutoRun)
+              ::win.EndBoxPanel()
+              ::win.AddFloat(&::cr, "Rad.", 1, 800)
+              ::win.SetCallback(&::AutoRun)
+            ::win.EndBoxPanel()
+            
+            #Ring parameters
+            ::win.BeginBoxPanel("Ring parameters")
+              ::win.BeginBoxPanel("Center")
+                ::win.AddFloat(&::ring_cx, "x", 1, 800)
+                ::win.SetCallback(&::AutoRun)
+                ::win.AddFloat(&::ring_cy, "y", 1, 800)
+                ::win.SetCallback(&::AutoRun)
+              ::win.EndBoxPanel()
+              ::win.AddFloat(&::ring_radius, "Rad.", 1, 800)
+              ::win.SetCallback(&::AutoRun)
+              ::win.AddFloat(&::ring_thick, "Thick.", 1, 10)
+              ::win.SetCallback(&::AutoRun)
+            ::win.EndBoxPanel()
+            
+          ::win.EnablePanel(::fun_page, 0)
+        
+        #Statistics page
+        ::stat_page = ::win.AddPage("Stat.")
+          ::AddBitmapButton(&::win, &::icons._Play, 16, "Statistics")
+          ::win.BeginBoxPanel("Error of the subpixel position")
+            ::win.AddString(&::mean_str, "Mean")
+            ::win.AddString(&::variance_str, "Variance")
+          ::win.EndBoxPanel()
+          ::win.EnablePanel(::stat_page, 0)
+          
+      ::win.EndBook()
+      
+      #Add the standard buttons for interface (edit, close, close all)
+      ::AddStandardButtons(&::win)
+      ::win.Update(-1)
+      ::win.Display
+    }
+    
+    ::Init()
+
+  } #end Class
+
+} #end If
+
+
+#----------------
+# Main
+#----------------
+if (!exists(synthAD)) {
+  syntheticADClass synthAD
+} else {
+  InfoDialog "The script for syntheticAD generation seems to be already loaded."
+}

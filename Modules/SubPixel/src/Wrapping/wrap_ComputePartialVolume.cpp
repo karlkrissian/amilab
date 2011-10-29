@@ -13,24 +13,24 @@
 #include "ComputePartialVolume.h"
 
 //---------------------------------------------------
-//ComputePV Wrapping
+//ComputePartialVolume Wrapping
 //---------------------------------------------------
 
 template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<ComputePV>::CreateVar( ParamList* p, bool quiet )
+BasicVariable::ptr WrapClass<ComputePartialVolume>::CreateVar( ParamList* p, bool quiet )
 {
-  WrapClass_ComputePV::wrap_ComputePV construct;
+  WrapClass_ComputePartialVolume::wrap_ComputePartialVolume construct;
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE_HASCOPY(ComputePV);
-AMI_DEFINE_VARFROMSMTPTR(ComputePV);
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(ComputePartialVolume);
+AMI_DEFINE_VARFROMSMTPTR(ComputePartialVolume);
 
-//AMIObject::ptr AddWrap_ComputePV(WrapClass_ComputePV::ptr& objectptr)
+//AMIObject::ptr AddWrap_ComputePartialVolume(WrapClass_ComputePartialVolume::ptr& objectptr)
 //{
 //  // Create a new instance of the class
 //  AMIObject::ptr amiobject(new AMIObject);
-//  amiobject->SetName("ComputePV");
+//  amiobject->SetName("ComputePartialVolume");
 //  amiobject->SetWrappedObject(objectptr);
 //  objectptr->SetAMIObject(amiobject);
 //  objectptr->AddMethods(objectptr);
@@ -38,37 +38,37 @@ AMI_DEFINE_VARFROMSMTPTR(ComputePV);
 //}
 //
 ////---------------------------------------------------
-//Variable<AMIObject>::ptr CreateVar_ComputePV(ComputePV* si)
+//Variable<AMIObject>::ptr CreateVar_ComputePartialVolume(ComputePartialVolume* si)
 //{
-//  boost::shared_ptr<ComputePV> si_ptr(si);
-//  WrapClass_ComputePV::ptr sip(new WrapClass_ComputePV(si_ptr));
-//  AMIObject::ptr amiobject(AddWrap_ComputePV(sip));
+//  boost::shared_ptr<ComputePartialVolume> si_ptr(si);
+//  WrapClass_ComputePartialVolume::ptr sip(new WrapClass_ComputePartialVolume(si_ptr));
+//  AMIObject::ptr amiobject(AddWrap_ComputePartialVolume(sip));
 //  Variable<AMIObject>::ptr varres(
 //    new Variable<AMIObject>(amiobject));
 //  return varres;
 //}
 
 //---------------------------------------------------
-//ComputePV Constructor
-void WrapClass_ComputePV::wrap_ComputePV::SetParametersComments()
+//ComputePartialVolume Constructor
+void WrapClass_ComputePartialVolume::wrap_ComputePartialVolume::SetParametersComments()
 {
-  return_comments = "A wrapped ComputePV object.";
+  return_comments = "A wrapped ComputePartialVolume object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_ComputePV::CallMember(ParamList* p)
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_ComputePartialVolume::CallMember(ParamList* p)
 {
-  return AMILabType<ComputePV>::CreateVar(new ComputePV());
+  return AMILabType<ComputePartialVolume>::CreateVar(new ComputePartialVolume());
 }
 
 //---------------------------------------------------
 //ComputeAnalyticPartialSurfaceSubdiv
-void WrapClass_ComputePV::wrap_ComputeAnalyticPartialSurfaceSubdiv
+void WrapClass_ComputePartialVolume::wrap_ComputeAnalyticPartialSurfaceSubdiv
                         ::SetParametersComments()
 {
   return_comments = "Returns the 2D image create with partial effect";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_ComputeAnalyticPartialSurfaceSubdiv
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_ComputeAnalyticPartialSurfaceSubdiv
                                       ::CallMember (ParamList* p)
 {
   float A;
@@ -82,14 +82,14 @@ BasicVariable::ptr WrapClass_ComputePV::wrap_ComputeAnalyticPartialSurfaceSubdiv
 }
 
 //---------------------------------------------------
-//ComputeAnalyticPartialVolumeSubdiv
-void WrapClass_ComputePV::wrap_ComputeAnalyticPartialVolumeSubdiv
+//RunAnalyticSubdiv
+void WrapClass_ComputePartialVolume::wrap_RunAnalyticSubdiv
                         ::SetParametersComments()
 {
   return_comments = "Returns the 3D image create with partial effect";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_ComputeAnalyticPartialVolumeSubdiv
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_RunAnalyticSubdiv
                                       ::CallMember (ParamList* p)
 {
   float A;
@@ -98,48 +98,48 @@ BasicVariable::ptr WrapClass_ComputePV::wrap_ComputeAnalyticPartialVolumeSubdiv
   
   if (!get_val_param<float>(A, p, n)) ClassHelpAndReturn;
   if (!get_val_param<float>(B, p, n)) ClassHelpAndReturn;
-  InrImage::ptr res (_objectptr->_obj->ComputeAnalyticPartialVolumeSubdiv(A,B));
+  InrImage::ptr res (_objectptr->_obj->RunAnalyticSubdiv(A,B));
   return Variable<InrImage>::ptr( new Variable<InrImage>(res));
 }
 
 //---------------------------------------------------
 //ComputePartialVolume
-void WrapClass_ComputePV::wrap_ComputePartialVolume::SetParametersComments()
+void WrapClass_ComputePartialVolume::wrap_Run::SetParametersComments()
 {
   return_comments = "Return the 3D image create with linear interpolation and iteratively";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_ComputePartialVolume
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_Run
                                       ::CallMember(ParamList* p)
 {
-  InrImage::ptr res (_objectptr->_obj->ComputePartialVolume());
+  InrImage::ptr res (_objectptr->_obj->Run());
   return Variable<InrImage>::ptr( new Variable<InrImage>(res));
 }
 
 //---------------------------------------------------
-//ComputePartialVolumeSubdiv
-void WrapClass_ComputePV::wrap_ComputePartialVolumeSubdiv::SetParametersComments()
+//RunSubDiv
+void WrapClass_ComputePartialVolume::wrap_RunSubdiv::SetParametersComments()
 {
   return_comments = "Return the 3D image create with linear interpolation recursively";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_ComputePartialVolumeSubdiv
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_RunSubdiv
                                       ::CallMember(ParamList* p)
 {
-  InrImage::ptr res (_objectptr->_obj->ComputePartialVolumeSubdiv());
+  InrImage::ptr res (_objectptr->_obj->RunSubdiv());
   return Variable<InrImage>::ptr( new Variable<InrImage>(res));
 }
 
 //---------------------------------------------------
 //setSubdiv
-void WrapClass_ComputePV::wrap_setSubdiv::SetParametersComments()
+void WrapClass_ComputePartialVolume::wrap_setSubdiv::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE(int, "Subdivision level.");
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_setSubdiv::CallMember(ParamList* p)
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_setSubdiv::CallMember(ParamList* p)
 {
-  ComputePV::ptr fd(this->_objectptr->GetObj());
+  ComputePartialVolume::ptr fd(this->_objectptr->GetObj());
   int subdiv;
   int   n = 0;
   
@@ -151,27 +151,27 @@ BasicVariable::ptr WrapClass_ComputePV::wrap_setSubdiv::CallMember(ParamList* p)
 
 //---------------------------------------------------
 //getSubdiv
-void WrapClass_ComputePV::wrap_getSubdiv::SetParametersComments()
+void WrapClass_ComputePartialVolume::wrap_getSubdiv::SetParametersComments()
 {
   return_comments = "Return the subdivision level";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_getSubdiv::CallMember(ParamList* p)
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_getSubdiv::CallMember(ParamList* p)
 {
   RETURN_VAR(int, _objectptr->_obj->getSubdiv());
 }
 
 //---------------------------------------------------
 //setAnalyticFunction
-void WrapClass_ComputePV::wrap_setAnalyticFunction::SetParametersComments()
+void WrapClass_ComputePartialVolume::wrap_setAnalyticFunction::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE(AnalyticFunctionBase, "A pointer to an analytic function");
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_setAnalyticFunction
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_setAnalyticFunction
                                       ::CallMember(ParamList* p)
 {
-  ComputePV::ptr fd(this->_objectptr->GetObj());
+  ComputePartialVolume::ptr fd(this->_objectptr->GetObj());
   int n=0;
   CLASS_GET_OBJECT_PARAM(AnalyticFunctionBase, var, analyticfunc );
   if (analyticfunc.get()) {
@@ -185,12 +185,12 @@ BasicVariable::ptr WrapClass_ComputePV::wrap_setAnalyticFunction
 
 //---------------------------------------------------
 //getAnalyticFunction
-void WrapClass_ComputePV::wrap_getAnalyticFunction::SetParametersComments()
+void WrapClass_ComputePartialVolume::wrap_getAnalyticFunction::SetParametersComments()
 {
   return_comments = "The analytic function.";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_getAnalyticFunction
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_getAnalyticFunction
                                       ::CallMember(ParamList* p)
 {
   AnalyticFunctionBase::ptr si_ptr(_objectptr->_obj->getAnalyticFunction().lock());
@@ -204,15 +204,15 @@ BasicVariable::ptr WrapClass_ComputePV::wrap_getAnalyticFunction
 
 //---------------------------------------------------
 //setInputImage
-void WrapClass_ComputePV::wrap_setInputImage::SetParametersComments()
+void WrapClass_ComputePartialVolume::wrap_setInputImage::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE(InrImage*, "The input image");
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_setInputImage
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_setInputImage
                                       ::CallMember(ParamList* p)
 {
-  ComputePV::ptr fd(this->_objectptr->GetObj());
+  ComputePartialVolume::ptr fd(this->_objectptr->GetObj());
   Variable<InrImage>::ptr varim;
   int   n = 0;
   if (!get_var_param<InrImage>(varim,p,n)) ClassHelpAndReturn;
@@ -229,12 +229,12 @@ BasicVariable::ptr WrapClass_ComputePV::wrap_setInputImage
 
 //---------------------------------------------------
 //getInputImage
-void WrapClass_ComputePV::wrap_getInputImage::SetParametersComments()
+void WrapClass_ComputePartialVolume::wrap_getInputImage::SetParametersComments()
 {
   return_comments = "The input image.";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_getInputImage
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_getInputImage
                                       ::CallMember(ParamList* p)
 {
   return Variable<InrImage>::ptr (
@@ -244,15 +244,15 @@ BasicVariable::ptr WrapClass_ComputePV::wrap_getInputImage
 
 //---------------------------------------------------
 //setResolution
-void WrapClass_ComputePV::wrap_setResolution::SetParametersComments()
+void WrapClass_ComputePartialVolume::wrap_setResolution::SetParametersComments()
 {
   ADDPARAMCOMMENT_TYPE(int, "The resolution level");
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_setResolution
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_setResolution
                                       ::CallMember(ParamList* p)
 {
-  ComputePV::ptr fd(this->_objectptr->GetObj());
+  ComputePartialVolume::ptr fd(this->_objectptr->GetObj());
   int resolution;
   int   n = 0;
   
@@ -264,12 +264,12 @@ BasicVariable::ptr WrapClass_ComputePV::wrap_setResolution
 
 //---------------------------------------------------
 //getResolution
-void WrapClass_ComputePV::wrap_getResolution::SetParametersComments()
+void WrapClass_ComputePartialVolume::wrap_getResolution::SetParametersComments()
 {
   return_comments = "The resolution level.";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_ComputePV::wrap_getResolution
+BasicVariable::ptr WrapClass_ComputePartialVolume::wrap_getResolution
                                       ::CallMember(ParamList* p)
 {
   RETURN_VAR(int, _objectptr->_obj->getResolution());

@@ -1,0 +1,13 @@
+
+func "SyntheticPVEImagesClass.amil"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(si)) {
+  SyntheticPVEImagesClass si
+  si.Gui()
+} else {
+  InfoDialog "The script for generate synthetic images with partial effect seems to be already loaded."
+}

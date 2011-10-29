@@ -167,7 +167,7 @@ BasicVariable::ptr WrapClass_AnalyticTorus::
   
   if (!get_val_param<float>(rmax, p, n)) ClassHelpAndReturn;
   
-  fd->set_rmin(rmax);
+  fd->set_rmax(rmax);
   return BasicVariable::ptr();
 }
 

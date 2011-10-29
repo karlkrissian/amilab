@@ -1,0 +1,71 @@
+\documentclass{article}
+\usepackage{/Applications/Tex/html}
+\usepackage[latin1]{inputenc}
+
+
+\begin{document}
+
+% Title Page
+\title{Synthetic PVE Images Gui}
+\author{Karl Krissian \& Daniel El\'ias Santana Cedr\'es}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Centro de Tecnolog\'ias de la Imagen (CTIM)\\
+Universidad de Las Palmas de Gran Canaria (ULPGC)\\
+email: krissian@dis.ulpgc.es
+email: dsantana@ctim.es
+}
+
+
+\maketitle
+
+\begin{abstract}
+This script provides a user interface to create synthetic images in 2D and 3D based on an analytic function (line, circle, vessel, ring, cube, cylinder, sphere or torus).
+\end{abstract}
+
+
+\section{Quick Start}
+
+For create a synthetic image follow this steps:
+\begin{enumerate}
+  \item Create a new input image (2D or 3D) on \emph{Main} tab.
+  \item Create a new analytic function from \emph{Func} tab.
+  \item Apply the method on \emph{Main} tab.
+  \item You can show or save the result.
+\end{enumerate}
+
+\section{Interface tabs}
+
+The interface is divided into several tabs.
+
+\subsection{\emph{Main} tab}
+In the \emph{Main} tab you can create a new input image indicating the x, y and z dimensions.
+
+After to create an analytic function you can apply the method. You can choose the recursive subdivision level and two different methods:
+\begin{itemize}
+	\item Analytic Partial Surface: Compute partial effect on a 2D image using the line, circle, vessel or ring analytic function.
+	\item Analytic Partial Volume: Compute partial effect on a 3D image using the cube, cylinder, sphere or torus analytic function.
+\end{itemize}
+
+Also, you can save the image as a global variable.
+
+\subsection{\emph{Func} tab}
+In the \emph{Func} tab you can create an analytic function object. There are eight functions with some parameters:
+\begin{itemize}
+	\item Line: Angle and y axis cut point.
+	\item Circle: Center and the radius.
+	\item Vessel: Center, angle and thickness.
+	\item Ring: Center, radius and thickness.
+	\item Cube: Center and x,y,z dimensions.
+	\item Cylinder: Radius and x,y,z directions.
+	\item Sphere: Center and radius.
+	\item Torus: Center, minimum and maximum radius.
+\end{itemize}
+
+All analytic functions have a reload option. If you check it, you can see the changes on the image when modify a parameter.
+
+\subsection{\emph{Help} tab}
+This help.
+
+
+\end{document}          

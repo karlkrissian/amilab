@@ -1,0 +1,842 @@
+# Generating synthetic images (with analytic function)
+#
+func "Common/ScriptGui"
+if (!exists(SubPixel)) {
+  func "../Load_SubPixel"
+}
+
+
+if (!exists(SyntheticPVEImagesClass)) {
+  Class SyntheticPVEImagesClass  : public ScriptGui{
+
+  #---------------------------------------------
+  proc ::Init() \
+  {
+    ::ImageDim   = INT(0), "0: 2D, 1: 3D"
+    ::type2D     = INT(0), "Analytic 2D function type"
+    ::type3D     = INT(0), "Analytic 3D function type"
+    #::pv_type    = INT(0), "Compute partial effect function"
+    ::subdiv2D   = INT(6), "Subdivision level for 2D functions"
+    ::subdiv3D   = INT(4), "Subdivision level for 3D functions"
+    ::autodisplay = UCHAR(1), "Display image after computation"
+    ::output_name= "synthetic_res", "Output image name"
+    
+    ::reloadLine     = UCHAR(0), "Reload the analytic line"
+    ::reloadCircle   = UCHAR(0), "Reload the analytic circle"
+    ::reloadVessel2D = UCHAR(0), "Reload the analytic vessel2D"
+    ::reloadRing2D   = UCHAR(0), "Reload the analytic ring"
+    ::reloadCube     = UCHAR(0), "Reload the analytic cube"
+    ::reloadCylinder = UCHAR(0), "Reload the analytic cylinder"
+    ::reloadSphere   = UCHAR(0), "Reload the analytic sphere"
+    ::reloadTorus    = UCHAR(0), "Reload the analytic torus"
+    
+    #Input image parameters
+    ::dimx = INT(100), "Input image X size"
+    ::dimy = INT(100), "Input image Y size"
+    ::dimz = INT(100), "Input image Z size"
+    
+    #Circle parameters
+    ::cx = 50.0, "X component of the center of the circle"
+    ::cy = 50.0, "Y component of the center of the circle"
+    ::cr = 20.0, "Radius of the circle"
+    
+    #Line parameters
+    ::line_angle = 45.0, "Angle of the line"
+    ::n          = 50.0, "Y axis cut point"
+    
+    #Straight Vessel 2D parameters
+    ::vessel_cx    = 50.0, "X component of the center of the vessel"
+    ::vessel_cy    = 50.0, "Y component of the center of the vessel"
+    ::vessel_angle = 45.0, "Angle of the vessel"
+    ::vessel_thick =  4.0, "Thickness of the vessel"
+    
+    #Ring 2D parameters
+    ::ring_cx     = 50.0, "X component of the center of the ring"
+    ::ring_cy     = 50.0, "Y component of the center of the ring"
+    ::ring_radius = 30.0, "Ring internal radius"
+    ::ring_thick  = 2.0, "Thickness of the ring"
+    
+    #Cube parameters
+    ::cube_cx   = 50.0, "X component of the center of the cube"
+    ::cube_cy   = 50.0, "Y component of the center of the cube"
+    ::cube_cz   = 50.0, "Z component of the center of the cube"
+    ::cube_dimx = 30.0, "X size of the cube"
+    ::cube_dimy = 30.0, "Y size of the cube"
+    ::cube_dimz = 30.0, "Z size of the cube"
+    
+    #Cylinder parameters
+    ::cylinder_r    = 25.0, "Radius of the cylinder"
+    ::cylinder_xdir =  0.0, "Cylinder X direction"
+    ::cylinder_ydir =  0.0, "Cylinder Y direction"
+    ::cylinder_zdir =  9.0, "Cylinder Z direction"
+    
+    #Sphere parameters
+    ::sx = 50.0, "X component of the center of the sphere"
+    ::sy = 50.0, "Y component of the center of the sphere"
+    ::sz = 50.0, "Z component of the center of the sphere"
+    ::sr = 20.0, "Radius of the sphere"
+    
+    #Torus parameters
+    ::tx = 50.0, "X component of the center of the torus"
+    ::ty = 50.0, "Y component of the center of the torus"
+    ::tz = 50.0, "Z component of the center of the torus"
+    ::tr = 2.0,  "Minimum radius of the torus"
+    ::tR = 10.0, "Maximum radius of the torus"
+    
+    #Help
+    ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
+    ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/SyntheticPVEImages/index.html"
+    
+    #Image intensities
+    ::A = 200.0
+    ::B = 100.0
+    
+    #::NewType2D()
+    #::NewType3D()
+    
+  }
+
+
+  #----------------------------------------------------------
+  proc ::NewType2D() {
+    if (exists(::page_vec2D)) { del ::page_vec2D; }
+    ::page_vec2D = VarVector();
+    ::page_vec2D.push_back(::page_line)
+    ::page_vec2D.push_back(::page_circle)
+    ::page_vec2D.push_back(::page_vessel2D)
+    ::page_vec2D.push_back(::page_ring2D)
+
+    for n=0 to 3 {
+      ::win.EnablePanel(::page_vec2D[n], ::type2D==n)
+    }
+    ::win.SelectPage(::book2D,::type2D)
+  }
+  #----------------------------------------------------------
+  proc ::NewType3D() {
+    if (exists(::page_vec3D)) { del ::page_vec3D; }
+    ::page_vec3D = VarVector();
+    ::page_vec3D.push_back(::page_cube)
+    ::page_vec3D.push_back(::page_cylinder)
+    ::page_vec3D.push_back(::page_sphere)
+    ::page_vec3D.push_back(::page_torus)
+    
+    for n=0 to 3 {
+      ::win.EnablePanel(::page_vec3D[n], ::type3D==n)
+    }
+    ::win.SelectPage(::book3D,::type3D)
+  }
+  
+  #----------------------------------------------------------
+  proc ::CreateInputImage() {
+    #Create the image with the parameters and enable the compute method panel
+    if (::ImageDim==0) {
+      dimz=1
+    } else {
+      dimz=::dimz
+    }
+    recompute=true
+    if (exists(::input)) {
+      recompute =  (::input.tx!=::dimx)||(::input.ty!=::dimy)||(::input.tz!=dimz)
+    }
+    printn "dimz = %1%" % dimz
+    if (recompute) {
+      ::input <<= Image(FLOAT,::dimx,::dimy,dimz)
+    }
+    ::input = 0
+    if recompute { del ::res_draw; }
+    #Enable functions page
+    #::win.EnablePanel(::functions_page, 1)
+  }
+  Comments(::CreateInputImage, "Create the input image for compute partial volume")
+  
+  #----------------------------------------------------------
+  proc ::ResetInputImage() {
+    ::dimx = 100
+    ::dimy = 100
+    ::dimz = 100
+    ::win.Update(-1)
+  }
+  Comments(::ResetInputImage, "Reset the input image values (dimx, dimy, dimz)")
+  
+
+  #----------------------------------------------------------
+  proc ::Compute() {
+  
+    ::CreateInputImage()
+    
+      #Create a compute partial volume object
+      ::pv = ComputePartialVolume()
+      
+      #Analytic function recursive for a surface
+      if(::ImageDim == 0) {
+        if(::input.tz == 1) {
+            ::pv->setInputImage(&::input)
+            ::pv->setSubdiv(::subdiv2D)
+            if(::type2D == 0){
+              ::GenerateLine()
+              ::pv->setAnalyticFunction(&::line)
+              ::output_name = "line"
+            }
+            if(::type2D == 1) {
+              ::GenerateCircle()
+              ::pv->setAnalyticFunction(&::circle)
+              ::output_name = "circle"
+            }
+            if(::type2D == 2) {
+              ::GenerateVessel2D()
+              ::pv->setAnalyticFunction(&::vessel2D)
+              ::output_name = "vessel2D"
+            }
+            if(::type2D == 3) {
+              ::GenerateRing2D()
+              ::pv->setAnalyticFunction(&::ring2D)
+              ::output_name = "ring2D"
+            }
+            InitTime
+            ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
+            printn "Tiempo = " + TimeSpent
+            EndTime
+            RestartTime
+        } else {
+          InfoDialog "Compute analytic surface only in 2D images."
+        }
+      }
+      
+      #Analytic function recursive for a volume
+      if(::ImageDim == 1) {
+          ::pv->setInputImage(&::input)
+          ::pv->setSubdiv(::subdiv3D)
+          if(::input.tz > 1) {
+            if(::type3D == 0) {
+              ::GenerateCube()
+              ::pv->setAnalyticFunction(&::cube)
+              ::output_name = "cube"
+            }
+            if(::type3D == 1) {
+              ::GenerateCylinder()
+              ::pv->setAnalyticFunction(&::cylinder)
+              ::output_name = "cylinder"
+            }
+            if(::type3D == 2) {
+              ::GenerateSphere()
+              ::pv->setAnalyticFunction(&::sphere)
+              ::output_name = "sphere"
+            }
+            if(::type3D == 3) {
+              ::GenerateTorus()
+              ::pv->setAnalyticFunction(&::torus)
+              ::output_name = "torus"
+            }
+            InitTime
+            ::res <<= ::pv->RunAnalyticSubdiv(::A,::B)
+            printn "Tiempo = " + TimeSpent
+            EndTime
+            RestartTime
+          } else {
+            InfoDialog "Compute analytic volume only in 3D images."
+          }
+      }
+      #Enable the save box
+      ::win.EnablePanel(::save_box, 1)
+      ::win.Update(::save_box)
+      if (::autodisplay) { ::Display(); }
+  }
+  Comments(::Compute, "Compute the partial volume effect")
+  
+  #----------------------------------------------------------
+  proc ::Display() {
+    if(exists(::res)){
+      show ::res
+    } else {
+      InfoDialog "The result image not exists."
+    }
+  }
+  Comments(::Display, "Display the result of apply the partial effect")
+  
+  #LINE
+  #--------------------------------------------------------------
+  proc ::GenerateLine() {
+    ::line = AnalyticLine()
+    ::line->setAngle(::line_angle)
+    ::line->set_n(::n)
+  }
+  Comments(::GenerateLine, "Generate analytic line")
+  #--------------------------------------------------------------
+  proc ::ResetLine() {
+    ::mx = 1.0
+    ::my = 1.0
+    ::n  = 50.0
+    ::angle = ::mx / ::my
+    ::angle = atan ::angle
+    ::angle = abs(::angle*360)/(2*Pi)
+    ::s_angle = sprint("%f",::angle)
+    ::win.Update(-1)
+    if(::reloadLine == 1) {
+      ::RecomputeLine()
+    }
+  }
+  Comments(::ResetLine, "Reset analytic line parameters")
+  
+  #CIRCLE
+  #--------------------------------------------------------------
+  proc ::GenerateCircle() {
+    ::circle = AnalyticCircle()
+    ::circle->setCenter(::cx,::cy)
+    ::circle->setRadius(::cr)
+  }
+  Comments(::GenerateCircle, "Generate analytic circle")
+  #--------------------------------------------------------------
+  proc ::ResetCircle() {
+    ::cx = 50.0
+    ::cy = 50.0
+    ::cr = 20.0
+    ::win.Update(-1)
+    if(::reloadCircle == 1){
+      ::RecomputeCircle()
+    }
+  }
+  Comments(::ResetCircle, "Reset analytic circle parameters")
+  
+  #VESSEL 2D
+  #--------------------------------------------------------------
+  proc ::GenerateVessel2D() {
+    ::vessel2D = AnalyticStraightVessel2D()
+    ::vessel2D->setCenter(::vessel_cx, ::vessel_cy)
+    ::vessel2D->setAngle(::vessel_angle)
+    ::vessel2D->setThickness(::vessel_thick)
+  }
+  Comments(::GenerateVessel2D, "Generate an analytic 2D straight vessel")
+  #--------------------------------------------------------------
+  proc ::ResetVessel2D() {
+    ::vessel_cx    = 50.0
+    ::vessel_cy    = 50.0
+    ::vessel_angle = 45.0
+    ::vessel_thick =  4.0
+    ::win.Update(-1)
+    if (::reloadVessel2D == 1){
+      ::RecomputeVessel2D()
+    }
+  }
+  
+  #RING
+  #--------------------------------------------------------------
+  proc ::GenerateRing2D() {
+    ::ring2D = AnalyticRing2D()
+    ::ring2D->setCenter(::ring_cx, ::ring_cy)
+    ::ring2D->setRadius(::ring_radius)
+    ::ring2D->setThickness(::ring_thick)
+  }
+  Comments(::GenerateRing2D, "Generate an analytic 2D ring")
+  #--------------------------------------------------------------
+  proc ::ResetRing2D() {
+    ::ring_cx = 50.0
+    ::ring_cy = 50.0
+    ::ring_radius = 30.0
+    ::ring_thick = 2.0
+    ::win.Update(-1)
+    if (::reloadRing2D) {
+      ::RecomputeRing2D()
+    }
+  }
+  
+  #CUBE
+  #--------------------------------------------------------------
+  proc ::GenerateCube() {
+    ::cube = AnalyticCube()
+    ::cube->setCenter(::cube_cx, ::cube_cy, ::cube_cz)
+    ::cube->setDimX(::cube_dimx)
+    ::cube->setDimY(::cube_dimy)
+    ::cube->setDimZ(::cube_dimz)
+  }
+  Comments(::GenerateCube, "Generate analytic cube")
+  #--------------------------------------------------------------
+  proc ::ResetCube() {
+    ::cube_cx   = 50.0
+    ::cube_cy   = 50.0
+    ::cube_cz   = 50.0
+    ::cube_dimx = 30.0
+    ::cube_dimy = 30.0
+    ::cube_dimz = 30.0
+    ::win.Update(-1)
+    if (::reloadCube == 1) {
+      ::RecomputeCube()
+    }
+  }
+  Comments(::ResetCube, "Reset analytic cube parameters")
+  
+  #CYLINDER
+  #--------------------------------------------------------------
+  proc ::GenerateCylinder() {
+    ::cylinder = AnalyticCylinder()
+    ::cylinder->setRadius(::cylinder_r)
+    ::cylinder->setXdir(::cylinder_xdir)
+    ::cylinder->setYdir(::cylinder_ydir)
+    ::cylinder->setZdir(::cylinder_zdir)
+  }
+  Comments(::GenerateCylinder, "Generate analytic cylinder")
+  #--------------------------------------------------------------
+  proc ::ResetCylinder() {
+    ::cylinder_r    = 25.0
+    ::cylinder_xdir = 0.0
+    ::cylinder_ydir = 0.0
+    ::cylinder_zdir = 9.0
+    ::win.Update(-1)
+    if (::reloadCylinder == 1) {
+      ::RecomputeCylinder()
+    }
+  }
+  Comments(::ResetCylinder, "Reset analytic cylinder parameters")
+  
+  #SPHERE
+  #--------------------------------------------------------------
+  proc ::GenerateSphere() {
+    ::sphere = AnalyticSphere()
+    ::sphere->setCenter(::sx,::sy,::sz)
+    ::sphere->setRadius(::sr)
+  }
+  Comments(::GenerateSphere, "Generate analytic sphere")
+  #--------------------------------------------------------------
+  proc ::ResetSphere() {
+    ::sx = 50.0
+    ::sy = 50.0
+    ::sz = 50.0
+    ::sr = 20.0
+    ::win.Update(-1)
+    if(::reloadSphere == 1){
+      ::RecomputeSphere()
+    }
+  }
+  Comments(::ResetSphere, "Reset analytic sphere parameters")
+  
+  #TORUS
+  #--------------------------------------------------------------
+  proc ::GenerateTorus() {
+    ::torus = AnalyticTorus()
+    ::torus->setCenter(::tx,::ty,::tz)
+    ::torus->set_rmin(::tr)
+    ::torus->set_rmax(::tR)
+  }
+  Comments(::GenerateTorus, "Generate analytic torus")
+  #--------------------------------------------------------------
+  proc ::ResetTorus() {
+    ::tx = 50.0
+    ::ty = 50.0
+    ::tz = 50.0
+    ::tr = 2.0
+    ::tR = 10.0
+    ::win.Update(-1)
+    if(::reloadTorus == 1){
+      ::RecomputeTorus()
+    }
+  }
+  Comments(::ResetTorus, "Reset analytic torus parameters")
+
+  #--------------------------------------------------------------
+  proc ::RecomputeLine() {
+    if(::reloadLine == 1) {
+      if(exists(::line)) {
+        ::line->setAngle(::line_angle)
+        ::line->set_n(::n)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::line)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeCircle() {
+    if(::reloadCircle == 1) {
+      if(exists(::circle)) {
+          ::circle->setCenter(::cx,::cy)
+          ::circle->setRadius(::cr)
+          if(exists(::pv)) {
+            ::pv->setAnalyticFunction(&::circle)
+            ::Compute()
+            ::Display()
+          }
+        }
+    }
+  }  
+  #--------------------------------------------------------------
+  proc ::RecomputeVessel2D() {
+    if(::reloadVessel2D == 1) {
+      if(exists(::vessel2D)) {
+        ::vessel2D->setCenter(::vessel_cx, ::vessel_cy)
+        ::vessel2D->setAngle(::vessel_angle)
+        ::vessel2D->setThickness(::vessel_thick)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::vessel2D)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeRing2D() {
+    if(::reloadRing2D == 1) {
+      if(exists(::ring2D)) {
+        ::ring2D->setCenter(::ring_cx, ::ring_cy)
+        ::ring2D->setRadius(::ring_radius)
+        ::ring2D->setThickness(::ring_thick)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::ring2D)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeCube() {
+    if(::reloadCube == 1) {
+      if(exists(::cube)) {
+        ::cube->setCenter(::cube_cx, ::cube_cy, ::cube_cz)
+        ::cube->setDimX(::cube_dimx)
+        ::cube->setDimY(::cube_dimy)
+        ::cube->setDimZ(::cube_dimz)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::cube)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeCylinder() {
+    if(::reloadCylinder == 1) {
+      if(exists(::cylinder)) {
+        ::cylinder->setRadius(::cylinder_r)
+        ::cylinder->setXdir(::cylinder_xdir)
+        ::cylinder->setYdir(::cylinder_ydir)
+        ::cylinder->setZdir(::cylinder_zdir)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::cylinder)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeSphere() {
+    if(::reloadSphere == 1) {
+      if(exists(::sphere)) {
+        ::sphere->setCenter(::sx,::sy,::sz)
+        ::sphere->setRadius(::sr)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::sphere)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeTorus() {
+    if(::reloadTorus == 1) {
+      if(exists(::torus)) {
+        ::torus->setCenter(::tx,::ty,::tz)
+        ::torus->set_rmin(::tr)
+        ::torus->set_rmax(::tR)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::torus)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::Save() {
+    if(exists(::res)) {
+      eval "global::" + ::output_name + "<<=::res;"
+    } else {
+      InfoDialog "Result image doesn't exist. You must apply the method"
+    }
+  }
+  Comments(::Save, "Save the result image")
+  
+  #--------------------------------------------------------------
+  proc ::OnImageDim(){
+    ::win.Enable(::dimz_id, (::ImageDim==1))
+    #::win.Update(::dimz_id)
+    ::win.EnablePanel(::functions_2D, ::ImageDim==0)
+    ::win.EnablePanel(::functions_3D, ::ImageDim==1)
+  }
+  
+  #--------------------------------------------------------------
+  proc ::Gui(){
+  
+    ::win = ParamPanel("Synth.Im.")
+
+    ::win.BeginBook()
+      #Main tab
+      ::win.AddPage("Main")
+
+        ::win.BeginBoxPanel("Input image")
+          ::win.BeginBoxPanel("Size")
+            ::win.AddInt(&::dimx, "x", 1, 800)
+            ::win.AddInt(&::dimy, "y", 1, 800)
+            ::dimz_id = ::win.AddInt(&::dimz, "z", 1, 800)
+          ::win.EndBoxPanel()
+          ::win.BeginHorizontal()
+            #::AddBitmapButton(&::win, &::icons._New_image, 16, "CreateInputImage")
+            ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetInputImage")
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+
+        ::cm_id = ::win.BeginBoxPanel("Partial volume parameters")
+          ::win.AddInt(&::subdiv2D,   "2D Subdivision" , 1, 10)
+          ::win.AddInt(&::subdiv3D,   "3D Subdivision" , 1, 10)
+          #Method for compute partial volume
+          #::pv_id = ::win.AddEnum(&::pv_type, "Method")
+          #  ::win.AddEnumChoice(::pv_id, "Analytic PS")
+          #  ::win.AddEnumChoice(::pv_id, "Analytic PV")
+        ::win.EndBoxPanel()
+        
+        ::win.AddBoolean(&::autodisplay,"Auto Display")
+        ::save_box = ::win.BeginBoxPanel("Save output")
+          ::win.BeginHorizontal()
+            ::win.AddString(&::output_name, "Name")
+            ::AddBitmapButton(&::win, &::icons._Save, 16, "Save")
+          ::win.EndHorizontal()
+          ::win.EnablePanel(::save_box, 0)
+        ::win.EndBoxPanel()
+      
+      #Function tab
+      ::functions_page = ::win.AddPage("Func")
+        ::win.BeginBook()
+          ::functions_2D = ::win.AddPage("2D")
+            ::type_id2D = ::win.AddEnum(&::type2D, "Function type")
+              ::win.AddEnumChoice(::type_id2D, "Line")
+              ::win.AddEnumChoice(::type_id2D, "Circle")
+              ::win.AddEnumChoice(::type_id2D, "Vessel")
+              ::win.AddEnumChoice(::type_id2D, "Ring")
+            ::win.SetCallback(&::NewType2D)
+            
+            #Functions2D notebook
+            ::book2D = ::win.BeginBook()
+            
+              ::page_line   = ::win.AddPage("Line")
+                ::win.BeginBoxPanel("Line parameters")
+                  ::win.AddFloat(&::line_angle, "Angle", 0, 360)
+                  ::win.SetCallback(&::RecomputeLine)
+                  ::win.AddFloat(&::n, "Cut point", 1,100)
+                  ::win.SetCallback(&::RecomputeLine)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateLine")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetLine")
+                  ::win.AddBoolean(&::reloadLine, "Reload")
+                ::win.EndHorizontal()
+                
+              ::page_circle = ::win.AddPage("Circle")
+                ::win.BeginBoxPanel("Circle parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::cx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeCircle)
+                    ::win.AddFloat(&::cy, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeCircle)
+                  ::win.EndBoxPanel()
+                  ::win.AddFloat(&::cr, "Radius", 1, 100)
+                  ::win.SetCallback(&::RecomputeCircle)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateCircle")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetCircle")
+                  ::win.AddBoolean(&::reloadCircle, "Reload")
+                ::win.EndHorizontal()
+                
+              ::page_vessel2D = ::win.AddPage("Vessel")
+                ::win.BeginBoxPanel("Straight Vessel 2D parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::vessel_cx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeVessel2D)
+                    ::win.AddFloat(&::vessel_cy, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeVessel2D)
+                  ::win.EndBoxPanel()
+                  ::win.AddFloat(&::vessel_angle, "Angle", 0, 360)
+                  ::win.SetCallback(&::RecomputeVessel2D)
+                  ::win.AddFloat(&::vessel_thick, "Thick.", 1, 10)
+                  ::win.SetCallback(&::RecomputeVessel2D)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateVessel2D")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetVessel2D")
+                  ::win.AddBoolean(&::reloadVessel2D, "Reload")
+                ::win.EndHorizontal()
+                
+              ::page_ring2D = ::win.AddPage("Ring")
+                ::win.BeginBoxPanel("Ring 2D parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::ring_cx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeRing2D)
+                    ::win.AddFloat(&::ring_cy, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeRing2D)
+                  ::win.EndBoxPanel()
+                  ::win.AddFloat(&::ring_radius, "r", 1, 100)
+                  ::win.SetCallback(&::RecomputeRing2D)
+                  ::win.AddFloat(&::ring_thick, "Thick.", 1, 6)
+                  ::win.SetCallback(&::RecomputeRing2D)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateRing2D")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetRing2D")
+                  ::win.AddBoolean(&::reloadRing2D, "Reload")
+                ::win.EndHorizontal()
+                
+              ::win.EndBook()
+              
+          ::functions_3D = ::win.AddPage("3D")
+            
+            ::type_id3D = ::win.AddEnum(&::type3D, "Function type")
+              ::win.AddEnumChoice(::type_id3D, "Cube")
+              ::win.AddEnumChoice(::type_id3D, "Cylinder")
+              ::win.AddEnumChoice(::type_id3D, "Sphere")
+              ::win.AddEnumChoice(::type_id3D, "Torus")
+            ::win.SetCallback(&::NewType3D)
+            
+            #Functions3D notebook
+            ::book3D = ::win.BeginBook()
+            
+              ::page_cube = ::win.AddPage("Cube")
+                ::win.BeginBoxPanel("Cube parameters")
+                ::win.BeginBoxPanel("Center")
+                  ::win.AddFloat(&::cube_cx, "x", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                  ::win.AddFloat(&::cube_cy, "y", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                  ::win.AddFloat(&::cube_cz, "z", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                ::win.EndBoxPanel()
+                ::win.BeginBoxPanel("Dimensions")
+                  ::win.AddFloat(&::cube_dimx, "dimx", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                  ::win.AddFloat(&::cube_dimy, "dimy", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                  ::win.AddFloat(&::cube_dimz, "dimz", 0, 100)
+                  ::win.SetCallback(&::RecomputeCube)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateCube")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetCube")
+                  ::win.AddBoolean(&::reloadCube, "Reload")
+                ::win.EndHorizontal()
+              
+              ::page_cylinder = ::win.AddPage("Cyl")
+                ::win.BeginBoxPanel("Cylinder parameters")
+                  ::win.AddFloat(&::cylinder_r, "Radius", 1, 100)
+                  ::win.SetCallback(&::RecomputeCylinder)
+                  ::win.AddFloat(&::cylinder_xdir, "Xdir", 0, 9)
+                  ::win.SetCallback(&::RecomputeCylinder)
+                  ::win.AddFloat(&::cylinder_ydir, "Ydir", 0, 9)
+                  ::win.SetCallback(&::RecomputeCylinder)
+                  ::win.AddFloat(&::cylinder_zdir, "Zdir", 0, 9)
+                  ::win.SetCallback(&::RecomputeCylinder)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateCylinder")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetCylinder")
+                  ::win.AddBoolean(&::reloadCylinder, "Reload")
+                ::win.EndHorizontal()
+              
+              ::page_sphere = ::win.AddPage("Sphere")
+                ::win.BeginBoxPanel("Sphere parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::sx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeSphere)
+                    ::win.AddFloat(&::sy, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeSphere)
+                    ::win.AddFloat(&::sz, "z", 0, 100)
+                    ::win.SetCallback(&::RecomputeSphere)
+                  ::win.EndBoxPanel()
+                  ::win.AddFloat(&::sr, "Radius", 1, 100)
+                  ::win.SetCallback(&::RecomputeSphere)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateSphere")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetSphere")
+                  ::win.AddBoolean(&::reloadSphere, "Reload")
+                ::win.EndHorizontal()
+              
+              ::page_torus  = ::win.AddPage("Torus")
+                ::win.BeginBoxPanel("Torus parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::tx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeTorus)
+                    ::win.AddFloat(&::ty, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeTorus)
+                    ::win.AddFloat(&::tz, "z", 0, 100)
+                    ::win.SetCallback(&::RecomputeTorus)
+                  ::win.EndBoxPanel()
+                  ::win.BeginBoxPanel("Radius")
+                    ::win.AddFloat(&::tr, "Rmin", 1, 100)
+                    ::win.SetCallback(&::RecomputeTorus)
+                    ::win.AddFloat(&::tR, "Rmax", 1, 100)
+                    ::win.SetCallback(&::RecomputeTorus)
+                  ::win.EndBoxPanel()
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateTorus")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetTorus")
+                  ::win.AddBoolean(&::reloadTorus, "Reload")
+                ::win.EndHorizontal()
+                
+              ::win.EndBook()
+        ::win.EndBoxPanel()
+        
+        #::win.EnablePanel(::functions_page, 0)
+        ::win.EndBook()
+        ::win.BeginBoxPanel("Intensity")
+          ::win.AddFloat(&::A, "A", 0, 255)
+          ::win.AddFloat(&::B, "B", 0, 255)
+        ::win.EndBoxPanel()
+      
+      #Help tab
+      ::AddHelpPage(&::win)
+      
+    ::win.EndBook()
+
+    ::win.BeginHorizontal()
+        #Configure input image
+        ::ImageDim_id = ::win.AddEnum(&::ImageDim, "dim")
+          ::win.AddEnumChoice(::ImageDim_id, "2D")
+          ::win.AddEnumChoice(::ImageDim_id, "3D")
+        ::win.SetCallback(&::OnImageDim)
+      ::icons.LoadIconPNG("Play")
+      ::AddBitmapButton(&::win, &::icons._Play, 16, "Compute")
+      ::AddBitmapButton(&::win, &::icons._Show, 16, "Display")
+    ::win.EndHorizontal()
+
+    # Update Image dim
+    ::OnImageDim()
+        
+    ::AddStandardButtons(&::win)
+    ::win.Update(-1)
+    ::win.Display()
+    
+    ::NewType2D()
+    ::NewType3D()
+  }
+  
+  ::Init
+  
+  }
+
+}
+# end if (!exists(SyntheticImagesClass))
+
+
+  #----------------------------
+  # Main
+  #----------------------------
+
+#  if (!exists(si)) {
+#    SyntheticImagesClass si
+#  } else {
+#    InfoDialog "The script for generate synthetic images seems to be already loaded."
+#  }

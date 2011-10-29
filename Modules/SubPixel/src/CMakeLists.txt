@@ -124,7 +124,7 @@ SET(${KIT}_HDRS
   AnalyticCircle.h
   AnalyticCube.h
   AnalyticCylinder.h
-  AnalyticFunctionBase.h
+  #AnalyticFunctionBase.h
   AnalyticLine.h
   AnalyticPlane.h
   AnalyticRing2D.h
@@ -143,6 +143,7 @@ SET(${KIT}_HDRS
   Wrapping/wrap_AnalyticSphere.h
   Wrapping/wrap_AnalyticStraightVessel2D.h
   Wrapping/wrap_AnalyticTorus.h
+  Wrapping/wrap_ComputePartialVolume.h
   Wrapping/wrap_SubVoxel3D.h
   Wrapping/wrap_SubPixel2D.h
   ${KIT}Plugin.h
@@ -153,7 +154,7 @@ SET(${KIT}_SRCS
   AnalyticCircle.cpp
   AnalyticCube.cpp
   AnalyticCylinder.cpp
-  AnalyticFunctionBase.cpp
+  #AnalyticFunctionBase.cpp
   AnalyticLine.cpp
   AnalyticPlane.cpp
   AnalyticRing2D.cpp
@@ -172,6 +173,7 @@ SET(${KIT}_SRCS
   Wrapping/wrap_AnalyticSphere.cpp
   Wrapping/wrap_AnalyticStraightVessel2D.cpp
   Wrapping/wrap_AnalyticTorus.cpp
+  Wrapping/wrap_ComputePartialVolume.cpp
   Wrapping/wrap_SubVoxel3D.cpp
   Wrapping/wrap_SubPixel2D.cpp
   ${KIT}Plugin.cpp
@@ -188,6 +190,7 @@ ENDIF(WIN32)
 SET(${KIT}_SRCS
     ${${KIT}_SRCS}
     ${${KIT}_HDRS}
+    ${${KIT}_scripts}
 )
 
 # Deal with GLSL files like in VTK

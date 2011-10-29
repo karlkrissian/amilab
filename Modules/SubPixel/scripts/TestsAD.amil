@@ -1,0 +1,337 @@
+#Interface for synthetic aortic dissection
+
+func "Common/ScriptGui"
+#Include NRAD for denoising
+#func "Denoising/AnisoNRAD/AnisoNRADClass.amil"
+
+if (!exists(thickTADClass)){
+
+  Class thickTADClass : public ScriptGui{
+  
+    #-----------------------
+    proc ::Init(){
+      ::class_name  = "global::Subpixel2DClass"
+      
+      #Input image parameters
+      ::dimx = INT(100), "Input image X size"
+      ::dimy = INT(100), "Input image Y size"
+      
+      #Intensity values inside and outside of the figures
+      ::A  = 200.0, "A intensity value" 
+      ::B  = 100.0, "B intensity value"
+      
+      #Circle parameters
+      ::cx = 50.0, "X component of the center of the circle"
+      ::cy = 50.0, "Y component of the center of the circle"
+      ::cr = 20.0, "Radius of the circle"
+      
+      #Ring 2D parameters
+      ::ring_cx     = 80.0, "X component of the center of the ring"
+      ::ring_cy     = 50.0, "Y component of the center of the ring"
+      ::ring_radius = 30.0, "Ring internal radius"
+      ::ring_thick  = 2.0, "Thickness of the ring"
+            
+      ::subdiv = INT(6), "Subdivision level"
+            
+      #Thickness loop limits
+      ::min_thick = 1
+      ::max_thick = 6
+      #::step_thick = 6
+      ::step_thick = 1
+      
+      #Noise loop limits
+      ::noise_min = 0
+      ::noise_max = 20
+      ::noise_step = 4
+      #::noise_step = 20
+
+      ::num_experiments = 4
+      #::num_experiments = 2
+
+      ::CreateGui()
+    }
+
+    #-----------------------
+    
+    proc ::CreateInputImage() {
+      #Create the image with the parameters and enable the compute method panel
+      ::input <<= Image(FLOAT,::dimx,::dimy,1)
+      ::input   = 0
+    }
+    Comments(::CreateInputImage, "Create the input image.")
+    
+    #-----------------------
+    
+    proc ::Statistics(IMAGE res_image, NUM thick) {
+      #Firstly, the subpixel detection result is needed, for compute the distance
+      ::ComputeSubpixel(res_image)
+      #Take the position of subpixel components and make a cast to double
+      x <<= ((DOUBLE)::spResult.xpos)*(::spResult.border==2)+((DOUBLE)::spResult.xpos-::spResult.acoef)*(::spResult.border!=2)
+      #Similar to the equation, but with x=0. It is the subpixel position
+      y <<= ((DOUBLE)::spResult.ypos-::spResult.acoef)*(::spResult.border==2)+((DOUBLE)::spResult.ypos)*(::spResult.border!=2)
+      #Distance for the circle
+      modC <<= sqrt((x-::cx)*(x-::cx)+(y-::cy)*(y-::cy))
+      #and for the ring
+      modR <<= sqrt((x-::ring_cx)*(x-::ring_cx)+(y-::ring_cy)*(y-::ring_cy))
+      
+      #Now, calculate the diference with the real position, using the radius
+      #Use the abs value, because the sign it does not matter
+      #Circle
+      dis1 <<= abs(modC - ::cr)
+      #Internal circle of the ring
+      dis2 <<= abs(modR - ::ring_radius)
+      #External circle of the ring
+      dis3 <<= abs(modR - (::ring_radius+thick))
+      
+      #The distance will be the minimum of the three distances calculated
+      resDis <<= -max(max(-dis1,-dis2),-dis3)
+      
+      #Calculate statistics of subpixel position (mean and variance)
+      ::dis_mean = mean(resDis)
+      
+      var <<= (resDis - ::dis_mean)*(resDis - ::dis_mean)
+      dis_var = mean(var)
+      ::dis_std = sqrt(dis_var)
+    }
+    Comments(::Statistics, "Calculate statistics of subpixel detection")
+    
+    #-----------------------
+    
+    proc ::ComputeSubpixel(IMAGE res_image) {
+      #if(exists(::res)) {
+        if (exists(::spResult)) { del ::spResult; }
+        spObject = SubPixel2D(&res_image, 25, 0)
+        ::spResult = spObject.DenoisingGus()
+      #} else {
+      #  InfoDialog "You must create first the image"
+      #}
+    }
+    
+    #-----------------------
+   
+    proc ::RunIteration() {
+      #Compute the result image
+      ::res <<= ::resC
+      #::res = (::resC!=::B)*(::resR!=::A)*::resR+((::resC==::B)+(::resR==::A))*::res
+      for i=0 to ::resR.tx-1 {
+        for j=0 to ::resR.ty-1 {
+          if(::resC(i,j,0)!=::B && ::resR(i,j,0)!=::A) {
+            ::res.setpos(i,j,0)
+            ::res.set(::resR(i,j,0))
+          }
+        }
+      }
+    }
+    Comments(::RunIteration, "Generate the syntheticAD image.")
+    
+    #-----------------------
+    proc ::RunTests() \
+    {
+      ::CreateInputImage()
+      #create a compute partial volume object
+      pv     = ComputePartialVolume()
+      pv->setInputImage(&::input)
+      pv->setSubdiv(::subdiv)
+      circle = AnalyticCircle()
+      ring   = AnalyticRing2D()
+      circle->setCenter(::cx, ::cy)
+      circle->setRadius(::cr)
+      #Create the circle
+      pv->setAnalyticFunction(&circle)
+      ::resC <<= pv->ComputeAnalyticPartialSurfaceSubdiv(::A, ::B)
+      ring->setCenter(::ring_cx, ::ring_cy)
+      ring->setRadius(::ring_radius)
+      mean_image = Image(DOUBLE,6,1,1)
+      std_image  = Image(DOUBLE,6,1,1)
+      
+      #Initialice the values of the parameters for AnisoNRAD
+      dt = 1.0/6.0
+      t = 2.0
+      prog = 0
+      increment = (INT)(100/(6+6+36))
+      SetProgress(prog)
+
+      # 1. Thickness test
+      printn "Starting thickness test..."
+      if(exists(i)) { del i; }
+      for i=::min_thick to ::max_thick step ::step_thick {
+        ring->setThickness(i)
+        #Create the ring
+        pv->setAnalyticFunction(&ring)
+        ::resR <<= pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
+        ::RunIteration()
+        ::Statistics(&::res,i)
+        mean_image.setpos(i-1,0,0)
+        mean_image.set(::dis_mean)
+        std_image.setpos(i-1,0,0)
+        std_image.set(::dis_std)
+        printn sprint("Thickness: %1.0f ", i)
+        print "\tMean = "
+        printn ::dis_mean
+        print "\tSTD  = "
+        printn ::dis_std
+        prog += increment
+        SetProgress(prog)
+      }
+      #Mean curve
+      ::dwt.SetCurve(mean_image,0)
+      #Standard deviation curve
+      ::dwt.SetCurve(std_image,1)
+      #Color for variance curve
+      ::dwt.SetCurveProperties(1,"#0000FF",0,1)
+      ::dwt.SetYLimits(0, max(max(mean_image, std_image))*1.1)
+      printn "Thickness test done!"
+      
+      # 2. Noise test
+      printn "Starting noise test..."
+      mean_image = 0
+      std_image  = 0
+      ring->setThickness(4)
+      pv->setAnalyticFunction(&ring)
+      ::resR <<= pv->ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
+      ::RunIteration()
+      #Also set the thickness value to i, for compute statistics
+      i = 4
+      
+      # region for compute the noise statistics
+      noise_extent = ::resC[0:20,0:20]
+      noise_counter = 0
+      
+      for j=::noise_min to ::noise_max step ::noise_step {
+        local_mean = 0.0
+        local_std  = 0.0
+        ::RunIteration()
+        for k=0 to 3 {
+          res_noise <<= AddGaussNoise(::res,0,j)
+          #Denoise the image using AnisoNRAD command
+          if(exists(res_noise_draw)) { del res_noise_draw; }
+          res_denoised <<= AnisoNRAD(res_noise, 2, dt, t/dt, 1, noise_extent.GetExtent)
+
+          # use thickness 4
+          ::Statistics(&res_denoised,4)
+
+          local_mean += ::dis_mean
+          local_std  += ::dis_std
+        }
+        
+        mean_image.setpos(noise_counter,0,0)
+        mean_image.set(local_mean/4)
+        std_image.setpos(noise_counter,0,0)
+        std_image.set(local_std/4)
+        printn sprint("Noise (sd): %1.0f ", j)
+        print "\tMean = "
+        printn local_mean/4
+        print "\tSTD  = "
+        printn local_std/4
+        prog += increment
+        SetProgress(prog)
+        noise_counter++
+      }
+      ::dwn.SetCurve(mean_image,0)
+      ::dwn.SetCurve(std_image, 1)
+      ::dwn.SetCurveProperties(1,"#0000FF",0,1)
+      ::dwn.SetYLimits(0, max(max(mean_image, std_image))*1.1)
+      printn "Noise test done!"
+      
+      
+
+      #Thickness and noise test
+      printn "Starting thickness&noise test..."
+      mean_image <<= Image(DOUBLE,6,6,1)
+      std_image  <<= Image(DOUBLE,6,6,1)
+      del i
+      for i=::min_thick to ::max_thick step ::step_thick {
+        noise_counter = 0
+        for j=::noise_min to ::noise_max step ::noise_step {
+          local_mean = 0.0
+          local_std  = 0.0
+          ring->setThickness(i)
+          pv->setAnalyticFunction(&ring)
+          ::resR <<= pv.ComputeAnalyticPartialSurfaceSubdiv(::B, ::A)
+          ::RunIteration()
+          
+          for k=1 to ::num_experiments {
+            res_noise <<= AddGaussNoise(::res,0,j)
+            #Denoise the image using AnisoNRAD command
+            res_denoised <<= AnisoNRAD(res_noise, 2, dt, t/dt, 1, noise_extent.GetExtent)
+            ::Statistics(&res_denoised,i)
+            local_mean += ::dis_mean
+            local_std  += ::dis_std
+          }
+          
+          mean_image.setpos(i-1,noise_counter,0)
+          mean_image.set(local_mean/4)
+          std_image.setpos(i-1,noise_counter,0)
+          std_image.set(local_std/4)
+          print sprint("Thickness: %1.0f", i)
+          printn sprint(" & Noise (sd): %1.0f", j)
+          print "\tMean = "
+          printn local_mean/4
+          print "\tSTD  = "
+          printn local_std/4
+          prog += increment
+          SetProgress(prog)
+          noise_counter++
+        }
+      }
+      SetProgress(100)
+      mean_image.save "eurocast/meanTN.ami.gz"
+      std_image.save "eurocast/stdTN.ami.gz"
+      printn "Thickness&noise test done!"
+    }
+    Comments(::RunTests, "Run tests with differents thickness and noise values.")
+    
+    #-----------------------
+    
+    proc ::CreateGui() {
+      ::win = ParamPanel("ADThicknessTest")
+      
+      #add Drawing Window
+      #::win.BeginBoxPanel("Thickness error graph")
+        d = ::win.CurrentParent()
+        ::dwt = wxDrawingWindow(&d)
+        ::dwt.SetMinSize(&wx.wxSize(50, 100))
+        ::dwt.SetBackgroundColour(&wx.wxColour(255,255,255))
+        ::dwt.SetXLimits(0,   5)
+        ::dwt.SetYLimits(0, 0.5)
+        ::win.AddString("Thickness error", "Graph")
+        ::win.AddWidget(&::dwt,0)
+      #::win.EndBoxPanel()
+      
+      #::win.BeginBoxPanel("Noise error graph")
+        d = ::win.CurrentParent()
+        ::dwn = wxDrawingWindow(&d)
+        ::dwn.SetMinSize(&wx.wxSize(50, 100))
+        ::dwn.SetBackgroundColour(&wx.wxColour(255,255,255))
+        #Faltan poner los límites
+        ::dwn.SetXLimits(0,   5)
+        ::dwn.SetYLimits(0, 0.5)
+        ::win.AddString("Noise error", "Graph")
+        ::win.AddWidget(&::dwn,0)
+      #::win.EndBoxPanel()
+      
+      ::icons.LoadIconPNG("Play")
+      ::AddBitmapButton(&::win, &::icons._Play, 16, "RunTests")
+      
+      ::AddStandardButtons(&::win)
+      
+      ::win.Update(-1)
+      ::win.Display()
+      
+    }
+    
+    ::Init()
+
+  } #end Class
+
+} #end If
+
+
+#----------------
+# Main
+#----------------
+if (!exists(thickTAD_object)) {
+  thickTADClass thickTAD_object
+} else {
+  InfoDialog "The script for test the aortic dissection synthetic images seems to be already loaded."
+}
