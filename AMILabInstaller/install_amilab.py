@@ -7,8 +7,10 @@ import dbus
 import sys
 import os
 import config
-from gi.repository import PackageKitGlib as packagekit
 
+initdir=os.getcwd()
+
+#from gi.repository import PackageKitGlib as packagekit
 import packagekit_wrapper
 
 # Create the system configuration filename
@@ -17,6 +19,9 @@ if platform.system()=='Linux':
   conf_platform = 'config_{0}'.format(platform.system())
   conf_dist     = 'config_{0}_{1}'.format(platform.system(),linuxdist[0])
   conf_distnum  = 'config_{0}_{1}_{2}'.format(platform.system(),linuxdist[0],linuxdist[1])
+  conf_platform = conf_platform.replace('.','_')
+  conf_dist     = conf_dist    .replace('.','_')
+  conf_distnum  = conf_distnum .replace('.','_')
   print "Configuration filename is {0}".format(conf_distnum)
 
 # source different files
@@ -30,12 +35,21 @@ if os.path.isfile(conf_platform+'.py'):
 if os.path.isfile(conf_dist+'.py'):
   exec("import {0}".format(conf_dist))
   exec("{0}.SetConfig()".format(conf_dist))
+  try:
+    exec("{0}.PreInstall()".format(conf_dist))
+  except:
+    print "no pre-installation required for {0}".format(conf_dist)
   #print "reading {0}".format(conf_dist)
   #execfile(conf_dist)
   
 if os.path.isfile(conf_distnum+'.py'):
   exec("import {0}".format(conf_distnum))
   exec("{0}.SetConfig()".format(conf_distnum))
+  # try pre-installation commands
+  try:
+    exec("{0}.PreInstall()".format(conf_distnum))
+  except:
+    print "no pre-installation required for {0}".format(conf_distnum)
   #print "reading {0}".format(conf_distnum)
   #execfile(conf_distnum)
 
@@ -223,13 +237,16 @@ if __name__ == '__main__':
   os.chdir("release")
 
   # check for ITK_DIR
-  if os.access(maindir+'/ITK_DIR', os.R_OK):
-    f.open(maindir+'/ITK_DIR')
+  print "looking for "+initdir+'/ITK_DIR'
+  if os.access(initdir+'/ITK_DIR', os.R_OK):
+    f = open(initdir+'/ITK_DIR')
     ITK_DIR=f.readline()
     f.close()
     config.AMILAB_CMAKE_FLAGS += ' -DITK_DIR="{0}"'.format(ITK_DIR)
 
-  cmake_return = os.system('cmake ../.. {0} -DCMAKE_INSTALL_PREFIX="{1}"'.format(config.AMILAB_CMAKE_FLAGS,installpath))
+  cmake_cmd = 'cmake ../.. {0} -DCMAKE_INSTALL_PREFIX="{1}"'.format(config.AMILAB_CMAKE_FLAGS,installpath)
+  print "CMAKE CMD="+cmake_cmd
+  cmake_return = os.system(cmake_cmd)
   #eval "cmake ${AMILAB_CMAKE_FLAGS} ../.."
 
   if cmake_return != 0:
@@ -250,5 +267,6 @@ if __name__ == '__main__':
   #cpack -G RPM
   #rpm -ivh AMILab-3.0.0-Linux.`uname -p`.rpm
 
-  os.chdir(maindir)
   
+os.chdir(initdir)
+

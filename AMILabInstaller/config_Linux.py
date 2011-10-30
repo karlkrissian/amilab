@@ -2,8 +2,6 @@
 import config
 
 def SetConfig():
-  config.INSTALLCMD             = "yum install"
-  config.INSTALLER_PACKAGES     = "yum-plugin-fastestmirror"
   config.COMPILATION_PACKAGES   = "gcc gcc-c++ binutils make subversion wget tar gawk"
   config.CMAKE_PACKAGES         = "cmake cmake-gui"
   config.VTKDEV_PACKAGES        = "vtk-devel"
