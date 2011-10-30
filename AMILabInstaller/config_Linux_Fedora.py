@@ -1,2 +1,5 @@
 
-PYSVN_PACKAGES="pysvn"
+import config
+
+def SetConfig():
+  config.PYSVN_PACKAGES="pysvn"

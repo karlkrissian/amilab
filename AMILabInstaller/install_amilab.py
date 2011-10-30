@@ -6,6 +6,7 @@ import platform
 import dbus
 import sys
 import os
+import config
 from gi.repository import PackageKitGlib as packagekit
 
 import packagekit_wrapper
@@ -13,23 +14,32 @@ import packagekit_wrapper
 # Create the system configuration filename
 if platform.system()=='Linux':
   linuxdist= platform.linux_distribution()
-  conf_platform = 'config_{0}.py'.format(platform.system())
-  conf_dist     = 'config_{0}_{1}.py'.format(platform.system(),linuxdist[0])
-  conf_distnum  = 'config_{0}_{1}_{2}.py'.format(platform.system(),linuxdist[0],linuxdist[1])
+  conf_platform = 'config_{0}'.format(platform.system())
+  conf_dist     = 'config_{0}_{1}'.format(platform.system(),linuxdist[0])
+  conf_distnum  = 'config_{0}_{1}_{2}'.format(platform.system(),linuxdist[0],linuxdist[1])
   print "Configuration filename is {0}".format(conf_distnum)
 
 # source different files
-if os.path.isfile(conf_platform):
-  print "reading {0}".format(conf_platform)
-  execfile(conf_platform)
-if os.path.isfile(conf_dist):
-  print "reading {0}".format(conf_dist)
-  execfile(conf_dist)
-if os.path.isfile(conf_distnum):
-  print "reading {0}".format(conf_distnum)
-  execfile(conf_distnum)
+if os.path.isfile(conf_platform+'.py'):
+  exec("import {0}".format(conf_platform))
+  exec("{0}.SetConfig()".format(conf_platform))
+  #config.libmodule = wx_lib.config
+  #print "reading {0}".format(conf_platform)
+  #execfile(conf_platform)
+  
+if os.path.isfile(conf_dist+'.py'):
+  exec("import {0}".format(conf_dist))
+  exec("{0}.SetConfig()".format(conf_dist))
+  #print "reading {0}".format(conf_dist)
+  #execfile(conf_dist)
+  
+if os.path.isfile(conf_distnum+'.py'):
+  exec("import {0}".format(conf_distnum))
+  exec("{0}.SetConfig()".format(conf_distnum))
+  #print "reading {0}".format(conf_distnum)
+  #execfile(conf_distnum)
 
-print INSTALLER_PACKAGES
+#print config.INSTALLER_PACKAGES
 
 def InstallPackageDbus(pname):
   try:
@@ -73,7 +83,7 @@ def install_packages(pkgname):
   print "-------------------------"
 
   try:
-    exec('packages={0}_PACKAGES'.format(pkgname))
+    exec('packages=config.{0}_PACKAGES'.format(pkgname))
   except:
     print "ERROR: {0}_PACKAGES not defined".format(pkgname)
     return
@@ -81,7 +91,7 @@ def install_packages(pkgname):
 
   if packages == "TOCOMPILE":
     print "Compiling {0} from source".format(pkgname)
-    system("{0}_COMPILE.py".format(pkgname))
+    os.system("python {0}_COMPILE.py".format(pkgname))
     #if [ $? != 0 ]
       #print "Installation of $1 failed"
       #exit $?
@@ -93,140 +103,152 @@ def install_packages(pkgname):
         #exit $?
   #fi
   
-#
-# selecting fastest mirror on ubuntu, check:
-# http://www.ubuntugeek.com/how-to-select-fastest-mirror-in-ubuntu.html
-#
-install_packages("INSTALLER")
+#----------------------------------------------------------------------
+# main
+#----------------------------------------------------------------------
+if __name__ == '__main__':
+  #
+  # selecting fastest mirror on ubuntu, check:
+  # http://www.ubuntugeek.com/how-to-select-fastest-mirror-in-ubuntu.html
+  #
+  install_packages("INSTALLER")
 
-# Compilation packages
-install_packages("COMPILATION")
+  # Compilation packages
+  install_packages("COMPILATION")
 
-# get number of threads
-#numthreads=`awk '/model name/  {ORS=""; count++;  }  END {  print  count "\n" }' /proc/cpuinfo`
+  # get number of threads
+  #numthreads=`awk '/model name/  {ORS=""; count++;  }  END {  print  count "\n" }' /proc/cpuinfo`
 
-# CMake installation
-install_packages("CMAKE")
+  # CMake installation
+  install_packages("CMAKE")
 
-# VTK
-install_packages("VTKDEV")
+  # VTK
+  install_packages("VTKDEV")
 
-# WXWIDGETS
-install_packages("WXWIDGETSDEV")
+  # WXWIDGETS
+  install_packages("WXWIDGETSDEV")
 
-# Boost
-install_packages("BOOSTDEV")
+  # Boost
+  install_packages("BOOSTDEV")
 
-# Image IO packages
-install_packages("IMDEV")
+  # Image IO packages
+  install_packages("IMDEV")
 
-# Compression packages
-install_packages("COMPRESSDEV")
+  # Compression packages
+  install_packages("COMPRESSDEV")
 
-# Other packages
-install_packages("OTHERDEV")
+  # Other packages
+  install_packages("OTHERDEV")
 
-# Bison-Flex packages
-install_packages("BISONFLEX")
+  # Bison-Flex packages
+  install_packages("BISONFLEX")
 
-# ITK packages
-install_packages("ITKDEV")
+  # ITK packages
+  install_packages("ITKDEV")
 
-# GCCXML package
-install_packages("GCCXML")
+  # GCCXML package
+  install_packages("GCCXML")
 
-#---------------------------------------------
-# installing repository
-#---------------------------------------------
-# try to use pysvn here ...
-# pysvn for fedora python-svn for ubuntu ...
-install_packages("PYSVN")
+  #---------------------------------------------
+  # installing repository
+  #---------------------------------------------
+  # try to use pysvn here ...
+  # pysvn for fedora python-svn for ubuntu ...
+  install_packages("PYSVN")
 
-#import sys
-#import svn.client
-import pysvn
+  #import sys
+  #import svn.client
+  import pysvn
 
-def notify( event_dict ):
-    return "notify"
+  def notify( event_dict ):
+      return "notify"
 
-def svn_co(url, path):
-  #svn.client.checkout(None, None, url, path, -1, 1, None, pool)
-  client = pysvn.Client()
-  client.callback_notify = notify
-  #check out the current version of the pysvn project
-  print "Checking out url:'{0}' to path:'{1}', be patient ...".format(url,path)
-  client.checkout(url, path)
-  print "Done. :)"
+  def svn_co(url, path):
+    #svn.client.checkout(None, None, url, path, -1, 1, None, pool)
+    client = pysvn.Client()
+    client.callback_notify = notify
+    #check out the current version of the pysvn project
+    print "Checking out url:'{0}' to path:'{1}', be patient ...".format(url,path)
+    client.checkout(url, path)
+    print "Done. :)"
 
-amilabpath='amilab_trunk'
-svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/trunk',amilabpath)
+  amilabpath='amilab_trunk'
+  svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/trunk',amilabpath)
 
-import os
-import shutil
+  import os
+  import shutil
 
-#os.getcwd()
-installpath=os.environ['HOME']+'/usr/local'
-os.chdir(amilabpath)
-maindir=os.getcwd()
+  #os.getcwd()
+  installpath=os.environ['HOME']+'/usr/local'
+  os.chdir(amilabpath)
+  maindir=os.getcwd()
 
-## Compile and install libAMIFluid
-print "-------------------------------------"
-print "  Compiling and installing libAMIFluid"
-print "-------------------------------------"
-os.chdir("libAMIFluid/src")
-if not(os.access("build", os.R_OK)):
-  os.mkdir("build")
-os.chdir("build")
-if not(os.access("release", os.R_OK)):
-  os.mkdir("release")
-os.chdir("release")
-os.system('cmake ../.. -DCMAKE_INSTALL_PREFIX="{0}"'.format(installpath))
+  ## Compile and install libAMIFluid
+  print "-------------------------------------"
+  print "  Compiling and installing libAMIFluid"
+  print "-------------------------------------"
+  os.chdir("libAMIFluid/src")
+  if not(os.access("build", os.R_OK)):
+    os.mkdir("build")
+  os.chdir("build")
+  if not(os.access("release", os.R_OK)):
+    os.mkdir("release")
+  os.chdir("release")
+  os.system('cmake ../.. -DCMAKE_INSTALL_PREFIX="{0}"'.format(installpath))
 
-import cpuinfo
-numthreads=len(cpuinfo.cpu.info)
+  import cpuinfo
+  numthreads=len(cpuinfo.cpu.info)
 
-os.system('make -j {0} '.format(numthreads))
-os.system("make install")
+  os.system('make -j {0} '.format(numthreads))
+  os.system("make install")
 
-# Copy libAMIOpticalFlow
-print "-------------------------------------"
-print "  Copying libAMIOpticalFlow"
-print "-------------------------------------"
-os.chdir(maindir)
-if not(os.access("{0}/include/OpticalFlow".format(installpath), os.R_OK)):
-  shutil.copytree("libAMIOpticalFlow/include/OpticalFlow","{0}/include/OpticalFlow".format(installpath))
+  # Copy libAMIOpticalFlow
+  print "-------------------------------------"
+  print "  Copying libAMIOpticalFlow"
+  print "-------------------------------------"
+  os.chdir(maindir)
+  if not(os.access("{0}/include/OpticalFlow".format(installpath), os.R_OK)):
+    shutil.copytree("libAMIOpticalFlow/include/OpticalFlow","{0}/include/OpticalFlow".format(installpath))
 
-# Compile amilab
-print "-------------------------------------"
-print "  Compiling amilab"
-print "-------------------------------------"
-os.chdir("{0}/src".format(maindir))
-if not(os.access("build", os.R_OK)):
-  os.mkdir("build")
-os.chdir("build")
-if not(os.access("release", os.R_OK)):
-  os.mkdir("release")
-os.chdir("release")
+  # Compile amilab
+  print "-------------------------------------"
+  print "  Compiling amilab"
+  print "-------------------------------------"
+  os.chdir("{0}/src".format(maindir))
+  if not(os.access("build", os.R_OK)):
+    os.mkdir("build")
+  os.chdir("build")
+  if not(os.access("release", os.R_OK)):
+    os.mkdir("release")
+  os.chdir("release")
 
-cmake_return = os.system('cmake ../.. {0} -DCMAKE_INSTALL_PREFIX="{1}"'.format(AMILAB_CMAKE_FLAGS,installpath))
-#eval "cmake ${AMILAB_CMAKE_FLAGS} ../.."
+  # check for ITK_DIR
+  if os.access(maindir+'/ITK_DIR', os.R_OK):
+    f.open(maindir+'/ITK_DIR')
+    ITK_DIR=f.readline()
+    f.close()
+    config.AMILAB_CMAKE_FLAGS += ' -DITK_DIR="{0}"'.format(ITK_DIR)
 
-if cmake_return != 0:
-  print ""
-  print "ERROR: --- cmake command failed ---"
-  print ""
-  sys.exit()
+  cmake_return = os.system('cmake ../.. {0} -DCMAKE_INSTALL_PREFIX="{1}"'.format(config.AMILAB_CMAKE_FLAGS,installpath))
+  #eval "cmake ${AMILAB_CMAKE_FLAGS} ../.."
 
-os.system('make -j {0} '.format(numthreads))
+  if cmake_return != 0:
+    print ""
+    print "ERROR: --- cmake command failed ---"
+    print ""
+    sys.exit()
 
-# Compile documentation, but missing improcess_html 
-#cd ${maindir}/doc
-#./generate_html.py all
+  os.system('make -j {0} '.format(numthreads))
 
-## create and install ubuntu package ?
-#cd ${maindir}/src/build/release
-#${INSTALLCMD} rpm-build
-#cpack -G RPM
-#rpm -ivh AMILab-3.0.0-Linux.`uname -p`.rpm
+  # Compile documentation, but missing improcess_html 
+  #cd ${maindir}/doc
+  #./generate_html.py all
 
-os.chdir(maindir)
+  ## create and install ubuntu package ?
+  #cd ${maindir}/src/build/release
+  #${INSTALLCMD} rpm-build
+  #cpack -G RPM
+  #rpm -ivh AMILab-3.0.0-Linux.`uname -p`.rpm
+
+  os.chdir(maindir)
+  
