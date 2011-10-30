@@ -739,7 +739,6 @@ IF(AMI_USE_VTK)
     vtkIO
     vtkFiltering
     vtkCommon
-    vtkNetCDF
     # additional libraries for volume rendering
     vtkRendering 
     vtkVolumeRendering 
@@ -747,6 +746,15 @@ IF(AMI_USE_VTK)
     vtkViews
     vtkCharts
   )
+
+  # it seems that vtkNetCDF is not needed, at least on linux
+  # TODO: check if we can really remove it
+  IF(NOT LINUX)
+    SET(LINK_VTK
+      ${LINK_VTK}
+      vtkNetCDF
+    )
+  ENDIF(NOT LINUX)
 
 ELSE(AMI_USE_VTK)
   SET(LINK_VTK
