@@ -749,12 +749,13 @@ IF(AMI_USE_VTK)
 
   # it seems that vtkNetCDF is not needed, at least on linux
   # TODO: check if we can really remove it
-  IF(NOT LINUX)
+  IF(NOT UNIX)
     SET(LINK_VTK
       ${LINK_VTK}
       vtkNetCDF
     )
-  ENDIF(NOT LINUX)
+  ENDIF(NOT UNIX)
+  MESSAGE("LINK_VTK=${LINK_VTK}")
 
 ELSE(AMI_USE_VTK)
   SET(LINK_VTK
