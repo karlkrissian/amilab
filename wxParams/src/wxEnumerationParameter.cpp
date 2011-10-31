@@ -10,7 +10,7 @@
 //
 //
 
-
+#include <iostream>
 //--------------------------------------------------
 // includes for wxWidgets
 #include "wx/wxprec.h"

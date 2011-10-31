@@ -398,12 +398,16 @@ Class PreviewerClass \
     printn "PreviewerClass::Gui()"
     # Create a Frame
     ::frame = wx.wxFrame( &ami.MainFrame,wx.wxID_ANY,"Previewer", \
-                          wx.wxPoint(100,100),wx.wxSize(300,300),\
-                          wx.wxRESIZE_BORDER|wx.wxMAXIMIZE_BOX,\
+                          wx.wxPoint(100,100),wx.wxSize(500,500),\
+                          wx.wxRESIZE_BORDER|wx.wxMAXIMIZE_BOX|wx.wxCAPTION,\
                           "test")
-   ::frame.CenterOnParent()
+    ::frame.CenterOnParent()
     # Create a panel with a sizer
     ::panel = wx.wxPanel(&::frame)
+    ::topsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+    ::topsizer.Add(&::panel,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 2))
+    ::frame.SetSizer( &::topsizer )      # use the sizer for layout
+
     # Create a BoxSizer
     ::boxsizerM = wx.wxBoxSizer(wx.wxVERTICAL)
     gridsizer = wx.wxGridSizer(::cols)
@@ -446,6 +450,7 @@ Class PreviewerClass \
     for n=0 to ::cols*::files-1 {
       del wxvtkI
       wxvtkI =  vtktools.wxVTKRenderWindowInteractor(&::panel,::wxvtk_id+n)
+      wxvtkI.SetMinSize(&wx.wxSize(100,100))
       #event copy view
       wxvtkI.Connect( wx.wxEVT_LEFT_UP,\
                       &evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
@@ -482,7 +487,10 @@ Class PreviewerClass \
     #panel
 
     ::panel.SetSizer(&::boxsizerM ) 
-    ::frame.SetMinSize(wx.wxSize(300,300))
+
+    ::topsizer.SetSizeHints( &::frame )   # set size hints to honour minimum size
+    ::frame.SetSize(wx.wxSize(500,500))
+
     ::PostGuiInit()
   }
 

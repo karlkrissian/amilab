@@ -161,6 +161,7 @@ class dwCurve {
       width       = c1.width;
       drawlines   = c1.drawlines;
       drawpoints  = c1.drawpoints;
+      return *this;
     }
 };
 

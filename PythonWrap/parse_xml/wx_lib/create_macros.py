@@ -76,6 +76,7 @@ def CreateHeaderFileMacros(inputfile,outputfile,headerfilename):
 
 def CreateMacros(inputfile,outputfile):
   wrapped_macros=""
+  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"defs")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"version")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"toplevel")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"valtext")

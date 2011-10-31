@@ -1165,7 +1165,8 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
       }
       _linearCM_uptodate = false;
 
-      Refresh(false);
+      //Refresh(false);
+      Paint(false);
     }
     else 
     {
@@ -1215,7 +1216,8 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
     _focus_point->SetFocus(true);
   }
 //  focus_pointid = closest;
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
   event.Skip();
 /*
   CLASS_MESSAGE(boost::format("At position %1% %2%")%_mouse_x%_mouse_y);
@@ -1294,9 +1296,10 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
   }
 
   _linearCM_uptodate = false;
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
   // capture event ...
-  //event.Skip();
+  event.Skip();
 
 }
 
@@ -1306,7 +1309,8 @@ void wxDrawingWindow::OnAddControlPoint(wxCommandEvent& event)
   double x,y;
   Window2World(_mouse_x,_mouse_y,x,y);
   AddControlPoint(dwControlPoint(dwPoint2D(x,y)));
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }
 
 //-------------------------------------------------
@@ -1320,7 +1324,8 @@ void wxDrawingWindow::OnAddControlledCurve(wxCommandEvent& event)
   c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x1,y)));
   c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x2,y)));
   _controlled_curves->push_back(c);
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }
 
 //-------------------------------------------------
@@ -1329,8 +1334,8 @@ void wxDrawingWindow::OnRemoveControlledCurve(wxCommandEvent& event)
   if (_focus_controlledcurve.get())
       // TODO: fix remove feature
 //    _controlled_curves->erase(_controlled_curves->begin()+_focus_controlledcurve);
-
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }
 
 //-------------------------------------------------
@@ -1338,14 +1343,16 @@ void wxDrawingWindow::OnRemoveControl(wxCommandEvent& event)
 {
   RemoveControl();
   _focus_point.reset();
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }
 
 //-------------------------------------------------
 void wxDrawingWindow::OnDuplicateControl(wxCommandEvent& event)
 {
   DuplicateControl();
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }
 
 /*
@@ -1371,7 +1378,8 @@ void wxDrawingWindow::OnColormapControlledCurve(wxCommandEvent& event)
     _focus_controlledcurve->SetType(normal_curve);
 
   _linearCM_uptodate = false;
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }
 
 //-------------------------------------------------
@@ -1384,21 +1392,24 @@ void wxDrawingWindow::OnLimitControlledCurve(wxCommandEvent& event)
     _focus_controlledcurve->SetLimits(false);
 
   _linearCM_uptodate = false;
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }
 
 //-------------------------------------------------
 void wxDrawingWindow::OnVerticalLine(wxCommandEvent& event)
 {
   _focus_point->SetVerticalLine(event.IsChecked());
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }
 
 //-------------------------------------------------
 void wxDrawingWindow::OnYLocked(wxCommandEvent& event)
 {
   _focus_point->SetYLocked(event.IsChecked());
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }
 
 //-------------------------------------------------
@@ -1417,12 +1428,14 @@ void wxDrawingWindow::OnControlColour(wxCommandEvent& event)
     }
   }
   _linearCM_uptodate = false;
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }
 
 //-------------------------------------------------
 void wxDrawingWindow::OnShowGrid(wxCommandEvent& event)
 {
   this->_draw_grid = event.IsChecked();
-  Refresh(false);
+  Paint(false);
+  //Refresh(false);
 }

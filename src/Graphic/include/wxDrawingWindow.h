@@ -390,6 +390,7 @@ public:
   void DrawControls();
 
   void Paint( bool in_paint=false);
+
   void OnSize( wxSizeEvent& event);
   //void OnChar(           wxKeyEvent&  event);
 
