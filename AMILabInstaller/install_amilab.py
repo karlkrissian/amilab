@@ -10,19 +10,27 @@ import config
 
 initdir=os.getcwd()
 
-#from gi.repository import PackageKitGlib as packagekit
-import packagekit_wrapper
+
+conf_platform = 'config_{0}'.format(platform.system())
+conf_platform = conf_platform.replace('.','_')
 
 # Create the system configuration filename
-if platform.system()=='Linux':
+if platform.system()=='config_Linux':
   linuxdist= platform.linux_distribution()
-  conf_platform = 'config_{0}'.format(platform.system())
   conf_dist     = 'config_{0}_{1}'.format(platform.system(),linuxdist[0])
   conf_distnum  = 'config_{0}_{1}_{2}'.format(platform.system(),linuxdist[0],linuxdist[1])
-  conf_platform = conf_platform.replace('.','_')
-  conf_dist     = conf_dist    .replace('.','_')
-  conf_distnum  = conf_distnum .replace('.','_')
   print "Configuration filename is {0}".format(conf_distnum)
+  #from gi.repository import PackageKitGlib as packagekit
+  import packagekit_wrapper
+
+if platform.system()=='config_Windows':
+  winver = platform.win32_ver()
+  conf_dist     = 'config_{0}_{1}'.format(platform.system(),winver[0])
+  conf_distnum  = 'config_{0}_{1}_{2}'.format(platform.system(),winver[0],winver[1])
+  # set 32 or 64bits info?
+  
+conf_dist     = conf_dist    .replace('.','_')
+conf_distnum  = conf_distnum .replace('.','_')
 
 # source different files
 if os.path.isfile(conf_platform+'.py'):
@@ -72,7 +80,7 @@ def cb(status, pc, spc, el, rem, c):
   print 'install pkg: %s, %i%%, cancel allowed: %s' % (status, pc, str(c))
   return True # return False to cancel
         
-def installer_install(packages):
+def installer_install_Linux(packages):
   pk = packagekit_wrapper.PackageKitClient()
   for pkg in packages.split():
     print pkg
@@ -89,6 +97,22 @@ def installer_install(packages):
     #  pkgs = [res[n*2]]
     #  print "Installing {0}".format(res[n*2])
     #  pk.InstallPackages(pkgs,cb)
+
+def installer_install_Windows(packages):
+  for pkg in packages.split():
+    installer="{0}_WININSTALL.py".format(pkg)
+    if os.access(installer, os.R_OK):
+      os.system("python "+installer)
+    else:
+      print "ERROR: not windows installer for {0}".format(pkg)
+
+
+def installer_install(packages):
+  if conf_platform=='config_Linux':
+    installer_install_Linux(packages)
+  if conf_platform=='config_Windows':
+    installer_install_Windows(packages)
+    
 
 #------------------------------------------------------------------------
 def install_packages(pkgname):
