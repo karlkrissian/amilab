@@ -2,9 +2,9 @@
 import config
 
 def SetConfig():
-  config.COMPILATION_PACKAGES   = "VistualStudioExpress2008 TurtoiseSubversion"
-  config.CMAKE_PACKAGES         = "cmake cmake-gui"
-  config.VTKDEV_PACKAGES        = "vtk-devel"
+  config.COMPILATION_PACKAGES   = "pywin32 VisualStudioExpress2008 TurtoiseSubversion"
+  config.CMAKE_PACKAGES         = "cmake"
+  config.VTKDEV_PACKAGES        = "VTK_devel"
   config.WXWIDGETSDEV_PACKAGES  = "wxGTK-devel"
   config.BOOSTDEV_PACKAGES      = "boost-devel"
   config.IMDEV_PACKAGES         = "libpng-devel libtiff-devel libjpeg-devel"

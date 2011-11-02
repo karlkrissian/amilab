@@ -3,7 +3,6 @@
 # get some options about the branch to download etc ...
 
 import platform
-import dbus
 import sys
 import os
 import config
@@ -15,15 +14,16 @@ conf_platform = 'config_{0}'.format(platform.system())
 conf_platform = conf_platform.replace('.','_')
 
 # Create the system configuration filename
-if platform.system()=='config_Linux':
+if conf_platform =='config_Linux':
   linuxdist= platform.linux_distribution()
   conf_dist     = 'config_{0}_{1}'.format(platform.system(),linuxdist[0])
   conf_distnum  = 'config_{0}_{1}_{2}'.format(platform.system(),linuxdist[0],linuxdist[1])
   print "Configuration filename is {0}".format(conf_distnum)
   #from gi.repository import PackageKitGlib as packagekit
   import packagekit_wrapper
+  import dbus
 
-if platform.system()=='config_Windows':
+if conf_platform =='config_Windows':
   winver = platform.win32_ver()
   conf_dist     = 'config_{0}_{1}'.format(platform.system(),winver[0])
   conf_distnum  = 'config_{0}_{1}_{2}'.format(platform.system(),winver[0],winver[1])
@@ -100,11 +100,14 @@ def installer_install_Linux(packages):
 
 def installer_install_Windows(packages):
   for pkg in packages.split():
-    installer="{0}_WININSTALL.py".format(pkg)
+    installer=os.getcwd()+"/{0}_WININSTALL.py".format(pkg)
     if os.access(installer, os.R_OK):
-      os.system("python "+installer)
+      #print os.getcwd()
+      print "running python "+installer
+      #os.system("python "+installer)
+      execfile(installer)
     else:
-      print "ERROR: not windows installer for {0}".format(pkg)
+      print "ERROR: No Windows installer for {0}".format(pkg)
 
 
 def installer_install(packages):
