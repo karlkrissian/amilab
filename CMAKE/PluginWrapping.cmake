@@ -28,114 +28,62 @@ SET(GCCXML_result 0)
 
 MESSAGE("Try to generate XML file...")
 
-# VTK compilation flags
-IF   (VTK_FOUND)
-  IF   (VTK_INCLUDE_DIRS)
-    FOREACH( inc ${VTK_INCLUDE_DIRS})
-      SET( VTK_INCLUDES  -I${inc}  ${VTK_INCLUDES} )
-    ENDFOREACH(inc ${VTK_INCLUDE_DIRS})
-  ENDIF(VTK_INCLUDE_DIRS)
-    IF   (VTK_REQUIRED_CXX_FLAGS)
-      FOREACH( def ${VTK_REQUIRED_CXX_FLAGS})
-        SET( VTK_DEFS  ${def}  ${WX_DEFS} )
-      ENDFOREACH(def ${VTK_REQUIRED_CXX_FLAGS})
-      MESSAGE("VTK_DEFS=${VTK_DEFS}")
-    ENDIF(VTK_REQUIRED_CXX_FLAGS)
-ENDIF ( VTK_FOUND)
+INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
+INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapVTK.cmake)
+GCCXML_USE_VTK()
 
-
-SET(MYCOMMAND ${GCCXML}    "-fxml=${XML_OUTPUT}")
-SET(MYCOMMAND ${MYCOMMAND} "-I${AMILAB_SOURCE_DIR}/Wrapping/include")
-SET(MYCOMMAND ${MYCOMMAND} "-I${AMILAB_SOURCE_DIR}/Common/include")
-SET(MYCOMMAND ${MYCOMMAND} "-I${AMILAB_SOURCE_DIR}/CommonBase")
-SET(MYCOMMAND ${MYCOMMAND} "-I${AMILAB_SOURCE_DIR}/LanguageBase")
-SET(MYCOMMAND ${MYCOMMAND} "-I${AMILAB_BINARY_DIR}")
-SET(MYCOMMAND ${MYCOMMAND} "-I${PROJECT_SOURCE_DIR}")
-SET(MYCOMMAND ${MYCOMMAND} "-I${Boost_INCLUDE_DIR}")
-SET(MYCOMMAND ${MYCOMMAND} "${VTK_INCLUDES}")
-SET(MYCOMMAND ${MYCOMMAND} ${XML_INPUT})
-
+# Adding KIT includes
 IF(KIT)
   IF(${KIT}_INCLUDE_PATHS)
     MESSAGE("************** ${KIT}_INCLUDE_PATHS = ${${KIT}_INCLUDE_PATHS}")
     foreach(path ${${KIT}_INCLUDE_PATHS})
-      SET(MYCOMMAND ${MYCOMMAND} "-I${path}")
+      SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${path}")
     endforeach(p ${${KIT}_INCLUDE_PATHS})
   ENDIF(${KIT}_INCLUDE_PATHS)
 ENDIF(KIT)
 
-MESSAGE("COMMAND: ${MYCOMMAND}")
+SET(GCCXML_CMD ${GCCXML}    "-fxml=${XML_OUTPUT}")
+SET(GCCXML_CMD ${GCCXML_CMD} "-I${AMILAB_SOURCE_DIR}/Wrapping/include")
+SET(GCCXML_CMD ${GCCXML_CMD} "-I${AMILAB_SOURCE_DIR}/Common/include")
+SET(GCCXML_CMD ${GCCXML_CMD} "-I${AMILAB_SOURCE_DIR}/CommonBase")
+SET(GCCXML_CMD ${GCCXML_CMD} "-I${AMILAB_SOURCE_DIR}/LanguageBase")
+SET(GCCXML_CMD ${GCCXML_CMD} "-I${AMILAB_BINARY_DIR}")
+SET(GCCXML_CMD ${GCCXML_CMD} "-I${PROJECT_SOURCE_DIR}")
+SET(GCCXML_CMD ${GCCXML_CMD} "-I${Boost_INCLUDE_DIR}")
+SET(GCCXML_CMD ${GCCXML_CMD} " ${GCCXML_INCLUDES} ${GCCXML_DEFS}")
+SET(GCCXML_CMD ${GCCXML_CMD} ${XML_INPUT})
+
+
+MESSAGE("COMMAND: ${GCCXML_CMD}")
 EXECUTE_PROCESS(
-  COMMAND ${MYCOMMAND}
-  RESULT_VARIABLE MYCOMMAND_RESULT
-  ERROR_VARIABLE  MYCOMMAND_ERROR
+  COMMAND ${GCCXML_CMD}
+  RESULT_VARIABLE GCCXML_CMD_RESULT
+  ERROR_VARIABLE  GCCXML_CMD_ERROR
 )
 
-IF(MYCOMMAND_RESULT)
+IF(GCCXML_CMD_RESULT)
 
-    MESSAGE(SEND_ERROR "Failed the generation of XML: ${MYCOMMAND_ERROR} - ${MYCOMMAND_RESULT}")
+    MESSAGE(SEND_ERROR "Failed the generation of XML: ${GCCXML_CMD_ERROR} - ${GCCXML_CMD_RESULT}")
 
-ELSE(MYCOMMAND_RESULT)
+ELSE(GCCXML_CMD_RESULT)
 
   MESSAGE("Generated XML file")
-
   MESSAGE("Find PYTHON...")
-
   FIND_PACKAGE( PythonInterp REQUIRED)
-
   MESSAGE("PYTHON found")
-
   MESSAGE("Try to generate ANCESTORS file...")
 
-  FILE(READ "${WRAP_DIR}/classes.txt" classes_txt)
-  STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
-
+  # Read list of classes to wrap
+  READ_CLASSES(  "${WRAP_DIR}/classes.txt")
   # Read list of functions to wrap
-  IF(EXISTS ${WRAP_DIR}/functions.txt)
-    FILE(READ "${WRAP_DIR}/functions.txt" functions_txt)
-    # skip comments
-    STRING(REGEX REPLACE "#[^\n]*\n" "\n"  functions_list_cleaned ${functions_txt} )
-    STRING(REGEX REPLACE "#[^\n]*$"  ""    functions_list_cleaned ${functions_list_cleaned} )
-    #STRING(REGEX REPLACE "\n#[^\n]*\n" "\n" functions_list_cleaned ${functions_list_cleaned} )
-    STRING(REGEX REPLACE "[\r\n]" ";" functions_list ${functions_list_cleaned} )
-    MESSAGE("functions_list = ${functions_list}")
-    SET(HAS_FUNCTIONS "1")
-  ENDIF(EXISTS ${WRAP_DIR}/functions.txt)
+  READ_FUNCTIONS("${WRAP_DIR}/functions.txt")
 
+  SET(LIBNAME "${CMAKE_PROJECT_NAME}")
+  CREATE_ANCESTORS()
 
-#   IF(EXISTS ${WRAP_DIR}/functions.txt)
-#     FILE(READ "${WRAP_DIR}/functions.txt" functions_txt)
-#     STRING(REGEX REPLACE "[\r\n]" ";" functions_list ${functions_txt} )
-#     SET(HAS_FUNCTIONS "1")
-#   ENDIF(EXISTS ${WRAP_DIR}/functions.txt)
-
-
-
-  SET(ANCESTORS_FILE "${GENERATED_DIR}/ancestors.txt")
-  SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
-
-  SET(MYCOMMAND_2 ${PYTHON_EXECUTABLE})                          #Command
-  SET(MYCOMMAND_2 ${MYCOMMAND_2} ${AMI_WRAPPER})                 #Wrapper
-  SET(MYCOMMAND_2 ${MYCOMMAND_2} ${XML_OUTPUT})                  #Input
-  SET(MYCOMMAND_2 ${MYCOMMAND_2} "--libname" "${CMAKE_PROJECT_NAME}")
-  SET(MYCOMMAND_2 ${MYCOMMAND_2} "--ancestors" ${classes_list})  #Options
-  SET(MYCOMMAND_2 ${MYCOMMAND_2} "--ancestors-file" ${ANCESTORS_FILE} "-q")
-  IF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
-    MESSAGE("***** available external classes *****")
-    SET(MYCOMMAND_2 ${MYCOMMAND_2} "--available_external_classes" ${AVAILABLE_EXTERNAL_CLASSES})
-  ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
-  MESSAGE("COMMAND 2: ${MYCOMMAND_2}")
-
-  EXECUTE_PROCESS(
-    COMMAND ${MYCOMMAND_2}
-    RESULT_VARIABLE MYCOMMAND_2_RESULT
-    ERROR_VARIABLE  MYCOMMAND_2_ERROR
-    OUTPUT_VARIABLE ancestors_result
-  )
-
-  IF(MYCOMMAND_2_RESULT)
-    MESSAGE(SEND_ERROR "Failed the generation of ANCESTORS file: ${MYCOMMAND_2_ERROR} - ${MYCOMMAND_2_RESULT}")
-  ELSE(MYCOMMAND_2_RESULT)
+#   IF(MYCOMMAND_2_RESULT)
+#     MESSAGE(SEND_ERROR "Failed the generation of ANCESTORS file: ${MYCOMMAND_2_ERROR} - ${MYCOMMAND_2_RESULT}")
+#   ELSE(MYCOMMAND_2_RESULT)
     MESSAGE("Generated ANCESTORS file: ancestors_result = ${ancestors_result}")
 
     IF(EXISTS ${ANCESTORS_FILE})
@@ -145,41 +93,18 @@ ELSE(MYCOMMAND_RESULT)
       SET(ancestors_list "")
     ENDIF(EXISTS ${ANCESTORS_FILE})
 
-    FOREACH( class ${ancestors_list})
-      ClassUsedName( class m_class )
-      SET(compilation_list ${compilation_list} ${m_class})
-      IF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.cpp) OR
-          (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.h) )
-        SET(OUTPUT_LIST
-          ${GENERATED_DIR}/wrap_${m_class}.cpp ${GENERATED_DIR}/wrap_${m_class}.h
-          ${OUTPUT_LIST}
-        )
-        SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
-      ENDIF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.cpp) OR
-             (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.h) )
-      SET(CLASS_LIST ${CLASS_LIST} ${class})
-    ENDFOREACH( class ${ancestors_list})
+    CHECK_WRAPPED_FILES( "${ancestors_list}"       "MISSING_CLASSES")
+    CHECK_WRAPPED_FILES( "${functions_list}"       "MISSING_FUNCTIONS")
+
+    MESSAGE("MISSING_CLASSES   = ${MISSING_CLASSES}")
+    MESSAGE("MISSING_FUNCTIONS = ${MISSING_FUNCTIONS}")
 
     LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
     MESSAGE(" NB_MISSING_CLASSES=${NB_MISSING_CLASSES}")
 
-    FOREACH( func ${functions_list})
-      ClassUsedName( func m_func )
-      SET(func_compilation_list ${compilation_list} ${m_func})
-      IF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_func}.cpp) OR
-          (NOT EXISTS ${GENERATED_DIR}/wrap_${m_func}.h) )
-        SET(OUTPUT_LIST
-          ${GENERATED_DIR}/wrap_${m_func}.cpp ${GENERATED_DIR}/wrap_${m_func}.h
-          ${OUTPUT_LIST}
-        )
-        SET(MISSING_FUNCTIONS ${func} ${MISSING_FUNCTIONS})
-      ENDIF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_func}.cpp) OR
-             (NOT EXISTS ${GENERATED_DIR}/wrap_${m_func}.h) )
-      SET(FUNC_LIST ${FUNC_LIST} ${func})
-    ENDFOREACH( func ${functions_list})
-
     LIST(LENGTH MISSING_FUNCTIONS NB_MISSING_FUNCTIONS)
     MESSAGE(" NB_MISSING_FUNCTIONS=${NB_MISSING_FUNCTIONS}")
+
 
     #IF( (${GCCXML_result} EQUAL 0) AND
     #    (DEFINED OUTPUT_LIST ) )
@@ -247,7 +172,7 @@ ELSE(MYCOMMAND_RESULT)
         ${${CMAKE_PROJECT_NAME}_SRCS})
 
 
-  ENDIF(MYCOMMAND_2_RESULT)
+#   ENDIF(MYCOMMAND_2_RESULT)
 
   MESSAGE("End wrapping")
 ENDIF(MYCOMMAND_RESULT)
