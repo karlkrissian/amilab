@@ -12,6 +12,7 @@ initdir=os.getcwd()
 
 conf_platform = 'config_{0}'.format(platform.system())
 conf_platform = conf_platform.replace('.','_')
+conf_platform = conf_platform.strip()
 
 # Create the system configuration filename
 if conf_platform =='config_Linux':
@@ -30,7 +31,9 @@ if conf_platform =='config_Windows':
   # set 32 or 64bits info?
   
 conf_dist     = conf_dist    .replace('.','_')
+conf_dist     = conf_dist.strip()
 conf_distnum  = conf_distnum .replace('.','_')
+conf_distnum  = conf_distnum.strip()
 
 # source different files
 if os.path.isfile(conf_platform+'.py'):
@@ -80,23 +83,35 @@ def cb(status, pc, spc, el, rem, c):
   print 'install pkg: %s, %i%%, cancel allowed: %s' % (status, pc, str(c))
   return True # return False to cancel
         
-def installer_install_Linux(packages):
-  pk = packagekit_wrapper.PackageKitClient()
+def installer_install_Linux_openSUSE(packages):
   for pkg in packages.split():
-    print pkg
-    res = pk.Resolve('none',[pkg])
-    if res==[]:
-      print "ERROR: Package {0} not found ...".format(pkg)
-    else:
-      print res[0][1]
-      print "Installing {0}".format(res[0][1])
-      pk.InstallPackages([res[0][1]],cb)
-    #res = pk.SearchNames('none',packages.split())
-    #print res
-    #for n in range(len(res)/2):
-    #  pkgs = [res[n*2]]
-    #  print "Installing {0}".format(res[n*2])
-    #  pk.InstallPackages(pkgs,cb)
+    os.system('sudo zypper -n install {0}'.format(pkg))
+  
+
+def installer_install_Linux(packages):
+  # packagekit not working in opensuse: getting stuck ...
+  print "'{0}'".format(conf_dist)
+  if conf_dist=='config_Linux_openSUSE':
+    installer_install_Linux_openSUSE(packages)
+  else:
+    pk = packagekit_wrapper.PackageKitClient()
+    for pkg in packages.split():
+      print "  '{0}'".format(pkg)
+      res = pk.Resolve('none',[pkg])
+      print "  resolved"
+      if res==[]:
+	print "ERROR: Package {0} not found ...".format(pkg)
+      else:
+	print res[0][1]
+	print "Installing {0}".format(res[0][1])
+	pk.InstallPackages([res[0][1]],cb)
+      #res = pk.SearchNames('none',packages.split())
+      #print res
+      #for n in range(len(res)/2):
+      #  pkgs = [res[n*2]]
+      #  print "Installing {0}".format(res[n*2])
+      #  pk.InstallPackages(pkgs,cb)
+    pk.SuggestDaemonQuit()
 
 def installer_install_Windows(packages):
   for pkg in packages.split():
@@ -224,6 +239,15 @@ if __name__ == '__main__':
   os.chdir(amilabpath)
   maindir=os.getcwd()
 
+  # fix FindBISON pb in spanish
+  print "***************"
+  cmd  = "sed 's/GNU Bison/GNU [bB]ison/g' /usr/share/cmake/Modules/FindBISON.cmake > /tmp/FindBISON.cmake"
+  os.system(cmd)
+  cmd = "sudo mv /tmp/FindBISON.cmake /usr/share/cmake/Modules/".format(maindir)
+  os.system(cmd)
+  print "**************"
+
+
   ## Compile and install libAMIFluid
   print "-------------------------------------"
   print "  Compiling and installing libAMIFluid"
@@ -270,6 +294,14 @@ if __name__ == '__main__':
     ITK_DIR=f.readline()
     f.close()
     config.AMILAB_CMAKE_FLAGS += ' -DITK_DIR="{0}"'.format(ITK_DIR)
+
+  # check for VTK_DIR
+  print "looking for "+initdir+'/VTK_DIR'
+  if os.access(initdir+'/VTK_DIR', os.R_OK):
+    f = open(initdir+'/VTK_DIR')
+    VTK_DIR=f.readline()
+    f.close()
+    config.AMILAB_CMAKE_FLAGS += ' -DVTK_DIR="{0}"'.format(VTK_DIR)
 
   cmake_cmd = 'cmake ../.. {0} -DCMAKE_INSTALL_PREFIX="{1}"'.format(config.AMILAB_CMAKE_FLAGS,installpath)
   print "CMAKE CMD="+cmake_cmd

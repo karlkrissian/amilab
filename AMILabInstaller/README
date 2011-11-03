@@ -8,3 +8,14 @@ to install the trunk run:
 
 python install_amilab.py
 
+
+The script is
+
+Working on:
+- Fedora 15
+- Ubuntu 11.10
+
+Not working on:
+- OpenSuse 10.4
+    pb with gccxml and gcc4.5: internal compilation errors
+

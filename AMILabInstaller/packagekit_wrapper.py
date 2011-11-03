@@ -61,14 +61,22 @@ class PackageKitClient:
         Return List of (installed, id, short_description) triples for all matches,
         where installed is a boolean and id and short_description are strings.
         '''
+        print "*1"
         result = []
+        print "*2"
         pk_xn = self._get_xn()
+        print "*3"
         pk_xn.connect_to_signal('Package', 
             lambda i, p_id, summary: result.append((i == 'installed', str(p_id), str(summary))))
+        print "*4"
         pk_xn.connect_to_signal('Finished', self._h_finished)
+        print "*5"
         pk_xn.connect_to_signal('ErrorCode', self._h_error)
+        print "*6"
         pk_xn.Resolve(filter, package)
+        print "*7"
         self._wait()
+        print "*8"
         return result
 
     def GetDetails(self, package_id):

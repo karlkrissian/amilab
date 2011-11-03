@@ -8,8 +8,11 @@ def PreInstall():
   os.system("sudo zypper install packagekit")
 
 def SetConfig():
-  config.PYSVN_PACKAGES       = "pysvn"
+  config.PYSVN_PACKAGES       = "python-pysvn"
   # not sure what package creates the need for libxml2-devel 
   config.OTHERDEV_PACKAGES      += " libxml2-devel"
   config.INSTALLCMD           = "zypper install"
   config.INSTALLER_PACKAGES   = "" 
+  config.VTKDEV_PACKAGES        = "TOCOMPILE"
+  config.GCCXML_PACKAGES        = "TOCOMPILE"
+  config.COMPRESSDEV_PACKAGES   = "zlib-devel libbz2-devel"
