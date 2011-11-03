@@ -67,6 +67,7 @@ void trace(void)
       // opacity is the sampled texture value in the 1D opacity texture at
       // scalarValue
       opacity=texture1D(opacityTexture,scalar);
+      
       if(opacity.a>0.0)
         {
         color=shade(value);
@@ -81,6 +82,8 @@ void trace(void)
         && (remainOpacity>=0.0039); // 1/255=0.0039
       }
     }
-  gl_FragColor = destColor;
-  gl_FragColor.a = 1.0-remainOpacity;
+   gl_FragColor = destColor;
+   gl_FragColor.a = 1.0-remainOpacity;
+  //gl_FragColor = 0;
+  //gl_FragColor.a = 0;
 }

@@ -610,6 +610,27 @@ inline double InterpolateAlpha( const double& a1,  const double& w1,const double
   return (a1*w1+a2*w2)/sum;
 }
 
+inline double InterpolateMidpoint( const double& a1,  const double& w1,const double& a2,  const double& w2)
+{
+  double sum = w1+w2;
+  if (sum==0){
+    //std::cout<< "Alpha == 0 " << std::endl;
+    return a1;
+  }
+  return (a1*w1+a2*w2)/sum;
+}
+
+
+inline double InterpolateSharpness( const double& a1,  const double& w1,const double& a2,  const double& w2)
+{
+  double sum = w1+w2;
+  if (sum==0){
+    //std::cout<< "Alpha == 0 " << std::endl;
+    return a1;
+  }
+  return (a1*w1+a2*w2)/sum;
+}
+
 
 inline wxColour InterpolateColour( const wxColour& c1, const double& w1, 
                             const wxColour& c2, const double& w2)
@@ -685,6 +706,8 @@ void wxDrawingWindow::DrawLinearCM(  )
     std::vector<wxColour> left_colours(cm_size,*wxBLACK);
     std::vector<wxColour> right_colours(cm_size,*wxBLACK);
     std::vector<double> alphas(cm_size,0.0); //Alpha
+    std::vector<double> midpoint(cm_size,0.0);
+    std::vector<double> sharpness(cm_size,0.0);
     std::vector<double> weights(cm_size,0.0);
     for(int c=0; c<(int) _controlled_curves->size();c++)
     {
@@ -718,12 +741,6 @@ void wxDrawingWindow::DrawLinearCM(  )
         dwControlPoint p2 = points[curvpt_id+1];
         double pos = _linearCM.GetPoint(cmpt_id).GetPosition();
         
-
-
-  //       std::cout<< "p1.GetX() = " << p1.GetX() << std::endl;
-  //       std::cout<< "p2.GetX() = " << p2.GetX() << std::endl;
-
-  //      std::cout<< "pos = " << pos << std::endl;
         while ((pos<p1.GetX())&&(cmpt_id<cm_size)) {
           cmpt_id++;
           pos = _linearCM.GetPoint(cmpt_id).GetPosition();
@@ -741,8 +758,11 @@ void wxDrawingWindow::DrawLinearCM(  )
             w2 = p2.GetY();
             if (w1<0) w1=0;
             if (w2<0) w2=0;
-            wxColour current_colour = InterpolateColour(c1,coeff1,c2,coeff2);
-            
+            wxColour current_colour   = InterpolateColour(c1,coeff1,c2,coeff2);
+            double current_sharpness  = InterpolateSharpness(p1.Getsharpness(),
+                                               coeff1,p2.Getsharpness(),coeff2);
+            double current_midpoint   =InterpolateMidpoint(p1.Getmidpoint(),
+                                               coeff1,p2.Getmidpoint(),coeff2);
             double current_weight;
             if(coeff1+coeff2==0) current_weight=0;
             else current_weight= (w1*coeff1+w2*coeff2)/(coeff1+coeff2);
@@ -757,11 +777,18 @@ void wxDrawingWindow::DrawLinearCM(  )
                                   right_colours[cmpt_id], weights[cmpt_id]);
             //std::cout<< "right_colour = " << right_colours[cmpt_id].GetAsString().ToAscii() << std::endl;
     
-            std::cout<< "p1.GetY() = " << p1.GetY() << std::endl;
-            std::cout<< "p2.GetY() = " << p2.GetY() << std::endl;      
+            //std::cout<< "p1.GetY() = " << p1.GetY() << std::endl;
+            //std::cout<< "p2.GetY() = " << p2.GetY() << std::endl;      
                 
-          alphas[cmpt_id] =InterpolateAlpha(current_weight,current_weight,alphas[cmpt_id], weights[cmpt_id]);
-                
+            alphas[cmpt_id] =InterpolateAlpha(current_weight,current_weight,
+                                              alphas[cmpt_id], weights[cmpt_id]);
+   
+            midpoint[cmpt_id] =InterpolateMidpoint(current_midpoint,current_weight,
+                                  midpoint[cmpt_id], weights[cmpt_id]);
+            
+            sharpness[cmpt_id] =InterpolateSharpness(current_sharpness,current_weight,
+                                  sharpness[cmpt_id], weights[cmpt_id]);       
+            
             weights[cmpt_id] += current_weight;
 
             cmpt_id++;
@@ -780,6 +807,8 @@ void wxDrawingWindow::DrawLinearCM(  )
       _linearCM.GetPoint(c).SetLeftColour (left_colours [c]);
       _linearCM.GetPoint(c).SetRightColour(right_colours[c]);
       _linearCM.GetPoint(c).SetAlpha      (alphas[c]);
+      _linearCM.GetPoint(c).SetMidpoint   (midpoint[c]);
+      _linearCM.GetPoint(c).SetSharpness  (sharpness[c]);
     }
 
     // Call the events related to the update of the colormap
@@ -986,7 +1015,7 @@ void wxDrawingWindow::Paint( bool in_paint)
 //-------------------------------------------------
 void wxDrawingWindow::OnPaint(wxPaintEvent& event)
 {
-  std::cout << "OnPaint" << std::endl;
+  //std::cout << "OnPaint" << std::endl;
   wxPaintDC pdc(this);
   PrepareDC(pdc);
 

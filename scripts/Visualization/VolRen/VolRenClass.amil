@@ -63,6 +63,8 @@ if (!exists(VolRenClass)) {
       ::previewerclass ::previewer
       ::previewer.Gui()
       ::previewer.SetApplyCallback(&::PreviewApplied)
+      
+      ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-volumerendering"
 
     }
     #----------------------------
@@ -201,10 +203,16 @@ if (!exists(VolRenClass)) {
       if (::input_name=="BrowseImage") {
         ::input_name = "::input"
       }
-      ::UpdateImageInfo(&::input,&::input_size)
-      ::win.SetLabelValue(::input_size_id,::input_size)
-      ::UpdateVolPages()
-      ::win.Update(-1)
+      if (::input.tz==1){
+        InfoDialog "Warning: input is a 2D image ..."
+        del ::input
+      }
+      if (exists (::input)){
+        ::UpdateImageInfo(&::input,&::input_size)
+        ::win.SetLabelValue(::input_size_id,::input_size)
+        ::UpdateVolPages()
+        ::win.Update(-1)
+      }
     }
 
     #----------------------------
@@ -266,10 +274,16 @@ if (!exists(VolRenClass)) {
       if (::input2_name=="BrowseImage") {
         ::input2_name = "::input2"
       }
-      ::UpdateImageInfo(&::input2,&::input2_size)
-      ::win.SetLabelValue(::input2_size_id,::input2_size)
-      ::UpdateVolPages()
-      ::win.Update(-1)
+      if (::input2.tz==1){
+        InfoDialog "Warning: input is a 2D image ..."
+        del ::input2
+      }
+      if (exists (::input2)){
+        ::UpdateImageInfo(&::input2,&::input2_size)
+        ::win.SetLabelValue(::input2_size_id,::input2_size)
+        ::UpdateVolPages()
+        ::win.Update(-1)
+      }
     }
   
     #----------------------------
@@ -405,6 +419,8 @@ if (!exists(VolRenClass)) {
         # TODO: fix the dependency of the renderer for the volVector[0] ...
         ::vtk_camera_gui.SetCamera(&::volVector[0].camera)
         ::vtk_camera_gui.SetCallback(&::CameraCallback)
+        #Set Linear curve
+        ::volVector[0].ResetLinearCurve1()
       }
     }
     Comments(::StartNew,"Starts rendering of first volume.")

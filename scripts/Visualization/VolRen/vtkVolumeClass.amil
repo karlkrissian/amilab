@@ -138,43 +138,27 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::SetLinearCurve( OBJECT curve) \
     {
-        #if (!exists(::SetLinearCurve_first)) {
-          #ccurv = &::imhisto1.dw.GetControlledCurves()
-          #size=ccurv.size()
-          #if size==1 {
-            #ccurv.pop_back()
-            #size=0
-          #}
-          #ccurv.push_back(&curve)
-          #::linearcurve1_id = ccurv.size()-1
-          #::linearcurve1 = &ccurv[size]
-          #c = size
-        #} else {
-          #::linearcurve1 = curve
-          ::imhisto1.dw.DrawLinearCM()
-          ccurv = &::imhisto1.dw.GetControlledCurves()
-          printn "NUM CURV %1%" %ccurv.size()
-          printn "linearcurve1_id %1%" %::linearcurve1_id
-          if (::linearcurve1_id<ccurv.size()) {
-            ccurv[::linearcurve1_id] = curve
-          } else {
-            ccurv.push_back(&curve)
-            ::linearcurve1_id = ccurv.size()-1
-          }
-        #}
+        ccurv = &::imhisto1.dw.GetControlledCurves()
+        #printn "linearcurve1_id %1%" %::linearcurve1_id
+        if (::linearcurve1_id<ccurv.size()) {
+          ccurv[::linearcurve1_id] = curve
+        } else {
+          ccurv.push_back(&curve)
+          ::linearcurve1_id = ccurv.size()-1
+        }
+        ::imhisto1.dw.UptodateLinearCM()
+        ::imhisto1.dw.DrawLinearCM()
         ::SetLinearCurve_first=false
     }
 
     #---------------------------
     proc ::OnLinearColormap() \
     {
-      printn "::OnLinearColormap()"
+      #printn "::OnLinearColormap()"
       ::imhisto1.dw._Paint()
       ::imhisto1.ColormapMinMax()
       ::imhisto1.UpdateCM()
       ::OnRender()
-
-      #::Draw_opacityFun()
     }
     
     #----------------------------
@@ -262,21 +246,29 @@ if (!exists(vtkVolumeClass)) {
         cp0 = ami.dwControlPoint(px1,o1*hmax)
         cp0.SetYLocked(1)
         cp0.SetColour(wx.wxColour(0,0,0))
+        cp0.Setmidpoint( 0.5)
+        cp0.Setsharpness(0)     
         curve.GetControlPoints().push_back(&cp0)
 
         # red point
         cp1 = ami.dwControlPoint(px2,o2*hmax)
         cp1.SetColour(wx.wxColour(255,0,0))
+        cp1.Setmidpoint( 0.5)
+        cp1.Setsharpness(0)
         curve.GetControlPoints().push_back(&cp1)
 
         # yellow point
         cp2 = ami.dwControlPoint(px3,o3*hmax)
         cp2.SetColour(wx.wxColour(255,255,0))
+        cp2.Setmidpoint( 0.5)
+        cp2.Setsharpness(0)
         curve.GetControlPoints().push_back(&cp2)
 
         # white point
         cp3 = ami.dwControlPoint(px4,o4*hmax)
         cp3.SetColour(wx.wxColour(255,255,255))
+        cp3.Setmidpoint( 0.5)
+        cp3.Setsharpness(0)
         curve.GetControlPoints().push_back(&cp3)
 
         curve.SetType(1) # solid
@@ -324,15 +316,16 @@ if (!exists(vtkVolumeClass)) {
           y =  ::opacity_attenuation/hmax*::imhisto1.dw.GetAlphalinearCM(n)
           pos = ::imhisto1.dw.GetPoslinearCM(n)
           col = ::imhisto1.dw.GetColourlinearCM(n)
+          mp  = ::imhisto1.dw.GetMidpointlinearCM(n)
+          s   = ::imhisto1.dw.GetSharpnesslinearCM(n)
           ::colorFun.AddRGBPoint( pos, \
                                   1.0/255*col.Red(), \
                                   1.0/255*col.Green(),\
                                   1.0/255*col.Blue(),\
-                                  0.5,\
-                                  0);
-          
+                                  mp,\
+                                  s);
           y = -max(-y,-1)
-          ::opacityFun.AddPoint(  pos, y , 0.5,0)
+          ::opacityFun.AddPoint(  pos, y , mp,s)
         }
         ::SetShadingProperties()
       } else {

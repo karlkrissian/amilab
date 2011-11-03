@@ -76,10 +76,14 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
     ADD_CLASS_METHOD(GetControlledCurves,  "Returns a reference to the std::vector of the controlled curves.");
     
     //Color maps operations
+    ADD_CLASS_METHOD(UptodateLinearCM,     "Enable DrawLinearCM");
     ADD_CLASS_METHOD(GetSizelinearCM,      "Gets the sizer of the LienarCM vector.");
     ADD_CLASS_METHOD(GetColourlinearCM,    "Gets the colour of point x of the LienarCM vector.");
     ADD_CLASS_METHOD(GetPoslinearCM,       "Gets the pos value of point x of the LienarCM vector.");
     ADD_CLASS_METHOD(GetAlphalinearCM,     "Gets the alpha value of point x of the LienarCM vector.");
+    ADD_CLASS_METHOD(GetSharpnesslinearCM, "Gets the sharpness value of point x of the LienarCM vector.");
+    ADD_CLASS_METHOD(GetMidpointlinearCM,  "Gets the midpoint value of point x of the LienarCM vector.");  
+   
     ADD_CLASS_METHOD(DrawLinearCM,         "Calculate LienarCM vector.");
     
     void AddMethods(WrapClass<wxDrawingWindow>::ptr this_ptr )
@@ -114,10 +118,14 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
       AddVar_GetNumberOfCurves(     this_ptr);
       AddVar_GetNumberOfColourCurves(this_ptr);
 
+      AddVar_UptodateLinearCM(      this_ptr);
       AddVar_GetSizelinearCM(       this_ptr);
       AddVar_GetColourlinearCM(     this_ptr);
-      AddVar_GetPoslinearCM(        this_ptr);
       AddVar_GetAlphalinearCM(      this_ptr);
+      AddVar_GetPoslinearCM(        this_ptr);
+      AddVar_GetSharpnesslinearCM(  this_ptr);      
+      AddVar_GetMidpointlinearCM(  this_ptr);          
+      
       AddVar_DrawLinearCM(          this_ptr);
       
       // Add public fields 

@@ -132,6 +132,10 @@ public:
     return _controlled_curves;
   }
 
+  void UptodateLinearCM(){
+    _linearCM_uptodate=false;
+  }
+  
   void SetCtrlPointCallback( CallBackBase::ptr callback) {
     this->_ctrlpt_callback = callback;
   }
@@ -362,6 +366,14 @@ public:
 
   double GetAlphalinearCM(int x){
     return _linearCM.GetPoint(x).GetAlpha();    
+  }
+
+  double GetMidpointlinearCM(int x){
+    return _linearCM.GetPoint(x).GetMidpoint();    
+  }
+  
+  double GetSharpnesslinearCM(int x){
+    return _linearCM.GetPoint(x).GetSharpness();    
   }
   
    wxColour GetColourlinearCM(int x){

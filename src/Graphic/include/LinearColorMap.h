@@ -30,6 +30,8 @@ class LinearColorMapPoint
 {
   double pos;
   double alpha;
+  double sharpness; 
+  double midpoint;
   wxColour left_colour;
   wxColour right_colour;
 
@@ -39,6 +41,8 @@ public:
     alpha =a;
     left_colour =  c;
     right_colour =  c;
+    midpoint = 0.5;
+    sharpness = 0; 
   }
 
   void SetPosition(const double& position)
@@ -70,6 +74,20 @@ public:
   {
     right_colour = c;
   }
+
+  void SetMidpoint(const double& mid)
+  {
+    midpoint = mid;
+  }
+
+  double GetMidpoint() const { return midpoint; }
+  
+  void SetSharpness(const double& shar)
+  {
+    sharpness = shar;
+  }
+
+  double GetSharpness() const { return sharpness; }
 
   wxColour GetLeftColour()  const { return left_colour;  }
   wxColour GetRightColour() const { return right_colour; }

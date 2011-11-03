@@ -625,6 +625,22 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
 
 //---------------------------------------------------
+//  UptodateLinearCM
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_UptodateLinearCM::SetParametersComments() 
+{
+  return_comments = "Enable DrawLinearCM";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_UptodateLinearCM::CallMember( ParamList* p)
+{
+  this->_objectptr->GetObj()->UptodateLinearCM();
+}
+
+
+//---------------------------------------------------
 //  GetSizerlinearCM
 //---------------------------------------------------
 void WrapClass_wxDrawingWindow::
@@ -698,4 +714,42 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   int n=0;
   GET_PARAM(int,pos,0);  
   RETURN_VAR(double,this->_objectptr->GetObj()->GetPoslinearCM(pos));
+}
+
+//---------------------------------------------------
+//  GetSharpnessCM
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetSharpnesslinearCM::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"Index of the linearCM point.");
+  return_comments = "Sharpness value of the point X as double";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetSharpnesslinearCM::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  GET_PARAM(int,pos,0);  
+  RETURN_VAR(double,this->_objectptr->GetObj()->GetSharpnesslinearCM(pos));
+}
+
+//---------------------------------------------------
+//  GetMidpointlinearCM
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetMidpointlinearCM::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"Index of the linearCM point.");
+  return_comments = "Midpoint value of the point X as double";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetMidpointlinearCM::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  GET_PARAM(int,pos,0);  
+  RETURN_VAR(double,this->_objectptr->GetObj()->GetMidpointlinearCM(pos));
 }

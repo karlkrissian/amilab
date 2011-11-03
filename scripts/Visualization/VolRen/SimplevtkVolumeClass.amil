@@ -489,6 +489,7 @@ if (!exists(SimplevtkVolumeClass)) {
             (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") || \
             (::volmapper.GetClassName()=="vtkAMILabOpenGLGPUMultiVolumeRayCastMapper") \
         {
+          printn "Texture =  %1%" %::volmapper.GetClassName()
           # update volmapper GPU settings
           ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
           ::volmapper.SetMaxMemoryFraction(::maxmemoryfraction)

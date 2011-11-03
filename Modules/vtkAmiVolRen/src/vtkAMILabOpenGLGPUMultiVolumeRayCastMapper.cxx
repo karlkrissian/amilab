@@ -137,7 +137,7 @@ private:
 
 //-----------------------------------------------------------------------------
 
-
+extern const char *vtkGPUMultiVolumeRayCastMapper_CompositeFS; //carlos
 extern const char *vtkGPUVolumeRayCastMapper_CompositeFS;
 extern const char *vtkGPUVolumeRayCastMapper_CompositeCroppingFS;
 extern const char *vtkGPUVolumeRayCastMapper_CompositeNoCroppingFS;
@@ -6325,7 +6325,9 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::BuildProgram(vtkRenderWindow *w
         methodCode=vtkGPUVolumeRayCastMapper_MIPFourDependentFS;
         break;
       case vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodComposite:
-        methodCode=vtkGPUVolumeRayCastMapper_CompositeFS;
+        //carlos
+        std::cout << "*** vtkGPUMultiVolumeRayCastMapper_CompositeFS  ***"<<std::endl;
+        methodCode=vtkGPUMultiVolumeRayCastMapper_CompositeFS;  //carlos
         break;
       case vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodCompositeMask:
         methodCode=vtkGPUVolumeRayCastMapper_CompositeMaskFS;

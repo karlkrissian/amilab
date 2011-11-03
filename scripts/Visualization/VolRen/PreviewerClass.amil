@@ -272,7 +272,7 @@ Class PreviewerClass \
    del ::vtkcurve
    del ::SVCVector
    del ::RWIVector
-    ::frame.Destroy()
+   ::frame.Destroy()
   }
 
   #----------------------------
@@ -397,10 +397,13 @@ Class PreviewerClass \
   {
     printn "PreviewerClass::Gui()"
     # Create a Frame
-    ::frame = wx.wxFrame( &ami.MainFrame,wx.wxID_ANY,"Previewer", \
-                          wx.wxPoint(100,100),wx.wxSize(500,500),\
-                          wx.wxRESIZE_BORDER|wx.wxMAXIMIZE_BOX|wx.wxCAPTION,\
-                          "test")
+     ::frame = wx.wxFrame( &ami.MainFrame,wx.wxID_ANY,"Previewer", \
+                           wx.wxPoint(100,100),wx.wxSize(500,500),\
+                           wx.wxRESIZE_BORDER|wx.wxMAXIMIZE_BOX|\
+                           wx.wxCAPTION,\
+                           "test")
+
+
     ::frame.CenterOnParent()
     # Create a panel with a sizer
     ::panel = wx.wxPanel(&::frame)
