@@ -1,13 +1,42 @@
 
+
+#
+# needs 
+#  GENERATED_DIR
+#  LIBNAME
+#
+MACRO(WRAP_INIT mess)
+  # reset log file
+  IF(DEFINED GENERATED_DIR)
+    FILE(WRITE ${GENERATED_DIR}/Wrapping.log "" )
+  ENDIF(DEFINED GENERATED_DIR)
+  WRAP_MESSAGE("***************************")
+  WRAP_MESSAGE(" ${mess}")
+  IF(DEFINED LIBNAME)
+    WRAP_MESSAGE(" Configuring wrapping for library ${LIBNAME}")
+  ENDIF(DEFINED LIBNAME)
+  WRAP_MESSAGE("***************************")
+  MESSAGE("Details in '${GENERATED_DIR}/Wrapping.log'")
+ENDMACRO(WRAP_INIT)
+
+#
+# needs GENERATED_DIR
+#
 MACRO(WRAP_MESSAGE mess)
+  SET(MAXLENGTH 50)
   STRING(LENGTH "${mess}" mess_length)
-  IF (${mess_length} GREATER 50)
+  IF (${mess_length} GREATER ${MAXLENGTH})
     # troncate message
-    string(SUBSTRING "${mess}" 0 50 mess_troncated)
+    string(SUBSTRING "${mess}" 0 ${MAXLENGTH} mess_troncated)
     MESSAGE("${mess_troncated}[...]")
-  ELSE (${mess_length} GREATER 50)
+  ELSE (${mess_length} GREATER ${MAXLENGTH})
     MESSAGE("${mess}")
-  ENDIF (${mess_length} GREATER 50)
+  ENDIF (${mess_length} GREATER ${MAXLENGTH})
+  # APPEND TO LOG FILE
+  IF(DEFINED GENERATED_DIR)
+    FILE(APPEND ${GENERATED_DIR}/Wrapping.log ${mess} )
+    FILE(APPEND ${GENERATED_DIR}/Wrapping.log "\n" )
+  ENDIF(DEFINED GENERATED_DIR)
 ENDMACRO(WRAP_MESSAGE mess)
 
 #
@@ -103,6 +132,10 @@ ENDMACRO( READ_FUNCTIONS )
 #   XML_OUTPUT
 #   LIBNAME
 #   AVAILABLE_EXTERNAL_CLASSES (optional)
+#   GENERATE_HTML_HELP
+#   CLASSES_URL_LIST
+#   HTML_DIR
+#
 # outputs:
 #   ANCESTORS_CMD_RESULT
 #   ANCESTORS_CMD_ERROR
@@ -121,7 +154,20 @@ MACRO( CREATE_ANCESTORS )
     WRAP_MESSAGE("***** available external classes *****")
     SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--available_external_classes" ${AVAILABLE_EXTERNAL_CLASSES})
   ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
-  WRAP_MESSAGE("ANCESTORS_CMD: ${ANCESTORS_CMD}")
+  IF(GENERATE_HTML_HELP)
+    # flag to generate html help
+    SET(WRAP_CMD ${WRAP_CMD} "--generate-html")
+    # base URL html help
+    SET(WRAP_CMD ${WRAP_CMD} "--url" "${CLASSES_URL_LIST}")
+    #HTML directory
+    SET(WRAP_CMD ${WRAP_CMD} "--outputhtmldir" ${HTML_DIR})
+  ENDIF(GENERATE_HTML_HELP)
+
+  SET( ANCESTORS_CMD_TXT "")
+  FOREACH( C ${ANCESTORS_CMD})
+    SET( ANCESTORS_CMD_TXT "${ANCESTORS_CMD_TXT} ${C}")
+  ENDFOREACH( C ${ANCESTORS_CMD})
+  WRAP_MESSAGE("ANCESTORS_CMD: ${ANCESTORS_CMD_TXT}")
 
   EXECUTE_PROCESS(
     COMMAND ${ANCESTORS_CMD}
@@ -172,6 +218,7 @@ ENDMACRO( CHECK_WRAPPED_FILES ELTS_LIST MISSING_VAR)
 #   GENERATED_DIR
 #   LIBNAME
 #   LIBFILTER (optional)
+#   LIBCONSTRUCTOR (optional)
 #   PYTHON_EXECUTABLE
 #   AMI_WRAPPER
 #   ancestors_list
@@ -187,6 +234,19 @@ ENDMACRO( CHECK_WRAPPED_FILES ELTS_LIST MISSING_VAR)
 #  command to wrap all the classes, functions, etc ...
 #
 MACRO( WRAP_CODE )
+  #
+  #
+  IF(NOT DEFINED NB_MISSING_CLASSES)
+    SET(NB_MISSING_CLASSES 0)
+  ENDIF(NOT DEFINED NB_MISSING_CLASSES)
+  IF(NOT DEFINED NB_MISSING_FUNCTIONS)
+    SET(NB_MISSING_FUNCTIONS 0)
+  ENDIF(NOT DEFINED NB_MISSING_FUNCTIONS)
+  IF(NOT DEFINED NB_MISSING_METHODS)
+    SET(NB_MISSING_METHODS 0)
+  ENDIF(NOT DEFINED NB_MISSING_METHODS)
+  #
+  #
   IF ((${NB_MISSING_CLASSES}   GREATER 0)                 OR 
       (${NB_MISSING_FUNCTIONS} GREATER 0)                 OR
       (${NB_MISSING_METHODS}   GREATER 0)                 OR
@@ -201,12 +261,19 @@ MACRO( WRAP_CODE )
     ELSE(DEFINED MISSING_METHODS)
       SET(available_classes_list ${ancestors_list})
     ENDIF(DEFINED MISSING_METHODS)
-    LIST(SORT               available_classes_list)
-    LIST(REMOVE_DUPLICATES  available_classes_list)
-    LIST(SORT               functions_list)
-    LIST(REMOVE_DUPLICATES  functions_list)
-    FILE(WRITE ${GENERATED_DIR}/available_classes.txt "${available_classes_list}")
-    FILE(WRITE ${GENERATED_DIR}/available_functions.txt "${functions_list}")
+
+    IF(DEFINED available_classes_list)
+      LIST(SORT               available_classes_list)
+      LIST(REMOVE_DUPLICATES  available_classes_list)
+      FILE(WRITE ${GENERATED_DIR}/available_classes.txt "${available_classes_list}")
+    ENDIF(DEFINED available_classes_list)
+
+    IF(DEFINED functions_list)
+      LIST(SORT               functions_list)
+      LIST(REMOVE_DUPLICATES  functions_list)
+      FILE(WRITE ${GENERATED_DIR}/available_functions.txt "${functions_list}")
+    ENDIF(DEFINED functions_list)
+
 
     SET(  WRAP_CMD ${PYTHON_EXECUTABLE})
     SET(  WRAP_CMD ${WRAP_CMD} ${AMI_WRAPPER})
@@ -215,6 +282,9 @@ MACRO( WRAP_CODE )
     IF(DEFINED LIBFILTER)
       SET(WRAP_CMD ${WRAP_CMD} "--filter" "\"${LIBFILTER}\"")
     ENDIF(DEFINED LIBFILTER)
+    IF(DEFINED LIBCONSTRUCTOR)
+      SET(WRAP_CMD ${WRAP_CMD} "--constructor" "\"${LIBCONSTRUCTOR}\"")
+    ENDIF(DEFINED LIBCONSTRUCTOR)
     SET(  WRAP_CMD ${WRAP_CMD} "--classes" ${MISSING_CLASSES})
     IF(DEFINED MISSING_METHODS)
       SET(WRAP_CMD ${WRAP_CMD} "--methodpointers" ${MISSING_METHODS})
