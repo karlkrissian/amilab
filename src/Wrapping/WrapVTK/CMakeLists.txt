@@ -30,58 +30,25 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   MESSAGE(" Generate XML file for VTK")
   MESSAGE("***************************")
   #
-  IF   (VTK_FOUND)
-    IF   (VTK_INCLUDE_DIRS)
-      FOREACH( inc ${VTK_INCLUDE_DIRS})
-        SET( VTK_INCLUDES  -I${inc}  ${VTK_INCLUDES} )
-      ENDFOREACH(inc ${VTK_INCLUDE_DIRS})
-    ENDIF(VTK_INCLUDE_DIRS)
-    #MESSAGE("VTK_INCLUDES=${VTK_INCLUDES}")
-
-#MESSAGE(" VTK_REQUIRED_CXX_FLAGS=${VTK_REQUIRED_CXX_FLAGS}")
-     IF   (VTK_REQUIRED_CXX_FLAGS)
-       FOREACH( def ${VTK_REQUIRED_CXX_FLAGS})
-         SET( VTK_DEFS  ${def}  ${WX_DEFS} )
-       ENDFOREACH(def ${VTK_REQUIRED_CXX_FLAGS})
-       MESSAGE("VTK_DEFS=${VTK_DEFS}")
-     ENDIF(VTK_REQUIRED_CXX_FLAGS)
-# 
-#     IF   (wxWidgets_DEFINITIONS_DEBUG)
-#       FOREACH( def ${wxWidgets_DEFINITIONS_DEBUG})
-#         SET( WX_DEFS  -D${def} ${WX_DEFS} )
-#       ENDFOREACH(def ${wxWidgets_DEFINITIONS_DEBUG})
-#       MESSAGE("wxWidgets_DEFINITIONS_DEBUG=${wxWidgets_DEFINITIONS_DEBUG}")
-#     ENDIF(wxWidgets_DEFINITIONS_DEBUG)
-# 
-#     IF   (wxWidgets_CXX_FLAGS)
-#       SET(WX_FLAGS "${CMAKE_CXX_FLAGS} ${wxWidgets_CXX_FLAGS}")
-#       MESSAGE("WX_FLAGS=${WX_FLAGS}")
-#     ENDIF(wxWidgets_CXX_FLAGS)
-  ENDIF ( VTK_FOUND)
-  #
-  # TODO: run gccxml_vcconfig.bat to allow visual studio 9
-  #
   SET(WRAPVTK_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated)
   CreateDirectory( ${WRAPVTK_OUTDIR})
+
+  INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
+  INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapVTK.cmake)
+  GCCXML_USE_VTK()
+  SET(XML_OUTPUT "${WRAPVTK_OUTDIR}/vtk_includes.xml")
+  SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/vtk_includes.h")
+  # Adding needed includes for wrapping
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${CMAKE_CURRENT_SOURCE_DIR}")
+  # Run GCCXML
+  RUN_GCCXML( ${XML_INPUT} ${XML_OUTPUT})
+
   IF(GENERATE_HTML_HELP)
     SET(CLASSES_URL_LIST "http://www.vtk.org/doc/release/5.6/html/")
     SET(HTML_DIR "${WRAPVTK_OUTDIR}/html")
     CreateDirectory( ${HTML_DIR} )
   ENDIF(GENERATE_HTML_HELP)
 
-  SET(XML_OUTPUT "${WRAPVTK_OUTDIR}/vtk_includes.xml")
-  SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/vtk_includes.h")
-  SET( GCCXML_result 0)
-#   add_custom_command(OUTPUT ${XML_OUTPUT}
-#     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
-#     DEPENDS ${XML_INPUT}
-#   )
-  MESSAGE("${GCCXML} -fxml=${XML_OUTPUT} -I${CMAKE_CURRENT_SOURCE_DIR} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}   ${XML_INPUT}")
-  execute_process(
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${CMAKE_CURRENT_SOURCE_DIR}
- -I${AMILAB_SOURCE_DIR}/Wrapping/include -I${AMILAB_SOURCE_DIR}/CommonBase -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}   ${XML_INPUT}
-  )
-   
   # Generate the classes list
 
   # Read list of classes to wrap
@@ -210,11 +177,13 @@ ENDIF(NUMBER_SOURCES_TO_PACKAGE EQUAL 1)
 SET(  WrapVTK_SRCS
   vtkwrap.cpp
   wrapVTK.cpp
+  vtkAmiCommand.cpp
 )
 
 SET(WrapVTK_HDRS
 	../include/vtkwrap.h
 	../include/wrapVTK.h
+  vtkAmiCommand.h
 )
 
 SET(WrapVTK_SRCS

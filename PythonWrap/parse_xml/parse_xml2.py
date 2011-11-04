@@ -175,6 +175,16 @@ if __name__ == '__main__':
     # add the user defined classes
     for cl in args.val.available_classes:
       config.available_classes.append(cl)
+
+    if args.val.available_classes_file != '':
+      # append list of classes from file
+      classes_file = open(args.val.available_classes_file,'r')
+      avail_classes = classes_file.read().split(';')
+      for cl in avail_classes:
+        if cl!='':
+          config.available_classes.append(cl)
+      classes_file.close()
+      
     for cl in args.val.available_external_classes:
       config.available_classes.append(cl)
     for cl in config.available_builtin_classes:
@@ -534,6 +544,15 @@ if __name__ == '__main__':
       for func in  args.val.available_functions:
         # TODO: check that the function is valid
         lib_functions.append(func)
+
+      if args.val.available_functions_file != '':
+        # append list of functions from file
+        functions_file = open(args.val.available_functions_file,'r')
+        avail_functions = functions_file.read().split(';')
+        for cl in avail_functions:
+          if cl!='':
+            lib_functions.append(cl)
+        functions_file.close()
 
       # sort alphabetically
       lib_functions.sort()

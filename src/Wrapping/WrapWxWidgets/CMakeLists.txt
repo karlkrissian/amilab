@@ -19,102 +19,46 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   MESSAGE("Creating wxWidgets wrapping...")
   MESSAGE("*********************\n")
 
-  # Generate XML file
-  MESSAGE("Generate XML file")
-  #
-  IF   (wxWidgets_FOUND)
-    IF   (wxWidgets_INCLUDE_DIRS)
-      FOREACH( inc ${wxWidgets_INCLUDE_DIRS})
-        SET( WX_INCLUDES  -I${inc}  ${WX_INCLUDES} )
-      ENDFOREACH(inc ${wxWidgets_INCLUDE_DIRS})
-    ENDIF(wxWidgets_INCLUDE_DIRS)
-    MESSAGE("WX_INCLUDES=${WX_INCLUDES}")
+  INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
+  INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapWxWidgets.cmake)
+  GCCXML_USE_WXWIDGETS()
 
-    IF   (wxWidgets_DEFINITIONS)
-      FOREACH( def ${wxWidgets_DEFINITIONS})
-        SET( WX_DEFS  -D${def}  ${WX_DEFS} )
-      ENDFOREACH(def ${wxWidgets_DEFINITIONS})
-      MESSAGE("wxWidgets_DEFINITIONS=${wxWidgets_DEFINITIONS}")
-    ENDIF(wxWidgets_DEFINITIONS)
-
-    IF   (wxWidgets_DEFINITIONS_DEBUG)
-      FOREACH( def ${wxWidgets_DEFINITIONS_DEBUG})
-        SET( WX_DEFS  -D${def} ${WX_DEFS} )
-      ENDFOREACH(def ${wxWidgets_DEFINITIONS_DEBUG})
-      MESSAGE("wxWidgets_DEFINITIONS_DEBUG=${wxWidgets_DEFINITIONS_DEBUG}")
-    ENDIF(wxWidgets_DEFINITIONS_DEBUG)
-
-    IF   (wxWidgets_CXX_FLAGS)
-      SET(WX_FLAGS "${CMAKE_CXX_FLAGS} ${wxWidgets_CXX_FLAGS}")
-      MESSAGE("WX_FLAGS=${WX_FLAGS}")
-    ENDIF(wxWidgets_CXX_FLAGS)
-  ENDIF (wxWidgets_FOUND)
   #
   # TODO: run gccxml_vcconfig.bat to allow visual studio 9
   #
-  SET(WRAPWX_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated)
-  CreateDirectory( ${WRAPWX_OUTDIR})
+  SET(GENERATED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated")
+  CreateDirectory( ${GENERATED_DIR})
   IF(GENERATE_HTML_HELP)
     SET(CLASSES_URL_LIST "http://docs.wxwidgets.org/stable/")
-    SET(HTML_DIR "${WRAPWX_OUTDIR}/html")
+    SET(HTML_DIR "${GENERATED_DIR}/html")
     CreateDirectory( ${HTML_DIR} )
   ENDIF(GENERATE_HTML_HELP)
 
-  SET(XML_OUTPUT "${WRAPWX_OUTDIR}/wx_includes.xml")
+  SET(XML_OUTPUT "${GENERATED_DIR}/wx_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/wx_includes.h")
-  SET( GCCXML_result 0)
-#   add_custom_command(OUTPUT ${XML_OUTPUT}
-#     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}
-#     DEPENDS ${XML_INPUT}
-#   )
-  MESSAGE("COMMAND: ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}")
-  EXECUTE_PROCESS(
-    COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include -I${AMILAB_SOURCE_DIR}/CommonBase  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR} -I${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION} ${WX_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}
-    OUTPUT_VARIABLE gccxml_result
-    ERROR_VARIABLE gccxml_error
-  )
-  MESSAGE(" gccxml_result = ${gccxml_result} ")
-  MESSAGE(" gccxml_error = ${gccxml_error} ")
+
+  # Adding needed includes for wrapping ???
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Wrapping/include")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Common/include")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/CommonBase")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/LanguageBase")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Language")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${CMAKE_BINARY_DIR}")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${PROJECT_SOURCE_DIR}")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${Boost_INCLUDE_DIR}")
+
+  RUN_GCCXML( ${XML_INPUT} ${XML_OUTPUT})
 
   # Generate the classes list
 
   # Read list of classes to wrap
-  FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt" classes_txt)
-  STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
-  STRING(REGEX REPLACE "[\r\n]" " " classes_string ${classes_txt} )
-
+  READ_CLASSES(  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt")
   # Read list of functions to wrap
-  IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/functions.txt)
-    FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/functions.txt" functions_txt)
-    # skip comments
-    STRING(REGEX REPLACE "#[^\n]*\n" "\n"  functions_list_cleaned ${functions_txt} )
-    STRING(REGEX REPLACE "#[^\n]*$"  ""    functions_list_cleaned ${functions_list_cleaned} )
-    #STRING(REGEX REPLACE "\n#[^\n]*\n" "\n" functions_list_cleaned ${functions_list_cleaned} )
-    STRING(REGEX REPLACE "[\r\n]" ";" functions_list ${functions_list_cleaned} )
-    MESSAGE("functions_list = ${functions_list}")
-    SET(HAS_FUNCTIONS "1")
-  ENDIF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/functions.txt)
+  READ_FUNCTIONS("${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/functions.txt")
 
-  SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated/ancestors.txt")
-  SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
-
-  IF(GENERATE_HTML_HELP)
-    MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --libname wx --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q")
-    EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --libname wx --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q
-      OUTPUT_VARIABLE ancestors_result
-      ERROR_VARIABLE ancestors_error
-    )
-  ELSE(GENERATE_HTML_HELP)
-    MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q")
-    EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} -q
-      OUTPUT_VARIABLE ancestors_result
-      ERROR_VARIABLE ancestors_error
-    )
-  ENDIF(GENERATE_HTML_HELP)
-  MESSAGE(" ancestors_result = ${ancestors_result} ")
-  MESSAGE(" ancestors_error = ${ancestors_error} ")
+  SET(LIBNAME "wx")
+  CREATE_ANCESTORS()
 
   FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
@@ -125,133 +69,104 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 
   # Wrap all missing classes at once since it is now fast
   
-  FOREACH( class ${ancestors_list})
+  CHECK_WRAPPED_FILES( "${ancestors_list}"       "MISSING_CLASSES")
+  CHECK_WRAPPED_FILES( "${functions_list}"       "MISSING_FUNCTIONS")
+  CHECK_WRAPPED_FILES( "${methodpointers_list}"  "MISSING_METHODS")
 
-    ClassUsedName( class m_class )
-    IF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_class}.cpp) OR
-        (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_class}.h))
-      SET(OUTPUT_LIST ${WRAPWX_OUTDIR}/wrap_${m_class}.cpp ${OUTPUT_LIST})
-      SET(OUTPUT_LIST ${WRAPWX_OUTDIR}/wrap_${m_class}.h ${OUTPUT_LIST})
-      SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
-    ENDIF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_class}.cpp) OR
-        (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_class}.h))
-  ENDFOREACH( class ${ancestors_list}) 
-
-  FOREACH( func ${functions_list})
-    ClassUsedName( func m_func )
-    SET(func_compilation_list ${compilation_list} ${m_func})
-    IF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_func}.cpp) OR
-        (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_func}.h) )
-      SET(OUTPUT_LIST
-        ${WRAPWX_OUTDIR}/wrap_${m_func}.cpp ${WRAPWX_OUTDIR}/wrap_${m_func}.h
-        ${OUTPUT_LIST}
-      )
-      SET(MISSING_FUNCTIONS ${func} ${MISSING_FUNCTIONS})
-    ENDIF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_func}.cpp) OR
-            (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${m_func}.h) )
-  ENDFOREACH( func ${functions_list})
-
-  FOREACH( method ${methodpointers_list})
-    IF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.cpp) OR
-        (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h))
-      SET(OUTPUT_LIST ${WRAPWX_OUTDIR}/wrap_${method}.cpp ${OUTPUT_LIST})
-      SET(OUTPUT_LIST ${WRAPWX_OUTDIR}/wrap_${method}.h ${OUTPUT_LIST})
-      SET(MISSING_METHODS ${method} ${MISSING_METHODS})
-    ENDIF( (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.cpp) OR
-        (NOT EXISTS ${WRAPWX_OUTDIR}/wrap_${method}.h))
-  ENDFOREACH( method ${methodpointers_list}) 
+  MESSAGE("MISSING_CLASSES   = ${MISSING_CLASSES}")
+  MESSAGE("MISSING_FUNCTIONS = ${MISSING_FUNCTIONS}")
+  MESSAGE("MISSING_METHODS   = ${MISSING_METHODS}")
 
   FOREACH( MP ${methodpointers_list})
-    SET( methodpointers_files ${methodpointers_files} ${WRAPWX_OUTDIR}/wrap_${MP}.h ${WRAPWX_OUTDIR}/wrap_${MP}.cpp )
+    SET( methodpointers_files ${methodpointers_files} ${GENERATED_DIR}/wrap_${MP}.h ${GENERATED_DIR}/wrap_${MP}.cpp )
   ENDFOREACH( MP ${methodpointers_list})
 
-  LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
-  LIST(LENGTH MISSING_METHODS NB_MISSING_METHODS)
+  LIST(LENGTH MISSING_CLASSES   NB_MISSING_CLASSES)
+  LIST(LENGTH MISSING_METHODS   NB_MISSING_METHODS)
   LIST(LENGTH MISSING_FUNCTIONS NB_MISSING_FUNCTIONS)
+  
+  SET(LIBFILTER "wx*")
+  WRAP_CODE()
 
-  MESSAGE("MISSING_CLASSES      = ${MISSING_CLASSES}")
-  MESSAGE("MISSING_METHODS      = ${MISSING_METHODS}")
-  MESSAGE("MISSING_FUNCTIONS    = ${MISSING_FUNCTIONS}")
-
-  #MESSAGE("Processing class ${class}")
-  IF ((${NB_MISSING_CLASSES} GREATER 0) OR
-      (${NB_MISSING_METHODS} GREATER 0) OR
-      (${NB_MISSING_FUNCTIONS} GREATER 0) OR
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
-      (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
-#     FOREACH( class ${MISSING_CLASSES})
-#       SET(MISSING_CLASSES_STRINGLIST ${MISSING_CLASSES_STRINGLIST} \"${class}\")
-#     ENDFOREACH( class ${MISSING_CLASSES})
-#     FOREACH( class ${ancestors_list})
-#       SET(ANCESTORS_STRINGLIST ${ANCESTORS_STRINGLIST} \"${class}\")
-#     ENDFOREACH( class ${ancestors_list})
-    # Go for python wrapping
-    IF(GENERATE_HTML_HELP)
-      ADD_CUSTOM_COMMAND(
-          OUTPUT ${OUTPUT_LIST}  ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
-          COMMAND
-            ${PYTHON_EXECUTABLE}
-              ${AMI_WRAPPER} ${XML_OUTPUT}
-              --libname wx
-              --filter "wx*"
-              --classes ${MISSING_CLASSES}
-              --methodpointers ${MISSING_METHODS}
-              --available_classes ${ancestors_list} ${methodpointers_list}
-              --functions ${MISSING_FUNCTIONS}
-              --available_functions ${functions_list}
-              --outputdir "${WRAPWX_OUTDIR}"
-              --addwrap
-              --profile
-              --templates
-              --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-              --generate-html             #flag to generate html help
-              --url ${CLASSES_URL_LIST}   #base URL html help
-              --outputhtmldir ${HTML_DIR} #HTML directory
-              -q
-          #DEPENDS
-          #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
-          VERBATIM
-      )
-    ELSE(GENERATE_HTML_HELP)
-      ADD_CUSTOM_COMMAND(
-          OUTPUT ${OUTPUT_LIST}  ${WRAPWX_OUTDIR}/addwrap_wx.h ${WRAPWX_OUTDIR}/addwrap_wx.cpp
-          COMMAND
-            ${PYTHON_EXECUTABLE}
-              ${AMI_WRAPPER} ${XML_OUTPUT}
-              --libname wx
-              --filter "wx*"
-              --classes ${MISSING_CLASSES}
-              --methodpointers ${MISSING_METHODS}
-              --available_classes ${ancestors_list} ${methodpointers_list}
-              --functions ${MISSING_FUNCTIONS}
-              --available_functions ${functions_list}
-              --outputdir "${WRAPWX_OUTDIR}"
-              --addwrap
-              --profile
-              --templates
-              --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-              -q
-          #DEPENDS
-          #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
-          VERBATIM
-      )
-    ENDIF(GENERATE_HTML_HELP)
-  ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR
-        (${NB_MISSING_METHODS} GREATER 0) OR
-        (${NB_MISSING_FUNCTIONS} GREATER 0) OR
-        (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.h) OR
-        (NOT EXISTS ${WRAPWX_OUTDIR}/addwrap_wx.cpp))
+# #MESSAGE("Processing class ${class}")
+#   IF ((${NB_MISSING_CLASSES} GREATER 0) OR
+#       (${NB_MISSING_METHODS} GREATER 0) OR
+#       (${NB_MISSING_FUNCTIONS} GREATER 0) OR
+#       (NOT EXISTS ${GENERATED_DIR}/addwrap_wx.h) OR
+#       (NOT EXISTS ${GENERATED_DIR}/addwrap_wx.cpp))
+# #     FOREACH( class ${MISSING_CLASSES})
+# #       SET(MISSING_CLASSES_STRINGLIST ${MISSING_CLASSES_STRINGLIST} \"${class}\")
+# #     ENDFOREACH( class ${MISSING_CLASSES})
+# #     FOREACH( class ${ancestors_list})
+# #       SET(ANCESTORS_STRINGLIST ${ANCESTORS_STRINGLIST} \"${class}\")
+# #     ENDFOREACH( class ${ancestors_list})
+#     # Go for python wrapping
+#     IF(GENERATE_HTML_HELP)
+#       ADD_CUSTOM_COMMAND(
+#           OUTPUT ${OUTPUT_LIST}  ${GENERATED_DIR}/addwrap_wx.h ${GENERATED_DIR}/addwrap_wx.cpp
+#           COMMAND
+#             ${PYTHON_EXECUTABLE}
+#               ${AMI_WRAPPER} ${XML_OUTPUT}
+#               --libname wx
+#                --filter "${LIBFILTER}"
+#               --classes ${MISSING_CLASSES}
+#               --methodpointers ${MISSING_METHODS}
+#               --available_classes ${ancestors_list} ${methodpointers_list}
+#               --functions ${MISSING_FUNCTIONS}
+#               --available_functions ${functions_list}
+#               --outputdir "${GENERATED_DIR}"
+#               --addwrap
+#               --profile
+#               --templates
+#               --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+#               --generate-html             #flag to generate html help
+#               --url ${CLASSES_URL_LIST}   #base URL html help
+#               --outputhtmldir ${HTML_DIR} #HTML directory
+#               -q
+#           #DEPENDS
+#           #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+#           VERBATIM
+#       )
+#     ELSE(GENERATE_HTML_HELP)
+#       ADD_CUSTOM_COMMAND(
+#           OUTPUT ${OUTPUT_LIST}  ${GENERATED_DIR}/addwrap_wx.h ${GENERATED_DIR}/addwrap_wx.cpp
+#           COMMAND
+#             ${PYTHON_EXECUTABLE}
+#               ${AMI_WRAPPER} ${XML_OUTPUT}
+#               --libname wx
+#               --filter "wx*"
+#               --classes ${MISSING_CLASSES}
+#               --methodpointers ${MISSING_METHODS}
+#               --available_classes ${ancestors_list} ${methodpointers_list}
+#               --functions ${MISSING_FUNCTIONS}
+#               --available_functions ${functions_list}
+#               --outputdir "${GENERATED_DIR}"
+#               --addwrap
+#               --profile
+#               --templates
+#               --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+#               -q
+#           #DEPENDS
+#           #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+#           VERBATIM
+#       )
+#     ENDIF(GENERATE_HTML_HELP)
+#   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR
+#         (${NB_MISSING_METHODS} GREATER 0) OR
+#         (${NB_MISSING_FUNCTIONS} GREATER 0) OR
+#         (NOT EXISTS ${GENERATED_DIR}/addwrap_wx.h) OR
+#         (NOT EXISTS ${GENERATED_DIR}/addwrap_wx.cpp))
 
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
 
 FOREACH( class ${ancestors_list} ${methodpointers_list} ${functions_list})
   ClassUsedName( class m_class )
-  SET( wx_HDRS ${WRAPWX_OUTDIR}/wrap_${m_class}.h ${wx_HDRS})
-  SET( wx_SRCS ${WRAPWX_OUTDIR}/wrap_${m_class}.cpp ${wx_SRCS})
+  SET( wx_HDRS ${GENERATED_DIR}/wrap_${m_class}.h ${wx_HDRS})
+  SET( wx_SRCS ${GENERATED_DIR}/wrap_${m_class}.cpp ${wx_SRCS})
 ENDFOREACH( class ${ancestors_list} ${methodpointers_list} ) 
-SET( wx_HDRS ${WRAPWX_OUTDIR}/addwrap_wx.h   ${wx_HDRS})
-SET( wx_SRCS ${WRAPWX_OUTDIR}/addwrap_wx.cpp ${wx_SRCS})
+SET( wx_HDRS ${GENERATED_DIR}/addwrap_wx.h   ${wx_HDRS})
+SET( wx_SRCS ${GENERATED_DIR}/addwrap_wx.cpp ${wx_SRCS})
 
 # MESSAGE("${wx_HDRS}")
 

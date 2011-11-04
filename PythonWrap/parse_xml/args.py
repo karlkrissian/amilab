@@ -17,6 +17,9 @@ arg_parser.add_argument('--classes', nargs='*',  default=[],  \
 arg_parser.add_argument('--available_classes', nargs='*',  default=[],  \
   help='Lists available classes' )
 
+arg_parser.add_argument('--available_classes_file',  default='',  \
+  help='File containing the list available classes' )
+
 arg_parser.add_argument('--available_external_classes', nargs='*',  default=[],  \
   help='Lists available classes from other libraries' )
 
@@ -25,6 +28,9 @@ arg_parser.add_argument('--functions', nargs='*', default=[],  \
 
 arg_parser.add_argument('--available_functions', nargs='*', default=[],  \
   help='name of the available wrapped function(s)' )
+
+arg_parser.add_argument('--available_functions_file',  default='',  \
+  help='File containing the list of the available wrapped function(s)' )
 
 arg_parser.add_argument('--methodpointers', nargs='*', default=[], \
   help='name of the method pointers to wrap' )
