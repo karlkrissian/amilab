@@ -13,6 +13,7 @@ def SetConfig():
   config.OTHERDEV_PACKAGES      += " libxml2-devel"
   config.INSTALLCMD           = "zypper install"
   config.INSTALLER_PACKAGES   = "" 
+  config.COMPILATION_PACKAGES  = "gcc gcc-c++ binutils make subversion wget tar gawk Mesa-devel"
   config.VTKDEV_PACKAGES        = "TOCOMPILE"
   config.GCCXML_PACKAGES        = "TOCOMPILE"
   config.COMPRESSDEV_PACKAGES   = "zlib-devel libbz2-devel"

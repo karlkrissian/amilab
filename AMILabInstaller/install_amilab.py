@@ -14,57 +14,29 @@ conf_platform = 'config_{0}'.format(platform.system())
 conf_platform = conf_platform.replace('.','_')
 conf_platform = conf_platform.strip()
 
+system_name=platform.system().strip()
+
 # Create the system configuration filename
 if conf_platform =='config_Linux':
   linuxdist= platform.linux_distribution()
-  conf_dist     = 'config_{0}_{1}'.format(platform.system(),linuxdist[0])
-  conf_distnum  = 'config_{0}_{1}_{2}'.format(platform.system(),linuxdist[0],linuxdist[1])
-  print "Configuration filename is {0}".format(conf_distnum)
+  conf_dist     = 'config_{0}_{1}'.format(system_name,linuxdist[0].strip())
+  conf_distnum  = 'config_{0}_{1}_{2}'.format(system_name,linuxdist[0].strip(),linuxdist[1].strip())
   #from gi.repository import PackageKitGlib as packagekit
   import packagekit_wrapper
   import dbus
 
 if conf_platform =='config_Windows':
   winver = platform.win32_ver()
-  conf_dist     = 'config_{0}_{1}'.format(platform.system(),winver[0])
-  conf_distnum  = 'config_{0}_{1}_{2}'.format(platform.system(),winver[0],winver[1])
+  conf_dist     = 'config_{0}_{1}'.format(system_name,winver[0])
+  conf_distnum  = 'config_{0}_{1}_{2}'.format(sytem_name,winver[0],winver[1])
   # set 32 or 64bits info?
   
 conf_dist     = conf_dist    .replace('.','_')
 conf_dist     = conf_dist.strip()
 conf_distnum  = conf_distnum .replace('.','_')
 conf_distnum  = conf_distnum.strip()
+print "Configuration filenames are {0}, {1}, {2} ".format(conf_platform, conf_dist, conf_distnum)
 
-# source different files
-if os.path.isfile(conf_platform+'.py'):
-  exec("import {0}".format(conf_platform))
-  exec("{0}.SetConfig()".format(conf_platform))
-  #config.libmodule = wx_lib.config
-  #print "reading {0}".format(conf_platform)
-  #execfile(conf_platform)
-  
-if os.path.isfile(conf_dist+'.py'):
-  exec("import {0}".format(conf_dist))
-  exec("{0}.SetConfig()".format(conf_dist))
-  try:
-    exec("{0}.PreInstall()".format(conf_dist))
-  except:
-    print "no pre-installation required for {0}".format(conf_dist)
-  #print "reading {0}".format(conf_dist)
-  #execfile(conf_dist)
-  
-if os.path.isfile(conf_distnum+'.py'):
-  exec("import {0}".format(conf_distnum))
-  exec("{0}.SetConfig()".format(conf_distnum))
-  # try pre-installation commands
-  try:
-    exec("{0}.PreInstall()".format(conf_distnum))
-  except:
-    print "no pre-installation required for {0}".format(conf_distnum)
-  #print "reading {0}".format(conf_distnum)
-  #execfile(conf_distnum)
-
-#print config.INSTALLER_PACKAGES
 
 def InstallPackageDbus(pname):
   try:
@@ -147,7 +119,7 @@ def install_packages(pkgname):
 
   if packages == "TOCOMPILE":
     print "Compiling {0} from source".format(pkgname)
-    os.system("python {0}_COMPILE.py".format(pkgname))
+    exec("import {0}_COMPILE".format(pkgname))
     #if [ $? != 0 ]
       #print "Installation of $1 failed"
       #exit $?
@@ -163,6 +135,42 @@ def install_packages(pkgname):
 # main
 #----------------------------------------------------------------------
 if __name__ == '__main__':
+
+
+
+  # source different files
+  if os.path.isfile(conf_platform+'.py'):
+    exec("import {0}".format(conf_platform))
+    exec("{0}.SetConfig()".format(conf_platform))
+    #config.libmodule = wx_lib.config
+    #print "reading {0}".format(conf_platform)
+    #execfile(conf_platform)
+    
+  if os.path.isfile(conf_dist+'.py'):
+    exec("import {0}".format(conf_dist))
+    exec("{0}.SetConfig()".format(conf_dist))
+    try:
+      exec("{0}.PreInstall()".format(conf_dist))
+    except:
+      print "no pre-installation required for {0}".format(conf_dist)
+    #print "reading {0}".format(conf_dist)
+    #execfile(conf_dist)
+    
+  if os.path.isfile(conf_distnum+'.py'):
+    exec("import {0}".format(conf_distnum))
+    exec("{0}.SetConfig()".format(conf_distnum))
+    # try pre-installation commands
+    try:
+      exec("{0}.PreInstall()".format(conf_distnum))
+    except:
+      print "no pre-installation required for {0}".format(conf_distnum)
+    #print "reading {0}".format(conf_distnum)
+    #execfile(conf_distnum)
+
+  #print config.INSTALLER_PACKAGES
+  print "config.VTK_VERSION = ", config.VTK_VERSION
+
+
   #
   # selecting fastest mirror on ubuntu, check:
   # http://www.ubuntugeek.com/how-to-select-fastest-mirror-in-ubuntu.html
@@ -177,6 +185,8 @@ if __name__ == '__main__':
 
   # CMake installation
   install_packages("CMAKE")
+
+  #print config.INSTALLER_PACKAGES
 
   # VTK
   install_packages("VTKDEV")

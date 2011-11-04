@@ -7,6 +7,7 @@ INSTALLER_PACKAGES    = ""
 COMPILATION_PACKAGES  = "gcc gcc-c++ binutils make subversion wget tar gawk"
 CMAKE_PACKAGES        = "cmake cmake-gui"
 VTKDEV_PACKAGES       = "vtk-devel"
+VTK_VERSION           = "5.6.1" # default vtk version to compile
 WXWIDGETSDEV_PACKAGES = "wxGTK-devel"
 BOOSTDEV_PACKAGES     = "boost-devel"
 IMDEV_PACKAGES        = "libpng-devel libtiff-devel libjpeg-devel"
