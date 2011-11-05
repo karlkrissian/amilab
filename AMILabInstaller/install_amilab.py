@@ -58,6 +58,12 @@ def cb(status, pc, spc, el, rem, c):
 def installer_install_Linux_openSUSE(packages):
   for pkg in packages.split():
     os.system('sudo zypper -n install {0}'.format(pkg))
+
+def installer_install_Linux_debian(packages):
+  pkg_list = ''
+  for pkg in packages.split():
+    pkg_list += ' '+pkg
+  os.system('su -c "apt-get -y install {0}"'.format(pkg_list))
   
 
 def installer_install_Linux(packages):
@@ -66,24 +72,27 @@ def installer_install_Linux(packages):
   if conf_dist=='config_Linux_openSUSE':
     installer_install_Linux_openSUSE(packages)
   else:
-    pk = packagekit_wrapper.PackageKitClient()
-    for pkg in packages.split():
-      print "  '{0}'".format(pkg)
-      res = pk.Resolve('none',[pkg])
-      print "  resolved"
-      if res==[]:
-        print "ERROR: Package {0} not found ...".format(pkg)
-      else:
-        print res[0][1]
-        print "Installing {0}".format(res[0][1])
-        pk.InstallPackages([res[0][1]],cb)
-      #res = pk.SearchNames('none',packages.split())
-      #print res
-      #for n in range(len(res)/2):
-      #  pkgs = [res[n*2]]
-      #  print "Installing {0}".format(res[n*2])
-      #  pk.InstallPackages(pkgs,cb)
-    pk.SuggestDaemonQuit()
+    if conf_dist=='config_Linux_debian':
+      installer_install_Linux_debian(packages)
+    else:
+      pk = packagekit_wrapper.PackageKitClient()
+      for pkg in packages.split():
+        print "  '{0}'".format(pkg)
+        res = pk.Resolve('none',[pkg])
+        print "  resolved"
+        if res==[]:
+          print "ERROR: Package {0} not found ...".format(pkg)
+        else:
+          print res[0][1]
+          print "Installing {0}".format(res[0][1])
+          pk.InstallPackages([res[0][1]],cb)
+        #res = pk.SearchNames('none',packages.split())
+        #print res
+        #for n in range(len(res)/2):
+        #  pkgs = [res[n*2]]
+        #  print "Installing {0}".format(res[n*2])
+        #  pk.InstallPackages(pkgs,cb)
+      pk.SuggestDaemonQuit()
 
 def installer_install_Windows(packages):
   for pkg in packages.split():
@@ -138,6 +147,7 @@ if __name__ == '__main__':
   #
   # source different files
   if os.path.isfile(conf_platform+'.py'):
+    print "importing {0}".format(conf_platform)
     exec("import {0}".format(conf_platform))
     exec("{0}.SetConfig()".format(conf_platform))
     #config.libmodule = wx_lib.config
@@ -145,6 +155,7 @@ if __name__ == '__main__':
     #execfile(conf_platform)
     
   if os.path.isfile(conf_dist+'.py'):
+    print "importing {0}".format(conf_dist)
     exec("import {0}".format(conf_dist))
     exec("{0}.SetConfig()".format(conf_dist))
     try:
@@ -155,6 +166,7 @@ if __name__ == '__main__':
     #execfile(conf_dist)
     
   if os.path.isfile(conf_distnum+'.py'):
+    print "importing {0}".format(conf_distnum)
     exec("import {0}".format(conf_distnum))
     exec("{0}.SetConfig()".format(conf_distnum))
     # try pre-installation commands
