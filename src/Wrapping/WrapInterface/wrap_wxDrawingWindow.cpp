@@ -630,13 +630,13 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 void WrapClass_wxDrawingWindow::
       wrap_UptodateLinearCM::SetParametersComments() 
 {
-  return_comments = "Enable DrawLinearCM";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxDrawingWindow::
       wrap_UptodateLinearCM::CallMember( ParamList* p)
 {
   this->_objectptr->GetObj()->UptodateLinearCM();
+  return BasicVariable::ptr();
 }
 
 

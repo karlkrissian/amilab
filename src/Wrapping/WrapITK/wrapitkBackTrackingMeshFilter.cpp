@@ -38,7 +38,7 @@
 #include "itkPointSet.h"
 #endif // _WITHOUT_ITK_
 
-#include <vtkPointData.h>
+//#include <vtkPointData.h>
 
 //#include "vtk_common.h"
 #include "surface.hpp"
