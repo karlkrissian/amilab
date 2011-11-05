@@ -28,7 +28,7 @@ if conf_platform =='config_Linux':
 if conf_platform =='config_Windows':
   winver = platform.win32_ver()
   conf_dist     = 'config_{0}_{1}'.format(system_name,winver[0])
-  conf_distnum  = 'config_{0}_{1}_{2}'.format(sytem_name,winver[0],winver[1])
+  conf_distnum  = 'config_{0}_{1}_{2}'.format(system_name,winver[0],winver[1])
   # set 32 or 64bits info?
   
 conf_dist     = conf_dist    .replace('.','_')
@@ -72,11 +72,11 @@ def installer_install_Linux(packages):
       res = pk.Resolve('none',[pkg])
       print "  resolved"
       if res==[]:
-	print "ERROR: Package {0} not found ...".format(pkg)
+        print "ERROR: Package {0} not found ...".format(pkg)
       else:
-	print res[0][1]
-	print "Installing {0}".format(res[0][1])
-	pk.InstallPackages([res[0][1]],cb)
+        print res[0][1]
+        print "Installing {0}".format(res[0][1])
+        pk.InstallPackages([res[0][1]],cb)
       #res = pk.SearchNames('none',packages.split())
       #print res
       #for n in range(len(res)/2):
@@ -135,9 +135,7 @@ def install_packages(pkgname):
 # main
 #----------------------------------------------------------------------
 if __name__ == '__main__':
-
-
-
+  #
   # source different files
   if os.path.isfile(conf_platform+'.py'):
     exec("import {0}".format(conf_platform))
@@ -335,7 +333,6 @@ if __name__ == '__main__':
   #${INSTALLCMD} rpm-build
   #cpack -G RPM
   #rpm -ivh AMILab-3.0.0-Linux.`uname -p`.rpm
-
   
-os.chdir(initdir)
+  os.chdir(initdir)
 

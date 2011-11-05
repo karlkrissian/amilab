@@ -15,10 +15,10 @@ if not(installed):
     if not(os.access(download_dir, os.R_OK)):
       os.mkdir(download_dir)
     if platform.architecture()[0]=='32bit':
-        # for the 32 bits version
-        url='http://downloads.sourceforge.net/tortoisesvn/TortoiseSVN-1.7.1.22161-win32-svn-1.7.1.msi?download'
-        filename=download_dir+'/'+'TortoiseSVN-1.7.1.22161-win32-svn-1.7.1.msi'
-        if platform.architecture()[0]=='64bit':
+      # for the 32 bits version
+      url='http://downloads.sourceforge.net/tortoisesvn/TortoiseSVN-1.7.1.22161-win32-svn-1.7.1.msi?download'
+      filename=download_dir+'/'+'TortoiseSVN-1.7.1.22161-win32-svn-1.7.1.msi'
+      if platform.architecture()[0]=='64bit':
         # for the 64 bits version
         url='http://downloads.sourceforge.net/tortoisesvn/TortoiseSVN-1.7.1.22161-x64-svn-1.7.1.msi?download'
         filename=download_dir+'/'+'TortoiseSVN-1.7.1.22161-x64-svn-1.7.1.msi'
