@@ -150,6 +150,7 @@ MACRO( CREATE_ANCESTORS )
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--libname" "${LIBNAME}")
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--ancestors" ${classes_list})  #Options
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--ancestors-file" ${ANCESTORS_FILE} "-q")
+  SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--templates" )
   IF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
     WRAP_MESSAGE("***** available external classes *****")
     SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--available_external_classes" ${AVAILABLE_EXTERNAL_CLASSES})
@@ -287,15 +288,15 @@ MACRO( WRAP_CODE )
     ENDIF(DEFINED LIBCONSTRUCTOR)
     SET(  WRAP_CMD ${WRAP_CMD} "--classes" ${MISSING_CLASSES})
     IF(DEFINED MISSING_METHODS)
-      SET(WRAP_CMD ${WRAP_CMD} "--methodpointers" ${MISSING_METHODS})
+      SET(WRAP_CMD ${WRAP_CMD} "--methodpointers" "${MISSING_METHODS}")
     ENDIF(DEFINED MISSING_METHODS)
     SET(  WRAP_CMD ${WRAP_CMD} "--available_classes_file" "${GENERATED_DIR}/available_classes.txt")
     IF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
       WRAP_MESSAGE("***** available external classes *****")
-      SET(WRAP_CMD ${WRAP_CMD} "--available_external_classes" ${AVAILABLE_EXTERNAL_CLASSES})
+      SET(WRAP_CMD ${WRAP_CMD} "--available_external_classes" "${AVAILABLE_EXTERNAL_CLASSES}")
     ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
     IF(DEFINED HAS_FUNCTIONS)
-      SET(WRAP_CMD ${WRAP_CMD} "--functions" ${MISSING_FUNCTIONS})
+      SET(WRAP_CMD ${WRAP_CMD} "--functions" "${MISSING_FUNCTIONS}")
       SET(WRAP_CMD ${WRAP_CMD} "--available_functions_file" "${GENERATED_DIR}/available_functions.txt")
     ENDIF(DEFINED HAS_FUNCTIONS)
     #SET(WRAP_CMD ${WRAP_CMD} "--wrap_includes" ${WrapWxWidgetsDir})
@@ -330,7 +331,7 @@ MACRO( WRAP_CODE )
         ${WRAP_CMD}
       DEPENDS
         ${GENERATED_DIR}/../classes.txt
-      #VERBATIM
+      VERBATIM
     )
   ENDIF ( (${NB_MISSING_CLASSES}   GREATER 0)                 OR 
           (${NB_MISSING_FUNCTIONS} GREATER 0)                 OR
