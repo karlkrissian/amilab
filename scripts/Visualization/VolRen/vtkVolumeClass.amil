@@ -146,7 +146,7 @@ if (!exists(vtkVolumeClass)) {
           ccurv.push_back(&curve)
           ::linearcurve1_id = ccurv.size()-1
         }
-        ::imhisto1.dw.UptodateLinearCM()
+        ::imhisto1.dw.UpdateLinearCM()
         ::imhisto1.dw.DrawLinearCM()
         ::SetLinearCurve_first=false
     }

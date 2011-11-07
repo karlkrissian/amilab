@@ -132,7 +132,12 @@ public:
     return _controlled_curves;
   }
 
-  void UptodateLinearCM(){
+  /**
+  * @brief Enable updating of the colormap
+  *
+  * @return void
+  **/
+  void UpdateLinearCM(){
     _linearCM_uptodate=false;
   }
   

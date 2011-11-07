@@ -625,17 +625,17 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
 
 //---------------------------------------------------
-//  UptodateLinearCM
+//  UpdateLinearCM
 //---------------------------------------------------
 void WrapClass_wxDrawingWindow::
-      wrap_UptodateLinearCM::SetParametersComments() 
+      wrap_UpdateLinearCM::SetParametersComments() 
 {
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxDrawingWindow::
-      wrap_UptodateLinearCM::CallMember( ParamList* p)
+      wrap_UpdateLinearCM::CallMember( ParamList* p)
 {
-  this->_objectptr->GetObj()->UptodateLinearCM();
+  this->_objectptr->GetObj()->UpdateLinearCM();
   return BasicVariable::ptr();
 }
 
