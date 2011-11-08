@@ -45,6 +45,7 @@
 #include "wx/math.h"
 #include "wx/toolbar.h"
 #include "wx/aui/aui.h"
+#include "wx/aui/auibar.h"
 
 // wxParams includes
 #include "wxParamTypes.hpp"

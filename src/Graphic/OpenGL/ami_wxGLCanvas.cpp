@@ -21,9 +21,9 @@ using namespace amilab;
 
 #include "amilab_messages.h"
 
-#include "driver.h"
-#include "CommonConfigure.h"
-COMMON_VAR_IMPORT yyip::Driver GB_driver;
+//#include "CommonConfigure.h"
+//#include "driver.h"
+//COMMON_VAR_IMPORT yyip::Driver GB_driver;
 
 #define CLASS_GL_MESSAGE(m) \
   if (GB_debug_opengl) { \
@@ -1530,10 +1530,12 @@ void ami_wxGLCanvas::DisplayObjects()
     if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::DisplayObjects() End \n");
 	}
 	catch(std::exception const& e) {
-	  GB_driver.err_print( (boost::format("std::exception catched during parsing \n %1% at %2% ") % e.what() % __func__ ).str().c_str());
+	  //GB_driver.err_print
+    PrintError( (boost::format("std::exception catched during parsing \n %1% at %2% ") % e.what() % __func__ ).str().c_str());
 	}
 	catch(...) { 
-	  GB_driver.err_print("Unknown exception catched during parsing");
+	  //GB_driver.err_print
+    PrintError("Unknown exception catched during parsing");
 	}
 
 } // DisplayObjects()

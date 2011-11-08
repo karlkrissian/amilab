@@ -184,7 +184,7 @@ typedef boost::weak_ptr  <Viewer3D> Viewer3D_wptr;
 #include <list>
 
 #include "wx/aui/aui.h"
-
+class wxAuiToolBar;
 
 #include "ParamPanel.hpp"
 // AMILab includes

@@ -77,6 +77,14 @@ IF(AMILab_FOUND)
         Bin/Release
         LanguageBase LanguageBase/Debug LanguageBase/Release)
 
+  FIND_LIBRARY(Language Language
+      DOC "AMILab Language library"
+      PATHS ${AMILAB_BINARY_DIR}
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        Language Language/Debug Language/Release)
+
   FIND_LIBRARY(WrapCommon WrapCommon
       DOC "AMILab WrapCommon library"
       PATHS ${AMILAB_BINARY_DIR}
@@ -117,6 +125,16 @@ IF(AMILab_FOUND)
         Graphic/Debug 
         Graphic/Release)
 
+  FIND_LIBRARY(AMILab AMILab
+      DOC "AMILab AMILab library"
+      PATHS ${AMILAB_BINARY_DIR}
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        AMILab 
+        AMILab/Debug 
+        AMILab/Release)
+
   FIND_LIBRARY(wxParams wxParams
       DOC "AMILab wxParams library"
       PATHS ${AMILAB_BINARY_DIR}
@@ -138,6 +156,18 @@ IF(AMILab_FOUND)
           Wrapping/WrapWxWidgets/Release)
   ENDIF (NEED_WX_WRAPPING)
 
+  IF (NEED_VTK_WRAPPING)
+    FIND_LIBRARY(WrapVTK WrapVTK
+        DOC "AMILab WrapVTK library"
+        PATHS ${AMILAB_BINARY_DIR}
+        PATH_SUFFIXES 
+          Bin/Debug
+          Bin/Release
+          Wrapping/WrapVTK
+          Wrapping/WrapVTK/Debug
+          Wrapping/WrapVTK/Release)
+  ENDIF (NEED_VTK_WRAPPING)
+
   FIND_LIBRARY(WrapInterface WrapInterface
       DOC "AMILab WrapInterface library"
       PATHS ${AMILAB_BINARY_DIR}
@@ -157,5 +187,15 @@ IF(AMILab_FOUND)
         Wrapping/WrapImports
         Wrapping/WrapImports/Debug
         Wrapping/WrapImports/Release)
+
+  FIND_LIBRARY(myVTK4 myVTK4
+      DOC "AMILab myVTK4 library"
+      PATHS ${AMILAB_BINARY_DIR}
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        myVTK4
+        myVTK4/Debug
+        myVTK4/Release)
 
 ENDIF(AMILab_FOUND)

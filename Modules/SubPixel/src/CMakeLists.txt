@@ -12,6 +12,8 @@ project (SubPixel)
 
 SET(KIT ${CMAKE_PROJECT_NAME})
 
+set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "4.2")
+
 IF(POLICY CMP0017) 
   CMAKE_POLICY(SET CMP0017 NEW)
 ENDIF(POLICY CMP0017)
@@ -33,6 +35,9 @@ ENDIF(ITK_FOUND)
 # need to find VTK first ...
 FIND_PACKAGE( VTK )
 
+MESSAGE("VTK_USE_FILE=${VTK_USE_FILE}")
+INCLUDE(${VTK_USE_FILE})
+MESSAGE("VTK_LIBRARY_DIRS=${VTK_LIBRARY_DIRS}")
 
 OPTION(ENABLE_WRAPPING    "ENABLE MODULE WRAPPING"  ON )
 OPTION(NEED_VTK_WRAPPING  "NEED VTK WRAPPING"       ON )
@@ -234,36 +239,37 @@ CONFIGURE_FILE(
 
 SET(amilab_ownlibs
   ${LanguageBase}
+  #${Language}
   ${Common}
   ${CommonBase}
   ${WrapCommon}
   ${WrapLanguage}
   ${Algorithms}
   ${Graphic}
+  ${AMILab}
   ${wxParams}
+  ${myVTK4}
   ${WrapWxWidgets}
+  ${WrapVTK}
   ${WrapInterface}
   ${WrapImports}
 )
 
-MESSAGE("VTK_USE_FILE=${VTK_USE_FILE}")
-INCLUDE(${VTK_USE_FILE})
-MESSAGE("VTK_LIBRARY_DIRS=${VTK_LIBRARY_DIRS}")
 
 LINK_DIRECTORIES( ${LINK_DIRECTORIES} ${VTK_LIBRARY_DIRS} )
 
 SET(LINK_VTK
-  vtkGraphics
-  vtkImaging
-  vtkIO
-  vtkFiltering
-  vtkCommon
-  vtkNetCDF
-  vtkRendering 
-  vtkVolumeRendering 
-  vtkWidgets
-  vtkViews
-  vtkCharts
+    vtkGraphics
+    vtkImaging
+    vtkIO
+    vtkFiltering
+    vtkCommon
+    # additional libraries for volume rendering
+    vtkRendering 
+    vtkVolumeRendering 
+    vtkWidgets
+    vtkViews
+    vtkCharts
 )
 
 ADD_LIBRARY(${KIT} MODULE ${${KIT}_SRCS} )
