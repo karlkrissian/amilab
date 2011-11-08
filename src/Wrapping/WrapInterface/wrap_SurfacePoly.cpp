@@ -28,8 +28,9 @@
 #include "fonctions.h"
 
 
-#include "driver.h"
-extern yyip::Driver GB_driver;
+#include "DriverBase.h"
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
 
 //
 // static member for creating a variable from a ParamList
@@ -120,12 +121,12 @@ BasicVariable::ptr WrapClass_SurfacePoly::
     % s->GetNumberOfLines()
     % s->GetNumberOfPolys ()
     ).str();
-  GB_driver.res_print(tmp_string);
+  GB_DriverBase->res_print(tmp_string);
   tmp_string = (boost::format(" limits X:[%4.2f %4.2f] Y:[%4.2f %4.2f]  Z:[%4.2f %4.2f]  \n")
     % s->_xmin % s->_xmax
     % s->_ymin % s->_ymax
     % s->_zmin % s->_zmax).str();
-  GB_driver.res_print(tmp_string);
+  GB_DriverBase->res_print(tmp_string);
   return BasicVariable::ptr();
 }
 
@@ -1060,9 +1061,9 @@ BasicVariable::ptr WrapClass_SurfacePoly::
       return Variable<InrImage>::ptr( 
         new Variable<InrImage>(res));
     } else
-      GB_driver.err_print((boost::format("Line %1% has no point.") % linenumber).str());
+      GB_DriverBase->err_print((boost::format("Line %1% has no point.") % linenumber).str());
   } else {
-    GB_driver.err_print("Invalid line number.");
+    GB_DriverBase->err_print("Invalid line number.");
   }
   return BasicVariable::ptr();
 }

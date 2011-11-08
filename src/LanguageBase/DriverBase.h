@@ -33,7 +33,10 @@ public:
   */
   virtual void yyiperror(const char *s) {}
 
-  /** Print error message to the output 
+  virtual void res_print(const char* st) {}
+  virtual void res_print(const std::string& st) {}
+
+    /** Print error message to the output 
     which can be a message dialog.
   */
   virtual int  err_print(const char* st) { return 0;}
