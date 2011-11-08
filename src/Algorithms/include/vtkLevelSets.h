@@ -71,7 +71,7 @@ class VTK_LEVELSETS_EXPORT vtkLevelSets : public vtkImageToImageFilter
 {
 public:
   static vtkLevelSets *New();
-  vtkTypeMacro(vtkLevelSets,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkLevelSets,vtkImageToImageFilter);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   vtkSetMacro(isotropic_voxels,int);

@@ -101,6 +101,8 @@ vtkCxxSetObjectMacro( vtkLevelSets,
                       initImage,
                       vtkImageData);
 
+vtkCxxRevisionMacro(vtkLevelSets,"$Revision: 1.0$")
+
 //
 //------------------------------------------------------------------------------
 vtkLevelSets* vtkLevelSets::New()

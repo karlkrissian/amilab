@@ -53,6 +53,7 @@
 #include <thread.h>
 #endif
 
+vtkCxxRevisionMacro(vtkImageIsoContourDist,"$Revision: 1.0$")
 //
 //---------------------------------------------------------------------------
 vtkImageIsoContourDist* vtkImageIsoContourDist::New()

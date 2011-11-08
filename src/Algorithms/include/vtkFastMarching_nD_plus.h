@@ -179,7 +179,7 @@ public:
 class VTK_EXPORT vtkFastMarching_nD_plus : public vtkImageToImageFilter
 {
 public:
-  vtkTypeMacro(vtkFastMarching_nD_plus,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkFastMarching_nD_plus,vtkImageToImageFilter);
   void PrintSelf(std::ostream& os, vtkIndent indent);
 
   // Description:

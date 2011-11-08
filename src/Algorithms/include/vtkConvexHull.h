@@ -62,13 +62,14 @@ protected:
 class VTK_LEVELSETS_EXPORT vtkConvexHull : public vtkImageToImageFilter
 {
 public:
-  vtkTypeMacro(vtkConvexHull,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkConvexHull,vtkImageToImageFilter);
+  //vtkTypeMacro(vtkConvexHull,vtkImageToImageFilter);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
   // Construct object to extract all of the input data.
   static vtkConvexHull *New();
-
+  
   // Order of the convex hull
   vtkSetMacro(Order,int);
   vtkGetMacro(Order,int);

@@ -54,6 +54,7 @@
 #define dist(a,b,c)  (distance[abs(a)][abs(b)][abs(c)])
 
 
+vtkCxxRevisionMacro(vtkImagePropagateDist2,"$Revision: 1.0$")
 
 //
 //---------------------------------------------------------------------------

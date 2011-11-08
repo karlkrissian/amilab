@@ -68,6 +68,8 @@
 #define EPSILON 1E-5
 
 
+vtkCxxRevisionMacro(vtkLevelSetFastMarching,"$Revision: 1.0$")
+
 //--------------------------------------------------
 ostream& operator << (ostream& os, const FM_TrialPoint& p)
 //       -----------

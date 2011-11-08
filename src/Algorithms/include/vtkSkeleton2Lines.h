@@ -54,7 +54,7 @@ class VTK_CORCTA_EXPORT vtkSkeleton2Lines : public vtkStructuredPointsToPolyData
 //               -----------------
 {
 public:
-  vtkTypeMacro(vtkSkeleton2Lines,vtkStructuredPointsToPolyDataFilter);
+  vtkTypeRevisionMacro(vtkSkeleton2Lines,vtkStructuredPointsToPolyDataFilter);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

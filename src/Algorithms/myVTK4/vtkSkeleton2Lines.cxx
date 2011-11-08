@@ -18,6 +18,7 @@
 #include "vtkPolyData.h"
 #include "vtkCellArray.h"
 
+vtkCxxRevisionMacro(vtkSkeleton2Lines,"$Revision: 1.0$")
 
 vtkSkeleton2Lines* vtkSkeleton2Lines::New()
 {

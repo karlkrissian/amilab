@@ -177,7 +177,7 @@ public:
 class VTK_EXPORT vtkLevelSetFastMarching : public vtkImageToImageFilter
 {
 public:
-  vtkTypeMacro(vtkLevelSetFastMarching,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkLevelSetFastMarching,vtkImageToImageFilter);
   void PrintSelf(std::ostream& os, vtkIndent indent);
 
   // Description:

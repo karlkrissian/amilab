@@ -60,6 +60,8 @@
 #include <algorithm>
 #include <vector>
 
+vtkCxxRevisionMacro(vtkFastMarching_nD_plus,"$Revision: 1.0$")
+
 //--------------------------------------------------
 ostream& operator << (ostream& os, const FM_TrialPoint_nD_plus& p)
 //       -----------

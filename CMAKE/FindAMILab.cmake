@@ -194,8 +194,8 @@ IF(AMILab_FOUND)
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
-        myVTK4
-        myVTK4/Debug
-        myVTK4/Release)
+        Algorithms/myVTK4
+        Algorithms/myVTK4/Debug
+        Algorithms/myVTK4/Release)
 
 ENDIF(AMILab_FOUND)

@@ -183,7 +183,7 @@ class VTK_LEVELSETS_EXPORT vtkImagePropagateDist2 : public vtkImageToImageFilter
 {
 public:
   static vtkImagePropagateDist2 *New();
-  vtkTypeMacro(vtkImagePropagateDist2,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkImagePropagateDist2,vtkImageToImageFilter);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   // Description

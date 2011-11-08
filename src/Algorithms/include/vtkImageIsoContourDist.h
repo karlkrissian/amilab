@@ -59,7 +59,7 @@ class VTK_LEVELSETS_EXPORT vtkImageIsoContourDist : public vtkImageToImageFilter
 {
 public:
   static vtkImageIsoContourDist *New();
-  vtkTypeMacro(vtkImageIsoContourDist,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkImageIsoContourDist,vtkImageToImageFilter);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   // Description
