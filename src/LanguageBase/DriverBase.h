@@ -43,13 +43,36 @@ public:
   */
   virtual int  err_print(const std::string& st) { return 0;}
 
-  /** Returns true if the current command is run from the console.
+  /**
+  * @brief write a command to the command history file.
+  *
+  * @param st ...
+  * @return void
+  **/
+  virtual void ws_print(const char* st) { return; }
+
+  /**
+  * @brief write a command to the command history file.
+  *
+  * @param st ...
+  * @return void
+  **/
+  virtual void ws_print(const std::string& st) { return; }
+
+    /** Returns true if the current command is run from the console.
   */
   virtual bool InConsole() { return in_console; }
 
   virtual BasicVariable::ptr yyip_call_function( AMIFunction* v, 
     const ParamList::ptr& param = ParamList::ptr() ) { return BasicVariable::ptr(); }
 
+  /** Invoke the scanner and parser on an input command line string
+    * @param input input string
+    * @param sname stream name for error messages
+    * @return    true if successfully parsed
+    */
+  virtual bool parse_commandline(const std::string& input,
+          const std::string& sname = "string stream") { return true; }
 };
 
 #endif //  _DriverBase_h_

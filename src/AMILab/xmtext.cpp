@@ -48,10 +48,11 @@
 #include "amilab_messages.h"
 
 #include "fonctions.h"
+#include "ami_object.h"
 
-#include "driver.h"
-#include "CommonConfigure.h"
-COMMON_VAR_IMPORT yyip::Driver GB_driver;
+#include "DriverBase.h"
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
 
 //#include "MainFrame.h"
 //extern MainFrame*   GB_main_wxFrame;
@@ -100,7 +101,7 @@ void TextControl::AddCommand( const wxString& cmd)
   text.Append(cmd);
   wxString unformat_cmd = cmd;
   unformat_cmd.Replace(_T("%"),_T("%%"));
-  GB_driver.ws_print((const char*) unformat_cmd.mb_str(wxConvUTF8));
+  GB_DriverBase->ws_print((const char*) unformat_cmd.mb_str(wxConvUTF8));
 
   cmd_lines[cmdlines_pos] = cmd;
   // get rid of the "\n" character at the end
@@ -139,7 +140,7 @@ void TextControl::AddPrompt(bool newline)
   if (newline) {
     text.Append(wxString::FromAscii("\n"));
     // adds it to the file too
-    GB_driver.ws_print("\n");
+    GB_DriverBase->ws_print("\n");
   }
   text.Append(wxString::FromAscii("[AMILab] "));
   UpdateText();
@@ -364,7 +365,7 @@ bool TextControl::ProcessReturn()
 
     res=AskImage(name);
     if (!res) {
-      GB_driver.yyiperror(" Need Image \n");
+      GB_DriverBase->yyiperror(" Need Image \n");
       in_changed_value = 0;
       return false;
     }
@@ -390,7 +391,7 @@ bool TextControl::ProcessReturn()
 
     res=AskSurface(name);
     if (!res) {
-      GB_driver.yyiperror(" Need Image \n");
+      GB_DriverBase->yyiperror(" Need Image \n");
       in_changed_value = 0;
       return false;
     }
@@ -418,10 +419,10 @@ bool TextControl::ProcessReturn()
   /*
   GB_driver.yyip_switch_to_string(last_cmd.mb_str(wxConvUTF8));
   //  yyiplineno=1;
-  bool parseok = GB_driver.yyip_parse();
+  bool parseok = .yyip_parse();
   GB_driver.yyip_popup_buffer();
   */
-  bool parseok = GB_driver.parse_commandline(string(last_cmd.mb_str(wxConvUTF8)));
+  bool parseok = GB_DriverBase->parse_commandline(string(last_cmd.mb_str(wxConvUTF8)));
 
   if (!parseok) {
     CLASS_ERROR("Error in last command");
@@ -622,7 +623,7 @@ void TextControl::OnChar(wxKeyEvent& event)
 
                   res=AskFilename(name);
                   if (!res) {
-                    GB_driver.yyiperror(" No filename given! \n");
+                    GB_DriverBase->yyiperror(" No filename given! \n");
                   } else {
   
                     wxFileName filename(wxString(name.c_str(), wxConvUTF8));
