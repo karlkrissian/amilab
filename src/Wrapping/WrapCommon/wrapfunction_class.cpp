@@ -20,6 +20,21 @@
 #include <wx/msgdlg.h>
 #include <sstream>
 
+/// global Null variable
+Variable<int>::ptr nullvar(new Variable<int>(boost::shared_ptr<int>(new int(NULL))));
+
+/**
+ * Function to check if the next parameter to parse is the pre-defined NULL variable
+ **/
+bool CheckNullVar(ParamList* _p, int _n)
+{
+  if (_n>=_p->GetNumParam())  return false;
+  boost::shared_ptr<Variable<int> > var = boost::dynamic_pointer_cast<Variable<int> >(_p->GetParam(_n));
+  if (!var.get()) return false;
+  return var->Pointer().get() == nullvar->Pointer().get();
+}
+
+
 std::string GetPointerAsString(void* p)
 {
   std::string res;

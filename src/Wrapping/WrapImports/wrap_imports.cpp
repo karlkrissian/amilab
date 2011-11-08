@@ -22,6 +22,12 @@
 
 #include "paramlist.h"
 #include "wrapfunctions.hpp"
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
+//#include "wrapfunction_class.h"
 #include "VarContexts.hpp"
 //#include "wrapfunctions_draw.h"
 #include "wrap_imports.h"
@@ -101,19 +107,6 @@ extern MainFrame*   GB_main_wxFrame;
 extern wxApp*       GB_wxApp;
 extern std::string  GB_cmdline;
 
-/// global Null variable
-Variable<int>::ptr nullvar(new Variable<int>(boost::shared_ptr<int>(new int(NULL))));
-
-/**
- * Function to check if the next parameter to parse is the pre-defined NULL variable
- **/
-bool CheckNullVar(ParamList* _p, int _n)
-{
-  if (_n>=_p->GetNumParam())  return false;
-  boost::shared_ptr<Variable<int> > var = boost::dynamic_pointer_cast<Variable<int> >(_p->GetParam(_n));
-  if (!var.get()) return false;
-  return var->Pointer().get() == nullvar->Pointer().get();
-}
 
 /**
  * Default wrapping
