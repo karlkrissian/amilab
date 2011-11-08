@@ -14,7 +14,7 @@
 #include "ami_function.h"
 #include "SubPixel2D.h"
 #include "wrap_DessinImage.h"
-//#include "wrap_wxColour.h"
+#include "wrap_wxColour.h"
 #include <wx/colour.h>
 
 

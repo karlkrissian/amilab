@@ -241,6 +241,8 @@ SET(amilab_ownlibs
   ${Algorithms}
   ${Graphic}
   ${wxParams}
+  ${WrapWxWidgets}
+  ${WrapInterface}
 )
 
 MESSAGE("VTK_USE_FILE=${VTK_USE_FILE}")

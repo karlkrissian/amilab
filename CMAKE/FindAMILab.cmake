@@ -126,4 +126,26 @@ IF(AMILab_FOUND)
         binary_dir/Release
       )
 
+  IF (NEED_WX_WRAPPING)
+    FIND_LIBRARY(WrapWxWidgets WrapWxWidgets
+        DOC "AMILab WrapWxWidgets library"
+        PATHS ${AMILAB_BINARY_DIR}
+        PATH_SUFFIXES 
+          Bin/Debug
+          Bin/Release
+          Wrapping/WrapWxWidgets/
+          Wrapping/WrapWxWidgets/Debug
+          Wrapping/WrapWxWidgets/Release)
+  ENDIF (NEED_WX_WRAPPING)
+
+  FIND_LIBRARY(WrapInterface WrapInterface
+      DOC "AMILab WrapInterface library"
+      PATHS ${AMILAB_BINARY_DIR}
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        Wrapping/WrapInterface
+        Wrapping/WrapInterface/Debug
+        Wrapping/WrapInterface/Release)
+
 ENDIF(AMILab_FOUND)
