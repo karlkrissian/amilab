@@ -673,7 +673,7 @@ SET(amilab_ownlibs
   WrapFilters
   WrapSystem
   WrapAMIFluid
-  WrapSurface
+#  WrapSurface
 #  WrapDessinImage
 #  WrapViewer3D
   WrapGLTransfMatrix
