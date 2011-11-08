@@ -37,8 +37,9 @@ LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
 extern MainFrame* GB_main_wxFrame;
 extern wxApp* GB_wxApp;
 
-extern void CB_delete_variable( void* var);
-extern void CB_delete_varlist( void* var);
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT void CB_delete_variable( void* var);
+LanguageBase_VAR_IMPORT void CB_delete_varlist( void* var);
 
 //
 // static member for creating a variable from a ParamList

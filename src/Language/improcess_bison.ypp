@@ -125,6 +125,8 @@
 
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts  Vars;
+LanguageBase_VAR_IMPORT void CB_delete_variable( void* var);
+LanguageBase_VAR_IMPORT void CB_delete_varlist( void* var);
 
 //Duree            IP_time;
 
@@ -222,8 +224,6 @@ static void CB_Button(  void* cd) {
 }
 */
 
-extern void CB_delete_variable( void* var);
-extern void CB_delete_varlist( void* var);
 
 
 //------------------------------------------------------

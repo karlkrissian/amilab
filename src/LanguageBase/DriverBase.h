@@ -8,6 +8,10 @@
 #include "ami_function.h"
 #include "paramlist.h"
 
+
+LanguageBase_EXPORT void CB_delete_variable( void* var);
+LanguageBase_EXPORT void CB_delete_varlist( void* var);
+
 /**
   This class contains the main functionalities of Driver that we want to use from outside
   without including driver.h and all its dependencies.

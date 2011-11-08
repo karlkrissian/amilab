@@ -27,9 +27,9 @@
 
 //#include "driver.h"
 
-
-extern void CB_delete_variable( void* var);
-extern void CB_delete_varlist( void* var);
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT void CB_delete_variable( void* var);
+LanguageBase_VAR_IMPORT void CB_delete_varlist( void* var);
 
 //
 // static member for creating a variable from a ParamList

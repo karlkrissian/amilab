@@ -61,6 +61,7 @@ class wxMessageTimer : public wxTimer
 // forward declaration
 //class CalcContext;
 
+
 /** The example namespace is used to encapsulate the three parser classes
  * example::Parser, example::Scanner and example::Driver */
 namespace yyip {
