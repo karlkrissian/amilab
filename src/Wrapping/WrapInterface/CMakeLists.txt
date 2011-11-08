@@ -33,6 +33,7 @@ SET(  WrapInterface_SRCS
   wrap_dwCurve.cpp
   wrap_dwControlledCurve.cpp
   wrap_Viewer3D.cpp
+  wrap_GLTransfMatrix.cpp
 )
 
 SET(WrapInterface_HDRS
@@ -49,6 +50,7 @@ SET(WrapInterface_HDRS
   ../include/wrap_dwCurve.h
   ../include/wrap_dwControlledCurve.h
   ../include/wrap_Viewer3D.h
+  ../include/wrap_GLTransfMatrix.h
 )
 
 SET(WrapInterface_SRCS
