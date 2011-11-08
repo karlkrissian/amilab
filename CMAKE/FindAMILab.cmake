@@ -148,4 +148,14 @@ IF(AMILab_FOUND)
         Wrapping/WrapInterface/Debug
         Wrapping/WrapInterface/Release)
 
+  FIND_LIBRARY(WrapImports WrapImports
+      DOC "AMILab WrapImports library"
+      PATHS ${AMILAB_BINARY_DIR}
+      PATH_SUFFIXES 
+        Bin/Debug
+        Bin/Release
+        Wrapping/WrapImports
+        Wrapping/WrapImports/Debug
+        Wrapping/WrapImports/Release)
+
 ENDIF(AMILab_FOUND)
