@@ -17,10 +17,11 @@
 #include "wrapfunctions.hpp"
 #include <vector>
 #include <iostream>
-using namespace std;
 
 #include "DessinImage.hpp"
 #include <wx/colour.h>
+
+using namespace std;
 
 //Type of edge: Vertical or horizontal (based on the maximum partial)
 #define XMAX	1

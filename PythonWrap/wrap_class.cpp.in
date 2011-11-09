@@ -18,6 +18,9 @@
 #include "ami_function.h"
 */
 
+// including this file first to try precompiled headers
+#include "wrap_prec.hpp"
+
 #include "wrap_${TEMPLATE}.h"
 
 // get all the required includes

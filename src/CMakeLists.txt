@@ -527,8 +527,6 @@ CHECK_INCLUDE_FILES (malloc.h HAVE_MALLOC_H)
 
 SET(AMI_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/AMILabConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/AMILabConfig.h)
-
 include(amilab_macros)
 
 include(PCH_GCC4_v2)
@@ -541,7 +539,6 @@ set(  wxParams_INCLUDE_DIRS
 #MESSAGE(wxParams_INCLUDE_DIRS=${wxParams_INCLUDE_DIRS})
 MESSAGE(FLEX_INCLUDE_DIR=${FLEX_INCLUDE_DIR})
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE/AMILabConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/AMILabConfig.cmake)
 
 include_directories (
   ${Boost_INCLUDE_DIR}
@@ -588,7 +585,8 @@ add_subdirectory (Language)
 add_subdirectory (Algorithms)
 #ENDIF(AMI_USE_FASTNLMEANS)
 
-include_directories (
+
+SET(AMILAB_INCLUDE_DIRS
   ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
@@ -602,6 +600,14 @@ include_directories (
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
+)
+
+
+MESSAGE("AMILAB_INCLUDE_DIRS=${AMILAB_INCLUDE_DIRS}")
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE/AMILabConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/AMILabConfig.cmake)
+
+include_directories (
+  ${AMILAB_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
   ${OPTICFLOW_INCLUDE_DIR}
@@ -884,6 +890,8 @@ ENDIF(APPLE)
 #      MACOSX_BUNDLE_ICON_FILE 
 #  )
 #ENDIF(APPLE)
+
+
 
 
 INSTALL(TARGETS ${AMILAB_BIN} 

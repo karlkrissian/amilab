@@ -17,6 +17,43 @@ SET(AMILAB_BINARY_DIR     "@AMILab_BINARY_DIR@")
 
 SET(AMI_VTK_VERSION       "@AMI_VTK_VERSION@")
 
+SET(AMILAB_INCLUDE_DIRS   @AMILAB_INCLUDE_DIRS@)
+
+#
+# finding other libraries
+#
+# -- VTK --
+SET(VTK_DIR                             "@VTK_DIR@")
+
+# -- ITK --
+SET(ITK_DIR                             "@ITK_DIR@")
+
+# -- wxWidgets --
+SET(wxWidgets_CONFIG_EXECUTABLE         "@wxWidgets_CONFIG_EXECUTABLE@")
+SET(wxWidgets_ROOT_DIR                  "@wxWidgets_ROOT_DIR@")
+
+# -- Python --
+SET(PYTHON_EXECUTABLE                   "@PYTHON_EXECUTABLE@")
+
+# -- GCCXML --
+SET(GCCXML                              "@GCCXML@")
+
+# -- Boost --
+SET(Boost_LIBRARY_DIRS                  "@Boost_LIBRARY_DIRS@")
+SET(Boost_INCLUDE_DIR                   "@Boost_INCLUDE_DIR@")
+SET(Boost_USE_STATIC_LIBS               "@Boost_USE_STATIC_LIBS@")
+
+# -- BZIP2 --
+SET(BZIP2_INCLUDE_DIR                   "@BZIP2_INCLUDE_DIR@")
+SET(BZIP2_LIBRARIES                     "@BZIP2_LIBRARY@")
+
+# -- ZLIB --
+SET(ZLIB_INCLUDE_DIR                    "@ZLIB_INCLUDE_DIR@")
+SET(ZLIB_LIBRARY                        "@ZLIB_LIBRARY@")
+
+
+# CMAKE Configuration
+SET(CMAKE_BUILD_TYPE                    "@CMAKE_BUILD_TYPE@")
 
 #SET(AMILab_PATHS
 #    ${AMILAB_SOURCE_DIR}/LanguageBase

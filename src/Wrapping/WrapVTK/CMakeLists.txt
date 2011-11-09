@@ -194,6 +194,13 @@ SET(WrapVTK_SRCS
 
 WRAP_MESSAGE("WrapVTK_SRCS =  ${WrapVTK_SRCS}")
 
+IF (AMI_USE_PRECOMP_HEADERS)
+  IF(CMAKE_COMPILER_IS_GNUCXX)
+    ADD_PCH_RULE(${AMILAB_SOURCE_DIR}/Wrapping/include/wrap_prec.hpp WrapVTK_SRCS)
+    #ADD_PCH_RULE(${AMILAB_SOURCE_DIR}/Common/include/DefineClass.hpp WrapVTK_SRCS)
+    #ADD_PCH_RULE(${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/wx_includes.h WrapWxWidgets_SRCS)
+  ENDIF(CMAKE_COMPILER_IS_GNUCXX )
+ENDIF(AMI_USE_PRECOMP_HEADERS)
 
 my_add_library ( WrapVTK)
 add_dependencies ( WrapVTK WrapWxWidgets )

@@ -21,7 +21,7 @@
 #
 # example : ADD_PCH_RULE(headers.h myprog_SRCS)
 MACRO (ADD_PCH_RULE  _header_filename _src_list)
-  MESSAGE("ADD_PCH_RULE ${_header_filename} ${_src_list}")
+  MESSAGE(" === ADD_PCH_RULE ${_header_filename} ${_src_list} ===")
 	SET(_gch_filename "${_header_filename}.gch")
 	LIST(APPEND ${_src_list} ${_gch_filename})
   MESSAGE("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
@@ -30,10 +30,13 @@ MACRO (ADD_PCH_RULE  _header_filename _src_list)
   IF ( NOT (${CMAKE_BUILD_TYPE} STREQUAL ""))
     string(TOUPPER  ${CMAKE_BUILD_TYPE} buildtype)
     MESSAGE("CMAKE_CXX_FLAGS_${buildtype} = ${CMAKE_CXX_FLAGS_${buildtype}}")
-    SET (_args "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_${buildtype}} -Winvalid-pch")
+    SET (_args "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_${buildtype}}")
+  ELSE( NOT (${CMAKE_BUILD_TYPE} STREQUAL ""))
+    SET (_args "${CMAKE_CXX_FLAGS} ")
   ENDIF( NOT (${CMAKE_BUILD_TYPE} STREQUAL ""))
+ #-Winvalid-pch
 
-	LIST(APPEND _args -c ${_header_filename} -o ${_gch_filename})
+	LIST(APPEND _args -fpch-preprocess -c ${_header_filename} -o ${_gch_filename})
   GET_DIRECTORY_PROPERTY(DIRINC INCLUDE_DIRECTORIES)
   GET_DIRECTORY_PROPERTY(DIRFLAGS COMPILE_DEFINITIONS)
   foreach (_inc ${DIRFLAGS})
@@ -43,6 +46,7 @@ MACRO (ADD_PCH_RULE  _header_filename _src_list)
 		LIST(APPEND _args "-I"${_inc})
 	endforeach(_inc ${DIRINC})
 	SEPARATE_ARGUMENTS(_args)
+  MESSAGE("Compilation of precompiled header: ${CMAKE_CXX_COMPILER}  ${CMAKE_CXX_COMPILER_ARG1} ${_args}")
 	add_custom_command(OUTPUT ${_gch_filename}
 		   COMMAND rm -f ${_gch_filename}
 		   COMMAND ${CMAKE_CXX_COMPILER}  ${CMAKE_CXX_COMPILER_ARG1} ${_args}

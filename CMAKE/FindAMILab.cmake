@@ -8,7 +8,7 @@
 
 
 # Assume not found.
-SET(AMILab_FOUND 0)
+#SET(AMILab_FOUND 0)
 # Construct consitent error messages for use below.
 SET(AMILab_DIR_DESCRIPTION "directory containing AMILabConfig.cmake.  This is either the root of the build tree, or PREFIX/lib/AMILab for an installation.")
 SET(AMILab_DIR_MESSAGE "AMILab not found.  Set the AMILab_DIR cmake cache entry to the ${AMILab_DIR_DESCRIPTION}")
