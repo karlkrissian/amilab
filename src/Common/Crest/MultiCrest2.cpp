@@ -1221,13 +1221,13 @@ void MultiCrest2 :: Projete( )
     float             dist;
     t_point       p1;
     point_ligne proj_p1;
-    unsigned char          modif = false;
+    //unsigned char          modif = false;
 
  std::cout << "lignes du 1er ensemble\n";
   l = 0;
   Repeter
 
-    modif=false;
+    //modif=false;
 
     TantQue ( l < lignes->NbLignes()) Et
             ( NbPoints(l) == 0) Faire 
@@ -1316,7 +1316,7 @@ void MultiCrest2 :: Projete( )
 
     Fusionne( l,n0,n1, Ligne(proj_e1), m0, m1 );
 // std::cout << "continue\n";
-      modif=true;
+      //modif=true;
       continue;
     FinSi
 
@@ -1344,7 +1344,7 @@ void MultiCrest2 :: Projete( )
       n1++;
 
       Fusionne( l,n0,n1, Ligne(proj_e2), m0, m1 );
-      modif=true;
+      //modif=true;
       continue;
     FinSi
 

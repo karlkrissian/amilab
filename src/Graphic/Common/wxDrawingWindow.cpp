@@ -294,11 +294,11 @@ void wxDrawingWindow::RemoveControl()
   */
 void wxDrawingWindow::DuplicateControl()
 {
-  int n1 = 0;
+  //int n1 = 0;
   vector_dwControlPoint::iterator it;
-  n1 = (int) _focus_pointset->size();
+  //n1 = (int) _focus_pointset->size();
   _focus_pointset->push_back(_focus_pointset->back());
-  n1 = (int) _focus_pointset->size();
+  //n1 = (int) _focus_pointset->size();
   it  = _focus_pointset->end(); // past to end
   it-=2; 
 
@@ -995,7 +995,7 @@ void wxDrawingWindow::Paint( bool in_paint)
   _memory_dc->SetBrush(*wxRED_BRUSH);
 
   // Get window dimensions
-  wxSize _sz = GetClientSize();
+  //wxSize _sz = GetClientSize();
 
   //_memory_dc->SelectObject(*_bitmap);
   _memory_dc->SetBackground(this->GetBackgroundColour());

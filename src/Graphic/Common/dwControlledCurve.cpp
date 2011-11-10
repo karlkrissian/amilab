@@ -22,7 +22,7 @@ void dwControlledCurve::ComputeCurve()
     if (appliedlimits&&(i==0))
       curve->AddPoint(dwPoint2D((*_controlpoints)[i].GetX(),0));
     curve->AddPoint(dwPoint2D((*_controlpoints)[i].GetX(),(*_controlpoints)[i].GetY()));
-    if (appliedlimits&&(i==_controlpoints->size()-1))
+    if (appliedlimits&&((int)i==_controlpoints->size()-1))
       curve->AddPoint(dwPoint2D((*_controlpoints)[i].GetX(),0));
   }
 /*  if (appliedlimits)

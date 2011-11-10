@@ -527,6 +527,10 @@ CHECK_INCLUDE_FILES (malloc.h HAVE_MALLOC_H)
 
 SET(AMI_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/AMILabConfig.h.in 
+                ${CMAKE_CURRENT_BINARY_DIR}/AMILabConfig.h
+              )
+
 include(amilab_macros)
 
 include(PCH_GCC4_v2)

@@ -1505,12 +1505,13 @@ void MultiCrest :: CreeJonction( int nouv_l, int l , int pos)
     multipoint_ligne    proj;
     float                distance;
     Point3D             pt,pt2;
-   float                C3; //C1,C2,C4; // differents criteres de connexion
+   //float                C3; //C1,C2,C4; // differents criteres de connexion
 
 
   multi_pt.Init(0,l,pos);
 
-  C3 = distance = ProjectionPlusProche2( multi_pt, proj);
+  //C3 = 
+  distance = ProjectionPlusProche2( multi_pt, proj);
   Si distance>0 Alors
    std::cout << "E2 ... d=" << distance << std::endl;
     try {
@@ -1758,7 +1759,7 @@ void MultiCrest :: Projete(
     multipoint       p1;
     multipoint_ligne proj_p1;
 //    char             nom_fichier[100];
-    unsigned char          modif = false;
+   // unsigned char          modif = false;
 
  std::cout << std::endl;
  std::cout << "lignes de l'ensemble " << e1 << "\n";
@@ -1774,7 +1775,7 @@ void MultiCrest :: Projete(
   //    sprintf(nom_fichier,"etape%d.1.crest",l);
   //    lignes[1]->Sauve(nom_fichier);
   //  FinSi
-    modif=false;
+   // modif=false;
 
     TantQue ( l.ligne < lignes[e1]->NbLignes()) Et
             ( NbPoints(l) == 0) Faire 
@@ -1868,7 +1869,7 @@ void MultiCrest :: Projete(
 
       Fusionne( l,n0,n1, Ligne(proj_e1), m0, m1, e3 );
 // std::cout << "continue\n";
-      modif=true;
+      //modif=true;
       continue;
     FinSi
 
@@ -1896,7 +1897,7 @@ void MultiCrest :: Projete(
       n1++;
 
       Fusionne( l,n0,n1, Ligne(proj_e2), m0, m1, e3 );
-      modif=true;
+      //modif=true;
       continue;
     FinSi
 

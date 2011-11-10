@@ -41,7 +41,8 @@ SET(GCCXML                              "@GCCXML@")
 # -- Boost --
 SET(Boost_LIBRARY_DIRS                  "@Boost_LIBRARY_DIRS@")
 SET(Boost_INCLUDE_DIR                   "@Boost_INCLUDE_DIR@")
-SET(Boost_USE_STATIC_LIBS               "@Boost_USE_STATIC_LIBS@")
+
+SET(Boost_USE_STATIC_LIBS               @Boost_USE_STATIC_LIBS@)
 
 # -- BZIP2 --
 SET(BZIP2_INCLUDE_DIR                   "@BZIP2_INCLUDE_DIR@")

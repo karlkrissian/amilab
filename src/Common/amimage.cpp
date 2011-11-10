@@ -896,14 +896,14 @@ unsigned char  amimage::readdata_ext( )
   int            header_size=0;
   //int read_size;
 
-  unsigned char  genesis_format;
+  //unsigned char  genesis_format;
   //float          corner[4][3];
 
   setlocale ( LC_NUMERIC,"C" );
 //  fprintf(stderr,"amimage::readdata_ext() \t 1\n");
   if ( GB_debug ) fprintf ( stderr,"amimage::readdata_ext( ) begin\n" );
 
-  genesis_format = 1;
+  //genesis_format = 1;
   zdim = last_slice-first_slice+1;
 
   allocate();
@@ -985,7 +985,7 @@ unsigned char  amimage::readdata_ext( )
     file_str->read( (char*)header_ptr,header_size );
     // Get Information from the header
     //if ( header_size<4 )
-    genesis_format = false;
+    //genesis_format = false;
     //  skip genesis format for the moment
     //if ( genesis_format ) genesis_format = CheckGenesisHeader ( header_ptr,z,corner );
 
@@ -1052,7 +1052,7 @@ unsigned char  amimage::readdata3D_ext( )
   unsigned char* ptr;
   //char*          header_ptr = NULL;
   unsigned int   image_size;
-  int            header_size=0;
+  //int            header_size=0;
   //int read_size;
 
 
@@ -1105,7 +1105,7 @@ unsigned char  amimage::readdata3D_ext( )
 
   // figure out the header size
   file_str->seekg (0, ios::end);
-  header_size = (int)(file_str->tellg())-(long)image_size;
+  //header_size = (int)(file_str->tellg())-(long)image_size;
 
   // don´ t read the header
   //if (header_ptr==NULL)

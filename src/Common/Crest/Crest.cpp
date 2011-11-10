@@ -505,7 +505,7 @@ unsigned char Crest::ReadJulio( char* nom )
     FILE*       fichier;
     int      i,j;    // indices pour les boucles
     Point3D     pt;       
-    int      pos;      // indice d'un point dans le tableau de points
+    //int      pos;      // indice d'un point dans le tableau de points
     LigneCrest  ligne_crest;
     int      n,res;
     char        ch[50];
@@ -589,7 +589,7 @@ unsigned char Crest::ReadJulio( char* nom )
     Pour(j,1,n)
       fscanf( fichier, "%f %f %f\n", &pt.x, &pt.y, &pt.z);
       // le point n'existe pas
-      pos = nb_points;
+      //pos = nb_points;
       nb_points++;
       _CREST_tab_points += pt;
       _CREST_tab_points[NbPoints()-1].nb_liens = 1;
@@ -1858,7 +1858,7 @@ int Crest ::  ConnecteJonction( )
 {
 
    
-    int  l,l1,l2,k;
+    int  l,k; //,l1,l2
     Point3D p1, p2;
     int  n1, n2;
 
@@ -1874,7 +1874,7 @@ int Crest ::  ConnecteJonction( )
       Si NbPoints(k) == 0 AlorsFait continue;
       Si (p1 == Point( k,  0)) Ou (p1 == Point( k, NbPoints(k)-1)) Alors
         n1++;
-        l1 = k;
+        //l1 = k;
       FinSi
     FinPour
 
@@ -1882,7 +1882,7 @@ int Crest ::  ConnecteJonction( )
       Si NbPoints(k) == 0 AlorsFait continue;
       Si (p2 == Point( k,  0)) Ou (p2 == Point( k, NbPoints(k)-1)) Alors
         n2++;
-        l2 = k;
+        //l2 = k;
       FinSi
     FinPour
 
