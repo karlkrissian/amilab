@@ -156,7 +156,7 @@ SET(${KIT}_SRCS
 
 SET(${KIT}_scripts
   ../scripts/SyntheticPVEImages/SyntheticPVEImagesClass.amil
-  ../scripts/2D/SubPixel2DClass.amil
+  ../scripts/2D/subpixel2DClass.amil
 )
 
 IF(WIN32)
