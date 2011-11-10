@@ -261,6 +261,13 @@ CONFIGURE_FILE(
     ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss.in
     ${CMAKE_CURRENT_SOURCE_DIR}/../Releases/Windows/amilab_wininstall.iss)
 
+#
+# Scripts dir configuration in the build directory
+#
+
+CONFIGURE_FILE(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Config/config.amil.in
+    ${CMAKE_CURRENT_BINARY_DIR}/config.amil)
 
 #-------------------------------------------------------------------------------
 #  End of Configuration files
@@ -537,8 +544,15 @@ include(PCH_GCC4_v2)
 
 InitPrintSources()
 
+#-------------------------------------------------------------------------------
+# Indepedent libraries and Plugins
 set(  wxParams_INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/../wxParams/src)
+
+# set(  SubPixel_INCLUDE_DIRS
+#     ${PROJECT_SOURCE_DIR}/../Modules/SubPixel/src)
+
+#-------------------------------------------------------------------------------
 
 #MESSAGE(wxParams_INCLUDE_DIRS=${wxParams_INCLUDE_DIRS})
 MESSAGE(FLEX_INCLUDE_DIR=${FLEX_INCLUDE_DIR})
@@ -563,7 +577,7 @@ add_subdirectory (CommonBase)
 add_subdirectory (Common)
 #add_subdirectory (DistTransf)
 add_subdirectory (Graphic)
-add_subdirectory (../wxParams/src binary_dir )
+add_subdirectory (../wxParams/src wxParams_build )
 add_subdirectory (AMILab)
 
 #for compile the plugins.
@@ -588,6 +602,12 @@ add_subdirectory (Language)
 #IF(AMI_USE_FASTNLMEANS)
 add_subdirectory (Algorithms)
 #ENDIF(AMI_USE_FASTNLMEANS)
+
+
+#
+# Automatically included plugins
+#
+add_subdirectory (../Modules/SubPixel/src SubPixel_build )
 
 
 SET(AMILAB_INCLUDE_DIRS

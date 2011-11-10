@@ -1,0 +1,6 @@
+#
+# Setup the scripts directory
+#
+
+op_system.SetGlobalScriptDir("@CMAKE_CURRENT_SOURCE_DIR@/../scripts/")
+

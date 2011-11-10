@@ -2,5 +2,4 @@
 
 op_system.SetGlobalScriptDir(op_system.GetCurrentScriptDir()+"/../../scripts/")
 
-#func op_system.GetHomeDir()+"/.amilab/config.amil"
 

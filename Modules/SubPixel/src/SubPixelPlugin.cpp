@@ -15,7 +15,7 @@
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts Vars;
 
-#include "addwrap_SubPixel.h"
+//#include "addwrap_SubPixel.h"
 
 // include SubPixel and SubVoxel wrapped classes
 #include "wrap_AnalyticFunctionBase.h"
@@ -49,7 +49,7 @@ bool SubPixelPlugin::Execute(void)
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("SubPixel");
 
-    wrap_SubPixel_classes(  amiobject->GetContext());
+   // wrap_SubPixel_classes(  amiobject->GetContext());
 
   // Add wx context to builtin
   // Could be in global with a default context

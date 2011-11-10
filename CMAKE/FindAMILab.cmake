@@ -31,21 +31,21 @@ IF(AMILab_FOUND)
   )
 
 
-  IF (NEED_VTK_WRAPPING)
+  IF (${KIT}_NEED_VTK_WRAPPING)
     SET(AMILab_PATHS
       ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
       ${AMILab_PATHS}
       )
     MESSAGE(" VTK wrapping path is ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated")
-  ENDIF(NEED_VTK_WRAPPING)
+  ENDIF(${KIT}_NEED_VTK_WRAPPING)
 
-  IF (NEED_WX_WRAPPING)
+  IF (${KIT}_NEED_WX_WRAPPING)
     SET(AMILab_PATHS
       ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
       ${AMILab_PATHS}
       )
     MESSAGE(" WxWidgets wrapping path is ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_WXWIDGETS_VERSION}/Generated")
-  ENDIF(NEED_WX_WRAPPING)
+  ENDIF(${KIT}_NEED_WX_WRAPPING)
 
   MESSAGE("AMILab_PATHS = ${AMILab_PATHS}")
 
@@ -144,7 +144,7 @@ IF(AMILab_FOUND)
         binary_dir/Release
       )
 
-  IF (NEED_WX_WRAPPING)
+  IF (${KIT}_NEED_WX_WRAPPING)
     FIND_LIBRARY(WrapWxWidgets WrapWxWidgets
         DOC "AMILab WrapWxWidgets library"
         PATHS ${AMILAB_BINARY_DIR}
@@ -154,9 +154,9 @@ IF(AMILab_FOUND)
           Wrapping/WrapWxWidgets/
           Wrapping/WrapWxWidgets/Debug
           Wrapping/WrapWxWidgets/Release)
-  ENDIF (NEED_WX_WRAPPING)
+  ENDIF (${KIT}_NEED_WX_WRAPPING)
 
-  IF (NEED_VTK_WRAPPING)
+  IF (${KIT}_NEED_VTK_WRAPPING)
     FIND_LIBRARY(WrapVTK WrapVTK
         DOC "AMILab WrapVTK library"
         PATHS ${AMILAB_BINARY_DIR}
@@ -166,7 +166,7 @@ IF(AMILab_FOUND)
           Wrapping/WrapVTK
           Wrapping/WrapVTK/Debug
           Wrapping/WrapVTK/Release)
-  ENDIF (NEED_VTK_WRAPPING)
+  ENDIF (${KIT}_NEED_VTK_WRAPPING)
 
   FIND_LIBRARY(WrapInterface WrapInterface
       DOC "AMILab WrapInterface library"
