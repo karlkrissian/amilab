@@ -352,7 +352,9 @@ void SubPixel2D::SuperGradienteCurvo()
   double a, b, c;
   double A, B, mod;
   double den;
-  double gx_n, gy_n, des_n, cu_n;
+  double gx_n, gy_n;
+  //double des_n;
+  double cu_n;
   double partial;
   //Pointers for partials indexes (based on maximum partial)
   int *u, *v;
@@ -445,13 +447,13 @@ void SubPixel2D::SuperGradienteCurvo()
       {
         gx_n  = b / den * mod;
         gy_n  = 1 / den * mod;
-        des_n = (ffy(x,y,z) > 0) ? -a : a;
+        //des_n = (ffy(x,y,z) > 0) ? -a : a;
       }
       else 
       {
         gx_n  = 1 / den * mod;
         gy_n  = b / den * mod;
-        des_n = (ffx(x,y,z) > 0) ? -a : a;
+        //des_n = (ffx(x,y,z) > 0) ? -a : a;
       }	 
       
       //Update gradient signs
@@ -611,10 +613,13 @@ void SubPixel2D::SuperGradienteGaussianoCurvo()
   int margin = 4; 
   double A, B;
   double S1, S2, S3;
-  double a, b, c, d;
+  double a, b, c;
+  //d;
   double f = (1+24*A01+48*A11) / 12;
   double partial;
-  double gx_n, gy_n, des_n, cu_n, abscu;
+  //double gx_n, gy_n, des_n;
+  double cu_n;
+  //abscu;
   //Pointers for partials indexes (based on maximum partial)
   int *u, *v;
   unsigned char edgeCase;
@@ -694,9 +699,10 @@ void SubPixel2D::SuperGradienteGaussianoCurvo()
       cu_n  = sqrt (1+b*b);
       cu_n *= cu_n * cu_n;
       cu_n  = 2*c / cu_n;
-      abscu = fabs(cu_n);
+      //abscu = fabs(cu_n);
       
       //Calculate gradient and displacement
+      /*
       d = (A-B) / sqrt(1+b*b);
       if (edgeCase==YMAX) 
       {
@@ -709,7 +715,7 @@ void SubPixel2D::SuperGradienteGaussianoCurvo()
         gx_n  = (ffx(x,y,z)>0) ? d   : -d;
         gy_n  = (ffy(x,y,z)>0) ? b*d : -b*d; 
         des_n = (ffx(x,y,z)>0) ? -a  : a;
-      }  
+      }  */
       
       //The sign of the curvatura change based on partial value
       if (edgeCase == YMAX && ffy(x,y,z)<0) cu_n = -cu_n;
@@ -747,7 +753,8 @@ void SubPixel2D::DenoisingGus()
   //Denominator for calculate coefficients
   double f;
   //Gradients, displacement and curvature
-  double gx, gy, des, cu=0;
+  //double gx, gy, des;
+  double cu=0;
   //3rd component of the InrImage
   int z = 0;
   //borderPixel object for the pixels of the edge
@@ -1073,9 +1080,9 @@ void SubPixel2D::DenoisingGus()
         
         //Calculate gradient, displacement and curvature
         f   = (A-B) / sqrt(1+b*b);
-        gx  = b * f;
+/*        gx  = b * f;
         gy  = f;
-        des = -a;
+        des = -a;*/
         if (!linear_case)
         {
           cu = sqrt (1+b*b);
@@ -1387,9 +1394,9 @@ void SubPixel2D::DenoisingGus()
         
         //Calculate gradient, displacement and curvature
         f = (A-B) / sqrt(1+b*b);
-        gx = f;
+/*        gx = f;
         gy = b * f;
-        des = -a;
+        des = -a;*/
         if (!linear_case) {
           cu = sqrt (1+b*b);
           cu *= cu * cu;
