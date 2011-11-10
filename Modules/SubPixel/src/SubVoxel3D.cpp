@@ -259,7 +259,8 @@ void SubVoxel3D::GradienteCurvo3D()
   //Margin at the limits of the image
   int margin = 3;
   int dx, dy, dz;
-  int m, nn;
+  int m;
+  //, nn;
   unsigned char edge_type;
   //Intenisities
   double A, B;
@@ -310,7 +311,7 @@ void SubVoxel3D::GradienteCurvo3D()
           //It's a voxel edge
           edge_type = YMAX;
           m         = (fx(x,y,z) * fz(x,y,z) >= 0) ? 1 : -1;
-          nn        = (fy(x,y,z) < 0) ? 1 : -1;
+          //nn        = (fy(x,y,z) < 0) ? 1 : -1;
           
           //We compute the column sums
           S1 = S2 = S3 = S4 = S5 = S6 = 0.0;
@@ -356,7 +357,7 @@ void SubVoxel3D::GradienteCurvo3D()
             //It's a voxel edge
             edge_type = XMAX;
             m         = (fy(x,y,z)*fz(x,y,z) >= 0) ? 1 : -1;
-            nn        = (fx(x,y,z) < 0) ? 1 : -1;
+            //nn        = (fx(x,y,z) < 0) ? 1 : -1;
             
             //We compute the column sums
             S1 = S2 = S3 = S4 = S5 = S6 = 0.0;
@@ -400,7 +401,7 @@ void SubVoxel3D::GradienteCurvo3D()
             //It's a voxel edge
             edge_type = ZMAX;
             m         = (fx(x,y,z)*fy(x,y,z) >= 0) ? 1 : -1;
-            nn        = (fz(x,y,z) < 0) ? 1 : -1;
+            //nn        = (fz(x,y,z) < 0) ? 1 : -1;
             
             //We compute the column sums
             S1 = S2 = S3 = S4 = S5 = S6 = 0.0;
