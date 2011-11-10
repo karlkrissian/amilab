@@ -289,28 +289,36 @@ if (!exists(Subpixel2DClass)){
         std_style = INT(0)
         
         if (::change==0) {
-          if(::normals==0) {
-            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
-                               std_color, std_thickness, std_style,\
-                               ::normals)
-          } else {
-            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
-                               std_color, std_thickness, std_style,\
-                               ::normals, norm_pts, std_color, std_thickness,\
-                               std_style)
+          image_draw.DrawLines(&border_pts,false)
+          if(::normals) {
+            image_draw.DrawLines(&norm_pts,true)
           }
+          //if(::normals==0) {
+          //  ::sp2D->drawBorder(&image_draw, inside, border_pts,\
+          //                     std_color, std_thickness, std_style,\
+          //                     ::normals)
+          //} else {
+          //  ::sp2D->drawBorder(&image_draw, inside, border_pts,\
+          //                     std_color, std_thickness, std_style,\
+          //                     ::normals, norm_pts, std_color, std_thickness,\
+          //                     std_style)
+          // }
         } else {
           bcolor = &wx.wxColour(::Ered, ::Egreen, ::Eblue, ::Ealpha)
           ncolor = &wx.wxColour(::Nred, ::Ngreen, ::Nblue, ::Nalpha)
-          if(::normals==0) {
-            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
-                               bcolor, ::Ethickness, ::Estyle, ::normals)
-          } else {
-            ::sp2D->drawBorder(&image_draw, inside, border_pts,\
-                               bcolor, ::Ethickness, ::Estyle, ::normals,\
-                               norm_pts, ncolor, ::Nthickness, ::Nstyle)
+          image_draw.DrawLines(&border_pts,false)
+          if(::normals) {
+            image_draw.DrawLines(&norm_pts,true)
           }
+          //  ::sp2D->drawBorder(&image_draw, inside, border_pts,\
+          //                     bcolor, ::Ethickness, ::Estyle, ::normals)
+          //} else {
+          //  ::sp2D->drawBorder(&image_draw, inside, border_pts,\
+          //                     bcolor, ::Ethickness, ::Estyle, ::normals,\
+          //                     norm_pts, ncolor, ::Nthickness, ::Nstyle)
+          // }
         }
+        image_draw.DrawingAreaDisplay()
       } else {
         InfoDialog "Before draw the border, you must apply the method."
       }

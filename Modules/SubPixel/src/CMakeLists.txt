@@ -33,53 +33,27 @@ IF(ITK_FOUND)
 ENDIF(ITK_FOUND)
 
 # need to find VTK first ...
-FIND_PACKAGE( VTK )
+#FIND_PACKAGE( VTK )
 
-MESSAGE("VTK_USE_FILE=${VTK_USE_FILE}")
-INCLUDE(${VTK_USE_FILE})
-MESSAGE("VTK_LIBRARY_DIRS=${VTK_LIBRARY_DIRS}")
+#MESSAGE("VTK_USE_FILE=${VTK_USE_FILE}")
+#INCLUDE(${VTK_USE_FILE})
+#MESSAGE("VTK_LIBRARY_DIRS=${VTK_LIBRARY_DIRS}")
 
 OPTION(ENABLE_WRAPPING    "ENABLE MODULE WRAPPING"  ON )
-OPTION(NEED_VTK_WRAPPING  "NEED VTK WRAPPING"       ON )
+OPTION(NEED_VTK_WRAPPING  "NEED VTK WRAPPING"       OFF )
 OPTION(GENERATE_HTML_HELP "Generate HTML file help" OFF)
 
 
 
 
-FIND_PACKAGE( wxWidgets COMPONENTS adv html aui  gl core base stc net richtext)
+#FIND_PACKAGE( wxWidgets COMPONENTS adv html aui  gl core base stc net richtext)
 
-OPTION(NEED_WX_WRAPPING "NEED WXWIDGETS WRAPPING" ON)
+OPTION(NEED_WX_WRAPPING "NEED WXWIDGETS WRAPPING" OFF)
 
 SET(AMI_WXWIDGETS_VERSION "AMI_WXWIDGETS_VERSION-NOTFOUND" )
 #-------------------------------------------------------------------------------
 #  Get the wxWidgets version.
 #-------------------------------------------------------------------------------
-IF(wxWidgets_FOUND)
-  MESSAGE("\n*** wxWidgets VERSION ***")
-  MESSAGE("wxWidgets include dirs: ${wxWidgets_INCLUDE_DIRS}")
-  FIND_PATH(WX_VERSION_PATH NAMES wx/version.h
-    PATHS
-      ${wxWidgets_INCLUDE_DIRS}
-    NO_DEFAULT_PATH
-    DOC "path of file: wx/version.h")
-  IF(WX_VERSION_PATH)
-    MESSAGE("path of file \"wx/version.h\": ${WX_VERSION_PATH}")
-    FILE(STRINGS "${WX_VERSION_PATH}/wx/version.h"
-         FILE_WX_MAJOR_VERSION
-         REGEX "^#define( +)wxM[AJ|IN].*OR_VERSION( +)[0-9]+")
-    MESSAGE("File filtering: ${FILE_WX_MAJOR_VERSION}\n")
-    LIST(GET FILE_WX_MAJOR_VERSION 0 MAJOR_VERSION)
-    LIST(GET FILE_WX_MAJOR_VERSION -1 MINOR_VERSION)
-    STRING(REGEX MATCH "[0-9]+" WX_MAJOR_VERSION ${MAJOR_VERSION})
-    STRING(REGEX MATCH "[0-9]+" WX_MINOR_VERSION ${MINOR_VERSION})
-    SET(AMI_WXWIDGETS_VERSION "${WX_MAJOR_VERSION}.${WX_MINOR_VERSION}")
-    MESSAGE("wxWidgets version: ${AMI_WXWIDGETS_VERSION}\n")
-  ELSE(WX_VERSION_PATH)
-    MESSAGE("Error: \"wx/version.h\" file not found\n")
-  ENDIF(WX_VERSION_PATH)
-  SET(WX_VERSION_PATH "WX_VERSION_PATH-NOTFOUND" CACHE FILEPATH "Cleared." FORCE)
-  MARK_AS_ADVANCED(WX_VERSION_PATH)
-ENDIF(wxWidgets_FOUND)
 
 
 FIND_PACKAGE(AMILab)
@@ -96,7 +70,6 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}
                     ${AMILab_PATHS}
                     ${AMILAB_SOURCE_DIR}/Algorithms/include
                     ${AMILAB_SOURCE_DIR}/Graphic/include
-                    ${wxParams_INCLUDE_DIRS}
  )
 
 OPTION(Boost_USE_STATIC_LIBS "Use Boost static libraries" ON)
@@ -109,9 +82,6 @@ FIND_PACKAGE( BZip2)
 
 
 IF(ENABLE_WRAPPING)
-  IF(VTK_FOUND)
-    SET(AMI_VTK_VERSION "${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
-  ENDIF(VTK_FOUND)
 
   # allow use of vtk classes  wrapped within AMILab
   FILE(READ "${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated/ancestors.txt" vtk_ancestors_txt)
@@ -186,6 +156,7 @@ SET(${KIT}_SRCS
 
 SET(${KIT}_scripts
   ../scripts/SyntheticPVEImages/SyntheticPVEImagesClass.amil
+  ../scripts/2D/SubPixel2DClass.amil
 )
 
 IF(WIN32)
@@ -239,38 +210,13 @@ CONFIGURE_FILE(
 
 SET(amilab_ownlibs
   ${LanguageBase}
-  #${Language}
   ${Common}
   ${CommonBase}
   ${WrapCommon}
-  ${WrapLanguage}
   ${Algorithms}
-  ${Graphic}
-  ${AMILab}
-  ${wxParams}
-  ${myVTK4}
-  ${WrapWxWidgets}
-  ${WrapVTK}
-  ${WrapInterface}
-  ${WrapImports}
 )
 
 
-LINK_DIRECTORIES( ${LINK_DIRECTORIES} ${VTK_LIBRARY_DIRS} )
-
-SET(LINK_VTK
-    vtkGraphics
-    vtkImaging
-    vtkIO
-    vtkFiltering
-    vtkCommon
-    # additional libraries for volume rendering
-    vtkRendering 
-    vtkVolumeRendering 
-    vtkWidgets
-    vtkViews
-    vtkCharts
-)
 
 ADD_LIBRARY(${KIT} MODULE ${${KIT}_SRCS} )
 
@@ -279,15 +225,11 @@ IF(WIN32 OR APPLE)
   # conflict between freetype and vtkfreetype
   TARGET_LINK_LIBRARIES( ${KIT}
     ${amilab_ownlibs}
-    ${LINK_VTK}
     ${wxWidgets_LIBRARIES}
     ${Boost_LIBRARIES}
     )
   TARGET_LINK_LIBRARIES( ${KIT}
     ITKIO
-    #ITKAlgorithms
-    #itkvnl
-    #itkvnl_algo
   )
   TARGET_LINK_LIBRARIES( ${KIT} ${ZLIB_LIBRARIES})
   TARGET_LINK_LIBRARIES( ${KIT} ${BZIP2_LIBRARIES})

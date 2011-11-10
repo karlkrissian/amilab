@@ -438,7 +438,7 @@ SET(Boost_USE_MULTITHREAD OFF)
 #MESSAGE(  CMAKE_HOST_SYSTEM=${CMAKE_HOST_SYSTEM} )
 
 SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
-FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
+FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex graph)
 #SET(Boost_USE_STATIC_LIBS ON)
 MESSAGE( "BOOST_LIBRARIES = ${BOOST_LIBRARIES}")
 

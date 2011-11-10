@@ -175,6 +175,25 @@
 #include "Viewer3D.hpp"
 #include "ParamBox.hpp"
 
+#include "ImageDraw_PositionParam.h"
+#include "ImageDraw_IntensityParam.h"
+#include "ImageDraw_VectorsParam.h"
+#include "ImageDraw_IsoContourParam.h"
+#include "ImageDraw_ImageSurfaceParam.h"
+#include "ImageDraw_ColorsParam.h"
+#include "ImageDraw_Sections3DParam.h"
+#include "ImageDraw_VolRenParam.h"
+#include "ImageDraw_GLMIPParam.h"
+#include "ImageDraw_Voxels3DParam.h"
+#include "ImageDraw_CirclesParam.h"
+#include "ImageDraw_ZoomFactorParam.h"
+#include "ImageDraw_MIPParam.h"
+#include "ImageDraw_AnimationParam.h"
+#include "ImageDraw_VoxelSizeParam.h"
+#include "ImageDraw_InfoParam.h"
+#include "ImageDraw_CoupesXYParam.h"
+
+
 #ifndef macro_min
   #define macro_min(a,b) ( (a)<(b) ? (a) : (b))
 #endif
@@ -186,7 +205,7 @@
 
 typedef  unsigned long Dimension;
 
-extern MainFrame*   GB_main_wxFrame;
+//extern MainFrame*   GB_main_wxFrame;
 
 //extern XtAppContext GB_contexte;
 #include "CommonConfigure.h"
@@ -1855,6 +1874,45 @@ void DessinImage::DessineChampVecteurs( )
 
 } // DessineChampVecteurs
 
+
+//----------------------------------------------------------------
+void DessinImage::DrawLines(InrImage::ptr LineImage, bool draw_arrow)
+{
+  double x1;
+  double y1;
+  double x2;
+  double y2;
+  register double v1x,v1y,v2x,v2y;
+  bool OK;
+  //Draw normals
+  for(int i=0; i<LineImage->DimX(); i++)
+  {
+    x1=(*LineImage)(i,0,0,0);
+    y1=(*LineImage)(i,0,0,1);
+    x2=(*LineImage)(i,0,0,2);
+    y2=(*LineImage)(i,0,0,3);
+    OK=true;
+    OK=OK&&(x1>=Param._Zoom._xmin)&&(x1<=Param._Zoom._xmax);
+    OK=OK&&(x2>=Param._Zoom._xmin)&&(x2<=Param._Zoom._xmax);
+    OK=OK&&(y1>=Param._Zoom._ymin)&&(y1<=Param._Zoom._ymax);
+    OK=OK&&(y2>=Param._Zoom._ymin)&&(y2<=Param._Zoom._ymax);
+    if (OK)
+    {
+      this->DrawLineZ(x1,y1,x2,y2);
+      
+      if (draw_arrow) {
+        //Draw the arrowhead
+        v1x= x2-x1;
+        v1y= y2-y1;
+        v2x= -v1y;
+        v2y= v1x;
+        
+        this->DrawLineZ(x2, y2, x2+(-v1x+v2x)/3.0, y2+(-v1y+v2y)/3.0);
+        this->DrawLineZ(x2, y2, x2+(-v1x-v2x)/3.0, y2+(-v1y-v2y)/3.0);
+      }
+    }
+  }
+}
 
 
 //----------------------------------------------------------------
@@ -4685,7 +4743,7 @@ void DessinImage::DrawAllContours()
 void DessinImage::CreateGLWindow()
 //                  -----------
 {
-  Viewer3D* viewer = new Viewer3D(GB_main_wxFrame, GetwxStr("3D Viewer"));
+  Viewer3D* viewer = new Viewer3D(this->GetParent(), GetwxStr("3D Viewer"));
   // Don´t delete the viewer since its parent will take care of it
   _GLWindow0 = Viewer3D::ptr( viewer,
                               wxwindow_nodeleter<Viewer3D>());

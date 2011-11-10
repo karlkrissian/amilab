@@ -188,23 +188,27 @@ class wxAuiToolBar;
 
 #include "ParamPanel.hpp"
 // AMILab includes
-#include "ImageDraw_PositionParam.h"
-#include "ImageDraw_IntensityParam.h"
-#include "ImageDraw_VectorsParam.h"
-#include "ImageDraw_IsoContourParam.h"
-#include "ImageDraw_ImageSurfaceParam.h"
-#include "ImageDraw_ColorsParam.h"
-#include "ImageDraw_Sections3DParam.h"
-#include "ImageDraw_VolRenParam.h"
-#include "ImageDraw_GLMIPParam.h"
-#include "ImageDraw_Voxels3DParam.h"
-#include "ImageDraw_CirclesParam.h"
-#include "ImageDraw_ZoomFactorParam.h"
+class ImageDraw_PositionParam;
+class ImageDraw_IntensityParam;
+class ImageDraw_VectorsParam;
+class ImageDraw_IsoContourParam;
+class ImageDraw_ImageSurfaceParam;
+class ImageDraw_ColorsParam;
+class ImageDraw_VolRenParam;
+
+class ImageDraw_GLMIPParam;
+
+class ImageDraw_Voxels3DParam;
+class ImageDraw_CirclesParam;
+class ImageDraw_MIPParam;
 #include "ImageDraw_MIPParam.h"
-#include "ImageDraw_AnimationParam.h"
-#include "ImageDraw_VoxelSizeParam.h"
-#include "ImageDraw_InfoParam.h"
-#include "ImageDraw_CoupesXYParam.h"
+
+class ImageDraw_AnimationParam;
+class ImageDraw_VoxelSizeParam;
+class ImageDraw_InfoParam;
+class ImageDraw_CoupesXYParam;
+class ImageDraw_Sections3DParam;
+class ImageDraw_ZoomFactorParam;
 
 class CompareImage;
 class compare_info; // defined at the end ...
@@ -394,39 +398,39 @@ protected:
   //----------------------------------------------------
   //ImageDraw_X parameters
   // Position parameters
-  ImageDraw_PositionParam::ptr     _param_position;
+  boost::shared_ptr<ImageDraw_PositionParam>     _param_position;
   //Intensity parameters
-  ImageDraw_IntensityParam::ptr    _param_intensity;
+  boost::shared_ptr<ImageDraw_IntensityParam>    _param_intensity;
   //Vectors parameters
-  ImageDraw_VectorsParam::ptr      _param_vectors;
+  boost::shared_ptr<ImageDraw_VectorsParam>      _param_vectors;
   //IsoContour parameters
-  ImageDraw_IsoContourParam::ptr   _param_isocontour;
+  boost::shared_ptr<ImageDraw_IsoContourParam>   _param_isocontour;
   //ImageSurface parameters
-  ImageDraw_ImageSurfaceParam::ptr _param_imagesurface;
+  boost::shared_ptr<ImageDraw_ImageSurfaceParam> _param_imagesurface;
   //Colors parameters
-  ImageDraw_ColorsParam::ptr       _param_colors;
+  boost::shared_ptr<ImageDraw_ColorsParam>       _param_colors;
   //Sections3d parameters
-  ImageDraw_Sections3DParam::ptr   _param_sections3D;
+  boost::shared_ptr<ImageDraw_Sections3DParam>   _param_sections3D;
   //VolRen parameters
-  ImageDraw_VolRenParam::ptr       _param_volren;
+  boost::shared_ptr<ImageDraw_VolRenParam>       _param_volren;
   //GLMIP parameters
-  ImageDraw_GLMIPParam::ptr        _param_glmip;
+  boost::shared_ptr<ImageDraw_GLMIPParam>        _param_glmip;
   //Voxels3D parameters
-  ImageDraw_Voxels3DParam::ptr     _param_voxels3D;
+  boost::shared_ptr<ImageDraw_Voxels3DParam>     _param_voxels3D;
   //Circles parameters
-  ImageDraw_CirclesParam::ptr      _param_circles;
+  boost::shared_ptr<ImageDraw_CirclesParam>      _param_circles;
   //ZoomFactor parameters
-  ImageDraw_ZoomFactorParam::ptr   _param_zoomfactor;
+  boost::shared_ptr<ImageDraw_ZoomFactorParam>   _param_zoomfactor;
   //MIP parameters
-  ImageDraw_MIPParam::ptr          _param_mip;
+  boost::shared_ptr<ImageDraw_MIPParam>          _param_mip;
   //Animation parameters
-  ImageDraw_AnimationParam::ptr    _param_animation;
+  boost::shared_ptr<ImageDraw_AnimationParam>    _param_animation;
   //VoxelSize parameters
-  ImageDraw_VoxelSizeParam::ptr    _param_voxel;
+  boost::shared_ptr<ImageDraw_VoxelSizeParam>    _param_voxel;
   //ImageInfo parameters
-  ImageDraw_InfoParam::ptr         _param_image_info;
+  boost::shared_ptr<ImageDraw_InfoParam>         _param_image_info;
   //CoupesXY parameters
-  ImageDraw_CoupesXYParam::ptr     _param_coupesxy;
+  boost::shared_ptr<ImageDraw_CoupesXYParam>     _param_coupesxy;
 
 
 /** @name Gestion des Animations
@@ -1020,6 +1024,7 @@ private:
   //       --------------------
   //  Dessine le champ de vecteur
   //  sur toutes les coupes visibles
+  
 
   ///
   void     DessineLigneDansMIP( const Point_3D<int>& p1, 
@@ -1334,6 +1339,14 @@ public:
   void     DessineChampCercles();
   //       -------------------
 
+  /**
+   * \brief Draw a set of line segments in the XY plane at any floating position with the current pen settings.
+   *
+   * \param LineImage 1D image (vector) of 4 values per pixel(/voxel): x1,y1,x2,y2
+   * \param draw_arrow if true, draws each segment as an arrow
+   **/
+  void DrawLines(InrImage::ptr LineImage, bool draw_arrow);
+  
   ///
   void     SetCirclesON() { _circles_ON = true; }
   //       ------------

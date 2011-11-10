@@ -18,8 +18,8 @@
 #include <vector>
 #include <iostream>
 
-#include "DessinImage.hpp"
-#include <wx/colour.h>
+//#include "DessinImage.hpp"
+//#include <wx/colour.h>
 
 using namespace std;
 
@@ -256,7 +256,8 @@ void SubPixel2D::OptimizarParabola (double &a, double &b, double &c,
   if (inv_signo) { a = -a; c = -c; }
 }
 
-//drawBorder method
+/*
+ //drawBorder method
 void SubPixel2D::drawBorder(DessinImage* viewer, InrImage* inside, 
                             InrImage* border_pts,  wxColour* bcolor, 
                             int bthickness, int bstyle, int draw_normals, 
@@ -313,7 +314,8 @@ void SubPixel2D::drawBorder(DessinImage* viewer, InrImage* inside,
   //Refresh the viewer
   viewer->DrawingAreaDisplay();
 }
-
+*/
+ 
 //Set input image method
 void SubPixel2D::setInput(InrImage* inp_image)
 {

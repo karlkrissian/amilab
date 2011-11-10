@@ -1301,6 +1301,35 @@ BasicVariable::ptr WrapClass_DessinImage::
   return BasicVariable::ptr();
 }
 
+//---------------------------------------------------
+//  DrawLines
+
+//---------------------------------------------------
+void WrapClass_DessinImage::
+wrap_DrawLines::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(InrImage, "input 1D vectorial image of 4 components containing the line segments");
+  ADDPARAMCOMMENT_TYPE(bool,     "draw arrows");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+wrap_DrawLines::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  if (!p) ClassHelpAndReturn;
+  Variable<InrImage>::ptr varim;
+  bool draw_vectors;
+  int n=0;
+  if (!get_var_param<InrImage>(varim,p,n)) ClassHelpAndReturn;
+  if (!get_val_param<bool>(draw_vectors,p,n)) ClassHelpAndReturn;
+  
+  InrImage::ptr image(varim->Pointer());
+  if (image.get()) 
+    di->DrawLines(image,draw_vectors);
+
+  return BasicVariable::ptr();
+}
+
 
 //---------------------------------------------------
 //  SetIntensityRange

@@ -152,23 +152,11 @@ public:
   
   virtual ~ SubPixel2D();
   
-  /**
-   *  Draw the sub-pixel edge.
-   *  @param viewer       A pointer to the viewer of the image.
-   *  @param inside       Image that indicates the points inside the view.
-   *  @param border_pts   Image that contains the points of the edge.
-   *  @param bcolor       The color of the edge.
-   *  @param bthickness   The thickness of the edge.
-   *  @param bstyle       The style of the edge.
-   *  @param draw_normals Indicates if the normals will be drawn.
-   *  @param norm_pts     Image that contains the points of the normals of the edge.
-   *  @param ncolor       The color of the normals.
-   *  @param nthickness   The thickness of the normals.
-   *  @param nstyle       The style of the normals.
-   */
+ /*
   void drawBorder(DessinImage* viewer, InrImage* inside, InrImage* border_pts, 
                   wxColour* bcolor, int bthickness, int bstyle, int draw_normals, 
                   InrImage* norm_pts, wxColour* ncolor, int nthickness, int nstyle);
+  */
   
   /**
    *  This procedure applies the basic method for sub-pixel edge detection in 2D

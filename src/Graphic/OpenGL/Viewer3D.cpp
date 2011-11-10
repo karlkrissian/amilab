@@ -167,7 +167,7 @@ BEGIN_EVENT_TABLE(Viewer3D, wxFrame)
 END_EVENT_TABLE()
 
 // My frame constructor
-Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
+Viewer3D::Viewer3D(wxWindow *frame, const wxString& title, const wxPoint& pos,
     const wxSize& size, long style)
     : wxFrame(frame, wxID_ANY, title, pos, size, style )
 {

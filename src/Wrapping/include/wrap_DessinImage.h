@@ -20,6 +20,8 @@
 #include "ami_object.h"
 
 #include "DessinImage.hpp"
+//#include "ImageDraw_MIPParam.h"
+
 #include "wrap_FenetreDessin.h"
 #include "wrap_ImageViewerBase.h"
 
@@ -107,6 +109,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
     ADD_CLASS_METHOD(getimage,             "Save the snapshot as a 2D image of format RGB. In the case of an image, the snapshot is taken from X11 and it includes potential colorbar and axes, in the case of a surface, it is taken from OpenGL");
 
     ADD_CLASS_METHOD(DrawLineZ,  "Draws a line on XY plane.");
+    ADD_CLASS_METHOD(DrawLines,  "Draws a set of line segments (optionally arrows) on the XY plane.");
 
     ADD_CLASS_METHOD(SetIntensityRange, "Sets the lower and upper limits of the intensity look-up table.");
 
@@ -155,6 +158,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
       AddVar_GetZPos(               this_ptr);
       AddVar_getimage(              this_ptr);
       AddVar_DrawLineZ(             this_ptr);
+      AddVar_DrawLines(             this_ptr);
       AddVar_SetIntensityRange(     this_ptr);
       
       // Adding Bases

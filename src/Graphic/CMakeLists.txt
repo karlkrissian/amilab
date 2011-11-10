@@ -28,6 +28,7 @@ include_directories (
 
 
 INCLUDE( ${VTK_USE_FILE} )
+INCLUDE( ${ITK_USE_FILE} )
 
 INCLUDE(${wxWidgets_USE_FILE})
 
@@ -92,6 +93,7 @@ SET(Graphic_HDRS
     include/Viewer3D_ViewParam.h
     include/ami_wxGLCanvas.hpp
     include/GLparam.hpp
+    include/Voxel.hpp
     include/isosurface.hpp
     include/surface.hpp
     include/TestGL.hpp
@@ -150,6 +152,7 @@ SET(Graphic_SRCS
     OpenGL/Viewer3D_ViewParam.cpp
     OpenGL/VolumeRender.cpp
     OpenGL/ami_wxGLCanvas.cpp
+    OpenGL/Voxel.cpp 
     OpenGL/isosurface.cpp 
     OpenGL/surface.cpp
 
@@ -161,12 +164,52 @@ SET(Graphic_SRCS
   ${Graphic_HDRS}
 )
 
-my_add_library (Graphic)
 
-target_link_libraries(Graphic
-  Common
-  wxParams
-  vtkGraphics
-  ${wxWidgets_LIBRARIES}
-  ${Boost_LIBRARIES}
-)
+#my_add_library (Graphic)
+
+#IF(APPLE)
+#  OPTION(Graphic_SHARED     "Compile Graphic library as shared" ON)
+#ELSE(APPLE)
+#  OPTION(Graphic_SHARED     "Compile Graphic library as shared" OFF)
+#ENDIF(APPLE)
+SET(Graphic_SHARED OFF)
+
+IF (Graphic_SHARED)
+  my_add_shared_library ( Graphic)
+  INSTALL(TARGETS Graphic
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+  )
+
+  SET(LINK_VTK
+    vtkGraphics
+    vtkImaging
+    vtkIO
+    vtkFiltering
+    vtkCommon
+    # additional libraries for volume rendering
+    vtkRendering 
+    vtkVolumeRendering 
+    vtkWidgets
+    vtkViews
+    vtkCharts
+  )
+
+  target_link_libraries(Graphic
+    Algorithms
+    Common
+    CommonBase
+    wxParams
+    wxVTK
+    ${LINK_VTK}
+    ${wxWidgets_LIBRARIES}
+    ${Boost_LIBRARIES}
+  )
+
+ELSE(Graphic_SHARED)
+
+  my_add_library ( Graphic)
+
+ENDIF(Graphic_SHARED)
+
+

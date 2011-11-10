@@ -565,7 +565,7 @@ void FenetreDessin::DrawingAreaInit( )
 void FenetreDessin::DrawingAreaDisplay( )
 //                  ------------------
 {
-  if (_memory_dc) {
+  if (_memory_dc.get()) {
 
     wxClientDC dc(_drawing_window);
     if (dc.IsOk()) {
@@ -597,7 +597,7 @@ void FenetreDessin :: DrawingAreaClear( )
 //                    -------------
 {
 
-  if (_memory_dc) {
+  if (_memory_dc.get()) {
     //_memory_dc->SelectObject(*_bitmap);
     _memory_dc->SetBackground(_drawing_window->GetBackgroundColour());
     _memory_dc->Clear();

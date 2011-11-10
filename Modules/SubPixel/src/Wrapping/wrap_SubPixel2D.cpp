@@ -13,9 +13,9 @@
 #include "ami_object.h"
 #include "ami_function.h"
 #include "SubPixel2D.h"
-#include "wrap_DessinImage.h"
-#include "wrap_wxColour.h"
-#include <wx/colour.h>
+//#include "wrap_DessinImage.h"
+//#include "wrap_wxColour.h"
+//#include <wx/colour.h>
 
 
 //
@@ -362,7 +362,7 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SubpixelDenoising
   return result;
 }
 
-
+/*
 //---------------------------------------------------
 //drawBorder
 void WrapClass_SubPixel2D::wrap_drawBorder::SetParametersComments()
@@ -437,4 +437,4 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_drawBorder::CallMember(ParamList* 
   }
   return BasicVariable::ptr();
 }
-
+*/

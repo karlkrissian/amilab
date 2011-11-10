@@ -107,7 +107,7 @@ public:
       }
   };
 
-    Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos = wxDefaultPosition,
+    Viewer3D(wxWindow *frame, const wxString& title, const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE 
 //| wxFRAME_FLOAT_ON_PARENT 
       );
