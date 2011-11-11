@@ -29,6 +29,7 @@
 #include <wx/richtext/richtextctrl.h>
 #include <wx/splitter.h>
 #include <wx/stc/stc.h>
+#include <wx/stdpaths.h>
 #include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/tipdlg.h>

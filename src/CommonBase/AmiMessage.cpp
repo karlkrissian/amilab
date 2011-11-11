@@ -4,7 +4,7 @@
 
 
 //-----------------------------------------
-int AmiMessage::Error(char* message)
+int AmiMessage::Error(const char* message)
 {
     if (ErrorFunction!=NULL) {
       return (*ErrorFunction)(message);
@@ -21,7 +21,7 @@ int  AmiMessage::Error(const std::string& st)
 }
 
 //-----------------------------------------
-void AmiMessage::SetErrorFunction(int (*ErrFunc)(char*))
+void AmiMessage::SetErrorFunction(int (*ErrFunc)(const char*))
 {
     ErrorFunction = ErrFunc;
 }

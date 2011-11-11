@@ -668,7 +668,8 @@ void Driver::init_cmdhistory()
   std::string dirname;
   std::string filename;
   struct stat file_stat;
-  int res,isdir;
+  //int res;
+  int isdir;
   int  i;
 
   if (GB_nofile) return;
@@ -676,7 +677,8 @@ void Driver::init_cmdhistory()
   // write in a local directory called .improcess
   // check if directory .improcess exists, otherwise create it
   dirname = ".improcess";
-  res=stat(dirname.c_str(),&file_stat);
+  //res=
+  stat(dirname.c_str(),&file_stat);
   #ifndef S_ISDIR
     #define S_ISDIR(a) (a & _S_IFDIR)
   #endif

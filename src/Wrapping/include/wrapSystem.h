@@ -38,5 +38,8 @@ BasicVariable::ptr wrap_GetCurrentFilename( ParamList* p);
 BasicVariable::ptr wrap_GetGlobalScriptDir( ParamList* p);
 BasicVariable::ptr wrap_SetGlobalScriptDir( ParamList* p);
 
+BasicVariable::ptr wrap_GetCMakeBuildType( ParamList* p);
+BasicVariable::ptr wrap_GetAMILabVersion(  ParamList* p);
+
 
 #endif // _wrapSystem_h_

@@ -63,7 +63,7 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   line.TakeOwnership( new LineType );
 
   double p[TDimension];
-  double q[TDimension];
+  //double q[TDimension];
   double vox_p[TDimension];
   bool   end_reached = false;
   double distance = 0.0;
@@ -105,8 +105,8 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   {
     std::cout << "Initial point not within image domain" << std::endl;
   }
-  for(int i=0;i<1;i++) q[i] = p[i];
-  if (input->GetImageDimension() == 3) for(int i=0;i<2;i++) q[i] = p[i];
+//   for(int i=0;i<1;i++) q[i] = p[i];
+//   if (input->GetImageDimension() == 3) for(int i=0;i<2;i++) q[i] = p[i];
 
   int numpoints = 0;
   

@@ -17,13 +17,13 @@ public:
   AmiMessage(): ErrorFunction(NULL) {}
 
   //-----------------------------------------
-  int Error(char* message);
+  int Error(const char* message);
 
   //-----------------------------------------
   int  Error(const std::string& st);
 
   //-----------------------------------------
-  void SetErrorFunction(int (*ErrFunc)(char*));
+  void SetErrorFunction(int (*ErrFunc)(const char*));
 
   //-----------------------------------------
   void IncCommand(const std::string& cmd);
@@ -32,7 +32,7 @@ public:
   void SetIncCommandFunction(void (*IncCommandFunction)(const std::string&));
   
 private:
-  int  (*ErrorFunction)(char*);
+  int  (*ErrorFunction)(const char*);
   void (*IncCommandFunction)(const std::string&);
 };
 

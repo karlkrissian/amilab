@@ -1900,9 +1900,9 @@ void DessinImageBase :: DrawColorBar( )
     register float          val,val_step,step,vpos2;
     register ClasseCouleur  couleur;
     float                   valmin, valmax;
-    float                   Imin, Imax;
+    //float                   Imin, Imax;
 
-  int char_xmax;
+  //int char_xmax;
   int char_ymax;
 
   wxFont font = _memory_dc->GetFont();
@@ -1910,10 +1910,11 @@ void DessinImageBase :: DrawColorBar( )
   _memory_dc->GetTextExtent(wxT("W"),
                     &maxCharWidth,
                     &maxCharHeight);
-  char_xmax = maxCharWidth;
+  //char_xmax = maxCharWidth;
   char_ymax = maxCharHeight;
 
-  Si (_image->_format == WT_FLOAT ) Ou
+/*
+ *  Si (_image->_format == WT_FLOAT ) Ou
      (_image->_format == WT_DOUBLE) Alors
     Imin = _intensite_float_min;
     Imax = _intensite_float_max;
@@ -1921,7 +1922,7 @@ void DessinImageBase :: DrawColorBar( )
     Imin = _intensite_entier_min;
     Imax = _intensite_entier_max;
   FinSi
-
+*/
   valmin = _val_min;
   valmax = _val_max;
 

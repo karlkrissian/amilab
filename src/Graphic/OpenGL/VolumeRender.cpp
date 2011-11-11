@@ -144,7 +144,7 @@ bool checkExtension( const char* checkFor)
 
 VolumeRender::VolumeRender(InrImage* im)
 {
-    float xmin,xmax,ymin,ymax,zmin,zmax;
+    //float xmin,xmax,ymin,ymax,zmin,zmax;
 
     _im = im;
     _size_x = _size_y = _size_z = 0;
@@ -173,12 +173,12 @@ VolumeRender::VolumeRender(InrImage* im)
     //    _ml.SetLimits(im);
 
     // Set the transformation to volume coordinates from the geometry (SRT)
-    xmin=im->SpacePosX(0);
-    xmax=im->SpacePosX(im->DimX()-1);
-    ymin=im->SpacePosY(0);
-    ymax=im->SpacePosY(im->DimY()-1);
-    zmin=im->SpacePosZ(0);
-    zmax=im->SpacePosZ(im->DimZ()-1);
+//     xmin=im->SpacePosX(0);
+//     xmax=im->SpacePosX(im->DimX()-1);
+//     ymin=im->SpacePosY(0);
+//     ymax=im->SpacePosY(im->DimY()-1);
+//     zmin=im->SpacePosZ(0);
+//     zmax=im->SpacePosZ(im->DimZ()-1);
 
 
     _VOL.SetIdentity();

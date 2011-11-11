@@ -87,9 +87,11 @@ BasicVariable::ptr wrap_AnisoGS::CallMember( ParamList* p)
 
   if (nb_iter < 1) nb_iter = 1;
 
-  int error = 0;
-  for(int i=1;i<=nb_iter;i++)
-    error = aniso->Iterate();
+  //int error = 0;
+  for(int i=1;i<=nb_iter;i++){
+    //error = 
+    aniso->Iterate();
+  }
 
   InrImage* imres = aniso->image_resultat;
   int bs = aniso->boundary_extension_size;

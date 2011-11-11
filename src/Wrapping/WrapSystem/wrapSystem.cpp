@@ -11,6 +11,7 @@
 //
 
 
+#include "AMILabConfig.h"
 
 //#include "fonctions.h"
 #include "VarContexts.hpp"
@@ -58,7 +59,10 @@ void AddWrapSystem( AMIObject::ptr& obj)
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetGlobalScriptDir",  wrap_GetGlobalScriptDir);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"SetGlobalScriptDir",  wrap_SetGlobalScriptDir);
 
-  // Restore the object context
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetCMakeBuildType", wrap_GetCMakeBuildType);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetAMILabVersion",  wrap_GetAMILabVersion);
+
+// Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
@@ -312,7 +316,7 @@ BasicVariable::ptr wrap_GetGlobalScriptDir(ParamList* p)
   RETURN_VAR(string,val);
 }
 
-//--------------------------------------------------------------------
+//------------------------------------------------------------------------------
 BasicVariable::ptr wrap_SetGlobalScriptDir(ParamList* p)
 {
     char functionname[] = "SetGlobalScriptDir";
@@ -336,4 +340,52 @@ BasicVariable::ptr wrap_SetGlobalScriptDir(ParamList* p)
     GB_driver.err_print("Directory does not exists.");
     
   return BasicVariable::ptr();
+}
+
+
+//------------------------------------------------------------------------------
+BasicVariable::ptr wrap_GetCMakeBuildType( ParamList* p)
+{
+    char functionname[] = "GetCMakeBuildType";
+    char description[]=" \n\
+        Return the cmake build type:\n\
+        Release, Debug,  RelWithDebInfo or MinSizeRel, \n\
+        or an empty string otherwise\n\
+            ";
+    char parameters[] =" \n\
+          Parameters: no parameter.\n\
+            ";
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
+  std::string res;
+  #ifdef _CMAKEBUILDTYPE_RELEASE_
+    res="Release";
+  #endif
+  #ifdef _CMAKEBUILDTYPE_DEBUG_
+    res="Debug";
+  #endif
+  #ifdef _CMAKEBUILDTYPE_RELWITHDEBINFO_
+    res="RelWithDebInfo";
+  #endif
+  #ifdef _CMAKEBUILDTYPE_MINSIZEREL_
+    res="MinSizeRel";
+  #endif
+    
+  return AMILabType<std::string>::CreateVar(res);
+}
+
+
+//------------------------------------------------------------------------------
+BasicVariable::ptr wrap_GetAMILabVersion( ParamList* p)
+{
+    char functionname[] = "GetAMILabVersion";
+    char description[]=" \n\
+        Return the current version number of AMILab\n\
+            ";
+    char parameters[] =" \n\
+          Parameters: no parameter.\n\
+            ";
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
+  std::string res = AMILAB_VERSION;
+    
+  return AMILabType<std::string>::CreateVar(res);
 }

@@ -22,22 +22,22 @@ SET( ${KIT}_ENABLE_WRAPPING      OFF )
 #FIND_PACKAGE(AMILab)
 
 
-#INCLUDE(${AMILAB_BINARY_DIR}/AMILabConfig.cmake)
+#INCLUDE(${AMILab_BINARY_DIR}/AMILabConfig.cmake)
 #MESSAGE("Boost_USE_STATIC_LIBS has been set to ${Boost_USE_STATIC_LIBS}")
 
-#INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
+#INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 
 set(  wxParams_INCLUDE_DIRS
-    ${AMILAB_SOURCE_DIR}/../wxParams/src)
+    ${AMILab_SOURCE_DIR}/../wxParams/src)
 
 SET(${KIT}_AMILab_PATHS
-    ${AMILAB_SOURCE_DIR}/LanguageBase
-    ${AMILAB_SOURCE_DIR}/Language
-    ${AMILAB_SOURCE_DIR}/Common/include
-    ${AMILAB_SOURCE_DIR}/CommonBase
-    ${AMILAB_SOURCE_DIR}/Wrapping/include
-    ${AMILAB_SOURCE_DIR}
-    ${AMILAB_BINARY_DIR}
+    ${AMILab_SOURCE_DIR}/LanguageBase
+    ${AMILab_SOURCE_DIR}/Language
+    ${AMILab_SOURCE_DIR}/Common/include
+    ${AMILab_SOURCE_DIR}/CommonBase
+    ${AMILab_SOURCE_DIR}/Wrapping/include
+    ${AMILab_SOURCE_DIR}
+    ${AMILab_BINARY_DIR}
 )
 
 INCLUDE_DIRECTORIES(
@@ -45,8 +45,8 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping
     ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping/Generated
     ${${KIT}_AMILab_PATHS}
-    ${AMILAB_SOURCE_DIR}/Algorithms/include
-    ${AMILAB_SOURCE_DIR}/Graphic/include
+    ${AMILab_SOURCE_DIR}/Algorithms/include
+    ${AMILab_SOURCE_DIR}/Graphic/include
     ${Boost_INCLUDE_DIR}
  )
 
@@ -56,7 +56,7 @@ IF(${KIT}_ENABLE_WRAPPING)
   #
   IF(${KIT}_NEED_VTK_WRAPPING)
     # allow use of vtk classes  wrapped within AMILab
-    FILE(READ "${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated/ancestors.txt" vtk_ancestors_txt)
+    FILE(READ "${AMILab_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated/ancestors.txt" vtk_ancestors_txt)
     STRING(REGEX REPLACE "[\r\n]" ";" vtk_ancestors_list ${vtk_ancestors_txt} )
     SET(AVAILABLE_EXTERNAL_CLASSES ${vtk_ancestors_list})
     MESSAGE("AVAILABLE_EXTERNAL_CLASSES=${AVAILABLE_EXTERNAL_CLASSES}")
@@ -126,9 +126,8 @@ SET(${KIT}_SRCS
   ${KIT}Plugin.cpp
 )
 
-SET(${KIT}_scripts
-  ../scripts/SyntheticPVEImages/SyntheticPVEImagesClass.amil
-  ../scripts/2D/subpixel2DClass.amil
+SET(${KIT}_scriptsdir
+  ../scripts
 )
 
 IF(WIN32)
@@ -138,7 +137,7 @@ ENDIF(WIN32)
 SET(${KIT}_SRCS
     ${${KIT}_SRCS}
     ${${KIT}_HDRS}
-    ${${KIT}_scripts}
+    ${${KIT}_scriptsdir}
 )
 
 # # ---------- Setup output Directories -------------------------
@@ -162,7 +161,9 @@ SET(${KIT}_SRCS
 #   "Single Directory for all Executables."
 # )
 
-SET( ${KIT}_LIBRARY_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+#SET( ${KIT}_LIBRARY_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+
+SET( ${KIT}_LIBRARY_OUTPUT_DIRECTORY  ${AMILab_BINARY_DIR}/lib/amilab-${AMILAB_VERSION}/plugin/)
 
 CONFIGURE_FILE(
     ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/dllpath.amil.in 
@@ -205,5 +206,39 @@ ELSE(WIN32 OR APPLE)
   )
 ENDIF(WIN32 OR APPLE)
 
+# Install library 
+INSTALL(TARGETS SubPixel
+      RUNTIME DESTINATION bin
+      ARCHIVE DESTINATION lib/amilab-${AMILAB_VERSION}/plugin/
+      LIBRARY DESTINATION lib/amilab-${AMILAB_VERSION}/plugin/
+)
+
+#get_target_property(Subpixel_location SubPixel LOCATION target)
+#MESSAGE("Subpixel_location=${Subpixel_location}")
+
+# Install the scripts
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../SubPixel
+        DESTINATION share/amilab-${AMILAB_VERSION}/Modules
+        # COMPONENT scripts
+        FILES_MATCHING 
+          PATTERN "*.amil"
+          PATTERN "*.sh"
+          PATTERN "*.py"
+          PATTERN "*.png"         
+          PATTERN "*.txt"
+          PATTERN "*.sh"
+          PATTERN "*.html"
+          # ----  Exclude
+          PATTERN "CMakeLists.txt" EXCLUDE
+          PATTERN "src"            EXCLUDE
+          PATTERN ".svn"           EXCLUDE
+          PATTERN "*.in"           EXCLUDE
+        PERMISSIONS 
+          OWNER_EXECUTE
+          OWNER_WRITE
+          OWNER_READ
+          GROUP_EXECUTE
+          GROUP_READ
+        )
 
 MESSAGE("TARGET: ${KIT}")

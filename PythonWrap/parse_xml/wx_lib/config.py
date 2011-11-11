@@ -26,6 +26,7 @@ def get_include_file(classname, filename):
   if s.find("choicdgg.h")!=-1:  s = "wx/choicdlg.h"
   if s.find("textdlgg.h")!=-1:  s = "wx/textdlg.h"
   if s.find("numdlgg.h")!=-1:   s = "wx/numdlg.h"
+  if s.find("stdpaths.h")!=-1:  s = "wx/stdpaths.h"
   # AD-HOC fixes, can be improved ...
   if classname.find("Aui")!=-1: s = "wx/aui/aui.h"
   if classname=="wxDC":         s = "wx/dc.h"

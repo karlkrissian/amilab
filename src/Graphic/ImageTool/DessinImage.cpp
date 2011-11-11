@@ -537,14 +537,14 @@ void DessinImage::ComputeBasicSizes()
       sprintf(valstr_min,"%1.2f",valmin);
     FinSi
 
-  int maxwidth;
+  //int maxwidth;
   wxCoord maxCharWidth, maxCharHeight;
   wxCoord minCharWidth, minCharHeight;
 
   _memory_dc->GetTextExtent(wxString::FromAscii(valstr_max),
                     &maxCharWidth,
                     &maxCharHeight);
-  maxwidth = (int) maxCharWidth;
+  //maxwidth = (int) maxCharWidth;
   _memory_dc->GetTextExtent(wxString::FromAscii(valstr_min),
                     &minCharWidth,
                     &minCharHeight);
@@ -807,7 +807,8 @@ void DessinImage::InitVoxelSize()
 void DessinImage::IncreaseZoomArea( )
 //
 {
-    int tx,ty,tz;
+    int tx,ty;
+    //,tz;
     float   Xneed, Yneed;
     int i;
     int h_margin[3]; // horizontal margin for each slice view
@@ -825,7 +826,7 @@ void DessinImage::IncreaseZoomArea( )
 
   tx = Param._Zoom._zoom_size_x;
   ty = Param._Zoom._zoom_size_y;
-  tz = Param._Zoom._zoom_size_z;
+  //tz = Param._Zoom._zoom_size_z;
 
   switch ( Param._type_coupe ){
 
@@ -5692,10 +5693,10 @@ void DessinImage::CB_sections3D(  wxCommandEvent&)
 {
     DessinImage*    di = (DessinImage*) this;
     bool  init;
-    float min, max;
+   // float min, max;
 
 //printf("CB_voxels3D\n");
-  if ((di->_image->_format == WT_FLOAT ) ||
+/*  if ((di->_image->_format == WT_FLOAT ) ||
      (di->_image->_format == WT_DOUBLE)) 
   {
     min = di->_intensite_float_min;
@@ -5706,7 +5707,7 @@ void DessinImage::CB_sections3D(  wxCommandEvent&)
   {
     min = di->_intensite_entier_min;
     max = di->_intensite_entier_max;
-  }
+  }*/
   //printf("min max %f %f \n", min, max);
 
 //  di->_param_Sections3D->AfficheDialogue();

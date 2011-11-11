@@ -1,7 +1,29 @@
 
 # loop over all directories??
+current_dir = op_system.GetCurrentScriptDir()
+nextDir = wx.wxDir(current_dir)
+nextFile = wx.wxString(current_dir)
+process = nextDir.GetFirst(&nextFile)
 
-func "ImageProcessing/scripts/Add2Menu"
-func "vtkAmiVolRen/scripts/Add2Menu"
-func "NoiseAnalysis/scripts/Add2Menu"
-func "SubPixel/scripts/Add2Menu"
+# and while there are still files to process
+while process {
+  
+  inputfilename = current_dir +  "/" +\
+                  wx.FromWxString(nextFile)
+  printn inputfilename
+  if(wx.wxDir.Exists(inputfilename)) {
+    add2menufile=inputfilename+"/scripts/Add2Menu.amil"
+    #printn "checking "+add2menufile
+    if  wx.wxFileExists(add2menufile) \
+    {
+      #printn "OK"
+      func add2menufile
+    }
+  }
+  process = nextDir.GetNext(&nextFile);
+}
+
+#func "ImageProcessing/scripts/Add2Menu"
+#func "vtkAmiVolRen/scripts/Add2Menu"
+#func "NoiseAnalysis/scripts/Add2Menu"
+#func "SubPixel/scripts/Add2Menu"

@@ -156,6 +156,7 @@ wxSizerFlags
 wxSizerItem
 wxSizerItemList
 wxSplitterWindow
+wxStandardPaths
 wxStaticBox
 wxStaticBoxSizer
 wxStaticLine

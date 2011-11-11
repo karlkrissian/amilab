@@ -88,22 +88,22 @@ SET(LanguageBase_HDRS
 #    VarArray.h
 )
 
+IF(WIN32 OR APPLE)
+  OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" ON)
+ELSE(WIN32)
+  OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" OFF)
+ENDIF(WIN32 OR APPLE)
 
  
-IF(WIN32 OR APPLE)
+IF(LanguageBase_SHARED)
   set_source_files_properties(${Language_SRCS} PROPERTIES COMPILE_FLAGS "-DLanguageBase_EXPORTS")
-ENDIF(WIN32 OR APPLE)
+ENDIF(LanguageBase_SHARED)
 
 SET(LanguageBase_SRCS
  ${LanguageBase_SRCS}
  ${LanguageBase_HDRS}
 )
  
-IF(WIN32 OR APPLE)
-  OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" ON)
-ELSE(WIN32)
-  OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" OFF)
-ENDIF(WIN32 OR APPLE)
 
 IF (LanguageBase_SHARED)
   my_add_shared_library ( LanguageBase)
@@ -114,6 +114,9 @@ IF (LanguageBase_SHARED)
     #  BUNDLE DESTINATION 
     #${CMAKE_INSTALL_DESTINATION_ARGS}
   )
+  IF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)
+    SET_TARGET_PROPERTIES(LanguageBase PROPERTIES COMPILE_FLAGS -fPIC)
+  ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)
 ELSE(LanguageBase_SHARED)
   my_add_library ( LanguageBase)
 ENDIF(LanguageBase_SHARED)
@@ -132,6 +135,17 @@ ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)
 
 SET(LanguageBase_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 MESSAGE("LanguageBase binary directory = ${CMAKE_CURRENT_BINARY_DIR}")
+
+#MESSAGE("CMAKE_LIBRARY_ARCHITECTURE=${CMAKE_LIBRARY_ARCHITECTURE}")
+
+MESSAGE("LIB_INSTALL_DIR=${LIB_INSTALL_DIR}")
+
+INSTALL(TARGETS LanguageBase
+  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib/amilab-${AMILAB_VERSION}
+  LIBRARY DESTINATION lib/amilab-${AMILAB_VERSION}
+)
+
 
 #add_dependencies ( LanguageBase
 #  WrapWxWidgets 

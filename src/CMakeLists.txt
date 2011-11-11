@@ -110,11 +110,11 @@ ENDIF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
 
 
 # create AMILAB_BIN variable
-IF(CMAKE_BUILD_TYPE)
-  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
-ELSE(CMAKE_BUILD_TYPE)
+# IF(CMAKE_BUILD_TYPE)
+#   string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
+# ELSE(CMAKE_BUILD_TYPE)
   string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
-ENDIF(CMAKE_BUILD_TYPE)
+# ENDIF(CMAKE_BUILD_TYPE)
 MESSAGE("AMILAB_BIN=${AMILAB_BIN}")
 
 
@@ -445,9 +445,10 @@ SET(Boost_USE_MULTITHREAD OFF)
 #MESSAGE(  CMAKE_HOST_SYSTEM=${CMAKE_HOST_SYSTEM} )
 
 SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
-FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex graph)
+FIND_PACKAGE( Boost ${BOOST_RELEASE} REQUIRED COMPONENTS date_time filesystem  system iostreams  regex )
+#graph)
 #SET(Boost_USE_STATIC_LIBS ON)
-MESSAGE( "BOOST_LIBRARIES = ${BOOST_LIBRARIES}")
+MESSAGE( "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 
 
 OPTION(AMI_USE_ZLIB "Use zlib" ON)
@@ -623,7 +624,7 @@ SET(AMILAB_INCLUDE_DIRS
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
-  ${AMILAB_BINARY_DIR}
+  ${AMILab_BINARY_DIR}
 )
 
 
@@ -804,14 +805,14 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   itkvnl
   itkvnl_algo
   ${AMIFLUID_LIBRARIES}
-#  ${wxParams_LIBRARIES}
+  #  ${wxParams_LIBRARIES}
   wxParams
   ${OPENGL_LIBRARIES}
   ${OPENGL_glu_LIBRARY}
   ${PTHREADS_LIBRARY}
   ${wxWidgets_LIBRARIES}
-# should be included in wxWdigets_LIBRARIES already ...
-#  ${WX_gl}
+  # should be included in wxWdigets_LIBRARIES already ...
+  #  ${WX_gl}
   ${Boost_LIBRARIES}
 )
 
@@ -855,20 +856,23 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
 endif (WIN32)
 
 
-IF(MSVC)
-  SET(CMAKE_DEBUG_POSTFIX  _debug)
-  SET(CMAKE_RELEASE_POSTFIX _release)
-  SET(CMAKE_MINSIZEREL_POSTFIX _minsizerel)
-  SET(CMAKE_RELWITHDEBINFO_POSTFIX _relwithdebinfo)
+SET(CMAKE_DEBUG_POSTFIX  _debug)
+SET(CMAKE_RELEASE_POSTFIX _release)
+SET(CMAKE_MINSIZEREL_POSTFIX _minsizerel)
+SET(CMAKE_RELWITHDEBINFO_POSTFIX _relwithdebinfo)
   
-  SET_TARGET_PROPERTIES( ${AMILAB_BIN}
+SET_TARGET_PROPERTIES( ${AMILAB_BIN}
     PROPERTIES 
-      DEBUG_POSTFIX  _debug
-      RELEASE_POSTFIX _release
-      MINSIZEREL_POSTFIX _minsizerel
-      RELWITHDEBINFO_POSTFIX _relwithdebinfo
-  )
-ENDIF(MSVC)
+      DEBUG_POSTFIX           _debug
+      RELEASE_POSTFIX         _release
+      MINSIZEREL_POSTFIX      _minsizerel
+      RELWITHDEBINFO_POSTFIX  _relwithdebinfo
+
+      COMPILE_DEFINITIONS_DEBUG           "_CMAKEBUILDTYPE_DEBUG_"
+      COMPILE_DEFINITIONS_RELEASE         "_CMAKEBUILDTYPE_RELEASE_"
+      COMPILE_DEFINITIONS_MINSIZEREL      "_CMAKEBUILDTYPE_MINSIZEREL_"
+      COMPILE_DEFINITIONS_RELWITHDEBINFO  "_CMAKEBUILDTYPE_RELWITHDEBINFO_"
+)
 
 IF(MSVC)
   # NEED TO SPECIFY FOR EACH POSSIBLE CONFIGURATION
@@ -886,9 +890,9 @@ IF(AMI_USE_FASTNLMEANS)
   )
 ENDIF(AMI_USE_FASTNLMEANS)
 
-IF(UNIX)
-  SET(CMAKE_INSTALL_PREFIX "/usr/")
-ENDIF(UNIX)
+#IF(UNIX)
+#  SET(CMAKE_INSTALL_PREFIX "/usr/")
+#ENDIF(UNIX)
 
 #IF(APPLE)
 #    MESSAGE("APPLE ...")
@@ -918,8 +922,7 @@ ENDIF(APPLE)
 
 
 
-INSTALL(TARGETS ${AMILAB_BIN} 
-#LanguageBase
+INSTALL(TARGETS ${AMILAB_BIN}
   RUNTIME DESTINATION bin
   #  COMPONENT applications
   #  BUNDLE DESTINATION 
@@ -932,30 +935,40 @@ INSTALL(TARGETS ${AMILAB_BIN}
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
         DESTINATION share/amilab-${AMILAB_VERSION}
 #        COMPONENT scripts
-        FILES_MATCHING PATTERN "*.amil"
-         PATTERN "*.sh"
-         PATTERN "*.py"
-         PATTERN "*.png"         
-         PATTERN "*.txt"
-         PATTERN "*.sh"
-         PATTERN "*.html"
-        PATTERN ".svn" EXCLUDE
+        FILES_MATCHING 
+          PATTERN "*.amil"
+          PATTERN "*.sh"
+          PATTERN "*.py"
+          PATTERN "*.png"         
+          PATTERN "*.txt"
+          PATTERN "*.sh"
+          PATTERN "*.html"
+          # exclude
+          PATTERN ".svn" EXCLUDE
+          PATTERN "*.in"  EXCLUDE
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                     GROUP_EXECUTE GROUP_READ
-#"*.amil" -o -name  "*.sh" -o -name "*.html"
+        )
+
+install(FILES ${AMILAB_SOURCE_DIR}/../Modules/Add2Menu.amil
+        DESTINATION share/amilab-${AMILAB_VERSION}/Modules/
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                    GROUP_EXECUTE GROUP_READ
         )
 
 # Install the Matlab utilities
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../MatlabUtils
         DESTINATION share/amilab-${AMILAB_VERSION}
         FILES_MATCHING PATTERN "*.m" PATTERN "*.amil"
-         PATTERN "*.sh"
-         PATTERN "*.py"
-         PATTERN "*.png"         
-         PATTERN "*.txt"
-         PATTERN "*.sh"
-         PATTERN "*.html"
-        PATTERN ".svn" EXCLUDE
+          PATTERN "*.sh"
+          PATTERN "*.py"
+          PATTERN "*.png"         
+          PATTERN "*.txt"
+          PATTERN "*.sh"
+          PATTERN "*.html"
+          # exclude
+          PATTERN ".svn" EXCLUDE
+          PATTERN "*.in"  EXCLUDE
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                     GROUP_EXECUTE GROUP_READ
         )
@@ -971,9 +984,13 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../doc
           PATTERN "*.gif"
           PATTERN "*.css"
           PATTERN "*.txt"
-        PATTERN ".svn" EXCLUDE
-        PERMISSIONS OWNER_WRITE OWNER_READ
-                    GROUP_READ
+          # exclude
+          PATTERN ".svn" EXCLUDE
+          PATTERN "*.in"  EXCLUDE
+        PERMISSIONS 
+          OWNER_WRITE 
+          OWNER_READ
+          GROUP_READ
         )
 
 if (UNIX)
@@ -982,9 +999,10 @@ if (UNIX)
           DESTINATION .
           FILES_MATCHING
             PATTERN "*"
-          PATTERN ".in" EXCLUDE
-          PATTERN ".svn" EXCLUDE
-          PATTERN "*~" EXCLUDE
+            # exclude
+            PATTERN "*.in"  EXCLUDE
+            PATTERN ".svn" EXCLUDE
+            PATTERN "*~"   EXCLUDE
           PERMISSIONS OWNER_READ GROUP_READ
           )
 endif(UNIX)
