@@ -22,9 +22,9 @@ import re
 
 print len(sys.argv)
 print "\n"
-if (len(sys.argv)<=1):
-  print "No arguments\n"
-  sys.exit(1)
+##if (len(sys.argv)<=1):
+##  print "No arguments\n"
+##  sys.exit(1)
 
 improcess_flex_lpp      = "../src/Language/improcess_flex.lpp"
 # try to replace improcess_html by a python script !!!
@@ -411,7 +411,8 @@ if __name__ == "__main__":
     lex_tokens=get_tokens()
     
     # save tokens strings for usage in C
-    if (sys.argv[1]=="-tokens"):
+    
+    if (len(sys.argv)>1)and(sys.argv[1]=="-tokens"):
         f = open ("token_list.h", "w")
         f.write("static const char* token_list[] = { ")
         for t in lex_tokens:
