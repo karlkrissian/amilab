@@ -34,7 +34,7 @@ MACRO(ADD_AMILAB_TESTS name-test amilab-options test)
 #-------------------------------------------------------------------------------
 
 ADD_TEST(${name-test}
-         "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${AMILAB_BIN}"
+         "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${AMILAB_BIN}_release"
          ${amilab-options}
          ${test} ${ARGN})
 
