@@ -12,6 +12,11 @@
 #include "ami_function.h"
 #include "ComputePartialVolume.h"
 
+#ifndef AnalyticFunctionBase_declared
+  #define AnalyticFunctionBase_declared
+  AMI_DECLARE_TYPE(AnalyticFunctionBase)
+#endif
+
 //---------------------------------------------------
 //ComputePartialVolume Wrapping
 //---------------------------------------------------

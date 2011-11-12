@@ -16,6 +16,7 @@ SET(CMAKE_MODULE_PATH  ${PROJECT_SOURCE_DIR}/../../../CMAKE  ${CMAKE_MODULE_PATH
 MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
 INCLUDE(${wxWidgets_USE_FILE})
+INCLUDE( ${USE_ITK_FILE} )
 
 SET( ${KIT}_ENABLE_WRAPPING      OFF )
 
@@ -172,11 +173,11 @@ CONFIGURE_FILE(
 
 
 SET(amilab_ownlibs
-  ${LanguageBase}
-  ${Common}
-  ${CommonBase}
-  ${WrapCommon}
-  ${Algorithms}
+  LanguageBase
+  Common
+  CommonBase
+  WrapCommon
+  Algorithms
 )
 
 
@@ -204,6 +205,8 @@ ELSE(WIN32 OR APPLE)
   TARGET_LINK_LIBRARIES( ${KIT}
     ${LINK_VTK}
   )
+  
+  ADD_DEPENDENCIES ( ${KIT} ${amilab_ownlibs})
 ENDIF(WIN32 OR APPLE)
 
 # Install library 

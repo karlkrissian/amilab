@@ -77,6 +77,8 @@ members_blacklist=[
   'wxApp::InitRichEdit',             # not implemented, static function
   'wxAppBase::Initialize',           # double pointer pb
   'wxAppConsole::Initialize',        # double pointer pb
+  'wxAppConsole::OnAssertFailure',   # Debug only
+  'wxAppConsole::OnAssert',          # Debug Only
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints',  # idem

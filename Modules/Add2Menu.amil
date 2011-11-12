@@ -10,7 +10,7 @@ while process {
   
   inputfilename = current_dir +  "/" +\
                   wx.FromWxString(nextFile)
-  printn inputfilename
+  #printn inputfilename
   if(wx.wxDir.Exists(inputfilename)) {
     add2menufile=inputfilename+"/scripts/Add2Menu.amil"
     #printn "checking "+add2menufile

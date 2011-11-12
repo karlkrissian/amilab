@@ -132,7 +132,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
     )
   ENDIF(GENERATE_HTML_HELP)
 
-  WRAP_MESSAGE(" ancestors_result = ${ancestors_result} ")
+  #WRAP_MESSAGE(" ancestors_result = ${ancestors_result} ")
+  MESSAGE(" ancestors_result = ${ancestors_result} ")
   WRAP_MESSAGE(" ancestors_error = ${ancestors_error} ")
 
 
