@@ -1,14 +1,17 @@
 import config
 import os
+import platform
 
 def PreInstall():
   print "--------------------------------------"
   print " Installing packagekit"
   print "--------------------------------------"
-  print " Enter root password:"
-  #os.system('su -c "apt-get install packagekit"')
-  print " Looking for the fastest mirror"
-  os.system('su -c "apt-get install netselect-apt"')
+  if platform.linux_distribution()[1]=='wheezy/sid':
+    os.system('su -c "apt-get -y install packagekit"')
+  #else:
+    #print " Enter root password:"
+    #print " Looking for the fastest mirror"
+    #os.system('su -c "apt-get install netselect-apt"')
 
 def SetConfig():
   config.PYSVN_PACKAGES       = "pysvn"

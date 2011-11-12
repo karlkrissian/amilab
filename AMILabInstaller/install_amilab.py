@@ -72,7 +72,8 @@ def installer_install_Linux(packages):
   if conf_dist=='config_Linux_openSUSE':
     installer_install_Linux_openSUSE(packages)
   else:
-    if conf_dist=='config_Linux_debian':
+    if  conf_dist    == 'config_Linux_debian' and \
+        conf_distnum != 'config_Linux_debian_wheezy/sid':
       installer_install_Linux_debian(packages)
     else:
       pk = packagekit_wrapper.PackageKitClient()
@@ -259,13 +260,22 @@ if __name__ == '__main__':
   os.chdir(amilabpath)
   maindir=os.getcwd()
 
+  cmake_module_path=''
   # fix FindBISON pb in spanish
-  print "***************"
-  cmd  = "sed 's/GNU Bison/GNU [bB]ison/g' /usr/share/cmake/Modules/FindBISON.cmake > /tmp/FindBISON.cmake"
-  os.system(cmd)
-  cmd = "sudo mv /tmp/FindBISON.cmake /usr/share/cmake/Modules/".format(maindir)
-  os.system(cmd)
-  print "**************"
+  if os.access('/usr/share/cmake/Modules',os.R_OK):
+    cmake_module_path='/usr/share/cmake/Modules'
+    else:
+      if os.access('/usr/share/cmake-2.8/Modules',os.R_OK):
+        cmake_module_path='/usr/share/cmake-2.8/Modules'
+
+  if cmake_module_path!='':
+    print "***************"
+    print " Fixing possible problem in FindBISON.cmake"
+    cmd  = "sed 's/GNU Bison/GNU [bB]ison/g' {0}/FindBISON.cmake > /tmp/FindBISON.cmake".format(cmake_module_path)
+    os.system(cmd)
+    cmd = "sudo mv /tmp/FindBISON.cmake {0}".format(cmake_module_path)
+    os.system(cmd)
+    print "**************"
 
 
   ## Compile and install libAMIFluid
