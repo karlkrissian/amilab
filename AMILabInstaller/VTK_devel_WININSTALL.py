@@ -13,8 +13,11 @@ import zipfile
 
 installed=False
 
+import os
 import subprocess
 from subprocess import PIPE
+
+initdir=os.getcwd()
 
 def launchWithoutConsole(command, args):
     """Launches 'command' windowless and waits until finished"""
@@ -27,7 +30,8 @@ def launchWithoutConsole(command, args):
 
 if not(installed):
     # Download
-    download_dir = os.path.expanduser('~/Downloads')
+    download_dir = initdir
+    #os.path.expanduser('~/Downloads')
     if not(os.access(download_dir, os.R_OK)):
       os.mkdir(download_dir)
     url='http://www.vtk.org/files/release/5.8/vtk-5.8.0.zip'
@@ -88,3 +92,4 @@ if not(installed):
 else:
     print "VTK 5.8 seems already installed"
 
+os.chdir(initdir)
