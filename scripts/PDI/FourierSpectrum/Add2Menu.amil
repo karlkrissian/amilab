@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuFourierSpectrum() \
+{
+  category = "&PDI"
+  script = "PDI/FourierSpectrum/FourierSpectrumGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&FourierSpectrum",script)
+}
+
+AddMenuFourierSpectrum()
+del AddMenuFourierSpectrum

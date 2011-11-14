@@ -83,7 +83,7 @@ BasicVariable::ptr WrapClass_RGBTransformComponent::
   CLASS_GET_OBJECT_PARAM(RGBTransformComponent,var,_obj);
 
   if (_obj.get()) {
-    this->_objectptr->_obj = _obj;
+    *this->_objectptr->_obj = *_obj;
   }
   return BasicVariable::ptr();
 }

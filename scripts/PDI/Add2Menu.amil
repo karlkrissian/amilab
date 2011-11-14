@@ -16,3 +16,5 @@ dir      = "PDI/"
 
  ami.MainFrame.AddToMenu("&PDI",category,"&PeronaMalik",  dir+"PeronaMalik/PeronaMalikGui")
 
+ ami.MainFrame.AddToMenu("&PDI",category,"&CrossCorrelation",  dir+"CrossCorrelation/CrossCorrelationGui")
+

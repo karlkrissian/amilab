@@ -1,0 +1,11 @@
+
+func "FourierFilterClass"
+
+if (!exists(FourierFilter_obj)) {
+  FourierFilterClass FourierFilter_obj
+  FourierFilter_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

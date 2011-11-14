@@ -31,6 +31,9 @@ SET(  WrapInterface_SRCS
   wrap_RGBTransformBase.cpp
   # PDI add the new class here
   wrap_RGBTransformComponent.cpp
+  wrap_RGBTransform001.cpp
+  wrap_RGBTransform002.cpp
+  wrap_RGBTransform003.cpp
 )
 
 SET(WrapInterface_HDRS
@@ -48,6 +51,9 @@ SET(WrapInterface_HDRS
   ../include/wrap_RGBTransformBase.h
   # PDI add the new class here
   ../include/wrap_RGBTransformComponent.h
+  ../include/wrap_RGBTransform001.h
+  ../include/wrap_RGBTransform002.h
+  ../include/wrap_RGBTransform003.h
 )
 
 SET(WrapInterface_SRCS

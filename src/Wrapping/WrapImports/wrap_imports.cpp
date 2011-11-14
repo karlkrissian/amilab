@@ -59,6 +59,9 @@
 
 // PDI: add your class here
 #include "wrap_RGBTransformComponent.h"
+#include "wrap_RGBTransform001.h"
+#include "wrap_RGBTransform002.h"
+#include "wrap_RGBTransform003.h"
 
 #include "wrap_stdvector.h"
 
@@ -161,6 +164,9 @@ void AddWrapAmilab()
 
   // PDI: add your class here
   WrapClass_RGBTransformComponent::AddVar_RGBTransformComponent( amiobject->GetContext());
+  WrapClass_RGBTransform001::AddVar_RGBTransform001( amiobject->GetContext());
+  WrapClass_RGBTransform002::AddVar_RGBTransform002( amiobject->GetContext());
+  WrapClass_RGBTransform003::AddVar_RGBTransform003( amiobject->GetContext());
 
   // 3. add the variables to this instance
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 

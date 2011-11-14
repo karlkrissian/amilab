@@ -1,0 +1,11 @@
+
+func "FourierSpectrumClass"
+
+if (!exists(FourierSpectrum_obj)) {
+  FourierSpectrumClass FourierSpectrum_obj
+  FourierSpectrum_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
