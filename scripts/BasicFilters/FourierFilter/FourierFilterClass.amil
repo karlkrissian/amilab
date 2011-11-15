@@ -1,0 +1,183 @@
+
+func "Common/ScriptGui"
+
+if (!exists(FourierFilterClass)) {
+
+  Class FourierFilterClass : public ScriptGui \
+  {
+    func "FourierUtils/FourierUtils"
+    ::fu = &FourierUtils
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+        ::input_name   = "","Name of the input image variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+        ::html_filename = GetScriptsDir+"/FourierFilter/Doc/FourierFilter/index.html"
+
+        ::Threshold = 100, "Filter parameter"
+        ::n = INT(1), "Butterworth filter parameter"
+        ::FilterType = INT(0), " 0: Ideal Low Pass Filter, 1: Ideal High Pass Filter, 2: Butterworth Low Pass Filter, 3: Butterworth High Pass Filter, 4: Homomorphic"
+        ::Homomorphic_low = 0.5, "Homomorphic filter low frequencies coeff"
+        ::Homomorphic_high = 2, "Homomorphic filter low frequencies coeff"
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+      # convert to scalar image ...
+      ::input <<= norm(::input)
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    #-----------------------------------------------
+    proc ::ApplyH( IMAGE dist ) \
+    {
+        if (::FilterType==0) {
+          return = dist<::Threshold
+        }
+        if (::FilterType==1) {
+          return = dist>::Threshold
+        }
+        if (::FilterType==2) {
+          return = 1/(1+exp(2*::n*ln(dist/::Threshold)))
+        }
+        if (::FilterType==3) {
+          return = 1/(1+exp(-2*::n*ln(dist/::Threshold)))
+        }
+        if (::FilterType==4) {
+          return = ::Homomorphic_low + (::Homomorphic_high-::Homomorphic_low)/(1+exp(-2*::n*ln(dist/::Threshold)))
+          return = (dist==0)+(dist!=0)*return
+        }
+    }
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+        ::res = (FLOAT)::input
+        dist = ::fu.Distance(&::input)
+        ::H = ::ApplyH(&dist)
+        if (::FilterType==4) {
+          min_input = min(::input[0])+0.1
+          fft_input = ln(::input[0]+min_input)
+        } else {
+          fft_input = ::input[0]
+        }
+        ::in_fft = ::fu.FFT(fft_input)
+        ::res <<= ::fu.RFFT(::in_fft*::H)[0]
+        if (::FilterType==4) {
+          ::res = exp(::res)-min_input
+        }
+        show ::input
+        show ::res
+        ::input_draw.compare(&::res_draw)
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::UpdateFilterCurve() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+        maxdist = sqrt(::input.tx*::input.tx+::input.ty*::input.ty)/2
+        ::dist_curv <<= Image(FLOAT,maxdist+1,1,1)
+        ::dist_curv = Xpos(::dist_curv)
+        ::H_curv <<= ::ApplyH(&::dist_curv)
+        ::dw.SetXLimits(-0.01*maxdist,(1+0.01)*maxdist)
+        ::dw.SetYLimits(-0.01, round(max(::H_curv)+0.5)*1.01)
+        ::dw.SetCurve(::H_curv)
+        ::dw.SetCurveProperties(0,"#F05050")
+      }
+    }
+    Comments( ::UpdateFilterCurve, "Updates the display of the filter function.")
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("FourierFilter",&::parent_panel)
+      } else {
+        ::win = ParamPanel("FourierFilter")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+          #::win.AddLabel("Info:","Set your parameters here")
+          ::win.AddFloat(&::Threshold,"Filter param",0,512)
+          ::win.SetCallback(&::UpdateFilterCurve)
+          ::win.AddInt(&::n,"Butterworth param",1,20)
+          ::win.SetCallback(&::UpdateFilterCurve)
+
+          ::win.BeginBoxPanel("Homomorphic Filter parameters")
+            ::win.AddFloat(&::Homomorphic_low,"Low_coeff",0,1)
+            ::win.SetCallback(&::UpdateFilterCurve)
+            ::win.AddFloat(&::Homomorphic_high,"High_coeff",0,4)
+            ::win.SetCallback(&::UpdateFilterCurve)
+          ::win.EndBoxPanel()
+
+          ::FilterType_id = ::win.AddEnum(&::FilterType,"Filter Type")
+            ::win.AddEnumChoice(::FilterType_id,"ILPF")
+            ::win.AddEnumChoice(::FilterType_id,"IHPF")
+            ::win.AddEnumChoice(::FilterType_id,"BLPF")
+            ::win.AddEnumChoice(::FilterType_id,"BHPF")
+            ::win.AddEnumChoice(::FilterType_id,"Homomorphic")
+          ::win.SetCallback(&::UpdateFilterCurve)
+
+          # add a Curve Drawing Window
+          ::dw = wxDrawingWindow(&::win.CurrentParent())
+          ::dw.SetMinSize(&wx.wxSize(50,100))
+          ::dw.SetBackgroundColour(\
+              &wx.wxColour(255,255,255))
+          ::win.AddWidget(&::dw,0)
+         
+
+        ::win.AddPage("Run")
+          ::win.AddButton("Run Filter",::Run)
+    
+        #::AddHelpPage(&::win)
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

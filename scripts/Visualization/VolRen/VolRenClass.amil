@@ -8,12 +8,22 @@ comments="VolRen: VTK GPU RayCasting."
 
 func "Common/ScriptGui"
 
-if (!exists(vtkAmiVolRenPlugin_obj)) {
-  func "../../../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen"
-} else {
-  func "../../../Modules/vtkAmiVolRen/scripts/ReLoad_vtkAmiVolRen"
-}
+# only load if it has been compiled
+# TODO: improve the way to check it ...
 
+if (!exists(vtkAmiVolRenPlugin_obj)) {
+
+  #file=op_system.GetCurrentScriptDir()+\
+      #"/../../../Modules/vtkAmiVolRen/scripts/vtkAmiVolRenPlugin"
+  #func file
+  
+  #vtkAmiVolRenPlugin vtkAmiVolRenPlugin_obj
+  #vtkAmiVolRenPlugin_obj.SetQuiet(true)
+  #vtkAmiVolRenPlugin_obj.Load()
+} else {
+  vtkAmiVolRenPlugin_obj.SetQuiet(true)
+  vtkAmiVolRenPlugin_obj.ReLoad()
+}
 
 if (!exists(VolRenClass)) {
 

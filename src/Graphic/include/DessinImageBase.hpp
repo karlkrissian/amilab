@@ -145,6 +145,8 @@ class wxMenuEnum;
 //#include "couleur.hpp"
 #include "FloatMatrix.hpp"
 
+#include "RGBTransformBase.h"
+
 #include "wx/version.h"
 #if ((wxMAJOR_VERSION==2)&&(wxMINOR_VERSION>=9))||(wxMAJOR_VERSION>=3)
   #define PENSTYLE_SOLID wxPENSTYLE_SOLID 
@@ -522,6 +524,10 @@ int        _nb_images_XY;
    unsigned char _couleur_sup;
 //@}
 
+
+   ///
+   RGBTransformBase::ptr _rgbtransform;
+   
 /** @name Variables pour le dessin de la position du curseur
  */
 //@{
@@ -905,6 +911,13 @@ public:
   ///
   void DrawColorBar();
 
+  
+  ///
+  void SetRGBTransform( RGBTransformBase::ptr t)
+  {
+    _rgbtransform = t;
+  }
+  
   ///
   void DrawSlice( int slice_id );
 

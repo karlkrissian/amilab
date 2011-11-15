@@ -1,0 +1,11 @@
+
+func "ViewerColorTransformClass"
+
+if (!exists(ViewerColorTransform_obj)) {
+  ViewerColorTransformClass ViewerColorTransform_obj
+  ViewerColorTransform_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

@@ -126,6 +126,66 @@ LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
   }
 
 
+//------------------------------------------------------------------------------
+Variable<InrImage>::ptr ImageOpScalar( InrImage::ptr im1, const double& val, 
+                                       double(*opfunc)(const double&,const double&), 
+                                       const std::string& name
+                                      )
+{
+  // process each component 
+  int vdim = im1->GetVDim();
+  std::string newname = (boost::format("%1%_%2%_val")%im1->GetName()%name).str(); 
+
+  InrImage::ptr res = InrImage::ptr(new InrImage(im1->_format,newname.c_str(),im1.get()));
+  InrImageIteratorBase::ptr im1_it(im1->CreateConstIterator());
+  InrImageIteratorBase::ptr res_it(res->CreateIterator());
+  im1_it->InitBuffer();                
+  res_it->InitBuffer();                
+  do{                           
+    for(int v=0;v<vdim;v++) {
+      res_it->SetDoubleValue(v,opfunc(im1_it->GetDoubleValue(v),val)); 
+    }
+    (*im1_it)++;               
+  } while ((*res_it)++);      
+  return Variable<InrImage>::ptr( new Variable<InrImage>(res)); 
+}
+
+
+//------------------------------------------------------------------------------
+Variable<InrImage>::ptr BinaryImageOperation( InrImage::ptr im1, InrImage::ptr im2, 
+                                              double(*opfunc)(const double&,const double&), 
+                                              const std::string& name
+                                            )
+{
+  // process each component ???
+  if ((!im1.get())||(!im2.get())) {
+    GB_AmiMessage.Error((boost::format("Empty input image smart pointer.") ).str()); 
+    return Variable<InrImage>::ptr(); 
+  }
+  
+  if (im1->GetVDim() == im2->GetVDim()) { 
+    int vdim = im1->GetVDim();
+    std::string newname = (boost::format("%1%_%2%_%3%")%im1->GetName()%name%im2->GetName()).str(); 
+    InrImage::ptr res = InrImage::ptr(new InrImage(im1->_format,newname.c_str(),im1.get()));
+    InrImageIteratorBase::ptr im1_it(im1->CreateConstIterator());
+    InrImageIteratorBase::ptr im2_it(im2->CreateConstIterator());
+    InrImageIteratorBase::ptr res_it(res->CreateIterator());
+    im1_it->InitBuffer();                
+    im2_it->InitBuffer();                
+    res_it->InitBuffer();                
+    do{                           
+      for(int v=0;v<vdim;v++) {
+        res_it->SetDoubleValue(v,opfunc(im1_it->GetDoubleValue(v),im2_it->GetDoubleValue(v))); 
+      }
+      (*im1_it)++;               
+      (*im2_it)++;               
+    } while ((*res_it)++);      
+    return Variable<InrImage>::ptr( new Variable<InrImage>(res)); 
+  } else 
+    GB_AmiMessage.Error((boost::format("Both images should have the same number of components for operator %1%.") % name ).str()); 
+    return Variable<InrImage>::ptr(); 
+}
+
 //------------------------------------------------------
 //------- Variable<InrImage>
 //------------------------------------------------------
@@ -313,17 +373,27 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator /=(cons
 }
 */
 
-/*
+inline double Pointwise_Modulus(const double& a, const double& b) {
+  return ((int) round(a)) % ((int) round(b));
+}
+
 /// a%b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator %(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(InrImage, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
-  } else
+    return ImageOpScalar(Pointer(),b->GetValueAsDouble(),Pointwise_Modulus,"Mod");
+  } 
+  else 
+    if (b->Type()==type_image) {
+      DYNAMIC_CAST_VARIABLE(InrImage,b,var_im2);
+      return BinaryImageOperation(Pointer(),var_im2->Pointer(),Pointwise_Modulus,"Mod");
+    }
+  else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
+/*
 /// a%=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator %=(const BasicVariable::ptr& b)
 { 
@@ -334,6 +404,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator %=(cons
   return this->NewReference(); 
 }
 */
+
 
 //  Comparison Operators
 

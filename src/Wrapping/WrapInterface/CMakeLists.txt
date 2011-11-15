@@ -35,6 +35,11 @@ SET(  WrapInterface_SRCS
   wrap_Viewer3D.cpp
   wrap_GLTransfMatrix.cpp
   wrap_SurfacePoly.cpp
+  wrap_RGBTransformBase.cpp
+  wrap_RGBTransformComponent.cpp
+  wrap_RGBTransformHSV.cpp
+  wrap_RGBTransformInc.cpp
+  wrap_RGBTransformGamma.cpp
 )
 
 SET(WrapInterface_HDRS
@@ -52,6 +57,11 @@ SET(WrapInterface_HDRS
   ../include/wrap_dwControlledCurve.h
   ../include/wrap_Viewer3D.h
   ../include/wrap_SurfacePoly.h
+  ../include/wrap_RGBTransformBase.h
+  ../include/wrap_RGBTransformComponent.h
+  ../include/wrap_RGBTransformHSV.h
+  ../include/wrap_RGBTransformInc.h
+  ../include/wrap_RGBTransformGamma.h
 )
 
 SET(WrapInterface_SRCS

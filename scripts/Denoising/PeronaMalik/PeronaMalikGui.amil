@@ -1,0 +1,11 @@
+
+func "PeronaMalikClass"
+
+if (!exists(PeronaMalik_obj)) {
+  PeronaMalikClass PeronaMalik_obj
+  PeronaMalik_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

@@ -25,33 +25,6 @@
     ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
-/*
-    ==================================================
-    Software : AMILab
-    Authors  : Karl Krissian
-    Email    : karl@bwh.harvard.edu
-
-    AMILab is a language for image processing
-    ==================================================
-    Copyright (C) 1996-2005  Karl Krissian
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    ==================================================
-   The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
-*/
 /***************************************************************************
  * $Author: karl $
  * $Revision: 1.6 $
@@ -2165,18 +2138,28 @@ void DessinImageBase::DrawSlice( int slice_id )
     {
       px1=px+nvsx; // add epsilon ??
 
-      Si (image_format != WT_RGB)&&
-         (image_format != WT_RGBA)
-      Alors
+      if ((image_format != WT_RGB)&&
+         (image_format != WT_RGBA))
+      {
         couleur = colors[ LookUpTable(image->ValeurBuffer(component),
                           image_format) ];
-      Sinon
-        couleur = ClasseCouleur(
-        (unsigned char) image->VectValeurBuffer(0),
-        (unsigned char) image->VectValeurBuffer(1),
-        (unsigned char) image->VectValeurBuffer(2)
-                               );
-      FinSi
+      } else {
+        
+        if (_rgbtransform.get()) {
+          unsigned char r =  (unsigned char) image->VectValeurBuffer(0);
+          unsigned char g =  (unsigned char) image->VectValeurBuffer(1);
+          unsigned char b =  (unsigned char) image->VectValeurBuffer(2);
+          unsigned char r1,g1,b1;
+          _rgbtransform->Apply(r,g,b,r1,g1,b1);
+          couleur = ClasseCouleur(r1,g1,b1);
+        } else {
+          couleur = ClasseCouleur(
+          (unsigned char) image->VectValeurBuffer(0),
+          (unsigned char) image->VectValeurBuffer(1),
+          (unsigned char) image->VectValeurBuffer(2)
+                                );
+        }
+      }
 
       if (pointlevel) {
 

@@ -21,6 +21,8 @@ if (!exists(Subvoxel3DClass)){
       ::show_vol    = UCHAR(0),          "Show or hide the volume"
       ::show_planes = UCHAR(1),          "Show or hide the planes of the edge"
       ::show_normals= UCHAR(0),          "Show or hide the normals of the edge"
+      ::FrontFaceCulling= UCHAR(0),          "Front Face culling"
+      ::BackFaceCulling = UCHAR(0),          "Back Face culling"
       
       #Parameters of the settings
       #Planes
@@ -56,9 +58,17 @@ if (!exists(Subvoxel3DClass)){
       }
     }
     Comments(::load_input, "Load the input image")
-    
+
     #-----------------------
-    
+    proc ::UpdateCulling() \
+    {    
+      ::plane_actor.GetProperty().SetBackfaceCulling( ::BackFaceCulling)
+      ::plane_actor.GetProperty().SetFrontfaceCulling(::FrontFaceCulling)
+      ::renwin_interact.Render()
+    }
+
+    #-----------------------
+
     proc ::vtkDrawEdges() {
       if (exists(::res)) {
         #Edge points
@@ -168,6 +178,8 @@ if (!exists(Subvoxel3DClass)){
           ::plane_actor.GetProperty().SetOpacity(::planes_opacity)
           #Set the color of the planes
           ::plane_actor.GetProperty().SetColor(::planes_r/255,::planes_g/255,::planes_b/255)
+          ::plane_actor.GetProperty().SetBackfaceCulling( ::BackFaceCulling)
+          ::plane_actor.GetProperty().SetFrontfaceCulling(::FrontFaceCulling)
           ::plane_actor.SetMapper(&plane_mapper)
         }
         
@@ -350,6 +362,14 @@ if (!exists(Subvoxel3DClass)){
             ::win.AddBoolean(&::show_vol, "Volume")
             ::win.AddBoolean(&::show_planes, "Edges")
             ::win.AddBoolean(&::show_normals, "Normals")
+            ::win.BeginBoxPanel("Face culling")
+              ::win.BeginHorizontal()
+                ::win.AddBoolean(&::FrontFaceCulling, "Front")
+                ::win.SetCallback(&::UpdateCulling)
+                ::win.AddBoolean(&::BackFaceCulling, "Back")
+                ::win.SetCallback(&::UpdateCulling)
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel()
           ::win.EndBoxPanel()
           
           ::win.BeginHorizontal()

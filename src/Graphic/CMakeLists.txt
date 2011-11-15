@@ -80,6 +80,11 @@ SET(Graphic_HDRS
     include/ImageDraw_VoxelSizeParam.h
     include/ImageDraw_InfoParam.h
     include/ImageDraw_CoupesXYParam.h
+    include/RGBTransformBase.h
+    include/RGBTransformComponent.h
+    include/RGBTransformHSV.h
+    include/RGBTransformInc.h
+    include/RGBTransformGamma.h
 
     # from OpenGL
     include/Viewer3D_BackgroundParam.h
@@ -137,6 +142,9 @@ SET(Graphic_SRCS
     ImageTool/ImageDraw_VoxelSizeParam.cpp
     ImageTool/ImageDraw_InfoParam.cpp
     ImageTool/ImageDraw_CoupesXYParam.cpp
+    ImageTool/RGBTransformHSV.cpp
+    ImageTool/RGBTransformInc.cpp
+    ImageTool/RGBTransformGamma.cpp
 
     # from OpenGL
     OpenGL/GLparam.cpp

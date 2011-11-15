@@ -25,3 +25,6 @@ del filt_dir
 
 ami.MainFrame.AddToMenu("&Scripts","&Basic Filters","&GreyMorpho",  "BasicFilters/GreyMorpho/GreyMorphoGui")
 
+ami.MainFrame.AddToMenu("&Scripts","&Basic Filters","&Fourier Spectrum",  "BasicFilters/FourierSpectrum/FourierSpectrumGui")
+ami.MainFrame.AddToMenu("&Scripts","&Basic Filters","&Fourier Filter",    "BasicFilters/FourierFilter/FourierFilterGui")
+

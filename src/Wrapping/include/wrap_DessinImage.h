@@ -112,6 +112,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
     ADD_CLASS_METHOD(DrawLines,  "Draws a set of line segments (optionally arrows) on the XY plane.");
 
     ADD_CLASS_METHOD(SetIntensityRange, "Sets the lower and upper limits of the intensity look-up table.");
+    ADD_CLASS_METHOD(SetRGBTransform, "Sets a RGB transformation for visualization of color images");
 
     void AddMethods(WrapClass<DessinImage>::ptr this_ptr )
     {
@@ -160,6 +161,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
       AddVar_DrawLineZ(             this_ptr);
       AddVar_DrawLines(             this_ptr);
       AddVar_SetIntensityRange(     this_ptr);
+      AddVar_SetRGBTransform(       this_ptr);
       
       // Adding Bases
 //       WrapClass_FenetreDessin::ptr parent_obj(

@@ -1,0 +1,123 @@
+#!/home/karl/projects/SourceForge/amilab/branches/Release-3.0-PDI/src/build/amilab_3.0.1_debug 
+
+
+ func "SyntheticImages/create_torus_gui" // from menu
+ func "Segmentation/LevelSets/LevelSetsGui.amil" // from menu
+ Normal006_MRA = Image "/home/karl/Descargas/Normal006-MRA.mha" // from menu
+show Normal006_MRA
+s = isosurf(Normal006_MRA,167)
+show s
+Normal006_MRA.info
+lsinit = ((FLOAT) Normal006_MRA) -200
+ barbara = Image "/home/karl/projects/data/DenoisingTestImages/barbara.png" // from menu
+proc TestLaplacian( IMAGE I) {
+  I.setvoxelsize(1,1,1)
+  I.settranslation(0,0,0)
+  p0 = SpacePos(I)
+  p = p0
+  p.SetComponent(0,p0[0]+1)
+  Ixp = I(p)
+  p.SetComponent(0,p0[0]-1)
+  Ixm = I(p)
+  p = p0
+  p.SetComponent(1,p0[1]+1)
+  Iyp = I(p)
+  p.SetComponent(1,p1[0]-1)
+  Iym = I(p)
+  return = Ixp+Ixm+Iyp+Iym-4*I
+}
+
+proc TestLaplacian( IMAGE I) {
+  I.setvoxelsize(1,1,1)
+  I.settranslation(0,0,0)
+  p0 = SpacePos(I)
+  p = p0
+  p.SetComponent(0,p0[0]+1)
+  Ixp = I(p)
+  p.SetComponent(0,p0[0]-1)
+  Ixm = I(p)
+  p = p0
+  p.SetComponent(1,p0[1]+1)
+  Iyp = I(p)
+  p.SetComponent(1,p0[1]-1)
+  Iym = I(p)
+  return = Ixp+Ixm+Iyp+Iym-4*I
+}
+
+lb = TestLaplacian(barbara)
+show lb
+proc TestLaplacian( IMAGE I0) {
+  I = (FLOAT) I0
+  I.setvoxelsize(1,1,1)
+  I.settranslation(0,0,0)
+  p0 = SpacePos(I)
+  p = p0
+  p.SetComponent(0,p0[0]+1)
+  Ixp = I(p)
+  p.SetComponent(0,p0[0]-1)
+  Ixm = I(p)
+  p = p0
+  p.SetComponent(1,p0[1]+1)
+  Iyp = I(p)
+  p.SetComponent(1,p0[1]-1)
+  Iym = I(p)
+  return = Ixp+Ixm+Iyp+Iym-4*I
+}
+
+
+proc DivCGrad( IMAGE im, IMAGE c) {
+  # imagenes de los 4 vecinos para im y C
+  I = (FLOAT) im
+  I.setvoxelsize(1,1,1)
+  I.settranslation(0,0,0)
+
+  C = (FLOAT) c
+  C.setvoxelsize(1,1,1)
+  C.settranslation(0,0,0)
+
+  p0 = SpacePos(I)
+  p = p0
+  p.SetComponent(0,p0[0]+1)
+  Ixp = I(p)
+  Cxp = C(p)
+  p.SetComponent(0,p0[0]-1)
+  Ixm = I(p)
+  Cxm = C(p)
+  p = p0
+  p.SetComponent(1,p0[1]+1)
+  Iyp = I(p)
+  Cyp = C(p)
+  p.SetComponent(1,p0[1]-1)
+  Iym = I(p)  
+  Cym = C(p)
+
+  Fxp = (Cxp+C)/2*(Ixp-I)
+  Fxm = (Cxm+C)/2*(I-Ixm)
+  Fyp = (Cyp+C)/2*(Iyp-I)
+  Fym = (Cym+C)/2*(I-Iym)
+
+  return = Fxp-Fxm+Fyp-Fym
+}
+
+lb = TestLaplacian(barbara)
+show lb
+res = barbara
+for n=1 to 10 { res = res + 0.1 * TestLaplacian(res); }
+show res
+
+bg = normgrad(barbara,1)
+c_bg = exp(-(bg*bg)/(20*20))
+res <<= (FLOAT)barbara
+for n=1 to 10 { res = res + 0.1 * DivCGrad(&res,&c_bg); 
+SetProgress((FLOAT)n/10*100); }
+SetProgress(0)
+show res
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+%Párrafos
+\setlength{\parskip}{1pc}
+\usepackage{url}
+
+\renewcommand{\thefootnote}{\arabic{footnote}}
+
+\begin{document}
+
+% Title Page
+\title{Transformaci\'on HSV, RGB y Gamma}
+\author{Luis M. Gonz\'alez Medina -  Rub\'en Dom\'inguez Falc\'on
+}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Centro de Tecnolog\'ias de la Imagen (CTIM)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es
+\url{http://www.ctm.ulpgc.es/joomla/index.php}
+}
+
+
+\maketitle
+
+\begin{abstract}
+Este script le permite realizar cambios en los valores HSV de la imagen, modificar los valores RGB de la imagen as\'i como realizar una correci\'on gamma.
+\end{abstract}
+
+
+\section{Quick Start}
+
+Los pasos a seguir son:
+\begin{enumerate}
+  \item Seleccione la imagen en la parte inferior.
+  \item Seleccione la secci\'on correspondiente a la transfirmaci\'on que desee realizar (HSV, RGB o Gamma).
+  \item Cambiando los par\'ametros la imagen se actualiza automaticamente en el visor.
+  \item Si desea guardar la imagen actual, escriba un nombre de fichero y pulse el boton Save Current Image.
+\end{enumerate}
+
+\section{HSV}
+La transformaci\'on HSV recoger\'a una imagen RGB y la convertir\'a a su equivalente HSV. En la interfaz se facilita el poder cambiar cualquiera de estas componentes. Con la barra deslizadora podremos modificar los par\'ametros directamente y la imagen se actualizar\'a de forma inmediata.
+
+\section{RGB}
+En esta secci\'on podremos modificar los valores RGB de los pixeles de la imagen. Tendremos 3 par\'ametros a modificar, correspondientes a los 3 colores b\'asicos. Modificarlos significa aumentar todos los valores de la imagen correspondientes a ese color en tanto como aumentemos el valor.
+
+\section{Correci\'on Gamma}
+Permite hacer una correci\'on gamma de la imagen. Para ello disponemos de una barra deslizante en la que podremos modificar este valor. Los cambios se reflejan en la imagen de forma inmediata.
+
+\section{Guardando el resultado}
+Podemos guardar la imagen que se visualiza actualmente en el visor. Para ello simplemente tendremos que escribir el nombre en el espacio correspondiente y darle al bot\'on Save Current Image.
+
+\end{document}          

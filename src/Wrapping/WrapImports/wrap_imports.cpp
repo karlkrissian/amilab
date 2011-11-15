@@ -89,6 +89,12 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 #include "wrap_dwCurve.h"
 #include "wrap_dwControlledCurve.h"
 
+#include "wrap_RGBTransformComponent.h"
+#include "wrap_RGBTransformHSV.h"
+#include "wrap_RGBTransformInc.h"
+#include "wrap_RGBTransformGamma.h"
+
+  
 #include "wrap_stdvector.h"
 
 #ifndef BasicVariable_declared
@@ -144,6 +150,12 @@ void AddWrapImports()
 
     WrapClass_wxDrawingWindow::AddVar_wxDrawingWindow(amiobject->GetContext());
     WrapClass_ParamPanel     ::AddVar_ParamPanel     (amiobject->GetContext());
+
+    // Color Transforms
+    WrapClass_RGBTransformComponent::AddVar_RGBTransformComponent( amiobject->GetContext());
+    WrapClass_RGBTransformHSV      ::AddVar_RGBTransformHSV( amiobject->GetContext());
+    WrapClass_RGBTransformInc      ::AddVar_RGBTransformInc( amiobject->GetContext());
+    WrapClass_RGBTransformGamma    ::AddVar_RGBTransformGamma( amiobject->GetContext());
 
     // Add context to builtin as 'default' context
     Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 

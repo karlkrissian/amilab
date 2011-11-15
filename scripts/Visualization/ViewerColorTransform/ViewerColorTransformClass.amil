@@ -1,0 +1,193 @@
+
+func "Common/ScriptGui"
+
+if (!exists(ViewerColorTransformClass)) {
+
+  Class ViewerColorTransformClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {    
+        
+        ::input_name   = "","Name of the input image variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+        ::h = 0, "Hue coefficient"
+        ::s = 0, "Saturation coefficient"
+        ::v = 0, "Value coefficient"
+        ::gamma = 1, "Gamma correction"
+        ::r = INT(0), "Red increment"
+        ::g = INT(0), "Green increment"        
+        ::b = INT(0), "Blue increment"
+        ::result_filename = "Resultado.jpg"
+        ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/ViewerColorTransform/index.html"
+        ::t  = RGBTransformHSV()    
+        ::t2 = RGBTransformInc()      
+        ::t3 = RGBTransformGamma()      
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= "+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    ::Display()    
+      
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    #-----------------------------------------------
+    proc ::RunHSV() \
+    {
+      if (!exists(::input)) {
+        ::load_input()
+      }      
+        ::input_draw.SetRGBTransform(&::t) 
+        ::t.SetH(::h)
+        ::t.SetS(::s)
+        ::t.SetV(::v)
+        ::input_draw.update()      
+    }
+    
+    #-----------------------------------------------
+    proc ::ResetHSV() \
+    {
+      ::h=0
+      ::s=0
+      ::v=0
+      ::RunHSV    
+      ::win.Update(-1)
+    }
+    
+        #-----------------------------------------------
+    proc ::RunRGB() \
+    {
+      if (!exists(::input)) {
+         ::load_input()
+      }     
+        ::input_draw.SetRGBTransform(&::t2) 
+        ::t2.SetR(::r)
+        ::t2.SetG(::g)
+        ::t2.SetB(::b)
+        ::input_draw.update()      
+    }
+    
+    #-----------------------------------------------
+    proc ::ResetRGB() \
+    {
+      ::r=0
+      ::g=0
+      ::b=0
+      ::RunRGB    
+      ::win.Update(-1)
+    }
+    #-----------------------------------------------
+    proc ::Rungamma() \
+    {
+      if (!exists(::input)) {
+         ::load_input()
+      }      
+        ::input_draw.SetRGBTransform(&::t3) 
+        ::t3.Setgamma(::gamma)        
+        ::input_draw.update()      
+    }
+    
+    #-----------------------------------------------
+    proc ::Resetgamma() \
+    {
+      ::gamma=1
+      ::Rungamma    
+      ::win.Update(-1)
+    }
+    
+    #------------------------------------------------
+    proc ::Display() \
+    {
+      if (exists(::input)) {
+        show ::input    
+      }  
+    
+    }
+    
+    proc ::Save() \
+    {
+      ::res = ::input_draw.getimage()
+      ::res.save ::result_filename
+    }
+
+
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("ColorTransf",&::parent_panel)
+      } else {
+        ::win = ParamPanel("ColorTransf")
+      }
+      
+      ::win.BeginBook()
+      
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+              ::win.EndHorizontal()
+              ::win.AddButton("Save Current Image",::Save)  
+              ::win.AddString( &::result_filename,"Saved File Name:")
+          ::win.EndBoxPanel()
+    
+        ::win.AddPage("HSV")
+          ::win.AddFloat(&::h,"H",-180,180)
+          ::win.SetCallback( &::RunHSV)
+          ::win.AddFloat(&::s,"S",-100,100)
+          ::win.SetCallback( &::RunHSV)
+          ::win.AddFloat(&::v,"V",-100,100)
+          ::win.SetCallback( &::RunHSV)     
+          ::win.AddButton("Reset",::ResetHSV)
+        
+        ::win.AddPage("RGB")
+          ::win.AddInt(&::r,"R",-255,255)
+          ::win.SetCallback( &::RunRGB)
+          ::win.AddInt(&::g,"G",-255,255)
+          ::win.SetCallback( &::RunRGB)
+          ::win.AddInt(&::b,"B",-255,255)
+          ::win.SetCallback( &::RunRGB)      
+          ::win.AddButton("Reset",::ResetRGB)
+          
+        ::win.AddPage("Gamma")
+          ::win.AddFloat(&::gamma,"Param gamma",0.1,10)
+          ::win.SetCallback( &::Rungamma)       
+          ::win.AddButton("Reset",::Resetgamma)
+                 
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

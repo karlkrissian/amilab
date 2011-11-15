@@ -1,0 +1,241 @@
+
+func "Common/ScriptGui"
+
+if (!exists(PeronaMalikClass)) {
+
+  Class PeronaMalikClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+        ::input_name   = "","Name of the input image variable"
+        ::input2_name   = "","Name of the second input image variable"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::html_filename = GetScriptsDir+"/PeronaMalik/Doc/PeronaMalik/index.html"
+
+        ::nb_iter = INT(10), "Number of iterations"
+        ::std = 1, "Gaussian standard deviation to compute gradient norm"
+        ::threshold = 20, "Diffusion parameter"
+        ::dt = 0.1, "Time step"
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+    #-----------------------------------------------
+    proc ::load_input2() {
+      eval "::input2 <<= (FLOAT)"+::input2_name+";"
+      if (::input2_name=="BrowseImage") {
+        ::input2_name = "::input2"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input2, "Copies the second input image in a local image member named 'input2'")
+
+
+    #-----------------------------------------
+    proc ::PrecomputePos( ) \
+    {
+      ::input.setvoxelsize(1,1,1)
+      ::input.settranslation(0,0,0)
+      p = SpacePos(::input)
+      ::p_xp <<= p
+      ::p_xp.SetComponent(0,p[0]+1)
+      ::p_xm <<= p
+      ::p_xm.SetComponent(0,p[0]-1)
+      ::p_yp <<= p
+      ::p_yp.SetComponent(1,p[1]+1)
+      ::p_ym <<= p
+      ::p_ym.SetComponent(1,p[1]-1)
+    }
+
+    #-----------------------------------------
+    proc ::FreePos() \
+    {
+      if exists(::p_xp)  { del ::p_xp; }
+      if exists(::p_xm)  { del ::p_xm; }
+      if exists(::p_yp)  { del ::p_yp; }
+      if exists(::p_ym)  { del ::p_ym; }
+    }
+    
+    #-----------------------------------------
+    proc ::PrecomputeCoeff( IMAGE C) \
+    {
+      Cxp = C(::p_xp)
+      Cxm = C(::p_xm)
+      Cyp = C(::p_yp)
+      Cym = C(::p_ym)
+      ::C_xp = (Cxp+C)/2
+      ::C_xm = (Cxm+C)/2
+      ::C_yp = (Cyp+C)/2
+      ::C_ym = (Cym+C)/2
+    }
+
+    #-----------------------------------------
+    proc ::FreeCoeff() \
+    {
+      if exists(::C_xp) { del ::C_xp; }
+      if exists(::C_xm) { del ::C_xm; }
+      if exists(::C_yp) { del ::C_yp; }
+      if exists(::C_ym) { del ::C_ym; }
+    }
+
+    #-----------------------------------------
+    proc ::DivCGrad( IMAGE res) \
+    {
+      # imagenes de los 4 vecinos para im y C 
+      I = &res
+      Ixp = I(::p_xp)
+      Ixm = I(::p_xm)
+      Iyp = I(::p_yp)
+      Iym = I(::p_ym)
+
+      Fxp = ::C_xp*(Ixp-I)
+      Fxm = ::C_xm*(I-Ixm)
+      Fyp = ::C_yp*(Iyp-I)
+      Fym = ::C_ym*(I-Iym)
+    
+      return = Fxp-Fxm+Fyp-Fym
+    }
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+
+        bg = normgrad(::input,::std)
+        c_bg = exp(-(bg*bg)/(::threshold*::threshold))
+
+        ::PrecomputePos()
+        ::PrecomputeCoeff(&c_bg)
+        
+        ::res <<= ::input
+        show ::input
+        show ::res
+        ::input_draw.compare(&::res_draw)
+        for n=1 to ::nb_iter { 
+          ::res = ::res + ::dt * ::DivCGrad(&::res)
+          SetProgress((FLOAT)n/::nb_iter*100)
+          show ::res
+        }
+        ::FreePos()
+        ::FreeCoeff()
+        SetProgress(0)
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::RunOnInput2() \
+    {
+      if (!exists(::input))&&(!exists(::input2)) {
+        Infodialog "First load the two input images !"
+      } else {
+
+        bg = normgrad(::input,::std)
+        c_bg = exp(-(bg*bg)/(::threshold*::threshold))
+
+        ::PrecomputePos()
+        ::PrecomputeCoeff(&c_bg)
+        
+        ::res <<= ::input2
+        show ::input2
+        show ::res
+        ::input2_draw.compare(&::res_draw)
+        for n=1 to ::nb_iter { 
+          ::res = ::res + ::dt * ::DivCGrad(&::res)
+          SetProgress((FLOAT)n/::nb_iter*100)
+          show ::res
+        }
+        ::FreePos()
+        ::FreeCoeff()
+        SetProgress(0)
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::Display() \
+    {
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("PeronaMalik",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("PeronaMalik")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input2_name, "")
+              ::win.AddButton("Load",::load_input2)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+          ::win.AddInt(&::nb_iter,"Iterations",1,100)
+          ::win.AddFloat(&::std,"Std dev.",0.4,10)
+          ::win.AddFloat(&::threshold,"Diffusion param",0.1,100)
+          ::win.AddFloat(&::dt,"Time step",0.01,1)
+
+        ::win.AddPage("Run")
+          ::win.AddButton("Run Filter",::Run)
+          ::win.AddButton("Run Filter on second image",::RunOnInput2)
+          ::win.AddButton("Display",::Display)
+
+        if wx.wxFileName(::html_filename)._FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

@@ -270,6 +270,7 @@ if (!exists(SimplevtkVolumeClass)) {
               (exists(vtkAmiVolRen)) {
             ::volmapper = vtkAmiVolRen.vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.New()
           } else {
+            SetStatusText("Setting GPU Volume Mapper")
             ::volrenmapper_type=0
             ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
           }

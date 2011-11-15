@@ -70,10 +70,10 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<InrImage>::operator /
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<InrImage>::operator /=(const BasicVariable::ptr& b);
 */
 
-/*
 /// a%b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<InrImage>::operator %(const BasicVariable::ptr& b);
 
+/*
 /// a%=b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<InrImage>::operator %=(const BasicVariable::ptr& b);
 */
