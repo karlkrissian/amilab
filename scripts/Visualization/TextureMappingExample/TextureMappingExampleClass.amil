@@ -608,9 +608,9 @@ if (!exists(TextureMappingExampleClass)) {
     proc ::Gui() {
     
       if (exists(::parent_panel)) {
-        ::win = ParamPanel("TextureMappingExample",&::parent_panel)
+        ::win = ParamPanel("TexMapping",&::parent_panel)
       } else {
-        ::win = ParamPanel("TextureMappingExample")
+        ::win = ParamPanel("TexMapping")
       }
       
       ::win.BeginBook()
