@@ -9,6 +9,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
+#define COUT 1
+
 #include "vtkAMILabGPUMultiVolumeRayCastMapper.h"
 
 #include "vtkVolumeRenderingFactory.h"
@@ -98,6 +100,41 @@ vtkAMILabGPUMultiVolumeRayCastMapper::~vtkAMILabGPUMultiVolumeRayCastMapper()
   this->SetTransformedInput(NULL);
   this->LastInput = NULL;
 }
+
+
+// ----------------------------------------------------------------------------
+//SetInput 2
+// void SetInput( vtkImageData *input )
+// void SetInput( vtkDataSet *genericInput )
+void vtkAMILabGPUMultiVolumeRayCastMapper::SetInput2( vtkDataSet *genericInput )
+{
+  vtkImageData *input = 
+    vtkImageData::SafeDownCast( genericInput );
+  
+  if ( input )
+    {
+    SetInput( input );
+    }
+  else
+    {
+    vtkErrorMacro("The SetInput method of this mapper requires vtkImageData as input");
+    }
+}
+
+void vtkAMILabGPUMultiVolumeRayCastMapper::SetInput2( vtkImageData *input )
+{
+  std::cout<< "entraaaaaaaa"<<std::endl;
+  if(input)
+    {
+    this->SetInputConnection(1, input->GetProducerPort());
+    }
+  else
+    {
+    // Setting a NULL input removes the connection.
+    this->SetInputConnection(1, 0);
+    }
+}
+
 
 // ----------------------------------------------------------------------------
 vtkAMILabGPUMultiVolumeRayCastMapper *vtkAMILabGPUMultiVolumeRayCastMapper::New()

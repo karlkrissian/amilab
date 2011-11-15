@@ -21,7 +21,10 @@
 #ifndef __vtkAMILabOpenGLGPUMultiVolumeRayCastMapper_h
 #define __vtkAMILabOpenGLGPUMultiVolumeRayCastMapper_h
 
-#include "vtkGPUVolumeRayCastMapper.h"
+#include "vtkAMILabGPUMultiVolumeRayCastMapper.h"
+//carlos #include "vtkGPUVolumeRayCastMapper.h"
+
+class vtkGPUVolumeRayCastMapper;
 
 class vtkVolume;
 class vtkRenderer;
@@ -47,11 +50,13 @@ class vtkStdString;
 class vtkShaderProgram2;
 class vtkShader2;
 
-class VTK_VOLUMERENDERING_EXPORT vtkAMILabOpenGLGPUMultiVolumeRayCastMapper : public vtkGPUVolumeRayCastMapper
+//carlos public vtkGPUVolumeRayCastMapper vtkAMILabGPUMultiVolumeRayCastMapper
+class VTK_VOLUMERENDERING_EXPORT vtkAMILabOpenGLGPUMultiVolumeRayCastMapper : public vtkAMILabGPUMultiVolumeRayCastMapper
 {
 public:
   static vtkAMILabOpenGLGPUMultiVolumeRayCastMapper *New();
-  vtkTypeMacro(vtkAMILabOpenGLGPUMultiVolumeRayCastMapper,vtkGPUVolumeRayCastMapper);
+  //carlos  vtkTypeMacro(vtkAMILabOpenGLGPUMultiVolumeRayCastMapper,vtkGPUVolumeRayCastMapper);
+  vtkTypeMacro(vtkAMILabOpenGLGPUMultiVolumeRayCastMapper,vtkAMILabGPUMultiVolumeRayCastMapper);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -437,6 +442,7 @@ protected:
   vtkOpacityTables *OpacityTables;
 
   vtkKWScalarField *CurrentScalar;
+  vtkKWScalarField *CurrentScalar2;
   vtkKWMask *CurrentMask;
 
   float ActualSampleDistance;

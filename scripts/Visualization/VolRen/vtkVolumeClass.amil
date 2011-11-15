@@ -271,13 +271,16 @@ if (!exists(vtkVolumeClass)) {
         cp3.Setsharpness(0)
         curve.GetControlPoints().push_back(&cp3)
 
+        ::SetBlendMode(0)
         curve.SetType(1) # solid
         ::SetLinearCurve(&curve)
         #::imhisto1.dw.SetCtrlPointCallback(&::OnCtrlPoint)
         ::imhisto1.dw.SetLinearColormapCallback(&::OnLinearColormap)
         ::use_shade=1
       } else {
-        InfoDialog "No histogram available."
+         //if (::volrenmapper_type!=3){
+          InfoDialog "No histogram available."
+         //}
       }
         
     }
@@ -312,7 +315,7 @@ if (!exists(vtkVolumeClass)) {
         # Create colors based on the curve
         hmax = max(::imhisto1.h[0])
         for n=0 to ::imhisto1.dw.GetSizelinearCM()-1 {
-          printn "-point number %1%" %n
+          #printn "-point number %1%" %n
           y =  ::opacity_attenuation/hmax*::imhisto1.dw.GetAlphalinearCM(n)
           pos = ::imhisto1.dw.GetPoslinearCM(n)
           col = ::imhisto1.dw.GetColourlinearCM(n)
@@ -386,7 +389,7 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::ReCompute() \
     {
-      printn "::Recompute"
+      #printn "::Recompute"
       del ::colorFun
       del ::opacityFun
       del ::property

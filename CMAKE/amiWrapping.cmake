@@ -127,7 +127,7 @@ ENDMACRO( READ_FUNCTIONS )
 #
 # needs:
 #   GENERATED_DIR
-#   AMILAB_SOURCE_DIR
+#   AMILab_SOURCE_DIR
 #   PYTHON_EXECUTABLE
 #   XML_OUTPUT
 #   LIBNAME
@@ -142,7 +142,7 @@ ENDMACRO( READ_FUNCTIONS )
 #
 MACRO( CREATE_ANCESTORS )
   SET(ANCESTORS_FILE "${GENERATED_DIR}/ancestors.txt")
-  SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
+  SET(AMI_WRAPPER "${AMILab_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
   SET(ANCESTORS_CMD ${PYTHON_EXECUTABLE})                          #Command
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} ${AMI_WRAPPER})                 #Wrapper
@@ -307,7 +307,7 @@ MACRO( WRAP_CODE )
     SET(  WRAP_CMD ${WRAP_CMD} "--addwrap")
     SET(  WRAP_CMD ${WRAP_CMD} "--profile")
     SET(  WRAP_CMD ${WRAP_CMD} "--templates")
-    SET(  WRAP_CMD ${WRAP_CMD} "--templatefile_dir" ${AMILAB_SOURCE_DIR}/../PythonWrap/)
+    SET(  WRAP_CMD ${WRAP_CMD} "--templatefile_dir" ${AMILab_SOURCE_DIR}/../PythonWrap/)
     IF(GENERATE_HTML_HELP)
       # flag to generate html help
       SET(WRAP_CMD ${WRAP_CMD} "--generate-html")

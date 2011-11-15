@@ -14,13 +14,14 @@
 // .SECTION Description
 // vtkAMILabGPUMultiVolumeRayCastMapper is a volume mapper that performs ray casting on
 // the GPU using fragment programs.
-//
+//vtkGPUVolumeRayCastMapper
 
 
 #ifndef __vtkAMILabGPUMultiVolumeRayCastMapper_h
 #define __vtkAMILabGPUMultiVolumeRayCastMapper_h
 
 #include "vtkVolumeMapper.h"
+
 
 class vtkVolumeProperty;
 class vtkRenderWindow;
@@ -31,9 +32,16 @@ class VTK_VOLUMERENDERING_EXPORT vtkAMILabGPUMultiVolumeRayCastMapper : public v
 {
 public:
   static vtkAMILabGPUMultiVolumeRayCastMapper *New();
+  //vtkTypeMacro(vtkAMILabGPUMultiVolumeRayCastMapper,vtkVolumeMapper);
   vtkTypeMacro(vtkAMILabGPUMultiVolumeRayCastMapper,vtkVolumeMapper);
   void PrintSelf( ostream& os, vtkIndent indent );
 
+  
+  //carlos Description:
+  // Define the Input functions for a second data 
+  void SetInput2( vtkImageData *input );
+  void SetInput2( vtkDataSet *genericInput );
+  
   // Description:
   // If AutoAdjustSampleDistances is on, the the ImageSampleDistance
   // will be varied to achieve the allocated render time of this

@@ -216,13 +216,13 @@ if (!exists(SimplevtkVolumeClass)) {
       ::camera.Azimuth( 10 )
       ::OnRender()
     }
-  #----------------------------
-  proc ::Rotate2(NUM n){
-   for i=0 to n {
-      wait(33)
-      ::Rotate()
+    #----------------------------
+    proc ::Rotate2(NUM n){
+    for i=0 to n {
+        wait(33)
+        ::Rotate()
+      }
     }
-  }
     #----------------------------
     proc ::Azimuth( NUM x) {
       ::camera.Azimuth( x )
@@ -344,6 +344,7 @@ if (!exists(SimplevtkVolumeClass)) {
         ::SetVolMapperMode ()
         ::vtkinput  = vtktools.ToVtkImageData(&::input)
 
+
         ::volmapper.SetInput(&::vtkinput)
         ::volmapper.SetBlendMode(::blend_mode)
         # connect up the volume to the property and the mapper
@@ -372,7 +373,7 @@ if (!exists(SimplevtkVolumeClass)) {
       del ::volmapper
       del ::vtkinput
       del ::box
-     ::renwininter.Render()
+     //¿?¿?¿ ::renwininter.Render()
 
      //::InitCamera()
     }
@@ -513,6 +514,13 @@ if (!exists(SimplevtkVolumeClass)) {
       ::renwininter.Render()
     }
 
+  #----------------------------
+    proc ::SetMask( IMAGE input_image) \
+    {
+      del ::mask
+      ::mask  = vtktools.ToVtkImageData(&input_image)
+      ::volmapper.SetMaskInput(&::mask) 
+    }
  
   } # end Class
 }# end if

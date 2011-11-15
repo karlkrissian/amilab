@@ -8,6 +8,13 @@ comments="VolRen: VTK GPU RayCasting."
 
 func "Common/ScriptGui"
 
+if (!exists(vtkAmiVolRenPlugin_obj)) {
+  func "../../../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen"
+} else {
+  func "../../../Modules/vtkAmiVolRen/scripts/ReLoad_vtkAmiVolRen"
+}
+
+
 if (!exists(VolRenClass)) {
 
 
@@ -210,8 +217,8 @@ if (!exists(VolRenClass)) {
       if (exists (::input)){
         ::UpdateImageInfo(&::input,&::input_size)
         ::win.SetLabelValue(::input_size_id,::input_size)
-        ::UpdateVolPages()
-        ::win.Update(-1)
+        #::UpdateVolPages()
+        #::win.Update(-1)
       }
     }
 
@@ -281,8 +288,8 @@ if (!exists(VolRenClass)) {
       if (exists (::input2)){
         ::UpdateImageInfo(&::input2,&::input2_size)
         ::win.SetLabelValue(::input2_size_id,::input2_size)
-        ::UpdateVolPages()
-        ::win.Update(-1)
+        #::UpdateVolPages()
+        #::win.Update(-1)
       }
     }
   
@@ -290,7 +297,7 @@ if (!exists(VolRenClass)) {
     proc ::UpdateVolPages() \
     {
       ::win.EnablePanel(::vol1_page , exists(::input))
-      ::win.EnablePanel(::vol2_page , exists(::input2))
+      ::win.EnablePanel(::vol2_page , exists(::input2)&&(::volrenmapper_type!=3))
     }
 
     #----------------------------
@@ -421,6 +428,9 @@ if (!exists(VolRenClass)) {
         ::vtk_camera_gui.SetCallback(&::CameraCallback)
         #Set Linear curve
         ::volVector[0].ResetLinearCurve1()
+
+        ::UpdateVolPages()
+        ::win.Update(-1)
       }
     }
     Comments(::StartNew,"Starts rendering of first volume.")
@@ -452,25 +462,41 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::AddVolume2() \
     {
+    
       if (::resizevol2==0){
         ::load_input2()
       }
      ::resizevol2=0
       if (exists(::input2)) {
-        ::volVector[1].cpManager(&::volVector[0])
-        ::volVector[1].DelVTK()
-        ::volVector[1].CreateVTK( &::input2)
-        ::volVector[1].OnRender()
-        ::renwin_interact.Render()
-        ::renwin_interact.Refresh()
+        if (::volrenmapper_type==3){
+          printn "**********AÑADE MASKARA"
+          ::volVector[1].DelVTK()
+          ::volVector[0].SetMask(&::input2)
+        }else {
+          ::volVector[1].cpManager(&::volVector[0])
+          ::volVector[1].DelVTK()
+          ::volVector[1].CreateVTK( &::input2)
+        if (::volrenmapper_type!=::volVector[1].volrenmapper_type) {
+          ::volrenmapper_type=::volVector[1].volrenmapper_type
+          ::win.Update(::volrentype_id)
+        }
+          ::volVector[1].OnRender()
+          ::renwin_interact.Render()
+          ::renwin_interact.Refresh()
 //fusion ?¿?¿
 //::volVector[1].camera.SetParallelProjection(true)
 //::volVector[1].blend_mode=3
-        ::EnableGPUmode(1)
-        ::hist_mode = 1
-        ::ShowHistogram()
-        ::hist_mode = 0
-        ::volVector[1].OnCtrlPoint()
+          ::EnableGPUmode(1)
+          ::hist_mode = 1
+          ::ShowHistogram()
+          ::hist_mode = 0
+          ::volVector[1].OnLinearColormap()
+          #Set Linear curve
+          ::volVector[1].ResetLinearCurve1()
+        }
+
+        ::UpdateVolPages()
+        ::win.Update(-1)
       }
     }
     Comments(::AddVolume2,"Adds rendering of second volume.")

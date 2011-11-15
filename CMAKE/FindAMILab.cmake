@@ -16,42 +16,43 @@ FIND_PACKAGE(AMILab QUIET NO_MODULE)
 
 MESSAGE("AMILab_FOUND=${AMILab_FOUND}")
 IF(AMILab_FOUND)
+  
   INCLUDE(${AMILab_DIR}/AMILabConfig.cmake)
 
-  MESSAGE("AMILAB_SOURCE_DIR = ${AMILAB_SOURCE_DIR}")
+  MESSAGE("AMILab_SOURCE_DIR = ${AMILab_SOURCE_DIR}")
 
   SET(AMILab_PATHS
-      ${AMILAB_SOURCE_DIR}/LanguageBase
-      ${AMILAB_SOURCE_DIR}/Language
-      ${AMILAB_SOURCE_DIR}/Common/include
-      ${AMILAB_SOURCE_DIR}/CommonBase
-      ${AMILAB_SOURCE_DIR}/Wrapping/include
-      ${AMILAB_SOURCE_DIR}
-      ${AMILAB_BINARY_DIR}
+      ${AMILab_SOURCE_DIR}/LanguageBase
+      ${AMILab_SOURCE_DIR}/Language
+      ${AMILab_SOURCE_DIR}/Common/include
+      ${AMILab_SOURCE_DIR}/CommonBase
+      ${AMILab_SOURCE_DIR}/Wrapping/include
+      ${AMILab_SOURCE_DIR}
+      ${AMILab_BINARY_DIR}
   )
 
 
   IF (${KIT}_NEED_VTK_WRAPPING)
     SET(AMILab_PATHS
-      ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
+      ${AMILab_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
       ${AMILab_PATHS}
       )
-    MESSAGE(" VTK wrapping path is ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated")
+    MESSAGE(" VTK wrapping path is ${AMILab_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated")
   ENDIF(${KIT}_NEED_VTK_WRAPPING)
 
   IF (${KIT}_NEED_WX_WRAPPING)
     SET(AMILab_PATHS
-      ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
+      ${AMILab_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
       ${AMILab_PATHS}
       )
-    MESSAGE(" WxWidgets wrapping path is ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_WXWIDGETS_VERSION}/Generated")
+    MESSAGE(" WxWidgets wrapping path is ${AMILab_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_WXWIDGETS_VERSION}/Generated")
   ENDIF(${KIT}_NEED_WX_WRAPPING)
 
   MESSAGE("AMILab_PATHS = ${AMILab_PATHS}")
 
   FIND_LIBRARY(CommonBase CommonBase
       DOC "AMILab CommonBase library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -62,7 +63,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(Common Common
       DOC "AMILab Common library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -71,7 +72,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(LanguageBase LanguageBase
       DOC "AMILab LanguageBase library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -79,7 +80,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(Language Language
       DOC "AMILab Language library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -87,7 +88,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(WrapCommon WrapCommon
       DOC "AMILab WrapCommon library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -97,7 +98,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(WrapLanguage WrapLanguage
       DOC "AMILab WrapLanguage library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -107,7 +108,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(Algorithms Algorithms
       DOC "AMILab Algorithms library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -117,7 +118,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(Graphic Graphic
       DOC "AMILab Graphic library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -127,7 +128,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(AMILab AMILab
       DOC "AMILab AMILab library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -137,7 +138,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(wxParams wxParams
       DOC "AMILab wxParams library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         binary_dir
         binary_dir/Debug
@@ -147,7 +148,7 @@ IF(AMILab_FOUND)
   IF (${KIT}_NEED_WX_WRAPPING)
     FIND_LIBRARY(WrapWxWidgets WrapWxWidgets
         DOC "AMILab WrapWxWidgets library"
-        PATHS ${AMILAB_BINARY_DIR}
+        PATHS ${AMILab_BINARY_DIR}
         PATH_SUFFIXES 
           Bin/Debug
           Bin/Release
@@ -159,7 +160,7 @@ IF(AMILab_FOUND)
   IF (${KIT}_NEED_VTK_WRAPPING)
     FIND_LIBRARY(WrapVTK WrapVTK
         DOC "AMILab WrapVTK library"
-        PATHS ${AMILAB_BINARY_DIR}
+        PATHS ${AMILab_BINARY_DIR}
         PATH_SUFFIXES 
           Bin/Debug
           Bin/Release
@@ -170,7 +171,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(WrapInterface WrapInterface
       DOC "AMILab WrapInterface library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -180,7 +181,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(WrapImports WrapImports
       DOC "AMILab WrapImports library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release
@@ -190,7 +191,7 @@ IF(AMILab_FOUND)
 
   FIND_LIBRARY(myVTK4 myVTK4
       DOC "AMILab myVTK4 library"
-      PATHS ${AMILAB_BINARY_DIR}
+      PATHS ${AMILab_BINARY_DIR}
       PATH_SUFFIXES 
         Bin/Debug
         Bin/Release

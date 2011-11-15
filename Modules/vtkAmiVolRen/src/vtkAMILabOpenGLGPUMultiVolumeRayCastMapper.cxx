@@ -2766,8 +2766,8 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::AllocateFrameBuffers(vtkRenderer
 
   const bool accumulativeBlendMode =
     (this->BlendMode==vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND ||
-     this->BlendMode==vtkGPUVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND ||
-     this->BlendMode==vtkGPUVolumeRayCastMapper::ADDITIVE_BLEND);
+     this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND ||
+     this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::ADDITIVE_BLEND);
 
   const bool needNewMaxValueBuffer =
     (this->MaxValueFrameBuffer == 0) && accumulativeBlendMode;
@@ -3074,7 +3074,7 @@ bool vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::TestLoadingScalar(
 //                           textureExtent[2]<=textureExtent[3] &&
 //                           textureExtent[4]<=textureExtent[5])))
 //-----------------------------------------------------------------------------
-int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::LoadScalarField(vtkImageData *input,
+/*int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::LoadScalarField(vtkImageData *input,
                                                         vtkImageData *maskInput,
                                                        int textureExtent[6],
                                                        vtkVolume *volume)
@@ -3161,6 +3161,138 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::LoadScalarField(vtkImageData *in
 
   return result;
 }
+*/
+
+/**
+ * New version load 2 textures as vtkImageData
+ */
+//carlos
+int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::LoadScalarField(vtkImageData *input,
+                                                       vtkImageData *input2,
+                                                       //vtkImageData *maskInput,
+                                                       int textureExtent[6],
+                                                       vtkVolume *volume)
+{
+
+  assert("pre: input_exists" && input!=0);
+  assert("pre: valid_point_extent" && (this->CellFlag ||
+                                       (textureExtent[0]<textureExtent[1] &&
+                                        textureExtent[2]<textureExtent[3] &&
+                                        textureExtent[4]<textureExtent[5])));
+  assert("pre: valid_cell_extent" && (!this->CellFlag ||
+                                      (textureExtent[0]<=textureExtent[1] &&
+                                       textureExtent[2]<=textureExtent[3] &&
+                                       textureExtent[4]<=textureExtent[5])));
+
+  
+  if (input2==0)
+  std::cout << "INPUT1 = NULL" << std::endl;
+  //std::cout << "INPUT2 NULL "<< input2==0 << std::endl;
+  
+  int result=1; // succeeded
+
+  // make sure we rebind our texture object to texture0 even if we don't have
+  // to load the data themselves because the binding might be changed by
+  // another mapper between two rendering calls.
+
+  vtkgl::ActiveTexture(vtkgl::TEXTURE0);
+
+  // Find the texture.
+  vtkstd::map<vtkImageData *,vtkKWScalarField *>::iterator it=
+    this->ScalarsTextures->Map.find(input);
+
+
+  vtkKWScalarField *texture;
+  if(it==this->ScalarsTextures->Map.end())
+    {
+    texture=new vtkKWScalarField;
+    this->ScalarsTextures->Map[input]=texture;
+    texture->SetSupports_GL_ARB_texture_float(this->Supports_GL_ARB_texture_float==1);
+    }
+  else
+    {
+    texture=(*it).second;
+    }
+
+  texture->Update(input,this->CellFlag,textureExtent,this->ScalarMode,
+                  this->ArrayAccessMode,
+                  this->ArrayId,
+                  this->ArrayName,
+                  volume->GetProperty()->GetInterpolationType()
+                  ==VTK_LINEAR_INTERPOLATION,
+                  this->TableRange,
+                  static_cast<int>(static_cast<float>(this->MaxMemoryInBytes)*this->MaxMemoryFraction));
+
+  result=texture->IsLoaded();
+  this->CurrentScalar=texture;
+
+
+  // Find the texture 2.
+  if (input2!=NULL){
+  vtkstd::map<vtkImageData *,vtkKWScalarField *>::iterator it2=
+    this->ScalarsTextures->Map.find(input2);
+
+
+  vtkKWScalarField *texture2;
+  if(it2==this->ScalarsTextures->Map.end())
+    {
+    texture2=new vtkKWScalarField;
+    this->ScalarsTextures->Map[input2]=texture2;
+    texture2->SetSupports_GL_ARB_texture_float(this->Supports_GL_ARB_texture_float==1);
+    }
+  else
+    {
+    texture2=(*it2).second;
+    }
+
+  texture2->Update(input2,this->CellFlag,textureExtent,this->ScalarMode,
+                  this->ArrayAccessMode,
+                  this->ArrayId,
+                  this->ArrayName,
+                  volume->GetProperty()->GetInterpolationType()
+                  ==VTK_LINEAR_INTERPOLATION,
+                  this->TableRange,
+                  static_cast<int>(static_cast<float>(this->MaxMemoryInBytes)*this->MaxMemoryFraction));
+
+  //result=texture2->IsLoaded();
+  this->CurrentScalar2=texture2;
+  }
+/*  
+  // Mask
+  if(maskInput!=0)
+    {
+    vtkgl::ActiveTexture(vtkgl::TEXTURE7);
+
+    // Find the texture.
+    vtkstd::map<vtkImageData *,vtkKWMask *>::iterator it2=
+      this->MaskTextures->Map.find(maskInput);
+
+
+    vtkKWMask *mask;
+    if(it2==this->MaskTextures->Map.end())
+      {
+      mask=new vtkKWMask;
+      this->MaskTextures->Map[maskInput]=mask;
+      }
+    else
+      {
+      mask=(*it2).second;
+      }
+
+    mask->Update(maskInput,this->CellFlag,textureExtent,this->ScalarMode,
+                 this->ArrayAccessMode,
+                 this->ArrayId,
+                 this->ArrayName,
+                 static_cast<int>(static_cast<float>(this->MaxMemoryInBytes)*this->MaxMemoryFraction));
+
+    result=result && mask->IsLoaded();
+    this->CurrentMask=mask;
+    vtkgl::ActiveTexture(vtkgl::TEXTURE0);
+    }
+*/
+  return result;
+}
+
 
 //-----------------------------------------------------------------------------
 // Allocate memory and load color table on the GPU or
@@ -3727,8 +3859,8 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::CopyFBOToTexture()
   glCopyTexSubImage2D(GL_TEXTURE_2D,0,0,0,0,0,this->ReducedSize[0],
                       this->ReducedSize[1]);
   if(this->BlendMode==vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND
-     || this->BlendMode==vtkGPUVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND
-     || this->BlendMode==vtkGPUVolumeRayCastMapper::ADDITIVE_BLEND)
+     || this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND
+     || this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::ADDITIVE_BLEND)
     {
     vtkgl::ActiveTexture(vtkgl::TEXTURE5);
     glBindTexture(GL_TEXTURE_2D,this->MaxValueFrameBuffer2);
@@ -4145,7 +4277,7 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PreRender(vtkRenderer *ren,
       // If we are using a mask to limit the volume rendering to or blend using a
       // label map mask..
       rayCastMethod = this->MaskInput ?
-         (this->MaskType == vtkGPUVolumeRayCastMapper::BinaryMaskType ?
+         (this->MaskType == vtkAMILabGPUMultiVolumeRayCastMapper::BinaryMaskType ?
               vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodCompositeBinaryMask :
               vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodCompositeMask) :
             vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodComposite;
@@ -4168,7 +4300,7 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PreRender(vtkRenderer *ren,
         {
         case 1:
           rayCastMethod= (this->MaskInput && this->MaskType ==
-            vtkGPUVolumeRayCastMapper::BinaryMaskType) ?
+            vtkAMILabGPUMultiVolumeRayCastMapper::BinaryMaskType) ?
               vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodMIPBinaryMask :
               vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodMIP;
           break;
@@ -4181,14 +4313,14 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PreRender(vtkRenderer *ren,
           break;
         }
       break;
-    case vtkGPUVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND:
+    case vtkAMILabGPUMultiVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND:
       shadeMethod=vtkAMILabOpenGLGPUMultiVolumeRayCastMapperShadeNotUsed;
       componentMethod=vtkAMILabOpenGLGPUMultiVolumeRayCastMapperComponentNotUsed;
       switch(numberOfScalarComponents)
         {
         case 1:
           rayCastMethod= (this->MaskInput && this->MaskType ==
-            vtkGPUVolumeRayCastMapper::BinaryMaskType) ?
+            vtkAMILabGPUMultiVolumeRayCastMapper::BinaryMaskType) ?
               vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodMinIPBinaryMask :
               vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodMinIP;
           break;
@@ -4201,7 +4333,7 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PreRender(vtkRenderer *ren,
           break;
         }
       break;
-    case vtkGPUVolumeRayCastMapper::ADDITIVE_BLEND:
+    case vtkAMILabGPUMultiVolumeRayCastMapper::ADDITIVE_BLEND:
       shadeMethod=vtkAMILabOpenGLGPUMultiVolumeRayCastMapperShadeNotUsed;
       componentMethod=vtkAMILabOpenGLGPUMultiVolumeRayCastMapperComponentNotUsed;
       switch(numberOfScalarComponents)
@@ -4264,7 +4396,7 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PreRender(vtkRenderer *ren,
     }
 
   if(numberOfScalarComponents==1 &&
-     this->BlendMode!=vtkGPUVolumeRayCastMapper::ADDITIVE_BLEND)
+     this->BlendMode!=vtkAMILabGPUMultiVolumeRayCastMapper::ADDITIVE_BLEND)
     {
     ivalue=1;
     v->SetUniformi("colorTexture",1,&ivalue);
@@ -4343,8 +4475,8 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PreRender(vtkRenderer *ren,
 
     // max scalar value framebuffer texture
     if(this->BlendMode==vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND
-       || this->BlendMode==vtkGPUVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND
-       || this->BlendMode==vtkGPUVolumeRayCastMapper::ADDITIVE_BLEND)
+       || this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND
+       || this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::ADDITIVE_BLEND)
       {
       vtkgl::ActiveTexture(vtkgl::TEXTURE5);
       glBindTexture(GL_TEXTURE_2D,static_cast<GLuint>(this->MaxValueFrameBuffer2));
@@ -4478,9 +4610,9 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PreRender(vtkRenderer *ren,
   this->CheckFrameBufferStatus();
 
   if(this->NumberOfCroppingRegions>1 &&
-     (this->BlendMode==vtkGPUVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND
-      || this->BlendMode==vtkGPUVolumeRayCastMapper::MAXIMUM_INTENSITY_BLEND
-      || this->BlendMode==vtkGPUVolumeRayCastMapper::ADDITIVE_BLEND))
+     (this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND
+      || this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::MAXIMUM_INTENSITY_BLEND
+      || this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::ADDITIVE_BLEND))
     {
 //    cout << "this->MaxValueFrameBuffer="<< this->MaxValueFrameBuffer <<endl;
 //    cout << "this->MaxValueFrameBuffer2="<< this->MaxValueFrameBuffer2 <<endl;
@@ -4499,7 +4631,7 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PreRender(vtkRenderer *ren,
     buffer[1] = vtkgl::COLOR_ATTACHMENT1_EXT;
     vtkgl::DrawBuffers(2,buffer);
 
-    if(this->BlendMode==vtkGPUVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND)
+    if(this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND)
       {
       glClearColor(1.0, 0.0, 0.0, 0.0);
       }
@@ -4527,8 +4659,8 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PreRender(vtkRenderer *ren,
     glBindTexture(GL_TEXTURE_2D,this->TextureObjects[vtkAMILabOpenGLGPUMultiVolumeRayCastMapperTextureObjectFrameBufferLeftFront+1]);
 
     if(this->BlendMode==vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND
-       || this->BlendMode==vtkGPUVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND
-       || this->BlendMode==vtkGPUVolumeRayCastMapper::ADDITIVE_BLEND )
+       || this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND
+       || this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::ADDITIVE_BLEND )
       {
       // max buffer target in the color attachment 1
       vtkgl::FramebufferTexture2DEXT(vtkgl::FRAMEBUFFER_EXT,
@@ -4855,8 +4987,8 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PostRender(
   if(this->NumberOfCroppingRegions>1)
     {
     if(this->BlendMode==vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND
-      || this->BlendMode==vtkGPUVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND
-      || this->BlendMode==vtkGPUVolumeRayCastMapper::ADDITIVE_BLEND)
+      || this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::MINIMUM_INTENSITY_BLEND
+      || this->BlendMode==vtkAMILabGPUMultiVolumeRayCastMapper::ADDITIVE_BLEND)
       {
       vtkgl::ActiveTexture( vtkgl::TEXTURE5 );
       glBindTexture(GL_TEXTURE_2D,0);

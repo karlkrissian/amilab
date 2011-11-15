@@ -20,6 +20,13 @@
 uniform sampler3D dataSetTexture;
 uniform sampler1D opacityTexture;
 
+uniform sampler3D dataSetTexture2;
+
+//carlos
+// uniform sampler3D maskTexture;
+// uniform sampler1D mask1ColorTexture;
+// uniform sampler1D mask2ColorTexture;
+
 uniform vec3 lowBounds;
 uniform vec3 highBounds;
 
@@ -62,12 +69,15 @@ void trace(void)
     {  
     while(inside)
       {
-      vec4 value=texture3D(dataSetTexture,pos);
+      //jugamos con la mask vec4 
+vec4 value=texture3D(dataSetTexture2,pos);
+//vec4 value=texture3D(maskTexture,pos);
+
       float scalar=scalarFromValue(value);
       // opacity is the sampled texture value in the 1D opacity texture at
       // scalarValue
       opacity=texture1D(opacityTexture,scalar);
-      
+      //opacity.a=1.0;
       if(opacity.a>0.0)
         {
         color=shade(value);
@@ -84,6 +94,4 @@ void trace(void)
     }
    gl_FragColor = destColor;
    gl_FragColor.a = 1.0-remainOpacity;
-  //gl_FragColor = 0;
-  //gl_FragColor.a = 0;
 }
