@@ -233,7 +233,7 @@ if (!exists(Subpixel2DClass)){
         xmax = image_draw.GetXmax()
         ymin = image_draw.GetYmin()
         ymax = image_draw.GetYmax()
-        #Create four new images for displacements inside pixel
+        #Create four new images for displacements inside the pixel
         dx1 = Image(DOUBLE,::res->xpos.tx,1,1)
         dy1 = Image(DOUBLE,::res->xpos.tx,1,1)
         dx2 = Image(DOUBLE,::res->xpos.tx,1,1)
@@ -251,9 +251,9 @@ if (!exists(Subpixel2DClass)){
         x2pos = ((DOUBLE)::res->xpos+dx2)*(::res->border==2)+((DOUBLE)::res->xpos+dy2)*(::res->border!=2)
         y2pos = ((DOUBLE)::res->ypos+dy2)*(::res->border==2)+((DOUBLE)::res->ypos+dx2)*(::res->border!=2)
         #inside delimits the draw area inside the region defined by xmin,xmax,ymin and ymax
-        inside = (::res->xpos>=xmin)*(::res->xpos<=xmax)*(::res->ypos>=ymin)*(::res->ypos<=ymax)
+        #inside = (::res->xpos>=xmin)*(::res->xpos<=xmax)*(::res->ypos>=ymin)*(::res->ypos<=ymax)
         
-        #Create the border points image
+        #Create the border points image (x1,y1,x2,y2)
         border_pts = Image(DOUBLE,x1pos.tx,1,1,4)
         border_pts.SetComponent(0,x1pos)
         border_pts.SetComponent(1,y1pos)
@@ -275,7 +275,7 @@ if (!exists(Subpixel2DClass)){
           normx = (px+nx)*(::res->border==2)+(px+ny)*(::res->border!=2)
           normy = (py+ny)*(::res->border==2)+(py+nx)*(::res->border!=2)
           
-          #Create the normal points image
+          #Create the normal points image (x1,y1,x2,y2)
           norm_pts = Image(DOUBLE,px.tx,1,1,4)
           norm_pts.SetComponent(0,px)
           norm_pts.SetComponent(1,py)
@@ -288,36 +288,29 @@ if (!exists(Subpixel2DClass)){
         std_thickness = INT(1)
         std_style = INT(0)
         
+        #There aren't changes on the edges' and normals' settings
         if (::change==0) {
+          image_draw.SetPenColor(std_color)
+          image_draw.SetLineParameters(std_thickness, std_style)
           image_draw.DrawLines(&border_pts,false)
           if(::normals) {
             image_draw.DrawLines(&norm_pts,true)
           }
-          //if(::normals==0) {
-          //  ::sp2D->drawBorder(&image_draw, inside, border_pts,\
-          //                     std_color, std_thickness, std_style,\
-          //                     ::normals)
-          //} else {
-          //  ::sp2D->drawBorder(&image_draw, inside, border_pts,\
-          //                     std_color, std_thickness, std_style,\
-          //                     ::normals, norm_pts, std_color, std_thickness,\
-          //                     std_style)
-          // }
         } else {
+          #Create two wxColour variables for edges and normals
           bcolor = &wx.wxColour(::Ered, ::Egreen, ::Eblue, ::Ealpha)
           ncolor = &wx.wxColour(::Nred, ::Ngreen, ::Nblue, ::Nalpha)
+          #Apply the settings in the viewer
+          image_draw.SetPenColor(bcolor)
+          image_draw.SetLineParameters(::Ethickness, ::Estyle)
           image_draw.DrawLines(&border_pts,false)
           if(::normals) {
+            image_draw.SetPenColor(ncolor)
+            image_draw.SetLineParameters(::Nthickness, ::Nstyle)
             image_draw.DrawLines(&norm_pts,true)
           }
-          //  ::sp2D->drawBorder(&image_draw, inside, border_pts,\
-          //                     bcolor, ::Ethickness, ::Estyle, ::normals)
-          //} else {
-          //  ::sp2D->drawBorder(&image_draw, inside, border_pts,\
-          //                     bcolor, ::Ethickness, ::Estyle, ::normals,\
-          //                     norm_pts, ncolor, ::Nthickness, ::Nstyle)
-          // }
         }
+        #Refresh the viewer
         image_draw.DrawingAreaDisplay()
       } else {
         InfoDialog "Before draw the border, you must apply the method."
@@ -333,9 +326,9 @@ if (!exists(Subpixel2DClass)){
       }
       ::thresholds_crossed = 0
       #Erase the draw objects
-     # if (exists(::input_draw))    { del ::input_draw; }
-     # if (exists(::averaged_draw)) { del ::averaged_draw; }
-     # if (exists(::restored_draw)) { del ::restored_draw; }
+      # if (exists(::input_draw))    { del ::input_draw; }
+      # if (exists(::averaged_draw)) { del ::averaged_draw; }
+      # if (exists(::restored_draw)) { del ::restored_draw; }
       #
       if (::input.vdim==1) {
         ::input <<= (DOUBLE) ::input
@@ -384,6 +377,7 @@ if (!exists(Subpixel2DClass)){
         }
         
         ::drawBorder()
+        ::DistanceTransform()
 
       }
      
@@ -511,6 +505,57 @@ if (!exists(Subpixel2DClass)){
         ::win.EnablePanel(::restoration_panel,1)
       }
       ::win.Update(-1)
+    }
+    
+    #-----------------------
+    
+    proc ::DistanceTransform() {
+      if (exists(::input) && exists(::res)) {
+        dx1 = 0
+        dy1 = ::res->acoef
+        dy1 = -dy1
+        #Create images for draw points (draw line from x1,y1 to x2,y2)
+        px = ((DOUBLE)::res->xpos+dx1)*(::res->border==2)+((DOUBLE)::res->xpos+dy1)*(::res->border!=2)
+        py = ((DOUBLE)::res->ypos+dy1)*(::res->border==2)+((DOUBLE)::res->ypos+dx1)*(::res->border!=2)
+
+        #Calculate normal point
+        div = (::res->aintensity - ::res->bintensity) / sqrt(1+::res->bcoef*::res->bcoef)
+        sign = (div>=0)*1 + (div<0)*-1
+        nx = ::res->bcoef * sign
+        ny = Image(DOUBLE,nx.tx,1,1)
+        ny = sign * 1
+        
+        normx = (px+nx)*(::res->border==2)+(px+ny)*(::res->border!=2)
+        normy = (py+ny)*(::res->border==2)+(py+nx)*(::res->border!=2)
+        
+        #Create the normal points image (x1,y1,x2,y2)
+        norm_pts = Image(DOUBLE,px.tx,1,1,4)
+        norm_pts.SetComponent(0,px)
+        norm_pts.SetComponent(1,py)
+        norm_pts.SetComponent(2,normx)
+        norm_pts.SetComponent(3,normy)
+      
+      
+        #Obtain the spacepos of the input image
+        p = SpacePos(::input)
+      
+        #Create the image for the distances
+        ::distance = Image(FLOAT,::input.tx, ::input.ty, ::input.tz)
+        ::distance = 1000000
+        
+        #Normal vector
+        nx = norm_pts[2] - norm_pts[0]
+        ny = norm_pts[3] - norm_pts[1]
+        
+        for i=0 to 10 {
+          #dk
+          prod = (p[0]-norm_pts(i,0,0,0))*nx(i) + (p[1]-norm_pts(i,0,0,1))*ny(i)
+          #d = dk if abs(dk)<abs(d) or d if abs(dk)>=abs(d)
+          ::distance = (prod * (abs(prod)<abs(::distance))) + \
+                       (::distance * (abs(prod)>=abs(::distance)))
+        } 
+        
+      }
     }
     
     #-----------------------
