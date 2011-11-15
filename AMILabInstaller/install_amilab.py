@@ -1,3 +1,4 @@
+#!/usr/bin/python2.7
 
 # first, try to know the system: Linux, MacOS, Windows ...
 # get some options about the branch to download etc ...
@@ -264,9 +265,9 @@ if __name__ == '__main__':
   # fix FindBISON pb in spanish
   if os.access('/usr/share/cmake/Modules',os.R_OK):
     cmake_module_path='/usr/share/cmake/Modules'
-    else:
-      if os.access('/usr/share/cmake-2.8/Modules',os.R_OK):
-        cmake_module_path='/usr/share/cmake-2.8/Modules'
+  else:
+    if os.access('/usr/share/cmake-2.8/Modules',os.R_OK):
+      cmake_module_path='/usr/share/cmake-2.8/Modules'
 
   if cmake_module_path!='':
     print "***************"
