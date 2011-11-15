@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Developer help</TITLE>
+<META NAME="description" CONTENT="Developer help">
+<META NAME="keywords" CONTENT="MultiLines">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="MultiLines.css">
+
+<LINK REL="next" HREF="node3.html">
+<LINK REL="previous" HREF="node1.html">
+<LINK REL="up" HREF="MultiLines.html">
+<LINK REL="next" HREF="node3.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html40"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="../../../../Latex2HtmlIcons/next.png"></A> 
+<A NAME="tex2html38"
+  HREF="MultiLines.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="../../../../Latex2HtmlIcons/up.png"></A> 
+<A NAME="tex2html32"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="../../../../Latex2HtmlIcons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html41"
+  HREF="node3.html">Tips,</A>
+<B> Up:</B> <A NAME="tex2html39"
+  HREF="MultiLines.html">AMILab</A>
+<B> Previous:</B> <A NAME="tex2html33"
+  HREF="node1.html">User</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL>
+<LI><A NAME="tex2html42"
+  HREF="node2.html#SECTION00021000000000000000">Script</A>
+<UL>
+<LI><A NAME="tex2html43"
+  HREF="node2.html#SECTION00021100000000000000">List of parameters</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html44"
+  HREF="node2.html#SECTION00022000000000000000">C++</A>
+</UL>
+<!--End of Table of Child-Links-->
+<HR>
+
+<H1><A NAME="SECTION00020000000000000000">
+Developer help</A>
+</H1>
+
+<P>
+
+<H2><A NAME="SECTION00021000000000000000">
+Script</A>
+</H2>
+
+<P>
+
+<H3><A NAME="SECTION00021100000000000000">
+List of parameters</A>
+</H3>
+The script has the following list of parameters:
+<TABLE CELLPADDING=3 BORDER="1">
+<TR><TD ALIGN="LEFT">input_name</TD>
+<TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="LEFT">Input image name</TD>
+</TR>
+<TR><TD ALIGN="LEFT">mask_mode</TD>
+<TD ALIGN="LEFT">INT(0)</TD>
+<TD ALIGN="LEFT">Mask mode 0: threshold from input image, 1: mask image</TD>
+</TR>
+<TR><TD ALIGN="LEFT">mask_threshold</TD>
+<TD ALIGN="LEFT">0</TD>
+<TD ALIGN="LEFT">Low threshold for the mask</TD>
+</TR>
+<TR><TD ALIGN="LEFT">mask_name</TD>
+<TD ALIGN="LEFT">""</TD>
+<TD ALIGN="LEFT">Mask of the pixels to process, this image must be of type UCHAR and the values &gt; 127 are considered part of the mask</TD>
+</TR>
+<TR><TD ALIGN="LEFT">use_SD</TD>
+<TD ALIGN="LEFT">UCHAR(0)</TD>
+<TD ALIGN="LEFT">Take into account standard deviation of boundary information along the integration circle</TD>
+</TR>
+<TR><TD ALIGN="LEFT">SD_th</TD>
+<TD ALIGN="LEFT">2</TD>
+<TD ALIGN="LEFT">Standard Deviation Coefficient to weight the response function</TD>
+</TR>
+<TR><TD ALIGN="LEFT">use_EXC</TD>
+<TD ALIGN="LEFT">UCHAR(0)</TD>
+<TD ALIGN="LEFT">Take into account the excentricity of the boundary vectors along the integration circle</TD>
+</TR>
+<TR><TD ALIGN="LEFT">EXC_th</TD>
+<TD ALIGN="LEFT">5</TD>
+<TD ALIGN="LEFT">Excentricity coefficient to weight the response function</TD>
+</TR>
+<TR><TD ALIGN="LEFT">pairs_mode</TD>
+<TD ALIGN="LEFT">INT(0)</TD>
+<TD ALIGN="LEFT">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">keephighest</TD>
+<TD ALIGN="LEFT">100</TD>
+<TD ALIGN="LEFT">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">radmin</TD>
+<TD ALIGN="LEFT">0.5</TD>
+<TD ALIGN="LEFT">minimal radius.</TD>
+</TR>
+<TR><TD ALIGN="LEFT">radmax</TD>
+<TD ALIGN="LEFT">5</TD>
+<TD ALIGN="LEFT">maximal radius</TD>
+</TR>
+<TR><TD ALIGN="LEFT">numrad</TD>
+<TD ALIGN="LEFT">INT(5)</TD>
+<TD ALIGN="LEFT">number of radii</TD>
+</TR>
+<TR><TD ALIGN="LEFT">local_maxima</TD>
+<TD ALIGN="LEFT">UCHAR(0)</TD>
+<TD ALIGN="LEFT">Compute local maxima</TD>
+</TR>
+<TR><TD ALIGN="LEFT">keep_orientations</TD>
+<TD ALIGN="LEFT">UCHAR(0)</TD>
+<TD ALIGN="LEFT">Keep orientations image</TD>
+</TR>
+<TR><TD ALIGN="LEFT">keep_radii</TD>
+<TD ALIGN="LEFT">UCHAR(0)</TD>
+<TD ALIGN="LEFT">Keep radii image</TD>
+</TR>
+<TR><TD ALIGN="LEFT">use_linearinterp</TD>
+<TD ALIGN="LEFT">UCHAR(1)</TD>
+<TD ALIGN="LEFT">Use linear interpolation</TD>
+</TR>
+<TR><TD ALIGN="LEFT">mode</TD>
+<TD ALIGN="LEFT">INT(0)</TD>
+<TD ALIGN="LEFT">0: Hessian Matrix 1: Structure Tensor</TD>
+</TR>
+<TR><TD ALIGN="LEFT">gamma</TD>
+<TD ALIGN="LEFT">1</TD>
+<TD ALIGN="LEFT">normalization</TD>
+</TR>
+<TR><TD ALIGN="LEFT">theta</TD>
+<TD ALIGN="LEFT">sqrt(3)</TD>
+<TD ALIGN="LEFT">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">rad2sigma_coeff</TD>
+<TD ALIGN="LEFT">1</TD>
+<TD ALIGN="LEFT">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">keep_all_scales</TD>
+<TD ALIGN="LEFT">UCHAR(0)</TD>
+<TD ALIGN="LEFT">Keep responses at all scales in memory</TD>
+</TR>
+<TR><TD ALIGN="LEFT">current_progress</TD>
+<TD ALIGN="LEFT">0</TD>
+<TD ALIGN="LEFT">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">current_step</TD>
+<TD ALIGN="LEFT">0</TD>
+<TD ALIGN="LEFT">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">output_name</TD>
+<TD ALIGN="LEFT">"Multilines-maxresponse.ami.gz"</TD>
+<TD ALIGN="LEFT">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">normalize_gradient</TD>
+<TD ALIGN="LEFT">UCHAR(1)</TD>
+<TD ALIGN="LEFT">normalize gradient</TD>
+</TR>
+<TR><TD ALIGN="LEFT">PSF_stddev</TD>
+<TD ALIGN="LEFT">0</TD>
+<TD ALIGN="LEFT">Standard deviation (in voxels) of the point spread function</TD>
+</TR>
+<TR><TD ALIGN="LEFT">upsample_recons</TD>
+<TD ALIGN="LEFT">UCHAR(0)</TD>
+<TD ALIGN="LEFT">Reconstruct the vessel in an image with double resolution compared to the input image</TD>
+</TR>
+<TR><TD ALIGN="LEFT">smoothradii_std</TD>
+<TD ALIGN="LEFT">1</TD>
+<TD ALIGN="LEFT">Gaussian standard deviation for smoothing the lines radii</TD>
+</TR>
+</TABLE>
+
+<P>
+
+<H2><A NAME="SECTION00022000000000000000">
+C++</A>
+</H2>
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html40"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="../../../../Latex2HtmlIcons/next.png"></A> 
+<A NAME="tex2html38"
+  HREF="MultiLines.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="../../../../Latex2HtmlIcons/up.png"></A> 
+<A NAME="tex2html32"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="../../../../Latex2HtmlIcons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html41"
+  HREF="node3.html">Tips,</A>
+<B> Up:</B> <A NAME="tex2html39"
+  HREF="MultiLines.html">AMILab</A>
+<B> Previous:</B> <A NAME="tex2html33"
+  HREF="node1.html">User</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+...
+</ADDRESS>
+</BODY>
+</HTML>

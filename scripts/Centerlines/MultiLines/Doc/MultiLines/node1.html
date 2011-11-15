@@ -1,0 +1,282 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>User help</TITLE>
+<META NAME="description" CONTENT="User help">
+<META NAME="keywords" CONTENT="MultiLines">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="MultiLines.css">
+
+<LINK REL="next" HREF="node2.html">
+<LINK REL="previous" HREF="MultiLines.html">
+<LINK REL="up" HREF="MultiLines.html">
+<LINK REL="next" HREF="node2.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html24"
+  HREF="node2.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="../../../../Latex2HtmlIcons/next.png"></A> 
+<A NAME="tex2html22"
+  HREF="MultiLines.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="../../../../Latex2HtmlIcons/up.png"></A> 
+<A NAME="tex2html16"
+  HREF="MultiLines.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="../../../../Latex2HtmlIcons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html25"
+  HREF="node2.html">Developer</A>
+<B> Up:</B> <A NAME="tex2html23"
+  HREF="MultiLines.html">AMILab</A>
+<B> Previous:</B> <A NAME="tex2html17"
+  HREF="MultiLines.html">AMILab</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL>
+<LI><A NAME="tex2html26"
+  HREF="node1.html#SECTION00011000000000000000">Interface</A>
+<UL>
+<LI><A NAME="tex2html27"
+  HREF="node1.html#SECTION00011100000000000000">IO tab</A>
+<LI><A NAME="tex2html28"
+  HREF="node1.html#SECTION00011200000000000000">Circle tab</A>
+<LI><A NAME="tex2html29"
+  HREF="node1.html#SECTION00011300000000000000">Scales tab</A>
+<LI><A NAME="tex2html30"
+  HREF="node1.html#SECTION00011400000000000000">Run tab</A>
+<LI><A NAME="tex2html31"
+  HREF="node1.html#SECTION00011500000000000000">Recons tab</A>
+</UL></UL>
+<!--End of Table of Child-Links-->
+<HR>
+
+<H1><A NAME="SECTION00010000000000000000">
+User help</A>
+</H1>
+
+<P>
+
+<H2><A NAME="SECTION00011000000000000000">
+Interface</A>
+</H2>
+The interface is composed of the following tabs (or pages):
+
+<UL>
+<LI>the <EM>IO</EM> tab, to select the input volume and select or create the mask image.
+</LI>
+<LI>the <EM>Circle</EM> tab, to select parameter of the 3D boundary integration along a circle.
+</LI>
+<LI>the <EM>Scales</EM> tab, to select the multiscale analysis parameters.
+</LI>
+<LI>the <EM>Run</EM> tab, to run the algorithm and display the results.
+</LI>
+<LI>the <EM>Recons</EM> tab, to create associated skeleton and reconstruction based on the multiscale result.
+</LI>
+</UL>
+
+<P>
+
+<H3><A NAME="SECTION00011100000000000000">
+IO tab</A>
+</H3>
+This page allows:
+
+<UL>
+<LI>Selecting the input image and loading it
+</LI>
+<LI>Selecting the mask image or generating it from the input, the mask image allows to reduce the overall computation time and is currently required. This image must be of type UCHAR and the values &gt; 127 are considered part of the mask.
+</LI>
+</UL>
+
+<P>
+
+<H3><A NAME="SECTION00011200000000000000">
+Circle tab</A>
+</H3>
+The algorithm integrates the boundary information along a circle for each central point candidate. This integration can be a simple averaging of all the boundary values found along the circle or a more complex function.
+
+<P>
+The C++ class that compute the boundary information along a circle is
+<A NAME="tex2html4"
+  HREF="http://www.ctm.ulpgc.es/amilab_doxygen/3.1.1/html/classCalculRepCercle.html">CalculRepCercle</A>.
+
+<P>
+As described in [<A
+ HREF="node4.html#Krissian2000b">3</A>,<A
+ HREF="node4.html#Krissian_al_2003">2</A>,<A
+ HREF="node4.html#KA09">1</A>]
+For each scale <IMG
+ WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img1.png"
+ ALT="$\sigma$">, a response is computed as a combination of the boundary information
+along a circle in the estimated cross-section plane of the vessel.
+The <EM>circle</EM> <!-- MATH
+ $C_{{\bf x},  \vec{ \bf v}_{1} ,  \vec{ \bf v}_{2} ,\tau \sigma}$
+ -->
+<IMG
+ WIDTH="75" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$C_{{\bf x}, \vec{ \bf v}_{1} , \vec{ \bf v}_{2} ,\tau \sigma}$"> is defined by its center <IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.png"
+ ALT="${\bf x}$">,
+an estimate of the cross-section orientation given
+by the eigenvectors <!-- MATH
+ $\vec{ \bf v}_{1}$
+ -->
+<IMG
+ WIDTH="19" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img4.png"
+ ALT="$ \vec{ \bf v}_{1} $"> and <!-- MATH
+ $\vec{ \bf v}_{2}$
+ -->
+<IMG
+ WIDTH="19" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img5.png"
+ ALT="$ \vec{ \bf v}_{2} $">,
+and a radius proportional of the current scale <IMG
+ WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img6.png"
+ ALT="$\tau \sigma$">.
+
+<P>
+The <EM>boundary information</EM>, denoted <IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img7.png"
+ ALT="$B$">, is obtained with the scalar product of the gradient and the radial direction.
+An initial version of this filter consisted in averaging the boundary values around the computed circle:
+<BR>
+<DIV ALIGN="RIGHT">
+
+<!-- MATH
+ \begin{equation}
+M_\sigma({\bf x}) = mean_{{\bf y} \in C}  B({\bf y})
+    = \frac{1}{N}
+    \sum_{i=0}^{N-1} - \sigma \nabla_{\sigma} I \left( {\bf x}+ \tau \sigma\:
+      \vec{\bf v } _\alpha \right) .   \vec{\bf v } _\alpha,
+\end{equation}
+ -->
+<TABLE WIDTH="100%" ALIGN="CENTER">
+<TR VALIGN="MIDDLE"><TD ALIGN="CENTER" NOWRAP><A NAME="eq:RepInt2"></A><IMG
+ WIDTH="407" HEIGHT="56" BORDER="0"
+ SRC="img8.png"
+ ALT="\begin{displaymath}
+M_\sigma({\bf x}) = mean_{{\bf y} \in C} B({\bf y})
+= \fra...
+...\sigma\:
+\vec{\bf v } _\alpha \right) . \vec{\bf v } _\alpha,
+\end{displaymath}"></TD>
+<TD WIDTH=10 ALIGN="RIGHT">
+(1)</TD></TR>
+</TABLE>
+<BR CLEAR="ALL"></DIV><P></P>
+with <!-- MATH
+ $\alpha = 2\pi i/N$
+ -->
+<IMG
+ WIDTH="78" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img9.png"
+ ALT="$\alpha = 2\pi i/N$">,
+and <!-- MATH
+ $\vec{\bf v } _\alpha = cos(\alpha)   \vec{ \bf v}_{1}  + sin(\alpha)   \vec{ \bf v}_{2}$
+ -->
+<IMG
+ WIDTH="185" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img10.png"
+ ALT="$ \vec{\bf v } _\alpha = cos(\alpha) \vec{ \bf v}_{1} + sin(\alpha) \vec{ \bf v}_{2} $">, where <IMG
+ WIDTH="17" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img11.png"
+ ALT="$N$"> is the number
+of points along the circle.
+In all the experiments, the value  <IMG
+ WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$\tau$"> is set to <IMG
+ WIDTH="22" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$\sqrt{3}$">, to maximize the selected response at the center in the case of a cylindrical circular vessel with Gaussian cross-section [<A
+ HREF="node4.html#Krissian2000b">3</A>],
+and the number of points <IMG
+ WIDTH="17" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img11.png"
+ ALT="$N$"> around the integrating circle is set to <IMG
+ WIDTH="17" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img14.png"
+ ALT="$20$">.
+
+<P>
+In order to improve both the selectivity of the filter and its robustness to outliers, we introduce the modifications:
+
+<OL>
+<LI>we only keep the minimum of the boundary information in opposite directions,
+</LI>
+<LI>we select the average over <IMG
+ WIDTH="30" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img15.png"
+ ALT="$80\%$"> of the highest obtained values.
+</LI>
+</OL>
+The first modification allows reducing the response obtained at standard edges, where high gradients are present in only one side of the circle. The second modification prevents strong reduction of the vesselness response in the presence of junctions or similar intensity nearby structures.
+
+<P>
+
+<H3><A NAME="SECTION00011300000000000000">
+Scales tab</A>
+</H3>
+
+<H3><A NAME="SECTION00011400000000000000">
+Run tab</A>
+</H3>
+
+<H3><A NAME="SECTION00011500000000000000">
+Recons tab</A>
+</H3>
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html24"
+  HREF="node2.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="../../../../Latex2HtmlIcons/next.png"></A> 
+<A NAME="tex2html22"
+  HREF="MultiLines.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="../../../../Latex2HtmlIcons/up.png"></A> 
+<A NAME="tex2html16"
+  HREF="MultiLines.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="../../../../Latex2HtmlIcons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html25"
+  HREF="node2.html">Developer</A>
+<B> Up:</B> <A NAME="tex2html23"
+  HREF="MultiLines.html">AMILab</A>
+<B> Previous:</B> <A NAME="tex2html17"
+  HREF="MultiLines.html">AMILab</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+...
+</ADDRESS>
+</BODY>
+</HTML>

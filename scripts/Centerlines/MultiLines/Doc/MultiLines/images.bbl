@@ -1,0 +1,22 @@
+\begin{thebibliography}{1}
+
+\bibitem{KA09}
+K.~Krissian and S.~Arencibia.
+\newblock A minimal cost path and level set evolution approach for carotid
+  bifurcation segmentation.
+\newblock In {\em Proc. of MICCAI´09 Workshop: Carotid Lumen Segmentation and
+  Stenosis Grading Challenge}, London, Sep 2009.
+
+\bibitem{Krissian_al_2003}
+K.~Krissian, J.~Ellsmere, K.~Vosburgh, R.~Kikinis, and C.-F. Westin.
+\newblock Multiscale segmentation of the aorta in 3d ultrasound images.
+\newblock In {\em 25th Annual Int. Conf. of the IEEE Engineering in Medicine
+  and Biology Society (EMBS)}, pages 638--641, Cancun Mexico, September 2003.
+
+\bibitem{Krissian2000b}
+K.~Krissian, G.~Malandain, N.~Ayache, R.~Vaillant, and Y.~Trousset.
+\newblock Model based detection of tubular structures in 3d images.
+\newblock {\em Computer Vision and Image Understanding}, 80(2):130--171, nov
+  2000.
+
+\end{thebibliography}
