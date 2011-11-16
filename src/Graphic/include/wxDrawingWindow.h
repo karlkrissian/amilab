@@ -51,6 +51,11 @@ class wxDrawingWindow : public wxScrolledWindow
   //! axis limits in Y
   double _ymin, _ymax;
   
+  //! minimal allowed range in X coordinates
+  double _min_xrange;
+  //! maximal allowed range in X coordinates
+  double _max_xrange;
+  
   //! infinite displacement in Y (range/10000)
   double _y_epsilon;
 
@@ -172,6 +177,12 @@ public:
     this->_ctrlpt_callback = callback;
   }
 */
+
+  double GetMinXRange() {  return _min_xrange; }
+  double GetMaxXRange() {  return _max_xrange; }
+
+  void SetMinXRange(const double& v) {  _min_xrange=v; }
+  void SetMaxXRange(const double& v) {  _max_xrange=v; }
 
   void DrawingAreaDisplay( bool in_paint=false);
 

@@ -25,7 +25,8 @@ for dir in  "BasicFilters","Filtering","Denoising",\
   del local_f
 }
 
-func "../Modules/Add2Menu"
+file=op_system.GetCurrentScriptDir()+"/../Modules/Add2Menu.amil"
+func file
 
 #quit
 

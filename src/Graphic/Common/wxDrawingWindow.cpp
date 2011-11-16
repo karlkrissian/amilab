@@ -111,6 +111,11 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
   _xaxis = _yaxis = 0;
   _xmin = _ymin = -10;
   _xmax = _ymax = 10;
+  
+  // set minimal range to 0.001
+  _min_xrange = 1E-3;
+  // set maximal range to 100 000
+  _max_xrange = 1E5;
 
   _draw_grid = true;
   _draw_linearCM=true;
@@ -1321,8 +1326,13 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
 
     double zoom_factor  = exp( step*log2f(2));
   
-    _xmin = x - (x-_xmin)/zoom_factor;
-    _xmax = x + (_xmax - x)/zoom_factor;
+    double newxmin = x - (x-_xmin)/zoom_factor;
+    double newxmax = x + (_xmax - x)/zoom_factor;
+    double range=newxmax-newxmin;
+    if ((range>_min_xrange)&&(range<_max_xrange)) {
+      _xmin = newxmin;
+      _xmax = newxmax;
+    }
   }
 
 
