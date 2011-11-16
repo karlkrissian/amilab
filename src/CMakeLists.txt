@@ -89,7 +89,7 @@ SET(CPACK_RPM_PACKAGE_RELEASE "1")
 SET(CPACK_RPM_PACKAGE_LICENSE "LGPL")
 SET(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
 SET(CPACK_RPM_PACKAGE_VENDOR "Karl Krissian, ULPGC")
-SET(CPACK_RPM_PACKAGE_DESCRIPTION "Amilab is designed as a tool for research and prototyping, with its own scripting language.")
+SET(CPACK_RPM_PACKAGE_DESCRIPTION "AMILab is a software for 2D/3D image processing, including its own scripting language with wrapping possibilities.")
 SET(CPACK_RPM_PACKAGE_REQUIRES "glibc wxGTK wxGTK-gl")
 SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
@@ -955,12 +955,14 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
           PATTERN "*.in"  EXCLUDE
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                     GROUP_EXECUTE GROUP_READ
+                    WORLD_READ
         )
 
 install(FILES ${AMILAB_SOURCE_DIR}/../Modules/Add2Menu.amil
         DESTINATION share/amilab-${AMILAB_VERSION}/Modules/
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                     GROUP_EXECUTE GROUP_READ
+                    WORLD_READ
         )
 
 # Install the Matlab utilities
@@ -978,6 +980,7 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../MatlabUtils
           PATTERN "*.in"  EXCLUDE
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                     GROUP_EXECUTE GROUP_READ
+                    WORLD_READ
         )
 
 
@@ -998,6 +1001,7 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../doc
           OWNER_WRITE 
           OWNER_READ
           GROUP_READ
+          WORLD_READ
         )
 
 if (UNIX)
@@ -1010,7 +1014,7 @@ if (UNIX)
             PATTERN "*.in"  EXCLUDE
             PATTERN ".svn" EXCLUDE
             PATTERN "*~"   EXCLUDE
-          PERMISSIONS OWNER_READ GROUP_READ
+          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
           )
 endif(UNIX)
 

@@ -2,5 +2,5 @@
 	needs="X11"\
 	section="Applications/Science" \
 	title="AMILab @AMILAB_VERSION@" \
-	command="/usr/bin/@AMILAB_BIN@" \
+	command="/usr/bin/@AMILAB_BIN@_release" \
 	icon="/usr/share/icons/hicolor/48x48/apps/amilab.png"
