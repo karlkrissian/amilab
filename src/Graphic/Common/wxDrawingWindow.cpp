@@ -1264,7 +1264,7 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
     // rescale the curve
     // find min/max of curve
     shared_ptr<std::vector<dwControlPoint> > points = 
-    _focus_controlledcurve->GetControlPoints();
+      _focus_controlledcurve->GetControlPoints();
     if (points->size()==0) return;
 /*
     double xmin = (*points)[0].GetX();
@@ -1298,6 +1298,7 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
                            xref+(x-xref)*zoom_factor,
                            yref+(y-yref)*zoom_factor);
     }
+    _linearCM_uptodate = false;
   } else {
     wxClientDC dc(this);
   
@@ -1324,7 +1325,7 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
     _xmax = x + (_xmax - x)/zoom_factor;
   }
 
-  _linearCM_uptodate = false;
+
   Paint(false);
   //Refresh(false);
   // capture event ...
