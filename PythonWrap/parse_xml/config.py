@@ -66,6 +66,7 @@ members_blacklist=[
   'wxGenericListCtrl::Update(long)', # linking problem, don't know why ...
   'wxBitmap::GetSelectedInto', # not included in windows in release mode
   'wxBitmap::SetSelectedInto', # not included in windows in release mode
+  'wxWindow::HandleQueryDragIcon',  # not include in windows link error
   'wxWindowList::front', # returning reference to pointer
   'wxListCtrl::ConvertToMSWStyle', # linking problem MacOS
   'wxListCtrl::ChangeCurrent',     # idem
@@ -77,8 +78,8 @@ members_blacklist=[
   'wxApp::InitRichEdit',             # not implemented, static function
   'wxAppBase::Initialize',           # double pointer pb
   'wxAppConsole::Initialize',        # double pointer pb
-  'wxAppConsole::OnAssertFailure',   # Debug only
-  'wxAppConsole::OnAssert',          # Debug Only
+  'wxAppConsole::OnAssertFailure',   # error in windows, not a member
+  'wxAppConsole::OnAssert',          # error in windows, not a member
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints',  # idem

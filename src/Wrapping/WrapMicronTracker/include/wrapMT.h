@@ -26,6 +26,8 @@ void AddWrapMT();
 BasicVariable::ptr GetImageMT(ParamList* p);
 BasicVariable::ptr GetStoreXpointMT(ParamList* p);
 BasicVariable::ptr Get2DXpointMT(ParamList* p);
+BasicVariable::ptr FillGrid(ParamList* p);
+
 
 
 #endif // _MTWRAP_H

@@ -30,6 +30,7 @@ vtkCommand
 vtkContextScene
 vtkContextView
 vtkCoordinate
+vtkCornerAnnotation
 vtkDataArray
 vtkDataObject
 vtkDataSet
@@ -91,13 +92,18 @@ vtkProp3D
 vtkPropCollection
 vtkProperty
 vtkRenderer
+vtkProperty2D
 vtkRendererCollection
 vtkRenderWindow
 vtkRenderWindowInteractor
 vtkScalarsToColors
+vtkSliderWidget
+vtkSliderRepresentation2D
+vtkSliderRepresentation3D
 vtkSphereSource
 vtkStdString
 vtkTable
+vtkTextActor
 vtkTextMapper
 vtkTextProperty
 vtkTexture

@@ -31,6 +31,7 @@
 #include <wx/stc/stc.h>
 #include <wx/stdpaths.h>
 #include <wx/statline.h>
+#include <wx/dcclient.h>
 #include <wx/stattext.h>
 #include <wx/tipdlg.h>
 #include <wx/platinfo.h>

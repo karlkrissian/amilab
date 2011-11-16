@@ -3,11 +3,18 @@
 
 FIND_PATH( MT_DIR MTC.h PATHS "$ENV{ProgramFiles}/Claron Technology/MicronTracker/Dist")
 
+INCLUDE( ${VTK_USE_FILE} )
+INCLUDE( ${wxWidgets_USE_FILE})
+
 include_directories (
   ${AMILAB_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/Generated
   ${MT_DIR}
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
 )
 
 # if automatic wrapping, generate source files
@@ -25,6 +32,43 @@ IF(AMI_ENABLE_WRAPPING)
   
   SET(WRAPMT_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/Generated)
   CreateDirectory( ${WRAPMT_OUTDIR})
+  
+  # found wxWidgets
+  IF   (wxWidgets_FOUND)
+    IF   (wxWidgets_INCLUDE_DIRS)
+      FOREACH( inc ${wxWidgets_INCLUDE_DIRS})
+        SET( WX_INCLUDES  -I${inc}  ${WX_INCLUDES} )
+      ENDFOREACH(inc ${wxWidgets_INCLUDE_DIRS})
+    ENDIF(wxWidgets_INCLUDE_DIRS)
+    MESSAGE("WX_INCLUDES=${WX_INCLUDES}")
+
+    IF   (wxWidgets_DEFINITIONS)
+      FOREACH( def ${wxWidgets_DEFINITIONS})
+        SET( WX_DEFS  -D${def}  ${WX_DEFS} )
+      ENDFOREACH(def ${wxWidgets_DEFINITIONS})
+      MESSAGE("wxWidgets_DEFINITIONS=${wxWidgets_DEFINITIONS}")
+    ENDIF(wxWidgets_DEFINITIONS)
+
+    IF   (wxWidgets_DEFINITIONS_DEBUG)
+      FOREACH( def ${wxWidgets_DEFINITIONS_DEBUG})
+        SET( WX_DEFS  -D${def} ${WX_DEFS} )
+      ENDFOREACH(def ${wxWidgets_DEFINITIONS_DEBUG})
+      MESSAGE("wxWidgets_DEFINITIONS_DEBUG=${wxWidgets_DEFINITIONS_DEBUG}")
+    ENDIF(wxWidgets_DEFINITIONS_DEBUG)
+
+    IF   (wxWidgets_CXX_FLAGS)
+      SET(WX_FLAGS "${CMAKE_CXX_FLAGS} ${wxWidgets_CXX_FLAGS}")
+      MESSAGE("WX_FLAGS=${WX_FLAGS}")
+    ENDIF(wxWidgets_CXX_FLAGS)
+  ENDIF (wxWidgets_FOUND)
+  
+  # Read wxWidgets ancestors list
+  SET( WX_OUTDIR ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated)
+
+  FILE(READ "${WX_OUTDIR}/ancestors.txt" wx_ancestors_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" wx_ancestors_list ${wx_ancestors_txt} )
+
+  # end found wxWidgets
 
   SET(XML_OUTPUT "${WRAPMT_OUTDIR}/mt_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/mt_includes.h")
@@ -33,9 +77,9 @@ IF(AMI_ENABLE_WRAPPING)
 #     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${mt_INCLUDES}  ${WX_DEFS}  ${XML_INPUT}
 #     DEPENDS ${XML_INPUT}
 #   )
-  MESSAGE("\nOBTENER XML ORDEN: ${GCCXML} -fxml=${XML_OUTPUT}  -I${MT_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/mt_includes.h \n")
+  MESSAGE("\nOBTENER XML ORDEN: ${GCCXML} -fxml=${XML_OUTPUT}  ${WX_INCLUDES}  ${WX_DEFS}  -I${MT_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/mt_includes.h \n")
   execute_process(
-    COMMAND ${GCCXML} 
+    COMMAND ${GCCXML}  ${WX_INCLUDES}  ${WX_DEFS} 
               -fxml=${XML_OUTPUT} 
               -I${MT_DIR} -I${CMAKE_CURRENT_SOURCE_DIR}/include
               ${CMAKE_CURRENT_SOURCE_DIR}/include/mt_includes.h
@@ -66,6 +110,7 @@ IF(AMI_ENABLE_WRAPPING)
       --libname mt
       --classes ${ancestors_list}
       --available_classes ${ancestors_list} 
+      --available_external_classes ${wx_ancestors_list}
       --outputdir "${WRAPMT_OUTDIR}"
       --addwrap
       --profile
@@ -161,3 +206,5 @@ ENDIF(AMI_USE_PRECOMP_HEADERS)
 
 
 my_add_library ( WrapMicronTracker)
+
+add_dependencies ( WrapMicronTracker WrapWxWidgets)

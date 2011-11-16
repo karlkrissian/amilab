@@ -177,8 +177,8 @@ Class vtktest_TPlaneClass : public ScriptGui \
     ::panel = wx.wxScrolledWindow(&::frame)
     ::panel.SetScrollbars(20, 20, 50, 50);
 
-    sbox = wx.wxStaticBox(&::panel,wx.wxID_ANY,"VTK-test")
-    ::sbox_sizer = wx.wxStaticBoxSizer(&sbox,wx.wxVERTICAL)
+    #sbox = wx.wxStaticBox(&::panel,wx.wxID_ANY,"VTK-test")
+    ::sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
     ::panel.SetSizer(&::sbox_sizer)
     # create widget here
 

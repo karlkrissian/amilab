@@ -384,9 +384,17 @@ void AddWrapLanguage(AMIObject::ptr& obj)
   }
   void AddWrapUltrasound()
   {
-    wrap_us_classes( Vars.GetBuiltinContext());
+      // Create us context
+      AMIObject::ptr amiobject(new AMIObject);
+      amiobject->SetName("us");
+      // Add classes to mt context
+      wrap_us_classes(amiobject->GetContext());
 
-    //WrapClass_Ultrasound::AddVar_Ultrasound( Vars.GetBuiltinContext());
+      // Add mt context to builtin
+      Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(),
+      amiobject,Vars.GetBuiltinContext());
+      //AddWrapUS();
+
   }
 #endif
 
