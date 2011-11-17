@@ -1,5 +1,8 @@
 # Create a library called "Hello" which includes the source file "hello.cxx".
 # The extension is already found.  Any number of sources could be listed here.
+IF(WIN32)
+  ADD_DEFINITIONS(-D_AFX_NO_AFXCMN_SUPPORT)
+ENDIF(WIN32)
 
 INCLUDE( ${wxWidgets_USE_FILE})
 

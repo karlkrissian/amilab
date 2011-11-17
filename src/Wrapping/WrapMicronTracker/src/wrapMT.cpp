@@ -15,7 +15,8 @@
 #include <inrimage.hpp>
 #include "VarContexts.hpp"
 
-extern VarContexts  Vars;
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 #include "addwrap_mt.h"
 #include "wrap_MCamera.h"
@@ -23,28 +24,22 @@ extern VarContexts  Vars;
 #include "wrap_XPoints.h"
 #include "wrap_MTXPoint.h"
 #include "wrapMT.h"
-#include "wrap_MTCollection__NS__Collection.h"
+#include "wrap_MTCollection_Collection.h"
+#include "wrap_wxBitmap.h"
+#include <math.h>
+
+#ifndef WX_PRECOMP
+    #include "wx/wx.h"
+#endif
+#include "wx/wx.h"
+#include "wx/mstream.h"
+#include "wx/stream.h"
+#include "wrap_vtkMatrix4x4.h"
+
 
 extern Variable<int>::ptr nullvar;
 
-struct reg2D{
-  double Xl, Yl; //left image
-  double Xr, Yr; //right image
-  double Xm, Ym; //middle image
-};
-struct reg3D{
-  double X, Y, Z;
 
-};
-class StoreXPoint{
-  int count;
-
-  StoreXPoint(int size);
-  ~StoreXPoint();
-  
-  void ItemPos2D(int pos,double* Xl,double* Yl,double* Xr,double* Yr,double* Xm,double* Ym);
-  void ItemPos3D(int pos,double* X,double* Y,double* Z);
-};
 
 //---------------------------------------------------------
 void AddWrapMT() {
@@ -58,6 +53,7 @@ void AddWrapMT() {
   ADDLOCAL_OBJECTVAR_NAME( amiobject,C_wrap_varfunction, "GetImageMT",  GetImageMT);
   ADDLOCAL_OBJECTVAR_NAME( amiobject,C_wrap_varfunction, "GetStoreXpointMT",  GetStoreXpointMT);
   ADDLOCAL_OBJECTVAR_NAME( amiobject,C_wrap_varfunction, "Get2DXpointMT",  Get2DXpointMT);
+  ADDLOCAL_OBJECTVAR_NAME( amiobject,C_wrap_varfunction, "FillGrid",  FillGrid);
   
 
   // Add classes to mt context
@@ -84,18 +80,21 @@ BasicVariable::ptr  GetImageMT(ParamList* p) {
                        left image\n\
                        right image\n\
                        camera object\n\
-                       ";
+                       ";                     
+                       
 
+    
     InrImage* left;
     InrImage* right;
     MCamera* cam;
     int n=0;
-    
-    
+
+
     unsigned char ** laddr;
     unsigned char ** raddr;
     unsigned char *pixelsr,*pixelsl;
     
+    //wxInitAllImageHandlers();
     if (!get_val_ptr_param<InrImage>(  left,      p, n)) HelpAndReturnVarPtr;
     if (!get_val_ptr_param<InrImage>(  right,      p, n)) HelpAndReturnVarPtr;
     if (!get_val_ptr_param<MCamera>(  cam,      p, n)) HelpAndReturnVarPtr;
@@ -106,9 +105,9 @@ BasicVariable::ptr  GetImageMT(ParamList* p) {
 
     if((iterR == NULL) || (iterL == NULL)) HelpAndReturnVarPtr;
     if((laddr == NULL) || (raddr == NULL)) HelpAndReturnVarPtr;
-    printf("Dimensiones de las imagenes leidas: %d filas - %d columnas \n",right->DimY(),right->DimX());
+  //  printf("Dimensiones de las imagenes leidas: %d filas - %d columnas \n",right->DimY(),right->DimX());
     // x COLUMNAS - y FILAS
-    printf("Dimensiones de las imagenes camara: %d filas- %d  columnas\n",cam->getYRes(),cam->getXRes());
+  //  printf("Dimensiones de las imagenes camara: %d filas- %d  columnas\n",cam->getYRes(),cam->getXRes());
    
     //se solicitan las imagenes a mitad de tamaño
     pixelsr = (unsigned char *)raddr;
@@ -117,7 +116,58 @@ BasicVariable::ptr  GetImageMT(ParamList* p) {
     //Cam resolution    
     int dimx= cam->getXRes();
     int dimy= cam->getYRes();
+    //unsigned char  data[307200];
+      unsigned char* data;
+//memcpy(data, pixelsl,(dimx*dimy));
+data = (unsigned char *)malloc( (dimx*dimy*3)*sizeof(unsigned char) );
 
+
+//for (int i =0;i<307200;i++) {if(pixelsl[i]>256 || pixelsl[i]< 0) printf("%d/n",pixelsl[i]);}
+//for (int i =0;i<50;i++)  printf("%d/n",pixelsl[i]);
+//for (int i =0;i<307200;i++) {if(data[i]>256 || data[i]< 0) printf("%d\n",data[i]);}
+//es escala de grises
+int j =0;
+for (int i =0;i<(dimx*dimy);i++) {
+  data[j++]= pixelsl[i];
+  data[j++]= pixelsl[i];
+  data[j++]= pixelsl[i];
+}
+wxImage MTimage(dimx,dimy);
+//setdata exige que los datos tengan tamaño The data given must have the size (width*height*3) 
+MTimage.SetData(data);
+MTimage.Rescale(320,240);
+//MTimage.SaveFile("C:\\prueba.bmp",wxBITMAP_TYPE_BMP);
+wxBitmap* bitmap = new wxBitmap(MTimage);
+    //wxImage MTimage(dimx,dimy,pixelsl,true);
+
+  //    MTimage.SaveFile("C:\\prueba.pgm",wxBITMAP_TYPE_PNM ); EXAMPLE
+  //  size_t size = dimx*dimy;
+      //wxMemoryInputStream InputMemStream(pixelsl, size); 
+      //wxImage USimage(InputMemStream);
+//wxBitmap *bitmap1 = new wxBitmap(data[0],dimx,dimy);
+//wxBitmap *bitmap1 = new wxBitmap(
+//bitmap1->SaveFile("C:\\prueba.pgm",wxBITMAP_TYPE_PNM);
+ //     wxImage MTimage(dimx,dimy,pixelsl,true);
+//      MTimage.SaveFile("C:\\prueba.pgm",wxBITMAP_TYPE_PNM );
+      //wxBitmap* bitmap = new wxBitmap(MTimage,1);
+//bitmap->SaveFile("C:\\prueba.jpeg",wxBITMAP_TYPE_BMP);
+  //  unsigned char * data = new unsigned char[dimx*dimy];
+//int a = 2; //borrar esto despues punto de control
+   // wxImage* MTimage = new wxImage(dimx,dimy,pixelsl,true);
+   // memcpy(data, pixelsl,size);
+   //wxImage* MTimage = new wxImage();
+//wxImage image(dimx,dimy,data);
+//wxImage* image2 = new wxImage(dimx,dimy,data);
+//wxImage image3(dimy,dimx,data);
+//wxImage* image4 = new wxImage(dimy,dimx,data);
+//wxBitmap *bitmap1 = new wxBitmap((const char*)pixelsl,dimx,dimy);
+//bitmap1->SaveFile("C:\\prueba.jpeg",wxBITMAP_TYPE_JPEG);
+//wxBitmap *bitmap2 = new wxBitmap(data[0],wxBITMAP_TYPE_BMP ,dimx,dimy)
+//wxBitmap *bitmap3 = new wxBitmap(bla)
+  
+  //  wxBitmap* bitmap = new wxBitmap(wxImage(dimx,dimy,data));
+
+  
     double valor;
 
     if (
@@ -139,18 +189,16 @@ BasicVariable::ptr  GetImageMT(ParamList* p) {
 
     } else {
 
-      printf("dimensiones  %d filas %d columnas\n",dimy,dimx);
+     // printf("dimensiones  %d filas %d columnas\n",dimy,dimx);
       iterR->InitBuffer();
       iterL->InitBuffer();
 
       for(int i=0; i<dimy;i++)
         for(int j=0;j<dimx;j++) {
           //Right image
-          //iterR->BufferPos(j,i,0);
           valor = (double)*(pixelsr+(i*dimx)+j);
           iterR->SetDoubleValue(valor);
           //Left image
-          //iterL->BufferPos(j,i,0);
           valor = (double)*(pixelsl+(i*dimx)+j);
           iterL->SetDoubleValue(valor);
 
@@ -158,19 +206,13 @@ BasicVariable::ptr  GetImageMT(ParamList* p) {
           (*iterL)++;
    
            
-              //iterR->SetDoubleValue((double)laddr[i][j]);
-             
-              //iterL->BufferPos(i,j,0);
-             
-              //iterL->SetDoubleValue((double)laddr[i][j]);
-   
-            /*  left->SetBufferPos(i,j,0);
-              left->SetValue(laddr[i,j]);*/
+
 
           }
     }
 
-    return BasicVariable::ptr();
+  return WrapClass_wxBitmap::CreateVar(bitmap);
+//    return BasicVariable::ptr();
  } // GetImageMT()
 
 
@@ -207,14 +249,14 @@ BasicVariable::ptr  GetStoreXpointMT(ParamList* p) {
     if (cam == NULL)printf("Error leyendo cam\n");
     int res = pXPoints->processFrame(NULL);
     if(res!= 0) printf("Error in process frame \n");
-    printf("handle xpoints %d",pXPoints->detectedXPoints(cam));
+  //  printf("handle xpoints %d",pXPoints->detectedXPoints(cam));
     //Store detected Xpoints 
     xpointsCollection = new MTCollection::Collection(pXPoints->detectedXPoints(cam)); 
-    printf(" puntos count %d\n",xpointsCollection->count());
+  //  printf(" puntos count %d\n",xpointsCollection->count());
 
 	  if (xpointsCollection->count() == 0) {
 		  delete xpointsCollection; 
-      printf("Empty Collection \n");
+    //  printf("Empty Collection \n");
       return nullvar;
 		  //return;
 	  }
@@ -231,10 +273,10 @@ BasicVariable::ptr  GetStoreXpointMT(ParamList* p) {
 			XP->Position3D(&x3, &y3, &z3);
 			XP->setIndex(XPNum);
       //Imprimir los Xpoints detectados
-      printf("XPoints detected  %f %f %f \n",x3,y3,z3);
+     // printf("XPoints detected  %f %f %f \n",x3,y3,z3);
       // TODO guardar los Xpoints detectados en fichero?
     }
-    return WrapClass_MTCollection__NS__Collection::CreateVar(xpointsCollection);
+    return AMILabType<MTCollection::Collection>::CreateVar(xpointsCollection);
  } // GetStoreXpointMT()
 
 /** Get a 2D Xpoint **/
@@ -273,7 +315,7 @@ BasicVariable::ptr  Get2DXpointMT(ParamList* p) {
     int c = xpointsCollection->count();
 	  if (xpointsCollection->count() == 0) {
 		  delete xpointsCollection; 
-      printf("Empty Collection \n");
+     // printf("Empty Collection \n");
       return BasicVariable::ptr();
 		  //return;
 	  }
@@ -288,3 +330,104 @@ BasicVariable::ptr  Get2DXpointMT(ParamList* p) {
     
     return BasicVariable::ptr();
  } // Get2DXpointMT()
+
+
+
+BasicVariable::ptr  FillGrid(ParamList* p) {
+
+
+    char functionname[] = "FillGrid";
+    char description[]=" \n\
+                       Fill the volumen grid\n\
+                       ";
+
+    char parameters[] =" \n\
+                          Parameters:\
+                          \n\
+                           Grid-Image 3D\n\
+                           Transformation matrix\n\
+                           Frame\n\
+                           Range to transform\n\
+                           ";
+                       
+             
+
+    
+    InrImage* grid;
+    InrImage* frame;
+    vtkMatrix4x4* matrix;
+    double* minrange;
+    int dimx;
+    int dimy;
+    int n=0;
+
+    
+
+    if (!get_val_ptr_param<InrImage>(  grid,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_ptr_param<vtkMatrix4x4>(  matrix,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_ptr_param<InrImage>(  frame,      p, n)) HelpAndReturnVarPtr;
+    //if (!get_val_ptr_param<int>( dimx,      p, n)) HelpAndReturnVarPtr;
+    //if (!get_val_ptr_param<int>(  dimy,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_ptr_param<double>(  minrange,      p, n)) HelpAndReturnVarPtr;
+    
+   // printf("dimx %d \n",(*dimx));
+   // printf("dimx %d \n",(*dimy));
+    printf("range 0:%f,1:%f,2:%f \n",minrange[0],minrange[1],minrange[2]);
+    printf("matrix %f %f %f %f \n %f %f %f %f \n %f %f %f %f \n %f %f %f %f ",matrix->GetElement(0,0),matrix->GetElement(0,1),matrix->GetElement(0,2),
+matrix->GetElement(0,3),matrix->GetElement(1,0),matrix->GetElement(1,1),matrix->GetElement(1,2),matrix->GetElement(1,3),matrix->GetElement(2,0),matrix->GetElement(2,1),matrix->GetElement(2,2),
+matrix->GetElement(2,3),matrix->GetElement(3,0),matrix->GetElement(3,1),matrix->GetElement(3,2),matrix->GetElement(3,3));
+
+    
+    
+    //printf("dim x de la imagen %d\n",frame->DimX());
+    //printf("dim y de la imagen %d\n",frame->DimY());
+    dimx = frame->DimX();
+    dimy = frame->DimY();
+
+    printf("dim x del grid %d\n",grid->DimX());
+    printf("dim y del grid %d\n",grid->DimY());
+    printf("dim z del grid %d\n",grid->DimZ());
+    
+   // frame->Sauve("C:\\miimagen.bmp");ok
+
+    
+    InrImageIteratorBase::ptr iterG = grid->CreateIterator(); 
+    InrImageIteratorBase::ptr iterF = frame->CreateIterator();
+
+    if((iterG == NULL) || (iterF == NULL)) HelpAndReturnVarPtr;
+    int intensidad;
+    iterG->InitBuffer();
+    iterF->InitBuffer();
+    double in[4],out[4];
+    in[2] = 0;
+    in[3] = 1;
+    int x2grid,y2grid,z2grid;
+    for(int i=0; i<(dimy-1);i++){
+      for(int j=0;j<(dimx-1);j++) {
+        //recorrer frame
+        //valor de la coordenada i*dimy+j
+        intensidad = iterF->GetDoubleValue();
+        
+        in[0] = i;
+        in[1] = j;
+
+        //multiplicar coordenada actual de la imagen por la matriz de transformacion, ´descubrir a qué coordenada corresponde para la cámara
+        matrix->MultiplyPoint(in,out);
+
+        //mover las coordenadas contenidas en out en el rango del grid ya que el grid empieza en cero, escalar por la resolución (tam voxel)
+        x2grid = floor((out[0]- minrange[0]) /0.2);
+        y2grid = floor((out[1]- minrange[1])/0.2);
+        z2grid = floor((out[2]- minrange[2])/0.2);
+        
+        //Pintar en las coordenadas del grid obtenidas la intensidad 
+        iterG->BufferPos( x2grid, y2grid, z2grid );
+        iterG->SetDoubleValue(intensidad);
+
+        (*iterF)++;   
+
+        }
+  }
+
+  return BasicVariable::ptr();
+
+ } // FillGrid()

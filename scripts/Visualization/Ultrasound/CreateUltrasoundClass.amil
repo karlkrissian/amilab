@@ -1,82 +1,380 @@
-#
-# Creates a torus within a volume data
-#
+
 
 func "Common/ScriptGui"
+
 
 if (!exists(CreateUltrasoundClass)) {
 
   
   Class CreateUltrasoundClass : public ScriptGui {
 
+    Class ::FramePoints {
+    
+            
+        #en este vector se almacenaran tres vectores
+        #respresentando cada uno de ellos las coordenadas
+        #de cada punto
+        ::vp = VarVector(3) 
+        
+        ::matrix_trasform = vtk.vtkMatrix4x4.New()
+    
+        #Ultrasound image
+        proc ::AddFrame(IMAGE i){
+            ::frame = i
+        }
+        proc ::GetFrame(){
+            return=&::frame
+        }
+        #Points detected
+        proc ::AddPoints(OBJECT p1,OBJECT p2, OBJECT p3){
+            point1 = vector_double(3,0)
+            point2 = vector_double(3,0)
+            point3 = vector_double(3,0)
+            
+            point1[0] = p1[0]
+            point1[1] = p1[1]
+            point1[2] = p1[2]
+            
+            point2[0] = p2[0]
+            point2[1] = p2[1]
+            point2[2] = p2[2]
+            
+            point3[0] = p3[0]
+            point3[1] = p3[1]
+            point3[2] = p3[2]
+            
+            ::vp.push_back(&point1)
+            ::vp.push_back(&point2)
+            ::vp.push_back(&point3)  
+        }
+        proc ::GetPoints(){
+            return=&::vp
+        }
+        # Transformation matrix ultrasound image => camera world coordinates
+        proc ::AddMatrix(OBJECT matrix){
+            ::matrix_trasform.DeepCopy(&matrix)
+        }
+        proc ::GetMatrix(){
+            return=&::matrix_trasform
+        }
+        
+    }
+    
+
     #----------------------------
     proc ::Init() {
-  	  ::ip = "localhost", "IP to connect"
-      ::folder_save = "", "Images save"
-      ::l = Image(UCHAR,640,480,1)
-      ::r = Image(UCHAR,640,480,1)
+    
+        #interface variables initialization
+        ::ip = "10.26.12.177", "IP to connect"
+        ::folder_save = "C:\\", "Data save"
+        ::file_read_stradex = "C:\\Documents and Settings\\usuario\\Mis documentos\\Descargas\\sample_data\\test.sw", "Data read"
+        ::folder_read_images = "C:\\Documents and Settings\\usuario\\Mis documentos\\Descargas\\sample_data\\frames", "Image folder to read"
+        ::mode_calibration = UCHAR(0)
+        ::usplit = UCHAR(0)
+        ::savetodisk = UCHAR(0)
+       
+        ::n_sample = INT(10), "Número de muestras a coger"
+        ::n_frame = INT(1), "Número de frame a visualizar"
+      
+        #vector de objetos FramePoints
+        ::FPvector = VarVector()
+      
+        #contador de muestras cogidas
+        ::sample_counter = 0
+      
+        #contador de puntos de la marca detectados
+        ::points_count = 0
+      
+        #flags
+        ::IsFrameReady = false
+        ::PendingRead = false
+        ::calibration_count = 0
+        ::exists_points = 0
+        ::conect_ultasonix = false
+      
+        #-------------Camera
+        ::l = Image(UCHAR,640,480,1)
+        ::r = Image(UCHAR,640,480,1)
+                
+        ::Xl=(DOUBLE)0
+        ::Yl=(DOUBLE)0
+        ::Xr=(DOUBLE)0
+        ::Yr=(DOUBLE)0
+        ::Xm=(DOUBLE)0
+        ::Ym=(DOUBLE)0
+        ::x3d=(DOUBLE)0
+        ::y3d=(DOUBLE)0
+        ::z3d=(DOUBLE)0
+      
+        ::Px1 = vector_double(3,0)
+        ::Px2 = vector_double(3,0)
+        ::Px3 = vector_double(3,0)
+      
+         
+        #-------------- Timer General
+        ::interval = 0.1, "timer interval in seconds"
+        ::evh = wx.wxAmiEventHandler(&::CB_timer)
+        ::timer = wx.wxTimer(&::evh)
+        ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
+        ::processing_timer = false
+        ::in_ReadCamera = false
+      
+        #-------------- Timer Ultrasound Event
+    
+        ::evhu = wx.wxAmiEventHandler(&::Timer_ReadUltrasound)
+        ::timeru = wx.wxTimer(&::evhu)
+        ::evhu.Connect(wx.wxEVT_TIMER,&::evhu.GetEventFunction())
+        ::processing_timeru = false
+      
+        #-------------- Timer Connect Ultrasonix
+    
+        ::evhcu = wx.wxAmiEventHandler(&::Timer_ConnectUltrasound)
+        ::timercu = wx.wxTimer(&::evhcu)
+        ::evhcu.Connect(wx.wxEVT_TIMER,&::evhcu.GetEventFunction())
+      
+        #------------- Calibration
+        ::tol_image=(DOUBLE)0
+        ::tol_probe=(DOUBLE)0
+        #no se ha hecho la tolerancia de los puntos porque habría que diferenciar cual es cada punto, mu complicao
+        ::ControlP1 = vector_double(3,0)
+        ::ControlP2 = vector_double(3,0)
+        ::ControlP3 = vector_double(3,0)
+ 
+        #------------------ Matrices estáticas
+        
+        # matriz de escalado imagen Adquirida-> Sonda
+        ::m_escalado = vtk.vtkMatrix4x4.New()
+        ::m_escalado.SetElement(0,0,1/10)
+        ::m_escalado.SetElement(0,1,0)
+        ::m_escalado.SetElement(0,2,0)
+        ::m_escalado.SetElement(0,3,0)
+        ::m_escalado.SetElement(1,0,0)
+        ::m_escalado.SetElement(1,1,1/10)
+        ::m_escalado.SetElement(1,2,0)
+        ::m_escalado.SetElement(1,3,0)
+        ::m_escalado.SetElement(2,0,0)
+        ::m_escalado.SetElement(2,1,0)
+        ::m_escalado.SetElement(2,2,1/10)
+        ::m_escalado.SetElement(2,3,0)
+        ::m_escalado.SetElement(3,0,0)
+        ::m_escalado.SetElement(3,1,0)
+        ::m_escalado.SetElement(3,2,0)
+        ::m_escalado.SetElement(3,3,1)
+        #static double scale[16] = {
+        #   1/10, 0,0, 0,
+        #   0, 1/10, 0, 0,
+        #   0,0, 1/10, 0,
+        #   0, 0, 0, 1 };
+        
+                
+        # matriz de rotación Adquirida -> Sonda
+        ::m_rotacion = vtk.vtkMatrix4x4.New()
+        ::m_rotacion.SetElement(0,0,1)
+        ::m_rotacion.SetElement(0,1,0)
+        ::m_rotacion.SetElement(0,2,0)
+        ::m_rotacion.SetElement(0,3,0)
+        ::m_rotacion.SetElement(1,0,0)
+        ::m_rotacion.SetElement(1,1,1)
+        ::m_rotacion.SetElement(1,2,0)
+        ::m_rotacion.SetElement(1,3,0)
+        ::m_rotacion.SetElement(2,0,0)
+        ::m_rotacion.SetElement(2,1,0)
+        ::m_rotacion.SetElement(2,2,1)
+        ::m_rotacion.SetElement(2,3,0)
+        ::m_rotacion.SetElement(3,0,0)
+        ::m_rotacion.SetElement(3,1,0)
+        ::m_rotacion.SetElement(3,2,0)
+        ::m_rotacion.SetElement(3,3,1)
+        #static double rotacion[16] = {
+        #   1, 0,0, 0,
+        #   0, 1, 0, 0,
+        #   0,0, 1, 0,
+        #   0, 0, 0, 1 };
+        
+        
+        # matriz de traslación Adquirida -> Sonda
+        ::m_traslacion = vtk.vtkMatrix4x4.New()
+        ::m_traslacion.SetElement(0,0,1)
+        ::m_traslacion.SetElement(0,1,0)
+        ::m_traslacion.SetElement(0,2,0)
+        ::m_traslacion.SetElement(0,3,0)
+        ::m_traslacion.SetElement(1,0,0)
+        ::m_traslacion.SetElement(1,1,1)
+        ::m_traslacion.SetElement(1,2,0)
+        ::m_traslacion.SetElement(1,3,-81.2)
+        ::m_traslacion.SetElement(2,0,0)
+        ::m_traslacion.SetElement(2,1,0)
+        ::m_traslacion.SetElement(2,2,1)
+        ::m_traslacion.SetElement(2,3,0)
+        ::m_traslacion.SetElement(3,0,0)
+        ::m_traslacion.SetElement(3,1,0)
+        ::m_traslacion.SetElement(3,2,0)
+        ::m_traslacion.SetElement(3,3,1)
+        
+        #static double traslacion[16] = {
+        #   1, 0,0, 0,
+        #   0, 1, 0, -81.2,
+        #   0,0, 1, 0,
+        #   0, 0, 0, 1 };
+        
+        
+
+        
+        #coordinate limits
+        ::Xmin_corner = 0
+        ::Xmax_corner = 0
+        ::Ymin_corner = 0
+        ::Ymax_corner = 0
+        ::Zmin_corner = 0
+        ::Zmax_corner = 0
+        
+        
   
-      
-      ::Xl=(DOUBLE)0
-      ::Yl=(DOUBLE)0
-      ::Xr=(DOUBLE)0
-      ::Yr=(DOUBLE)0
-      ::Xm=(DOUBLE)0
-      ::Ym=(DOUBLE)0
-      ::x3d=(DOUBLE)0
-      ::y3d=(DOUBLE)0
-      ::z3d=(DOUBLE)0
-      
-      
-      ::Px1 = vector_double(3,0)
-      ::Px2 = vector_double(3,0)
-      ::Px3 = vector_double(3,0)
-      
-      
-      #-------------- Timer
-      ::interval = 0.1, "timer interval in seconds"
-      ::evh = wx.wxAmiEventHandler(&::CB_timer)
-      ::timer = wx.wxTimer(&::evh)
-      ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
-      ::processing_timer = false
-      ::in_ReadCamera = false
     }
     
     
-    #----------------- Timer
+  #*************************************************************************#
+  #                               Timer   General                           #
+  #*************************************************************************#
     proc ::Start() {
+      # restart flags and variables
+      ::IsFrameReady = false
+      ::PendingRead = false
+      ::processing_timer = false
+      ::in_ReadCamera = false
+      ::calibration_count = 0
+       
+      
       ::inittime = wx.wxDateTime.UNow()
       ::win.SetLabelValue(::startdate_id,::inittime.FormatISODate().c_str())
       ::win.SetLabelValue(::starttime_id,::inittime.FormatISOTime().c_str())
       ::timer.Start(::interval*1000)
+      
+      #desactivar el control selección de frame a visualizar
+      ::win.EnablePanel(::panel_frames,0)
     }
     
-    #----------------- Timer
+  
     proc ::Stop() {
-      ::timer.Stop()
+        ::timer.Stop()
+        #recolocar los límites de la pestaña de desplazamiento    
+        ::win.IntegerConstraints(::frame_id , 1 , ::sample_counter , ::sample_counter )
+        #activar el control selección de frame a visualizar
+        ::win.EnablePanel(::panel_frames,1)
+           
+        #reiniciar flags
+        ::points_count = 0
+        #flags
+        ::IsFrameReady = false
+        ::PendingRead = false
+        ::calibration_count = 0
+        ::exists_points = 0
+        
+        
+        del ::file
+       
+
     }
 
-    #----------------- Timer
+  
     proc ::CB_timer() {
       if (!::processing_timer)  {
-          ::processing_timer = true
-          currenttime = wx.wxDateTime.UNow()
-          diff=currenttime-::inittime
-          ::win.SetLabelValue(::label_id,diff.Format("%M min %S s %l ms").c_str())
-          ::ReadCamera()
+        inittime = wx.wxDateTime.UNow()
+        ::processing_timer = true
+        currenttime = wx.wxDateTime.UNow()
+        diff=currenttime-::inittime
+        ::win.SetLabelValue(::label_id,diff.Format("%M min %S s %l ms").c_str())
+        ::ReadData()
+        ::processing_timer =false
+        currenttime = wx.wxDateTime.UNow()
+        diff=currenttime-inittime
+        ::win.SetLabelValue(::TimerTime_id,diff.Format("%M min %S s %l ms").c_str())
+        ::win.Update(::TimerTime_id)
+      } 
+    }
+    
+    
+  #*************************************************************************#
+  #                               Timer  - Ultrasound Event                 #
+  #   Este timer sirve para dar tiempo a que se reciba el evento de la      #
+  #    máquina de ultrasonidos. Sin un timer no era posible capturar la     #
+  #    respuesta de la máquina pues desde dentro de una función se bloquea  #
+  #    la recepción de eventos.                                             #
+  #*************************************************************************#
+  proc ::Timer_ReadUltrasound() {
+      if (!::processing_timeru)  {
+          ::processing_timeru = true
          
-          ::processing_timer =false
+          if  (exists(::us)) && (::us.IsImageCaptured()) {
+            ::IsFrameReady = true
+            ::timeru.Stop()
+          }
+          ::processing_timeru =false
       } 
     }
         
-    #------------------------------------
-    
-    proc ::ConnectUltrasonix() {
-     ::win.EnablePanel(::panel_ultrasound,1)
   
+  #*************************************************************************#
+  #                               Ultrasound                                #
+  #*************************************************************************#  
+   
+   proc ::Timer_ConnectUltrasound(){
+        if (::us.IsUltrasonixConnect()){
+            ::conect_ultasonix = true
+            if (exists(::cam)) {
+                #los dos dispositivos están conectados correctamente,activar panel
+                ::win.EnablePanel(::panel_timer,1)
+                ::win.Enable(::calibration_id,1)
+            }
+            ::win.Enable(::dultrasound_id,1)
+            SetStatusText("Ultrasound Connected")
+        }else{
+            InfoDialog "Connection error!"
+        }   
+   }
+   
+   proc ::ConnectUltrasound() {
+        ::win.EnablePanel(::panel_ultrasound,1)
+        #crear instancia de InterfaceUS
+        if (exists(::us)){
+            del ::us
+        }
+        ::us =  us.InterfaceUS(::folder_save)
+        #conectar con el ultrasound
+        ::us.Connect_Ultrasonix(::ip)        
+        ::timercu.Start(10,true)
+      #  if (exists(::us)) && (exists(::cam)) {
+      #      ::win.EnablePanel(::panel_timer,1)
+      #  }
+     
     }
   
-  #connect, grab frame a read left and righ image
+    proc ::DisconnectUltrasound() {
+        ::win.EnablePanel(::panel_ultrasound,0)
+        if (exists(::us)){
+            ::us.DisConnect_Ultrasonix()
+            del ::us
+        }
+        ::conect_ultasonix = false
+        ::win.EnablePanel(::panel_timer,0)
+        ::win.Enable(::dultrasound_id,0)
+        ::win.Enable(::calibration_id,0)
+        ::sample_counter = 0
+        SetStatusText("")
+    }
+  
+    proc ::ReadUltrasound() {
+      if (exists(::us)){
+        ::us.GetImage()
+        ::PendingRead = true
+        #Hay una lectura pendiente, que no se termina hasta que se reciba el evento de imagen enviada
+        #y se guarde la imagen
+      }
+    }
+  
+  #*************************************************************************#
+  #                               Camera                                    #
+  #*************************************************************************#
   proc ::ConnectCamera() {
     ::c = mt.Cameras()
     res = ::c.AttachAvailableCameras()
@@ -85,43 +383,37 @@ if (!exists(CreateUltrasoundClass)) {
       if (exists(::cam)) { del ::cam; }
 
       ::cam = ::c.getCamera(0)
+      ::win.Enable(::dcamera_id,1)
       
+      
+    }
+  #  if (exists(::us)) && (exists(::cam)) { ::conect_ultasonix = true
+    if ::conect_ultasonix && (exists(::cam)) {
+        ::win.EnablePanel(::panel_timer,1)
+        ::win.Enable(::calibration_id,1)
     }
   }
   
   proc ::DisconnectCamera() {
     if(exists(::c)){
         ::c.Detach()
-        ::win.EnablePanel(::panel_camera,0)
+        del ::c
+       
     }
-  
+    ::sample_counter = 0
+    ::win.EnablePanel(::panel_camera,0)
+    ::win.EnablePanel(::panel_timer,0)
+    ::win.Enable(::dcamera_id,0)
+    ::win.Enable(::calibration_id,0)
   }
-  
-  proc ::ReadUltrasonix() {
-
-  }
-  
-  proc ::Pinta() {
- #   if(exists(::l_draw)){
-  #      ::l_draw.SetPenColor(wx.wxColour(255,0,0,255))
-  #      ::l_draw.SetLineParameters(2,0)
-   #      for XPNum=1 to ::collect->count() { 
-    #    ::mtxp = mt.MTXPoint(::collect->itemI(XPNum))
-     #   ::mtxp.Position2D(&::Xl,&::Yl,&::Xr,&::Yr,&::Xm,&::Ym);
-      #  ::mtxp.Position3D(&::x3d, &::y3d, &::z3d);
-      #  ::mtxp.setIndex(XPNum)
-       # ::l_draw.DrawCircleR(::Xl,::Yl,3)
-        
-       # del ::mtxp
-      # }
-        
-       # ::l_draw->DrawingAreaDisplay()
-   # }else{
-    #    InfoDialog "There is not draw!"
-    #}
-  }
-  
+   
+   
+  #*************************************************************************#
+  #                               ReadCamera                                #
+  #*************************************************************************#
   proc ::ReadCamera() {
+    inittime = wx.wxDateTime.UNow()
+
     if (!::in_ReadCamera) {
       ::in_ReadCamera=true
     ok = ::cam.grabFrame()
@@ -129,18 +421,28 @@ if (!exists(CreateUltrasoundClass)) {
     ::collect=mt.GetStoreXpointMT(&::xp,&::cam)
   
     if (ok==true && ::collect!=NULL) {
-        mt.GetImageMT(&::l,&::r,&::cam)
-    
+        bitmap = mt.GetImageMT(&::l,&::r,&::cam)
+       #bitmap.SaveFile("C:\\secuencia\\prueba2.bmp",wx.wxBITMAP_TYPE_BMP)
+       #bitmap.SaveFile("C:\\secuencia\\prueba%1%.bmp" %::sample_counter,wx.wxBITMAP_TYPE_BMP)
+        ::dc.DrawBitmap(&bitmap,wx.wxPoint(0,0))
+        
         if (!exists(l_draw)) { 
-          show ::l
-          ::l_draw.PaintCallback(&::ReadCamera)
+            #comentar que muestre imagen de camara en ventana aparte
+            //show ::l
+            //::l_draw.PaintCallback(&::ReadCamera)        
+            #end
         }
-
-        ::l_draw.SetPenColor(wx.wxColour(255,0,0,255))
-        ::l_draw.SetLineParameters(2,0)
+        #parte para que muestre imagen de camara en ventana aparte
+        //::l_draw.SetPenColor(wx.wxColour(255,0,0,255))
+        //::l_draw.SetLineParameters(2,0)
+        #end
         
         if(exists(::collect)){
-            for XPNum=1 to ::collect->count() { 
+            ::exists_points = 1
+            ::points_count = ::collect->_count()
+            
+            
+            for XPNum=1 to ::collect->_count() { 
             ::mtxp = mt.MTXPoint(::collect->itemI(XPNum))
             ::mtxp.Position2D(&::Xl,&::Yl,&::Xr,&::Yr,&::Xm,&::Ym);
             ::mtxp.Position3D(&::x3d, &::y3d, &::z3d);
@@ -155,8 +457,7 @@ if (!exists(CreateUltrasoundClass)) {
                 ::win.SetLabelValue(::xpoint2, " (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
                 ::Px2[0] = ::x3d
                 ::Px2[1] = ::y3d
-                ::Px2[2] = ::z3d
-            
+                ::Px2[2] = ::z3d         
             }
             if(XPNum == 3){
                 ::win.SetLabelValue(::xpoint3, " (X: %1%" %::x3d + ", Y: %1%" %::y3d + ", Z: %1%)" %::z3d )
@@ -164,27 +465,32 @@ if (!exists(CreateUltrasoundClass)) {
                 ::Px3[1] = ::y3d
                 ::Px3[2] = ::z3d
             }
-            #sacar las dos rectas y hacer el producto vectorial. El resultado es la normal al plano
-           # ::RenderPlane(1.2,2.3,3.4)
-            
+                    
             ::win.Update(-1)
-            ::l_draw.DrawCircleR(::Xl,::Yl,3)
-             
+            #comentar que muestre imagen aparte
+            //::l_draw.DrawCircleR(::Xl,::Yl,3)
+            #end
+            ::dc.DrawCircle(::dc.LogicalToDeviceXRel(::Xl*320/640),::dc.LogicalToDeviceYRel(::Yl*240/480),3)
             del ::mtxp
             }
-       # del ::collect
         }
-        
-        ::l_draw->DrawingAreaDisplay()
-
-            
+        #comentar que muestre imagen aparte
+        //::l_draw->DrawingAreaDisplay()
+        #end
+        #Delete warning of collect empty
+        ::textActor.SetInput ( "" )    
     } else {
-      InfoDialog "grabFrame failed! or collect NULL"
-      #del ::collect
+      #InfoDialog "grabFrame failed! or collect NULL"
+      ::textActor.SetInput ( "* No Mark Detected *" )
+      ::renwin_planes.Render()
     }
-      del ::collect
-      ::in_ReadCamera = false
+    del ::collect
+    ::in_ReadCamera = false
     }
+    currenttime = wx.wxDateTime.UNow()
+    diff=currenttime-inittime
+    ::win.SetLabelValue(::ReadCameraTime_id,diff.Format("%M min %S s %l ms").c_str())
+    ::win.Update(::ReadCameraTime_id)
   }
   
   
@@ -196,169 +502,1104 @@ if (!exists(CreateUltrasoundClass)) {
     show ::l
   }
   
-  proc ::RenderPlane(NUM xn,NUM yn,NUM zn) {
-
- 
- //Create a plane
-  planeSource = vtk.vtkPlaneSource.New();
+  #*************************************************************************#
+  #                               RenderPlane                               #
+  #*************************************************************************#
   
+  proc ::RenderPlane(OBJECT vp,IMAGE img) {
+    
     #Calcular módulo para saber cual es el origen del plano
-  #|Px1Px2|
-
-  vp = VarVector(3)
-  vp.push_back(&::Px1)
-  vp.push_back(&::Px2)
-  vp.push_back(&::Px3)
-
-  r = vector_int(3)
-
-  r[2] = 0
-  for k=0 to 2 {
-    tmp = ::Px2[k]-::Px1[k]
-    r[2] += tmp*tmp
-  }
-  r[1] = 0
-  for k=0 to 2 {
-    tmp = ::Px3[k]-::Px1[k]
-    r[1] += tmp*tmp
-  }
-  r[0] = 0
-  for k=0 to 2 {
-    tmp = ::Px3[k]-::Px2[k]
-    r[0] += tmp*tmp
-  }
-  
-  i0 = 0
-  i1 = 1
-  i2 = 2
-  if (r[i0]>r[i1]) {
-    tmp = i0; i0 = i1; i1 = tmp;
-  }
-  if (r[i1]>r[i2]) {
-    tmp = i1; i1 = i2; i2 = tmp;
-  }
-  if (r[i0]>r[i1]) {
-    tmp = i0; i0 = i1; i1 = tmp;
-  }
-  
-  
-  planeSource.SetOrigin( -vp[i2][0], vp[i2][1], vp[i2][2])
-  planeSource.SetPoint1( -vp[i0][0], vp[i0][1], vp[i0][2])
-  planeSource.SetPoint2( -vp[i1][0], vp[i1][1], vp[i1][2])
-  
-  
+    #|Px1Px2|
+    r = vector_int(3)
+    r[2] = 0
+    for k=0 to 2 {
+        #tmp = ::Px2[k]-::Px1[k]
+        tmp = vp[1][k]-vp[0][k]
+        r[2] += tmp*tmp
+    }
+    r[1] = 0
+    for k=0 to 2 {
+        #tmp = ::Px3[k]-::Px1[k]
+        tmp = vp[2][k]-vp[0][k]
+        r[1] += tmp*tmp
+    }
+    r[0] = 0
+    for k=0 to 2 {
+        #tmp = ::Px3[k]-::Px2[k]
+        tmp = vp[2][k]-vp[1][k]
+        r[0] += tmp*tmp
+    }
  
-#  planeSource.SetCenter(1.0, 0.0, 0.0);
- # planeSource.SetNormal(1.0, 0.0, 1.0);
+    i0 = 0
+    i1 = 1
+    i2 = 2
+    if (r[i0]>r[i1]) {
+        tmp = i0; i0 = i1; i1 = tmp;
+    }
+    if (r[i1]>r[i2]) {
+        tmp = i1; i1 = i2; i2 = tmp;
+    }
+    if (r[i0]>r[i1]) {
+        tmp = i0; i0 = i1; i1 = tmp;
+    }
+    
+    #::planeSource.SetOrigin( -vp[i2][0], vp[i2][1], vp[i2][2])
+    #::planeSource.SetPoint1( -vp[i0][0], vp[i0][1], vp[i0][2])
+    #::planeSource.SetPoint2( -vp[i1][0], vp[i1][1], vp[i1][2])
+    
+    ::planeSource.SetOrigin( vp[i2][0], vp[i2][1], vp[i2][2])
+    ::planeSource.SetPoint1( vp[i0][0], vp[i0][1], vp[i0][2])
+    ::planeSource.SetPoint2( vp[i1][0], vp[i1][1], vp[i1][2])
+    
+    plane = ::planeSource.GetOutput();    
+  
+    vtkinput  = vtktools.ToVtkImageData(&img)
  
-   plane = planeSource.GetOutput();
+    ::atext.SetInput(&vtkinput)
+    ::atext.InterpolateOn()
+      
+    # Create a plane source and actor. The vtkPlanesSource generates
+    # texture coordinates.
+    ::planeMapper.SetInputConnection(&::planeSource.GetOutputPort())
+      
+    ::actor.SetMapper(&::planeMapper)
+    ::actor.SetTexture(&::atext)
+    ::renderer.AddActor(&::actor)
 
-      
-      #Visualize
-      mapper = vtk.vtkPolyDataMapper.New()
-     # mapper.SetInputConnection(&glyph3D.GetOutputPort())
-    mapper.SetInput(&planeSource.GetOutput())
-      
-      #basándome en vtkIsoSurfaceClass
-      renwin_interact = vtktools.wxVTKFrame()
-      renwin = renwin_interact.GetRenderWindow()
-      renderer = vtk.vtkRenderer.New()
-      renwin.AddRenderer(&renderer)
-      interact = vtk.vtkInteractorStyleTrackballCamera.New()
-      renwin_interact.SetInteractorStyle(&interact)
-      actor = vtk.vtkActor.New()
-      actor.SetMapper(&mapper)
-      renderer.AddActor(&actor)
-      renderer.ResetCameraClippingRange()
-      renderer.SetBackground(0.3, 0.6, 0.3)
-      renderer.ResetCamera()
-
-      
-      #renwin.Render()
-      renwin_interact.Start()
+    ::renderer.ResetCameraClippingRange()
+    ::renderer.ResetCamera()
+    ::renwin_interact_planes.Start()
+    ::renwin_planes.Render()
+    
+    #Crear matriz Ts->c  . (Cambio de base) de la sonda a la cámara
+    
+    #vector OP1 (Origen -> Point1)
+    OP1 = vector_double(3,0)
+    OP1[0] = vp[i0][0] - vp[i2][0]
+    OP1[1] = vp[i0][1] - vp[i2][1]
+    OP1[2] = vp[i0][2] - vp[i2][2]
+    
+    
+    #vector OP2 (Origen -> Point2)
+    OP2 = vector_double(3,0)
+    OP2[0] = vp[i1][0] - vp[i2][0]
+    OP2[1] = vp[i1][1] - vp[i2][1]
+    OP2[2] = vp[i1][2] - vp[i2][2]
+    
+    
+    #tercer vector. Producto vectoria OP1 x OP2
+    OP3 = vector_double(3,0)
+    OP3[0] = (OP1[1] * OP2[2]) - (OP1[2] * OP2[1])
+    OP3[1] = -((OP1[0] * OP2[2]) - (OP1[2] * OP2[0]))
+    OP3[2] = (OP1[0] * OP2[1]) - (OP1[1] * OP2[0])
+    
+    
+    #hallar vectores unitarios
+    uOP1 = vector_double(3,0)
+    uOP2 = vector_double(3,0)
+    uOP3 = vector_double(3,0)
+    
+    mOP1 = sqrt(OP1[0]*OP1[0] + OP1[1]*OP1[1] + OP1[2]*OP1[2])
+    uOP1[0] = OP1[0]/mOP1
+    uOP1[1] = OP1[1]/mOP1
+    uOP1[2] = OP1[2]/mOP1
+    
+    mOP2 = sqrt(OP2[0]*OP2[0] + OP2[1]*OP2[1] + OP2[2]*OP2[2])
+    uOP2[0] = OP2[0]/mOP2
+    uOP2[1] = OP2[1]/mOP2
+    uOP2[2] = OP2[2]/mOP2
+    
+    mOP3 = sqrt(OP3[0]*OP3[0] + OP3[1]*OP3[1] + OP3[2]*OP3[2])
+    uOP3[0] = OP3[0]/mOP3
+    uOP3[1] = OP3[1]/mOP3
+    uOP3[2] = OP3[2]/mOP3
+    
+    #construir la matriz de cambio de base. Hay que construirla para cada frame
+    if(exists(::m_probetocamera)){
+        del ::m_probetocamera
+    }
+    #NOTA: vp[i2] es el origen del sistema de la marca
+    ::m_probetocamera = vtk.vtkMatrix4x4.New()
+    ::m_probetocamera.SetElement(0,0,uOP1[0])
+    ::m_probetocamera.SetElement(0,1,uOP2[0])
+    ::m_probetocamera.SetElement(0,2,uOP3[0])
+    ::m_probetocamera.SetElement(0,3,vp[i2][0])
+    ::m_probetocamera.SetElement(1,0,uOP1[1])
+    ::m_probetocamera.SetElement(1,1,uOP2[1])
+    ::m_probetocamera.SetElement(1,2,uOP3[1])
+    ::m_probetocamera.SetElement(1,3,vp[i2][1])
+    ::m_probetocamera.SetElement(2,0,uOP1[2])
+    ::m_probetocamera.SetElement(2,1,uOP2[2])
+    ::m_probetocamera.SetElement(2,2,uOP3[2])
+    ::m_probetocamera.SetElement(2,3,vp[i2][2])
+    ::m_probetocamera.SetElement(3,0,0)
+    ::m_probetocamera.SetElement(3,1,0)
+    ::m_probetocamera.SetElement(3,2,0)
+    ::m_probetocamera.SetElement(3,3,1)
+  
   }
   
+  #*************************************************************************#
+  #                               ReadData                                  #
+  #*************************************************************************#
+  proc ::ReadData() {
+
+    if (!::PendingRead){
+        ::exists_points = 0
+        ::ReadCamera()
+        #no hay ninguna lectura anterior pendiente
+        if(::points_count == 3){
+            #se han leido los tres puntos de la marca, lectura válida
+            del ::initime_readus
+            ::inittime_readus = wx.wxDateTime.UNow()            
+            ::ReadUltrasound()
+            #iniciar timer a espera de que el servidor responda
+            ::timeru.Start(10)
+        }else{
+        #    InfoDialog "Not all points detected."
+        }
+    }
+   
+    if (::IsFrameReady){
+        
+        if (::mode_calibration){
+            #modo calibración
+            if(::calibration_count == ::n_sample){
+                # parar la toma de datos, ya se ha llegado al tamaño de la muestra necesario
+                ::timer.Stop()
+               # ::tol_image = ::tol_image / ::calibration_count;
+              
+                InfoDialog "calibration process completed."
+              
+            }else{
+                # proceso de calibración,tomar otra muestra
+                ::Calibration()
+            }
+        }else{
+            imagen_valida = 1
+            #se ha recibido la respuesta del servidor, se puede leer la imagen
+            i <<= ::us.ReadImage()
+         
+          #  i.save("C:\\secuencia\\prueba%1%.jpg" %::sample_counter)
+            ::IsFrameReady = false
+            #ciclo de lectura de frame de ultrasonido terminado
+            ::PendingRead = false
+                
+            #guardar datos en la estructura de FramePoints      
+            #crear un objecto FramePoint que se va a meter en el vector de ::FPvector
+            if(exists(::fnode)){
+                del ::fnode
+            } 
+            ::FramePoints ::fnode
+            #introducir Frame si no está la imagen vacía
+            if (exists(::control_image)){
+                InfoDialog "tolerancia"
+                printn ::tol_image
+                InfoDialog "media"
+                printn mean(abs(::control_image - i))
+                if(mean(abs(::control_image - i))<=::tol_image){
+                InfoDialog "imagen vacia"
+                imagen_valida = 0
+                
+                }
+                      
+            }
+            #introducir datos
+            if(imagen_valida && (::points_count == 3)){
+                ::fnode.AddFrame(i)
+                #TEST DE OBTENER FRAME
+                #     ::r = ::fnode.GetFrame() 
+                #    show ::r
+        
+                #introducir vectores de puntos detectados
+                ::fnode.AddPoints(&::Px1,&::Px2,&::Px3)
+                v = &::fnode.GetPoints()
+                ::RenderPlane(&v,i)
+                
+                if(::savetodisk){
+                    #guardar en disco la imagen y sus puntos asociados &::folder_save
+                    i.save(::folder_save + "\\image_%1%.png" %::sample_counter)
+                    ::file = File ( ::folder_save + "\\points_%1%.txt" %::sample_counter)
+                    
+                    #Point1
+                    ::file._printn("%1%" %::Px1[0] + ";%1%" %::Px1[1] + ";%1%" %::Px1[2])
+                    #Point2
+                    ::file._printn("%1%" %::Px2[0] + ";%1%" %::Px2[1] + ";%1%" %::Px2[2])
+                    #Point3
+                    ::file._printn("%1%" %::Px3[0] + ";%1%" %::Px3[1] + ";%1%" %::Px3[2])                  
+                }
+                
+                #guardar junto con el par puntos frame, la matriz de transformacion para ese frame
+                #Ma->c = TRs->c * TRa->s*Ma
+                #TRa->s = Ta->s * Ra->s * Sa->s
+                
+                ::m_imagetocamera = vtk.vtkMatrix4x4.New()
+                temp = vtk.vtkMatrix4x4.New()              
+                m_imagetoprobe = vtk.vtkMatrix4x4.New()
+                
+                vtk.vtkMatrix4x4.Multiply4x4(&::m_rotacion,&::m_escalado,&temp)
+                vtk.vtkMatrix4x4.Multiply4x4(&::m_traslacion,&temp,&m_imagetoprobe)
+                vtk.vtkMatrix4x4.Multiply4x4(&::m_probetocamera,&m_imagetoprobe,&::m_imagetocamera)
+                
+                ::fnode.AddMatrix(&::m_imagetocamera)
+                
+                
+   
+                # PRUEBA DE SACAR MATRIZ      
+                #   m = &::fnode.GetMatrix()
+                #   ::ShowMatrix(&m)
+                
+                del ::m_probetocamera
+                del temp
+                del m_imagetoprobe
+                del ::m_imagetocamera
+               
+            
+                #introducir el nuevo nodo registro de datos en el vector de datos Frame-Points
+                ::FPvector.push_back(&::fnode)
+
+             
+         
+                #--------------prueba para ver si se han introducido los datos bien
+                del ::f
+                ::f = &::FPvector[::sample_counter]
+                #  ::m = ::f.GetFrame()
+                #   show ::m
+                # x = &::f.GetPoints()
+                #printn x[0][0]
+                #printn x[0][1]
+                #printn x[0][2]
+        
+                #datos de la muestra completos, incrementar contador
+                ::sample_counter = ::sample_counter + 1 
+                ::win.SetLabelValue(::fcount," %1%" %::sample_counter)
+                ::win.Update(::fcount)
+            }
+            currenttime = wx.wxDateTime.UNow()
+            diff=currenttime-::inittime_readus
+            ::win.SetLabelValue(::readusTime_id,diff.Format("%M min %S s %l ms").c_str())
+            ::win.Update(::readusTime_id)
+            
+        }
+    }
+  }
+  
+  #*************************************************************************#
+  #                              Calibration                                #
+  #*************************************************************************#
+  proc ::Calibration() {
+
+      if (!::PendingRead){
+        ::ReadCamera()
+        #no hay ninguna lectura anterior pendiente
+        ::ReadUltrasound()
+        #iniciar timer a espera de que el servidor responda
+        ::timeru.Start(10)
+    }
+    if (::IsFrameReady){
+        #se ha recibido la respuesta del servidor, se puede leer la imagen
+        if(::calibration_count == 0){
+            #datos de control
+            ::control_image <<= ::us.ReadImage()
+            ::ControlP1[0]=::Px1[0]
+            ::ControlP1[1]=::Px1[1]
+            ::ControlP1[2]=::Px1[2]
+        
+            ::ControlP2[0]=::Px2[0]
+            ::ControlP2[1]=::Px2[1]
+            ::ControlP2[2]=::Px2[2]
+        
+            ::ControlP3[0]=::Px3[0]
+            ::ControlP3[1]=::Px3[1]
+            ::ControlP3[2]=::Px3[2]
+        }else{
+            #comparar con datos de control
+            i <<= ::us.ReadImage()
+           
+            temp = mean(abs(::control_image - i))
+            printn temp
+            if(temp > ::tol_image){
+                #con la media no funciona demasiado bien, se elige el mal menor
+                ::tol_image = temp 
+            }
+            #::tol_image = ::tol_image + temp
+            
+            #::tol_probe = ::Px1[0] - ::ControlP1[0]
+        }
+        
+         
+        ::IsFrameReady = false
+        ::PendingRead = false
+        
+        ::calibration_count = ::calibration_count + 1
+        
+        
+    }
+  }
+  
+  #*************************************************************************#
+  #                   Show Frame                                            #
+  #*************************************************************************#
+  proc ::ShowFrame()  {
+    if(::n_frame > ::sample_counter){
+        ::n_frame = ::sample_counter
+    }
+    ::win.SetLabelValue(::frame," %1%" %::n_frame )
+    
+    #sacar el registro frame-point solicitado
+    del ::f
+    ::f = &::FPvector[::n_frame-1]
+    del ::m
+    ::m = ::f.GetFrame()
+    x = &::f.GetPoints()
+
+    ::RenderPlane(&x,::m)
+    
+  }
+  
+  #*************************************************************************#
+  #                   Show Matrix                                           #
+  #*************************************************************************#
+  proc ::ShowMatrix(OBJECT m)  {
+    printn " %1%;" %m.GetElement(0,0) + " %1%;" %m.GetElement(0,1) + " %1%;" %m.GetElement(0,2) + " %1%" %m.GetElement(0,3)
+    printn " %1%;" %m.GetElement(1,0) + " %1%;" %m.GetElement(1,1) + " %1%;" %m.GetElement(1,2) + " %1%" %m.GetElement(1,3)
+    printn " %1%;" %m.GetElement(2,0) + " %1%;" %m.GetElement(2,1) + " %1%;" %m.GetElement(2,2) + " %1%" %m.GetElement(2,3)
+    printn " %1%;" %m.GetElement(3,0) + " %1%;" %m.GetElement(3,1) + " %1%;" %m.GetElement(3,2) + " %1%" %m.GetElement(3,3)
+  }
+  
+  proc ::ShowPoint(OBJECT p)  {
+    printn " %1%;" %p[0] + " %1%;" %p[1] + " %1%;" %p[2] + " %1%" %p[3]
+  }
+
+  #*************************************************************************#
+  #                   Generar Grid                                          #
+  #*************************************************************************#
+  proc ::GenerateGrid(OBJECT dim_image) {
+    
+    coordinate = vector_double(4,0)
+    
+    ::ShowPoint(&(dim_image[0]))
+    ::ShowPoint(&(dim_image[1]))
+    ::ShowPoint(&(dim_image[2]))
+    ::ShowPoint(&(dim_image[3]))
+    
+
+    
+    #recorrer nodos  guardados
+    for i=0 to  (::sample_counter-1){ 
+        
+        node = &::FPvector[i]
+        tmatrix = &node.GetMatrix()
+                               
+        for j=0 to 3{
+            #multiplicar puntos de las esquinas del frame por la matriz de trasnformación
+            #buscando máximos y mínimos veremos los límites del grid
+            tmatrix.MultiplyPoint_2(&(dim_image[j][0]),&(coordinate[0])) 	
+            if(i == 0 && j == 0){
+                #initialize limits
+                ::Xmax_corner = coordinate[0]
+                ::Xmin_corner = coordinate[0]
+                ::Ymax_corner = coordinate[1]
+                ::Ymin_corner = coordinate[1]
+                ::Zmax_corner = coordinate[2]
+                ::Zmin_corner = coordinate[2]
+            }else {
+                #check limits
+                if(coordinate[0]>::Xmax_corner){
+                    ::Xmax_corner = coordinate[0]
+                }
+                if(coordinate[0]<::Xmin_corner){
+                    ::Xmin_corner = coordinate[0]
+                }
+                if(coordinate[1]>::Ymax_corner){
+                    ::Ymax_corner = coordinate[1]
+                }
+                if(coordinate[1]<::Ymin_corner){
+                    ::Ymin_corner = coordinate[1]
+                }
+                if(coordinate[2]>::Zmax_corner){
+                    ::Zmax_corner = coordinate[2]
+                }
+                if(coordinate[2]<::Zmin_corner){
+                    ::Zmin_corner = coordinate[2]
+                }
+
+                #::ShowPoint(&coordinate)
+            }
+        }
+        del node
+        del tmatrix 
+    }
+    ::win.SetLabelValue(::xmax, " %1%" %::Xmax_corner )
+    ::win.SetLabelValue(::xmin, " %1%" %::Xmin_corner )
+    ::win.SetLabelValue(::ymax, " %1%" %::Ymax_corner )
+    ::win.SetLabelValue(::ymin, " %1%" %::Ymin_corner )
+    ::win.SetLabelValue(::zmax, " %1%" %::Zmax_corner )
+    ::win.SetLabelValue(::zmin, " %1%" %::Zmin_corner )
+    
+    #crear grid-Imagen 3D AMILAB
+    grid_dimx = floor(::Xmax_corner - ::Xmin_corner +1) //floor se queda con la parte entera
+    grid_dimy = floor(::Ymax_corner - ::Ymin_corner +1)
+    grid_dimz = floor(::Zmax_corner - ::Zmin_corner +1)
+    ::Grid = Image(DOUBLE,grid_dimx,grid_dimy,grid_dimz)
+    ::Grid.initvalue(0)
+
+    #range_min para trasladar las coordenadas obtenidas a coordenadas del grid (el grid empieza en cero)
+    range_min = vector_double(3,0)
+    
+    range_min[0] = ::Xmin_corner
+    range_min[1] = ::Ymin_corner
+    range_min[2] = ::Zmin_corner
+    #rellenar grid
+    for i=0 to  (::sample_counter-1){ 
+        node = &::FPvector[i]
+        tmatrix = &node.GetMatrix()
+        frame = &node.GetFrame() 
+        
+     #  printn dimx
+     #  printn dimy
+        printn "grid dimensions"
+        printn grid_dimx
+        printn grid_dimy
+        printn grid_dimz
+        printn "range"
+        printn range_min[0]
+        printn range_min[1]
+        printn range_min[2]
+        mt.FillGrid(&::Grid,&tmatrix,&frame,&(range_min[0]))
+        del node
+        del tmatrix 
+        del frame
+    }
+  }
+  
+  #*************************************************************************#
+  #                   Read Stradwin file                                    #
+  #*************************************************************************#
+    proc ::GridFromStradx() {
+        ::sample_counter = 0 //mirar como hacer si se lee de un sitio stradx o directamente
+        
+        #variable definitions
+        pixels = vector_double(4,0)
+        room = vector_double(4,0)
+        vec_FrameMatrix = VarVector() 
+
+        
+        if(::file_read_stradex==""){
+            InfoDialog "File data Not Found"
+        }else{         
+            ::file = File (::file_read_stradex,"r")
+            a = true   
+            if(::file.eof()){
+                #fichero vacío
+                a = false
+            }
+            #Read data from file.sw
+            while a  {
+                
+                s = ::file.read_string ()            
+               
+                if(s == "RES_BUF_FRAMES"){
+                    s = ::file.read_string ()
+                    res_buf_frames = atof(s)
+                    #floor(atof(s)) floor es pasar a entero
+                }
+                if(s == "RES_BUF_WIDTH"){
+                    s = ::file.read_string ()
+                    res_buf_width = atof(s)
+                }
+                if(s == "RES_BUF_HEIGHT"){
+                    s = ::file.read_string ()
+                    res_buf_height = atof(s)
+                }
+                if(s == "RES_XTRANS"){
+                    s = ::file.read_string ()
+                    res_xtrans = atof(s)
+                }
+                if(s == "RES_YTRANS"){
+                    s = ::file.read_string ()
+                    res_ytrans =  atof(s)
+                }
+                if(s == "RES_ZTRANS"){
+                    s = ::file.read_string ()
+                    res_ztrans =  atof(s)
+                }
+                if(s == "RES_AZIMUTH"){
+                    s = ::file.read_string ()
+                    res_azimuth =  atof(s)
+                }
+                if(s == "RES_ELEVATION"){
+                    s = ::file.read_string ()
+                    res_elevation =  atof(s)
+                }
+                if(s == "RES_ROLL"){
+                    s = ::file.read_string ()
+                    res_roll =   atof(s)
+                }
+                if(s == "RES_XSCALE"){
+                    s = ::file.read_string ()
+                    res_xscale =  atof(s)
+                }
+                if(s == "RES_YSCALE"){
+                    s = ::file.read_string ()
+                    res_yscale =  atof(s)
+                }
+                if(s == "RES_ISOCENTRE_XTRANS"){
+                    s = ::file.read_string ()
+                    res_isocentre_xtrans =  atof(s)
+                }
+                if(s == "RES_ISOCENTRE_YTRANS"){
+                    s = ::file.read_string ()
+                    res_isocentre_ytrans =  atof(s)
+                }
+                if(s == "RES_ISOCENTRE_ZTRANS"){
+                    s = ::file.read_string ()
+                    res_isocentre_ztrans =  atof(s)
+                }
+                if(s == "RES_ISOCENTRE_AZIMUTH"){
+                    s = ::file.read_string ()
+                    res_isocentre_azimuth =  atof(s)
+                }
+                if(s == "RES_ISOCENTRE_ELEVATION"){
+                    s = ::file.read_string ()
+                    res_isocentre_elevation =  atof(s)
+                }
+                if(s == "RES_ISOCENTRE_ROLL"){
+                    s = ::file.read_string ()
+                    res_isocentre_roll =  atof(s)
+                }
+                if(s == "IM"){
+                    //parámetros de línea, para cada frame
+                    s = ::file.read_string () //time
+                    s = ::file.read_string () //x
+                    im_x = atof(s)
+                    s = ::file.read_string () //y
+                    im_y = atof(s)
+                    s = ::file.read_string () //z
+                    im_z = atof(s)
+                    s = ::file.read_string () //azimuth
+                    im_azimuth = atof(s)
+                    s = ::file.read_string () //elevation
+                    im_elevation = atof(s)
+                    s = ::file.read_string () //roll
+                    im_roll = atof(s)        
+                    
+                    //Create matrix frame (frame location in position sensor coordinates)
+                    m_frame = vtk.vtkMatrix4x4.New()                    
+                    ::RTForward(im_x,im_y,im_z,im_azimuth,im_elevation,im_roll,&m_frame )
+                    //almacenar matriz frame en vector de matrices de imagen Stradx
+                    vec_FrameMatrix.push_back(&m_frame)
+                    
+                    del m_frame
+                }
+                if(::file.eof()){
+                    a = false
+                }
+                
+            }
+            // Create matrices for
+            //  - position sensor calibration (cal)
+            //  - isocentre (room) calibration (iso)
+            m_cal = vtk.vtkMatrix4x4.New()
+            m_iso = vtk.vtkMatrix4x4.New()
+            ::RTForward(res_xtrans,res_ytrans,res_ztrans,res_azimuth,res_elevation,res_roll,&m_cal )
+            ::RTForward(res_isocentre_xtrans,res_isocentre_ytrans,res_isocentre_ztrans,res_isocentre_azimuth,res_isocentre_elevation,res_isocentre_roll,&m_iso )
+            
+            #Recorrer vector de matrices-frame de imágenes, crear matriz compuesta y almacenar datos en FPvector
+            printn res_buf_frames
+            for num_frame=0 to (res_buf_frames-1) { 
+            
+                m_frame =  &vec_FrameMatrix[num_frame]     
+            
+                // Calculate vertices for
+                //  - point location relative to the B-scan frame (pixels) escalar
+                //  - point location relative to the position sensing device attached to the probe (pos)
+                //  - point location in position sensor base coordinates (world)
+                //  - point location in room coordinates (room)
+                // pos = cal * pixels.scale(res_xscale, res_yscale);
+                //world = frame * pos;
+                //room = iso * world;
+
+                
+                //matriz compuesta de iso*frame*cal
+                m_temp = vtk.vtkMatrix4x4.New()
+                m_composed = vtk.vtkMatrix4x4.New()
+                
+                vtk.vtkMatrix4x4.Multiply4x4(&m_frame,&m_cal,&m_temp)
+                vtk.vtkMatrix4x4.Multiply4x4(&m_iso,&m_temp,&m_composed)
+                del m_temp
+               
+                                   
+                pixels[0] = 100;  // pixels from top left in horizontal direction
+                pixels[1] = 50;   // pixels from top left in vertical direction
+                pixels[3] = 1;
+                
+                
+                #escalar pixels
+                pixels[0] = pixels[0] * res_xscale
+                pixels[1] = pixels[1] * res_yscale
+                            
+                m_composed.MultiplyPoint_2(&(pixels[0]),&(room[0])) 
+               
+                //IMPORTANTE comprobar si existe elfichero primero!!          
+                #leer imagen de disco
+                i = Image ::folder_read_images+"\\"+ "frame%04d.jpeg"%num_frame 
+               
+                #rellenar vector FPVector con el frame y la matriz
+                ::FramePoints ::fnode
+                ::fnode.AddFrame(i)
+                ::fnode.AddMatrix(&m_composed)
+               
+                ::FPvector.push_back(&::fnode)
+                
+                #aumentar el número de datos leidos en 1
+                ::sample_counter = ::sample_counter +1
+                
+            }
+                    
+            del m_cal        
+            del m_iso
+            
+            //Define de image corner points  before generate grid
+            #Define the image limits
+            dim_image = VarVector(4) 
+            corner1 = vector_double(4,0)
+            corner2 = vector_double(4,0)
+            corner3 = vector_double(4,0)
+            corner4 = vector_double(4,0)
+            
+            #corner1
+            corner1[3] = 1
+            
+            #corner2 (width,0,0,1)
+            corner2[0] = res_buf_width - 1
+            corner2[3] = 1
+                    
+            #corner3 (0,height,0,1)
+            corner3[1] = res_buf_height - 1
+            corner3[3] = 1
+            
+            
+            #corner 4(width,height,0,1)
+            corner4[0] = res_buf_width - 1    
+            corner4[1] = res_buf_height - 1
+            corner4[3] = 1
+                           
+            dim_image.push_back(&corner1)
+            dim_image.push_back(&corner2)
+            dim_image.push_back(&corner3) 
+            dim_image.push_back(&corner4) 
+            
+            #invocar a GenerateGrid
+            ::GenerateGrid(&(dim_image[0]))
+            del ::file
+        }
+        ::win.SetLabelValue(::text_data_count," %1%" %::sample_counter)
+        ::win.Update(::text_data_count)      
+   }
+   
+   // Create forward translation and rotation from Euler angles
+   //x,y,z = traslation
+   // azimuth, elevation,roll = rotacion
+    proc ::RTForward(NUM x,NUM y,NUM z,NUM a,NUM e,NUM r,OBJECT m ){
+  
+        // Pre-calculate radian angles 
+        ra = a*Pi/180;
+        rb = e*Pi/180;
+        rg = r*Pi/180;
+
+        // Pre-calculate sines and cosines 
+        cos_a = cos(ra);
+        cos_b = cos(rb);
+        cos_g = cos(rg);
+        sin_a = sin(ra);
+        sin_b = sin(rb);
+        sin_g = sin(rg);
+
+        // Create the correct matrix coefficients ZYX
+        m.SetElement(0,0,cos_a * cos_b)
+        m.SetElement(1,0,sin_a * cos_b)
+        m.SetElement(2,0,- sin_b)
+        m.SetElement(3,0, 0.0)
+        m.SetElement(0,1, cos_a * sin_b * sin_g - sin_a * cos_g)
+        m.SetElement(1,1, sin_a * sin_b * sin_g + cos_a * cos_g)
+        m.SetElement(2,1,cos_b * sin_g)
+        m.SetElement(3,1, 0.0)
+        m.SetElement(0,2, cos_a * sin_b * cos_g + sin_a * sin_g)
+        m.SetElement(1,2, sin_a * sin_b * cos_g - cos_a * sin_g)
+        m.SetElement(2,3, cos_b * cos_g)
+        m.SetElement(3,2, 0.0)
+        m.SetElement(0,3, x)
+        m.SetElement(1,3, y)
+        m.SetElement(2,3, z)
+        m.SetElement(3,3, 1.0)
+    }
+   
+
+    #*********************************************************************************#
+    #                   Generar Grid desde datos generados por el propio sistema      #
+    #                   Se conoce el tamaño de imagen                                 #
+    #*********************************************************************************#
+    proc ::GridFromData() {
+        #Define the image limits
+        
+        #::dim_image[0] (0,0,0)
+        #::dim_image[1] (394,0,0)
+        #::dim_image[2] (0,411,0)
+        #::dim_image[3] (394,411,0)
+        
+        dim_image = VarVector(4) 
+        corner1 = vector_double(4,0)
+        corner2 = vector_double(4,0)
+        corner3 = vector_double(4,0)
+        corner4 = vector_double(4,0)
+
+        #corner1
+        corner1[3] = 1
+
+        #corner2 (394,0,0,1)
+        corner2[0] = 394
+        corner2[3] = 1
+                
+        #corner3 (0,411,0,1)
+        corner3[1] = 411
+        corner3[3] = 1
+
+
+        #corner 4(394,411,0,1)
+        corner4[0] = 394    
+        corner4[1] = 411
+        corner4[3] = 1
+                       
+        dim_image.push_back(&corner1)
+        dim_image.push_back(&corner2)
+        dim_image.push_back(&corner3) 
+        dim_image.push_back(&corner4) 
+        ::GenerateGrid(&(dim_image[0]))
+    }
+  
+  #*************************************************************************#
+  #                   Añadir pestaña con la ventana VTK                     #
+  #*************************************************************************#
+  proc ::MainBook_AddVTKRenTab()  \
+    {
+//Interfaz wxWidgets
+        mb = ami.MainFrame.GetMainBook()
+        ::panel = wx.wxPanel(&ami.MainFrame)
+        ::panel.SetName("Ultrasound display")
+        sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+        ::panel.SetSizer(&sbox_sizer)
+        # estilo #define wxSP_NOSASH 0x0010  estilo #define wxSP_3DBORDER 0x0200
+        ::splitter =wx.wxSplitterWindow(&::panel,-1,wx.wxPoint(-1,-1),wx.wxSize(320, 240),16|512)
+        sbox_sizer.Add( &::splitter, 1, wx.wxALL | wx.wxEXPAND,2)
+        ::panel2 = wx.wxPanel(&::splitter,106)
+        sbox_sizerh = wx.wxBoxSizer(wx.wxHORIZONTAL)
+        
+        
+//panel visualización 3D   planos de ecografía 
+        ::renwin_interact_planes = vtktools.wxVTKRenderWindowInteractor(&::panel2,-1)
+        ::renwin_interact_planes.Enable(true)
+        ::renwin_interact_planes.UseCaptureMouseOn()
+        ::renwin_interact_planes.SetBackgroundColour(wx.wxColour(0,0,0))
+        ::renwin_planes = ::renwin_interact_planes.GetRenderWindow()
+        #añadir interacción con el ratón
+        interact = vtk.vtkInteractorStyleTrackballCamera.New()
+        ::renwin_interact_planes.SetInteractorStyle(&interact)
+        
+ // Setup the text and add it to the window
+        ::textActor = vtk.vtkTextActor.New()
+        ::textActor.GetTextProperty().SetFontSize ( 20 )
+        ::textActor.GetTextProperty().SetColor ( 1.0,0.0,0.0 )
+       
+//panel Renderizado volumétrico
+        ::renwin_interact_vol = vtktools.wxVTKRenderWindowInteractor(&::splitter,-1)
+        ::renwin_interact_vol.Enable(true)
+        ::renwin_interact_vol.UseCaptureMouseOn()
+        ::renwin_interact_vol.SetBackgroundColour(wx.wxColour(0,0,0))
+        ::renwin_vol = ::renwin_interact_vol.GetRenderWindow()
+           
+//panel Mostrar imagen de camara
+        ::panel_cam = wx.wxPanel(&::panel2,155,wx.wxPoint(-1,-1),wx.wxSize(320, 240))
+        ::dc = wx.wxClientDC(&::panel_cam)
+      
+ //Set splitter        
+        ::splitter.SetSashGravity(1.0)
+        ::splitter.SetMinimumPaneSize(240)
+        ::splitter.SplitHorizontally( &::renwin_interact_vol,&::panel2,-240)
+        
+        ::panel2.SetSizer(&sbox_sizerh)
+        sbox_sizerh.Add( &::panel_cam, 0, wx.wxSHAPED|wx.wxALIGN_CENTER,4)
+        sbox_sizerh.AddSpacer(2)
+        sbox_sizerh.Add( &::renwin_interact_planes, 1, wx.wxEXPAND,5)
+      
+//Prepare brush to draw circles      
+        ::dc.SetPen(wx.wxPen(wx.wxColour(255,0,0),2))
+        ::dc.SetBrush(wx.wxBrush(wx.wxColour(255,0,0),wx.wxTRANSPARENT))
+        ::dc.DrawCircle(25,25,10)
+ 
+//Add page to main book. This add the panel
+        ::icons.LoadIconPNG2("Transparent background","Transparent_background")
+        mb.AddPage( &::panel,  "USView",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+        ::USView_pageindex = mb.GetPageIndex(&::panel)
+        
+//Crear plano y renderer para planos de ecografía
+        ::planeSource = vtk.vtkPlaneSource.New();
+        ::renderer = vtk.vtkRenderer.New()
+        ::renwin_planes.AddRenderer(&::renderer)
+        ::renderer.SetBackground(0, 0, 0.8)
+        //Guardar la cámara inicial para restablecerla luego
+        ::cam_backup = vtk.vtkCamera.New()
+        #::cam_backup.DeepCopy(&::renderer.GetActiveCamera())
+        ::cam_backup = ::renderer.GetActiveCamera()
+//Show warning text.Initialize
+        ::renderer.AddActor2D ( &::textActor )
+        ::textActor.SetInput ( "" )
+        
+//create actor, texture y mapper  para los planos de ecografía      
+      ::actor = vtk.vtkActor.New()
+      ::atext = vtk.vtkTexture.New()
+      ::planeMapper = vtk.vtkPolyDataMapper.New()      
+         
+//Show orientation axes
+      axes = vtk.vtkAxesActor.New()
+      widget = vtk.vtkOrientationMarkerWidget.New()
+      widget.SetOutlineColor( 0.9300, 0.5700, 0.1300 );
+      widget.SetOrientationMarker( &axes );
+      widget.SetInteractor( &::renwin_interact_planes );
+      widget.SetViewport( 0.0, 0.0, 0.2, 0.5);
+      widget.SetEnabled( 1 );
+      widget.InteractiveOn();
+    }
+    
+    proc ::Usplit_bottom(){
+        if(  ::usplit ){
+            ::splitter.Unsplit(&::panel2) 
+        }else{
+            ::splitter.SplitHorizontally( &::renwin_interact_vol,&::panel2,-240)
+        }
+    }
+    
+    #----------------------------
+    proc ::MainBook_CloseTab()  \
+    {
+      if (exists(::USView_pageindex)){
+        mb = ami.MainFrame.GetMainBook()
+        mb.DeletePage(::USView_pageindex)
+      }
+    }
+  
+    #----------------------------
+    # Redefinition of Close to close the panel tab in main_book
+    #
+    proc ::Close() {        
+      ::MainBook_CloseTab()
+      ::win.HidePanel()
+      #Disconnect cam & ultrasound
+      if(exists(::c)){
+        ::c.Detach()
+      }
+      if (exists(::us)){
+            ::us.DisConnect_Ultrasonix()
+      }
+      
+      delvars GetObjectName(::Close)
+      
+    }
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------- Callback calibration
+    proc ::ActivateCalibration(){
+        if(::mode_calibration){
+            ::win.EnablePanel(::panel_calibration,1)
+        }else{
+            ::win.EnablePanel(::panel_calibration,0)
+        }
+    }
+    
+    #--------------------------- Callback activation save to disk
+    proc ::SaveData(){
+        if(::savetodisk){
+            ::win.Enable(::dir_id,1)
+        }else{
+           ::win.Enable(::dir_id,0)
+           ::folder_save = "C:\\"
+           ::win.Update(::dir_id)
+        }
+    }
+    
+    
+    
+    
+    
   proc ::Gui() {
-    ::win = ParamPanel("Ultrasound display")
+    
+    if (exists(::parent_panel)) {
+      ::win = ParamPanel("Ultrasound display",&::parent_panel)
+    } else {
+       ::win = ParamPanel("Ultrasound display")
+    }
+    
+   
   
     ::win.BeginBook()
+    
       ::win.AddPage("Param")
-
         ::win.BeginBoxPanel("Connection params")
           ::win.AddString( &::ip,"IP")
-          ::win.AddButton("Connect Ultrasonix",::ConnectUltrasonix)
+          ::win.BeginHorizontal()
+            ::win.AddButton("Connect Ultras.",::ConnectUltrasound)
+            ::dultrasound_id = ::win.AddButton("Disconnect Ultras.",::DisconnectUltrasound)
+            ::win.Enable(::dultrasound_id,0)
+          ::win.EndHorizontal()
           ::win.BeginHorizontal()
             ::win.AddButton("Connect Camera",::ConnectCamera)
-            ::win.AddButton("Disconnect Camera",::DisconnectCamera)
+            ::dcamera_id = ::win.AddButton("Disconnect Camera",::DisconnectCamera)
+            ::win.Enable(::dcamera_id,0)
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
+            ::calibration_id = ::win.AddBoolean(&::mode_calibration,"Mode Calibration")
+            ::win.Enable(::calibration_id,0)
+            ::win.SetCallback(&::ActivateCalibration)
+          ::win.EndHorizontal()
+           ::win.BeginHorizontal()
+            ::win.AddBoolean(&::usplit,"Expand volume view")
+            ::win.SetCallback(&::Usplit_bottom)
           ::win.EndHorizontal()
         ::win.EndBoxPanel()
+        
+        ::panel_calibration = ::win.BeginBoxPanel("Calibration. Size sample")
+          ::sam_id = ::win.AddInt( &::n_sample,"Size",2,20)
+          ::win.AddButton("Calibration",::Calibration)
+          ::win.EnablePanel(::panel_calibration,0)
+        ::win.EndBoxPanel()
 
-        ::win.BeginBoxPanel("Ultrasound folder")
-          ::win.AddDirname( &::folder_save, "Dir")
+        ::win.BeginBoxPanel("Save data folder")
+            ::win.BeginHorizontal()
+                ::win.AddBoolean(&::savetodisk,"Save to disk")
+                ::win.SetCallback(&::SaveData)
+            ::win.EndHorizontal()
+            ::dir_id = ::win.AddDirname( &::folder_save, "Dir")
+            ::win.Enable(::dir_id,0)
+        ::win.EndBoxPanel()
+        
+        ::win.BeginBoxPanel("Read Stradex data")
+           ::win.AddFilename(&::file_read_stradex, "sw File", "C:\\","")
+           ::win.AddDirname( &::folder_read_images , "ImgDir")
+           ::win.AddButton("Read",::GridFromStradx)
+           ::win.BeginHorizontal()
+                ::text_data_count = ::win.AddLabel("Frame read:","")
+           ::win.EndHorizontal()
         ::win.EndBoxPanel()
         
         ::panel_ultrasound = ::win.BeginBoxPanel("")
-          ::win.AddButton("Start ultrasonix",::ReadUltrasonix)		  
+          ::win.AddButton("Start Ultrasound",::ReadUltrasound)		  
           ::win.EnablePanel(::panel_ultrasound,0)
         ::win.EndBoxPanel()
         
         ::panel_camera = ::win.BeginBoxPanel("")
           ::win.AddButton("Start Camera",::ReadCamera)
           ::win.EnablePanel(::panel_camera,0)
-        ::win.EndBoxPanel()
-        
+        ::win.EndBoxPanel()     
+                     
         ::win.BeginBoxPanel("Images")
           ::win.BeginHorizontal()
             ::win.AddButton("Show Left",::LImageShow)
             ::win.AddButton("Show Right",::RImageShow)
-            ::win.AddButton("Show VTK",::RenderPlane)
           ::win.EndHorizontal()
         ::win.EndBoxPanel()
-        
-                
-        ::win.BeginBoxPanel("Coordenadas")
-                   
-          ::win.BeginHorizontal()
-                ::xpoint1 = ::win.AddLabel("XPoint1:","")
-          ::win.EndHorizontal()
-          ::win.BeginHorizontal()
-                ::xpoint2 = ::win.AddLabel("XPoint2:","")
-          ::win.EndHorizontal()
-          ::win.BeginHorizontal()
-                ::xpoint3 = ::win.AddLabel("XPoint3:","")
-          ::win.EndHorizontal()
-        ::win.EndBoxPanel()
-        
-        
+      
       ::win.AddPage("Render")
+        ::win.BeginBoxPanel("")
+            ::win.AddButton("Generate Grid",::GridFromData)
+        ::win.EndBoxPanel()
+        ::win.BeginBoxPanel("Grid Limits")
+            ::win.BeginHorizontal()
+                ::xmax = ::win.AddLabel("Xmax:","")
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+                ::xmin = ::win.AddLabel("Xmin:","")
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+                ::ymax = ::win.AddLabel("Ymax:","")
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+                ::ymin = ::win.AddLabel("Ymin:","")
+            ::win.EndHorizontal()
+             ::win.BeginHorizontal()
+                ::zmax = ::win.AddLabel("Zmax:","")
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+                ::zmin = ::win.AddLabel("Zmin:","")
+            ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+      
+       
       
       ::win.AddPage("Timer")
         #---------------- Timer
-        ::win.AddFloat(&::interval,"Interval",0.01,100)
-        ::win.BeginHorizontal()
-            ::icons.LoadIconPNG("Play")
-            ::AddBitmapButton(&::win, &::icons._Play, 32, "Start")
-            ::win.SetPositionProp(-1,0)
-
-            ::icons.LoadIconPNG2("Stop playing","Stop_playing")
-            ::AddBitmapButton(&::win, &::icons._Stop_playing, 32, "Stop")
-            ::win.SetPositionProp(-1,0)
-       ::win.EndHorizontal()
-       ::win.BeginBoxPanel("Started At:")
-        ::startdate_id = ::win.AddLabel("Date:","")
-        ::starttime_id = ::win.AddLabel("Time:","")
-       ::win.EndBoxPanel()
-       ::win.BeginBoxPanel("Elapsed Time")
-        ::label_id = ::win.AddLabel("","")
-      ::win.EndBoxPanel()
+        ::panel_timer = ::win.BeginBoxPanel("Elapsed Time")
+            ::win.AddFloat(&::interval,"Interval",0.1,100)
+            ::win.BeginHorizontal()
+                ::icons.LoadIconPNG("Play")
+                ::AddBitmapButton(&::win, &::icons._Play, 32, "Start")
+                ::win.SetPositionProp(-1,0)
+                ::icons.LoadIconPNG2("Stop playing","Stop_playing")
+                ::AddBitmapButton(&::win, &::icons._Stop_playing, 32, "Stop")
+                ::win.SetPositionProp(-1,0)
+            ::win.EndHorizontal()
+            ::win.EnablePanel(::panel_timer,0)
+        ::win.EndBoxPanel()
+        
+        ::win.BeginBoxPanel("Started At:")
+            ::startdate_id = ::win.AddLabel("Date:","")
+            ::starttime_id = ::win.AddLabel("Time:","")
+        ::win.EndBoxPanel()
+        
+        ::win.BeginBoxPanel("Elapsed Time")
+            ::ReadCameraTime_id = ::win.AddLabel("ReadCamera()","")
+            ::TimerTime_id  = ::win.AddLabel("CB_Timer()","")
+            ::readusTime_id = ::win.AddLabel("Read US","")
+            ::label_id = ::win.AddLabel("","")
+        ::win.EndBoxPanel()
+        
+        ::win.BeginBoxPanel("Coordenadas")
+            ::win.BeginHorizontal()
+                ::xpoint1 = ::win.AddLabel("XPoint1:","")
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+                ::xpoint2 = ::win.AddLabel("XPoint2:","")
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+                ::xpoint3 = ::win.AddLabel("XPoint3:","")
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+                ::frame = ::win.AddLabel("NFrame:","")
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+                ::fcount = ::win.AddLabel("Frame count:","")
+            ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        
+        ::panel_frames = ::win.BeginBoxPanel("Frames view")
+            ::frame_id = ::win.AddInt( &::n_frame,"N.Frame",1,100)
+            ::win.SetCallback(&::ShowFrame)
+            ::win.EnablePanel(::panel_frames,0)
+        ::win.EndBoxPanel()
         #------------------ end Timer  
         
     ::win.EndBook()
 
     ::AddStandardButtons(&::win)
-  
+     if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
     ::win.Update(-1)
-    ::win.Display()
+    #copy of VolRenClass.amil
+ #   ::win.Display()
+    ::MainBook_AddVTKRenTab()
+    
   }
   
   ::Init()

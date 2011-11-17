@@ -386,11 +386,13 @@ FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net richtext)
 
 OPTION(GENERATE_HTML_HELP "Generate HTML file help")
 
-SET(Need_Find_GTK FALSE)
-STRING(REGEX MATCH "__WXGTK__" FindGTKLib ${wxWidgets_DEFINITIONS})
-IF(FindGTKLib)
-  SET(Need_Find_GTK TRUE)
-ENDIF(FindGTKLib)
+IF(NOT WIN32)
+  SET(Need_Find_GTK FALSE)
+  STRING(REGEX MATCH "__WXGTK__" FindGTKLib ${wxWidgets_DEFINITIONS})
+  IF(FindGTKLib)
+    SET(Need_Find_GTK TRUE)
+  ENDIF(FindGTKLib)
+ENDIF(NOT WIN32)
 
 SET(AMI_WXWIDGETS_VERSION "AMI_WXWIDGETS_VERSION-NOTFOUND" )
 

@@ -22,6 +22,8 @@
 #include <vtkContextScene.h>
 #include <vtkContextView.h>
 #include <vtkCoordinate.h>
+#include <vtkCoordinate.h>
+#include <vtkCornerAnnotation.h>
 #include <vtkDirectory.h>
 #include <vtkDoubleArray.h>
 #include <vtkFieldData.h>
@@ -59,12 +61,17 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkProperty.h>
+#include <vtkProperty2D.h>
 #include <vtkRendererCollection.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkSliderWidget.h>
+#include <vtkSliderRepresentation2D.h>
+#include <vtkSliderRepresentation3D.h>
 #include <vtkSphereSource.h>
 #include <vtkTable.h>
+#include <vtkTextActor.h>
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
 #include <vtkTexturedSphereSource.h>

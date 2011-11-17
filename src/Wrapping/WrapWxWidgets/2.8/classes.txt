@@ -31,6 +31,7 @@ wxChoice
 wxClassInfo
 wxClientData
 wxClientDataContainer
+wxClientDC
 wxCmdLineParser
 wxCloseEvent
 wxColour

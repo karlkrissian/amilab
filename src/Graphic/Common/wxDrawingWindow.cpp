@@ -43,6 +43,7 @@
   #define PENSTYLE_SOLID wxSOLID 
 #endif
 
+#include <limits>
 
 enum {
   wxID_AddControlPoint = 2000,
@@ -111,6 +112,11 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
   _xaxis = _yaxis = 0;
   _xmin = _ymin = -10;
   _xmax = _ymax = 10;
+  
+  // set minimal range to 0.01
+  _min_xrange = 1E-2;
+  // set maximal range to 100 000
+  _max_xrange = 1E5;
 
   _draw_grid = true;
   _draw_linearCM=true;
@@ -415,10 +421,18 @@ void wxDrawingWindow::DrawCurve( dwCurve& curve )
   std::vector<dwPoint2D>::iterator it;
   wxCoord x1=0,y1=0,x2=0,y2=0;
 
+  wxCoord mincoord = std::numeric_limits< short >::min();
+  wxCoord maxcoord = std::numeric_limits< short >::max();
+
   for(it=_points.begin();it!=_points.end();it++)
   {
     // draw line from previous to current point
     World2Window(it->GetX(),it->GetY(),x2,y2);
+    // seems to be a problem with values out of 'short int' range
+    if (x2<mincoord) x2=mincoord;
+    if (x2>maxcoord) x2=maxcoord;
+    if (y2<mincoord) y2=mincoord;
+    if (y2>maxcoord) y2=maxcoord;
     if (curve.GetDrawLines())
       if (it!=_points.begin()) {
         DrawLine(x1,y1,x2,y2);
@@ -1321,8 +1335,13 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
 
     double zoom_factor  = exp( step*log2f(2));
   
-    _xmin = x - (x-_xmin)/zoom_factor;
-    _xmax = x + (_xmax - x)/zoom_factor;
+    double newxmin = x - (x-_xmin)/zoom_factor;
+    double newxmax = x + (_xmax - x)/zoom_factor;
+    double range=newxmax-newxmin;
+    if ((range>_min_xrange)&&(range<_max_xrange)) {
+      _xmin = newxmin;
+      _xmax = newxmax;
+    }
   }
 
 

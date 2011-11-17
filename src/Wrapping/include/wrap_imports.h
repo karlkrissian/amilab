@@ -17,6 +17,8 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
+
+
 /** function that adds an import object to import all the code wrapping
  */
 void AddWrapImports();
@@ -29,6 +31,7 @@ void AddWrapWxWidgets(AMIObject::ptr& obj);
 #ifdef AMI_WRAP_MICRONTRACKER
   void AddWrapMicronTracker();
   void AddWrapUltrasound();
+
 #endif
 
 
