@@ -201,6 +201,8 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
     case itk::ImageIOBase::UCHAR:  res = itkReadDICOMClass<unsigned char,  imdim>()(fileNames,WT_UNSIGNED_CHAR);   break; \
     case itk::ImageIOBase::USHORT: res = itkReadDICOMClass<unsigned short, imdim>()(fileNames,WT_UNSIGNED_SHORT);  break; \
     case itk::ImageIOBase::SHORT:  res = itkReadDICOMClass<signed short,   imdim>()(fileNames,WT_SIGNED_SHORT);    break; \
+    case itk::ImageIOBase::FLOAT:  res = itkReadDICOMClass<float,   imdim>()(fileNames,WT_FLOAT);    break; \
+    case itk::ImageIOBase::DOUBLE: res = itkReadDICOMClass<double,   imdim>()(fileNames,WT_DOUBLE);  break; \
     case itk::ImageIOBase::CHAR:    \
     case itk::ImageIOBase::UNKNOWNPIXELTYPE:  \
     default:  \
