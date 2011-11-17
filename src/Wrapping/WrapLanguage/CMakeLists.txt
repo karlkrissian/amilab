@@ -229,4 +229,6 @@ SET(WrapLanguage_SRCS
 #MESSAGE("WrapLanguage_SRCS =  ${WrapLanguage_SRCS}")
 
 my_add_library ( WrapLanguage)
+
 add_dependencies ( WrapLanguage WrapWxWidgets)
+
