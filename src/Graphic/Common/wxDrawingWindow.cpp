@@ -88,18 +88,25 @@ END_EVENT_TABLE();
 wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style,
     const wxString& name)
-    : wxScrolledWindow(parent, id, pos, size, style
+    :
+#ifdef __APPLE__
+  wxWindow(parent,id,pos,size,style)
+#else
+  wxScrolledWindow(parent, id, pos, size, style
     |wxFULL_REPAINT_ON_RESIZE
     //|wxDOUBLE_BORDER
     |wxBORDER_RAISED
     | wxHSCROLL | wxVSCROLL
     , 
     name) 
+#endif
 {
   this->_linearCM_uptodate = false;
   
+#ifndef __APPLE__
   this->SetScrollbars(3,3,10,10);
   this->EnableScrolling(true,true);
+#endif
 
   _focus_point.reset();
   _focus_pointset.reset();
@@ -139,7 +146,7 @@ void wxDrawingWindow::DrawingAreaInit( )
 
   int w = this->GetClientSize().GetWidth();
   int h = this->GetClientSize().GetHeight();
-
+  
   // wx way
   scoped_ptr<wxBitmap> bitmap(new wxBitmap( w,h,-1));
   swap(_bitmap,bitmap);
@@ -740,7 +747,7 @@ void wxDrawingWindow::DrawLinearCM(  )
         p_post.SetPos(p_post.GetX()+e,0.0);
         points.insert(points.begin(),p_ant);
         points.push_back(p_post);
-        std::cout<< "Add limits = " << points_ptr->size() << " " << points.size() << std::endl;
+        //std::cout<< "Add limits = " << points_ptr->size() << " " << points.size() << std::endl;
       }
 
       int cmpt_id   = 0; // colormap point id
@@ -970,10 +977,16 @@ void wxDrawingWindow::DrawingAreaDisplay( bool in_paint)
         dc = new wxPaintDC(this);
       else
         dc = new wxClientDC(this);
+#ifndef __APPLE__
+      PrepareDC(*dc);
+#endif
+
+      //std::cout << " in paint " << in_paint << "  dc size is " << dc->GetSize().GetWidth() << "x" << dc->GetSize().GetHeight() << std::endl;
       if (dc->IsOk()) {
         #if AMI_USE_wxGC
           dc->DrawBitmap(*_bitmap,0,0);
         #else
+          //std::cout << "Blit to dc " << std::endl;
           dc->Blit(0,0,
             _memory_dc->GetSize().GetWidth(),
             _memory_dc->GetSize().GetHeight(),
@@ -1029,12 +1042,15 @@ void wxDrawingWindow::Paint( bool in_paint)
 //-------------------------------------------------
 void wxDrawingWindow::OnPaint(wxPaintEvent& event)
 {
-  //std::cout << "OnPaint" << std::endl;
+  //std::cout << "-- OnPaint begin" << std::endl;
   wxPaintDC pdc(this);
-  PrepareDC(pdc);
-
+#ifndef __APPLE__
+  PrepareDC(*dc);
+#endif
+  
   Paint(true);
   event.Skip();
+  //std::cout << "-- OnPaint end" << std::endl;
 }
 
 //-------------------------------------------------
@@ -1058,7 +1074,10 @@ void wxDrawingWindow::OnLeftUp( wxMouseEvent& event)
 void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
 {
   wxClientDC dc(this);
-
+#ifndef __APPLE__
+  PrepareDC(*dc);
+#endif
+  
   _mouse_x = (int)event.GetX();
   _mouse_y = (int)event.GetY();
 
@@ -1170,7 +1189,10 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
   if (_within_popupmenu) return;
   
   wxClientDC dc(this);
-
+#ifndef __APPLE__
+  PrepareDC(*dc);
+#endif
+  
   int oldmouse_x = _mouse_x;
   int oldmouse_y = _mouse_y;
   _mouse_x = (int)event.GetX();
@@ -1315,7 +1337,10 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
     _linearCM_uptodate = false;
   } else {
     wxClientDC dc(this);
-  
+#ifndef __APPLE__
+    PrepareDC(*dc);
+#endif
+    
     _mouse_x = (int)event.GetX();
     _mouse_y = (int)event.GetY();
     double x,y;
