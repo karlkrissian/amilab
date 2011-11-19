@@ -1045,7 +1045,7 @@ void wxDrawingWindow::OnPaint(wxPaintEvent& event)
   //std::cout << "-- OnPaint begin" << std::endl;
   wxPaintDC pdc(this);
 #ifndef __APPLE__
-  PrepareDC(*dc);
+  PrepareDC(pdc);
 #endif
   
   Paint(true);
@@ -1075,7 +1075,7 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
 {
   wxClientDC dc(this);
 #ifndef __APPLE__
-  PrepareDC(*dc);
+  PrepareDC(dc);
 #endif
   
   _mouse_x = (int)event.GetX();
@@ -1190,7 +1190,7 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
   
   wxClientDC dc(this);
 #ifndef __APPLE__
-  PrepareDC(*dc);
+  PrepareDC(dc);
 #endif
   
   int oldmouse_x = _mouse_x;
@@ -1338,7 +1338,7 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
   } else {
     wxClientDC dc(this);
 #ifndef __APPLE__
-    PrepareDC(*dc);
+    PrepareDC(dc);
 #endif
     
     _mouse_x = (int)event.GetX();
