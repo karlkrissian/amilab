@@ -18,6 +18,8 @@ conf_platform = conf_platform.strip()
 system_name=platform.system().strip()
 
 # Create the system configuration filename
+
+# ---Linux Systems---
 if conf_platform =='config_Linux':
   linuxdist= platform.linux_distribution()
   conf_dist     = 'config_{0}_{1}'.format(system_name,linuxdist[0].strip())
@@ -26,12 +28,15 @@ if conf_platform =='config_Linux':
   import packagekit_wrapper
   import dbus
 
+#---Windows Systems---
 if conf_platform =='config_Windows':
   winver = platform.win32_ver()
   conf_dist     = 'config_{0}_{1}'.format(system_name,winver[0])
   conf_distnum  = 'config_{0}_{1}_{2}'.format(system_name,winver[0],winver[1])
   # set 32 or 64bits info?
-  
+ 
+#---Darwin Systems---
+ 
 conf_dist     = conf_dist    .replace('.','_')
 conf_dist     = conf_dist.strip()
 conf_distnum  = conf_distnum .replace('.','_')
@@ -56,6 +61,8 @@ def cb(status, pc, spc, el, rem, c):
   print 'install pkg: %s, %i%%, cancel allowed: %s' % (status, pc, str(c))
   return True # return False to cancel
         
+
+#------------------------------------------------------------------------
 def installer_install_Linux_openSUSE(packages):
   for pkg in packages.split():
     os.system('sudo zypper -n install {0}'.format(pkg))
@@ -65,7 +72,6 @@ def installer_install_Linux_debian(packages):
   for pkg in packages.split():
     pkg_list += ' '+pkg
   os.system('su -c "apt-get -y install {0}"'.format(pkg_list))
-  
 
 def installer_install_Linux(packages):
   # packagekit not working in opensuse: getting stuck ...
@@ -96,6 +102,8 @@ def installer_install_Linux(packages):
         #  pk.InstallPackages(pkgs,cb)
       pk.SuggestDaemonQuit()
 
+
+#------------------------------------------------------------------------
 def installer_install_Windows(packages):
   for pkg in packages.split():
     installer=os.getcwd()+"/{0}_WININSTALL.py".format(pkg)
@@ -107,12 +115,26 @@ def installer_install_Windows(packages):
     else:
       print "ERROR: No Windows installer for {0}".format(pkg)
 
+#------------------------------------------------------------------------
+def installer_install_Darwin(packages):
+  for pkg in packages.split():
+    installer=os.getcwd()+"/{0}_MACINSTALL.py".format(pkg)
+    if os.access(installer, os.R_OK):
+      #print os.getcwd()
+      print "running python "+installer
+      #os.system("python "+installer)
+      execfile(installer)
+    else:
+      print "ERROR: No Windows installer for {0}".format(pkg)
 
+#------------------------------------------------------------------------
 def installer_install(packages):
   if conf_platform=='config_Linux':
     installer_install_Linux(packages)
   if conf_platform=='config_Windows':
     installer_install_Windows(packages)
+  if conf_platform=='config_Darwin':
+    installer_install_Darwin(packages)
     
 
 #------------------------------------------------------------------------
