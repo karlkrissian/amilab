@@ -6,6 +6,8 @@ def PreInstall():
   print " Installing packagekit"
   print "--------------------------------------"
   os.system("sudo zypper install packagekit")
+  os.system("sudo zypper install python-gobject-devel")
+  os.system("sudo zypper install python-gobject2")
 
 def SetConfig():
   config.PYSVN_PACKAGES       = "python-pysvn"
