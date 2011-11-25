@@ -1,0 +1,5 @@
+wxURL
+wxStringInputStream
+wxStringOutputStream
+wxFileInputStream
+wxFileOutputStream

@@ -1,0 +1,10 @@
+
+del DownloadDataPlugin
+func "DownloadDataPlugin"
+
+if (!exists(DownloadData_obj)) {
+  DownloadDataPlugin DownloadData_obj
+  DownloadData_obj.Load()
+} else {
+  InfoDialog "The script class DownloadDataPlugin to be already instanciated." 
+}

@@ -155,10 +155,10 @@ proc CopyDir(STRING _from, STRING _to) \
         }
         # and get the next file
         process = nextDir.GetNext(&nextFile);
+      }
+      i++
+      processdirs = (i<myDirs.size())
     }
-    i++
-    processdirs = (i<myDirs.size())
-  }
   
     return=true
   }
@@ -168,7 +168,7 @@ proc CopyDir(STRING _from, STRING _to) \
 
 
 #-------------------------------------------------------------------------------
-Class CopyDirAndReplace 
+Class CopyDirAndReplace \
 {
 
   #-------------------------------------
