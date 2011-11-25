@@ -7,3 +7,4 @@ ami.MainFrame.AddToMenu("&Modules","&DownloadData","&ReLoad",  "../Modules/Downl
 #if exists(global::scripts_toolbar) {
 #  global::scripts_toolbar.AddSeparator()
 #}
+func "URLLoad/Add2Menu.amil"

@@ -126,10 +126,10 @@ SET(${KIT}_SRCS
 
 SET( ${KIT}_LIBRARY_OUTPUT_DIRECTORY  ${AMILab_BINARY_DIR}/lib/amilab-${AMILAB_VERSION}/plugin/)
 
-CONFIGURE_FILE(
-    ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/dllpath.amil.in 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/dllpath.amil
-    )
+# CONFIGURE_FILE(
+#     ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/dllpath.amil.in 
+#     ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/dllpath.amil
+#     )
 
 
 SET(amilab_ownlibs

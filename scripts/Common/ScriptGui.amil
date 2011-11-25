@@ -95,7 +95,7 @@ if (!exists(ScriptGui)) \
     {
       size = 16
       bmp = wx.wxBitmap(&icon_im.Scale(size,size))
-      eval "::%1%_but_id = win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
+      eval "::%1%_but_id = ::win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
     }
 
     #------------------------------------
