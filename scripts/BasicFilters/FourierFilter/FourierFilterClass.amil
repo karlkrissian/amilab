@@ -114,9 +114,8 @@ if (!exists(FourierFilterClass)) {
         ::win = ParamPanel("FourierFilter")
       }
       
-      ::win.BeginBook()
     
-        ::win.AddPage("Init")
+      #  ::win.AddPage("Init")
 
           ::win.BeginBoxPanel("Input Image")
             # set the input image
@@ -126,6 +125,7 @@ if (!exists(FourierFilterClass)) {
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
+      ::win.BeginBook()
         ::win.AddPage("Param")
           #::win.AddLabel("Info:","Set your parameters here")
           ::win.AddFloat(&::Threshold,"Filter param",0,512)
@@ -156,12 +156,12 @@ if (!exists(FourierFilterClass)) {
           ::win.AddWidget(&::dw,0)
          
 
-        ::win.AddPage("Run")
-          ::win.AddButton("Run Filter",::Run)
+        #::win.AddPage("Run")
     
         #::AddHelpPage(&::win)
     
       ::win.EndBook()
+      ::win.AddButton("Run Filter",::Run)
     
       ::AddStandardButtons(&::win)
 

@@ -10,3 +10,5 @@ ami.MainFrame.AddToMenu("&Scripts","&IO","&itk DICOM","IO/itkDICOM/itkDICOM.amil
 
 # ITK
 ami.MainFrame.AddToMenu("&ITK","&IO","&DICOM","IO/itkDICOM/itkDICOM.amil")
+ ami.MainFrame.AddToMenu("&Scripts","&IO","&SaveAs",  "IO/SaveAs/SaveAsGui")
+
