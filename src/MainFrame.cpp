@@ -78,7 +78,8 @@ AMILab_VAR_IMPORT wxConfig*   GB_Config;
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts  Vars;
 
-
+// limit the recursions since we don't check for loops
+#define MAX_VARTREE_LEVEL 10
 
 // in function.cpp
 int AskScript(std::string& name);
@@ -1651,9 +1652,17 @@ void MainFrame::UpdateVarList()
 
 
 //-----------------------------------------------------
+/**
+ * @brief Update the information in the variable tree control, recursive.
+ *
+ * @param rootbranch ...
+ * @param context ...
+ * @return void
+ **/
 void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch, 
-                                Variables::ptr context)
+                                Variables::ptr context, int rec_level)
 {
+  if (rec_level>MAX_VARTREE_LEVEL) return;
 
   // delete children of root
   _var_tree->DeleteChildren(rootbranch);
@@ -1835,7 +1844,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
         AMIObject::ptr obj( varobj->Pointer());
         // create the tree by recursive call
-        this->UpdateVarTree(itemid, obj->GetContext());
+        this->UpdateVarTree(itemid, obj->GetContext(),rec_level+1);
       }
     } // end if var.get()
 
@@ -2530,10 +2539,10 @@ void MainFrame::UpdateVarsDisplay()
 
   _var_tree->Expand(  _vartree_root);
 
-  UpdateVarTree(_vartree_global, Vars.GetCurrentContext());
+  UpdateVarTree(_vartree_global, Vars.GetCurrentContext(),0);
   _var_tree->Expand(  _vartree_global);
 
-  UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext());
+  UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext(),0);
   _var_tree->Expand(  _vartree_builtin);
 #endif
 /// @endcond

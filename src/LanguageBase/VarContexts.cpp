@@ -168,22 +168,30 @@ boost::shared_ptr<wxArrayString> VarContexts::SearchVariables(const vartype type
     _builtin_context->SearchVariables(type,completions);
   } else {
     // global context, prepend "global::"
-    SearchVariablesRecursive(type,completions,_context[0],_T("global::"));
+    SearchVariablesRecursive(type,completions,_context[0],_T("global::"),0);
 
     // global context, prepend "global::"
-    SearchVariablesRecursive(type,completions,_builtin_context,_T(""));
+    SearchVariablesRecursive(type,completions,_builtin_context,_T(""),0);
     
   }
 
   return completions;
 }
 
+#define MAX_RECURSION_LEVEL 10
+
 //--------------------------------------------------
 void VarContexts::SearchVariablesRecursive( const vartype& type,
                                    boost::shared_ptr<wxArrayString>& variables,
                                    const Variables::ptr& context,
-                                   wxString const & prefix ) const
+                                   wxString const & prefix,
+                                   int rec_level
+                                          ) const
 {
+  if (rec_level>MAX_RECURSION_LEVEL) {
+    CLASS_ERROR("Maximum level of recursion reached!")
+    return;
+  }
   wxString new_prefix;
 
   for(int i=0;i<(int)context->GetSize();i++) {
@@ -200,7 +208,8 @@ void VarContexts::SearchVariablesRecursive( const vartype& type,
           DYNAMIC_CAST_VARIABLE(AMIObject,m_var,varobj);
           AMIObject::ptr obj( varobj->Pointer());
           new_prefix = prefix + wxString(m_var->Name().c_str(), wxConvUTF8) + wxT(".");
-          SearchVariablesRecursive(type, variables, obj->GetContext(), new_prefix);
+          SearchVariablesRecursive(type, variables, obj->GetContext(), 
+                                   new_prefix, rec_level+1);
         }
       }
     }
@@ -220,10 +229,15 @@ boost::shared_ptr<wxArrayString> VarContexts::SearchAMIObjectTypeVariables(const
 
 //--------------------------------------------------
 void VarContexts::SearchAMIObjectTypeVariablesRecursive( const std::string & type_string,
-                      boost::shared_ptr<wxArrayString>& variables,
-                      const Variables::ptr& context,
-                      wxString const & prefix) const
+                                    boost::shared_ptr<wxArrayString>& variables,
+                                    const Variables::ptr& context,
+                                    wxString const & prefix,
+                                    int rec_level) const
 {
+  if (rec_level>MAX_RECURSION_LEVEL) {
+    CLASS_ERROR("Maximum level of recursion reached!")
+    return;
+  }
   wxString new_prefix;
   
   for(int i=0;i<(int)context->GetSize();i++) {
@@ -243,7 +257,11 @@ void VarContexts::SearchAMIObjectTypeVariablesRecursive( const std::string & typ
           }
         }// if(TheObject.get())
         new_prefix += wxT(".");
-        SearchAMIObjectTypeVariablesRecursive(type_string, variables, obj->GetContext(), new_prefix);
+        SearchAMIObjectTypeVariablesRecursive(type_string, variables, 
+                                              obj->GetContext(), 
+                                              new_prefix,
+                                              rec_level+1
+                                             );
       } // if (m_var->Type() == type_ami_object)      
     } //if (m_var.get())
   } //for

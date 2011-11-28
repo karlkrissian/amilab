@@ -215,7 +215,8 @@ public:
 
   void UpdateVarList();
 
-  void UpdateVarTree( const wxTreeItemId& rootbranch, Variables::ptr context);
+  void UpdateVarTree( const wxTreeItemId& rootbranch, Variables::ptr context,
+                      int rec_level );
 
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))

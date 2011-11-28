@@ -136,7 +136,9 @@ public:
   void SearchVariablesRecursive( const vartype& type,
                         boost::shared_ptr<wxArrayString>& variables,
                         const Variables::ptr& context,
-                        wxString const & prefix) const;
+                        wxString const & prefix,
+                        int rec_level=0
+                               ) const;
 
   /**
    * \brief Search all AMIObject variables of a given type.
@@ -148,7 +150,9 @@ public:
   void SearchAMIObjectTypeVariablesRecursive( const std::string & type_string,
                         boost::shared_ptr<wxArrayString>& variables,
                         const Variables::ptr& context,
-                        wxString const & prefix) const;
+                        wxString const & prefix,
+                        int rec_level=0
+                                            ) const;
 
   /**
   * 

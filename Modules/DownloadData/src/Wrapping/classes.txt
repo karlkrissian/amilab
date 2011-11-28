@@ -1,6 +1,9 @@
-wxURL
-wxStringInputStream
-wxStringOutputStream
+wxFileDialog
 wxFileInputStream
 wxFileOutputStream
-wxFileDialog
+wxMemoryInputStream
+wxMemoryOutputStream
+wxStringInputStream
+wxStringOutputStream
+wxTextFile
+wxURL
