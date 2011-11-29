@@ -39,7 +39,7 @@ MESSAGE( "VTK_FOUND=${VTK_FOUND}")
 #   INCLUDE(${ITK_USE_FILE})
 # ENDIF(ITK_FOUND)
 
-FIND_PACKAGE( wxWidgets REQUIRED COMPONENTS adv  core base )
+FIND_PACKAGE( wxWidgets REQUIRED COMPONENTS adv  core base net )
 
 # default boost parameters
 OPTION(Boost_USE_STATIC_LIBS "Use Boost static libraries" ON)
@@ -60,8 +60,8 @@ INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 
 
 FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
-FIND_PACKAGE( ZLIB)
-FIND_PACKAGE( BZip2)
+#FIND_PACKAGE( ZLIB)
+#FIND_PACKAGE( BZip2)
 
 
 add_subdirectory (src)

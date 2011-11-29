@@ -133,11 +133,12 @@ SET( ${KIT}_LIBRARY_OUTPUT_DIRECTORY  ${AMILab_BINARY_DIR}/lib/amilab-${AMILAB_V
 
 
 SET(amilab_ownlibs
-  LanguageBase
-  Common
-  CommonBase
-  WrapCommon
-  Algorithms
+  ${LanguageBase}
+  ${Common}
+  ${CommonBase}
+  ${WrapCommon}
+  ${WrapWxWidgets}
+  #${Algorithms}
 )
 
 
