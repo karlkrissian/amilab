@@ -36,7 +36,7 @@
 #include "vtk_common.h"
 
 // Only one execution of curv at a time
-static shared_ptr<vtkLevelSets> curv;
+static boost::shared_ptr<vtkLevelSets> curv;
 static vtkImageData_ptr image_input;
 static vtkImageData_ptr velocity;
 static vtkImageData_ptr expansion_image;

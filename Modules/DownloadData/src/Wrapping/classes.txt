@@ -6,4 +6,4 @@ wxMemoryOutputStream
 wxStringInputStream
 wxStringOutputStream
 wxTextFile
-wxURL
+# wxURL

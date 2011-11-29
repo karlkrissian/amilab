@@ -24,6 +24,7 @@
 #include <wx/cmdline.h>
 #include <wx/scrolwin.h>
 #include <wx/timer.h>
+#include <wx/url.h>
 
 #ifdef __GCCXML__
   // declare classes to instantiate them

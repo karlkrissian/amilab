@@ -238,7 +238,7 @@ if (!exists(URLLoadClass)) {
     #---------------------------------------------------------------------------
     proc ::URL2File( STRING urlstr, STRING fname) \
     {
-      url = wxURL(urlstr)
+      url = wx.wxURL(urlstr)
       if url.IsOk() {
         in_st = url.GetInputStream()
         if (in_st.IsOk()) {
@@ -264,7 +264,7 @@ if (!exists(URLLoadClass)) {
     proc ::URL2Icon( STRING urlstr, STRING varname) \
     {
       icon_filename = op_system.GetCurrentScriptDir()+"/%1%_32x32.png" % varname
-      url = wxURL(urlstr)
+      url = wx.wxURL(urlstr)
       if url.IsOk() {
         in_st = url.GetInputStream()
         # write to a MemoryOutputStream
@@ -348,6 +348,7 @@ if (!exists(URLLoadClass)) {
     proc ::ReadImage( NUM saveicon) \
     {
       wx_fname = wx.wxFileName.CreateTempFileName(::output_filename)
+      wx_fname.Replace("\\","/")
       fname = wx.FromWxString(wx_fname)
       SetStatusText("temporary file is "+fname)
       ::URL2File(::url_name,fname)

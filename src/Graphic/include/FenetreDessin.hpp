@@ -80,13 +80,13 @@
 #define CREATE_TOPLEVEL_SHELL   3
 
 #include <boost/scoped_ptr.hpp>
-using namespace boost;
+//using namespace boost;
 
-typedef shared_ptr<wxBitmap>    wxBitmap_ptr;
-typedef shared_ptr<wxImage>    wxImage_ptr;
-typedef shared_ptr<wxMemoryDC>  wxMemoryDC_ptr;
-typedef shared_ptr<wxBrush>     wxBrush_ptr;
-typedef shared_ptr<wxPen>       wxPen_ptr;
+typedef boost::shared_ptr<wxBitmap>    wxBitmap_ptr;
+typedef boost::shared_ptr<wxImage>    wxImage_ptr;
+typedef boost::shared_ptr<wxMemoryDC>  wxMemoryDC_ptr;
+typedef boost::shared_ptr<wxBrush>     wxBrush_ptr;
+typedef boost::shared_ptr<wxPen>       wxPen_ptr;
 
 //=====================================================================
 class FenetreDessin:  public wxFrame
@@ -123,13 +123,13 @@ protected:
 
   /// wx way of drawing
   /// device context in memory
-  scoped_ptr<wxMemoryDC> _memory_dc;
+  boost::scoped_ptr<wxMemoryDC> _memory_dc;
   /// device context in memory
-  scoped_ptr<wxBitmap>   _bitmap; 
+  boost::scoped_ptr<wxBitmap>   _bitmap; 
   /// current brush
-  scoped_ptr<wxBrush>   _current_brush;
+  boost::scoped_ptr<wxBrush>   _current_brush;
   /// current pen
-  scoped_ptr<wxPen>     _current_pen;
+  boost::scoped_ptr<wxPen>     _current_pen;
 
 
   unsigned char _fenetre_affichee;

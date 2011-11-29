@@ -128,7 +128,7 @@
 
 
 #include <boost/shared_ptr.hpp>
-using namespace boost;
+//using namespace boost;
 
 #ifdef _MSC_VER
   #pragma warning( disable : 4290 )
@@ -137,7 +137,7 @@ using namespace boost;
 #ifndef _WITHOUT_VTK_
 // avoiding including vtk files for faster compilation ...
 class vtkImageData;
-typedef shared_ptr<vtkImageData>  vtkImageData_ptr;
+typedef boost::shared_ptr<vtkImageData>  vtkImageData_ptr;
 #endif // _WITHOUT_VTK_
 
 /*

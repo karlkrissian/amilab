@@ -462,6 +462,7 @@ AMI_DECLARE_TYPE_EXPORT(VarArray);
 #endif
 */
 
+
 //----------------------------------------------------------------------
 /**
  * Define one variable, which contains a generic pointer (void*) to a smart pointer
@@ -552,7 +553,6 @@ public:
     return res;
   }
 
-
   int GetPtrCounter() const
   {
     return _pointer.use_count();
@@ -584,7 +584,8 @@ public:
    * Copy of variables
    * @param v 
    */
-  void operator = (const ptr& v) {
+  void operator = (const ptr& v) 
+  {
      (*this) = (*v);
       /*
       _type         = v->_type;
@@ -633,7 +634,8 @@ public:
     else return false;
   }
 
-  bool operator == (const Variable<T>& v) {
+  bool operator == (const Variable<T>& v) 
+  {
       return ((_type     == v._type) &&
               (_name     == v._name) &&
               (_comments == v._comments) &&
@@ -916,6 +918,8 @@ public:
 
 }; // class Variable
 
+
+
 template<class T>  
 std::ostream& operator<<(std::ostream& o, const Variable<T>& v);
 
@@ -938,7 +942,9 @@ class CastVariable: public CastVariableBase
 };
 */
 
-#include "Variable.tpp"
+#ifndef __GCCXML__
+  #include "Variable.tpp"
+#endif // __GCCXML__
 
 //#include "Variable.cpp"
 
@@ -965,16 +971,19 @@ class VarArray;
 #define VAR_DECL_FUNC(type,fname) \
 template<> BasicVariable::ptr Variable<type>::m_##fname();
 
-#include "Variable_float.h"
-#include "Variable_bool.h"   /// New (added: 19/11/2010)
-#include "Variable_double.h" /// New (added: 24/05/2010)
-#include "Variable_long.h"   /// New (added: 27/05/2010)
-#include "Variable_int.h"
-#include "Variable_uchar.h"
-#include "Variable_InrImage.h"
-#include "Variable_string.h"
-#include "Variable_FloatMatrix.h"
-#include "Variable_AMIObject.h"
+// Cannot wrap those lines in GCCXML: internal compiler error
+#ifndef __GCCXML__ 
+  #include "Variable_float.h"
+  #include "Variable_bool.h"   /// New (added: 19/11/2010)
+  #include "Variable_double.h" /// New (added: 24/05/2010)
+  #include "Variable_long.h"   /// New (added: 27/05/2010)
+  #include "Variable_int.h"
+  #include "Variable_uchar.h"
+  #include "Variable_InrImage.h"
+  #include "Variable_string.h"
+  #include "Variable_FloatMatrix.h"
+  #include "Variable_AMIObject.h"
+#endif //__GCCXML__
 
 template<> std::string Variable<WrapClassMember>::TreeCtrlInfo() const;
 /*
@@ -982,6 +991,5 @@ template<> std::string Variable<WrapClassMember>::TreeCtrlInfo() const;
   return Pointer()->GetDescription();
 };
 */
-
 
 #endif

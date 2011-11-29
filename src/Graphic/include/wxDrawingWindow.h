@@ -102,11 +102,11 @@ class wxDrawingWindow : public wxScrolledWindow
   bool _previous_crosshair;
 
   /// Initial device context in memory
-  scoped_ptr<wxMemoryDC> _init_memory_dc;
+  boost::scoped_ptr<wxMemoryDC> _init_memory_dc;
   /// device context in memory, is a Graphical Context if available
-  scoped_ptr<wxDC>       _memory_dc;
+  boost::scoped_ptr<wxDC>       _memory_dc;
   /// device context in memory
-  scoped_ptr<wxBitmap>   _bitmap; 
+  boost::scoped_ptr<wxBitmap>   _bitmap; 
 
 
   // Callback for the control point motion

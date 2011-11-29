@@ -101,7 +101,8 @@ ELSE(GCCXML_CMD_RESULT)
 #   IF(MYCOMMAND_2_RESULT)
 #     WRAP_MESSAGE(SEND_ERROR "Failed the generation of ANCESTORS file: ${MYCOMMAND_2_ERROR} - ${MYCOMMAND_2_RESULT}")
 #   ELSE(MYCOMMAND_2_RESULT)
-    WRAP_MESSAGE("Generated ANCESTORS file: ancestors_result = ${ancestors_result}")
+    #WRAP_
+    MESSAGE("Generated ANCESTORS file: ancestors_result = ${ancestors_result}")
 
     IF(EXISTS ${ANCESTORS_FILE})
       FILE(READ "${ANCESTORS_FILE}" ancestors_txt)

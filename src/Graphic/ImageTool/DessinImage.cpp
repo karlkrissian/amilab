@@ -894,13 +894,13 @@ void DessinImage::InitPositionImages( )
   largeur = _largeur - _colorbar_width;
   hauteur = _hauteur;
 
-  if (GB_debug) std::cerr << format(" (%d %d) --> (%d %d ) ") %_largeur %_hauteur % largeur%hauteur << std::endl;
+  if (GB_debug) std::cerr << boost::format(" (%d %d) --> (%d %d ) ") %_largeur %_hauteur % largeur%hauteur << std::endl;
 
   Pour(i,0,2)
     h_margin[i] = _right_margin[i]  + _left_margin[i];
     v_margin[i] = _top_margin[i]    + _bottom_margin[i];
 
-  if (GB_debug) std::cerr << format("i= %d  hmargin %d vmargin %d ")
+  if (GB_debug) std::cerr << boost::format("i= %d  hmargin %d vmargin %d ")
       % i % h_margin[i]% v_margin[i] << std::endl;
 
   FinPour
@@ -4794,7 +4794,7 @@ void DessinImage::Paint( unsigned char affiche)
   _in_paint=1;
 
   Si GB_debug AlorsFait
-    std::cerr << format("\n **********\n \t DessinImage::Paint(%s)\t begin %d %d \n")
+    std::cerr << boost::format("\n **********\n \t DessinImage::Paint(%s)\t begin %d %d \n")
              % (char*)_name
              % _hauteur
              % _largeur

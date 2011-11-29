@@ -417,8 +417,8 @@ void DessinImageBase::UpdateStatusIntensity( int x, int y, int z)
 //                    ---------------------
 {
   if (!_image->CoordOK(x,y,z)) {
-    std::cerr << format("%1%::UpdateStatusIntensity( %2%, %3%, %4%)") % get_name() % x % y % z;
-    std::cerr << format("\t position out of image definition \n");
+    std::cerr << boost::format("%1%::UpdateStatusIntensity( %2%, %3%, %4%)") % get_name() % x % y % z;
+    std::cerr << boost::format("\t position out of image definition \n");
     return;
   }
 
@@ -426,7 +426,7 @@ void DessinImageBase::UpdateStatusIntensity( int x, int y, int z)
 
   if ((_image->_format == WT_RGB)||
       (_image->_format == WT_RGBA)) {
-    intensity_string = str(format("%1% %2% %3%")
+    intensity_string = str(boost::format("%1% %2% %3%")
            % (int)(*_image)(x,y,z,0)
            % (int)(*_image)(x,y,z,1)
            % (int)(*_image)(x,y,z,2));
@@ -434,10 +434,10 @@ void DessinImageBase::UpdateStatusIntensity( int x, int y, int z)
     float valeur = (*_image)(x,y,z);
     switch ( _image->_format ){
       case WT_DOUBLE:
-        intensity_string = str(format("%1%") % (FORMAT_DOUBLE) valeur);
+        intensity_string = str(boost::format("%1%") % (FORMAT_DOUBLE) valeur);
       break;
       case WT_FLOAT:
-        intensity_string = str(format("%1%") % (FORMAT_FLOAT) valeur);
+        intensity_string = str(boost::format("%1%") % (FORMAT_FLOAT) valeur);
       break;
 
       case WT_UNSIGNED_CHAR:
@@ -445,7 +445,7 @@ void DessinImageBase::UpdateStatusIntensity( int x, int y, int z)
       case WT_SIGNED_SHORT:
       case WT_SIGNED_INT:
       case WT_UNSIGNED_INT:
-        intensity_string = str(format("%1%") % (int) valeur);
+        intensity_string = str(boost::format("%1%") % (int) valeur);
       break;
       default: ;
     } // end switch
@@ -1673,13 +1673,13 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
       if ((current_value%text_pixel_step) == 0) {
         Ligne((int)px,(int)py,(int)px,(int)(py-large_tick_size-1));
         switch(unit_scale) {
-          case 1: num_str = str(format("%1%")%(current_value/10.0));
+          case 1: num_str = str(boost::format("%1%")%(current_value/10.0));
           break;
-          case 2: num_str = str(format("%1%")%(current_value/100.0));
+          case 2: num_str = str(boost::format("%1%")%(current_value/100.0));
           break;
-          case 3: num_str = str(format("%1%")%(current_value/1000.0));
+          case 3: num_str = str(boost::format("%1%")%(current_value/1000.0));
           break;
-          default:num_str = str(format("%1%")%current_value);
+          default:num_str = str(boost::format("%1%")%current_value);
         }
 
         /*
@@ -1733,13 +1733,13 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
       if ((current_value%text_pixel_step) == 0) {
         Ligne((int) px,(int) py,(int) (px-large_tick_size-1),(int) py);
         switch(unit_scale) {
-          case 1: num_str = str(format("%1%")%(current_value/10.0));
+          case 1: num_str = str(boost::format("%1%")%(current_value/10.0));
           break;
-          case 2: num_str = str(format("%1%")%(current_value/100.0));
+          case 2: num_str = str(boost::format("%1%")%(current_value/100.0));
           break;
-          case 3: num_str = str(format("%1%")%(current_value/1000.0));
+          case 3: num_str = str(boost::format("%1%")%(current_value/1000.0));
           break;
-          default:num_str = str(format("%1%")%current_value);
+          default:num_str = str(boost::format("%1%")%current_value);
         }
         /*
         switch ( Param._axes_info ){
