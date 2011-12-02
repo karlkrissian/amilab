@@ -72,6 +72,17 @@ if (!exists(URLLoadClass)) {
         
       ::html_filename = GetScriptsDir+"/URLLoad/Doc/URLLoad/index.html"
 
+      sp = wx.wxStandardPathsBase.Get()
+      user_app_path = wx.FromWxString(sp.GetUserLocalDataDir())
+      if !wx.wxDir.Exists(user_app_path) {
+        wx.wxFileName.Mkdir(user_app_path)
+      }
+
+      ::user_script_path = user_app_path + "/URLLoad"
+      if !wx.wxDir.Exists(::user_script_path) {
+        wx.wxFileName.Mkdir(::user_script_path)
+      }
+
     }
 
 
@@ -126,9 +137,16 @@ if (!exists(URLLoadClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::IconFileName( STRING imname ) \
+    {
+      return = ::user_script_path+"/%1%_32x32.png" % imname
+    }
+
+
+    #---------------------------------------------------------------------------
     proc ::LoadImageIcon( STRING imname ) \
     {
-      icon_filename = op_system.GetCurrentScriptDir()+"/%1%_32x32.png" % imname
+      icon_filename = ::IconFileName(imname)
       if wx.wxFileName(icon_filename).FileExists() {
         eval "::%1%_icon = wx.wxImage(icon_filename);" % imname
         return=true
@@ -193,8 +211,7 @@ if (!exists(URLLoadClass)) {
         imname = ::sipi_misc[n]
         varname = ::Im2Var_sipi_misc(::sipi_misc[n])
         # 1. check if the icon exists
-        icon_filename = op_system.GetCurrentScriptDir()+\
-                        "/%1%_32x32.png" % varname
+        icon_filename = ::IconFileName(varname)
         if !wx.wxFileName(icon_filename).FileExists() {
           # preview link
           SetStatusText(  " getting file %1%  " % varname + \
@@ -263,7 +280,7 @@ if (!exists(URLLoadClass)) {
     #---------------------------------------------
     proc ::URL2Icon( STRING urlstr, STRING varname) \
     {
-      icon_filename = op_system.GetCurrentScriptDir()+"/%1%_32x32.png" % varname
+      icon_filename = ::IconFileName(varname)
       url = wx.wxURL(urlstr)
       if url.IsOk() {
         in_st = url.GetInputStream()
@@ -361,7 +378,7 @@ if (!exists(URLLoadClass)) {
       eval cmd
 
       if saveicon {
-        icon_filename = op_system.GetCurrentScriptDir()+"/%1%_32x32.png" % ::output_imagename
+        icon_filename = ::IconFileName(::output_imagename)
         out_wxim = wx.wxImage(fname)
         if out_wxim.IsOk() {
           SetStatusText("Image OK, resizing")

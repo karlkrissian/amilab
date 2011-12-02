@@ -273,7 +273,7 @@ if (!exists(BasicEdgeDetection3DClass)){
       resZ = Convolve(::norm_input, ::zMask)
       
       #Compute the module
-      ::res = sqrt(resX*resX + resY*resY + resZ*resZ)
+      ::res <<= sqrt(resX*resX + resY*resY + resZ*resZ)
       
       #Display the result
       ::Display()

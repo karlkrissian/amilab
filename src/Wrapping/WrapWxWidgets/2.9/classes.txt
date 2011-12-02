@@ -2,6 +2,7 @@ wxAcceleratorEntry
 wxAcceleratorTable
 wxActivateEvent
 wxAmiEventHandler
+wxApp
 wxArrayInt
 wxArtProvider
 wxAuiDockArt
@@ -41,6 +42,7 @@ wxDC
 wxDateSpan
 wxDateTime
 wxDialog
+wxDir
 wxDrawObject
 wxDynamicLibrary
 wxDynamicLibraryDetails
