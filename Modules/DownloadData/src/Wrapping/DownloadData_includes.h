@@ -3,6 +3,7 @@
 #ifndef _DownloadData_include_h_
 #define _DownloadData_include_h_
 
+#include <wx/archive.h>
 #include <wx/filedlg.h>
 #include <wx/mstream.h>
 #include <wx/sstream.h>

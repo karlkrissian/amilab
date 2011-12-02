@@ -1,9 +1,11 @@
 
-del DownloadDataPlugin
-func "DownloadDataPlugin"
+#del DownloadDataPlugin
+#func "DownloadDataPlugin"
+func "Common/ModulePlugin"
 
 if (!exists(DownloadData_obj)) {
-  DownloadDataPlugin DownloadData_obj
+  ModulePlugin DownloadData_obj
+  DownloadData_obj.SetModuleName("DownloadData")
   DownloadData_obj.Load()
 } else {
   InfoDialog "The script class DownloadDataPlugin to be already instanciated." 

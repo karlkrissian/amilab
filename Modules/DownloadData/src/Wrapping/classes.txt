@@ -1,3 +1,5 @@
+wxArchiveEntry
+wxArchiveInputStream
 wxFileDialog
 wxFileInputStream
 wxFileOutputStream
