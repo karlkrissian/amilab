@@ -49,6 +49,8 @@ def get_include_file(classname, filename):
   if classname=="wxIcon": s = "wx/icon.h"
   if classname=="wxPen": s = "wx/pen.h"
   if classname=="wxSplitterWindow": s = "wx/splitter.h"
+  if classname=="wxSplitterWindow": s = "wx/splitter.h"
+  if classname=="wxAppConsole": s = "wx/app.h"
   #if classname=="wxTextEntry":       s = "wx_includes.h"
   #if classname=="wxTextEntryBase":   s = "wx_includes.h"
   #print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)

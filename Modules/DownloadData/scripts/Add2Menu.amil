@@ -1,0 +1,10 @@
+
+ami.MainFrame.AddToMenu("&Modules","&DownloadData","&Load",    "../Modules/DownloadData/scripts/Load_DownloadData")
+ami.MainFrame.AddToMenu("&Modules","&DownloadData","&ReLoad",  "../Modules/DownloadData/scripts/ReLoad_DownloadData")
+
+#func "2D/Add2Menu.amil"
+
+#if exists(global::scripts_toolbar) {
+#  global::scripts_toolbar.AddSeparator()
+#}
+func "URLLoad/Add2Menu.amil"

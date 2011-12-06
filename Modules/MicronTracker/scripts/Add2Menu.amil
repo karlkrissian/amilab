@@ -1,0 +1,10 @@
+
+ami.MainFrame.AddToMenu("&Modules","&MicronTracker","&Load",    "../Modules/MicronTracker/scripts/Load_MicronTracker")
+ami.MainFrame.AddToMenu("&Modules","&MicronTracker","&ReLoad",  "../Modules/MicronTracker/scripts/ReLoad_MicronTracker")
+
+#func "2D/Add2Menu.amil"
+
+#if exists(global::scripts_toolbar) {
+#  global::scripts_toolbar.AddSeparator()
+#}
+

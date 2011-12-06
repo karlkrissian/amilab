@@ -1,0 +1,14 @@
+#
+# Micron Tracker classes to wrap automatically
+#
+Cameras
+MCamera
+XPoints
+MTXPoint
+MTCollection::Collection
+Facet
+Vector
+Persistence
+Markers
+MTMarker::Marker
+#

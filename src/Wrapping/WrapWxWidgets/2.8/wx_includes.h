@@ -51,3 +51,4 @@
 #include <wx/textdlg.h>
 #include <wx/msgdlg.h>
 #include <wx/tipdlg.h>
+#include <wx/url.h>

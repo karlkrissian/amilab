@@ -214,8 +214,65 @@ if (!exists(Subpixel2DClass)){
     }
     Comments(::getBorderPixelInfo, "Border pixel information")
     
+
     #-----------------------
-    
+    proc ::GetBorders() {
+      #Create four new images for displacements inside the pixel
+      dx1 = Image(DOUBLE,::res->xpos.tx,1,1)
+      dy1 = Image(DOUBLE,::res->xpos.tx,1,1)
+      dx2 = Image(DOUBLE,::res->xpos.tx,1,1)
+      dy2 = Image(DOUBLE,::res->xpos.tx,1,1)
+      dx1 = -0.4
+      #y = a + b*x + c*x*x
+      dy1 = ::res->acoef + ::res->bcoef*dx1 + ::res->ccoef*dx1*dx1
+      dy1 = -dy1
+      dx2 = 0.4
+      dy2 = ::res->acoef + ::res->bcoef*dx2 + ::res->ccoef*dx2*dx2
+      dy2 = -dy2
+      #Create images for draw points (draw line from x1,y1 to x2,y2)
+      x1pos = ((DOUBLE)::res->xpos+dx1)*(::res->border==2)+((DOUBLE)::res->xpos+dy1)*(::res->border!=2)
+      y1pos = ((DOUBLE)::res->ypos+dy1)*(::res->border==2)+((DOUBLE)::res->ypos+dx1)*(::res->border!=2)
+      x2pos = ((DOUBLE)::res->xpos+dx2)*(::res->border==2)+((DOUBLE)::res->xpos+dy2)*(::res->border!=2)
+      y2pos = ((DOUBLE)::res->ypos+dy2)*(::res->border==2)+((DOUBLE)::res->ypos+dx2)*(::res->border!=2)
+      #inside delimits the draw area inside the region defined by xmin,xmax,ymin and ymax
+      #inside = (::res->xpos>=xmin)*(::res->xpos<=xmax)*(::res->ypos>=ymin)*(::res->ypos<=ymax)
+      
+      #Create the border points image (x1,y1,x2,y2)
+      border_pts = Image(DOUBLE,x1pos.tx,1,1,4)
+      border_pts.SetComponent(0,x1pos)
+      border_pts.SetComponent(1,y1pos)
+      border_pts.SetComponent(2,x2pos)
+      border_pts.SetComponent(3,y2pos)
+      return=&border_pts
+    }
+
+
+    #-----------------------
+    proc ::GetNormals( IMAGE borders) {
+      #Edge central point
+      px = (borders[0]+borders[2]) / 2
+      py = (borders[1]+borders[3]) / 2
+      #Calculate normal point
+      div = (::res->aintensity - ::res->bintensity) / sqrt(1+::res->bcoef*::res->bcoef)
+      sign = (div>=0)*1 + (div<0)*-1
+      nx = ::res->bcoef * sign
+      ny = Image(DOUBLE,nx.tx,1,1)
+      ny = sign * 1
+      
+      normx = (px+nx)*(::res->border==2)+(px+ny)*(::res->border!=2)
+      normy = (py+ny)*(::res->border==2)+(py+nx)*(::res->border!=2)
+      
+      #Create the normal points image (x1,y1,x2,y2)
+      norm_pts = Image(DOUBLE,px.tx,1,1,4)
+      norm_pts.SetComponent(0,px)
+      norm_pts.SetComponent(1,py)
+      norm_pts.SetComponent(2,normx)
+      norm_pts.SetComponent(3,normy)
+      return=&norm_pts
+    }
+
+
+    #-----------------------
     proc ::drawBorder() {
       if(exists(::res) && exists(::sp2D)){
         if (::draw_on_averaged) {
@@ -229,58 +286,16 @@ if (!exists(Subpixel2DClass)){
         }
         #InitTime
         #Catch visualization region limits
-        xmin = image_draw.GetXmin()
-        xmax = image_draw.GetXmax()
-        ymin = image_draw.GetYmin()
-        ymax = image_draw.GetYmax()
-        #Create four new images for displacements inside the pixel
-        dx1 = Image(DOUBLE,::res->xpos.tx,1,1)
-        dy1 = Image(DOUBLE,::res->xpos.tx,1,1)
-        dx2 = Image(DOUBLE,::res->xpos.tx,1,1)
-        dy2 = Image(DOUBLE,::res->xpos.tx,1,1)
-        dx1 = -0.4
-        #y = a + b*x + c*x*x
-        dy1 = ::res->acoef + ::res->bcoef*dx1 + ::res->ccoef*dx1*dx1
-        dy1 = -dy1
-        dx2 = 0.4
-        dy2 = ::res->acoef + ::res->bcoef*dx2 + ::res->ccoef*dx2*dx2
-        dy2 = -dy2
-        #Create images for draw points (draw line from x1,y1 to x2,y2)
-        x1pos = ((DOUBLE)::res->xpos+dx1)*(::res->border==2)+((DOUBLE)::res->xpos+dy1)*(::res->border!=2)
-        y1pos = ((DOUBLE)::res->ypos+dy1)*(::res->border==2)+((DOUBLE)::res->ypos+dx1)*(::res->border!=2)
-        x2pos = ((DOUBLE)::res->xpos+dx2)*(::res->border==2)+((DOUBLE)::res->xpos+dy2)*(::res->border!=2)
-        y2pos = ((DOUBLE)::res->ypos+dy2)*(::res->border==2)+((DOUBLE)::res->ypos+dx2)*(::res->border!=2)
-        #inside delimits the draw area inside the region defined by xmin,xmax,ymin and ymax
-        #inside = (::res->xpos>=xmin)*(::res->xpos<=xmax)*(::res->ypos>=ymin)*(::res->ypos<=ymax)
-        
-        #Create the border points image (x1,y1,x2,y2)
-        border_pts = Image(DOUBLE,x1pos.tx,1,1,4)
-        border_pts.SetComponent(0,x1pos)
-        border_pts.SetComponent(1,y1pos)
-        border_pts.SetComponent(2,x2pos)
-        border_pts.SetComponent(3,y2pos)
+        #xmin = image_draw.GetXmin()
+        #xmax = image_draw.GetXmax()
+        #ymin = image_draw.GetYmin()
+        #ymax = image_draw.GetYmax()
+
+        border_pts = ::GetBorders()
         
         #If draw normals is active, calculate normals
         if (::normals==1) {
-          #Edge central point
-          px = (x1pos+x2pos) / 2
-          py = (y1pos+y2pos) / 2
-          #Calculate normal point
-          div = (::res->aintensity - ::res->bintensity) / sqrt(1+::res->bcoef*::res->bcoef)
-          sign = (div>=0)*1 + (div<0)*-1
-          nx = ::res->bcoef * sign
-          ny = Image(DOUBLE,nx.tx,1,1)
-          ny = sign * 1
-          
-          normx = (px+nx)*(::res->border==2)+(px+ny)*(::res->border!=2)
-          normy = (py+ny)*(::res->border==2)+(py+nx)*(::res->border!=2)
-          
-          #Create the normal points image (x1,y1,x2,y2)
-          norm_pts = Image(DOUBLE,px.tx,1,1,4)
-          norm_pts.SetComponent(0,px)
-          norm_pts.SetComponent(1,py)
-          norm_pts.SetComponent(2,normx)
-          norm_pts.SetComponent(3,normy)
+          norm_pts = ::GetNormals(&border_pts)
         }
         
         #Standard color (red), thickness and style
@@ -507,9 +522,9 @@ if (!exists(Subpixel2DClass)){
       ::win.Update(-1)
     }
     
-    #-----------------------
-    
-    proc ::DistanceTransform() {
+    #---------------------------------------------------------------------------
+    proc ::DistanceTransform() \
+    {
       if (exists(::input) && exists(::res)) {
         dx1 = 0
         dy1 = ::res->acoef
@@ -558,8 +573,88 @@ if (!exists(Subpixel2DClass)){
       }
     }
     
-    #-----------------------
-    
+    #---------------------------------------------------------------------------
+    proc ::DistanceTransform2() \
+    {
+      if (exists(::input) && exists(::res)) {
+      
+        printn "**"
+        border_pts = ::GetBorders()
+        norm_pts   = ::GetNormals(&border_pts)
+
+        # create usefull vectors
+        # normal vector
+        norm_vec = Image(DOUBLE,norm_pts.tx,1,1,2)
+        norm_vec.SetComponent(0,norm_pts[2]-norm_pts[0])
+        norm_vec.SetComponent(1,norm_pts[3]-norm_pts[1])
+        # normalize normal vector
+        norm_vec = norm_vec/(norm(norm_vec)+0.001)
+
+        printn "**"
+        # tangent vector
+        tang_vec = Image(DOUBLE,norm_pts.tx,1,1,2)
+        tang_vec.SetComponent(0,border_pts[2]-border_pts[0])
+        tang_vec.SetComponent(1,border_pts[3]-border_pts[1])
+        # normalize tangent vector
+        border_size = norm(tang_vec)
+        tang_vec = tang_vec/(border_size+0.001)
+
+        printn "**"
+        # middle point
+        mid_point = Image(DOUBLE,norm_pts.tx,1,1,2)
+        mid_point.SetComponent(0,norm_pts[0])
+        mid_point.SetComponent(1,norm_pts[1])
+
+        #Obtain the spacepos of the input image
+        p = SpacePos(::input)
+      
+        #Create the image for the distances
+        ::distance = Image(FLOAT,::input.tx, ::input.ty, ::input.tz)
+        ::distance = 1000000
+        
+        printn "****"
+        for i=0 to border_pts.tx-1 {
+          current_size = border_size(i,0,0)
+          printn "current_size = %1%" % current_size
+          SetProgress((FLOAT) i/(border_pts.tx-1)*100)
+          #dk
+          p1 = p
+          p1.SetComponent(0,p1[0]-mid_point(i,0,0,0))
+          p1.SetComponent(1,p1[1]-mid_point(i,0,0,1))
+          dist_line = p1[0]*norm_vec(i,0,0,0)+p1[1]*norm_vec(i,0,0,1)
+          
+          # projection on the tangent line measured from the middle point
+          proj_line = p1[0]*tang_vec(i,0,0,0)+p1[1]*tang_vec(i,0,0,1)
+          
+          vec_point1 = p
+          vec_point1.SetComponent(0, vec_point1[0]-border_pts(i,0,0,0))
+          vec_point1.SetComponent(1, vec_point1[1]-border_pts(i,0,0,1))
+          dist_point1 = norm(vec_point1)
+          
+          vec_point2 = p
+          vec_point2.SetComponent(0, vec_point2[0]-border_pts(i,0,0,2))
+          vec_point2.SetComponent(1, vec_point2[1]-border_pts(i,0,0,3))
+          dist_point2 = norm(vec_point2)
+
+          #segdist = -max(-dist_point1,-dist_point2)
+
+
+          segdist = (proj_line<-current_size/2)*dist_point1 + \
+                    (proj_line>=-current_size/2)*(proj_line<=current_size/2)*abs(dist_line) + \
+                    (proj_line>current_size/2)*dist_point2
+
+          segdist = segdist*(dist_line>=0)-segdist*(dist_line<0)
+
+          ##d = dk if abs(dk)<abs(d) or d if abs(dk)>=abs(d)
+          ::distance = (segdist    * (abs(segdist)< abs(::distance))) + \
+                       (::distance * (abs(segdist)>=abs(::distance)))
+        } 
+        SetProgress(0)
+        show ::distance
+      }
+    }
+
+    #---------------------------------------------------------------------------
     proc ::CreateGui() {
 
       ::win = ParamPanel("Subpixel 2D")
@@ -706,6 +801,7 @@ if (!exists(Subpixel2DClass)){
       ::win.EndBook()
       ::icons.LoadIconPNG("Play")
       ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
+      ::win.AddButton("Distance",&::DistanceTransform2)
 
       ::AddStandardButtons(&::win)
       ::win.Update(-1)

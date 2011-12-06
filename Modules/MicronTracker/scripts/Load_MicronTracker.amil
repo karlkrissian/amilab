@@ -1,0 +1,10 @@
+
+del MicronTrackerPlugin
+func "MicronTrackerPlugin"
+
+if (!exists(MicronTracker_obj)) {
+  MicronTrackerPlugin MicronTracker_obj
+  MicronTracker_obj.Load()
+} else {
+  InfoDialog "The script class MicronTrackerPlugin to be already instanciated." 
+}

@@ -121,7 +121,7 @@ class VolumeRender;
 class DessinImageBase;
 class Viewer3D;
 
-typedef shared_ptr<wxGLContext> wxGLContext_ptr;
+typedef boost::shared_ptr<wxGLContext> wxGLContext_ptr;
 
 /**
   OpenGL viewer for 3D polydata objects

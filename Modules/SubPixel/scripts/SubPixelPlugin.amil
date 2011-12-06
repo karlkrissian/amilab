@@ -18,7 +18,8 @@ Class SubPixelPlugin \
     # 2. add lib/amilab-{version}/plugin/
     #
     binpath = wx.wxStandardPaths().GetExecutablePath()
-    execpath = wx.wxFileName(binpath)
+    execpath  = wx.wxFileName(binpath)
+    execpath2 = wx.wxFileName(binpath)
     printn "binpath="+wx.FromWxString(binpath)
     dirs=execpath.GetDirs()
     printn "dirs.count = %1%" % dirs.GetCount()
@@ -27,22 +28,29 @@ Class SubPixelPlugin \
     printn "last.makeupper="+wx.FromWxString(last.MakeUpper())
     if (last.MakeUpper().Cmp("DEBUG")==0) {
       last_removed = last
-      execpath.RemoveLastDir()
+      execpath2.RemoveLastDir()
     }
     if (last.MakeUpper().Cmp("RELEASE")==0) {
       last_removed = last
-      execpath.RemoveLastDir()
+      execpath2.RemoveLastDir()
     }
     if (last.MakeUpper().Cmp("BIN")==0) {
-      execpath.RemoveLastDir()
+      execpath2.RemoveLastDir()
     }
     execpath.AppendDir("lib");
     execpath.AppendDir("amilab-"+op_system.GetAMILabVersion());
     execpath.AppendDir("plugin");
+    execpath2.AppendDir("lib");
+    execpath2.AppendDir("amilab-"+op_system.GetAMILabVersion());
+    execpath2.AppendDir("plugin");
     if (exists(last_removed)) {
-        execpath.AppendDir(last_removed);
+        execpath2.AppendDir(last_removed);
     }
     dllpath = execpath.GetPath(wx.wxPATH_GET_VOLUME | wx.wxPATH_GET_SEPARATOR)
+    dllpath2 = execpath2.GetPath(wx.wxPATH_GET_VOLUME | wx.wxPATH_GET_SEPARATOR)
+    if (!wx.wxDir.Exists(dllpath)) && (wx.wxDir.Exists(dllpath2)) {
+      dllpath = dllpath2
+    }
     printn "dllpath="+wx.FromWxString(dllpath)
 
     f_so = wx.wxArrayString()

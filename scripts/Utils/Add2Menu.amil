@@ -27,3 +27,5 @@ if exists(global::scripts_toolbar) {
 
  ami.MainFrame.AddToMenu("&Scripts","&Utils","&CopyDirAndReplace",  "Utils/CopyDirAndReplace/CopyDirAndReplaceGui")
 
+ ami.MainFrame.AddToMenu("&Scripts","&Utils","&RegEx",  "Utils/RegEx/RegExGui")
+

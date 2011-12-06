@@ -214,16 +214,6 @@ static std::list<wxScheduleTimer::ptr> schedule_timers;
 InrImage* ReadImage( const char* name);
 
 
-//static void ( void* cd, long unsigned int *) {
-//  CB_ParamWin(cd);
-//}
-
-/*
-static void CB_Button(  void* cd) {
-  CB_ParamWin(cd);
-}
-*/
-
 
 
 //------------------------------------------------------

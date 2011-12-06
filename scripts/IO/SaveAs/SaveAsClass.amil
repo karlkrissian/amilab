@@ -1,0 +1,153 @@
+
+func "Common/ScriptGui"
+
+if (!exists(SaveAsClass)) {
+
+  Class SaveAsClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+      ::input_name   = "","Name of the input image variable"
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+      ::dir_save = ".", "Save Path Folder"
+      ::image_save = "image", "Name of the save image"
+      ::convert_uchar = UCHAR(0), "Conversion to scalar unsigned char"
+      ::convert_RGB   = UCHAR(0), "Conversion to RGB"
+      ::overwrite     = UCHAR(0), "Overwrite existing file"
+      ::ext = INT(1), "Extension save"
+
+        ::html_filename = GetScriptsDir+"/SaveAs/Doc/SaveAs/index.html"
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      if exists(::input) { del ::input; }
+      eval "::input = &"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+
+
+    #-----------------------------------------------
+    proc ::OnExtension() \
+    {
+      ::convert_uchar = (::ext==6)
+      ::convert_RGB   = (::ext==4)||(::ext==5)||(::ext==7)||(::ext==8)||(::ext==9)
+      ::win.Update(-1)
+    }
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      ::load_input()
+      filename = ::dir_save+"/"+::image_save
+      if (::ext == 0) {  filename += ".ami";    }
+      if (::ext == 1) {  filename += ".ami.gz"; }
+      if (::ext == 2) {  filename += ".vtk";    }
+      if (::ext == 3) {  filename += ".mhd";    }
+      if (::ext == 4) {  filename += ".jpg";    }
+      if (::ext == 5) {  filename += ".jpeg";   }
+      if (::ext == 6) {  filename += ".png";    }
+      if (::ext == 7) {  filename += ".bmp";    }
+      if (::ext == 8) {  filename += ".tif";    }
+      if (::ext == 9) {  filename += ".tiff";   }
+      if (::convert_uchar) {
+        input = (UCHAR) ::input
+      } else {
+        if (::convert_RGB) {
+          input = Image(RGB,::input.tx,::input.ty,::input.tz)
+          input.SetComponent(0,::input[0])
+          input.SetComponent(1,::input[1])
+          input.SetComponent(2,::input[2])
+        } else {
+          input = &::input
+        }
+      }
+      wxfilename = wx.wxFileName(filename)
+      if (wxfilename.FileExists())&&(!::overwrite) {
+        InfoDialog "File already exists"
+      } else {
+        input.save filename
+      }
+   }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("SaveAs",&::parent_panel)
+      } else {
+        ::win = ParamPanel("SaveAs")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+        ::win.BeginBoxPanel("Input Image")
+          # set the input image
+          ::win.AddImageChoice( &::input_name, "")
+        ::win.EndBoxPanel()
+      
+        ::win.BeginBoxPanel("Filename (path,name,extension)")
+          ::win.AddDirname(&::dir_save, "Path")          
+          ::win.AddString( &::image_save,"Output Image Name")
+            ext_id = ::win.AddEnum( &::ext,"Extension")
+            ::win.AddEnumChoice(ext_id, "*.ami") #0
+            ::win.AddEnumChoice(ext_id, "*.ami.gz") #1
+            ::win.AddEnumChoice(ext_id, "*.vtk") #2
+            ::win.AddEnumChoice(ext_id, "*.mhd") #3
+            ::win.AddEnumChoice(ext_id, "*.jpg") #4
+            ::win.AddEnumChoice(ext_id, "*.jpeg") #5
+            ::win.AddEnumChoice(ext_id, "*.png") #6
+            ::win.AddEnumChoice(ext_id, "*.bmp") #7
+            ::win.AddEnumChoice(ext_id, "*.tif") #8
+            ::win.AddEnumChoice(ext_id, "*.tiff") #9
+          ::win.SetCallback(&::OnExtension)
+        ::win.EndBoxPanel()
+        
+        ::win.BeginBoxPanel("Conversion")
+          ::win.BeginHorizontal()
+            ::win.AddBoolean( &::convert_uchar,"Unsigned char")
+            ::win.AddBoolean( &::convert_RGB,"RGB")
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        ::win.AddBoolean( &::overwrite,"Overwrite")
+        #::win.BeginHorizontal
+          ::win.AddButton("Save",::Run)
+        #::win.EndHorizontal()
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

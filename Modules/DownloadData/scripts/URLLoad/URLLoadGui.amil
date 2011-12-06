@@ -1,0 +1,11 @@
+
+func "URLLoadClass"
+
+if (!exists(URLLoad_obj)) {
+  URLLoadClass URLLoad_obj
+  URLLoad_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

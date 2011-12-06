@@ -37,6 +37,10 @@ import parse_function
 
 import generate_html #HTML generate file functions
 
+if args.val.classes_includes!='':
+  #print "-------- args.val.classes_includes -------------"
+  import imp
+  classes_inc = imp.load_source("classes_inc_module",args.val.classes_includes)
 
 def IsTemplate(classname):
   return re.match(r"(.*)<(.*)>",classname)!=None
@@ -59,6 +63,13 @@ def ClassConstructor(classname):
     return no_ns.group(2)
 
 def FindIncludeFile(classname,fileid):
+  try:
+    #print "classname=",classname, " keys:", classes_inc.classes_includes.keys()
+    if classname in classes_inc.classes_includes.keys():
+      print "*"
+      return '#include "{0}"'.format(classes_inc.classes_includes[classname])
+  except:
+    pass
   if config.libmodule != None:
     include_file = config.libmodule.get_include_file(classname, \
                     config.files[fileid])

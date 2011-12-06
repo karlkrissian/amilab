@@ -136,7 +136,9 @@ public:
   void SearchVariablesRecursive( const vartype& type,
                         boost::shared_ptr<wxArrayString>& variables,
                         const Variables::ptr& context,
-                        wxString const & prefix) const;
+                        wxString const & prefix,
+                        int rec_level=0
+                               ) const;
 
   /**
    * \brief Search all AMIObject variables of a given type.
@@ -148,7 +150,9 @@ public:
   void SearchAMIObjectTypeVariablesRecursive( const std::string & type_string,
                         boost::shared_ptr<wxArrayString>& variables,
                         const Variables::ptr& context,
-                        wxString const & prefix) const;
+                        wxString const & prefix,
+                        int rec_level=0
+                                            ) const;
 
   /**
   * 
@@ -160,6 +164,9 @@ public:
   */
   template <class T>
   boost::shared_ptr<Variable<T> > AddVar(const char* name, boost::shared_ptr<Variable<T> >& val, int context=NEWVAR_CONTEXT)
+#ifdef __GCCXML__
+    ;
+#else
   {
       if (context==OBJECT_CONTEXT_NUMBER) {
         if (_object_context.get()) {
@@ -178,10 +185,14 @@ public:
     if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
     return _context[context]->AddVar<T>(name,val,_context[context]);
   }
+#endif
 
   ///
   template <class T>
   boost::shared_ptr<Variable<T> > AddVar(const std::string& name, boost::shared_ptr<T>& val, int context=NEWVAR_CONTEXT)
+#ifdef __GCCXML__
+    ;
+#else
   {
       if (context==OBJECT_CONTEXT_NUMBER) {
         if (_object_context.get()) {
@@ -201,10 +212,13 @@ public:
     //boost::shared_ptr<Variable<T> > newvar( new Variable<T>(name,val));
     return _context[context]->AddVar<T>(name,val,_context[context]);
   }
-
+#endif
 
 
   BasicVariable::ptr AddVar(const char* name, BasicVariable::ptr& val, int context=NEWVAR_CONTEXT)
+#ifdef __GCCXML__
+    ;
+#else
   {
       if (context==OBJECT_CONTEXT_NUMBER) {
         if (_object_context.get()) {
@@ -222,6 +236,7 @@ public:
     if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
     return _context[context]->AddVar(name,val,_context[context]);
   }
+#endif
 
   /**
    * Adds a new variable based on a smart pointer to a variable and a context id.
@@ -269,6 +284,9 @@ public:
   bool deleteVar(boost::shared_ptr<Variable<T> >& var);
 };
 
-#include "VarContexts.tpp"
+// no need to include .tpp when parsing with gccxml
+#ifndef __GCCXML__
+  #include "VarContexts.tpp"
+#endif
 
 #endif //_AMI_VARCONTEXTS_HPP

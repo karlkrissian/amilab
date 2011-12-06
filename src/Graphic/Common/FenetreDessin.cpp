@@ -523,11 +523,11 @@ void FenetreDessin::DrawingAreaInit( )
   }
 
   // wx way
-  scoped_ptr<wxBitmap> bitmap(new wxBitmap(  _largeur, 
+  boost::scoped_ptr<wxBitmap> bitmap(new wxBitmap(  _largeur, 
                                               _hauteur,
                                               -1));
   swap(_bitmap,bitmap);
-  scoped_ptr<wxMemoryDC> memory_dc(new wxMemoryDC);
+  boost::scoped_ptr<wxMemoryDC> memory_dc(new wxMemoryDC);
   /*
   if (!memory_dc->IsOk()) {
     std::cerr  << "FenetreDessin::DrawingAreaInit( )"
@@ -539,12 +539,12 @@ void FenetreDessin::DrawingAreaInit( )
   swap(_memory_dc, memory_dc);
   _memory_dc->SelectObject(*_bitmap);
   _memory_dc->SetBackgroundMode(wxTRANSPARENT);
-  scoped_ptr<wxBrush> current_brush(new wxBrush(
+  boost::scoped_ptr<wxBrush> current_brush(new wxBrush(
                              *wxBLACK, 
                              PENSTYLE_SOLID
                              ));
   swap(_current_brush,current_brush);
-  scoped_ptr<wxPen> current_pen(new wxPen( *wxBLACK,
+  boost::scoped_ptr<wxPen> current_pen(new wxPen( *wxBLACK,
                                  1,
                                  PENSTYLE_SOLID));
   swap(_current_pen,current_pen);

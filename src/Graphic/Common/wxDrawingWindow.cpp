@@ -148,7 +148,7 @@ void wxDrawingWindow::DrawingAreaInit( )
   int h = this->GetClientSize().GetHeight();
   
   // wx way
-  scoped_ptr<wxBitmap> bitmap(new wxBitmap( w,h,-1));
+  boost::scoped_ptr<wxBitmap> bitmap(new wxBitmap( w,h,-1));
   swap(_bitmap,bitmap);
 
   wxMemoryDC* mdc = new wxMemoryDC();
@@ -162,13 +162,13 @@ void wxDrawingWindow::DrawingAreaInit( )
 #endif*/
   #if AMI_USE_wxGC
     // keep initial memory DC in a scoped pointer
-    scoped_ptr<wxMemoryDC> init_memory_dc(mdc);
+    boost::scoped_ptr<wxMemoryDC> init_memory_dc(mdc);
     swap(_init_memory_dc, init_memory_dc);
     // use a Graphic Context to draw in memory
     wxGCDC* gdc = new wxGCDC( *mdc );
-    scoped_ptr<wxDC> memory_dc(gdc);
+    boost::scoped_ptr<wxDC> memory_dc(gdc);
   #else
-    scoped_ptr<wxDC> memory_dc(mdc);
+    boost::scoped_ptr<wxDC> memory_dc(mdc);
   #endif
 
   swap(_memory_dc, memory_dc);
@@ -400,7 +400,7 @@ void wxDrawingWindow::SetCurveWidth( int i, int width)
 //------------------------------------------------
 void wxDrawingWindow::DrawCurve( dwCurve& curve )
 {
-  scoped_ptr<wxPen> current_pen(
+  boost::scoped_ptr<wxPen> current_pen(
     new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
   current_pen->SetColour(curve.GetColour());
   /*
@@ -508,7 +508,7 @@ void wxDrawingWindow::DrawAxes(  )
   wxCoord x1,y1,x2,y2;
   double xpos,ypos;
 
-  scoped_ptr<wxPen> current_pen2( new wxPen( *wxLIGHT_GREY, 1, wxDOT));// PENSTYLE_SOLID));
+  boost::scoped_ptr<wxPen> current_pen2( new wxPen( *wxLIGHT_GREY, 1, wxDOT));// PENSTYLE_SOLID));
   _memory_dc->SetPen(*current_pen2);
 
   if (_draw_grid)
@@ -568,7 +568,7 @@ void wxDrawingWindow::DrawAxes(  )
   }
 
 
-  scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
+  boost::scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
   _memory_dc->SetPen(*current_pen);
 
   // from xmin,yaxis to xmax,yaxis
@@ -918,7 +918,7 @@ void wxDrawingWindow::DrawControlPoint( dwControlPoint& pt,
 //------------------------------------------------
 void wxDrawingWindow::DrawControlPoints()
 {
-  scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
+  boost::scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
   _memory_dc->SetPen(*current_pen);
   wxSize _sz = GetClientSize();
 
@@ -1014,7 +1014,7 @@ void wxDrawingWindow::Paint( bool in_paint)
   // Clip the drawing
   wxRect rect(_memory_dc->GetSize());
   wxDCClipper clip(*_memory_dc,rect);
-  scoped_ptr<wxPen> current_pen(
+  boost::scoped_ptr<wxPen> current_pen(
     new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
 
   _memory_dc->SetPen(*current_pen);
@@ -1210,7 +1210,7 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
       {
         double x = _focus_point->GetX();
         double y = _focus_point->GetY();
-        shared_ptr<std::vector<dwControlPoint> > points = 
+        boost::shared_ptr<std::vector<dwControlPoint> > points = 
           _focus_controlledcurve->GetControlPoints();
         for(int i=0;i<(int)points->size();i++) {
           SetCtrlPointPosition((*points)[i],
@@ -1235,7 +1235,7 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
     }
     else 
     {
-      scoped_ptr<wxPen> current_pen(
+      boost::scoped_ptr<wxPen> current_pen(
         new wxPen( *wxBLACK, 1, wxDOT));
       dc.SetPen(*current_pen);
 
@@ -1299,7 +1299,7 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
   if (_focus_controlledcurve.get()) {
     // rescale the curve
     // find min/max of curve
-    shared_ptr<std::vector<dwControlPoint> > points = 
+    boost::shared_ptr<std::vector<dwControlPoint> > points = 
       _focus_controlledcurve->GetControlPoints();
     if (points->size()==0) return;
 /*

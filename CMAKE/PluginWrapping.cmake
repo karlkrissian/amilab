@@ -17,7 +17,14 @@ FIND_PACKAGE( GCCXML REQUIRED)
 
 INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
 
-SET(WRAP_DIR ${PROJECT_SOURCE_DIR}/Wrapping)
+IF(EXISTS ${PROJECT_SOURCE_DIR}/Wrapping)
+  SET(WRAP_DIR ${PROJECT_SOURCE_DIR}/Wrapping)
+ENDIF(EXISTS ${PROJECT_SOURCE_DIR}/Wrapping)
+
+IF(EXISTS ${PROJECT_SOURCE_DIR}/src/Wrapping)
+  SET(WRAP_DIR ${PROJECT_SOURCE_DIR}/src/Wrapping)
+ENDIF(EXISTS ${PROJECT_SOURCE_DIR}/src/Wrapping)
+
 SET(GENERATED_DIR ${WRAP_DIR}/Generated)
 IF( NOT EXISTS ${GENERATED_DIR})
   FILE(MAKE_DIRECTORY ${GENERATED_DIR})
@@ -31,8 +38,15 @@ SET(GCCXML_result 0)
 
 WRAP_MESSAGE("Try to generate XML file...")
 
-INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amiWrapVTK.cmake)
-GCCXML_USE_VTK()
+IF(${KIT}_NEED_VTK_WRAPPING)
+  INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amiWrapVTK.cmake)
+  GCCXML_USE_VTK()
+ENDIF(${KIT}_NEED_VTK_WRAPPING)
+
+IF(${KIT}_NEED_WX_WRAPPING)
+  INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amiWrapWxWidgets.cmake)
+  GCCXML_USE_WXWIDGETS()
+ENDIF(${KIT}_NEED_WX_WRAPPING)
 
 # Adding KIT includes
 IF(KIT)
@@ -66,7 +80,7 @@ EXECUTE_PROCESS(
 
 IF(GCCXML_CMD_RESULT)
 
-    WRAP_MESSAGE(SEND_ERROR "Failed the generation of XML: ${GCCXML_CMD_ERROR} - ${GCCXML_CMD_RESULT}")
+    WRAP_MESSAGE("Failed the generation of XML: ${GCCXML_CMD_ERROR} - ${GCCXML_CMD_RESULT}")
 
 ELSE(GCCXML_CMD_RESULT)
 
@@ -87,7 +101,8 @@ ELSE(GCCXML_CMD_RESULT)
 #   IF(MYCOMMAND_2_RESULT)
 #     WRAP_MESSAGE(SEND_ERROR "Failed the generation of ANCESTORS file: ${MYCOMMAND_2_ERROR} - ${MYCOMMAND_2_RESULT}")
 #   ELSE(MYCOMMAND_2_RESULT)
-    WRAP_MESSAGE("Generated ANCESTORS file: ancestors_result = ${ancestors_result}")
+    #WRAP_
+    MESSAGE("Generated ANCESTORS file: ancestors_result = ${ancestors_result}")
 
     IF(EXISTS ${ANCESTORS_FILE})
       FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
@@ -133,6 +148,9 @@ ELSE(GCCXML_CMD_RESULT)
         SET(MYCOMMAND_3 ${MYCOMMAND_3} "--functions" ${MISSING_FUNCTIONS})
         SET(MYCOMMAND_3 ${MYCOMMAND_3} "--available_functions" ${functions_list})
       ENDIF(DEFINED HAS_FUNCTIONS)
+      IF(EXISTS ${WRAP_DIR}/classes_includes.py)
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--classes_includes" ${WRAP_DIR}/classes_includes.py)
+      ENDIF(EXISTS ${WRAP_DIR}/classes_includes.py)
       #SET(MYCOMMAND_3 ${MYCOMMAND_3} "--wrap_includes" ${WrapWxWidgetsDir})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--outputdir" ${GENERATED_DIR})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--profile")

@@ -1,0 +1,11 @@
+wxArchiveEntry
+wxArchiveInputStream
+wxFileDialog
+wxFileInputStream
+wxFileOutputStream
+wxMemoryInputStream
+wxMemoryOutputStream
+wxStringInputStream
+wxStringOutputStream
+wxTextFile
+# wxURL

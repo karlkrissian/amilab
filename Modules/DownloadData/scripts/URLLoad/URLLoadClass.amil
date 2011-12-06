@@ -1,0 +1,444 @@
+
+func "Common/ScriptGui"
+
+if (!exists(DownloadData)) {
+  func "../Load_DownloadData"
+}
+
+
+
+if (!exists(URLLoadClass)) {
+
+  Class URLLoadClass : public ScriptGui \
+  {
+    
+    proc ::CreateImageLists() \
+    {
+      func "Utils/Var_Vec"
+
+      # Denoising of Natural Images 
+      # from http://decsai.ugr.es/~javier/denoise/test_images/index.htm
+      Var_Vec ::den_list
+      ::den_list.SetThis(&::den_list)
+      ::den_list = ::den_list+"lena"+"barbara"+"boat"+"fingerprint"+"house"+\
+                    "peppers256"
+
+      # Signal and Image Processing Institute (SIPI) Image Database
+      # misc volume
+      Var_Vec ::sipi_misc
+      ::sipi_misc.SetThis(&::sipi_misc)
+      f = wxTextFile()
+      f.Open(op_system.GetCurrentScriptDir()+"/sipi_misc.txt")
+      #sipi_exp = "([^\\s]+)\\s+(([^\\s]+\\s)+)\\s+([\\d]+)\\s+(Color|Gray)"
+      sipi_exp = "([^[:blank:]]+)[[:blank:]]{2,}(([^[:blank:]]+)([ ][^[:blank:]]+)*)[[:blank:]]{2,}([[:digit:]]+)[[:blank:]]+(Color|Gray)"
+      sipi_re = wx.wxRegEx(sipi_exp,wx.wxRE_ADVANCED)
+      sipi_re.Compile(sipi_exp)
+      #printn "IsValid = %1%" % sipi_re.IsValid()
+      if sipi_re.IsValid() {
+        for n =0 to f.GetLineCount()-1 {
+          current_line = f[n]
+          #printn "*"
+          if sipi_re.Matches(&current_line) {
+            im_name  = wx.FromWxString(sipi_re.GetMatch(&current_line,1))
+            im_desc  = wx.FromWxString(sipi_re.GetMatch(&current_line,2))
+            im_size  = wx.FromWxString(sipi_re.GetMatch(&current_line,5))
+            im_color = wx.FromWxString(sipi_re.GetMatch(&current_line,6))
+            #print " '%1%' " % im_name
+            #print " '%1%' " %im_desc
+            #print " '%1%' " %im_size
+            #print " '%1%' " %im_color+"\n"
+            ::sipi_misc += im_name
+          } else {
+            printn "no match;"
+          }
+        }
+      }
+      #::sipi_misc.Display()
+      ::sipi_misc_has_icon = VarVector(::sipi_misc.size(),false)
+    }
+    
+    # need to call it here ...
+    ::CreateImageLists()
+
+    //---------------------------------------------------
+    proc ::Init() {
+      
+      ::url_name = "", "Name of the url to load"
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::output_path = ".",    "Save Path Folder"
+      ::output_filename = "", "Output filename"
+      ::output_imagename = "", "Output image name"
+        
+      ::html_filename = GetScriptsDir+"/URLLoad/Doc/URLLoad/index.html"
+
+      sp = wx.wxStandardPathsBase.Get()
+      user_app_path = wx.FromWxString(sp.GetUserLocalDataDir())
+      if !wx.wxDir.Exists(user_app_path) {
+        wx.wxFileName.Mkdir(user_app_path)
+      }
+
+      ::user_script_path = user_app_path + "/URLLoad"
+      if !wx.wxDir.Exists(::user_script_path) {
+        wx.wxFileName.Mkdir(::user_script_path)
+      }
+
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::LoadDenoisingImage( STRING imname ) {
+      ::url_name = "http://decsai.ugr.es/~javier/denoise/%1%.png" % imname
+      ::OnUrl()
+      ::ReadImage(false)
+    }
+
+    #---------------------------------------------------------------------------
+    for n=0 to ::den_list.size()-1\
+    {
+      eval "proc ::Load_%1%( ) { ::LoadDenoisingImage(\"%1%\"); };" \
+              % ::den_list[n]
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Im2Var_sipi_misc(STRING imname) \
+    {
+      wx_imname = wx.wxString(imname)
+      wx_imname.Replace(".","_")
+      return = wx.FromWxString(wx_imname)
+      return = "SIPI_misc_"+ return
+      #printn "Im2Var_sipi_misc returns %1%" % return
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Load_SIPI_misc_Image( STRING imname, NUM n ) {
+      ::url_name = "http://sipi.usc.edu/database/download.php?vol=misc&img=%1%" % imname
+      varname=::Im2Var_sipi_misc(imname)
+      ::output_filename  = varname
+      ::output_imagename = varname
+      ::win.Update(-1)
+      ::ReadImage(!::sipi_misc_has_icon[n])
+      #if  {
+      #  printn "Need to update icon"
+      #  ::URL2Icon(::url_name,varname)
+      #}
+    }
+
+    #---------------------------------------------------------------------------
+    for n=0 to ::sipi_misc.size()-1\
+    {
+      imname = ::sipi_misc[n]
+      varname = ::Im2Var_sipi_misc(::sipi_misc[n])
+      cmd = "proc ::Load_%1%( ) " % varname +\
+            "{ ::Load_SIPI_misc_Image(\"%1%\"" % imname+\
+            ",%1%); };" % n
+      #printn cmd
+      eval cmd
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::IconFileName( STRING imname ) \
+    {
+      return = ::user_script_path+"/%1%_32x32.png" % imname
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::LoadImageIcon( STRING imname ) \
+    {
+      icon_filename = ::IconFileName(imname)
+      if wx.wxFileName(icon_filename).FileExists() {
+        eval "::%1%_icon = wx.wxImage(icon_filename);" % imname
+        return=true
+      } else {
+        if !exists(::_Picture) {
+          ::icons.LoadIconPNG("Picture")
+        }
+        eval "::%1%_icon = &::icons._Picture;" % imname
+        return=false
+      }
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::AddImageButton( STRING varname) \
+    {
+      #printn "Starting ::AddImageButton(%1%)" %varname
+      return=::LoadImageIcon(varname);
+      eval "bmp = wx.wxBitmap(&::%1%_icon.Scale(32,32));" % varname
+      callback_name = "Load_%1%" % varname
+
+      # more complicate to allow changing the image afterwards
+      #eval "return = ::win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
+      sizer = ::win.GetCurrentSizer()
+      
+      bb0 = wx.wxBitmapButton(&::win.CurrentParent(),wx.wxID_ANY,&bmp)
+      # keep the bitmap button for posterior use 
+      eval "::bb_%1% = &bb0;" % varname
+      # TODO: tooltip
+      #bb0.SetToolTip("Wiki link")
+      sizer.Add(&bb0,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
+
+      eval "evh_bt0 = wx.wxAmiEventHandler(&::%1%);" % callback_name
+      bb0.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt0.GetEventFunction(),\
+                  &NULL,&evh_bt0)
+
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::AddDenoisingButtons( ) \
+    {
+      ::win.BeginBoxPanel("Natural Denoising Images")
+        ::win.BeginHorizontal()
+        c=0
+        for n=0 to ::den_list.size()-1 {
+          ::AddImageButton(::den_list[n])
+          c++
+          if (c%4)==0 {
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+          }
+        }
+        ::win.EndHorizontal()
+      ::win.EndBoxPanel()
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::SIPI_misc_load_previews( ) \
+    {
+      for n=0 to ::sipi_misc.size()-1 {
+        imname = ::sipi_misc[n]
+        varname = ::Im2Var_sipi_misc(::sipi_misc[n])
+        # 1. check if the icon exists
+        icon_filename = ::IconFileName(varname)
+        if !wx.wxFileName(icon_filename).FileExists() {
+          # preview link
+          SetStatusText(  " getting file %1%  " % varname + \
+                          " %1%"%(n+1) + "/%1%" % ::sipi_misc.size())
+          SetProgress((100.0*n)/(::sipi_misc.size()-1))
+          preview_link = "http://sipi.usc.edu/database/preview/misc/%1%.png" \
+                            % imname
+          ::URL2Icon(preview_link,varname)
+          # Read icon
+          eval "::%1%_icon = wx.wxImage(icon_filename);" % varname
+          # Set corresponding button
+          eval "::bb_%1%.SetBitmapLabel(&wx.wxBitmap(&::%1%_icon));" % varname
+        }
+      }
+      SetProgress(0)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Add_SIPI_misc_Buttons( ) \
+    {
+      ::win.BeginBoxPanel("SIPI database: misc")
+        ::win.AddButton("Load Previews",&::SIPI_misc_load_previews)
+        ::win.BeginHorizontal()
+        c=0
+        for n=0 to ::sipi_misc.size()-1 {
+          #printn "1"
+          imname = ::sipi_misc[n]
+          varname = ::Im2Var_sipi_misc(::sipi_misc[n])
+          ok = ::AddImageButton(varname)
+          ::sipi_misc_has_icon[n] = ok
+          c++
+          if (c%4)==0 {
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
+          }
+        }
+        ::win.EndHorizontal()
+      ::win.EndBoxPanel()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::URL2File( STRING urlstr, STRING fname) \
+    {
+      url = wx.wxURL(urlstr)
+      if url.IsOk() {
+        in_st = url.GetInputStream()
+        if (in_st.IsOk()) {
+          out_file = wxFileOutputStream(fname)
+          canread = in_st.CanRead()
+          while canread {
+            in_st.Read(&out_file)
+            SetStatusText("%1% Kb read from url stream" % (in_st.LastRead()/1000))
+            canread = in_st.CanRead()
+          }
+          return=true
+        } else {
+          printn "input stream not OK"
+          return=false
+        }
+      } else {
+        InfoDialog "url [%1%] not valid" % urlstr
+        return=false
+      }
+    }
+
+    #---------------------------------------------
+    proc ::URL2Icon( STRING urlstr, STRING varname) \
+    {
+      icon_filename = ::IconFileName(varname)
+      url = wx.wxURL(urlstr)
+      if url.IsOk() {
+        in_st = url.GetInputStream()
+        # write to a MemoryOutputStream
+        out_mem = wxMemoryOutputStream()
+        canread = in_st.CanRead()
+        while canread {
+          in_st.Read(&out_mem)
+          SetStatusText("%1% Kb read from url stream" % (in_st.LastRead()/1000))
+          canread = in_st.CanRead()
+        }
+        # initialize a MemoryInputStream from the result
+        in_mem = wxMemoryInputStream(&out_mem)
+
+        if (in_mem.IsOk()) {
+          SetStatusText("Reading image")
+          out_wxim = wx.wxImage(&in_mem)
+          if out_wxim.IsOk() {
+            SetStatusText("Image OK, resizing")
+            wxim_32 = out_wxim.Scale(32,32,wx.wxIMAGE_QUALITY_HIGH)
+            saved = wxim_32.SaveFile(icon_filename)
+            SetStatusText("file %1% saved = " % icon_filename + " %1%" % saved)
+          }
+        } else {
+          printn "input stream not OK"
+        }
+      } else {
+        InfoDialog "url [%1%] not valid" % urlstr
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::OnUrl() \
+    {
+      SetStatusText("::OnUrl")
+      sipi_found=false
+      sipi_test="http://sipi.usc.edu/database/download.php\\?vol=([[:alnum:]]*)&img=([[:digit:].]*)"
+      printn wx.FromWxString(wx.wxString(sipi_test))
+      del sumre
+      sumre = wx.wxRegEx(sipi_test,wx.wxRE_ADVANCED)
+      sumre.Compile(sipi_test)
+      if sumre.IsValid() {
+        printn "::url_name = '%1%'" % ::url_name
+        if sumre.Matches(::url_name) {
+          sipi_found=true
+          res1 = wx.FromWxString(sumre.GetMatch(&::url_name,1))
+          res2 = wx.FromWxString(sumre.GetMatch(&::url_name,2))
+          printn "res1=%1%" %res1
+          printn "res2=%1%" %res2
+          name = res1+"_"+res2
+          ::output_filename  = name
+          imname = wx.wxString(name)
+          imname.Replace(".","_")
+          ::output_imagename = wx.FromWxString(imname)
+        } else {
+          SetStatusText("no match")
+        }
+      } else {
+        SetStatusText("Invalid Regular Expression !")
+      }
+
+      if !sipi_found {
+        ::output_filename  = wx.FromWxString(wx.wxFileName(::url_name).GetFullName())
+        ::output_imagename = wx.FromWxString(wx.wxFileName(::url_name).GetName())
+      }
+      ::win.Update(-1)
+    }
+
+    #-----------------------------------------------
+    proc ::SaveIcon() \
+    {
+      ::URL2Icon(::url_name,::output_filename)
+    }
+
+    #-----------------------------------------------
+    proc ::SaveFile() \
+    {
+      ::URL2File(::url_name,::output_path+"/"+::output_filename)
+    }
+
+    #-----------------------------------------------
+    proc ::ReadImage( NUM saveicon) \
+    {
+      wx_fname = wx.wxFileName.CreateTempFileName(::output_filename)
+      wx_fname.Replace("\\","/")
+      fname = wx.FromWxString(wx_fname)
+      SetStatusText("temporary file is "+fname)
+      ::URL2File(::url_name,fname)
+      imname = wx.FromWxString(wx.wxFileName(::output_imagename).GetName())
+      cmd= "global::"+imname+" = Image \"%1%\";" % fname
+      SetStatusText(cmd)
+      eval cmd
+      cmd= "show global::"+imname+";"
+      SetStatusText(cmd)
+      eval cmd
+
+      if saveicon {
+        icon_filename = ::IconFileName(::output_imagename)
+        out_wxim = wx.wxImage(fname)
+        if out_wxim.IsOk() {
+          SetStatusText("Image OK, resizing")
+          wxim_32 = out_wxim.Scale(32,32,wx.wxIMAGE_QUALITY_HIGH)
+          saved = wxim_32.SaveFile(icon_filename)
+          SetStatusText("file %1% saved = " % icon_filename + " %1%" % saved)
+        }
+      }
+
+    }
+    
+    #---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("URLLoad",&::parent_panel)
+      } else {
+        ::win = ParamPanel("URLLoad")
+      }
+      
+
+      ::win.AddString(&::url_name,"URL")
+      ::win.SetCallback(&::OnUrl)
+
+      ::win.AddDirname(&::output_path, "Path")
+      ::win.AddString( &::output_filename,  "Filename")
+      ::win.AddString( &::output_imagename, "Image name")
+    
+      ::win.AddButton("ReadImage",&::ReadImage)
+      ::win.BeginHorizontal()
+        ::win.AddButton("SaveFile", &::SaveFile)
+        ::win.AddButton("SaveIcon", &::SaveIcon)
+      ::win.EndHorizontal()
+
+      if wx.wxFileName(::html_filename).FileExists() {
+        ::AddHelpPage(&::win)
+      }
+
+      ::win.BeginBook()
+        ::win.AddPage("1")
+          ::AddDenoisingButtons()
+        ::win.AddPage("sipi")
+          ::Add_SIPI_misc_Buttons( )
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

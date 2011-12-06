@@ -80,6 +80,10 @@ members_blacklist=[
   'wxAppConsole::Initialize',        # double pointer pb
   'wxAppConsole::OnAssertFailure',   # error in windows, not a member
   'wxAppConsole::OnAssert',          # error in windows, not a member
+  'wxButton::GTKMouseEnters',    # not define with wx 2.9.2
+  'wxButton::GTKMouseLeaves',    # not define with wx 2.9.2
+  'wxButton::GTKPressed',        # not define with wx 2.9.2
+  'wxButton::GTKReleased',       # not define with wx 2.9.2
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints',  # idem

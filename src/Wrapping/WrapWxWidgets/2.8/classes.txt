@@ -163,6 +163,7 @@ wxTipProvider
 wxToolBar
 wxTopLevelWindow
 wxULongLongNative
+wxURL
 wxUpdateUIEvent
 wxValidator
 wxVisualAttributes

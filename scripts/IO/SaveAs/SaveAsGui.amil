@@ -1,0 +1,11 @@
+
+func "SaveAsClass"
+
+if (!exists(SaveAs_obj)) {
+  SaveAsClass SaveAs_obj
+  SaveAs_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

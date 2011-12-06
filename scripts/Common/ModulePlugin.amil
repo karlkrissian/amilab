@@ -1,0 +1,139 @@
+
+del ModulePlugin
+
+
+Class ModulePlugin \
+{
+
+  proc ::Init() {
+    ::plugin_mgr=wx.wxPluginManager()
+    ::f_dynlibs = wx.wxArrayString()
+    ::quiet=false
+    ::ModuleName = "Module"
+  }
+
+  proc ::SetModuleName( STRING mname ) {
+    ::ModuleName = mname
+  }
+
+  proc ::SetQuiet(NUM q) {
+    ::quiet=q
+  }
+
+  #
+  # Try to find the right plugin dynamic library
+  # test for files ending with either .so or .dll
+  # return true if at least one file is found
+  # the resulting files are stored in ::f_dynlibs
+  #  
+  proc ::CheckModule( ) \
+  {
+    # Make this platform independent, using a .in file ?
+    #
+    # Look with the executable path
+    # 1. get rid of posible 'bin' directory at the end
+    # 2. add lib/amilab-{version}/plugin/
+    #
+    binpath = wx.wxStandardPaths().GetExecutablePath()
+    execpath  = wx.wxFileName(binpath)
+    execpath2 = wx.wxFileName(binpath)
+    printn "binpath="+wx.FromWxString(binpath)
+    dirs=execpath.GetDirs()
+    printn "dirs.count = %1%" % dirs.GetCount()
+    last = dirs.Last()
+    printn "dirs.Last = %1%" % wx.FromWxString(dirs.Last())
+    printn "last.makeupper="+wx.FromWxString(last.MakeUpper())
+    if (last.MakeUpper().Cmp("DEBUG")==0) {
+      last_removed = last
+      execpath2.RemoveLastDir()
+    }
+    if (last.MakeUpper().Cmp("RELEASE")==0) {
+      last_removed = last
+      execpath2.RemoveLastDir()
+    }
+    if (last.MakeUpper().Cmp("BIN")==0) {
+      execpath2.RemoveLastDir()
+    }
+    execpath.AppendDir("lib");
+    execpath.AppendDir("amilab-"+op_system.GetAMILabVersion());
+    execpath.AppendDir("plugin");
+    execpath2.AppendDir("lib");
+    execpath2.AppendDir("amilab-"+op_system.GetAMILabVersion());
+    execpath2.AppendDir("plugin");
+    if (exists(last_removed)) {
+        execpath2.AppendDir(last_removed);
+    }
+
+    dllpath  = execpath.GetPath(wx.wxPATH_GET_VOLUME | wx.wxPATH_GET_SEPARATOR)
+    dllpath2 = execpath2.GetPath(wx.wxPATH_GET_VOLUME | wx.wxPATH_GET_SEPARATOR)
+    if (!wx.wxDir.Exists(dllpath)) && (wx.wxDir.Exists(dllpath2)) {
+      dllpath = dllpath2
+    }
+    printn "dllpath=" +wx.FromWxString(dllpath)
+    printn "dllpath2="+wx.FromWxString(dllpath2)
+
+    ::f_dynlibs.Empty()
+    platform = wx.FromWxString(\
+                  wx.wxPlatformInfo.Get().GetOperatingSystemFamilyName())
+
+    if platform=="Unix"      { ext = "so"; }
+    if platform=="Macintosh" { ext = "so"; }
+    if platform=="Windows"   { ext = "dll"; }
+    found_libs = wx.wxDir.GetAllFiles(dllpath,&::f_dynlibs,"*%1%." % ::ModuleName+\
+                     "%1%" % ext)
+
+
+    if found_libs>1 {
+      InfoDialog "Found several libraries under directory %1%" % dllpath
+    }
+    return=(found_libs)>=1
+  }
+  
+  proc ::Load() {
+
+    ::CheckModule()
+    found_libs  = ::f_dynlibs.Count()>0
+    
+    load_ok=false
+    # try to load .so library
+    if found_libs>0 {
+      libname = wx.FromWxString(::f_dynlibs[0])
+      SetStatusText("Loading "+libname)
+      load_ok = ::plugin_mgr.Load(libname)
+    }
+
+    #if wx.wxFileName(dllpath+"/libModule.so").FileExists() {
+    #}
+    #if wx.wxFileName(dllpath+"/Debug/Module.dll").FileExists() {
+      #SetStatusText("Loading "+dllpath+"/Debug/Module.dll")
+      #::plugin_mgr.Load(dllpath+"/Debug/Module.dll")
+      #found=true
+    #}
+    if load_ok {
+      ::plugin_mgr.Getplugin().Execute()
+      return=true
+    } else {
+       if (!::quiet) {
+        InfoDialog("Dynamic Library not found ...")
+      } else {
+        SetStatusText("Dynamic Library not found ...")
+      }
+      return=false
+    }
+  }
+
+  proc ::UnLoad() {
+    # should delete variables in Buitin
+    del Module
+    # need to call detach first, otherwise SEGFAULT!
+    ::plugin_mgr.Detach()
+    ::plugin_mgr.Unload()
+  }
+
+  proc ::ReLoad() {
+    ::UnLoad()
+    ::Load()
+  }
+
+  ::Init()
+}
