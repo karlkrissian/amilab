@@ -14,6 +14,7 @@ for dir in  "BasicFilters","Filtering","Denoising",\
             "Vessels", \
             "Variable" \
 {
+  del local_f
   local_f = wx.wxFileName(GetScriptsDir)
   local_f.AppendDir(dir)
   local_f.SetFullName("Add2Menu.amil")
@@ -22,7 +23,6 @@ for dir in  "BasicFilters","Filtering","Denoising",\
   } else {
     InfoDialog wx.FromWxString(local_f.GetFullPath())+" does not exists"
   }
-  del local_f
 }
 
 file=op_system.GetCurrentScriptDir()+"/../Modules/Add2Menu.amil"

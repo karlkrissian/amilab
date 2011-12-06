@@ -1,6 +1,4 @@
 
-#del DownloadDataPlugin
-#func "DownloadDataPlugin"
 func "Common/ModulePlugin"
 
 if (!exists(DownloadData_obj)) {

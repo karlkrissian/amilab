@@ -290,9 +290,9 @@ if (!exists(ScriptGui)) \
         wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX,"test")
       ::helpw.CreateStatusBar()
       ::helpw.Show()
-      evh_close = wx.wxAmiEventHandler(&::CloseHelp)
-      ::helpw.Connect(wx.wxEVT_CLOSE_WINDOW,&evh_close.GetCloseEventFunction(),\
-                  &NULL,&evh_close)
+      ::evh_hlp_close = wx.wxAmiEventHandler(&::CloseHelp)
+      ::helpw.Connect(wx.wxEVT_CLOSE_WINDOW,&::evh_hlp_close.GetCloseEventFunction(),\
+                  &NULL,&::evh_hlp_close)
       topsizer = wx.wxBoxSizer(wx.wxVERTICAL)
 
       butsizer = wx.wxBoxSizer(wx.wxHORIZONTAL)
@@ -322,25 +322,25 @@ if (!exists(ScriptGui)) \
       butsizer.Add(&bb4,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
       butsizer.Add(&bb5,wx.wxSizerFlags(0).Border(wx.wxALL, 2))
 
-      evh0 = wx.wxAmiEventHandler(&::LaunchWiki)
-      bb0.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh0.GetEventFunction(),\
-                  &NULL,&evh0)
+      ::evh0 = wx.wxAmiEventHandler(&::LaunchWiki)
+      bb0.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&::evh0.GetEventFunction(),\
+                  &NULL,&::evh0)
 
-      evh_bt1 = wx.wxAmiEventHandler(&::Html2Home)
-      bb1.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt1.GetEventFunction(),\
-                  &NULL,&evh_bt1)
-      evh_bt2 = wx.wxAmiEventHandler(&::Html2Back)
-      bb2.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt2.GetEventFunction(),\
-                  &NULL,&evh_bt2)
-      evh_bt3 = wx.wxAmiEventHandler(&::Html2Forward)
-      bb3.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt3.GetEventFunction(),\
-                  &NULL,&evh_bt3)
-      evh_bt4 = wx.wxAmiEventHandler(&::Html2Reload)
-      bb4.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt4.GetEventFunction(),\
-                  &NULL,&evh_bt4)
-      evh_bt5 = wx.wxAmiEventHandler(&::OpenInBrowser)
-      bb5.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&evh_bt5.GetEventFunction(),\
-                  &NULL,&evh_bt5)
+      ::evh_bt1 = wx.wxAmiEventHandler(&::Html2Home)
+      bb1.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&::evh_bt1.GetEventFunction(),\
+                  &NULL,&::evh_bt1)
+      ::evh_bt2 = wx.wxAmiEventHandler(&::Html2Back)
+      bb2.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&::evh_bt2.GetEventFunction(),\
+                  &NULL,&::evh_bt2)
+      ::evh_bt3 = wx.wxAmiEventHandler(&::Html2Forward)
+      bb3.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&::evh_bt3.GetEventFunction(),\
+                  &NULL,&::evh_bt3)
+      ::evh_bt4 = wx.wxAmiEventHandler(&::Html2Reload)
+      bb4.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&::evh_bt4.GetEventFunction(),\
+                  &NULL,&::evh_bt4)
+      ::evh_bt5 = wx.wxAmiEventHandler(&::OpenInBrowser)
+      bb5.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,&::evh_bt5.GetEventFunction(),\
+                  &NULL,&::evh_bt5)
 
       topsizer.Add(&butsizer,wx.wxSizerFlags(0).Center())
 
@@ -348,17 +348,17 @@ if (!exists(ScriptGui)) \
       ::html2 = wx.wxHtmlWindow(&::helpw)
       ::html2.LoadFile( ::html_filename)
       ::html2.SetRelatedFrame(&::helpw,"HtmlHelp : %s")
-      evh4 = wx.wxAmiEventHandler(&::Html2Hover)
+      ::evh4 = wx.wxAmiEventHandler(&::Html2Hover)
       ::html2.Connect(  wx.wxEVT_COMMAND_HTML_CELL_HOVER,\
-                        &evh4.GetHtmlCellEventFunction(),\
+                        &::evh4.GetHtmlCellEventFunction(),\
                         &NULL,\
-                        &evh4)
+                        &::evh4)
 
-      evh5 = wx.wxAmiEventHandler(&::OnHtmlLinkClicked)
+      ::evh5 = wx.wxAmiEventHandler(&::OnHtmlLinkClicked)
       ::html2.Connect(  wx.wxEVT_COMMAND_HTML_LINK_CLICKED,\
-                        &evh5.GetHtmlLinkEventFunction(),\
+                        &::evh5.GetHtmlLinkEventFunction(),\
                         &NULL,\
-                        &evh5)
+                        &::evh5)
 
       topsizer.Add(&::html2,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 10))
       ::helpw.SetSizer( &topsizer )      # use the sizer for layout

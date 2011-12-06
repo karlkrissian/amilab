@@ -180,7 +180,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_GetBookCtrl::CallMember( ParamList
   if (b==NULL)
     return BasicVariable::ptr();
   else
-    return AMILabType<wxNotebook>::CreateVar(b);
+    return AMILabType<wxNotebook>::CreateVar(b,true);
 
 }
 
@@ -1244,14 +1244,14 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_CurrentParent::CallMember( ParamLi
 {
   wxWindow* parent = this->_objectptr->GetObj()->CurrentParent();
 
-  // create the variable
-  // Smart pointer to the wxWindow
-  boost::shared_ptr<wxWindow> wxw_ptr(
-      parent,
-      wxwindow_nodeleter<wxWindow>()    );
+//   // create the variable
+//   // Smart pointer to the wxWindow
+//   boost::shared_ptr<wxWindow> wxw_ptr(
+//       parent,
+//       wxwindow_nodeleter<wxWindow>()    );
 
   // Create the AMIObject with its methods
-  return WrapClass<wxWindow>::CreateVar(new WrapClass_wxWindow(wxw_ptr));
+  return AMILabType<wxWindow>::CreateVar(parent,true);
 
 }
 
@@ -1268,14 +1268,14 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_GetCurrentSizer::CallMember( Param
 {
   wxBoxSizer* bsizer = this->_objectptr->GetObj()->GetCurrentSizer();
 
-  // create the variable
-  // Smart pointer to the wxWindow
-  boost::shared_ptr<wxBoxSizer> wxw_ptr(
-      bsizer,
-      wxwindow_nodeleter<wxBoxSizer>()    );
+//   // create the variable
+//   // Smart pointer to the wxWindow
+//   boost::shared_ptr<wxBoxSizer> wxw_ptr(
+//       bsizer,
+//       wxwindow_nodeleter<wxBoxSizer>()    );
 
   // Create the AMIObject with its methods
-  return WrapClass<wxBoxSizer>::CreateVar(new WrapClass_wxBoxSizer(wxw_ptr));
+  return AMILabType<wxBoxSizer>::CreateVar(bsizer,true);
 
 }
 
@@ -1316,5 +1316,5 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddWidget::CallMember( ParamList* 
     ClassHelpAndReturn;
   }
 
-  return WrapClass_wxSizerItem::CreateVar(res);
+  return AMILabType<wxSizerItem>::CreateVar(res,true);
 }

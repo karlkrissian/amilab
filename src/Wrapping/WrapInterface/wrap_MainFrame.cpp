@@ -147,7 +147,7 @@ BasicVariable::ptr WrapClass_MainFrame::
       wrap_GetAuiManager::CallMember( ParamList* p)
 {
   wxAuiManager& mgr =   this->_objectptr->_obj->GetAuiManager();
-  return WrapClass_wxAuiManager::CreateVar(&mgr);
+  return AMILabType<wxAuiManager>::CreateVar(&mgr,true);
 }
 
 //---------------------------------------------------
@@ -162,7 +162,7 @@ BasicVariable::ptr WrapClass_MainFrame::
       wrap_GetMainBook::CallMember( ParamList* p)
 {
   wxAuiNotebook* nb =   this->_objectptr->_obj->GetMainBook();
-  return AMILabType<wxAuiNotebook>::CreateVar(nb);
+  return AMILabType<wxAuiNotebook>::CreateVar(nb,true);
 }
 
 //---------------------------------------------------

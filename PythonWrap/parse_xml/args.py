@@ -23,6 +23,9 @@ arg_parser.add_argument('--available_classes_file',  default='',  \
 arg_parser.add_argument('--classes_includes',  default='',  \
   help='Manually defined includes for certain classes' )
 
+arg_parser.add_argument('--members_blacklist',  default='',  \
+  help='Manually discard a set of class function members' )
+
 arg_parser.add_argument('--available_external_classes', nargs='*',  default=[],  \
   help='Lists available classes from other libraries' )
 

@@ -42,6 +42,11 @@ if args.val.classes_includes!='':
   import imp
   classes_inc = imp.load_source("classes_inc_module",args.val.classes_includes)
 
+if args.val.members_blacklist!='':
+  #print "-------- args.val.classes_includes -------------"
+  import imp
+  mem_blacklist = imp.load_source("mem_blacklist_module",args.val.members_blacklist)
+
 def IsTemplate(classname):
   return re.match(r"(.*)<(.*)>",classname)!=None
 
@@ -288,6 +293,16 @@ class MethodInfo:
 
 
 def CheckBlackList(mname,demangled):
+  try:
+    if mname in mem_blacklist.members_blacklist:
+      utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format(mname))
+      return True
+    for bname in mem_blacklist.members_blacklist:
+      if demangled.startswith(bname+"(") or demangled==bname:
+        utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format( demangled))
+        return True
+  except:
+    pass
   if mname in config.members_blacklist:
     utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format(mname))
     return True
@@ -489,7 +504,16 @@ class ParsePublicMembers:
       fname   = attrs.get('name',    None)
       ftype   = attrs.get('type',    None)
       bits    = attrs.get('bits',    None)
+      discard=False
       if "{0}::{1}".format(config.types[context].GetDemangled(),fname) in config.members_blacklist:
+        discard=True
+      try:
+        if "{0}::{1}".format(config.types[context].GetDemangled(),fname) in \
+            mem_blacklist.members_blacklist:
+          discard=True
+      except:
+        pass
+      if discard:
         print "Discarded field ",fname, " which is in the backlist"
       else:
         field = FieldInfo()
@@ -786,6 +810,9 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
             shared_type = config.IsSharedPtr(typename)
             if shared_type==None:
               if config.types[method.returntype].GetType() == "ReferenceType" and not(config.types[method.returntype].GetFullString().endswith('const &')) and not(config.types[method.returntype].GetFullString().endswith('* &')):
+                if (method.static!="1") and (config.types[method.returntype].GetString()==classname):
+                  res += ident+'  if (&res==this->_objectptr->GetObj().get())\n'
+                  res += ident+'    return AMILabType<{0} >::CreateVarFromSmtPtr(this->_objectptr->_obj);\n'.format(typename)
                 # return a pointer that will not be deleted
                 res += ident+'  return AMILabType<{0} >::CreateVar(&res,true);\n'.format(typename)
               else:
@@ -1005,6 +1032,10 @@ def WrapClass(classname,include_file,inputfile):
 
   found = classname in config.classes.keys()
 
+  bases=[]
+  config.GetBases(classname,bases)
+  print "bases :", bases
+
   #
   if found:
     classid = config.classes[classname]
@@ -1029,24 +1060,37 @@ def WrapClass(classname,include_file,inputfile):
 
     # Smart Pointer Deleter
     failed = False
+    implement_smart_pointer=''
     if config.libmodule != None:
+      #implement_smart_pointer = config.libmodule.\
+      #  CreateSmartPointer(config.ClassTypeDef(classname),'sp','res','  ')
       try:
-        implement_deleter = config.libmodule.implement_deleter(config.ClassTypeDef(classname))
+        # give bases as parameter, useful for wxwidgets to check wxwindow inheritence
+        implement_smart_pointer = config.libmodule.\
+          CreateSmartPointer(config.ClassTypeDef(classname),'sp','res','  ',bases)
       except:
-        failed=True
-      if not failed:
-        # Check if a file needs to be included
+        #print "CreateSmartPointer failed\n"
         try:
-          fileinc = config.libmodule.deleter_includefile()
-          config.AddInclude(fileinc)
+          implement_deleter = config.libmodule.implement_deleter(config.ClassTypeDef(classname))
         except:
-          pass
+          failed=True
+        if not failed:
+          # Check if a file needs to be included
+          try:
+            fileinc = config.libmodule.deleter_includefile()
+            config.AddInclude(fileinc)
+          except:
+            pass
     else:
       failed=True
     if failed:
-      implement_deleter = ""
+      implement_deleter = ''
       if (dh.abstract=='1') or (dh.public_members.destructor==None):
         implement_deleter = ", smartpointer_nodeleter<{0} >()".format(config.ClassTypeDef(classname))
+    if implement_smart_pointer=='':
+      implement_smart_pointer=  "boost::shared_ptr<{0} > res(sp {1});".\
+        format(config.ClassTypeDef(classname), implement_deleter)
+
 
     # Check for Copy Constructor
     pos=0
@@ -1100,7 +1144,7 @@ def WrapClass(classname,include_file,inputfile):
       implement_type += "  if (nodeleter)\n"
       implement_type += "    obj_ptr = boost::shared_ptr<{0} >(val, smartpointer_nodeleter<{0} >());\n".format(classname)
       implement_type += "  else\n"
-      implement_type += "    obj_ptr = boost::shared_ptr<{0} >(val {1});\n".format(classname,implement_deleter)
+      implement_type += "    obj_ptr = CreateSmartPointer_{0}(val);\n".format(config.ClassUsedName(classname))
       implement_type += "  return AMILabType<{0} >::CreateVarFromSmtPtr(obj_ptr);\n".format(classname)
       implement_type += "}\n"
               
@@ -1599,21 +1643,22 @@ def WrapClass(classname,include_file,inputfile):
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     for line in fileinput.FileInput(impl_filename,inplace=1):
-      line = line.replace("${INCLUDES}",              config.CreateIncludes())
-      line = line.replace("${IMPLEMENT_TYPE}",        implement_type)
-      line = line.replace("${IMPLEMENT_CREATEVAR}",   implement_createvar)
-      line = line.replace("${IMPLEMENT_DELETER}",     implement_deleter)
-      line = line.replace("${TEMPLATE}",              config.ClassTypeDef(classname))
-      line = line.replace("${TEMPLATENAME}",          config.ClassUsedName(classname))
-      line = line.replace("${TEMPLATESHORTNAME}",     config.ClassShortName(classname,args.val.libname))
-      line = line.replace("${METHODS_BASES}",         methods_bases)
-      line = line.replace("${AddVar_method_all}",     add_var_all)
-      line = line.replace("${AddPublicFields}",       add_public_fields)
-      line = line.replace("${AddPublicEnums}",        add_public_enums)
-      line = line.replace("${AddPublicTypedefs}",     add_public_typedefs)
-      line = line.replace("${AddVar_constructor}",    add_constructor)
-      line = line.replace("${AddVar_static_methods}", add_static_methods)
-      line = line.replace("${WRAP_PUBLIC_METHODS}",   impl)
+      line = line.replace("${INCLUDES}",                config.CreateIncludes())
+      line = line.replace("${IMPLEMENT_TYPE}",          implement_type)
+      line = line.replace("${IMPLEMENT_CREATEVAR}",     implement_createvar)
+      #line = line.replace("${IMPLEMENT_DELETER}",       implement_deleter)
+      line = line.replace("${IMPLEMENT_SMART_POINTER}", implement_smart_pointer)
+      line = line.replace("${TEMPLATE}",                config.ClassTypeDef(classname))
+      line = line.replace("${TEMPLATENAME}",            config.ClassUsedName(classname))
+      line = line.replace("${TEMPLATESHORTNAME}",       config.ClassShortName(classname,args.val.libname))
+      line = line.replace("${METHODS_BASES}",           methods_bases)
+      line = line.replace("${AddVar_method_all}",       add_var_all)
+      line = line.replace("${AddPublicFields}",         add_public_fields)
+      line = line.replace("${AddPublicEnums}",          add_public_enums)
+      line = line.replace("${AddPublicTypedefs}",       add_public_typedefs)
+      line = line.replace("${AddVar_constructor}",      add_constructor)
+      line = line.replace("${AddVar_static_methods}",   add_static_methods)
+      line = line.replace("${WRAP_PUBLIC_METHODS}",     impl)
       print line,
 
   if found:

@@ -75,11 +75,50 @@ def get_include_file(classname, filename):
   return s1
  
 def get_var_filter():
-  return "wx*"
+  # allow std::auto_ptr in filter
+  return "(std::auto_ptr<)?wx*"
 
 def wrap_public_fields(classname):
   # only wrap public fields for wxPoint
   return classname=="wxPoint"
 
 def implement_deleter(classname):
-  return ", smartpointer_nodeleter<{0} >()".format(classname)
+  if classname.find('auto_ptr'):
+    return ""
+  else:
+    return ", smartpointer_nodeleter<{0} >()".format(classname)
+
+
+#
+# Create a standard smart pointer code for wxWidgets classes
+# if the class inherits from wxWindow, no deleter, otherwise, use standard 
+#  C++ delete
+#
+# classname is the class for which to create a smart pointer
+# pointervarname is the name of the pointer variable
+# resname is the name of the resulting smart pointer variable
+# indent is the string to prepend for indentation
+#
+
+# Tentative to automatically create wxWidgets smart pointer with correct deleter failed 
+# does not work since all classes cannot be dynamically casted
+def CreateSmartPointer(classname,pointervarname,resname,indent,bases):
+  #print "CreateSmartPointer \n"
+  # need to check if the class inherits from wxWindow
+  #classname_typedef = config.ClassTypeDef(classname)
+  print 'CreateSmartPointer({0},...)--'.format(classname),
+  res = indent+'boost::shared_ptr<{0} > res;\n'.format(classname)
+  bases1 = bases
+  bases1.append(classname)
+  if ('wxWindow' in bases1) or ('wxMenu' in bases1) or ('wxSizer' in bases1):
+    print " no deleter"
+    res += indent+'  {0} =  '.format(resname)+ \
+            'boost::shared_ptr<{0} >({1}, smartpointer_nodeleter<{0} >());\n'.\
+              format(classname,pointervarname)
+  else:
+    print " use C++ delete"
+    res += indent+'  {0} =  boost::shared_ptr<{1} >({2});\n'.\
+            format(resname,classname,pointervarname)
+  return res
+  
+

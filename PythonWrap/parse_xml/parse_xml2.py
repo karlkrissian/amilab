@@ -92,6 +92,9 @@ def WrapMethodTypePointer(typedefname,include_file):
 
 
   implement_deleter = ", smartpointer_nodeleter<{0} >()".format(typedefname)
+  implement_smart_pointer=  "boost::shared_ptr<{0} > res(sp {1});".\
+        format(typedefname, implement_deleter)
+
 
   # now output the results:
   constructors_decl='\n'
@@ -149,7 +152,8 @@ def WrapMethodTypePointer(typedefname,include_file):
   for line in fileinput.FileInput(impl_filename,inplace=1):
     line = line.replace("${TEMPLATE}",          typedefname)
     line = line.replace("${INCLUDES}",           "")
-    line = line.replace("${IMPLEMENT_DELETER}",  implement_deleter)
+    #line = line.replace("${IMPLEMENT_DELETER}",  implement_deleter)
+    line = line.replace("${IMPLEMENT_SMART_POINTER}", implement_smart_pointer)
     line = line.replace("${IMPLEMENT_TYPE}",     implement_type)
     line = line.replace("${IMPLEMENT_CREATEVAR}",implement_createvar)
     line = line.replace("${METHODS_BASES}",     "")

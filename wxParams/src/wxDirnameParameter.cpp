@@ -72,6 +72,7 @@ void wxDirnameParameter::OnDirUpdate( void* data)
 {
   wxDirnameParameter* _this=(wxDirnameParameter*)data;
   _this->UpdateParam();
+  _this->Callback();
 }
 
 void wxDirnameParameter::SetToolTip( const wxString& tt)

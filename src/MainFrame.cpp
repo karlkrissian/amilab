@@ -2646,7 +2646,8 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
   usermenu_id++;
   usermenu_scripts[usermenu_id] = script_name;
   // first try to find the menu corresponding to the given category
-  menuid = current_menu->FindItem(wxString(script_category.c_str(), wxConvUTF8));
+  wxString menu_cat=wxString(script_category.c_str(), wxConvUTF8);
+  menuid = current_menu->FindItem(menu_cat);
   if (menuid != wxNOT_FOUND) {
     // category found, adding as submenu
     CLASS_MESSAGE("category found");

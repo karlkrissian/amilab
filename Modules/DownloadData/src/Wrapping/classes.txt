@@ -1,8 +1,14 @@
+#
+# needed wxWidgets classes
+#
+wxArchiveClassFactory
 wxArchiveEntry
 wxArchiveInputStream
+wxFilterClassFactory
 wxFileDialog
 wxFileInputStream
 wxFileOutputStream
+std::auto_ptr<wxFFileInputStream>
 wxMemoryInputStream
 wxMemoryOutputStream
 wxStringInputStream

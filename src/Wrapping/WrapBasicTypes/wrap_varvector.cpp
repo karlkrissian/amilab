@@ -63,7 +63,9 @@ BasicVariable::ptr WrapClass_VarVector::wrap_VarVector::CallMember( ParamList* p
   int initial_size = 0;
   get_val_param<int>(initial_size,p,n);
   
-  BasicVariable::ptr v(p->GetParam(n++));
+  BasicVariable::ptr v;
+  if (p->GetNumParam()>1)
+    v = p->GetParam(n++);
 
   VarVector* vv = new VarVector();
   if ((initial_size>0)&&(v.get()))  {
@@ -100,7 +102,7 @@ BasicVariable::ptr WrapClass_VarVector::wrap_push_back::CallMember( ParamList* p
   // probably still "naive" implementation, need to check for the permanence of the smart pointer ?
   // or is it ok?
   // do we want explicit copy or reference of the variable contents ??
- std::cout << "_objectptr" << _objectptr << std::endl; 
+  // std::cout << "_objectptr" << _objectptr << std::endl; 
 
   this->_objectptr->_obj->push_back(var);
 

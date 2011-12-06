@@ -196,6 +196,22 @@ def IsMultipleTemplate(classname):
 def ClassTypeDef(classname):
   return ClassShortName(classname)
 
+
+
+#------------------------------------------------------------------
+#  GetBases
+#------------------------------------------------------------------
+def GetBases(classname, bases):
+  if classname in classes.keys():
+    classid = classes[classname]
+    current_bases = types[classid].bases
+    for (base,virtual) in current_bases:
+      basename = types[base].GetString()
+      basename1 = basename.replace(',',', ')
+      basename1 = basename1.replace(',  ',', ')
+      bases.append(basename1)
+      GetBases(basename1,bases)
+
 #------------------------------------------------------------------
 #  AddInclude
 #------------------------------------------------------------------

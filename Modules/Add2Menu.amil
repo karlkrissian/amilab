@@ -23,6 +23,9 @@ while process {
   process = nextDir.GetNext(&nextFile);
 }
 
+del nextDir
+del nextDir_ptr
+
 #func "ImageProcessing/scripts/Add2Menu"
 #func "vtkAmiVolRen/scripts/Add2Menu"
 #func "NoiseAnalysis/scripts/Add2Menu"

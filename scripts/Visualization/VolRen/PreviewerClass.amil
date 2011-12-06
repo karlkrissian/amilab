@@ -420,7 +420,7 @@ Class PreviewerClass \
     ::choice1.SetSelection(0)
     #event choice
     ::evh_selected = wx.wxAmiEventHandler(&::ChoiceSelected)
-    ::evh_selected.SetSendListEvent(true)
+    ::evh_selected.SetSendCommandEvent(true)
     ::choice1.Connect( wx.wxEVT_COMMAND_CHOICE_SELECTED,\
                        &::evh_selected.GetEventFunction(),\
                        &NULL,&::evh_selected)
@@ -428,20 +428,20 @@ Class PreviewerClass \
     ::b_Apply = wx.wxButton(&::panel,wx.wxID_ANY,"Apply")
     ::b_Close = wx.wxButton(&::panel,wx.wxID_ANY,"Close")
     #button event 
-    evh1 = wx.wxAmiEventHandler(&::Apply)
+    ::evh1 = wx.wxAmiEventHandler(&::Apply)
     ::b_Apply.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,\
-                      &evh1.GetEventFunction(),&NULL,&evh1)
+                      &::evh1.GetEventFunction(),&NULL,&::evh1)
 
-    evh2 = wx.wxAmiEventHandler(&::Close)
+    ::evh2 = wx.wxAmiEventHandler(&::Close)
     ::b_Close.Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED,\
-                      &evh2.GetEventFunction(),&NULL,&evh2)
+                      &::evh2.GetEventFunction(),&NULL,&::evh2)
     #line separator
     line=wx.wxStaticLine(&::panel,wx.wxID_ANY)
 
     #wxVTKRenderWindowInteractor events
-    evh_cpV     = wx.wxAmiEventHandler(&::cpView)
-    //evh_EnterW1 = wx.wxAmiEventHandler(&::OnEnter1)
-    evh_ChoiceW = wx.wxAmiEventHandler(&::OnChoiceW)
+    ::evh_cpV     = wx.wxAmiEventHandler(&::cpView)
+    //::evh_EnterW1 = wx.wxAmiEventHandler(&::OnEnter1)
+    ::evh_ChoiceW = wx.wxAmiEventHandler(&::OnChoiceW)
 
     #wxVTKRenderWindowInteractor
     ::wxvtk_id = 10000
@@ -456,12 +456,12 @@ Class PreviewerClass \
       wxvtkI.SetMinSize(&wx.wxSize(100,100))
       #event copy view
       wxvtkI.Connect( wx.wxEVT_LEFT_UP,\
-                      &evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
+                      &::evh_cpV.GetMouseEventFunction(),&NULL,&::evh_cpV)
       wxvtkI.Connect( wx.wxEVT_MOUSEWHEEL,\
-                      &evh_cpV.GetMouseEventFunction(),&NULL,&evh_cpV)
+                      &::evh_cpV.GetMouseEventFunction(),&NULL,&::evh_cpV)
       #event onenter window and choice
       wxvtkI.Connect( wx.wxEVT_CHILD_FOCUS,\
-                      &evh_ChoiceW.GetChildFocusEventFunction(),&NULL,&evh_ChoiceW)
+                      &::evh_ChoiceW.GetChildFocusEventFunction(),&NULL,&::evh_ChoiceW)
       #add vector
       ::RWIVector.push_back(&wxvtkI)
       del boxsizer

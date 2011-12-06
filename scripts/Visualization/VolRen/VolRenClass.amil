@@ -105,7 +105,7 @@ if (!exists(VolRenClass)) {
     proc ::AddToolbar_VR() \
     {
       ::mgr = &ami.MainFrame.GetAuiManager()
-      del ::tb
+      #del ::tb
       ::tb = wx.wxAuiToolBar(&ami.MainFrame, wx.wxID_ANY);
       ::tb.SetToolBitmapSize(wx.wxSize(16,16));
 
@@ -145,28 +145,29 @@ if (!exists(VolRenClass)) {
       ::tb.Realize()
 
       #add the toolbars to the manager
-      ::mgr.AddPane(&::tb, wx.wxAuiPaneInfo().\
+      pi = wx.wxAuiPaneInfo().\
                   Name("VolRen").Caption("VolRen").\
                   ToolbarPane().Top().Position(2).\
-                  LeftDockable(false).RightDockable(false));
+                  LeftDockable(false).RightDockable(false)
+      ::mgr.AddPane(&::tb, &pi);
 
       ::mgr.Update()
 
       id=0
-      evh_tb_h = wx.wxAmiEventHandler(&::ShowHistogram) 
+      ::evh_tb_h = wx.wxAmiEventHandler(&::ShowHistogram) 
       ::tb.Connect( tb_id+id, wx.wxEVT_COMMAND_MENU_SELECTED \
-                  ,&evh_tb_h.GetEventFunction(),\
-                  &NULL,&evh_tb_h)
+                  ,&::evh_tb_h.GetEventFunction(),\
+                  &NULL,&::evh_tb_h)
       id=id+1
-      evh_tb_p = wx.wxAmiEventHandler(&::Preview) 
+      ::evh_tb_p = wx.wxAmiEventHandler(&::Preview) 
       ::tb.Connect( tb_id+id, wx.wxEVT_COMMAND_MENU_SELECTED \
-                  ,&evh_tb_p.GetEventFunction(),\
-                  &NULL,&evh_tb_p)
+                  ,&::evh_tb_p.GetEventFunction(),\
+                  &NULL,&::evh_tb_p)
       id=id+1
-      evh_tb_s = wx.wxAmiEventHandler(&::GetSnapshot) 
+      ::evh_tb_s = wx.wxAmiEventHandler(&::GetSnapshot) 
       ::tb.Connect( tb_id+id, wx.wxEVT_COMMAND_MENU_SELECTED \
-                  ,&evh_tb_s.GetEventFunction(),\
-                  &NULL,&evh_tb_s)
+                  ,&::evh_tb_s.GetEventFunction(),\
+                  &NULL,&::evh_tb_s)
 
       #id=id+1
       #evh_tb_jc = wx.wxAmiEventHandler(&::LoadCurve) 
@@ -174,10 +175,10 @@ if (!exists(VolRenClass)) {
                   #,&evh_tb_jc.GetEventFunction(),\
                   #&NULL,&evh_tb_jc)
       id=id+1
-      evh_tb_sc = wx.wxAmiEventHandler(&::SaveCurve) 
+      ::evh_tb_sc = wx.wxAmiEventHandler(&::SaveCurve) 
       ::tb.Connect( tb_id+id, wx.wxEVT_COMMAND_MENU_SELECTED \
-                  ,&evh_tb_sc.GetEventFunction(),\
-                  &NULL,&evh_tb_sc)
+                  ,&::evh_tb_sc.GetEventFunction(),\
+                  &NULL,&::evh_tb_sc)
     }
 
     #----------------------------
@@ -351,7 +352,7 @@ if (!exists(VolRenClass)) {
         aux = Resize(::input, ::input.tx/2, ::input.ty/2, ::input.tz/2,1)
         SetStatusText("Resizing done")
         del ::input
-        ::input=aux
+        ::input=&aux
         ::UpdateImageInfo(&::input,&::input_size)
         ::win.SetLabelValue(::input_size_id,::input_size)
         ::UpdateVolPages()
@@ -840,10 +841,10 @@ if (!exists(VolRenClass)) {
             ::vol2_page = ::win.AddPage("Vol2")
               ::volVector[1].AddGui( &::win)
 
-             evh_vb = wx.wxAmiEventHandler(&::OnChangePage) 
+             ::evh_vb = wx.wxAmiEventHandler(&::OnChangePage) 
              ::vbCtrl.Connect( ::vbCtrl.GetId(), wx.wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED \
-                  ,&evh_vb.GetEventFunction(),\
-                  &NULL,&evh_vb)
+                  ,&::evh_vb.GetEventFunction(),\
+                  &NULL,&::evh_vb)
           ::win.EndBook()
 
         ::win.AddPage("Scene")

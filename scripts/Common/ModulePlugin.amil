@@ -96,7 +96,7 @@ Class ModulePlugin \
     
     load_ok=false
     # try to load .so library
-    if found_libs>0 {
+    if found_libs {
       libname = wx.FromWxString(::f_dynlibs[0])
       SetStatusText("Loading "+libname)
       load_ok = ::plugin_mgr.Load(libname)
@@ -123,8 +123,8 @@ Class ModulePlugin \
   }
 
   proc ::UnLoad() {
-    # should delete variables in Buitin
-    del Module
+    # should delete variables in Builtin
+    eval "del %1%;" % ::ModuleName
     # need to call detach first, otherwise SEGFAULT!
     ::plugin_mgr.Detach()
     ::plugin_mgr.Unload()

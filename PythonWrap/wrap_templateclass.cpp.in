@@ -42,6 +42,18 @@ BasicVariable::ptr WrapClass<${TEMPLATE} >::CreateVar( ParamList* p, bool quiet)
 ${IMPLEMENT_CREATEVAR}
 }
 
+
+//------------------------------------------------------------------------------
+static boost::shared_ptr<${TEMPLATE} >  CreateSmartPointer_${TEMPLATENAME}(
+                                      ${TEMPLATE}* sp)
+//, WrapClass_${TEMPLATENAME}* _this)
+{
+  //boost::shared_ptr<${TEMPLATE} > res;
+${IMPLEMENT_SMART_POINTER}
+  return res;
+}
+
+
 ${IMPLEMENT_TYPE}
 
 //----------------------------------------------------------------------
@@ -50,9 +62,11 @@ ${IMPLEMENT_TYPE}
 //
 Variable<AMIObject>::ptr WrapClass_${TEMPLATENAME}::CreateVar( ${TEMPLATE}* sp)
 {
-  boost::shared_ptr<${TEMPLATE} > di_ptr(
-    sp 
-    ${IMPLEMENT_DELETER});
+  boost::shared_ptr<${TEMPLATE} > di_ptr= CreateSmartPointer_${TEMPLATENAME}(sp);
+  //,this);
+  //(
+  //  sp 
+  //  ${IMPLEMENT_DELETER});
   Variable<AMIObject>::ptr res = 
     WrapClass<${TEMPLATE} >::CreateVar(
       new WrapClass_${TEMPLATENAME}(di_ptr)
