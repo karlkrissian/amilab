@@ -7,13 +7,19 @@
 # get number of threads
 import cpuinfo
 import os
+import platform
 
 numthreads=len(cpuinfo.cpu.info)
 initdir=os.getcwd()
 
 
-vtksourcefile='vtk-5.6.1.tar.gz'
-vtkurl='http://www.vtk.org/files/release/5.6/{0}'.format(vtksourcefile)
+#vtksourcefile='vtk-5.6.1.tar.gz'
+#vtkurl='http://www.vtk.org/files/release/5.6/{0}'.format(vtksourcefile)
+
+vtksourcefile='vtk-5.8.0.tar.gz'
+vtkurl='http://www.vtk.org/files/release/5.8/{0}'.format(vtksourcefile)
+
+
 if not(os.access(vtksourcefile, os.R_OK)):
   import urllib2, urllib
   urllib.urlretrieve(vtkurl, vtksourcefile)
@@ -21,7 +27,7 @@ if not(os.access(vtksourcefile, os.R_OK)):
 if not(os.access("VTK", os.R_OK)):
   print " Extracting the tar.gz file"
   import tarfile
-  tar = tarfile.open("vtk-5.6.1.tar.gz")
+  tar = tarfile.open(vtksourcefile)
   tar.extractall()
   tar.close()
 

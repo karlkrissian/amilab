@@ -41,7 +41,12 @@
 /**
   * A wxWindow that draws 2D curves.
   */
-class wxDrawingWindow : public wxScrolledWindow
+class wxDrawingWindow : 
+#ifdef __APPLE__
+  public wxWindow
+#else
+  public wxScrolledWindow
+#endif
 {
   DEFINE_CLASS(wxDrawingWindow);
 

@@ -133,10 +133,10 @@ IF(UNIX)
   SET(CPACK_DEBIAN_PACKAGE_SECTION      "science")
   SET(CPACK_DEBIAN_PACKAGE_PRIORITY     "extra")
   # creating dependencies ...
-  MESSAGE(" ${AMILAB_BIN}")
-  if (EXISTS "${AMILAB_BIN}")
+  MESSAGE(" ${AMILAB_BIN}_release")
+  if (EXISTS "${AMILAB_BIN}_release")
       EXECUTE_PROCESS( 
-        COMMAND ${CMAKE_SOURCE_DIR}/../Releases/Debian/list_dependencies.sh  ${AMILAB_BIN} 
+        COMMAND ${CMAKE_SOURCE_DIR}/../Releases/Debian/list_dependencies.sh  ${AMILAB_BIN}_release
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         RESULT_VARIABLE amilab_dep_result 
         OUTPUT_VARIABLE amilab_dep_output
@@ -145,10 +145,10 @@ IF(UNIX)
     
       MESSAGE ("Dependencies = [${amilab_dep_result}], [${amilab_dep_output}] , [${amilab_dep_error}]")
       SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${amilab_dep_output}")
-#      SET(CPACK_DEBIAN_PACKAGE_DEPENDS "lib64expat1, libbz2-1.0, libc6, libc6-amd64, libc6-i686, libexpat1, libgcc1, libgl1-mesa-glx, libglu1-mesa, libice6, libjpeg62, libpng12-0, libsm6, libstdc++6, libtiff4, libuuid1, libvtk5.2, libwxbase2.8-0, libwxgtk2.8-0, libx11-6, libxext6, zlib1g")
+#      SET(CPACK_DEBIAN_PACKAGE_DEPENDS "lib64expat1, libbz2-1.0, libc6, libc6-amd64, libc6-i686, libexpat1, libgcc1, libgl1-mesa-glx, libglu1-mesa, libice6, libjpeg62, libpng12-0, libsm6, libstdc++6, libtiff4, libuuid1, libvtk5.6, libwxbase2.8-0, libwxgtk2.8-0, libx11-6, libxext6, zlib1g")
 #    endif(objdump_prog)
   
-  ENDIF(EXISTS "${AMILAB_BIN}")
+  ENDIF(EXISTS "${AMILAB_BIN}_release")
 ENDIF(UNIX)
 
 #
