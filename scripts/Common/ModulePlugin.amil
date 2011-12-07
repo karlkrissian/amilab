@@ -10,6 +10,7 @@ Class ModulePlugin \
     ::f_dynlibs = wx.wxArrayString()
     ::quiet=false
     ::ModuleName = "Module"
+    ::IsLoaded = false
   }
 
   proc ::SetModuleName( STRING mname ) {
@@ -18,6 +19,10 @@ Class ModulePlugin \
 
   proc ::SetQuiet(NUM q) {
     ::quiet=q
+  }
+
+  proc ::LoadOK() {
+    return = ::IsLoaded
   }
 
   #
@@ -90,7 +95,6 @@ Class ModulePlugin \
   }
   
   proc ::Load() {
-
     ::CheckModule()
     found_libs  = ::f_dynlibs.Count()>0
     
@@ -111,15 +115,15 @@ Class ModulePlugin \
     #}
     if load_ok {
       ::plugin_mgr.Getplugin().Execute()
-      return=true
     } else {
        if (!::quiet) {
         InfoDialog("Dynamic Library not found ...")
       } else {
         SetStatusText("Dynamic Library not found ...")
       }
-      return=false
     }
+    ::IsLoaded = load_ok
+    return = load_ok
   }
 
   proc ::UnLoad() {
