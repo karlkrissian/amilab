@@ -728,7 +728,12 @@ void wxStcFrame::CreateMenu ()
     menuView->Append (myID_HILIGHTLANG, _("&Hilight language .."), menuHilight);
     menuView->AppendSeparator();
     menuView->AppendCheckItem (myID_FOLDTOGGLE, _("&Toggle current fold\tCtrl+T"));
-    menuView->AppendCheckItem (myID_OVERTYPE, _("&Overwrite mode\tIns"));
+    #ifdef __APPLE__
+      menuView->AppendCheckItem (myID_OVERTYPE, _("&Overwrite mode\tCtrl+B"));
+    #else
+      menuView->AppendCheckItem (myID_OVERTYPE, _("&Overwrite mode\tIns"));
+    #endif
+   
     menuView->AppendCheckItem (myID_WRAPMODEON, _("&Wrap mode\tCtrl+U"));
     menuView->AppendSeparator();
     menuView->AppendCheckItem (myID_DISPLAYEOL, _("Show line &endings"));
