@@ -32,12 +32,24 @@
 #include "vtkGPUInfoList.h"
 #include "vtkGPUInfo.h"
 
+//carlos
+#include "vtkVolumeMapper.h"
+#include "vtkDataSet.h"
+#include "vtkExecutive.h"
+#include "vtkGarbageCollector.h"
+#include "vtkInformation.h"
+//
+
 vtkInstantiatorNewMacro(vtkAMILabGPUMultiVolumeRayCastMapper);
 vtkCxxSetObjectMacro(vtkAMILabGPUMultiVolumeRayCastMapper, MaskInput, vtkImageData);
 vtkCxxSetObjectMacro(vtkAMILabGPUMultiVolumeRayCastMapper, TransformedInput, vtkImageData);
 
 vtkAMILabGPUMultiVolumeRayCastMapper::vtkAMILabGPUMultiVolumeRayCastMapper()
 {
+//carlos  
+  this->SecondVolLoad=false;
+  this->Property2                  = NULL;
+//
   this->AutoAdjustSampleDistances  = 1;
   this->ImageSampleDistance        = 1.0;
   this->MinimumImageSampleDistance = 1.0;
@@ -91,6 +103,9 @@ vtkAMILabGPUMultiVolumeRayCastMapper::vtkAMILabGPUMultiVolumeRayCastMapper()
 
   this->TransformedInput = NULL;
   this->LastInput = NULL;
+  //carlos
+  this->SetNumberOfInputPorts(2);
+  //
 }
 
 // ----------------------------------------------------------------------------
@@ -104,8 +119,7 @@ vtkAMILabGPUMultiVolumeRayCastMapper::~vtkAMILabGPUMultiVolumeRayCastMapper()
 
 // ----------------------------------------------------------------------------
 //SetInput 2
-// void SetInput( vtkImageData *input )
-// void SetInput( vtkDataSet *genericInput )
+//New funcions adds
 void vtkAMILabGPUMultiVolumeRayCastMapper::SetInput2( vtkDataSet *genericInput )
 {
   vtkImageData *input = 
@@ -123,16 +137,58 @@ void vtkAMILabGPUMultiVolumeRayCastMapper::SetInput2( vtkDataSet *genericInput )
 
 void vtkAMILabGPUMultiVolumeRayCastMapper::SetInput2( vtkImageData *input )
 {
-  std::cout<< "entraaaaaaaa"<<std::endl;
   if(input)
     {
+    this->SecondVolLoad=true;
     this->SetInputConnection(1, input->GetProducerPort());
     }
   else
     {
     // Setting a NULL input removes the connection.
-    this->SetInputConnection(1, 0);
+    this->SetInputConnection(1,0);
     }
+}
+
+
+vtkImageData * vtkAMILabGPUMultiVolumeRayCastMapper::GetInput2()
+{
+  if (this->GetNumberOfInputConnections(1) < 1)
+    {
+    return 0;
+    }
+  
+  return vtkImageData::SafeDownCast(
+    this->GetExecutive()->GetInputData(1, 0));
+}
+
+
+
+void vtkAMILabGPUMultiVolumeRayCastMapper::SetProperty2(vtkVolumeProperty *property)
+{
+  if( this->Property2 != property )
+    {
+    if (this->Property2 != NULL) {this->Property2->UnRegister(this);}
+    this->Property2 = property;
+    if (this->Property2 != NULL) 
+      {
+      this->Property2->Register(this);
+      this->Property2->UpdateMTimes();
+      }
+    this->Modified();
+    }
+
+}
+
+vtkVolumeProperty *vtkAMILabGPUMultiVolumeRayCastMapper::GetProperty2()
+{
+  if( this->Property2 == NULL )
+    {
+    this->Property2 = vtkVolumeProperty::New();
+    this->Property2->Register(this);
+    this->Property2->Delete();
+    }
+  return this->Property2;
+
 }
 
 

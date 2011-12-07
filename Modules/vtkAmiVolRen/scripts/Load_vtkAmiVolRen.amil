@@ -1,10 +1,10 @@
 
-del vtkAmiVolRenPlugin
-func "vtkAmiVolRenPlugin"
+func "Common/ModulePlugin"
 
 if (!exists(vtkAmiVolRenPlugin_obj)) {
-  vtkAmiVolRenPlugin vtkAmiVolRenPlugin_obj
+  ModulePlugin vtkAmiVolRenPlugin_obj
+  vtkAmiVolRenPlugin_obj.SetModuleName("vtkAmiVolRen")
   vtkAmiVolRenPlugin_obj.Load()
 } else {
-  InfoDialog "The script seems to be already loaded." 
+  InfoDialog "The object vtkAmiVolRenPlugin_obj to be already instanciated." 
 }

@@ -2,7 +2,10 @@
 
   Program:   Visualization Toolkit
   Module:    vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.h
-
+  
+  Modifications over vtk file: Carlos Falcón cfalcon@ctim.es 
+                               Karl Krissian karl@ctim.es 
+  
 
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
@@ -436,13 +439,14 @@ protected:
   vtkMapMaskTextureId *MaskTextures; // need a list for AMR mode.
 
   vtkRGBTable *RGBTable;
+  vtkRGBTable *RGBTable2;             //carlos
   vtkRGBTable *Mask1RGBTable;
   vtkRGBTable *Mask2RGBTable;
 
   vtkOpacityTables *OpacityTables;
-
+  vtkOpacityTables *OpacityTables2;   //carlos
   vtkKWScalarField *CurrentScalar;
-  vtkKWScalarField *CurrentScalar2;
+  vtkKWScalarField *CurrentScalar2;   //carlos
   vtkKWMask *CurrentMask;
 
   float ActualSampleDistance;
@@ -459,6 +463,8 @@ protected:
   vtkShader2 *Component;
   vtkShader2 *Shade;
 
+  
+  
   // Internal Variable used to keep track of whether or render window's size
   // changed and therefore we need re-allocation.
   bool        SizeChanged;

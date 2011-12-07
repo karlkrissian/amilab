@@ -1,4 +1,4 @@
 
-if exists(vtkAmiVolRen_obj) {
-  vtkAmiVolRen_obj.ReLoad()
+if exists(DownloadData_obj) {
+  DownloadData_obj.ReLoad()
 }

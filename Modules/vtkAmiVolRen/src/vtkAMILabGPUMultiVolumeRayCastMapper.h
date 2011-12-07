@@ -3,7 +3,8 @@
   Program:   Visualization Toolkit
   Module:    vtkAMILabGPUMultiVolumeRayCastMapper.h
 
-  Modifications over vtk file: Karl Krissian
+  Modifications over vtk file: Carlos Falcón cfalcon@ctim.es 
+                               Karl Krissian karl@ctim.es 
   
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
@@ -25,6 +26,7 @@
 
 class vtkVolumeProperty;
 class vtkRenderWindow;
+class vtkImageData;
 
 //class vtkKWAMRVolumeMapper; // friend class.
 
@@ -36,11 +38,15 @@ public:
   vtkTypeMacro(vtkAMILabGPUMultiVolumeRayCastMapper,vtkVolumeMapper);
   void PrintSelf( ostream& os, vtkIndent indent );
 
-  
-  //carlos Description:
-  // Define the Input functions for a second data 
+//carlos Description:
+  // Define the Input/output functions for a second data 
   void SetInput2( vtkImageData *input );
   void SetInput2( vtkDataSet *genericInput );
+  vtkImageData * GetInput2();
+  // Functions for set/get the properties of the second volume
+  void SetProperty2(vtkVolumeProperty *property);
+  vtkVolumeProperty *GetProperty2();;
+  
   
   // Description:
   // If AutoAdjustSampleDistances is on, the the ImageSampleDistance
@@ -270,7 +276,12 @@ protected:
 
   vtkIdType MaxMemoryInBytes;
   float MaxMemoryFraction;
-
+//carlos
+  //If a second volume exists
+  bool SecondVolLoad;
+  //Property of the second volume
+  vtkVolumeProperty *Property2;
+//
 
   // 1 if we are generating the canonical image, 0 otherwise
   int   GeneratingCanonicalView;

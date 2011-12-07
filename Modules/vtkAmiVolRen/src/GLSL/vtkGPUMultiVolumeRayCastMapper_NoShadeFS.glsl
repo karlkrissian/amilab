@@ -24,6 +24,7 @@
 
 // from 1- vs 4-component shader.
 vec4 colorFromValue(vec4 value);
+vec4 colorFromValue2(vec4 value);
 
 // ----------------------------------------------------------------------------
 void initShade()
@@ -36,4 +37,11 @@ vec4 shade(vec4 value)
 {
   return colorFromValue(value);
 }
+
+// ----------------------------------------------------------------------------
+vec4 shade2(vec4 value)
+{
+  return colorFromValue2(value);
+}
+
 

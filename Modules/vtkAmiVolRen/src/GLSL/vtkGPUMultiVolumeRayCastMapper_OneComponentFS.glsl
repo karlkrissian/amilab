@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkGPUVolumeRayCastMapper_NoShadeFS.glsl
+  Module:    vtkGPUVolumeRayCastMapper_OneComponentFS.glsl
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -13,8 +13,8 @@
 
 =========================================================================*/
 
-// Fragment shader that implements initShade() and shade() in the case of no
-// shading.
+// Fragment shader that implements scalarFromValue() and colorFromValue() in
+// the case of a one-component dataset.
 // The functions are used in composite mode.
 
 #version 110
@@ -22,18 +22,20 @@
 // "value" is a sample of the dataset.
 // Think of "value" as an object.
 
-// from 1- vs 4-component shader.
-vec4 colorFromValue(vec4 value);
+uniform sampler1D colorTexture;
+uniform sampler1D colorTexture2;
 
-// ----------------------------------------------------------------------------
-void initShade()
+float scalarFromValue(vec4 value)
 {
-  // empty, nothing to do.
+  return value.x;
 }
 
-// ----------------------------------------------------------------------------
-vec4 shade(vec4 value)
+vec4 colorFromValue(vec4 value)
 {
-  return colorFromValue(value);
+  return texture1D(colorTexture,value.x);
 }
 
+vec4 colorFromValue2(vec4 value)
+{
+  return texture1D(colorTexture2,value.x);
+}
