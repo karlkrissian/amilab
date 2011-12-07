@@ -42,7 +42,6 @@ wxDC
 wxDateSpan
 wxDateTime
 wxDialog
-std::auto_ptr<wxDir>
 wxDrawObject
 wxDynamicLibrary
 wxDynamicLibraryDetails
