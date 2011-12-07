@@ -147,7 +147,7 @@ MACRO( CREATE_ANCESTORS )
   SET(ANCESTORS_CMD ${PYTHON_EXECUTABLE})                          #Command
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} ${AMI_WRAPPER})                 #Wrapper
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} ${XML_OUTPUT})                  #Input
-  SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--libname" "${LIBNAME}")
+  SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--libname" "${LIBNAME}")       
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--ancestors" ${classes_list})  #Options
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--ancestors-file" ${ANCESTORS_FILE} "-q")
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--templates" )

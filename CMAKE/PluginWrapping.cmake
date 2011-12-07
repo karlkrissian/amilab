@@ -53,8 +53,9 @@ IF(KIT)
   IF(${KIT}_INCLUDE_PATHS)
     WRAP_MESSAGE("************** ${KIT}_INCLUDE_PATHS = ${${KIT}_INCLUDE_PATHS}")
     foreach(path ${${KIT}_INCLUDE_PATHS})
+MESSAGE("path=${path}")
       SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${path}")
-    endforeach(p ${${KIT}_INCLUDE_PATHS})
+    endforeach(path ${${KIT}_INCLUDE_PATHS})
   ENDIF(${KIT}_INCLUDE_PATHS)
 ENDIF(KIT)
 
@@ -195,7 +196,7 @@ ELSE(GCCXML_CMD_RESULT)
         ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.cpp 
         ${${CMAKE_PROJECT_NAME}_SRCS})
 
-
+#MESSAGE("${CMAKE_PROJECT_NAME}_HDR = ${${CMAKE_PROJECT_NAME}_HDR}")
 #   ENDIF(MYCOMMAND_2_RESULT)
 
   WRAP_MESSAGE("End wrapping")
