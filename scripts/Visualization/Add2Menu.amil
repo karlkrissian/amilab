@@ -48,3 +48,6 @@ if exists(global::scripts_toolbar) {
 
  ami.MainFrame.AddToMenu("&Scripts","&Visualization","&ViewerColorTransform",  \
               "Visualization/ViewerColorTransform/ViewerColorTransformGui")
+
+ ami.MainFrame.AddToMenu("&Scripts","&Visualization","&GraphViz",  "Visualization/GraphViz/GraphVizGui")
+

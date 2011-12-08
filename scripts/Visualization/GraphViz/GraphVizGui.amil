@@ -1,0 +1,11 @@
+
+func "GraphVizClass"
+
+if (!exists(GraphViz_obj)) {
+  GraphVizClass GraphViz_obj
+  GraphViz_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

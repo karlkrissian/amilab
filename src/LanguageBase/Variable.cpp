@@ -251,9 +251,10 @@ AMI_DEFINE_BASICTYPE_NOCONSTRUCT(C_wrap_varfunction);
 
 
 
-AMI_DEFINE_BASICTYPE(AMIObject);
+AMI_DEFINE_LIMITED_TYPE(AMIObject);
+AMI_DEFINE_LIMITED_TYPE(WrapClassMember);
 // abstract
-AMI_DEFINE_BASICTYPE_NOCONSTRUCT(WrapClassMember);
+//AMI_DEFINE_BASICTYPE_NOCONSTRUCT(WrapClassMember);
 
 // At least have name_as_string here, define in their corresponding wrapping
 //std::string AMILabType<AMIObject>::name_as_string() { return std::string("AMIObject"); } 

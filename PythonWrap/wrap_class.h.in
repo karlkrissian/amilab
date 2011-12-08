@@ -29,7 +29,7 @@ ${INCLUDE_BASES}
 
 #ifndef ${TEMPLATE}_declared
   #define ${TEMPLATE}_declared
-  AMI_DECLARE_TYPE(${TEMPLATE});
+  ${DECLARE_TYPE}
 #endif
 
 // TODO: check for inheritence ...

@@ -24,8 +24,6 @@ if (!exists(PovrayClass)) {
       ::html_filename = GetScriptsDir+"/Povray/Doc/Povray/index.html"
     }
 
-
-
     //---------------------------------------------------
     proc ::OutputAuto() {
       f = wx.wxFileName(::scene_file)

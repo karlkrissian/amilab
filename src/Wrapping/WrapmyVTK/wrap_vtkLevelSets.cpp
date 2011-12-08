@@ -17,10 +17,10 @@
 #include "ami_class.h"
 #include "ami_object.h"
 
-#ifndef AMIObject_declared
-  #define AMIObject_declared
-  AMI_DECLARE_TYPE(AMIObject);
-#endif
+// #ifndef AMIObject_declared
+//   #define AMIObject_declared
+//   AMI_DECLARE_TYPE(AMIObject);
+// #endif
 
 
 #include "vtkLevelSets.h"

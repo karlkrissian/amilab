@@ -116,7 +116,16 @@ class AMILabType {
     { return false;}
 };
 
+//   template<> class LanguageBase_EXPORT AMILabType<type> 
+//   { 
+//     public: 
+//       
+//   };
+
 // forward declaration of the specialization
+#define AMI_DECLARE_LIMITED_TYPE_EXPORT(type) \
+      template<>  LanguageBase_EXPORT std::string AMILabType<type>::name_as_string();
+
 #define AMI_DECLARE_TYPE_EXPORT(type) \
   template<> class LanguageBase_EXPORT AMILabType<type> \
   { \
@@ -126,7 +135,7 @@ class AMILabType {
       static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
       static BasicVariable::ptr CreateVar(type* val, bool nodeleter=false);\
       static BasicVariable::ptr CreateVar(const type& val);\
-      static BasicVariable::ptr CreateVar(type** val);\
+      static BasicVariable::ptr CreateVar(type** val, bool nodeleter=false);\
       static bool get_val_param( \
                     type& arg,\
                     ParamList*p,\
@@ -143,6 +152,29 @@ class AMILabType {
                     bool quiet=false);\
   };
 
+
+#define AMI_DECLARE_WRAPPED_LIMITED_TYPE(type) \
+  template<> boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr, bool quiet);\
+  template<> BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
+  template<> BasicVariable::ptr AMILabType<type>::CreateVar(type* val, bool nodeleter);\
+  template<> BasicVariable::ptr AMILabType<type>::CreateVar(const type& val);\
+  template<> BasicVariable::ptr AMILabType<type>::CreateVar(type** val, bool nodeleter);\
+  template<> bool AMILabType<type>::get_val_param( \
+                    type& arg,\
+                    ParamList*p,\
+                    int& num,\
+                    bool required,\
+                    bool noconstr,\
+                    bool quiet);\
+      \
+  template<> bool AMILabType<type>::get_val_smtptr_param(\
+                    boost::shared_ptr<type>& arg,\
+                    ParamList*p, int& num,\
+                    bool required,\
+                    bool noconstr,\
+                    bool quiet);
+  
+  
 // forward declaration of the specialization
 #define AMI_DECLARE_TYPE(type) \
   template<> class AMILabType<type> \
@@ -196,6 +228,9 @@ class AMILabType {
       return true;\
     } \
 
+#define AMI_DEFINE_GETVALPARAM_SPECIALIZED(type) \
+   template <> AMI_DEFINE_GETVALPARAM(type)
+
 #define AMI_DEFINE_GETVALSMTPTRPARAM(type) \
     \
     bool AMILabType<type>::get_val_smtptr_param(\
@@ -218,6 +253,11 @@ class AMILabType {
       return true;\
     }
 
+#define AMI_DEFINE_GETVALSMTPTRPARAM_SPECIALIZED(type) \
+  template <> AMI_DEFINE_GETVALSMTPTRPARAM(type)
+
+#define AMI_DEFINE_LIMITED_TYPE(type) \
+  template<> std::string AMILabType<type>::name_as_string() { return std::string(#type); } 
 
 
 #define AMI_DEFINE_BASICTYPE(type) \
@@ -309,6 +349,40 @@ class AMILabType {
     AMI_DEFINE_GETVALSMTPTRPARAM(type)
 
 
+#define AMI_DEFINE_WRAPPEDTYPE_COMMON_SPECIALIZED(type) \
+    \
+    template<> boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr,bool quiet)  \
+    { \
+      if (!var.get()) \
+      {\
+        FILE_ERROR("Variable not found");\
+        return boost::shared_ptr<type>();\
+      }\
+      boost::shared_ptr<Variable<AMIObject> > tmp( boost::dynamic_pointer_cast<Variable<AMIObject> >(var)); \
+      if ((!tmp.get()) && (!noconstr)) {\
+        /* Try with the constructor */ \
+        ParamList::ptr param(new ParamList()); \
+        param->AddParam(var); \
+        BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get(),quiet);\
+        tmp = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);\
+      } else { FILE_MESSAGE("first cast ok"); }\
+      if (tmp.get()) { \
+        WrapClassBase::ptr object( tmp->Pointer()->GetWrappedObject()); \
+        boost::shared_ptr<WrapClass<type> > wc( boost::dynamic_pointer_cast<WrapClass<type> >(object));\
+        if (wc.get()) { \
+          return wc->GetObj(); \
+        } else { \
+          /*FILE_ERROR("Could not cast dynamically the variable.")*/;\
+        } \
+      }  else { \
+        /*FILE_ERROR("Need a wrapped object or compatible variable as parameter.")*/; \
+      } \
+      return boost::shared_ptr<type>();\
+    } \
+    \
+    AMI_DEFINE_GETVALSMTPTRPARAM_SPECIALIZED(type)
+
+
 #define AMI_DEFINE_WRAPPEDTYPE_NOCOPY(type) \
     AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
     \
@@ -343,6 +417,23 @@ class AMILabType {
       return AMILabType<type>::CreateVar(new type(val));\
     } 
 
+#define AMI_DEFINE_WRAPPEDTYPE_HASCOPY_SPECIALIZED(type) \
+    AMI_DEFINE_WRAPPEDTYPE_COMMON_SPECIALIZED(type)\
+    \
+    template<> BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
+    { \
+      boost::shared_ptr<type> obj_ptr; \
+      if (nodeleter) \
+        obj_ptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        obj_ptr = boost::shared_ptr<type>(val);\
+      return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
+    } \
+    \
+    template <> BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return AMILabType<type>::CreateVar(new type(val));\
+    } 
 
 // Abstract classes
 #define AMI_DEFINE_WRAPPEDTYPE_ABSTRACT(type) \
@@ -363,6 +454,24 @@ class AMILabType {
       return BasicVariable::ptr();\
     } 
 
+#define AMI_DEFINE_WRAPPEDTYPE_ABSTRACT_SPECIALIZED(type) \
+    AMI_DEFINE_WRAPPEDTYPE_COMMON_SPECIALIZED(type)\
+    \
+    template<> BasicVariable::ptr AMILabType<type>::CreateVar( type* val, bool nodeleter)  \
+    { \
+      boost::shared_ptr<type> obj_ptr; \
+      if (nodeleter) \
+        obj_ptr = boost::shared_ptr<type>(val,smartpointer_nodeleter<type>());\
+      else \
+        obj_ptr = boost::shared_ptr<type>(val);\
+      return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
+    } \
+    \
+    template<> BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return BasicVariable::ptr();\
+    } 
+
 #define AMI_DEFINE_VARFROMSMTPTR(type) \
   BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr(boost::shared_ptr<type>& obj_ptr) \
   { \
@@ -370,6 +479,9 @@ class AMILabType {
       WrapClass<type>::CreateVar( \
         new WrapClass_##type(obj_ptr));\
   } 
+
+#define AMI_DEFINE_VARFROMSMTPTR_SPECIALIZED(type) \
+  template<> AMI_DEFINE_VARFROMSMTPTR(type)
 
 #define AMI_DEFINE_VARFROMSMTPTR_TEMPLATE(type1,name1,type2) \
   BasicVariable::ptr AMILabType<type1<type2> >::CreateVarFromSmtPtr(boost::shared_ptr<type1<type2> >& obj_ptr) \
@@ -451,17 +563,23 @@ AMI_DECLARE_TYPE_EXPORT(VarArray);
 
 // abstract classes, is it OK?
 // TODO: check why to two following features where commented
+// problem with WrapLanguage
+// where a builtin type is wrapped, creates doubled defined functions
+//   AMI_DECLARE_LIMITED_TYPE_EXPORT has been created to defined only 
+//     name_as_string member
+
+
 //#ifndef WIN32
-  #ifndef AMIObject_declared
-    #define AMIObject_declared
-    AMI_DECLARE_TYPE_EXPORT(AMIObject);
-  #endif
+//  #ifndef AMIObject_declared
+//    #define AMIObject_declared
+    AMI_DECLARE_LIMITED_TYPE_EXPORT(AMIObject);
+//  #endif
 //#endif
 
-#ifndef WrapClassMember_declared
-  #define WrapClassMember_declared
-  AMI_DECLARE_TYPE_EXPORT(WrapClassMember);
-#endif
+//#ifndef WrapClassMember_declared
+//  #define WrapClassMember_declared
+  AMI_DECLARE_LIMITED_TYPE_EXPORT(WrapClassMember);
+//#endif
 
 
 //----------------------------------------------------------------------

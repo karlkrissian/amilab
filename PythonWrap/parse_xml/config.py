@@ -123,6 +123,10 @@ available_types       = [
   ]
 available_builtin_classes     = ['amilab::SurfacePoly']
 
+# Builtin classes that may also be wrapped, so they need
+# to have a special treatment for AMILabType<> type.
+builtin_classes = ['AMIObject','WrapClassMember']
+
 # not used
 #available_pointertypes= ['int','float','double','unsigned char','long','long int','std::string','bool']
 
@@ -248,7 +252,10 @@ def CreateIncludes():
       res += '  typedef {0} {1};\n'.format(f,ClassTypeDef(f))
       res += '  AMI_DECLARE_TYPE({0})\n'.format(ClassTypeDef(f))
     else:
-      res += '  AMI_DECLARE_TYPE({0})\n'.format(f)
+      if f in builtin_classes:
+        res += '  AMI_DECLARE_WRAPPED_LIMITED_TYPE({0})\n'.format(f)
+      else:
+        res += '  AMI_DECLARE_TYPE({0})\n'.format(f)
     res += '#endif\n'
   return res
 

@@ -1115,19 +1115,34 @@ def WrapClass(classname,include_file,inputfile):
             utils.WarningMessage( "Copy assign operator found: {0}".format(m.usedname))
             dh.has_copyassign = True
       pos = pos+1
+
+    declare_type=''
+    if classname in config.builtin_classes:
+      declare_type='  AMI_DECLARE_WRAPPED_LIMITED_TYPE({0});'.format(\
+        config.ClassTypeDef(classname))
+    else:
+      declare_type='  AMI_DECLARE_TYPE({0});'.format(\
+        config.ClassTypeDef(classname))
     
     implement_type="\n"
+    specialized=''
+    if classname in config.builtin_classes:
+      specialized='_SPECIALIZED'
     if dh.has_copyassign:
-        implement_type += "AMI_DEFINE_GETVALPARAM({0});\n".format(config.ClassTypeDef(classname))
+      implement_type += "AMI_DEFINE_GETVALPARAM{1}({0});\n".format(\
+          config.ClassTypeDef(classname),specialized)
     if dh.has_copyconstr:
       if dh.abstract=='1':
-        implement_type += "AMI_DEFINE_WRAPPEDTYPE_ABSTRACT({0});\n".format(config.ClassTypeDef(classname))
+        implement_type += "AMI_DEFINE_WRAPPEDTYPE_ABSTRACT{1}({0});\n".format(\
+            config.ClassTypeDef(classname),specialized)
       else:
-        implement_type += "AMI_DEFINE_WRAPPEDTYPE_HASCOPY({0});\n".format(config.ClassTypeDef(classname))
+        implement_type += "AMI_DEFINE_WRAPPEDTYPE_HASCOPY{1}({0});\n".format(\
+            config.ClassTypeDef(classname),specialized)
       if (IsTemplate(classname) and args.val.templates) or IsWithinContext(classname):
         implement_type += "AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2({0},{1});\n".format(config.ClassTypeDef(classname),config.ClassUsedName(classname))
       else:
-        implement_type += "AMI_DEFINE_VARFROMSMTPTR({0});\n".format(config.ClassTypeDef(classname))
+        implement_type += "AMI_DEFINE_VARFROMSMTPTR{1}({0});\n".format(\
+            config.ClassTypeDef(classname),specialized)
     else:
       implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(config.ClassTypeDef(classname))
       #print "{0} is template {1}".format(classname,IsTemplate(classname))
@@ -1531,6 +1546,7 @@ def WrapClass(classname,include_file,inputfile):
         
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)
+      line = line.replace("${DECLARE_TYPE}",      declare_type)
       line = line.replace("${INCLUDE_TYPEDEF}",   include_typedef)
       line = line.replace("${INHERIT_BASES}",     inherit_bases)
       line = line.replace("${CONSTRUCTOR_BASES}", constructor_bases)

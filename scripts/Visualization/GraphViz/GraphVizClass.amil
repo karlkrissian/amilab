@@ -1,0 +1,92 @@
+
+func "Common/ScriptGui"
+
+if (!exists(GraphVizClass)) {
+
+  Class GraphVizClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() \
+    {
+      ::graphviz_dot_bin = "/usr/bin/dot", "GraphViz dot executable"
+      ::graphviz_file = "graph.dot", "filename containing the graph description"
+      ::graphviz_lang = "png"
+      ::output_file = "graph.png", "output image filename"
+      ::graphviz_dir = ".", "Default scene directory"
+      ::html_filename = GetScriptsDir+"/GraphViz/Doc/GraphViz/index.html"
+    }
+
+    //---------------------------------------------------
+    proc ::OutputAuto() \
+    {
+      f = wx.wxFileName(::graphviz_file)
+      f.SetPath("/tmp")
+      f.SetExt("png")
+      ::output_file = f.GetFullPath().c_str()
+      ::win.Update(-1)
+    }
+
+    //---------------------------------------------------
+    proc ::Run() \
+    {
+      cmd = ::graphviz_dot_bin+" -T%1%" % ::graphviz_lang \
+              +" %1%" % ::graphviz_file \
+              + " -o"+ ::output_file
+      SetStatusText("GraphViz command : "+cmd)
+      sh cmd
+    }
+
+    //---------------------------------------------------
+    proc ::Show() {
+      ::res <<= Image(::output_file)
+      show ::res
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() \
+    {
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("GraphViz",&::parent_panel)
+      } else {
+        ::win = ParamPanel("GraphViz")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Config")
+
+          ::win.AddFilename(&::graphviz_dot_bin,"GV program",".","*")
+          ::win.AddFilename(&::graphviz_file,"scene",::graphviz_dir,"*.dot")
+          ::win.AddButton("Set Output",&::OutputAuto)
+          ::win.AddFilename(&::output_file,"output",".","*.png")
+
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+      ::win.BeginHorizontal()
+        ::win.AddButton("Run",::Run)
+        ::win.AddButton("Show",&::Show)
+      ::win.EndHorizontal()
+
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

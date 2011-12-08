@@ -36,10 +36,10 @@ if (!exists(URLLoadClass)) {
             im_desc  = wx.FromWxString(sipi_re.GetMatch(&current_line,2))
             im_size  = wx.FromWxString(sipi_re.GetMatch(&current_line,5))
             im_color = wx.FromWxString(sipi_re.GetMatch(&current_line,6))
-            #print " '%1%' " % im_name
-            #print " '%1%' " %im_desc
-            #print " '%1%' " %im_size
-            #print " '%1%' " %im_color+"\n"
+            print " '%1%' " % im_name
+            print " '%1%' " %im_desc
+            print " '%1%' " %im_size
+            print " '%1%' " %im_color+"\n"
             ::sipi_misc += im_name
           } else {
             printn "no match;"
@@ -60,9 +60,9 @@ if (!exists(URLLoadClass)) {
       f = wxTextFile()
       f.Open(op_system.GetCurrentScriptDir()+"/osirix_examples.txt")
       name_exp     = "[[:blank:]]*Alias Name: ([A-Z0-9]+)"
-      modality_exp = "[[:blank:]]Modality: ([A-Z]+)"
-      size_exp     = "[[:blank:]]File Size: ([0-9]+) Mb"
-      descr_exp    = "[[:blank:]]Description: (.*)"
+      modality_exp = "[[:blank:]]*Modality: (.+)"
+      size_exp     = "[[:blank:]]*File Size: (.+)"
+      descr_exp    = "[[:blank:]]*Description: (.+)"
 
       name_re = wx.wxRegEx(name_exp,wx.wxRE_ADVANCED)
       name_re.Compile(name_exp)
@@ -73,18 +73,36 @@ if (!exists(URLLoadClass)) {
       descr_re = wx.wxRegEx(descr_exp,wx.wxRE_ADVANCED)
       descr_re.Compile(descr_exp)
 
+      Class Osirix_image_info {
+        ::name = "-"
+        ::modality = "-"
+        ::size = "-"
+        ::descr = "-"
+      }
+
       #printn "IsValid = %1%" % sipi_re.IsValid()
       for n =0 to f.GetLineCount()-1 {
         current_line = f[n]
         #printn "*"
         if name_re.Matches(&current_line) {
-          im_name  = wx.FromWxString(name_re.GetMatch(&current_line,1))
-          n=n+3
-          #im_desc  = wx.FromWxString(sipi_re.GetMatch(&current_line,2))
-          #im_size  = wx.FromWxString(sipi_re.GetMatch(&current_line,5))
-          #im_color = wx.FromWxString(sipi_re.GetMatch(&current_line,6))
-          printn "Found '%1%'" % im_name
-          ::osirix_examples += im_name
+          del vinfo
+          Osirix_image_info vinfo
+          vinfo.name     = wx.FromWxString(name_re    .GetMatch(&current_line,1))
+          n++;current_line = f[n]
+          if modality_re.Matches(&current_line) {
+            vinfo.modality = wx.FromWxString(modality_re.GetMatch(&current_line,1))
+          }
+          n++;current_line = f[n]
+          if size_re.Matches(&current_line) {
+            vinfo.size     = wx.FromWxString(size_re    .GetMatch(&current_line,1))
+          }
+          n++;current_line = f[n]
+          if descr_re.Matches(&current_line) {
+            vinfo.descr    = wx.FromWxString(descr_re   .GetMatch(&current_line,1))
+          }
+          printn "Found '%1%'" % vinfo.name + " '%1%' " % vinfo.modality + " '%1%' " % vinfo.size + " '%1%' " % vinfo.descr 
+          # TODO: check why += does not work
+          ::osirix_examples.v.push_back(&vinfo)
         } else {
           printn "no match;"
         }
@@ -209,8 +227,8 @@ if (!exists(URLLoadClass)) {
 
     for n=0 to ::osirix_examples.size()-1\
     {
-      imname = ::osirix_examples[n]
-      varname = ::Im2Var_osirix_examples(::osirix_examples[n])
+      imname = ::osirix_examples[n].name
+      varname = ::Im2Var_osirix_examples(::osirix_examples[n].name)
       cmd = "proc ::Load_%1%( ) " % varname +\
             "{ ::Load_osirix_examples_Image(\"%1%\"" % imname+\
             ",%1%); };" % n
@@ -245,7 +263,7 @@ if (!exists(URLLoadClass)) {
     #---------------------------------------------------------------------------
     proc ::AddImageButton( STRING varname) \
     {
-      #printn "Starting ::AddImageButton(%1%)" %varname
+      printn "Starting ::AddImageButton(%1%)" %varname
       return=::LoadImageIcon(varname);
       eval "bmp = wx.wxBitmap(&::%1%_icon.Scale(32,32));" % varname
       #eval "::bmp_%1% = &bmp;" % varname
@@ -318,8 +336,10 @@ if (!exists(URLLoadClass)) {
     proc ::Osirix_load_previews( ) \
     {
       for n=0 to ::osirix_examples.size()-1 {
-        imname = ::osirix_examples[n]
-        varname = ::Im2Var_osirix_examples(::osirix_examples[n])
+        imname = ::osirix_examples[n].name
+        # special case ...
+        if imname == "WRIX" { imname = "WRIST"; }
+        varname = ::Im2Var_osirix_examples(::osirix_examples[n].name)
         # 1. check if the icon exists
         icon_filename = ::IconFileName(varname)
         if !wx.wxFileName(icon_filename).FileExists() {
@@ -349,6 +369,7 @@ if (!exists(URLLoadClass)) {
         for n=0 to ::sipi_misc.size()-1 {
           #printn "1"
           imname = ::sipi_misc[n]
+          printn imname
           varname = ::Im2Var_sipi_misc(::sipi_misc[n])
           ok = ::AddImageButton(varname)
           ::sipi_misc_has_icon[n] = ok
@@ -371,9 +392,17 @@ if (!exists(URLLoadClass)) {
         c=0
         for n=0 to ::osirix_examples.size()-1 {
           #printn "1"
-          imname = ::osirix_examples[n]
-          varname = ::Im2Var_osirix_examples(::osirix_examples[n])
+          imname = ::osirix_examples[n].name
+          varname = ::Im2Var_osirix_examples(::osirix_examples[n].name)
           ok = ::AddImageButton(varname)
+          #if n==0 {
+          tt = "%1%"      % (::osirix_examples[n].modality)
+          tt = tt+", %1%" % (::osirix_examples[n].size)
+          tt = tt+", %1%" % (::osirix_examples[n].descr)
+          cmd =  "::bb_%1%."%varname
+          cmd = cmd + ("SetToolTip(\"%1%\");" % tt)
+          eval cmd
+          #}
           ::osirix_examples_has_icon[n] = ok
           c++
           if (c%4)==0 {
