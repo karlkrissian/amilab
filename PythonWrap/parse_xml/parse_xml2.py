@@ -68,6 +68,7 @@ def FindAvailableClasses():
 #  WrapMethodTypePointer
 #----------------------------------------------------------------------
 def WrapMethodTypePointer(typedefname,include_file):
+  #print "WrapMethodPointer({0},..)".format(typedefname)
   # Create the handler
   #dh = FindMethodTypePointer(typedefname)
 
@@ -95,6 +96,13 @@ def WrapMethodTypePointer(typedefname,include_file):
   implement_smart_pointer=  "boost::shared_ptr<{0} > res(sp {1});".\
         format(typedefname, implement_deleter)
 
+  declare_type=''
+  if typedefname in config.builtin_classes:
+      declare_type='  AMI_DECLARE_WRAPPED_LIMITED_TYPE({0});'.format(\
+        typedefname)
+  else:
+      declare_type='  AMI_DECLARE_TYPE({0});'.format(\
+        typedefname)
 
   # now output the results:
   constructors_decl='\n'
@@ -111,6 +119,7 @@ def WrapMethodTypePointer(typedefname,include_file):
   includefiles = '#include "{0}"'.format(include_file)
   for line in fileinput.FileInput(header_filename,inplace=1):
     line = line.replace("${INCLUDE_BASES}",     "")
+    line = line.replace("${DECLARE_TYPE}",      declare_type)
     line = line.replace("${INHERIT_BASES}",     "")
     line = line.replace("${CONSTRUCTOR_BASES}", "")
     line = line.replace("${TEMPLATE}",          typedefname)
@@ -120,7 +129,6 @@ def WrapMethodTypePointer(typedefname,include_file):
     line = line.replace("${ADD_CLASS_METHOD_ALL}",class_decl)
     print line,
         
-
   implement_type="\n"
   implement_type += "AMI_DEFINE_GETVALPARAM({0});\n".format(typedefname)
   implement_type += "AMI_DEFINE_WRAPPEDTYPE_NOCOPY({0});\n".format(typedefname)
