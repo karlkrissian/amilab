@@ -124,7 +124,8 @@ class AMILabType {
 
 // forward declaration of the specialization
 #define AMI_DECLARE_LIMITED_TYPE_EXPORT(type) \
-      template<>  LanguageBase_EXPORT std::string AMILabType<type>::name_as_string();
+  template<>  LanguageBase_EXPORT std::string AMILabType<type>::name_as_string() \
+  { return std::string(#type); } 
 
 #define AMI_DECLARE_TYPE_EXPORT(type) \
   template<> class LanguageBase_EXPORT AMILabType<type> \
@@ -256,9 +257,10 @@ class AMILabType {
 #define AMI_DEFINE_GETVALSMTPTRPARAM_SPECIALIZED(type) \
   template <> AMI_DEFINE_GETVALSMTPTRPARAM(type)
 
+/*
 #define AMI_DEFINE_LIMITED_TYPE(type) \
   template<> std::string AMILabType<type>::name_as_string() { return std::string(#type); } 
-
+*/
 
 #define AMI_DEFINE_BASICTYPE(type) \
 	std::string AMILabType<type>::name_as_string() { return std::string(#type); } \
