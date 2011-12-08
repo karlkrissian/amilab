@@ -124,7 +124,7 @@ class AMILabType {
 
 // forward declaration of the specialization
 #define AMI_DECLARE_LIMITED_TYPE_EXPORT(type) \
-  template<>  LanguageBase_EXPORT std::string AMILabType<type>::name_as_string() \
+  template<> inline LanguageBase_EXPORT std::string AMILabType<type>::name_as_string() \
   { return std::string(#type); } 
 
 #define AMI_DECLARE_TYPE_EXPORT(type) \
