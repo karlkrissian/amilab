@@ -451,10 +451,12 @@ AMI_DECLARE_TYPE_EXPORT(VarArray);
 
 // abstract classes, is it OK?
 // TODO: check why to two following features where commented
-#ifndef AMIObject_declared
-  #define AMIObject_declared
-  AMI_DECLARE_TYPE_EXPORT(AMIObject);
-#endif
+//#ifndef WIN32
+  #ifndef AMIObject_declared
+    #define AMIObject_declared
+    AMI_DECLARE_TYPE_EXPORT(AMIObject);
+  #endif
+//#endif
 
 #ifndef WrapClassMember_declared
   #define WrapClassMember_declared
