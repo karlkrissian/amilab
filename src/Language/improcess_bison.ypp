@@ -7444,6 +7444,17 @@ image:
     }
     | T_cumhisto T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
+    /**
+       Parameters:
+         (3) image: image to compute the histogram
+         (5) expr: minimal value
+         (7) expr: maximal value
+         (9) expr: number of intervals
+
+       Description:
+         Compute the cumulative histogram of an image and returns it
+         as a 1D image
+    **/
       GET_VARSTACK_VALUE(InrImage,im);
       float vmin  = $5;
       float vmax  = $7;
