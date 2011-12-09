@@ -9,14 +9,44 @@ if (!exists(GraphVizClass)) {
     //---------------------------------------------------
     proc ::Init() \
     {
-      ::graphviz_bin_dir = "/usr/bin", "GraphViz binary path"
+      # use global AMILabConfig to read/save configuration of the script
+      ::config_path = "/scripts/Visualization/GraphViz"
+      ::ReadConfig()
+    
+      # try to read the user dir
+      ::graphviz_dir = ".", "Default file directory"
       ::graphviz_program = "dot"
 
       ::graphviz_file = "graph.dot", "filename containing the graph description"
       ::graphviz_lang = "png"
       ::output_file = "graph.png", "output image filename"
-      ::graphviz_dir = ".", "Default scene directory"
       ::html_filename = GetScriptsDir+"/GraphViz/Doc/GraphViz/index.html"
+      
+    }
+
+    //---------------------------------------------------
+    proc ::ReadConfig() \
+    {
+      config_path_bak = ami.AMILabConfig.GetPath()
+      ami.AMILabConfig.SetPath(::config_path)
+
+      ::graphviz_bindir = wx.FromWxString(ami.AMILabConfig.\
+        Read_11("GRAPHVIZ_BINDIR","/usr/bin"))
+      #, "GraphViz binary path"
+
+        
+      ami.AMILabConfig.SetPath(&config_path_bak)
+    }
+
+    //---------------------------------------------------
+    proc ::SaveConfig() \
+    {
+      config_path_bak = ami.AMILabConfig.GetPath()
+      ami.AMILabConfig.SetPath(::config_path)
+
+      ami.AMILabConfig.Write("GRAPHVIZ_BINDIR",::graphviz_bindir)
+        
+      ami.AMILabConfig.SetPath(&config_path_bak)
     }
 
     //---------------------------------------------------
@@ -65,13 +95,13 @@ if (!exists(GraphVizClass)) {
       ::win.BeginBook()
     
         ::win.AddPage("Params")
-          ::win.AddFilename(&::graphviz_dot_bin,"GV program",".","*")
           ::win.AddFilename(&::graphviz_file,"scene",::graphviz_dir,"*.dot")
           ::win.AddButton("Set Output",&::OutputAuto)
           ::win.AddFilename(&::output_file,"output",".","*.png")
 
         ::win.AddPage("Config")
-          ::win.AddDirname("Bin dir",&::graphviz_bin_dir)
+          ::bindir_id = ::win.AddDirname(&::graphviz_bindir,"Bin dir")
+          ::win.AddButton("Save",&::SaveConfig)
 
         if wx.wxFileName(::html_filename).FileExists() {
           ::AddHelpPage(&::win)
@@ -79,8 +109,8 @@ if (!exists(GraphVizClass)) {
     
       ::win.EndBook()
       ::win.BeginHorizontal()
-        ::win.AddButton("Edit",::Edit)
-        ::win.AddButton("Run",::Run)
+        ::win.AddButton("Edit",&::Edit)
+        ::win.AddButton("Run",&::Run)
         ::win.AddButton("Show",&::Show)
       ::win.EndHorizontal()
 
@@ -91,6 +121,8 @@ if (!exists(GraphVizClass)) {
       } else {
         ::win.Display()
       }
+      #::win.Update(::bindir_id)
+      #::graphviz_bin_dir = ::graphviz_bin_dir+"/"
       ::win.Update(-1)
 
 
