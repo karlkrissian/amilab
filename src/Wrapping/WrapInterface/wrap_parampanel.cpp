@@ -38,7 +38,9 @@
   return varres;
 
 
-extern MainFrame*     GB_main_wxFrame;
+#include "AMILabConfigure.h"
+AMILab_VAR_IMPORT MainFrame*     GB_main_wxFrame;
+
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts  Vars;
 

@@ -104,13 +104,17 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 
 #include "wrapVTK.h"
 #include "wrap_wxApp.h"
+#include "wrap_wxConfigBase.h"
 //#include "wrap_TestTemplateClass__LT__int__GT__.h"
 
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts  Vars;
 
-extern MainFrame*   GB_main_wxFrame;
-extern wxApp*       GB_wxApp;
+#include "AMILabConfigure.h"
+
+AMILab_VAR_IMPORT MainFrame*  GB_main_wxFrame;
+AMILab_VAR_IMPORT wxConfig*   GB_Config;
+AMILab_VAR_IMPORT wxApp*      GB_wxApp;
 extern std::string  GB_cmdline;
 
 
@@ -429,6 +433,9 @@ void AddWrapAmilab(AMIObject::ptr& obj)
   // Add the MainFrame as an object
   BasicVariable::ptr mainframe_var = WrapClass_MainFrame::CreateVar(GB_main_wxFrame);
   amiobject->GetContext()->AddVar("MainFrame", mainframe_var, amiobject->GetContext());
+
+  BasicVariable::ptr config_var = AMILabType<wxConfigBase>::CreateVar(GB_Config);
+  amiobject->GetContext()->AddVar("AMILabConfig", config_var, amiobject->GetContext());
 
   // Add the App as an object
   BasicVariable::ptr app_var = AMILabType<wxApp>::CreateVar(GB_wxApp,true);

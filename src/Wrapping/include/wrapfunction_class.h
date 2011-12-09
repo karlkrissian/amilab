@@ -310,7 +310,10 @@ class WrapCommon_DECLARE WrapClassBase
 
     virtual int GetObjCounter() { return 0; }
 
-//    virtual std::string ObjPointerAsString() { return ""; }
+// what was the problem of this command, why can't I get the type of an object??
+#ifdef __GNUC__
+    virtual std::string ObjPointerAsString() { return ""; }
+#endif
     
 //    virtual GenericPointer GetGenericPointer() { return GenericPointer(NULL); }
 

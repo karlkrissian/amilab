@@ -37,6 +37,9 @@ public:
                             WrapClass_AnalyticFunctionBase(si)
   {}
   
+  std::string ObjPointerAsString() { return "AnalyticPlane"; }
+
+  
   ADD_CLASS_CONSTRUCTOR(AnalyticPlane, "Wrapping of AnalyticPlane");
   
   

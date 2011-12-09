@@ -17,7 +17,9 @@
 #include "wx/artprov.h"
 
 #include "MainFrame.h"
-extern MainFrame*    GB_main_wxFrame;
+
+#include "AMILabConfigure.h"
+AMILab_VAR_IMPORT MainFrame*    GB_main_wxFrame;
 #include <iostream>
 
 #include "myDataViewCtrl.h"

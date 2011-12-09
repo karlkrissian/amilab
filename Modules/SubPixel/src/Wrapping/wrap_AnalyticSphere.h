@@ -37,6 +37,8 @@ public:
                             WrapClass_AnalyticFunctionBase(si)
   {}
   
+  std::string ObjPointerAsString() { return "AnalyticSphere"; }
+  
   ADD_CLASS_CONSTRUCTOR(AnalyticSphere, "Wrapping of AnalyticSphere");
   
   ADD_CLASS_METHOD(setCenter, "Set sphere's center.");

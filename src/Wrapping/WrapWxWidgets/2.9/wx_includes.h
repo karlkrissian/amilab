@@ -24,6 +24,7 @@
 #include <wx/choice.h>
 #include <wx/statline.h>
 #include <wx/cmdline.h>
+#include <wx/config.h>
 #include <wx/scrolwin.h>
 #include <wx/timer.h>
 #include <wx/url.h>

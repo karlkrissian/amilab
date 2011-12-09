@@ -37,6 +37,8 @@ public:
                             WrapClass_AnalyticFunctionBase(si)
   {}
   
+  std::string ObjPointerAsString() { return "AnalyticCylinder"; }
+
   ADD_CLASS_CONSTRUCTOR(AnalyticCylinder, "Wrapping of AnalyticCylinder");
   
   

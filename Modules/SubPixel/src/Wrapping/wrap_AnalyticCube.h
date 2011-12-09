@@ -37,6 +37,8 @@ public:
                          WrapClass_AnalyticFunctionBase(si)
   {}
   
+  std::string ObjPointerAsString() { return "AnalyticCube"; }
+
   ADD_CLASS_CONSTRUCTOR(AnalyticCube, "Wrapping of AnalyticCube");
   
   

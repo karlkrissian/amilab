@@ -41,6 +41,7 @@ class WrapClass_ClassBase3 : public WrapClass<ClassBase3>
   public:
     // resolve ambiguity
     const boost::shared_ptr<ClassBase3>& GetObj() const { return WrapClass<ClassBase3>::GetObj(); }
+    std::string ObjPointerAsString() { return "ClassBase3"; }
 
     /// Constructor
     WrapClass_ClassBase3(boost::shared_ptr<ClassBase3 > si): 

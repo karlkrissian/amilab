@@ -50,6 +50,7 @@ wxDynamicLibraryDetailsArray
 wxEvent
 wxEventTable
 wxEvtHandler
+wxFileConfig
 wxFileName
 wxFileSystem
 wxFileSystemHandler

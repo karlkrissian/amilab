@@ -43,6 +43,8 @@ class WrapClass_Viewer3D:  public WrapClass<Viewer3D>,  public  WrapClass_wxFram
     WrapClass_Viewer3D(boost::shared_ptr<Viewer3D > si): WrapClass<Viewer3D>(si), WrapClass_wxFrame(si)
     { }
 
+    std::string ObjPointerAsString() { return "Viewer3D"; }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(Viewer3D, "Wrapping of Viewer3D." )
 

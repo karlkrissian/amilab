@@ -37,6 +37,8 @@ public:
                           WrapClass_AnalyticFunctionBase(si)
   {}
   
+  std::string ObjPointerAsString() { return "AnalyticLine"; }
+
   ADD_CLASS_CONSTRUCTOR(AnalyticLine, "Wrapping of AnalyticLine.");
   
   ADD_CLASS_METHOD(setAngle,  "Set line's angle.");

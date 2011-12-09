@@ -49,6 +49,8 @@ class WrapClass_RGBTransformInc:  public WrapClass<RGBTransformInc>,
       WrapClass<RGBTransformInc>(si),WrapClass_RGBTransformBase(si) 
     { }
 
+    std::string ObjPointerAsString() { return "RGBTransformInc"; }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( RGBTransformInc, "Wrapping of RGBTransformInc." );
 

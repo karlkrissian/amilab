@@ -46,8 +46,9 @@ class WrapClass_${TEMPLATENAME} : public WrapClass<${TEMPLATE} >
     typedef ${TEMPLATE} ObjectType;
 
   public:
-    // resolve ambiguity
+    // resolve ambiguities
     const boost::shared_ptr<${TEMPLATE} >& GetObj() const { return WrapClass<${TEMPLATE} >::GetObj(); }
+    std::string ObjPointerAsString() { return "${TEMPLATENAME}"; }
 
     /// Constructor
     WrapClass_${TEMPLATENAME}(boost::shared_ptr<${TEMPLATE} > si): 

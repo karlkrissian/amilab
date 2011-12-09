@@ -37,6 +37,8 @@ public:
                                         WrapClass_AnalyticFunctionBase(si)
   {}
   
+  std::string ObjPointerAsString() { return "AnalyticStraightVessel"; }
+  
   ADD_CLASS_CONSTRUCTOR(AnalyticStraightVessel2D, "Wrapping of AnalyticStraightVessel");
   
   ADD_CLASS_METHOD(getCenter,    "Get vessel center.");

@@ -37,6 +37,8 @@ public:
                               WrapClass_AnalyticFunctionBase(si)
   {}
   
+  std::string ObjPointerAsString() { return "AnalyticRing2D"; }
+  
   ADD_CLASS_CONSTRUCTOR(AnalyticRing2D, "Wrapping of AnalyticRing2D");
   
   ADD_CLASS_METHOD(getCenter,    "Get ring center.");

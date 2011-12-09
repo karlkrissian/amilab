@@ -34,8 +34,10 @@ LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
 
 #include <wx/string.h>
 
-extern MainFrame* GB_main_wxFrame;
-extern wxApp* GB_wxApp;
+#include "AMILabConfigure.h"
+
+AMILab_VAR_IMPORT MainFrame* GB_main_wxFrame;
+AMILab_VAR_IMPORT wxApp*     GB_wxApp;
 
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT void CB_delete_variable( void* var);

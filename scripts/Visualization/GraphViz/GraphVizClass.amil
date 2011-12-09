@@ -9,7 +9,9 @@ if (!exists(GraphVizClass)) {
     //---------------------------------------------------
     proc ::Init() \
     {
-      ::graphviz_dot_bin = "/usr/bin/dot", "GraphViz dot executable"
+      ::graphviz_bin_dir = "/usr/bin", "GraphViz binary path"
+      ::graphviz_program = "dot"
+
       ::graphviz_file = "graph.dot", "filename containing the graph description"
       ::graphviz_lang = "png"
       ::output_file = "graph.png", "output image filename"
@@ -26,11 +28,19 @@ if (!exists(GraphVizClass)) {
       ::output_file = f.GetFullPath().c_str()
       ::win.Update(-1)
     }
+    
+    //---------------------------------------------------
+    proc ::Edit() \
+    {
+      ed = ami->MainFrame.GetAmilabEditor(::graphviz_file)
+      ed.FileOpen( ::classfilename)
+      ed.Show()
+    }
 
     //---------------------------------------------------
     proc ::Run() \
     {
-      cmd = ::graphviz_dot_bin+" -T%1%" % ::graphviz_lang \
+      cmd = ::graphviz_bin_dir+"/"+::graphviz_program+" -T%1%" % ::graphviz_lang \
               +" %1%" % ::graphviz_file \
               + " -o"+ ::output_file
       SetStatusText("GraphViz command : "+cmd)
@@ -54,13 +64,14 @@ if (!exists(GraphVizClass)) {
       
       ::win.BeginBook()
     
-        ::win.AddPage("Config")
-
+        ::win.AddPage("Params")
           ::win.AddFilename(&::graphviz_dot_bin,"GV program",".","*")
           ::win.AddFilename(&::graphviz_file,"scene",::graphviz_dir,"*.dot")
           ::win.AddButton("Set Output",&::OutputAuto)
           ::win.AddFilename(&::output_file,"output",".","*.png")
 
+        ::win.AddPage("Config")
+          ::win.AddDirname("Bin dir",&::graphviz_bin_dir)
 
         if wx.wxFileName(::html_filename).FileExists() {
           ::AddHelpPage(&::win)
@@ -68,6 +79,7 @@ if (!exists(GraphVizClass)) {
     
       ::win.EndBook()
       ::win.BeginHorizontal()
+        ::win.AddButton("Edit",::Edit)
         ::win.AddButton("Run",::Run)
         ::win.AddButton("Show",&::Show)
       ::win.EndHorizontal()

@@ -38,6 +38,8 @@ public:
                             WrapClass_AnalyticFunctionBase(si)
   {}
   
+  std::string ObjPointerAsString() { return "AnalyticCircle"; }
+
   ADD_CLASS_CONSTRUCTOR(AnalyticCircle, "Wrapping of AnalyticCircle.");
                                    
   //Class methods

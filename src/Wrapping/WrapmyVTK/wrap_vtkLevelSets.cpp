@@ -38,7 +38,8 @@
   return varres;
 
 
-extern MainFrame*     GB_main_wxFrame;
+#include "AMILabConfigure.h"
+AMILab_VAR_IMPORT MainFrame*     GB_main_wxFrame;
 
 class vtkUpdateProgressBar : public vtkCommand
 {

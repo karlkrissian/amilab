@@ -43,6 +43,7 @@ class WrapClass_wxVTKRenderWindowInteractor : public WrapClass<wxVTKRenderWindow
   public:
     // resolve ambiguity
     const boost::shared_ptr<wxVTKRenderWindowInteractor>& GetObj() const { return WrapClass<wxVTKRenderWindowInteractor>::GetObj(); }
+    std::string ObjPointerAsString() { return "wxVTKRenderWindowInteractor"; }
 
     /// Constructor
     WrapClass_wxVTKRenderWindowInteractor(boost::shared_ptr<wxVTKRenderWindowInteractor > si): 

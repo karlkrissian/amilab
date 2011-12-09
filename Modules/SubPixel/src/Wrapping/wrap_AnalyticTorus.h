@@ -37,6 +37,8 @@ public:
                             WrapClass_AnalyticFunctionBase(si)
   {}
   
+  std::string ObjPointerAsString() { return "AnalyticTorus"; }
+  
   ADD_CLASS_CONSTRUCTOR(AnalyticTorus, "Wrapping of AnalyticTorus");
   
   ADD_CLASS_METHOD(setCenter, "Set torus' center.");

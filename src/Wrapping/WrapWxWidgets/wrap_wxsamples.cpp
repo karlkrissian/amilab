@@ -28,7 +28,8 @@
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts  Vars;
 
-extern MainFrame*   GB_main_wxFrame;
+#include "AMILabConfigure.h"
+AMILab_VAR_IMPORT MainFrame*   GB_main_wxFrame;
 
 void AddWrapWXSamples(AMIObject::ptr & obj)
 {
@@ -41,7 +42,7 @@ void AddWrapWXSamples(AMIObject::ptr & obj)
   Vars.SetObjectContext(amiobject->GetContext());
 
   ADDOBJECTVAR_NAME(C_wrap_procedure,"penguin", wrap_penguin);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,"wxStcFrame", wrap_wxStcFrame);
+//  ADDOBJECTVAR_NAME(C_wrap_procedure,"wxStcFrame", wrap_wxStcFrame);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -89,6 +90,7 @@ void wrap_penguin( ParamList* p)
  * Runs the scintilla test wxwidgets sample.
  * @param p 
  */
+/*
 void wrap_wxStcFrame( ParamList* p)
 {
     char functionname[] = "penguin";
@@ -122,4 +124,4 @@ void wrap_wxStcFrame( ParamList* p)
   editor->ShowLineNumbers(true);
   editor->GotoLine(line_number);
 }
-
+*/

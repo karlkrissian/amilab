@@ -16,6 +16,7 @@
 #include <wx/aui/aui.h>
 #include <wx/choice.h>
 #include <wx/cmdline.h>
+#include <wx/config.h>
 #include <wx/dir.h>
 #include <wx/dynlib.h>
 #include <wx/event.h>

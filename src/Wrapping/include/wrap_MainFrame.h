@@ -40,6 +40,8 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxFram
     WrapClass_MainFrame(boost::shared_ptr<MainFrame> si): WrapClass<MainFrame>(si), WrapClass_wxFrame(si)
     {}
 
+    std::string ObjPointerAsString() { return "MainFrame"; }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(MainFrame, "Wrapping of MainFrame (this object cannot be constructed from scratch)." )
 

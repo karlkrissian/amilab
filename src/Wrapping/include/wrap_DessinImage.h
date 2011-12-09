@@ -53,6 +53,8 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
       CLASS_MESSAGE("*** Destroying ***");
     }
 
+    std::string ObjPointerAsString() { return "DessinImage"; }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(DessinImage, "Wrapping of DessinImage." );
 

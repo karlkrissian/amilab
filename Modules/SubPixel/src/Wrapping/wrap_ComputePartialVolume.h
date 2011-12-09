@@ -32,6 +32,8 @@ public:
                         WrapClass<ComputePartialVolume>(si)
   {}
   
+  std::string ObjPointerAsString() { return "ComputePartialVolume"; }
+  
   ADD_CLASS_CONSTRUCTOR(ComputePartialVolume, "Wrapping of ComputePartialVolume");
   
   ADD_CLASS_METHOD(ComputeAnalyticPartialSurfaceSubdiv,

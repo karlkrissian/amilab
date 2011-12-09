@@ -21,6 +21,6 @@
 void AddWrapWXSamples(  AMIObject::ptr& obj);
 
 void wrap_penguin(      ParamList* p);
-void wrap_wxStcFrame(   ParamList* p);
+//void wrap_wxStcFrame(   ParamList* p);
 
 #endif //  _wrap_wxsamples_h_

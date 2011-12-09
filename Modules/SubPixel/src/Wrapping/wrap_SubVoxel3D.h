@@ -34,6 +34,8 @@ public:
   {}
   
   ADD_CLASS_CONSTRUCTOR(SubVoxel3D, "Wrapping of SubVoxel3D." )
+
+  std::string ObjPointerAsString() { return "SubVoxel3D"; }
   
   //Class methods
   ADD_CLASS_METHOD(GradienteCurvo3D, 

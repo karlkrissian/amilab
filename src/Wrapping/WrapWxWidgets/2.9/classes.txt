@@ -67,6 +67,7 @@ wxEventTypeTag<wxHtmlCellEvent>
 wxEventTypeTag<wxHtmlLinkEvent>
 wxFocusEvent
 wxFSFile
+wxFileConfig
 wxFileName
 wxFileSystem
 wxFileSystemHandler

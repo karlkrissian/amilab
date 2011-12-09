@@ -39,6 +39,8 @@ class WrapClass_FenetreDessin : public WrapClass<FenetreDessin>, public WrapClas
     WrapClass_FenetreDessin(boost::shared_ptr<FenetreDessin> si):  WrapClass<FenetreDessin>(si), WrapClass_wxFrame(si)
     {}
 
+    std::string ObjPointerAsString() { return "FenetreDessin"; }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(FenetreDessin, "Wrapping of FenetreDessin." );
 

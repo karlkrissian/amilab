@@ -32,6 +32,8 @@ public:
                                   WrapClass<AnalyticFunctionBase>(si)
   {}
   
+  std::string ObjPointerAsString() { return "AnalyticFunctionBase"; }
+
   ADD_CLASS_CONSTRUCTOR(AnalyticFunctionBase, "Wrapping of AnalyticFunctionBase." )
   
   void AddMethods(WrapClass<AnalyticFunctionBase>::ptr this_ptr)

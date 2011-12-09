@@ -31,7 +31,9 @@ public:
   WrapClass_SubPixel2D(boost::shared_ptr<SubPixel2D> si):
                         WrapClass<SubPixel2D>(si)
   {}
-  
+
+  std::string ObjPointerAsString() { return "SubPixel2D"; }
+
   ADD_CLASS_CONSTRUCTOR(SubPixel2D, "Wrapping of SubPixel2D." )
   
   //Class methods
