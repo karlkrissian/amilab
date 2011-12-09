@@ -11,10 +11,10 @@ if (!exists(GraphVizClass)) {
     {
       # use global AMILabConfig to read/save configuration of the script
       ::config_path = "/scripts/Visualization/GraphViz"
+      ::graphviz_dotdir = ".", "Default file directory"
       ::ReadConfig()
     
       # try to read the user dir
-      ::graphviz_dir = ".", "Default file directory"
       ::graphviz_program = "dot"
 
       ::graphviz_file = "graph.dot", "filename containing the graph description"
@@ -32,6 +32,20 @@ if (!exists(GraphVizClass)) {
 
       ::graphviz_bindir = wx.FromWxString(ami.AMILabConfig.\
         Read_11("GRAPHVIZ_BINDIR","/usr/bin"))
+
+      # Set/Create the directory of the graph files
+      sp = wx.wxStandardPathsBase.Get()
+      user_app_path = wx.FromWxString(sp.GetUserLocalDataDir())
+      if !wx.wxDir.Exists(user_app_path) {
+        wx.wxFileName.Mkdir(user_app_path)
+      }
+      ::graphviz_dotdir = user_app_path + "/GraphViz"
+      if !wx.wxDir.Exists(::graphviz_dotdir) {
+        wx.wxFileName.Mkdir(::graphviz_dotdir)
+      }
+
+      ::graphviz_dotdir = wx.FromWxString(ami.AMILabConfig.\
+        Read_11("GRAPHVIZ_DOTDIR",::graphviz_dotdir))
       #, "GraphViz binary path"
 
         
@@ -45,6 +59,7 @@ if (!exists(GraphVizClass)) {
       ami.AMILabConfig.SetPath(::config_path)
 
       ami.AMILabConfig.Write("GRAPHVIZ_BINDIR",::graphviz_bindir)
+      ami.AMILabConfig.Write("GRAPHVIZ_DOTDIR",::graphviz_dotdir)
         
       ami.AMILabConfig.SetPath(&config_path_bak)
     }
@@ -62,15 +77,21 @@ if (!exists(GraphVizClass)) {
     //---------------------------------------------------
     proc ::Edit() \
     {
-      ed = ami->MainFrame.GetAmilabEditor(::graphviz_file)
-      ed.FileOpen( ::classfilename)
-      ed.Show()
+      if wx.wxFileName(::graphviz_file).FileExists() {
+        ed = ami->MainFrame.GetAmilabEditor()
+        ed.FileOpen(::graphviz_file)
+        ed.Show()
+        ed.Raise()
+        ed.RequestUserAttention()
+      } else {
+        SetStatusText("File %1% not found" %1% ::graphviz_file)
+      }
     }
 
     //---------------------------------------------------
     proc ::Run() \
     {
-      cmd = ::graphviz_bin_dir+"/"+::graphviz_program+" -T%1%" % ::graphviz_lang \
+      cmd = ::graphviz_bindir+"/"+::graphviz_program+" -T%1%" % ::graphviz_lang \
               +" %1%" % ::graphviz_file \
               + " -o"+ ::output_file
       SetStatusText("GraphViz command : "+cmd)
@@ -79,9 +100,62 @@ if (!exists(GraphVizClass)) {
 
     //---------------------------------------------------
     proc ::Show() {
-      ::res <<= Image(::output_file)
-      show ::res
+      # 1. check existence of output file ?
+      im = wx.wxImage(::output_file)
+      if im.IsOk() {
+        del ::bmp
+        ::bmp = wx.wxBitmap(&im)
+        dc = wx.wxClientDC(&::panel)
+        dc_size = dc.GetSize()
+        x_pos = (dc_size.GetWidth() -::bmp.GetWidth())/2
+        y_pos = (dc_size.GetHeight()-::bmp.GetHeight())/2
+        dc.DrawBitmap(&::bmp,wx.wxPoint(x_pos,y_pos))
+      } else {
+        SetStatusText("Failed to load image '%1%'" % ::output_file)
+      }
+      #::res <<= Image(::output_file)
+      #show ::res
     }
+
+    //---------------------------------------------------
+    proc ::MainBook_AddTab()  \
+    {
+        # Interface wxWidgets
+        mb = ami.MainFrame.GetMainBook()
+        ::panel = wx.wxPanel(&ami.MainFrame)
+        ::panel.SetName("GraphViz Result")
+
+
+        #::dc.SetPen(wx.wxPen(wx.wxColour(255,0,0),2))
+        #::dc.SetBrush(wx.wxBrush(wx.wxColour(255,0,0),wx.wxTRANSPARENT))
+        #::dc.DrawCircle(25,25,10)
+ 
+        # Add page to main book. This add the panel
+        ::icons.LoadIconPNG2("Transparent background","Transparent_background")
+        mb.AddPage( &::panel,  "GraphViz",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+        ::GraphViz_pageindex = mb.GetPageIndex(&::panel)
+    }
+    
+    #----------------------------
+    proc ::MainBook_CloseTab()  \
+    {
+      if (exists(::GraphViz_pageindex)){
+        mb = ami.MainFrame.GetMainBook()
+        mb.DeletePage(::GraphViz_pageindex)
+      }
+    }
+  
+    #----------------------------
+    # Redefinition of Close to close the panel tab in main_book
+    #
+    proc ::Close() \
+    {
+      ::MainBook_CloseTab()
+      ::win.HidePanel()
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
 
     //---------------------------------------------------
     proc ::Gui() \
@@ -95,12 +169,15 @@ if (!exists(GraphVizClass)) {
       ::win.BeginBook()
     
         ::win.AddPage("Params")
-          ::win.AddFilename(&::graphviz_file,"scene",::graphviz_dir,"*.dot")
+          ::win.AddFilename(&::graphviz_file,"graph file",::graphviz_dotdir,"*.dot")
           ::win.AddButton("Set Output",&::OutputAuto)
           ::win.AddFilename(&::output_file,"output",".","*.png")
 
         ::win.AddPage("Config")
-          ::bindir_id = ::win.AddDirname(&::graphviz_bindir,"Bin dir")
+          ::win.BeginBoxPanel("Script paths")
+            ::bindir_id = ::win.AddDirname(&::graphviz_bindir,"Binary")
+            ::dotpath_id = ::win.AddDirname(&::graphviz_dotdir,"Dot files")
+          ::win.EndBoxPanel()
           ::win.AddButton("Save",&::SaveConfig)
 
         if wx.wxFileName(::html_filename).FileExists() {
@@ -125,6 +202,7 @@ if (!exists(GraphVizClass)) {
       #::graphviz_bin_dir = ::graphviz_bin_dir+"/"
       ::win.Update(-1)
 
+      ::MainBook_AddTab()
 
     }
     ::Init()
