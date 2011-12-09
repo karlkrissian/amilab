@@ -62,7 +62,7 @@ using namespace amilab;
 #include "wxStcFrame.h"
 #include "ParamPanel.hpp"
 
-
+#include "wrapfunction_class.h"
 #include <map>
 #include <string>
 
@@ -1798,6 +1798,14 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
       if ((var->Type() == type_ami_object))
       {
         text = var->TreeCtrlInfo();
+        // Get the class name is possible
+        DYNAMIC_CAST_VARIABLE(AMIObject, var, varobj)
+        if (varobj.get()) { 
+          WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject());
+          if (wrapped_base.get()) 
+            valtext = (boost::format("[%1%]") % 
+                          wrapped_base->ObjPointerAsString()).str();
+        }
         append_id = vartree_objects;
       } else
       if (var->Type() == type_c_image_function)
