@@ -38,6 +38,8 @@
 #include <iostream>
 #include "amilab_messages.h"
 
+#include "ami_object.h"
+
 //extern unsigned char       GB_debug;
 //extern yyip::Driver GB_driver;
 
@@ -77,6 +79,29 @@ Variables::~Variables()
   EmptyVariables();
 }
 
+//--------------------------------------------------
+void Variables::AddDefault( BasicVariable::ptr& defvarcontext )
+{
+  DYNAMIC_CAST_VARIABLE(AMIObject,defvarcontext,var1);
+  if (!var1.get()) {
+    CLASS_MESSAGE((boost::format(" Variable %1% is not of type AMIObject") 
+                    % defvarcontext->get_name()).str().c_str());
+    return;
+  }
+  _defaults.push_back(var1->Pointer()->GetContext());
+}
+
+//--------------------------------------------------
+void Variables::RemoveDefault( BasicVariable::ptr& defvarcontext )
+{
+  DYNAMIC_CAST_VARIABLE(AMIObject,defvarcontext,var1);
+  if (!var1.get()) {
+    CLASS_MESSAGE((boost::format(" Variable %1% is not of type AMIObject") 
+                    % defvarcontext->get_name()).str().c_str());
+    return;
+  }
+  _defaults.remove(var1->Pointer()->GetContext());
+}
 
 //--------------------------------------------------
 std::string Variables::CheckVarName(const char* name)

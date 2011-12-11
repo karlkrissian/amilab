@@ -19,6 +19,7 @@
 #include <wx/listctrl.h>
 #include <wx/splitter.h>
 #include <wx/richtext/richtextctrl.h>
+#include <wx/richtext/richtextstyles.h>
 #include <wx/stdpaths.h>
 #include <wx/stc/stc.h>
 #include <wx/choice.h>

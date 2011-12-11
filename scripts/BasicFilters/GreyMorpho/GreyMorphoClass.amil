@@ -52,42 +52,66 @@ if (!exists(GreyMorphoClass)) {
     Comments( ::load_input, "Copies the input image in a local image member named 'input'")
 
     #----------------------------
-    proc ::ProcessImage( IMAGE input) \
+    proc ::ProcessImage( IMAGE input, NUM component) \
     {
       morph = filters.ContinuousMorphology()
       morph.SetLimits(::Imin,::Imax)
+      #::txtctrl_cmd += "morph.SetLimits(%1%,"%::Imin+"%1%)\n"%::Imax
 
       if (::operation==0) {
 #        input = EDPdilate(input,::size,::step)
         input = morph.Dilate(input,::size,::step)
+        op = "Dilate"
       }
       if (::operation==1) {
 #        input = EDPerode(input,::size,::step)
         input = morph.Erode(input,::size,::step)
+        op = "Erode"
       }
       if (::operation==2) {
 #        input = EDPclose(input,::size,::step)
         input = morph.Close(input,::size,::step)
+        op = "Close"
       }
       if (::operation==3) {
 #        input = EDPopen(input,::size,::step)
         input = morph.Open(input,::size,::step)
+        op = "Open"
       }
+
+      if (component<0) {
+        ::txtctrl_cmd =  "res = morph.%1%(input," % op + \
+                          "%1%"%::size + ",%1%)" %::step
+      } else {
+        ::txtctrl_cmd =  "res.SetComponent(%1%, " % component+\
+                          " morph.%1%(" % op + \
+                         " input[%1%],"%component+\
+                          "%1%"%::size + ",%1%))" %::step
+      }
+      ::txtctrl.WriteText(::txtctrl_cmd+"\n")
+      
     }
 
     #----------------------------
     proc ::Process() {
 
       if (!exists(::res)) {
-        ::Restart
+        ::Restart()
       }
+
+      ::txtctrl_cmd =""
+      ::txtctrl_cmd += "morph = filters.ContinuousMorphology()\n"
+      ::txtctrl.WriteText(::txtctrl_cmd)
+      
+
       RestartTime;InitTime
       if (::res.vdim==1) {
-        ::ProcessImage(&::res)
+        ::ProcessImage(&::res,-1)
       } else {
-        for local::k=0 to ::res.vdim-1 {
+        ::txtctrl.WriteText("res = input\n")
+        for k=0 to ::res.vdim-1 {
           _c = (FLOAT) ::res[k]
-          ::ProcessImage(&_c)
+          ::ProcessImage(&_c,k)
           ::res.SetComponent( k, _c)
         }
       }
@@ -165,6 +189,8 @@ if (!exists(GreyMorphoClass)) {
       ::load_input()
       ::res <<= ::input
       show ::res
+      ::txtctrl.Clear()
+      #::txtctrl.WriteText(::txtctrl_prompt)
     }
     
     #----------------------------
@@ -238,7 +264,17 @@ if (!exists(GreyMorphoClass)) {
           }
     
       ::win.EndBook()
-    
+
+      ::win.AddLabel("Indicative amilab commands:","")
+      ::txtctrl = wx.wxRichTextCtrl(&::win.CurrentParent())
+      ::win.AddWidget(&::txtctrl,0)
+      # set about 3 lines visible
+      tw = INT(1);th = INT(1)
+      ::txtctrl.GetTextExtent("A",&tw,&th)
+      ::txtctrl.SetMinSize(wx.wxSize(-1,th*5*1.5+10))
+      ::txtctrl.SetEditable(false)
+      ::txtctrl.Clear()
+
       ::AddStandardButtons(&::win)
 
       if (exists(::parent_panel)) {

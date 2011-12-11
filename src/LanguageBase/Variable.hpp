@@ -374,10 +374,10 @@ class AMILabType {
         if (wc.get()) { \
           return wc->GetObj(); \
         } else { \
-          /*FILE_ERROR("Could not cast dynamically the variable.")*/;\
+          FILE_MESSAGE("Could not cast dynamically the variable.") \
         } \
       }  else { \
-        /*FILE_ERROR("Need a wrapped object or compatible variable as parameter.")*/; \
+        FILE_MESSAGE("Need a wrapped object or compatible variable as parameter.") \
       } \
       return boost::shared_ptr<type>();\
     } \

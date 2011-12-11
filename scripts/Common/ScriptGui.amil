@@ -76,6 +76,7 @@ if (!exists(ScriptGui)) \
       ed = ami->MainFrame.GetAmilabEditor()
       ed.FileOpen( ::classfilename)
       ed.Show()
+      ed.Raise()
     }
     Comments( ::EditScript, "Open AmilabEditor to edit the current script :)")
 

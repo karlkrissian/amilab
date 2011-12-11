@@ -176,5 +176,14 @@ IF (AMI_USE_PRECOMP_HEADERS)
   ENDIF(CMAKE_COMPILER_IS_GNUCXX )
 ENDIF(AMI_USE_PRECOMP_HEADERS)
 
+# Give the option to compile as shared, but need to write dependencies for 
+# Windows and MacOS ...
+# however speeds up the linking ...
+OPTION(WrapWxWidgets_SHARED     "Compile WrapWxWidgets library as shared" OFF)
 
-my_add_library ( WrapWxWidgets)
+
+IF(WrapWxWidgets_SHARED)
+  my_add_shared_library ( WrapWxWidgets)
+ELSE(WrapWxWidgets_SHARED)
+  my_add_library ( WrapWxWidgets)
+ENDIF(WrapWxWidgets_SHARED)

@@ -327,7 +327,7 @@ const LanguageInfo g_LanguagePrefs [] = {
      mySTC_FOLD_COMMENT | mySTC_FOLD_COMPACT | mySTC_FOLD_PREPROC},
     // AMILab
     {_T("dot"),
-     _T("*.dot"),
+     _T("*.dot;*.gv"),
      wxSTC_LEX_CPP,
      {{mySTC_TYPE_DEFAULT, NULL},
       {mySTC_TYPE_COMMENT, NULL},

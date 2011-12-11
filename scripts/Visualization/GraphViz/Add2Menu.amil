@@ -4,3 +4,30 @@
 # Adding main Gui scripts to the menu
 #
 
+
+
+if (!exists(graphviz_display)) {
+
+  proc AddScript() {
+    global
+    func "Common/ScriptDisplayClass"
+
+    ScriptDisplayClass graphviz_display
+
+    graphviz_display.SetScript("Visualization/GraphViz/GraphVizGui.amil")
+    graphviz_display.SetScriptObjName("global::GraphViz_obj")
+
+    graphviz_display.SetDisplayedName("&GraphViz Gui")
+    graphviz_display.SetHelp("Interface to run GraphViz programs.")
+    graphviz_display.SetInMenus("Scripts","Visualization")
+
+    graphviz_display.SetIcon16( op_system.GetCurrentScriptDir()+"/graphviz_icon16.png")
+    graphviz_display.SetIcon32( op_system.GetCurrentScriptDir()+"/graphviz_icon32.png")
+
+    graphviz_display.Add2Menu()
+    graphviz_display.Add2Toolbar()
+  }
+  AddScript()
+  del AddScript
+
+}

@@ -8,111 +8,194 @@ func "Common/ScriptGui"
 
 if (!exists(GaussianFilterClass)) {
 
-  Class GaussianFilterClass : public ScriptGui {
-
-  #----------------------------
-  proc ::Init() {
-    ::input_name = ""
-    ::sigma      = 1, "Gaussian kernel standard devation"
-    ::derx = INT(0), "Derivation order in X (0: no derivation)"
-    ::dery = INT(0), "Derivation order in Y (0: no derivation)"
-    ::derz = INT(0), "Derivation order in Z (0: no derivation)"
-    ::auto = UCHAR(0), "Apply the filter automatically after changing the standard deviation value"
-    ::autodrag = UCHAR(0), "Apply the filter automatically while moving the scale"
-    
-    ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php"
-
-    ::html_filename = GetScriptsDir+"/BasicFilters/GaussianFilter/Doc/gaussian_filter/index.html"
-
-    ::CreateGui()
-  }
-    
-  #----------------------------
-  proc ::load_input() {
-    eval "::input <<="+::input_name+";"
-    if (::input_name=="BrowseImage") {
-      ::input_name = "::input"
-      ::win.Update(-1)
-    }
-  }
-  
-  #--------------------------------------------------
-  proc ::Filter() {
-    ::load_input()
-    ::res <<= ::input
-    if (::input.vdim==1) {
-      ::res = filter(::input,::sigma,\
-                      ::derx,::dery,::derz)
-    }else {
-      for n=0 to ::input.vdim-1 {
-        ::res.SetComponent( n, filter( ::input[n],::sigma,\
-                            ::derx,::dery,::derz))
-      }
-     }
-   ::Display()
-  }
-  Comments( ::Filter, "Apply Gaussian convolution on each channel of the image.")
-  
-  proc ::Display() \
+  Class GaussianFilterClass : public ScriptGui \
   {
-    show ::input
-    if (exists(::res)) {
-      show ::res
-      ::res_draw.update()
-      ::input_draw.compare(&::res_draw)
+
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      ::input_name = ""
+      ::sigma      = 1, "Gaussian kernel standard devation"
+      ::derx = INT(0), "Derivation order in X (0: no derivation)"
+      ::dery = INT(0), "Derivation order in Y (0: no derivation)"
+      ::derz = INT(0), "Derivation order in Z (0: no derivation)"
+      ::auto = UCHAR(0), "Apply the filter automatically after changing the standard deviation value"
+      ::autodrag = UCHAR(0), "Apply the filter automatically while moving the scale"
+      
+      ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php"
+
+      ::html_filename = GetScriptsDir+"/BasicFilters/GaussianFilter/Doc/gaussian_filter/index.html"
+
+      ::CreateGui()
     }
-  }
-  
-  #-----------------------------------------
-  proc ::AutoFilter() {
-    if (::auto) { ::Filter; }
-  }
-  Comments( ::AutoFilter, "Apply the filter automatically if this option is enabled")
-
-  #-----------------------------------------
-  proc ::AutoDrag() {
-    ::win.SetDragCallback(::sigma_id,::autodrag)
-  }
-  Comments( ::AutoDrag, "Enable/Disable real-time filtering while moving the scale")
-  
-  #-----------------------------------------
-  proc ::Save() {
-    ::res.save resultname
-  }
-  Comments( ::Save, "Save the resulting image")
-
-  #-----------------------------------------
-  proc ::CreateGui() {
-    # parameters window
-    ::win = ParamPanel("GaussFilter")
-  
-    ::win.BeginBook()
-      ::win.AddPage("Param")
-  
-        ::win.AddImageChoice( &::input_name, "Input")
-        ::sigma_id = ::win.AddFloat( &::sigma,"std_dev",0.1,10)
-        ::win.SetCallback( &::AutoFilter)
-        ::win.SetDragCallback(::sigma_id,::autodrag)
+      
+    #---------------------------------------------------------------------------
+    proc ::load_input() {
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+    }
     
-        ::win.AddInt( &::derx,"Der_order_X",0,2)
-        ::win.AddInt( &::dery,"Der_order_Y",0,2)
-        ::win.AddInt( &::derz,"Der_order_Z",0,2)
-        ::win.AddBoolean( &::auto,"Auto")
-        ::win.AddBoolean( &::autodrag,"Auto drag")
-        ::win.SetCallback( &::AutoDrag)
-        ::win.AddButton("Apply",::Filter)
+    #---------------------------------------------------------------------------
+    proc ::DisplayCommand() {
+      ::txtctrl_cmd=  ", %1%"  % ::sigma +\
+                      ", %1%"  % ::derx+\
+                      ", %1%"  % ::dery+\
+                      ", %1%)" % ::derz
+      tc = &::txtctrl
+      imcolor = wx.wxColour(100,100,250)
+      tc.Clear()
+      tc.BeginAlignment(wx.wxTEXT_ALIGNMENT_CENTRE)
+        tc.BeginItalic()
+          tc.BeginTextColour(&imcolor);
+            tc.WriteText("res")
+          tc.EndTextColour()
+        tc.EndItalic()
+        tc.WriteText(" = ")
+        tc.BeginBold()
+          tc.WriteText("filter")
+        tc.EndBold()
+        tc.WriteText("(")
+        tc.BeginItalic()
+          tc.BeginTextColour(&imcolor);
+            tc.WriteText("input")
+          tc.EndTextColour()
+        tc.EndItalic()
+        tc.WriteText(::txtctrl_cmd+"\n")
+      tc.EndAlignment()
+    }
 
-      ::AddHelpPage(&::win)
-  
-    ::win.EndBook()
-  
-    ::AddStandardButtons(&::win)
-  
-    ::win.Update(-1)
-    ::win.Display()
-  }
-  
-  ::Init
+    #---------------------------------------------------------------------------
+    proc ::Filter() {
+      ::load_input()
+      ::res <<= ::input
+      if (::input.vdim==1) {
+        ::res = filter(::input,::sigma,\
+                        ::derx,::dery,::derz)
+      }else {
+        for n=0 to ::input.vdim-1 {
+          ::res.SetComponent( n, filter( ::input[n],::sigma,\
+                              ::derx,::dery,::derz))
+        }
+      }
+      ::DisplayCommand()
+      ::Display()
+    }
+    Comments( ::Filter, "Apply Gaussian convolution on each channel of the image.")
+    
+    #---------------------------------------------------------------------------
+    proc ::Display() \
+    {
+      show ::input
+      if (exists(::res)) {
+        show ::res
+        ::res_draw.update()
+        ::input_draw.compare(&::res_draw)
+      }
+    }
+    
+    #---------------------------------------------------------------------------
+    proc ::AutoFilter() {
+      ::DisplayCommand()
+      if (::auto) { ::Filter(); }
+    }
+    Comments( ::AutoFilter, "Apply the filter automatically if this option is enabled")
+
+    #---------------------------------------------------------------------------
+    proc ::AutoDrag() {
+      ::win.SetDragCallback(::sigma_id,::autodrag)
+    }
+    Comments( ::AutoDrag, "Enable/Disable real-time filtering while moving the scale")
+    
+    #---------------------------------------------------------------------------
+    proc ::Save() {
+      ::res.save resultname
+    }
+    Comments( ::Save, "Save the resulting image")
+
+    
+    #---------------------------------------------------------------------------
+    # not used here
+    #
+    proc ::InitRichText() \
+    {
+      language.Vars.GetCurrentContext().AddDefault(&wx)
+
+      # Create fonts ...
+
+      ::romanFont = wxFont(12, wxROMAN, wxNORMAL, wxNORMAL)
+
+      ::normalPara = wxRichTextParagraphStyleDefinition("Normal")
+      ::normalAttr = wxRichTextAttr()
+      ::normalAttr.SetFontFaceName(::romanFont.GetFaceName())
+      ::normalAttr.SetFontSize(12)
+      # Let's set all attributes for this style
+      ::normalAttr.SetFlags(wxTEXT_ATTR_FONT | wxTEXT_ATTR_BACKGROUND_COLOUR | \
+                          wxTEXT_ATTR_TEXT_COLOUR|wxTEXT_ATTR_ALIGNMENT|\
+                          wxTEXT_ATTR_LEFT_INDENT|wxTEXT_ATTR_RIGHT_INDENT|\
+                          wxTEXT_ATTR_TABS|\
+                          wxTEXT_ATTR_PARA_SPACING_BEFORE|\
+                          wxTEXT_ATTR_PARA_SPACING_AFTER|\
+                          wxTEXT_ATTR_LINE_SPACING|\
+                          wxTEXT_ATTR_BULLET_STYLE|wxTEXT_ATTR_BULLET_NUMBER)
+      ::normalPara.SetStyle(::normalAttr)
+      ::m_styleSheet = wxRichTextStyleSheet()
+      ::m_styleSheet.AddParagraphStyle(&normalPara)
+
+      ::txtctrl.SetStyleSheet(&::m_stylesheet)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CreateGui() {
+      # parameters window
+      ::win = ParamPanel("GaussFilter")
+    
+      ::win.BeginBook()
+        ::win.AddPage("Param")
+    
+          ::win.AddImageChoice( &::input_name, "Input")
+          ::sigma_id = ::win.AddFloat( &::sigma,"std_dev",0.1,10)
+          ::win.SetCallback( &::AutoFilter)
+          ::win.SetDragCallback(::sigma_id,::autodrag)
+      
+          ::win.AddInt( &::derx,"Der_order_X",0,2)
+          ::win.SetCallback( &::DisplayCommand)
+          ::win.AddInt( &::dery,"Der_order_Y",0,2)
+          ::win.SetCallback( &::DisplayCommand)
+          ::win.AddInt( &::derz,"Der_order_Z",0,2)
+          ::win.SetCallback( &::DisplayCommand)
+          ::win.AddBoolean( &::auto,"Auto")
+          ::win.AddBoolean( &::autodrag,"Auto drag")
+          ::win.SetCallback( &::AutoDrag)
+          ::win.AddButton("Apply",::Filter)
+
+        ::AddHelpPage(&::win)
+    
+      ::win.EndBook()
+    
+      ::win.AddLabel("Indicative amilab command:","")
+      ::txtctrl = wx.wxRichTextCtrl(&::win.CurrentParent())
+      ::win.AddWidget(&::txtctrl,0)
+
+      ::font = wx.wxFont(12, wx.wxROMAN, wx.wxNORMAL, wx.wxNORMAL)
+      ::txtctrl.SetFont(&::font)
+
+      # set about 3 lines visible
+      tw = INT(1);th = INT(1)
+      ::txtctrl.GetTextExtent("A",&tw,&th)
+      ::txtctrl.SetMinSize(wx.wxSize(-1,th*1.5+10))
+      ::txtctrl.SetEditable(false)
+      ::txtctrl.Clear()
+      #::InitRichText()
+
+      ::AddStandardButtons(&::win)
+    
+      ::win.Update(-1)
+      ::win.Display()
+    }
+    
+    ::Init()
   
   } #end Class
 } #end If.

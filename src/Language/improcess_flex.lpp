@@ -1102,6 +1102,9 @@ yyip::Parser::token::yytokentype checkvar(
 {
 
   BasicVariable::ptr var = Vars.GetVar(varname,context);
+  //std::cout << "Vars ptr = " << &Vars << std::endl;
+  //std::cout << "Vars.GetCurrentContextNumber() = " 
+  //          << Vars.GetCurrentContextNumber() << std::endl;
   //cout << "res = " << res << std::endl;
   if  ((!GB_driver.procedure_declaration) && var.get())   {
 

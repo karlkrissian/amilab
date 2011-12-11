@@ -113,7 +113,7 @@ public:
   }
 
   /**
-   * Create a new shared pointer reference to the object.
+   * Returns the context that contains the variable.
    * @return variable's context
    */
   boost::shared_ptr<Variables> GetContext() const

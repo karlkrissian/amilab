@@ -64,6 +64,22 @@ class LanguageBase_EXPORT Variables{
     _defaults.remove(defcontext);
   }
 
+  /**
+   * @brief Adding as default the context of an AMIObject variable
+   *
+   * @param defvarcontext : variable of type AMIObject 
+   * @return void
+   **/
+  void AddDefault( BasicVariable::ptr& defvarcontext );
+
+  /**
+   * @brief Removing from default the context of an AMIObject variable
+   *
+   * @param defvarcontext : variable of type AMIObject
+   * @return void
+   **/
+  void RemoveDefault( BasicVariable::ptr& defvarcontext );
+
   //--------------------------------------------
   int GetSize()
   {

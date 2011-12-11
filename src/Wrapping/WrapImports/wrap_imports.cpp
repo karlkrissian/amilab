@@ -358,10 +358,12 @@ void AddWrapLanguage(AMIObject::ptr& obj)
 
   // Add classes to language context
   // PROBLEM WITH DOUBLE DEFINITION OF WrapClass<AMIObject>::name_as_string() ???
-//  wrap_language_classes(amiobject->GetContext());
+  wrap_language_classes(amiobject->GetContext());
 
+  //std::cout << "wrap import Vars : " << &Vars << std::endl;
   // Add Vars: all the variable contexts
-  BasicVariable::ptr vars = AMILabType<VarContexts>::CreateVar(Vars);
+  // create from the pointer, without deleter ...
+  BasicVariable::ptr vars = AMILabType<VarContexts>::CreateVar(&Vars,true);
   amiobject->GetContext()->AddVar("Vars", vars, Vars.GetBuiltinContext());
 
   ADDLOCAL_OBJECTVAR_NAME(amiobject,C_wrap_varfunction,

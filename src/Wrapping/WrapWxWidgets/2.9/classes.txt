@@ -137,6 +137,7 @@ wxObject
 wxObjectList
 wxObjectListNode
 wxOutputStream
+wxPaintDC
 wxPaintEvent
 wxPalette
 wxPanel
@@ -147,7 +148,10 @@ wxPluginManager
 wxPoint
 wxRect
 wxRegion
+wxRichTextAttr
 wxRichTextCtrl
+wxRichTextRange
+wxRichTextStyleSheet
 wxScopedCharTypeBuffer<char>
 wxScrollHelper
 wxScrollWinEvent
@@ -168,6 +172,8 @@ wxStdDialogButtonSizer
 wxString
 wxStyledTextCtrl
 wxSysColourChangedEvent
+wxTextAttr
+wxTextAttrEx
 wxThread
 wxTimeSpan
 wxTimer

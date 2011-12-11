@@ -52,7 +52,17 @@
   AMI_DECLARE_TYPE(wxCloseEvent)
 #endif
 
-void CB_ParamWin( void* cd );
+#ifndef wxSizeEvent_declared
+  #define wxSizeEvent_declared
+  AMI_DECLARE_TYPE(wxSizeEvent)
+#endif
+
+#ifndef wxPaintEvent_declared
+  #define wxPaintEvent_declared
+  AMI_DECLARE_TYPE(wxPaintEvent)
+#endif
+
+  void CB_ParamWin( void* cd );
 void CallAmiFunction(AMIFunction* f, const ParamList::ptr& p);
 
 /* Karl*/
@@ -224,6 +234,34 @@ class wxAmiEventHandler: public wxEvtHandler
         wxLogMessage(wxT("Callback function not available"));
     }
 
+    void OnPaintEvent(wxPaintEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxPaintEvent>::CreateVar((wxPaintEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+
+    void OnSizeEvent(wxSizeEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxSizeEvent>::CreateVar((wxSizeEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+
 //     void OnListEvent(wxListEvent& event)
 //     {
 //       if (callback_function!=NULL)
@@ -293,6 +331,18 @@ class wxAmiEventHandler: public wxEvtHandler
     wxObjectEventFunction* GetCloseEventFunction() {
       // TODO: delete the new allocation
       eventfunc = new wxObjectEventFunction(wxCloseEventHandler(wxAmiEventHandler::OnCloseEvent));
+      return eventfunc;
+    }
+
+    wxObjectEventFunction* GetPaintEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxPaintEventHandler(wxAmiEventHandler::OnPaintEvent));
+      return eventfunc;
+    }
+
+    wxObjectEventFunction* GetSizeEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxSizeEventHandler(wxAmiEventHandler::OnSizeEvent));
       return eventfunc;
     }
 

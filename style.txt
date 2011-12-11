@@ -1,0 +1,32 @@
+
+New style programming rules for amilab:
+
+
+- Variables names
+  name of classes,
+  name of instances,
+  name of class members : field, functions
+
+
+- Comments
+- Line size: limit length to 80 characters
+
+- file names
+- directory names
+
+documentation
+
+
+C++ code:
+  - amilab C++ class, will start with 'ami' lower case amiClassName
+  - header amiClassName.h
+  - implementation amiClassName.cpp
+  - one file per class
+
+
+Script code:
+  - a Gui script needs to be created from the corresponding interface
+  - script class name will start with 'al' and className with upper case first character: 'alClassName'
+
+
+Modules:

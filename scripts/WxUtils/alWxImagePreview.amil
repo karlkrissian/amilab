@@ -1,0 +1,91 @@
+
+del alWxImagePreview
+
+#===============================================================================
+Class alWxImagePreview \
+{
+
+  #-----------------------------------------------------------------------------
+  proc ::Init() {
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetwxWindow( OBJECT win) {
+    ::win = &win
+
+    # Add Paint Event
+    ::evh_paint = wx.wxAmiEventHandler(&::OnPaint)
+    ::win.Connect(wx.wxEVT_PAINT,&::evh_paint.GetPaintEventFunction(),\
+                  &NULL,&::evh_paint)
+
+    # Add Size event
+    ::evh_size = wx.wxAmiEventHandler(&::OnSize)
+    ::win.Connect(wx.wxEVT_SIZE,&::evh_size.GetSizeEventFunction(),\
+                  &NULL,&::evh_size)
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetwxImage( OBJECT im) {
+    if im.IsOk() {
+      del ::bmp
+      ::bmp = wx.wxBitmap(&im)
+      ::bmp_w = ::bmp.GetWidth()
+      ::bmp_h = ::bmp.GetHeight()
+    } else {
+      SetStatusText("Failed to load image '%1%'" % ::output_file)
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::DrawDC( OBJECT dc ) {
+    if (exists(::bmp)) {
+      ::virtual_size = ::win.GetVirtualSize()
+      #dc_size = dc.GetSize()
+      x_pos = (::virtual_size.GetWidth() -::bmp_w)/2
+      y_pos = (::virtual_size.GetHeight()-::bmp_h)/2
+      dc.DrawBitmap(&::bmp,x_pos,y_pos)
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::OnPaint( OBJECT event ) {
+    #printn "OnPaint"
+    dc = wx.wxPaintDC(&::win)
+    ::win.DoPrepareDC(&dc)
+    dc.Clear()
+    ::DrawDC(&dc)
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::OnSize( OBJECT event ) {
+    if (exists(::bmp)) {
+      diff=false
+      #print "OnSize"
+      virtual_size = ::win.GetVirtualSize()
+      #printn "new size %1% x " % virtual_size.GetWidth() + \
+              #"%1%" % virtual_size.GetHeight()
+      if exists(::virtual_size) {
+        #printn "current size %1% x " % ::virtual_size.GetWidth() + \
+                #"%1%" % ::virtual_size.GetHeight()
+        diff = (::virtual_size!=virtual_size)
+      }
+      #printn " diff = %1%" % diff
+      if diff {
+        dc = wx.wxClientDC(&::win)
+        ::win.DoPrepareDC(&dc)
+        dc.Clear()
+        ::DrawDC(&dc)
+      }
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::Draw( ) {
+    dc = wx.wxClientDC(&::win)
+    ::win.DoPrepareDC(&dc)
+    dc.Clear()
+    ::DrawDC(&dc)
+  }
+
+  ::Init()
+}

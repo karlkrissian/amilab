@@ -1,0 +1,11 @@
+
+func "RegExClass"
+
+if (!exists(RegEx_obj)) {
+  RegExClass RegEx_obj
+  RegEx_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

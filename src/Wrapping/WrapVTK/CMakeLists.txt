@@ -202,5 +202,16 @@ IF (AMI_USE_PRECOMP_HEADERS)
   ENDIF(CMAKE_COMPILER_IS_GNUCXX )
 ENDIF(AMI_USE_PRECOMP_HEADERS)
 
-my_add_library ( WrapVTK)
+# Give the option to compile as shared, but need to write dependencies for 
+# Windows and MacOS ...
+OPTION(WrapVTK_SHARED     "Compile WrapVTK library as shared" OFF)
+
+
+IF(WrapVTK_SHARED)
+  my_add_shared_library ( WrapVTK)
+ELSE(WrapVTK_SHARED)
+  my_add_library ( WrapVTK)
+ENDIF(WrapVTK_SHARED)
+
+
 add_dependencies ( WrapVTK WrapWxWidgets )

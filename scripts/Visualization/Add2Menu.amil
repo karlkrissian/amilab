@@ -15,7 +15,7 @@ proc AddSegMenu() {
   ami.MainFrame.AddToMenu("&Scripts",category,"Image &Grid",  dir+"ImageGrid")
   
   
-  for subdir in  "RGBScale","VolRen","ImageHistogram", "vtkIsoSurface", "Loupe", "SurfaceColor" \
+  for subdir in  "RGBScale","VolRen","ImageHistogram", "vtkIsoSurface", "Loupe", "SurfaceColor", "GraphViz" \
   {
     curfile=GetScriptsDir+"/Visualization/"+subdir+"/Add2Menu.amil"
     if wx.wxFileName(curfile).FileExists() {
@@ -49,5 +49,5 @@ if exists(global::scripts_toolbar) {
  ami.MainFrame.AddToMenu("&Scripts","&Visualization","&ViewerColorTransform",  \
               "Visualization/ViewerColorTransform/ViewerColorTransformGui")
 
- ami.MainFrame.AddToMenu("&Scripts","&Visualization","&GraphViz",  "Visualization/GraphViz/GraphVizGui")
+# ami.MainFrame.AddToMenu("&Scripts","&Visualization","&GraphViz",  "Visualization/GraphViz/alGraphVizGui")
 

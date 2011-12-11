@@ -1,0 +1,101 @@
+
+func "Common/ScriptGui"
+
+if (!exists(RegExClass)) {
+
+  Class RegExClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() {
+      
+        ::regex   = "(?w)href=\"([^\"]*)"            ,"Regular Expression"
+        ::string  = "href=\"http:\\www.google.es\""  ,"test string"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::html_filename = GetScriptsDir+"/RegEx/Doc/RegEx/index.html"
+    }
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      ::listctrl.DeleteAllItems()
+      sumre = wx.wxRegEx(::regex,wx.wxRE_ADVANCED)
+      if sumre.IsValid() {
+        if sumre.Matches(::string) {
+          printn "match count=%1%" % sumre.GetMatchCount()
+          for n=0 to sumre.GetMatchCount()-1 {
+            print "Match %1%: " % n
+            res = wx.FromWxString(sumre.GetMatch(&::string,n))
+            printn res
+
+            pos = ::listctrl.InsertItem(n,"%1%"%n)
+            ::listctrl.SetItemData(pos,n)
+
+            ::listctrl.SetItem(pos,1,"%1%"%res)
+            #if (!exists(it)) {
+            #  it = wx.wxListItem()
+            #}
+            #it.SetId(n)
+            #it.SetColumn(0)
+            #it.SetText("%1%"%n)
+            #it.SetColumn(1)
+            #it.SetText("%1%"%res)
+            #::listctrl.SetItem_2(n,0,wx.wxString("%1%"%n))
+            #::listctrl.SetItem_2(n,1,wx.wxString("%1%"%res))
+          }
+        } else {
+          SetStatusText("no match")
+        }
+      } else {
+        SetStatusText("Invalid Regular Expression !")
+      }
+      ::listctrl.SetColumnWidth(1, wx.wxLIST_AUTOSIZE)
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("RegEx",&::parent_panel)
+      } else {
+        ::win = ParamPanel("RegEx")
+      }
+      
+      ::win.BeginBook()
+        ::win.AddPage("Test")
+        ::win.AddString(&::regex,"RegEx")
+        ::win.AddString(&::string,"String")
+        ::win.AddButton("Run",::Run)
+
+    
+        if wx.wxFileName(::html_filename).FileExists() {
+            ::AddHelpPage(&::win)
+          }
+    
+      ::win.EndBook()
+    
+        ::listctrl = wx.wxListCtrl(&::win)
+        ::win.AddWidget(&::listctrl,1)
+        ::listctrl.SetWindowStyle(wx.wxLC_REPORT)
+        ::listctrl.InsertColumn_2(0,"Match")
+        ::listctrl.InsertColumn_2(1,"Value")
+
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

@@ -1,0 +1,410 @@
+
+func "Common/ScriptGui"
+
+del alGraphVizClass
+
+if (!exists(alGraphVizClass)) {
+
+
+
+  #=============================================================================
+  # Interface to run GraphViz program and visualize the results in a convenient 
+  # way
+  #
+  Class alGraphVizClass : public ScriptGui \
+  {
+
+    func "WxUtils/alWxImagePreview"
+    alWxImagePreview ::preview
+    alWxImagePreview ::preview2
+
+
+    func "WxUtils/alWxFileList"
+    alWxFileList ::filelistgui
+
+    Class ::ShadowParamClass {
+      # Shadow parameters
+      ::morph_size = 2,  "Size of closing morphological operation"
+      ::sigma      = 1,  "Size of the Gaussian standard deviation"+\
+                                "for smoothing"
+      ::trx        = INT(1),  "Shadow displacement in X"
+      ::try        = INT(1),  "Shadow displacement in X"
+
+      proc ::AddGui( OBJECT win) \
+      {
+        win.BeginBoxPanel("Operation size")
+          win.AddFloat(&::morph_size,"Closing",0.5,10)
+          win.AddFloat(&::sigma,"Smoothing",0.5,10)
+        win.EndBoxPanel()
+        win.BeginBoxPanel("Translation")
+          win.AddInt(&::trx,"X",-10,10)
+          win.AddInt(&::try,"Y",-10,10)
+        win.EndBoxPanel()
+      }
+    }
+
+    //---------------------------------------------------
+    proc ::Init() \
+    {
+      # use global AMILabConfig to read/save configuration of the script
+      ::config_path = "/scripts/Visualization/GraphViz"
+      ::graphviz_dotdir = ".", "Default file directory"
+      ::ReadConfig()
+    
+      # try to read the user dir
+      ::graphviz_program = "dot"
+
+      ::ShowOnRun = UCHAR(1), "Automatically show after run"
+
+      ::graphviz_file = "graph.dot", "filename containing the graph description"
+      ::graphviz_lang = "png"
+      ::output_file = "graph.png", "output image filename"
+      ::html_filename = GetScriptsDir+"/GraphViz/Doc/GraphViz/index.html"
+      
+      # Setup ::filelistgui
+      ::filelistgui.AddFileSpec("*.dot")
+      ::filelistgui.AddFileSpec("*.gv")
+      ::filelistgui.SetSelectionCommand(&::OnSelection)
+
+      ::examples_path = op_system.GetCurrentScriptDir()+"/Examples"
+
+      ::filelistgui.ClearPaths()
+      ::filelistgui.AddPath(::graphviz_dotdir)
+      ::filelistgui.AddPath(::examples_path)
+
+      ::ShadowParamClass ::shadowparam
+    }
+
+    //---------------------------------------------------
+    proc ::ReadConfig() \
+    {
+      config_path_bak = ami.AMILabConfig.GetPath()
+      ami.AMILabConfig.SetPath(::config_path)
+
+      ::graphviz_bindir = wx.FromWxString(ami.AMILabConfig.\
+        Read_11("GRAPHVIZ_BINDIR","/usr/bin"))
+
+      # Set/Create the directory of the graph files
+      sp = wx.wxStandardPathsBase.Get()
+      user_app_path = wx.FromWxString(sp.GetUserLocalDataDir())
+      if !wx.wxDir.Exists(user_app_path) {
+        wx.wxFileName.Mkdir(user_app_path)
+      }
+      ::graphviz_dotdir = user_app_path + "/GraphViz"
+      if !wx.wxDir.Exists(::graphviz_dotdir) {
+        wx.wxFileName.Mkdir(::graphviz_dotdir)
+      }
+
+      ::graphviz_dotdir = wx.FromWxString(ami.AMILabConfig.\
+        Read_11("GRAPHVIZ_DOTDIR",::graphviz_dotdir))
+      #, "GraphViz binary path"
+
+        
+      ami.AMILabConfig.SetPath(&config_path_bak)
+    }
+
+    //---------------------------------------------------
+    proc ::SaveConfig() \
+    {
+      config_path_bak = ami.AMILabConfig.GetPath()
+      ami.AMILabConfig.SetPath(::config_path)
+
+      ami.AMILabConfig.Write("GRAPHVIZ_BINDIR",::graphviz_bindir)
+      ami.AMILabConfig.Write("GRAPHVIZ_DOTDIR",::graphviz_dotdir)
+        
+      ami.AMILabConfig.SetPath(&config_path_bak)
+    }
+
+    //---------------------------------------------------
+    proc ::OutputAuto() \
+    {
+      f = wx.wxFileName(::graphviz_file)
+      f.SetPath("/tmp")
+      f.SetExt("png")
+      ::output_file = f.GetFullPath().c_str()
+      ::win.Update(-1)
+    }
+    
+    //---------------------------------------------------
+    proc ::Edit() \
+    {
+      if wx.wxFileName(::graphviz_file).FileExists() {
+        ed = ami->MainFrame.GetAmilabEditor()
+        ed.FileOpen(::graphviz_file)
+        ed.Show()
+        ed.Raise()
+        ed.RequestUserAttention()
+      } else {
+        SetStatusText("File %1% not found" %1% ::graphviz_file)
+      }
+    }
+
+    //---------------------------------------------------
+    proc ::Run() \
+    {
+      cmd = ::graphviz_bindir+"/"+::graphviz_program+" -T%1%" % ::graphviz_lang \
+              +" %1%" % ::graphviz_file \
+              + " -o"+ ::output_file
+      mess = "GraphViz command : "+cmd
+      printn mess
+      SetStatusText(mess)
+      sh cmd
+      if ::ShowOnRun { ::Show(); }
+    }
+
+    //---------------------------------------------------
+    proc ::Show() {
+      # 1. check existence of output file ?
+      im = wx.wxImage(::output_file)
+      if im.IsOk() {
+        ::preview.SetwxImage(&im)
+        # Adjust scrolling size
+        xscroll_unit = 5;
+        yscroll_unit = 5;
+        ::swin.SetScrollbars(xscroll_unit,yscroll_unit,\
+                            im.GetWidth()/xscroll_unit+1,\
+                            im.GetHeight()/yscroll_unit+1)
+        ::preview.Draw()
+      } else {
+        SetStatusText("Failed to load image '%1%'" % ::output_file)
+      }
+      #::res <<= Image(::output_file)
+      #show ::res
+    }
+
+    //---------------------------------------------------
+    proc ::ShowShadow( STRING output_file) {
+      # 1. check existence of output file ?
+      im = wx.wxImage(output_file)
+      if im.IsOk() {
+        ::preview2.SetwxImage(&im)
+        # Adjust scrolling size
+        xscroll_unit = 5;
+        yscroll_unit = 5;
+        ::swin2.SetScrollbars(xscroll_unit,yscroll_unit,\
+                            im.GetWidth()/xscroll_unit+1,\
+                            im.GetHeight()/yscroll_unit+1)
+        ::preview2.Draw()
+      } else {
+        SetStatusText("Failed to load image '%1%'" % output_file)
+      }
+    }
+
+    //---------------------------------------------------
+    proc ::MainBook_AddTab()  \
+    {
+        # Interface wxWidgets
+        mb = ami.MainFrame.GetMainBook()
+        ::panel = wx.wxPanel(&ami.MainFrame)
+        sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+        ::panel.SetSizer(&sbox_sizer)
+
+        ::tabwin = ParamPanel("GraphViz",&::panel)
+        sbox_sizer.Add( &::tabwin, 1, wx.wxALL | wx.wxEXPAND,2)
+
+        ::tabwin.BeginBook()
+
+          ::tabwin.AddPage("result")
+            ::swin = wx.wxScrolledWindow(&::tabwin.CurrentParent())
+              #,-1,\
+                                          #wx.wxPoint(-1,-1),\
+                                          #wx.wxSize(-1,-1),\
+                                          #wx.wxVSCROLL|wx.wxHSCROLL)
+            #::panel.SetWindowStyleFlag( ::panel.GetWindowStyleFlag()|\
+                                        #wx.wxVSCROLL|wx.wxHSCROLL)
+            ::swin.EnableScrolling(true,true)
+            ::swin.SetName("GraphViz Result")
+            ::preview.SetwxWindow(&::swin)
+
+            ::tabwin.AddWidget(&::swin,1)
+
+          ::tabwin.AddPage("shadow")
+            ::swin2 = wx.wxScrolledWindow(&::tabwin.CurrentParent())
+            ::swin2.EnableScrolling(true,true)
+            ::swin2.SetName("GraphViz Shadow")
+            ::preview2.SetwxWindow(&::swin2)
+            ::tabwin.AddWidget(&::swin2,1)
+
+        ::tabwin.EndBook()
+        ::tabwin.ShowPanel()
+        #sbox_sizer.Add( &::swin, 1, wx.wxALL | wx.wxEXPAND,2)
+
+        #::dc.SetPen(wx.wxPen(wx.wxColour(255,0,0),2))
+        #::dc.SetBrush(wx.wxBrush(wx.wxColour(255,0,0),wx.wxTRANSPARENT))
+        #::dc.DrawCircle(25,25,10)
+ 
+        # Add page to main book. This add the panel
+        ::wxim = wx.wxImage(op_system.GetCurrentScriptDir()+\
+                            "/graphviz_icon16.png")
+        ::bm = wx.wxBitmap(&::wxim.Rescale(16,16))
+        mb.AddPage( &::panel,  "GraphViz",1, &::bm)
+        ::GraphViz_pageindex = mb.GetPageIndex(&::panel)
+    }
+    
+    #----------------------------
+    proc ::MainBook_CloseTab()  \
+    {
+      if (exists(::GraphViz_pageindex)){
+        mb = ami.MainFrame.GetMainBook()
+        mb.DeletePage(::GraphViz_pageindex)
+      }
+    }
+  
+    #----------------------------
+    # Redefinition of Close to close the panel tab in main_book
+    #
+    proc ::Close() \
+    {
+      ::MainBook_CloseTab()
+      ::win.HidePanel()
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+
+    #---------------------------------------------------------------------------
+    proc ::Scan() \
+    {
+      ::filelistgui.ClearPaths()
+      ::filelistgui.AddPath(::graphviz_dotdir)
+      ::filelistgui.AddPath(::examples_path)
+      ::filelistgui.Scan()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnSelection() \
+    {
+      selection = ::filelistgui.GetSelected()
+
+      # keep only the last selected file for the moment
+      if selection.size()>0 {
+        ::graphviz_file = selection.back()
+        ::OutputAuto()
+        ::Run()
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ShadowEffect() \
+    {
+      # first, get the image in amilab image format (through disk here)
+      output_image = Image(::output_file)
+      # Image is probably RGB, we will suppose that the background is white
+
+      # Convert Image to greyscale ? optional?
+      # Run Closing on each channel
+      # size as parameter?
+      res = output_image
+      morph = filters.ContinuousMorphology()
+
+      for n=0 to output_image.vdim-1 {
+        res.SetComponent(n, morph.Close(output_image[n],\
+                                        ::shadowparam.morph_size,0.5))
+      }
+
+      # Then run gaussian smoothing
+      for n=0 to output_image.vdim-1 {
+        res.SetComponent(n, filter(res[n],::shadowparam.sigma,0,0,0))
+      }
+
+      # Then translate
+      p = SpacePos(res)
+      p.SetComponent(0,p[0]-::shadowparam.trx)
+      p.SetComponent(1,p[1]-::shadowparam.try)
+      res = res(p)
+      
+      # Now combine the images
+
+        # mask background (white) colors
+        # since there is antialiasing
+        # compute a coeff weight to the background color
+        dist_param = 80
+        back_1 =  (FLOAT) output_image
+        back_col = back_1
+        back_col.initvalue(255,255,255)
+        back_1 = back_1-back_col
+        #::back_w <<= sqrt(back_1*back_1)
+        #show ::back_w
+        back_1 = back_1/dist_param
+        back_w = exp(-back_1*back_1)
+
+        ::res_shadow <<= (RGB) (back_w*res + (1-back_w)*output_image)
+
+      #::res_shadow = (RGB) res
+      #show ::res_shadow
+      shadow_filename="/tmp/shadow.png"
+      ::res_shadow.save shadow_filename
+      ::ShowShadow(shadow_filename)
+
+      
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() \
+    {
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("GraphViz",&::parent_panel)
+      } else {
+        ::win = ParamPanel("GraphViz")
+      }
+      
+
+      ::win.BeginBook()
+    
+        ::win.AddPage("Params")
+          ::win.AddFilename(&::graphviz_file,"graph file",::graphviz_dotdir,\
+                            "DOT (*.dot;*.gv)|*.dot;*.gv|Text (*.txt)|*.txt|ALL (*.*)|*.*")
+          ::win.SetCallback(&::OutputAuto)
+          ::win.AddButton("Set Output",&::OutputAuto)
+          ::win.AddFilename(&::output_file,"output",".","*.png")
+          ::win.AddBoolean(&::ShowOnRun,"Show on run")
+
+        ::win.AddPage("Config")
+          ::win.BeginBoxPanel("Paths")
+            ::bindir_id = ::win.AddDirname(&::graphviz_bindir,"Binary")
+            ::dotpath_id = ::win.AddDirname(&::graphviz_dotdir,"Dot files")
+          ::win.EndBoxPanel()
+          ::win.AddButton("Save",&::SaveConfig)
+
+        ::win.AddPage("Shadow")
+          ::shadowparam.AddGui(&::win)
+          ::win.AddButton("Create shadow effect",&::ShadowEffect)
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+
+      ::win.BeginHorizontal()
+        ::win.AddButton("Edit",&::Edit)
+        ::win.AddButton("Run", &::Run)
+        ::win.AddButton("Scan",&::Scan)
+        ::win.AddButton("Show",&::Show)
+      ::win.EndHorizontal()
+
+      ::filelistgui.AddGui(&::win)
+
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      #::win.Update(::bindir_id)
+      #::graphviz_bin_dir = ::graphviz_bin_dir+"/"
+      ::win.Update(-1)
+
+      ::MainBook_AddTab()
+
+      ::Scan()
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If
