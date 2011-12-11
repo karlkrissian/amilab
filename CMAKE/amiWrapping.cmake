@@ -160,11 +160,11 @@ MACRO( CREATE_ANCESTORS )
   ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
   IF(GENERATE_HTML_HELP)
     # flag to generate html help
-    SET(WRAP_CMD ${WRAP_CMD} "--generate-html")
+    SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--generate-html")
     # base URL html help
-    SET(WRAP_CMD ${WRAP_CMD} "--url" "${CLASSES_URL_LIST}")
+    SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--url" "${CLASSES_URL_LIST}")
     #HTML directory
-    SET(WRAP_CMD ${WRAP_CMD} "--outputhtmldir" ${HTML_DIR})
+    SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--outputhtmldir" ${HTML_DIR})
   ENDIF(GENERATE_HTML_HELP)
 
   SET( ANCESTORS_CMD_TXT "")
