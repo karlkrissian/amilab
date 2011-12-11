@@ -151,9 +151,12 @@ MACRO( CREATE_ANCESTORS )
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--ancestors" ${classes_list})  #Options
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--ancestors-file" ${ANCESTORS_FILE} "-q")
   SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--templates" )
+  SET(ANCESTORS_CMD ${ANCESTORS_CMD}  "--templatefile_dir" 
+                                      ${AMILab_SOURCE_DIR}/../PythonWrap/ )
   IF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
     WRAP_MESSAGE("***** available external classes *****")
-    SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--available_external_classes" ${AVAILABLE_EXTERNAL_CLASSES} )
+    SET(ANCESTORS_CMD ${ANCESTORS_CMD}  "--available_external_classes" 
+                                        ${AVAILABLE_EXTERNAL_CLASSES} )
     #FOREACH(C ${AVAILABLE_EXTERNAL_CLASSES})
     #  SET(ANCESTORS_CMD ${ANCESTORS_CMD} "\"${C}\"" )
     #ENDFOREACH(C ${AVAILABLE_EXTERNAL_CLASSES})

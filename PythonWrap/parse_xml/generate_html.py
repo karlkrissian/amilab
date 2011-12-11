@@ -75,7 +75,7 @@ class generate_html:
   #-------------------------------------------------------------
   def Initialization(self,templatedir,outputdirectory,outputfilename,url,libraryname):
     self.networking=self.CheckURL(url)
-    self.pathtemplate=templatedir+"wrap_templatehtmlhelp.html.in"
+    self.pathtemplate=templatedir+"/wrap_templatehtmlhelp.html.in"
     self.outputdir=outputdirectory
     self.filename=self.outputdir+"/"+outputfilename
     self.baseurl=url
