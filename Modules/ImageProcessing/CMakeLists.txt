@@ -64,9 +64,6 @@ FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system ios
 #FIND_PACKAGE( BZip2)
 
 
-add_subdirectory (src)
-
-
 IF(${KIT}_GENERATE_HTML_HELP)
   # check if doxygen is even installed
   FIND_PACKAGE(Doxygen)
@@ -75,6 +72,11 @@ IF(${KIT}_GENERATE_HTML_HELP)
   ENDIF (DOXYGEN_FOUND STREQUAL "NO")
 
   SET(AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR})
+
+  SET(CLASSES_URL_LIST "http://www.ctm.ulpgc.es/amilab_doc/")
+  SET(HTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/html")
+  CreateDirectory(${HTML_DIR})
+
   # prepare doxygen configuration file
   CONFIGURE_FILE(${AMILAB_SOURCE_DIR}/../Doxygen/doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
 
@@ -105,4 +107,5 @@ IF(${KIT}_GENERATE_HTML_HELP)
        )
 ENDIF(${KIT}_GENERATE_HTML_HELP)
 
+add_subdirectory (src)
 
