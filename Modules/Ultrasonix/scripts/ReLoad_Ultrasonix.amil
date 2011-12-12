@@ -1,0 +1,4 @@
+
+if exists(Ultrasonix_obj) {
+  Ultrasonix_obj.ReLoad()
+}

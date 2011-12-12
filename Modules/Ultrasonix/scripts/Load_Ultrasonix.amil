@@ -1,0 +1,10 @@
+
+del UltrasonixPlugin
+func "UltrasonixPlugin"
+
+if (!exists(Ultrasonix_obj)) {
+  UltrasonixPlugin Ultrasonix_obj
+  Ultrasonix_obj.Load()
+} else {
+  InfoDialog "The script class UltrasonixPlugin to be already instanciated." 
+}

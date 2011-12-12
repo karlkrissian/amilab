@@ -1,0 +1,5 @@
+#
+# Ultrasonix classes to wrap automatically
+#
+InterfaceUS
+#

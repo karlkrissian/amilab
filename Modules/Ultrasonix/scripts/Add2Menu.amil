@@ -1,0 +1,10 @@
+
+ami.MainFrame.AddToMenu("&Modules","&Ultrasonix","&Load",    "../Modules/Ultrasonix/scripts/Load_Ultrasonix")
+ami.MainFrame.AddToMenu("&Modules","&Ultrasonix","&ReLoad",  "../Modules/Ultrasonix/scripts/ReLoad_Ultrasonix")
+
+#func "2D/Add2Menu.amil"
+
+#if exists(global::scripts_toolbar) {
+#  global::scripts_toolbar.AddSeparator()
+#}
+
