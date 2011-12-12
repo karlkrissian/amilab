@@ -47,11 +47,11 @@ SET(Boost_USE_STATIC_LIBS               @Boost_USE_STATIC_LIBS@)
 
 # -- BZIP2 --
 SET(BZIP2_INCLUDE_DIR                   "@BZIP2_INCLUDE_DIR@")
-SET(BZIP2_LIBRARIES                     "@BZIP2_LIBRARY@")
+SET(BZIP2_LIBRARIES                     "@BZIP2_LIBRARIES@")
 
 # -- ZLIB --
 SET(ZLIB_INCLUDE_DIR                    "@ZLIB_INCLUDE_DIR@")
-SET(ZLIB_LIBRARY                        "@ZLIB_LIBRARY@")
+SET(ZLIB_LIBRARIES                      "@ZLIB_LIBRARIES@")
 
 
 # CMAKE Configuration

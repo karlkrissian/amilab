@@ -97,6 +97,7 @@ ELSE(GCCXML_CMD_RESULT)
   READ_FUNCTIONS("${WRAP_DIR}/functions.txt")
 
   SET(LIBNAME "${CMAKE_PROJECT_NAME}")
+  SET(GENERATE_HTML_HELP ${${KIT}_GENERATE_HTML_HELP})
   CREATE_ANCESTORS()
 
 #   IF(MYCOMMAND_2_RESULT)
@@ -162,6 +163,14 @@ ELSE(GCCXML_CMD_RESULT)
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--templatefile_dir" ${AMILab_SOURCE_DIR}/../PythonWrap/)
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--addwrap")
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "-q")
+      IF(${KIT}_GENERATE_HTML_HELP)
+        # flag to generate html help
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--generate-html")
+        # base URL html help
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--url" "${CLASSES_URL_LIST}")
+        #HTML directory
+        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--outputhtmldir" ${HTML_DIR})
+      ENDIF(${KIT}_GENERATE_HTML_HELP)
 
       WRAP_MESSAGE("COMMAND 3: ${MYCOMMAND_3}")
       ADD_CUSTOM_COMMAND(
