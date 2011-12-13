@@ -8,21 +8,12 @@ comments="VolRen: VTK GPU RayCasting."
 
 func "Common/ScriptGui"
 
-# only load if it has been compiled
-# TODO: improve the way to check it ...
 
-if (!exists(vtkAmiVolRenPlugin_obj)) {
-
-  #file=op_system.GetCurrentScriptDir()+\
-      #"/../../../Modules/vtkAmiVolRen/scripts/vtkAmiVolRenPlugin"
-  #func file
-  
-  #vtkAmiVolRenPlugin vtkAmiVolRenPlugin_obj
-  #vtkAmiVolRenPlugin_obj.SetQuiet(true)
-  #vtkAmiVolRenPlugin_obj.Load()
+if (!exists(global::vtkAmiVolRenPlugin_obj)) {
+  func "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen"
+  #::AmiVol= global::vtkAmiVolRenPlugin_obj.LoadOK()  
 } else {
-  vtkAmiVolRenPlugin_obj.SetQuiet(true)
-  vtkAmiVolRenPlugin_obj.ReLoad()
+  func "../Modules/vtkAmiVolRen/scripts/ReLoad_vtkAmiVolRen"
 }
 
 if (!exists(VolRenClass)) {
@@ -37,7 +28,6 @@ if (!exists(VolRenClass)) {
     ::previewerclass=&PreviewerClass
 
     func "vtkVolumeClass.amil"
-    func "Visualization/ImageHistogram/ImageHistogramClass.amil"
 
     func "VTKControls/vtkCamera/vtkCameraClass"
     vtkCameraClass ::vtk_camera_gui
@@ -325,6 +315,24 @@ if (!exists(VolRenClass)) {
     }
 
     #----------------------------
+    proc ::ImLoad(){
+      del ::input
+      eval "::input = &"+::input_name+";"
+      if (::input_name!="BrowseImage") {
+         printn "Load 1"
+        ::load_input()
+      }
+      del ::input2
+      eval "::input2 = &"+::input2_name+";"
+      if (::input2_name!="BrowseImage") {
+        printn "Load 2"
+        ::load_input2()
+      }
+    }
+    Comments(::ImLoad,"Loads the input image. (Needed by AMILab mapper)")
+
+    #----------------------------
+
     proc ::ImReload() \
     {
       ::load_input()
@@ -398,8 +406,10 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::StartNew() \
     {
-      if (::resizevol1==0){
-        ::load_input()
+      if (::volrenmapper_type!=3){
+        if (::resizevol1==0){
+          ::load_input()
+        }
       }
       ::azimuthAnt=0
       ::elevationAnt=0
@@ -407,16 +417,25 @@ if (!exists(VolRenClass)) {
       ::azimuth=0
       ::elevation=0
       ::zoom=0
+      ::resizevol1=0
 
-     ::resizevol1=0
       if (exists(::input)){
         if (::volVector[0].initialized==0){
           ::renwin_interact.Initialize()
           ::volVector[0].InitManager(&::renwin_interact)
+          ::volVector[0].AddAnnotatedCube() 
         }
         ::volVector[0].DelVTK()
         ::volVector[0].SetVolRenMapper(::volrenmapper_type)
-        ::volVector[0].CreateVTK( &::input)
+        #::volVector[0].CreateVTK( &::input)
+        if (::volrenmapper_type!=3){
+          ::volVector[0].SetInput(&::input)
+        } else {
+          ::volVector[0].SetInput(&::input)
+          ::volVector[0].SetInput2(&::input2)
+        }
+        ::volVector[0].DefaultProperties() 
+        ::volVector[0].CreateVTK()
         if (::volrenmapper_type!=::volVector[0].volrenmapper_type) {
           ::volrenmapper_type=::volVector[0].volrenmapper_type
           ::win.Update(::volrentype_id)
@@ -479,32 +498,25 @@ if (!exists(VolRenClass)) {
       }
      ::resizevol2=0
       if (exists(::input2)) {
-        if (::volrenmapper_type==3){
-          printn "**********AÑADE MASKARA"
-          ::volVector[1].DelVTK()
-          ::volVector[0].SetMask(&::input2)
-        }else {
-          ::volVector[1].cpManager(&::volVector[0])
-          ::volVector[1].DelVTK()
-          ::volVector[1].CreateVTK( &::input2)
+        ::volVector[1].cpManager(&::volVector[0])
+        ::volVector[1].DelVTK()
+        #::volVector[1].CreateVTK( &::input2)
+        ::volVector[1].SetInput(&::input2)
+        ::volVector[1].CreateVTK()
         if (::volrenmapper_type!=::volVector[1].volrenmapper_type) {
           ::volrenmapper_type=::volVector[1].volrenmapper_type
           ::win.Update(::volrentype_id)
         }
-          ::volVector[1].OnRender()
-          ::renwin_interact.Render()
-          ::renwin_interact.Refresh()
-//fusion ?¿?¿
-//::volVector[1].camera.SetParallelProjection(true)
-//::volVector[1].blend_mode=3
-          ::EnableGPUmode(1)
-          ::hist_mode = 1
-          ::ShowHistogram()
-          ::hist_mode = 0
-          ::volVector[1].OnLinearColormap()
-          #Set Linear curve
-          ::volVector[1].ResetLinearCurve1()
-        }
+        ::volVector[1].OnRender()
+        ::renwin_interact.Render()
+        ::renwin_interact.Refresh()
+        ::EnableGPUmode(1)
+        ::hist_mode = 1
+        ::ShowHistogram()
+        ::hist_mode = 0
+        ::volVector[1].OnLinearColormap()
+        #Set Linear curve
+        ::volVector[1].ResetLinearCurve1()
 
         ::UpdateVolPages()
         ::win.Update(-1)
@@ -553,9 +565,10 @@ if (!exists(VolRenClass)) {
       ::win.EnablePanel(::vol1_page , false)
       ::win.EnablePanel(::vol2_page , false)
 
-      ::splitter.SetSashGravity(1)//(0.8)
+      //::splitter.SetSashGravity(1)//(0.8)
+      
       ::splitter.SplitHorizontally(&::renwin_interact, &::panel2)
-
+      ::splitter.Unsplit()
       # Add to main book
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
       mb.AddPage( &::panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
@@ -804,7 +817,9 @@ if (!exists(VolRenClass)) {
         ::win.AddEnumChoice(::volrentype_id,"GPU mapper")
         ::win.AddEnumChoice(::volrentype_id,"FixedPoint mapper")
         ::win.AddEnumChoice(::volrentype_id,"Standard mapper")
-        ::win.AddEnumChoice(::volrentype_id,"AMILab mapper")
+        //if (::AmiVol) {
+          ::win.AddEnumChoice(::volrentype_id,"AMILab mapper")
+        //}
 
 
       ::win.BeginBook()
@@ -818,6 +833,7 @@ if (!exists(VolRenClass)) {
 
               ::icons.LoadIconPNG2("Resize image","Resize_image")
               ::AddBitmapButton16(&::win, &::icons._Resize_image, "Resize_Vol1")
+              #::AddBitmapButton16(&::win, &::icons._Add, "ImLoad")
               #::win.AddButton( "ImReload",&::ImReload)
             ::win.EndHorizontal()
             ::input_size_id = ::win.AddLabel("Size:",::input_size)
@@ -831,8 +847,7 @@ if (!exists(VolRenClass)) {
             ::win.EndHorizontal()
             ::input2_size_id = ::win.AddLabel("Size:",::input2_size)
           ::win.EndBoxPanel()
-
-
+          ::AddBitmapButton16(&::win, &::icons._Add, "ImLoad")
         ::win.AddPage("Volumes")
           ::win.BeginBook()
             ::vbCtrl = ::win.GetBookCtrl()

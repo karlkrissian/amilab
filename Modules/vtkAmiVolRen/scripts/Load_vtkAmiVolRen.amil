@@ -1,10 +1,10 @@
 
 func "Common/ModulePlugin"
 
-if (!exists(vtkAmiVolRenPlugin_obj)) {
-  ModulePlugin vtkAmiVolRenPlugin_obj
-  vtkAmiVolRenPlugin_obj.SetModuleName("vtkAmiVolRen")
-  vtkAmiVolRenPlugin_obj.Load()
+if (!exists(global::vtkAmiVolRenPlugin_obj)) {
+  ModulePlugin global::vtkAmiVolRenPlugin_obj
+  global::vtkAmiVolRenPlugin_obj.SetModuleName("vtkAmiVolRen")
+  global::vtkAmiVolRenPlugin_obj.Load()
 } else {
   InfoDialog "The object vtkAmiVolRenPlugin_obj to be already instanciated." 
 }

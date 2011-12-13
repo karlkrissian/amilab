@@ -194,7 +194,9 @@ Class PreviewerClass \
                     ::CurveVector[indexCurve].r2, ::CurveVector[indexCurve].g2, \
                     ::CurveVector[indexCurve].b2, ::CurveVector[indexCurve].Gradient )
           #Create & addvolume
-          ::SVCVector[n].CreateVTK( &::input)
+          ::SVCVector[n].SetInput( &::input)
+          #::SVCVector[n].CreateVTK( &::input)
+          ::SVCVector[n].CreateVTK( )
           ::SVCVector[n].OnRender()
           ::SVCVector[n].InitRenderer()
           ::RWIVector[n].Render()

@@ -1,4 +1,4 @@
 
-if exists(DownloadData_obj) {
-  DownloadData_obj.ReLoad()
+if exists(global::vtkAmiVolRenPlugin_obj) {
+  global::vtkAmiVolRenPlugin_obj.ReLoad()
 }
