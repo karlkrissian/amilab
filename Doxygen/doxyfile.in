@@ -1466,7 +1466,16 @@ PREDEFINED             = "ADDMEMBER(str_name,classname,proc_name)= {    boost::s
 # Use the PREDEFINED tag if you want to use a different macro definition that 
 # overrules the definition found in the source code.
 
-EXPAND_AS_DEFINED      = 
+EXPAND_AS_DEFINED      = BASICVAR_OP_VAR \
+                         BASICVAR_COMP_OP_VAR \
+                         BASICVAR_LOGIC_OP \
+                         BASICVAR_LOGIC_OP_VAR \
+                         VAR_OP_BASICVAR \
+                         VAR_COMP_OP_BASICVAR \
+                         VAR_LOGIC_OP \
+                         BASICVAR_OP_VAR \
+                         BASICVAR_FUNC \
+                         AMI_DECLARE_TYPE_EXPORT
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then 
 # doxygen's preprocessor will remove all references to function-like macros 

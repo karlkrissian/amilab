@@ -70,6 +70,7 @@ class generate_html:
     self.baseurl=""          # HTML base URL
     self.libname=""          # Library name
     self.createhtml=False    # Flag to generate html.
+    self.doctype="doxygen"   # type of C++ documentation to link
 
 
   #-------------------------------------------------------------
@@ -83,10 +84,11 @@ class generate_html:
     self.createhtml=True
     self.ResetIgnoreMethodList()
     self.ResetClassMethodList()
-    self.vtkclasses_html=None
-    self.lastvtkclassname=None
-    self.lastvtkclasslink=None
-    self.lastvtkclass_html=None
+    # doxygen link info
+    self.doxyclasses_html=None
+    self.lastdoxyclassname=None
+    self.lastdoxyclasslink=None
+    self.lastdoxyclass_html=None
 
   #-------------------------------------------------------------
   def SetPublicMethods(self,pm):
@@ -525,41 +527,41 @@ class generate_html:
         #Format for the version 2.8.x
         url+="wx_"+classname.lower()+".html#"+classname.lower()
       else:
-        if self.libname=="vtk":
-          vtklink = 'http://www.vtk.org/doc/release/5.6/html/classes.html'
-          if self.vtkclasses_html==None:
+        if self.doctype=="doxygen":
+          vtklink = self.baseurl+'/classes.html'
+          if self.doxyclasses_html==None:
             # Download the HTML file linking to the vtk classes ...
             # we should deal with VTK version here ...
             try:
               f = urllib2.urlopen(vtklink)
-              self.vtkclasses_html = f.read()
+              self.doxyclasses_html = f.read()
             except IOError:
               print "Error: Failed to open {0}".format(vtklink)
-              self.vtkclasses_html = ""
-          if self.lastvtkclassname==None or self.lastvtkclassname!=classname:
+              self.doxyclasses_html = ""
+          if self.lastdoxyclassname==None or self.lastdoxyclassname!=classname:
             # now look for the filename using regular expressions
-            m = re.search(r"<a[^>]*\"([^\"\.]*)\.html\"[^>]*>"+classname+"</a>",self.vtkclasses_html)
+            m = re.search(r"<a[^>]*\"([^\"\.]*)\.html\"[^>]*>"+classname+"</a>",self.doxyclasses_html)
             if m!=None:
               fileid=m.group(1).strip()
               print "Found VTK file {0} for class {1}".format(fileid,classname)
-              classurl="http://www.vtk.org/doc/release/5.6/html/{0}.html".format(fileid)
-              self.lastvtkclasslink=classurl
+              classurl= self.baseurl+"/{0}.html".format(fileid)
+              self.lastdoxyclasslink=classurl
               # download the class documentation
               try:
                 f = urllib2.urlopen(classurl)
-                self.lastvtkclass_html = f.read()
+                self.lastdoxyclass_html = f.read()
               except IOError:
                 print "Error: Failed to open {0}".format(classurl)
-                self.lastvtkclass_html = ""
-              #print "lastvtkclass_html {0}".format(self.lastvtkclass_html[:100])
+                self.lastdoxyclass_html = ""
+              #print "lastdoxyclass_html {0}".format(self.lastdoxyclass_html[:100])
             else:
-              self.lastvtkclasslink=None
-              self.lastvtkclass_html=None
+              self.lastdoxyclasslink=None
+              self.lastdoxyclass_html=None
               classurl=vtklink
           else:
-            classurl=self.lastvtkclasslink
+            classurl=self.lastdoxyclasslink
           url=classurl
-          self.lastvtkclassname=classname
+          self.lastdoxyclassname=classname
         else:
           url+="class"+self.GenerateDoxygenFileName(classname)+".html"
 
@@ -596,77 +598,93 @@ class generate_html:
       #Format for the version 2.8.x
       methodname=methodname.replace('_','')
       #print "GenerateMethodFormat: methodname={0}\n".format(methodname)
-      if methodname=="!":
-        methodname="operatornot"
-      if methodname=="=":
-        methodname="operatorassign"
-      if methodname=="+":
-        methodname="operatorplus"
-      if methodname=="+=":
-        methodname="plusequal"
-      if methodname=="[]":
-        methodname="operatorbracket"
-      if methodname=="()":
-        methodname="operatorparenth"
-      if methodname=="<<":
-        methodname="operatorout"
-      if methodname==">>":
-        methodname="operatorin"
+      if methodname=="!":        methodname="operatornot"
+      if methodname=="=":        methodname="operatorassign"
+      if methodname=="+":        methodname="operatorplus"
+      if methodname=="+=":       methodname="plusequal"
+      if methodname=="[]":       methodname="operatorbracket"
+      if methodname=="()":       methodname="operatorparenth"
+      if methodname=="<<":       methodname="operatorout"
+      if methodname==">>":       methodname="operatorin"
       # constructors
-      if methodname==classname:
-        methodname="ctor"
+      if methodname==classname:  methodname="ctor"
       url+="wx_"+classname.lower()+".html#"+classname.lower()+methodname.lower()
     else:
-      if self.libname=="vtk":
-        vtklink = 'http://www.vtk.org/doc/release/5.6/html/classes.html'
-        if self.vtkclasses_html==None:
+      if self.doctype=="doxygen":
+        #print "URL is {0}".format(self.baseurl)
+        vtklink = self.baseurl+'/classes.html'
+        if self.doxyclasses_html==None:
           # Download the HTML file linking to the vtk classes ...
           # we should deal with VTK version here ...
           try:
             f = urllib2.urlopen(vtklink)
-            self.vtkclasses_html = f.read()
+            self.doxyclasses_html = f.read()
           except IOError:
             print "Error: Failed to open {0}".format(vtklink)
-            self.vtkclasses_html = ""
-        if self.lastvtkclassname==None or self.lastvtkclassname!=classname:
+            self.doxyclasses_html = ""
+        if self.lastdoxyclassname==None or self.lastdoxyclassname!=classname:
           # now look for the filename using regular expressions
-          m = re.search(r"<a[^>]*\"([^\"\.]*)\.html\"[^>]*>"+classname+"</a>",self.vtkclasses_html)
+          m = re.search(r"<a[^>]*\"([^\"\.]*)\.html\"[^>]*>"+classname+"</a>",self.doxyclasses_html)
           if m!=None:
             fileid=m.group(1).strip()
             print "Found VTK file {0} for class {1}".format(fileid,classname)
-            classurl="http://www.vtk.org/doc/release/5.6/html/{0}.html".format(fileid)
-            self.lastvtkclasslink=classurl
+            classurl=self.baseurl+"/{0}.html".format(fileid)
+            self.lastdoxyclasslink=classurl
             # download the class documentation
             try:
               f = urllib2.urlopen(classurl)
-              self.lastvtkclass_html = f.read()
+              self.lastdoxyclass_html = f.read()
             except IOError:
               print "Error: Failed to open {0}".format(classurl)
-              self.lastvtkclass_html = ""
-            #print "lastvtkclass_html {0}".format(self.lastvtkclass_html[:100])
+              self.lastdoxyclass_html = ""
+            #print "lastdoxyclass_html {0}".format(self.lastdoxyclass_html[:100])
           else:
-            self.lastvtkclasslink=None
-            self.lastvtkclass_html=None
+            self.lastdoxyclasslink=None
+            self.lastdoxyclass_html=None
             classurl=vtklink
         else:
-          classurl=self.lastvtkclasslink
-        if self.lastvtkclass_html!=None:
+          classurl=self.lastdoxyclasslink
+        if self.lastdoxyclass_html!=None:
           # now look for the tag
-          print "Looking for method {0} ".format(method.name)
-          if method.name=="[]":
-            rname=r"operator\[\]"
-          else:
-            rname=method.name
+          print "Looking for method '{0}' ".format(method.name)
+          rname=method.name
+          if method.name=="="  : rname=r"operator\="
+          if method.name=="==" : rname=r"operator\=\="
+          if method.name=="[]" : rname=r"operator\[\]"
+          if method.name=="++" : rname=r"operator\+\+"
+          if method.name=="+"  : rname=r"operator\+"
+          if method.name=="+=" : rname=r"operator\+\="
+          if method.name=="-"  : rname=r"operator\-"
+          if method.name=="--" : rname=r"operator\-\-"
+          if method.name=="-=" : rname=r"operator\-\="
+          if method.name=="*"  : rname=r"operator\*"
+          if method.name=="*=" : rname=r"operator\*\="
+          if method.name=="/" : rname=r"operator/"
+          if method.name=="/=" : rname=r"operator/\="
+          if method.name=="%"  : rname=r"operator%"
+          if method.name=="%=" : rname=r"operator%\="
+          if method.name=="<"  : rname=r"operator&lt;"
+          if method.name=="<=" : rname=r"operator&lt;="
+          if method.name==">"  : rname=r"operator&gt;"
+          if method.name==">=" : rname=r"operator&gt;="
+          if method.name=="!=" : rname=r"operator\!\="
+          if method.name=="!"  : rname=r"operator\!"
+          if method.name=="|"  : rname=r"operator\|"
+          if method.name=="&"  : rname=r"operator&amp;"
+          if method.name=="&&" : rname=r"operator&amp;&amp;"
+          if method.name=="||" : rname=r"operator\|\|"
+          #print "rname = {0}".format(rname)
+          if method.name=="^"  : rname=r"operator\^"
           m = re.search(r"<a[^>]*\"([^\"\.]*\.html#[^\"]*)\"[^>]*>"+rname+"</a>",\
-                        self.lastvtkclass_html)
+                        self.lastdoxyclass_html)
           if m!=None:
-            url="http://www.vtk.org/doc/release/5.6/html/{0}".format(m.group(1).strip())
+            url=self.baseurl+"/{0}".format(m.group(1).strip())
           else:
-            print "Method {0} not found".format(method.name)
+            print "----- Method {0} not found -----".format(method.name)
             url=classurl
         else:
-          url='http://www.vtk.org/doc/release/5.6/html/classes.html'
-        self.lastvtkclassname=classname
+          url=self.baseurl+'/classes.html'
+        self.lastdoxyclassname=classname
       else:
         #Doxygen methodname format:
         # type classname::methodnamemethodname(parameters)
