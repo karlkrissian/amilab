@@ -16,10 +16,14 @@ SET(CMAKE_MODULE_PATH  ${PROJECT_SOURCE_DIR}/../../../CMAKE  ${CMAKE_MODULE_PATH
 MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
 INCLUDE(${wxWidgets_USE_FILE})
-INCLUDE( ${USE_ITK_FILE} )
-INCLUDE( ${USE_VTK_FILE} )
+INCLUDE(${ITK_USE_FILE})
+INCLUDE(${VTK_USE_FILE})
 
-SET( ${KIT}_ENABLE_WRAPPING      OFF )
+#INCLUDE(${wxWidgets_USE_FILE})
+#INCLUDE( ${USE_ITK_FILE} )
+#INCLUDE( ${USE_VTK_FILE} )
+
+SET( ${KIT}_ENABLE_WRAPPING      ON )
 
 #FIND_PACKAGE(AMILab)
 
@@ -29,10 +33,10 @@ SET( ${KIT}_ENABLE_WRAPPING      OFF )
 
 #INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 
-set(  wxParams_INCLUDE_DIRS
-    ${AMILab_SOURCE_DIR}/../wxParams/src)
+# set(  wxParams_INCLUDE_DIRS
+#     ${AMILab_SOURCE_DIR}/../wxParams/src)
 
-SET(${KIT}_AMILab_PATHS
+SET(${KIT}_INCLUDE_PATHS
     ${AMILab_SOURCE_DIR}/LanguageBase
     ${AMILab_SOURCE_DIR}/Language
     ${AMILab_SOURCE_DIR}/Common/include
@@ -40,13 +44,13 @@ SET(${KIT}_AMILab_PATHS
     ${AMILab_SOURCE_DIR}/Wrapping/include
     ${AMILab_SOURCE_DIR}
     ${AMILab_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping
 )
 
 INCLUDE_DIRECTORIES(
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping
     ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping/Generated
-    ${${KIT}_AMILab_PATHS}
+    ${${KIT}_INCLUDE_PATHS}
     ${AMILab_SOURCE_DIR}/Algorithms/include
     ${AMILab_SOURCE_DIR}/Graphic/include
     ${Boost_INCLUDE_DIR}
@@ -94,7 +98,7 @@ SET(${KIT}_HDRS
   Wrapping/wrap_AnalyticTorus.h
   Wrapping/wrap_ComputePartialVolume.h
   Wrapping/wrap_SubVoxel3D.h
-  Wrapping/wrap_SubPixel2D.h
+#  Wrapping/wrap_SubPixel2D.h
   ${KIT}Plugin.h
 )
 
@@ -124,7 +128,7 @@ SET(${KIT}_SRCS
   Wrapping/wrap_AnalyticTorus.cpp
   Wrapping/wrap_ComputePartialVolume.cpp
   Wrapping/wrap_SubVoxel3D.cpp
-  Wrapping/wrap_SubPixel2D.cpp
+#  Wrapping/wrap_SubPixel2D.cpp
   ${KIT}Plugin.cpp
 )
 

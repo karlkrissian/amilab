@@ -8,10 +8,11 @@
 
 class DessinImage;
 class wxColour;
+class InrImage;
 
-#include "inrimage.hpp"
 #include "DefineClass.hpp"
 #include <vector>
+#include <boost/shared_ptr.hpp>
 //using namespace std;
 
 /**
@@ -129,6 +130,33 @@ private:
 };
 
 
+class SuperGradienteCurvo_res 
+{
+public:
+  boost::shared_ptr<InrImage> denoised;
+  boost::shared_ptr<InrImage> aintensity;
+  boost::shared_ptr<InrImage> bintensity;
+  boost::shared_ptr<InrImage> border;
+  boost::shared_ptr<InrImage> acoef;
+  boost::shared_ptr<InrImage> bcoef;
+  boost::shared_ptr<InrImage> ccoef;
+  boost::shared_ptr<InrImage> curvature;
+  boost::shared_ptr<InrImage> xpos;
+  boost::shared_ptr<InrImage> ypos;
+
+  
+  /**
+   * @brief Allocate the different images as 1D images with the given size, 
+   * apart from denoised comes from the algorithm.
+   *
+   * @param size Dimension of the 1D (array) images.
+   * @return void
+   **/
+  void InitImages(int size);
+  
+};
+
+
 /**
  *  This class contains the methods of the SubPixel method for 2D images.
  *  Also includes the method that draw the sub-pixel edge.
@@ -162,7 +190,7 @@ public:
    *  This procedure applies the basic method for sub-pixel edge detection in 2D
    *  images.
    */
-  void SuperGradienteCurvo();
+  SuperGradienteCurvo_res SuperGradienteCurvo();
   
   /**
    *  This procedure applies the sub-pixel edge detection in 2D noisy images.
@@ -175,6 +203,27 @@ public:
    */
   void DenoisingGus();
   
+  /**
+   * @brief Initialize SubpixelDenoising, allocating 3 images.
+   * Called within SubpixelDenoising() method.
+   * @return void
+   **/
+  void SubpixelDenoising_Init();
+
+  /**
+   * @brief Finalize SubpixelDenoising.
+   * Called within SubpixelDenoising() method.
+   * @return void
+   **/
+  void SubpixelDenoising_End();
+
+  /**
+   * @brief Runs one iteration of SubpixelDenoising.
+   * Called within SubpixelDenoising() method.
+   * @return void
+   **/
+  void SubpixelDenoising_Iterate();
+
   /**
    *  This procedure applies the sub-pixel edge detection in 2D noisy images
    *  using a dynamic window and a close edge detection. Use a iterative
@@ -208,10 +257,10 @@ public:
    *  @param posx       Smart pointer to an InrImage for x positions.
    *  @param posy       Smart pointer to an InrImage for y positions.
    */
-  void fillImages(InrImage::ptr AIntensity, InrImage::ptr BIntensity, 
-                  InrImage::ptr border, InrImage::ptr a, InrImage::ptr b, 
-                  InrImage::ptr c, InrImage::ptr curvature, InrImage::ptr posx, 
-                  InrImage::ptr posy);
+  void fillImages(boost::shared_ptr<InrImage> AIntensity, boost::shared_ptr<InrImage> BIntensity, 
+                  boost::shared_ptr<InrImage> border, boost::shared_ptr<InrImage> a, boost::shared_ptr<InrImage> b, 
+                  boost::shared_ptr<InrImage> c, boost::shared_ptr<InrImage> curvature, boost::shared_ptr<InrImage> posx, 
+                  boost::shared_ptr<InrImage> posy);
   
   /**
    *  Set the input image.
@@ -249,6 +298,14 @@ private:
   //Linear case (first or second order)
   int linear_case;
    
+  /// Images needed for the subpixel denoising method
+  ///Counters image
+  boost::shared_ptr<InrImage> C;
+  ///Intensities image
+  boost::shared_ptr<InrImage> I;
+  ///Averaged image
+  boost::shared_ptr<InrImage> G;
+  boost::shared_ptr<InrImage> input_copy;
 };
 
 #endif

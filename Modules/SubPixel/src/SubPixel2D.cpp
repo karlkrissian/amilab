@@ -9,9 +9,9 @@
   #define isnan _isnan
 #endif
 
+#include "inrimage.hpp"
 #include "SubPixel2D.h"
 #include <cmath>
-#include "inrimage.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
 #include "wrapfunctions.hpp"
@@ -340,8 +340,34 @@ vector<borderPixel> SubPixel2D::getBorderPixelVector()
   return borderPixelVector;
 }
 
+//------------------------------------------------------------------------------
+void SuperGradienteCurvo_res::InitImages(int size)
+{
+  //InrImages for params
+  this->aintensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "aintensity.inr.gz"));
+  this->bintensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "bintensity.inr.gz"));
+  this->border     = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_CHAR,
+                                                        "border.inr.gz"));
+  this->acoef      = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "acoef.inr.gz"));
+  this->bcoef      = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "bcoef.inr.gz"));
+  this->ccoef      = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "ccoef.inr.gz"));
+  this->curvature  = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "curvature.inr.gz"));
+  this->xpos       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+                                                        "xpos.inr.gz"));
+  this->ypos       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+                                                      "ypos.inr.gz"));
+}
+
+
+//------------------------------------------------------------------------------
 //Basic SubPixel 2D detection method, using a 5x3 window (1st and 2nd order)
-void SubPixel2D::SuperGradienteCurvo() 
+SuperGradienteCurvo_res SubPixel2D::SuperGradienteCurvo() 
 {
   //Calculate the gradient module, the argument, displacement and curvature
   
@@ -480,6 +506,24 @@ void SubPixel2D::SuperGradienteCurvo()
       borderPixelVector.push_back(pixel);
     }
   }
+
+  SuperGradienteCurvo_res res;
+  int size = this->getBorderPixelVector().size();
+  res.InitImages(size);
+
+  //Fill InrImages
+  this->fillImages(res.aintensity, res.bintensity, res.border, res.acoef, 
+                 res.bcoef, res.ccoef, res.curvature, 
+                 res.xpos, res.ypos);
+  //Copy the result of averaged in a smart pointer
+  InrImage* aux = this->getDenoised();
+  InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE,
+                                                    "averaged.ami.gz",aux));
+  *(output.get()) = *aux;
+  res.denoised = InrImage::ptr(output);
+
+  return res;
+  
 }
 
 //fillImages method. Is used before create the AMIObject for the interpreted languaje
@@ -766,8 +810,8 @@ void SubPixel2D::DenoisingGus()
   int vpos[] = { -1,-3, 0,-2, 2, 0, 3, 1};	 
   
   //We start copying the input image and averege it
-  InrImage input_copy(WT_DOUBLE,"input_copy.inr.gz",input);
-  input_copy = *input;
+  input_copy= InrImage::ptr(new InrImage(WT_DOUBLE,"input_copy.inr.gz",input));
+  *input_copy = *input;
   Average3x3(input, denoised, A00, A01, A11);
   setInput(denoised);
   //For all pixels
@@ -906,9 +950,9 @@ void SubPixel2D::DenoisingGus()
           {
             bor2u = true; //There is a 2nd near border up
             if (m>0)
-              B = (input_copy(x,y+m1,z) + input_copy(x-1,y+l1,z))/2;
+              B = ((*input_copy)(x,y+m1,z) + (*input_copy)(x-1,y+l1,z))/2;
             else 
-              B = (input_copy(x,y+m1,z) + input_copy(x+1,y+r1,z))/2;
+              B = ((*input_copy)(x,y+m1,z) + (*input_copy)(x+1,y+r1,z))/2;
           }
         }
         if (j2<4 && y+j2+2<=input->DimY()-1)
@@ -919,9 +963,9 @@ void SubPixel2D::DenoisingGus()
           {
             bor2d = true; //There is a 2nd near border down
             if (m>0)
-              A = (input_copy(x,y+m2,z) + input_copy(x+1,y+r2,z))/2;
+              A = ((*input_copy)(x,y+m2,z) + (*input_copy)(x+1,y+r2,z))/2;
             else
-              A = (input_copy(x,y+m2,z) + input_copy(x-1,y+l2,z))/2;
+              A = ((*input_copy)(x,y+m2,z) + (*input_copy)(x-1,y+l2,z))/2;
           }
         }
         
@@ -944,7 +988,7 @@ void SubPixel2D::DenoisingGus()
             for(int indi = -2; indi<=2; indi++)
             {
               fprime->BufferPos(fprimex+indi,fprimey+indj,z);
-              fprime->FixeValeur(input_copy(x+indi,y+indj,z));
+              fprime->FixeValeur((*input_copy)(x+indi,y+indj,z));
             }
           }
           //If top edge, update B on F' top 
@@ -1223,9 +1267,9 @@ void SubPixel2D::DenoisingGus()
           {
             bor2u = true; //There is a 2nd near border up
             if (m>0)
-              B = (input_copy(x+m1,y,z) + input_copy(x+l1,y-1,z))/2;
+              B = ((*input_copy)(x+m1,y,z) + (*input_copy)(x+l1,y-1,z))/2;
             else 
-              B = (input_copy(x+m1,y,z) + input_copy(x+r1,y+1,z))/2;
+              B = ((*input_copy)(x+m1,y,z) + (*input_copy)(x+r1,y+1,z))/2;
           }
         }
         if (j2<4 && y+j2+2<=input->DimY()-1)
@@ -1236,9 +1280,9 @@ void SubPixel2D::DenoisingGus()
           {
             bor2d = true; //There is a 2nd near border down
             if (m>0)
-              A = (input_copy(x+m2,y,z) + input_copy(x+r2,y+1,z))/2;
+              A = ((*input_copy)(x+m2,y,z) + (*input_copy)(x+r2,y+1,z))/2;
             else
-              A = (input_copy(x+m2,y,z) + input_copy(x+l2,y-1,z))/2;
+              A = ((*input_copy)(x+m2,y,z) + (*input_copy)(x+l2,y-1,z))/2;
           }
         }
         
@@ -1260,7 +1304,7 @@ void SubPixel2D::DenoisingGus()
             for(int indi = -5; indi<=5; indi++)
             {
               fprime->BufferPos(fprimex+indi,fprimey+indj,z);
-              fprime->FixeValeur(input_copy(x+indi,y+indj,z));
+              fprime->FixeValeur((*input_copy)(x+indi,y+indj,z));
             }
           }
           //If top edge, update B on F' top
@@ -1955,24 +1999,11 @@ void UpdateImages(InrImage* input, InrImage * C, InrImage* I, int x, int y, int 
 }
 
 
-//Iterative version with floating window and very close edges
-void SubPixel2D::SubpixelDenoising(int niter)
+//------------------------------------------------------------------------------
+void SubPixel2D::SubpixelDenoising_Iterate()
 {
   int margin = 1;
   double A, B;
-  //Counters image
-  InrImage::ptr C = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
-                                               input->DimZ(), WT_UNSIGNED_SHORT,
-                                               "counters.inr.gz"));
-  //Intensities image
-  InrImage::ptr I = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
-                                               input->DimZ(), WT_DOUBLE,
-                                               "intensities.inr.gz"));
-  //Averaged image
-  InrImage::ptr G = InrImage::ptr(new InrImage(input->DimX(), input->DimY(),
-                                               input->DimZ(), WT_DOUBLE,
-                                               "averaged.inr.gz"));
-
   //Partial derivatives
   double parx, pary, partial;
   //Pointers to upos and vpos
@@ -2004,746 +2035,784 @@ void SubPixel2D::SubpixelDenoising(int niter)
   //Limits for computing synthetic images
   Lims[1][0] = Lims[2][0] = Lims[3][0] = -4;
   Lims[1][1] = Lims[2][1] = Lims[3][1] = 4;
-  InrImage input_copy(WT_DOUBLE,"input_copy.inr.gz",input);
-  //Begins the iterative method
-  for(int index=0; index<niter; index++)
+
+  //Initialize to zero the counters, intensities and averaged image
+  C->InitZero();
+  I->InitZero();
+  //G->InitZero();
+  //Make a copy of the input image
+  *input_copy = *input;
+  //1st we average the input image
+  Average3x3(input, G.get(), A00, A01, A11);
+  //And set it as the input image for compute the partial derivatives
+  *input = *(G.get());
+  //If we are in a intermediate iteration, we must clear the border pixel vector
+  borderPixelVector.clear();
+  
+  //For all pixels inside G
+  for(int y = margin; y < G->DimY()-margin; y++)
   {
-    //Initialize to zero the counters, intensities and averaged image
-    C->InitZero();
-    I->InitZero();
-    //G->InitZero();
-    //Make a copy of the input image
-    input_copy = *input;
-    //1st we average the input image
-    Average3x3(input, G.get(), A00, A01, A11);
-    //And set it as the input image for compute the partial derivatives
-    *input = *(G.get());
-    //If we are in a intermediate iteration, we must clear the border pixel vector
-    borderPixelVector.clear();
-    
-    //For all pixels inside G
-    for(int y = margin; y < G->DimY()-margin; y++)
+    for(int x = margin; x < G->DimX()-margin; x++)
     {
-      for(int x = margin; x < G->DimX()-margin; x++)
-      {
-        pary = ffy(x,y,z);
-        parx = ffx(x,y,z);
-        if (parx*parx + pary*pary < threshold*threshold) continue;
-        if (fabs(pary) >= fabs(parx))
+      pary = ffy(x,y,z);
+      parx = ffx(x,y,z);
+      if (parx*parx + pary*pary < threshold*threshold) continue;
+      if (fabs(pary) >= fabs(parx))
+      { 
+        //Vertical window
+        u = upos;
+        v = vpos;
+        partial = fabs(pary);
+        //The partial must be maximum in the column or row
+        if (partial < threshold) continue;
+        if (y>2) if (fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z)) > partial) continue;
+        if (y>1) if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
+        if (y<input->DimY()-2) if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
+        if (y<input->DimY()-3) if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
+        m = (parx*pary >= 0) ? 1 : -1;
+        p = (m+1) / 2;
+        
+        //Calculate the limits of the window
+        //Left
+        for (par0 = ffyu(x-m,y,z), l1=-1; l1>=-2; l1--)
+        {
+          if (y+l1==0) break;
+          par1 = ffyu(x-m, y+l1,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        }
+        if (y<input->DimY()-2)
+        {
+          for (par0 = ffyd(x-m,y+1,z), l2=2; l2<=3; l2++)
+          {
+            if (y+l2==input->DimY()-1) break;
+            par1 = ffyd(x-m,y+l2,z);
+            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+            par0 = par1;
+          }
+        } 
+        else l2 = 1;
+        //Middle
+        for (par0 = ffyu(x,y,z), m1=-1; m1>=-3; m1--) 
+        {
+          if (y+m1==0) break; 
+          par1 = ffyu(x,y+m1,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        } 
+        for (par0 = ffyd(x,y,z), m2=1; m2<=3; m2++) 
+        {
+          if (y+m2==input->DimY()-1) break;
+          par1 = ffyd(x,y+m2,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        }
+        //Right
+        if (y>1) for (par0 = ffyu(x+m,y-1,z), r1=-2; r1>=-3; r1--) 
+        {
+          if (y+r1==0) break;
+          par1 = ffyu(x+m,y+r1,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        }
+        else r1 = -1;
+        for (par0 = ffyd(x+m,y,z), r2=1; r2<=2; r2++) 
+        {
+          if (y+r2==input->DimY()-1) break;
+          par1 = ffyd(x+m,y+r2,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        }
+
+        //If m is negative, swap 'l' and 'r' limits
+        if (m<0) 
         { 
-          //Vertical window
-          u = upos;
-          v = vpos;
-          partial = fabs(pary);
-          //The partial must be maximum in the column or row
-          if (partial < threshold) continue;
-          if (y>2) if (fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z)) > partial) continue;
-          if (y>1) if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
-          if (y<input->DimY()-2) if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
-          if (y<input->DimY()-3) if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
-          m = (parx*pary >= 0) ? 1 : -1;
-          p = (m+1) / 2;
-          
-          //Calculate the limits of the window
-          //Left
-          for (par0 = ffyu(x-m,y,z), l1=-1; l1>=-2; l1--)
-          {
-            if (y+l1==0) break;
-            par1 = ffyu(x-m, y+l1,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          }
-          if (y<input->DimY()-2)
-          {
-            for (par0 = ffyd(x-m,y+1,z), l2=2; l2<=3; l2++)
-            {
-              if (y+l2==input->DimY()-1) break;
-              par1 = ffyd(x-m,y+l2,z);
-              if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-              par0 = par1;
-            }
-          } 
-          else l2 = 1;
-          //Middle
-          for (par0 = ffyu(x,y,z), m1=-1; m1>=-3; m1--) 
-          {
-            if (y+m1==0) break;	
-            par1 = ffyu(x,y+m1,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          } 
-          for (par0 = ffyd(x,y,z), m2=1; m2<=3; m2++) 
-          {
-            if (y+m2==input->DimY()-1) break;
-            par1 = ffyd(x,y+m2,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          }
-          //Right
-          if (y>1) for (par0 = ffyu(x+m,y-1,z), r1=-2; r1>=-3; r1--) 
-          {
-            if (y+r1==0) break;
-            par1 = ffyu(x+m,y+r1,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          }
-          else r1 = -1;
-          for (par0 = ffyd(x+m,y,z), r2=1; r2<=2; r2++) 
-          {
-            if (y+r2==input->DimY()-1) break;
-            par1 = ffyd(x+m,y+r2,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          }
-
-          //If m is negative, swap 'l' and 'r' limits
-          if (m<0) 
-          { 
-            SWAP_INT(l1,r1);
-            SWAP_INT(l2,r2);
-          }
-          
-          //Calculate A and B (A under and B over edge)
-          if (m>0) 
-          {
-            A = (FF(x,y+m2,z) + FF(x+1,y+r2,z)) / 2;
-            B = (FF(x,y+m1,z) + FF(x-1,y+l1,z)) / 2;
-          }
-          else
-          {
-            A = (FF(x,y+m2,z) + FF(x-1,y+l2,z)) / 2;
-            B = (FF(x,y+m1,z) + FF(x+1,y+r1,z)) / 2;
-          }
-          
-          //If the intensity jump is less than the threshold, continue
-          if (fabs(A-B) < threshold) continue;
-          
-          //We search if there are other near edge (2 and 3 pixels case)
-          //Initialize the image limits
-          ll1 = l1; mm1 = m1; rr1 = r1;
-          ll2 = l2; mm2 = m2; rr2 = r2;
-          bor2d = bor2u = false;
-          int i1, i2, j1, j2;
-          double par0;
-          if (partial > 2*fabs(parx))
-          {
-            i1 = i2 = 0;
-            j1 = m1;
-            j2 = m2;
-          }
-          else 
-          {
-            i1 = -m;
-            i2 = m;
-            if (m>0)
-            {
-              j1 = l1;
-              j2 = r2;
-            }
-            else 
-            {
-              j1 = r1;
-              j2 = l2;
-            }
-          }
-          if (j1>-4 && y+j1-2>=0)
-          {
-            par0 = (y+j1-2>0) ? ffy(x+i1,y+j1-2,z) : ffyd(x+i1,0,z);
-            par0 = fabs(par0);
-            if (par0 > partial/4 && par0>threshold)
-            {
-              bor2u = true; //There is a 2nd near border up
-              if (m>0)
-                B = (input_copy(x,y+m1,z) + input_copy(x-1,y+l1,z))/2;
-              else 
-                B = (input_copy(x,y+m1,z) + input_copy(x+1,y+r1,z))/2;
-            }
-          }
-          if (j2<4 && y+j2+2<=input->DimY()-1)
-          {
-            par0 = (y+j2+2<input->DimY()-1) ? ffy(x+i2,y+j2+2,z) : ffyu(x+i2,input->DimY()-1,z);
-            par0 = fabs(par0);
-            if (par0>partial/4 && par0>threshold)
-            {
-              bor2d = true; //There is a 2nd near border down
-              if (m>0)
-                A = (input_copy(x,y+m2,z) + input_copy(x+1,y+r2,z))/2;
-              else
-                A = (input_copy(x,y+m2,z) + input_copy(x-1,y+l2,z))/2;
-            }
-          }
-          
-          //We compare with the low threshold
-          //if (fabs(A-B) < low_threshold) continue;
-          
-          //If there are a second near edge, we create a new subimage form the original
-          //and averaged it after for computing the edge
-          if (bor2d || bor2u)
-          {
-            int mini, minj, maxi, maxj;
-            //My new subimage (11x5, because it's YMAX case)
-            InrImage* fprime = new InrImage(5,11,1,WT_DOUBLE,"fprime.inr.gz");
-            //Near of the margins, the subimage is a little different
-            minj = (y>4) ? -5 : -y;
-            maxj = (y<input->DimY()-5) ? 5 : input->DimY()-1-y;
-            if (x==1)
-            {
-              mini = -1;
-              for(int j=minj; j<=maxj; j++) //1st column of the image
-              {
-                fprime->BufferPos(0,j+5,z);
-                fprime->FixeValeur(2*input_copy(0,y+j,z) 
-                                   - input_copy(1,y+j,z));
-              }
-            }
-            else 
-              mini = -2;
-            if (x==input->DimX()-2)
-            {
-              maxi = 1;
-              for (int j=minj; j<=maxj; j++) //Last column of the image
-              {
-                fprime->BufferPos(4,j+5,z);
-                fprime->FixeValeur(2*input_copy(input_copy.DimX()-1,y+j,z)
-                                   -input_copy(input_copy.DimX()-2,y+j,z));
-              }
-            }
-            else 
-              maxi = 2;
-            
-            if (minj>-5)
-              for (int i=mini; i<=maxi; i++)
-              {
-                fprime->BufferPos(i+2,minj+4,z);
-                fprime->FixeValeur(2*input_copy(x+i,0,z)
-                                   -input_copy(x+i,1,z));
-              }
-            if (maxj<5)
-              for (int i=mini; i<=maxi; i++)
-              {
-                fprime->BufferPos(i+2,maxj+6,z);
-                fprime->FixeValeur(2*input_copy(x+i,input_copy.DimY()-1,z)
-                                   -input_copy(x+i,input_copy.DimY()-2,z));
-              }
-
-            //We fill the synthetic image with the original values of the input
-            for(int indj = minj; indj<=maxj; indj++)
-            {
-              for(int indi = mini; indi<=maxi; indi++)
-              {
-                fprime->BufferPos(indi+2,indj+5,z);
-                fprime->FixeValeur(input_copy(x+indi,y+indj,z));
-              }
-            }
-            //If top edge, update B on F' top
-            if (bor2u)
-            {
-              par0 = ffyu (x-2, y+l1+p,z);
-              int ll = (par0*pary>0)? l1+p-1 : l1+p;
-              par1 = ffyu (x+2, y+r1+1-p,z);
-              int rr = (par1*pary>0)? r1-p : r1+1-p;
-              for (int k=-5; k<=ll; k++)
-              {
-                fprime->BufferPos(0,k+5,z);
-                fprime->FixeValeur(B);
-              }
-              for (int k=-5; k<=l1; k++)
-              {
-                fprime->BufferPos(1,k+5,z);
-                fprime->FixeValeur(B);
-              }
-              for (int k=-5; k<=m1; k++)
-              {
-                fprime->BufferPos(2,k+5,z);
-                fprime->FixeValeur(B);
-              }
-              for (int k=-5; k<=r1; k++)
-              {
-                fprime->BufferPos(3,k+5,z);
-                fprime->FixeValeur(B);
-              }
-              for (int k=-5; k<=rr; k++)
-              {
-                fprime->BufferPos(4,k+5,z);
-                fprime->FixeValeur(B);
-              }
-              ll1=-3+m; mm1=-3; rr1=-3-m;
-            }
-            //If lower edge, update A in F' bottom
-            if (bor2d)
-            {
-              par0 = ffyd (x-2, y+l2+p-1,z);
-              int ll = (par0*pary>0)? l2+p : l2+p-1;
-              par1 = ffyd (x+2, y+r2-p,z);
-              int rr = (par1*pary>0)? r2+1-p : r2-p;					
-              for (int k=ll; k<=5; k++)
-              {
-                fprime->BufferPos(0,k+5,z);
-                fprime->FixeValeur(A);
-              }
-              for (int k=l2; k<=5; k++)
-              {
-                fprime->BufferPos(1,k+5,z);
-                fprime->FixeValeur(A);
-              }
-              for (int k=m2; k<=5; k++)
-              {
-                fprime->BufferPos(2,k+5,z);
-                fprime->FixeValeur(A);
-              }
-              for (int k=r2; k<=5; k++)
-              {
-                fprime->BufferPos(3,k+5,z);
-                fprime->FixeValeur(A);
-              }
-              for (int k=rr; k<=5; k++)
-              {
-                fprime->BufferPos(4,k+5,z);
-                fprime->FixeValeur(A);
-              }
-              ll2=3+m;  mm2=3;  rr2=3-m;
-            }
-            //Average F' obtaining G'
-            //Central position of the subimage (2,5)
-            int fprimex = 2;
-            int fprimey = 5;
-            for(int indj = -4; indj<=4; indj++)
-            {
-              for(int indi= -1; indi<=1; indi++)
-              {
-                int posx = fprimex+indi;
-                int posy = fprimey+indj;
-                double suma = 0;
-                suma += (*fprime)(posx-1,posy-1,z) + (*fprime)(posx,posy-1,z) + 
-                (*fprime)(posx+1,posy-1,z);
-                suma += (*fprime)(posx-1,posy,z) + (*fprime)(posx,posy,z) + 
-                (*fprime)(posx+1,posy,z);
-                suma += (*fprime)(posx-1,posy+1,z) + (*fprime)(posx,posy+1,z) + 
-                (*fprime)(posx+1,posy+1,z);
-                fprime->BufferPos(posx,posy,z);
-                fprime->FixeValeur(suma/9);
-              }
-            }
-            //With the averaged image, we compute the sums of the columns with the 
-            //subimage
-            for (SL=0, k=ll1; k<=ll2; k++) 
-              SL += (*fprime)(fprimex-1,fprimey+k,z);
-            for (SM=0, k=mm1; k<=mm2; k++) 
-              SM += (*fprime)(fprimex,fprimey+k,z);
-            for (SR=0, k=rr1; k<=rr2; k++) 
-              SR += (*fprime)(fprimex+1,fprimey+k,z);
-            delete(fprime);
-          }
-          else //Else, we compute the sums of the columns with the big image
-          {            
-            //Calculate the sums of the columns
-            for (SL=0, k=l1; k<=l2; k++) 
-              SL += FF(x-1,y+k,z);
-            for (SM=0, k=m1; k<=m2; k++) 
-              SM += FF(x,y+k,z);
-            for (SR=0, k=r1; k<=r2; k++) 
-              SR += FF(x+1,y+k,z);
-          }
-          
-          //Calculate the coefficients of the curve
-          f = 2 * (A-B);
-          a = (2*SM - (1+2*mm2)*A - (1-2*mm1)*B) / f;
-          b = (SR - SL + A*(ll2-rr2) + B*(rr1-ll1)) / f;		
-          if (!linear_case)
-          {
-            c = (SL + SR - 2*SM + A*(2*mm2-ll2-rr2) - B*(2*mm1-ll1-rr1)) / f;
-            a -= ((1+24*A01+48*A11)/12) * c;
-          }
-          
-          //Calculate gradient, displacement and curvature
-          f   = (A-B) / sqrt(1+b*b);
-          gx  = b * f;
-          gy  = f;
-          des = -a;
-          if (!linear_case)
-          {
-            cu = sqrt (1+b*b);
-            cu *= cu * cu;
-            cu = 2*c / cu;
-            if (pary<0)
-              cu = -cu;
-          }
-          
-          
-          //Set the calculated values on the borderPixel object
-          pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu, x, y);
-          //Add edge pixel to the vector
-          borderPixelVector.push_back(pixel);
-          
-          //Update the counters and intensities images
-          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, YMAX, gx, gy, des, 
-                       cu, A, B, linear_case, m, l1, l2, m1, m2, r1, r2);
+          SWAP_INT(l1,r1);
+          SWAP_INT(l2,r2);
+        }
+        
+        //Calculate A and B (A under and B over edge)
+        if (m>0) 
+        {
+          A = (FF(x,y+m2,z) + FF(x+1,y+r2,z)) / 2;
+          B = (FF(x,y+m1,z) + FF(x-1,y+l1,z)) / 2;
         }
         else
         {
-          //Horizontal window
-          u = vpos;
-          v = upos;
-          partial = fabs(parx);
-
-          //The partial must be maximum in the column or row
-          if (partial < threshold) continue;
-          if (x>2) if (fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z)) > partial) continue;
-          if (x>1) if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
-          if (x<input->DimX()-2) if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
-          if (x<input->DimX()-3) if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
-
-          m = (parx*pary >= 0) ? 1 : -1;
-          p = (m+1) / 2;
-          
-          //Calculate the limits of the window
-          //Left
-          for (par0 = ffxl(x,y-m,z), l1=-1; l1>=-2; l1--)
+          A = (FF(x,y+m2,z) + FF(x-1,y+l2,z)) / 2;
+          B = (FF(x,y+m1,z) + FF(x+1,y+r1,z)) / 2;
+        }
+        
+        //If the intensity jump is less than the threshold, continue
+        if (fabs(A-B) < threshold) continue;
+        
+        //We search if there are other near edge (2 and 3 pixels case)
+        //Initialize the image limits
+        ll1 = l1; mm1 = m1; rr1 = r1;
+        ll2 = l2; mm2 = m2; rr2 = r2;
+        bor2d = bor2u = false;
+        int i1, i2, j1, j2;
+        double par0;
+        if (partial > 2*fabs(parx))
+        {
+          i1 = i2 = 0;
+          j1 = m1;
+          j2 = m2;
+        }
+        else 
+        {
+          i1 = -m;
+          i2 = m;
+          if (m>0)
           {
-            if (x+l1==0) break;
-            par1 = ffxl(x+l1,y-m,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          } 
-          if (x<input->DimX()-2) for (par0 = ffxr(x+1,y-m,z),l2=2; l2<=3; l2++) 
-          {
-            if (x+l2==input->DimX()-1) break;
-            par1 = ffxr(x+l2,y-m,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          } 
-          else
-            l2 = 1;
-          //Medium
-          for (par0 = ffxl(x,y,z), m1=-1; m1>=-3; m1--) 
-          {
-            if (x+m1==0) break;	
-            par1 = ffxl(x+m1,y,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          } 
-          for (par0 = ffxr(x,y,z), m2=1; m2<=3; m2++) 
-          {
-            if (x+m2==input->DimX()-1) break;
-            par1 = ffxr(x+m2,y,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          } 
-          //Right
-          if (x>1) for (par0 = ffxl(x-1,y+m,z), r1=-2; r1>=-3; r1--) 
-          {
-            if (x+r1==0) break;
-            par1 = ffxl(x+r1,y+m,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          }
-          else
-            r1 = -1;
-          for (par0 = ffxr(x,y+m,z), r2=1; r2<=2; r2++)
-          {
-            if (x+r2==input->DimX()-1) break;
-            par1 = ffxr(x+r2,y+m,z);
-            if (fabs(par0)<fabs(par1) || par0*par1<0) break;
-            par0 = par1;
-          }
-
-          //If m is negative, swap 'l' and 'r' limits
-          if (m<0) 
-          { 
-            SWAP_INT(l1,r1);
-            SWAP_INT(l2,r2);
-          }
-          
-          //Calculate A and B (A under and B over edge)
-          if (m>0) 
-          {
-            A = (FF(x+m2,y,z) + FF(x+r2,y+1,z)) / 2;
-            B = (FF(x+m1,y,z) + FF(x+l1,y-1,z)) / 2;
-          }
-          else
-          {
-            A = (FF(x+m2,y,z) + FF(x+l2,y-1,z)) / 2;
-            B = (FF(x+m1,y,z) + FF(x+r1,y+1,z)) / 2;
-          }
-          
-          //If the intensity jump is less than the threshold, continue
-          if (fabs(A-B) < threshold) continue;
-          
-          //We search if there are other near edge (2 and 3 pixels case)
-          //Initialize the image limits
-          ll1 = l1; mm1 = m1; rr1 = r1;
-          ll2 = l2; mm2 = m2; rr2 = r2;
-          bor2d = bor2u = false;
-          int i1, i2, j1, j2;
-          double par0;
-          if (partial > 2*fabs(pary))
-          {
-            i1 = i2 = 0;
-            j1 = m1;
-            j2 = m2;
+            j1 = l1;
+            j2 = r2;
           }
           else 
           {
-            i1 = -m;
-            i2 = m;
-            if (m>0)
-            {
-              j1 = l1;
-              j2 = r2;
-            }
-            else 
-            {
-              j1 = r1;
-              j2 = l2;
-            }
+            j1 = r1;
+            j2 = l2;
           }
-          if (j1>-4 && x+j1-2>=0)
-          {
-            par0 = (x+j1-2>0) ? ffx(x+j1-2,y+i1,z) : ffxr(0,y+i1,z);
-            par0 = fabs(par0);
-            if (par0 > partial/4 && par0>threshold)
-            {
-              bor2u = true; //There is a 2nd near border up
-              if (m>0)
-                B = (input_copy(x+m1,y,z) + input_copy(x+l1,y-1,z))/2;
-              else 
-                B = (input_copy(x+m1,y,z) + input_copy(x+r1,y+1,z))/2;
-            }
-          }
-          if (j2<4 && x+j2+2<=input->DimY()-1)
-          {
-            par0 = (x+j2+2<input->DimX()-1) ? ffx(x+j2+2,y+i2,z) : ffxl(input->DimX()-1,y+i2,z);
-            par0 = fabs(par0);
-            if (par0>partial/4 && par0>threshold)
-            {
-              bor2d = true; //There is a 2nd near border down
-              if (m>0)
-                A = (input_copy(x+m2,y,z) + input_copy(x+r2,y+1,z))/2;
-              else
-                A = (input_copy(x+m2,y,z) + input_copy(x+l2,y-1,z))/2;
-            }
-          }
-          
-          //We compare with the low threshold
-          //if (fabs(A-B) < low_threshold) continue;
-          
-          //If there are a second near edge, we create a new subimage form the original
-          //and averaged it after for computing the edge
-          if (bor2d || bor2u)
-          {
-            int mini, minj, maxi, maxj;
-            //My new subimage (5x11, because it's XMAX case)
-            InrImage* fprime = new InrImage(11,5,1,WT_DOUBLE,"fprime.inr.gz");
-            //Near of the margin the subimage is a little different
-            minj = (x>4) ? -5 : -x;
-            maxj = (x<input->DimX()-5) ? 5 : input->DimX()-1-x;
-            if (y==1)
-            {
-              mini = -1;
-              for (int j=minj; j<=maxj; j++)
-              {
-                fprime->BufferPos(j+5,0,z);
-                fprime->FixeValeur(2*input_copy(x+j,0,z)
-                                   - input_copy(x+j,1,z));
-              }
-            }
-            else 
-              mini = -2;
-            if (y == input->DimY()-2)
-            {
-              maxi = 1;
-              for (int j=minj; j<=maxj; j++)
-              {
-                fprime->BufferPos(j+5,4,z);
-                fprime->FixeValeur(2*input_copy(x+j,input_copy.DimY()-1,z)
-                                   - input_copy(x+j,input_copy.DimY()-2,z));
-              }
-            }
-            else 
-              maxi = 2;
-            
-            if (minj>-5)
-              for (int i=mini; i<=maxi; i++)
-              {
-                fprime->BufferPos(minj+4, i+2, z);
-                fprime->FixeValeur(2*input_copy(0,y+i,z)
-                                   - input_copy(1,y+i,z));
-              }
-            if (maxj<5)
-              for (int i=mini; i<=maxi; i++)
-              {
-                fprime->BufferPos(maxj+6, i+2, z);
-                fprime->FixeValeur(2*input_copy(input_copy.DimX()-1,y+i,z)
-                                   - input_copy(input_copy.DimX()-2,y+i,z));
-              }
-            
-            //We fill the synthetic image with the original values of the input
-            for(int indj = minj; indj<=maxj; indj++)
-            {
-              for(int indi = mini; indi<=maxi; indi++)
-              {
-                fprime->BufferPos(indj+5, indi+2, z);
-                fprime->FixeValeur(input_copy(x+indj,y+indi,z));
-              }
-            }
-            //If top edge, update B on F' top
-            if (bor2u)
-            {
-              par0 = ffxl (x+l1+p, y-2,z);
-              int ll = (par0*parx>0)? l1+p-1 : l1+p;
-              par1 = ffxl (x+r1+1-p, y+2,z);
-              int rr = (par1*parx>0)? r1-p : r1+1-p;
-              for (int k=-5; k<=ll; k++)
-              {
-                fprime->BufferPos(5+k,0,z);
-                fprime->FixeValeur(B);
-              }
-              for (int k=-5; k<=l1; k++)
-              {
-                fprime->BufferPos(5+k,1,z);
-                fprime->FixeValeur(B);
-              }
-              for (int k=-5; k<=m1; k++)
-              {
-                fprime->BufferPos(5+k,2,z);
-                fprime->FixeValeur(B);
-              }
-              for (int k=-5; k<=r1; k++)
-              {
-                fprime->BufferPos(5+k,3,z);
-                fprime->FixeValeur(B);
-              }
-              for (int k=-5; k<=rr; k++)
-              {
-                fprime->BufferPos(5+k,4,z);
-                fprime->FixeValeur(B);
-              }
-              ll1=-3+m; mm1=-3; rr1=-3-m;
-            }
-            //If lower edge, update A in F' bottom
-            if (bor2d)
-            {
-              par0 = ffxr (x+l2+p-1, y-2,z);
-              int ll = (par0*parx>0)? l2+p : l2+p-1;
-              par1 = ffxr (x+r2-p, y+2,z);
-              int rr = (par1*parx>0)? r2+1-p : r2-p;					
-              for (int k=ll; k<=5; k++)
-              {
-                fprime->BufferPos(5+k,0,z);
-                fprime->FixeValeur(A);
-              }
-              for (int k=l2; k<=5; k++)
-              {
-                fprime->BufferPos(5+k,1,z);
-                fprime->FixeValeur(A);
-              }
-              for (int k=m2; k<=5; k++)
-              {
-                fprime->BufferPos(5+k,2,z);
-                fprime->FixeValeur(A);
-              }
-              for (int k=r2; k<=5; k++)
-              {
-                fprime->BufferPos(5+k,3,z);
-                fprime->FixeValeur(A);
-              }
-              for (int k=rr; k<=5; k++)
-              {
-                fprime->BufferPos(5+k,4,z);
-                fprime->FixeValeur(A);
-              }
-              ll2=3+m;  mm2=3;  rr2=3-m;
-            }
-            
-            //Average F' obtaining G'
-            //Center position of the subimage (5,2)
-            int fprimex = 5;
-            int fprimey = 2;
-            for(int indj = -1; indj<=1; indj++)
-            {
-              for(int indi= -4; indi<=4; indi++)
-              {
-                int posx = fprimex+indi;
-                int posy = fprimey+indj;
-                double suma = 0;
-                suma += (*fprime)(posx-1,posy-1,z) + (*fprime)(posx,posy-1,z) + 
-                (*fprime)(posx+1,posy-1,z);
-                suma += (*fprime)(posx-1,posy,z) + (*fprime)(posx,posy,z) + 
-                (*fprime)(posx+1,posy,z);
-                suma += (*fprime)(posx-1,posy+1,z) + (*fprime)(posx,posy+1,z) + 
-                (*fprime)(posx+1,posy+1,z);
-                fprime->BufferPos(posx,posy,z);
-                fprime->FixeValeur(suma/9);
-              }
-            }
-            //With the averaged image, we compute the sums of the rows with the 
-            //subimage
-            for (SL=0, k=ll1; k<=ll2; k++) 
-              SL += (*fprime)(fprimex+k,fprimey-1,z);
-            for (SM=0, k=mm1; k<=mm2; k++) 
-              SM += (*fprime)(fprimex+k,fprimey,z);
-            for (SR=0, k=rr1; k<=rr2; k++) 
-              SR += (*fprime)(fprimex+k,fprimey+1,z);
-            delete(fprime);
-          }
-          else //Else, we compute the sums of the rows with the big image
-          {                    
-            //Calculate sums of the rows 
-            for (SL=0, k=l1; k<=l2; k++) 
-              SL += FF(x+k,y-1,z);
-            for (SM=0, k=m1; k<=m2; k++) 
-              SM += FF(x+k,y,z);
-            for (SR=0, k=r1; k<=r2; k++) 
-              SR += FF(x+k,y+1,z);
-          }
-
-          //Calculate the coefficients of the curve
-          f = 2 * (A-B);
-          a = (2*SM - (1+2*mm2)*A - (1-2*mm1)*B) / f;
-          b = (SR - SL + A*(ll2-rr2) + B*(rr1-ll1)) / f;		
-          if (!linear_case) {
-            c = (SL + SR - 2*SM + A*(2*mm2-ll2-rr2) - B*(2*mm1-ll1-rr1)) / f;
-            a -= ((1+24*A01+48*A11)/12) * c;
-          }
-          
-          //Calculate gradient, displacement and curvature
-          f = (A-B) / sqrt(1+b*b);
-          gx = f;
-          gy = b * f;
-          des = -a;
-          if (!linear_case) {
-            cu = sqrt (1+b*b);
-            cu *= cu * cu;
-            cu = 2*c / cu;
-            if (parx<0) 
-              cu = -cu;
-          }
-                    
-          //Set the calculated values on the borderPixel object
-          pixel.setBorderPixelValues(A, B, XMAX, a, b, c, cu, x, y);
-          //Add edge pixel to the vector
-          borderPixelVector.push_back(pixel);
-          
-          UpdateImages(&input_copy, C.get(), I.get(), x, y, z, XMAX, gx, gy, des, 
-                       cu, A, B, linear_case, m, l1, l2, m1, m2, r1, r2);
         }
-      }
-    }
-    //Con las imágenes resultantes, se rellena la nueva imagen de entrada
-    //With the result, we fill the input image for the next iteration
-    for (int y = 0; y < G->DimY(); y++)
-    {
-      for (int x = 0; x < G->DimX(); x++)
-      {
-        if ((*C)(x,y,z) > 0)
+        if (j1>-4 && y+j1-2>=0)
         {
-          input->BufferPos(x,y,z);
-          //The value is the quotien of the intensity and the counter
-          input->FixeValeur(((*I)(x,y,z))/((*C)(x,y,z)));
+          par0 = (y+j1-2>0) ? ffy(x+i1,y+j1-2,z) : ffyd(x+i1,0,z);
+          par0 = fabs(par0);
+          if (par0 > partial/4 && par0>threshold)
+          {
+            bor2u = true; //There is a 2nd near border up
+            if (m>0)
+              B = ((*input_copy)(x,y+m1,z) + (*input_copy)(x-1,y+l1,z))/2;
+            else 
+              B = ((*input_copy)(x,y+m1,z) + (*input_copy)(x+1,y+r1,z))/2;
+          }
         }
+        if (j2<4 && y+j2+2<=input->DimY()-1)
+        {
+          par0 = (y+j2+2<input->DimY()-1) ? ffy(x+i2,y+j2+2,z) : ffyu(x+i2,input->DimY()-1,z);
+          par0 = fabs(par0);
+          if (par0>partial/4 && par0>threshold)
+          {
+            bor2d = true; //There is a 2nd near border down
+            if (m>0)
+              A = ((*input_copy)(x,y+m2,z) + (*input_copy)(x+1,y+r2,z))/2;
+            else
+              A = ((*input_copy)(x,y+m2,z) + (*input_copy)(x-1,y+l2,z))/2;
+          }
+        }
+        
+        //We compare with the low threshold
+        //if (fabs(A-B) < low_threshold) continue;
+        
+        //If there are a second near edge, we create a new subimage form the original
+        //and averaged it after for computing the edge
+        if (bor2d || bor2u)
+        {
+          int mini, minj, maxi, maxj;
+          //My new subimage (11x5, because it's YMAX case)
+          InrImage* fprime = new InrImage(5,11,1,WT_DOUBLE,"fprime.inr.gz");
+          //Near of the margins, the subimage is a little different
+          minj = (y>4) ? -5 : -y;
+          maxj = (y<input->DimY()-5) ? 5 : input->DimY()-1-y;
+          if (x==1)
+          {
+            mini = -1;
+            for(int j=minj; j<=maxj; j++) //1st column of the image
+            {
+              fprime->BufferPos(0,j+5,z);
+              fprime->FixeValeur(2*(*input_copy)(0,y+j,z) 
+                                  - (*input_copy)(1,y+j,z));
+            }
+          }
+          else 
+            mini = -2;
+          if (x==input->DimX()-2)
+          {
+            maxi = 1;
+            for (int j=minj; j<=maxj; j++) //Last column of the image
+            {
+              fprime->BufferPos(4,j+5,z);
+              fprime->FixeValeur(2*(*input_copy)(input_copy->DimX()-1,y+j,z)
+                                  -(*input_copy)(input_copy->DimX()-2,y+j,z));
+            }
+          }
+          else 
+            maxi = 2;
+          
+          if (minj>-5)
+            for (int i=mini; i<=maxi; i++)
+            {
+              fprime->BufferPos(i+2,minj+4,z);
+              fprime->FixeValeur(2*(*input_copy)(x+i,0,z)
+                                  -(*input_copy)(x+i,1,z));
+            }
+          if (maxj<5)
+            for (int i=mini; i<=maxi; i++)
+            {
+              fprime->BufferPos(i+2,maxj+6,z);
+              fprime->FixeValeur(2*(*input_copy)(x+i,input_copy->DimY()-1,z)
+                                  -(*input_copy)(x+i,input_copy->DimY()-2,z));
+            }
+
+          //We fill the synthetic image with the original values of the input
+          for(int indj = minj; indj<=maxj; indj++)
+          {
+            for(int indi = mini; indi<=maxi; indi++)
+            {
+              fprime->BufferPos(indi+2,indj+5,z);
+              fprime->FixeValeur((*input_copy)(x+indi,y+indj,z));
+            }
+          }
+          //If top edge, update B on F' top
+          if (bor2u)
+          {
+            par0 = ffyu (x-2, y+l1+p,z);
+            int ll = (par0*pary>0)? l1+p-1 : l1+p;
+            par1 = ffyu (x+2, y+r1+1-p,z);
+            int rr = (par1*pary>0)? r1-p : r1+1-p;
+            for (int k=-5; k<=ll; k++)
+            {
+              fprime->BufferPos(0,k+5,z);
+              fprime->FixeValeur(B);
+            }
+            for (int k=-5; k<=l1; k++)
+            {
+              fprime->BufferPos(1,k+5,z);
+              fprime->FixeValeur(B);
+            }
+            for (int k=-5; k<=m1; k++)
+            {
+              fprime->BufferPos(2,k+5,z);
+              fprime->FixeValeur(B);
+            }
+            for (int k=-5; k<=r1; k++)
+            {
+              fprime->BufferPos(3,k+5,z);
+              fprime->FixeValeur(B);
+            }
+            for (int k=-5; k<=rr; k++)
+            {
+              fprime->BufferPos(4,k+5,z);
+              fprime->FixeValeur(B);
+            }
+            ll1=-3+m; mm1=-3; rr1=-3-m;
+          }
+          //If lower edge, update A in F' bottom
+          if (bor2d)
+          {
+            par0 = ffyd (x-2, y+l2+p-1,z);
+            int ll = (par0*pary>0)? l2+p : l2+p-1;
+            par1 = ffyd (x+2, y+r2-p,z);
+            int rr = (par1*pary>0)? r2+1-p : r2-p;          
+            for (int k=ll; k<=5; k++)
+            {
+              fprime->BufferPos(0,k+5,z);
+              fprime->FixeValeur(A);
+            }
+            for (int k=l2; k<=5; k++)
+            {
+              fprime->BufferPos(1,k+5,z);
+              fprime->FixeValeur(A);
+            }
+            for (int k=m2; k<=5; k++)
+            {
+              fprime->BufferPos(2,k+5,z);
+              fprime->FixeValeur(A);
+            }
+            for (int k=r2; k<=5; k++)
+            {
+              fprime->BufferPos(3,k+5,z);
+              fprime->FixeValeur(A);
+            }
+            for (int k=rr; k<=5; k++)
+            {
+              fprime->BufferPos(4,k+5,z);
+              fprime->FixeValeur(A);
+            }
+            ll2=3+m;  mm2=3;  rr2=3-m;
+          }
+          //Average F' obtaining G'
+          //Central position of the subimage (2,5)
+          int fprimex = 2;
+          int fprimey = 5;
+          for(int indj = -4; indj<=4; indj++)
+          {
+            for(int indi= -1; indi<=1; indi++)
+            {
+              int posx = fprimex+indi;
+              int posy = fprimey+indj;
+              double suma = 0;
+              suma += (*fprime)(posx-1,posy-1,z) + (*fprime)(posx,posy-1,z) + 
+              (*fprime)(posx+1,posy-1,z);
+              suma += (*fprime)(posx-1,posy,z) + (*fprime)(posx,posy,z) + 
+              (*fprime)(posx+1,posy,z);
+              suma += (*fprime)(posx-1,posy+1,z) + (*fprime)(posx,posy+1,z) + 
+              (*fprime)(posx+1,posy+1,z);
+              fprime->BufferPos(posx,posy,z);
+              fprime->FixeValeur(suma/9);
+            }
+          }
+          //With the averaged image, we compute the sums of the columns with the 
+          //subimage
+          for (SL=0, k=ll1; k<=ll2; k++) 
+            SL += (*fprime)(fprimex-1,fprimey+k,z);
+          for (SM=0, k=mm1; k<=mm2; k++) 
+            SM += (*fprime)(fprimex,fprimey+k,z);
+          for (SR=0, k=rr1; k<=rr2; k++) 
+            SR += (*fprime)(fprimex+1,fprimey+k,z);
+          delete(fprime);
+        }
+        else //Else, we compute the sums of the columns with the big image
+        {            
+          //Calculate the sums of the columns
+          for (SL=0, k=l1; k<=l2; k++) 
+            SL += FF(x-1,y+k,z);
+          for (SM=0, k=m1; k<=m2; k++) 
+            SM += FF(x,y+k,z);
+          for (SR=0, k=r1; k<=r2; k++) 
+            SR += FF(x+1,y+k,z);
+        }
+        
+        //Calculate the coefficients of the curve
+        f = 2 * (A-B);
+        a = (2*SM - (1+2*mm2)*A - (1-2*mm1)*B) / f;
+        b = (SR - SL + A*(ll2-rr2) + B*(rr1-ll1)) / f;    
+        if (!linear_case)
+        {
+          c = (SL + SR - 2*SM + A*(2*mm2-ll2-rr2) - B*(2*mm1-ll1-rr1)) / f;
+          a -= ((1+24*A01+48*A11)/12) * c;
+        }
+        
+        //Calculate gradient, displacement and curvature
+        f   = (A-B) / sqrt(1+b*b);
+        gx  = b * f;
+        gy  = f;
+        des = -a;
+        if (!linear_case)
+        {
+          cu = sqrt (1+b*b);
+          cu *= cu * cu;
+          cu = 2*c / cu;
+          if (pary<0)
+            cu = -cu;
+        }
+        
+        
+        //Set the calculated values on the borderPixel object
+        pixel.setBorderPixelValues(A, B, YMAX, a, b, c, cu, x, y);
+        //Add edge pixel to the vector
+        borderPixelVector.push_back(pixel);
+        
+        //Update the counters and intensities images
+        UpdateImages(input_copy.get(), C.get(), I.get(), x, y, z, YMAX, gx, gy, des, 
+                      cu, A, B, linear_case, m, l1, l2, m1, m2, r1, r2);
+      }
+      else
+      {
+        //Horizontal window
+        u = vpos;
+        v = upos;
+        partial = fabs(parx);
+
+        //The partial must be maximum in the column or row
+        if (partial < threshold) continue;
+        if (x>2) if (fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z)) > partial) continue;
+        if (x>1) if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > partial) continue;
+        if (x<input->DimX()-2) if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > partial) continue;
+        if (x<input->DimX()-3) if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > partial) continue;
+
+        m = (parx*pary >= 0) ? 1 : -1;
+        p = (m+1) / 2;
+        
+        //Calculate the limits of the window
+        //Left
+        for (par0 = ffxl(x,y-m,z), l1=-1; l1>=-2; l1--)
+        {
+          if (x+l1==0) break;
+          par1 = ffxl(x+l1,y-m,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        } 
+        if (x<input->DimX()-2) for (par0 = ffxr(x+1,y-m,z),l2=2; l2<=3; l2++) 
+        {
+          if (x+l2==input->DimX()-1) break;
+          par1 = ffxr(x+l2,y-m,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        } 
+        else
+          l2 = 1;
+        //Medium
+        for (par0 = ffxl(x,y,z), m1=-1; m1>=-3; m1--) 
+        {
+          if (x+m1==0) break; 
+          par1 = ffxl(x+m1,y,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        } 
+        for (par0 = ffxr(x,y,z), m2=1; m2<=3; m2++) 
+        {
+          if (x+m2==input->DimX()-1) break;
+          par1 = ffxr(x+m2,y,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        } 
+        //Right
+        if (x>1) for (par0 = ffxl(x-1,y+m,z), r1=-2; r1>=-3; r1--) 
+        {
+          if (x+r1==0) break;
+          par1 = ffxl(x+r1,y+m,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        }
+        else
+          r1 = -1;
+        for (par0 = ffxr(x,y+m,z), r2=1; r2<=2; r2++)
+        {
+          if (x+r2==input->DimX()-1) break;
+          par1 = ffxr(x+r2,y+m,z);
+          if (fabs(par0)<fabs(par1) || par0*par1<0) break;
+          par0 = par1;
+        }
+
+        //If m is negative, swap 'l' and 'r' limits
+        if (m<0) 
+        { 
+          SWAP_INT(l1,r1);
+          SWAP_INT(l2,r2);
+        }
+        
+        //Calculate A and B (A under and B over edge)
+        if (m>0) 
+        {
+          A = (FF(x+m2,y,z) + FF(x+r2,y+1,z)) / 2;
+          B = (FF(x+m1,y,z) + FF(x+l1,y-1,z)) / 2;
+        }
+        else
+        {
+          A = (FF(x+m2,y,z) + FF(x+l2,y-1,z)) / 2;
+          B = (FF(x+m1,y,z) + FF(x+r1,y+1,z)) / 2;
+        }
+        
+        //If the intensity jump is less than the threshold, continue
+        if (fabs(A-B) < threshold) continue;
+        
+        //We search if there are other near edge (2 and 3 pixels case)
+        //Initialize the image limits
+        ll1 = l1; mm1 = m1; rr1 = r1;
+        ll2 = l2; mm2 = m2; rr2 = r2;
+        bor2d = bor2u = false;
+        int i1, i2, j1, j2;
+        double par0;
+        if (partial > 2*fabs(pary))
+        {
+          i1 = i2 = 0;
+          j1 = m1;
+          j2 = m2;
+        }
+        else 
+        {
+          i1 = -m;
+          i2 = m;
+          if (m>0)
+          {
+            j1 = l1;
+            j2 = r2;
+          }
+          else 
+          {
+            j1 = r1;
+            j2 = l2;
+          }
+        }
+        if (j1>-4 && x+j1-2>=0)
+        {
+          par0 = (x+j1-2>0) ? ffx(x+j1-2,y+i1,z) : ffxr(0,y+i1,z);
+          par0 = fabs(par0);
+          if (par0 > partial/4 && par0>threshold)
+          {
+            bor2u = true; //There is a 2nd near border up
+            if (m>0)
+              B = ((*input_copy)(x+m1,y,z) + (*input_copy)(x+l1,y-1,z))/2;
+            else 
+              B = ((*input_copy)(x+m1,y,z) + (*input_copy)(x+r1,y+1,z))/2;
+          }
+        }
+        if (j2<4 && x+j2+2<=input->DimY()-1)
+        {
+          par0 = (x+j2+2<input->DimX()-1) ? ffx(x+j2+2,y+i2,z) : ffxl(input->DimX()-1,y+i2,z);
+          par0 = fabs(par0);
+          if (par0>partial/4 && par0>threshold)
+          {
+            bor2d = true; //There is a 2nd near border down
+            if (m>0)
+              A = ((*input_copy)(x+m2,y,z) + (*input_copy)(x+r2,y+1,z))/2;
+            else
+              A = ((*input_copy)(x+m2,y,z) + (*input_copy)(x+l2,y-1,z))/2;
+          }
+        }
+        
+        //We compare with the low threshold
+        //if (fabs(A-B) < low_threshold) continue;
+        
+        //If there are a second near edge, we create a new subimage form the original
+        //and averaged it after for computing the edge
+        if (bor2d || bor2u)
+        {
+          int mini, minj, maxi, maxj;
+          //My new subimage (5x11, because it's XMAX case)
+          InrImage* fprime = new InrImage(11,5,1,WT_DOUBLE,"fprime.inr.gz");
+          //Near of the margin the subimage is a little different
+          minj = (x>4) ? -5 : -x;
+          maxj = (x<input->DimX()-5) ? 5 : input->DimX()-1-x;
+          if (y==1)
+          {
+            mini = -1;
+            for (int j=minj; j<=maxj; j++)
+            {
+              fprime->BufferPos(j+5,0,z);
+              fprime->FixeValeur(2*(*input_copy)(x+j,0,z)
+                                  - (*input_copy)(x+j,1,z));
+            }
+          }
+          else 
+            mini = -2;
+          if (y == input->DimY()-2)
+          {
+            maxi = 1;
+            for (int j=minj; j<=maxj; j++)
+            {
+              fprime->BufferPos(j+5,4,z);
+              fprime->FixeValeur(2*(*input_copy)(x+j,input_copy->DimY()-1,z)
+                                  - (*input_copy)(x+j,input_copy->DimY()-2,z));
+            }
+          }
+          else 
+            maxi = 2;
+          
+          if (minj>-5)
+            for (int i=mini; i<=maxi; i++)
+            {
+              fprime->BufferPos(minj+4, i+2, z);
+              fprime->FixeValeur(2*(*input_copy)(0,y+i,z)
+                                  - (*input_copy)(1,y+i,z));
+            }
+          if (maxj<5)
+            for (int i=mini; i<=maxi; i++)
+            {
+              fprime->BufferPos(maxj+6, i+2, z);
+              fprime->FixeValeur(2*(*input_copy)(input_copy->DimX()-1,y+i,z)
+                                  - (*input_copy)(input_copy->DimX()-2,y+i,z));
+            }
+          
+          //We fill the synthetic image with the original values of the input
+          for(int indj = minj; indj<=maxj; indj++)
+          {
+            for(int indi = mini; indi<=maxi; indi++)
+            {
+              fprime->BufferPos(indj+5, indi+2, z);
+              fprime->FixeValeur((*input_copy)(x+indj,y+indi,z));
+            }
+          }
+          //If top edge, update B on F' top
+          if (bor2u)
+          {
+            par0 = ffxl (x+l1+p, y-2,z);
+            int ll = (par0*parx>0)? l1+p-1 : l1+p;
+            par1 = ffxl (x+r1+1-p, y+2,z);
+            int rr = (par1*parx>0)? r1-p : r1+1-p;
+            for (int k=-5; k<=ll; k++)
+            {
+              fprime->BufferPos(5+k,0,z);
+              fprime->FixeValeur(B);
+            }
+            for (int k=-5; k<=l1; k++)
+            {
+              fprime->BufferPos(5+k,1,z);
+              fprime->FixeValeur(B);
+            }
+            for (int k=-5; k<=m1; k++)
+            {
+              fprime->BufferPos(5+k,2,z);
+              fprime->FixeValeur(B);
+            }
+            for (int k=-5; k<=r1; k++)
+            {
+              fprime->BufferPos(5+k,3,z);
+              fprime->FixeValeur(B);
+            }
+            for (int k=-5; k<=rr; k++)
+            {
+              fprime->BufferPos(5+k,4,z);
+              fprime->FixeValeur(B);
+            }
+            ll1=-3+m; mm1=-3; rr1=-3-m;
+          }
+          //If lower edge, update A in F' bottom
+          if (bor2d)
+          {
+            par0 = ffxr (x+l2+p-1, y-2,z);
+            int ll = (par0*parx>0)? l2+p : l2+p-1;
+            par1 = ffxr (x+r2-p, y+2,z);
+            int rr = (par1*parx>0)? r2+1-p : r2-p;          
+            for (int k=ll; k<=5; k++)
+            {
+              fprime->BufferPos(5+k,0,z);
+              fprime->FixeValeur(A);
+            }
+            for (int k=l2; k<=5; k++)
+            {
+              fprime->BufferPos(5+k,1,z);
+              fprime->FixeValeur(A);
+            }
+            for (int k=m2; k<=5; k++)
+            {
+              fprime->BufferPos(5+k,2,z);
+              fprime->FixeValeur(A);
+            }
+            for (int k=r2; k<=5; k++)
+            {
+              fprime->BufferPos(5+k,3,z);
+              fprime->FixeValeur(A);
+            }
+            for (int k=rr; k<=5; k++)
+            {
+              fprime->BufferPos(5+k,4,z);
+              fprime->FixeValeur(A);
+            }
+            ll2=3+m;  mm2=3;  rr2=3-m;
+          }
+          
+          //Average F' obtaining G'
+          //Center position of the subimage (5,2)
+          int fprimex = 5;
+          int fprimey = 2;
+          for(int indj = -1; indj<=1; indj++)
+          {
+            for(int indi= -4; indi<=4; indi++)
+            {
+              int posx = fprimex+indi;
+              int posy = fprimey+indj;
+              double suma = 0;
+              suma += (*fprime)(posx-1,posy-1,z) + (*fprime)(posx,posy-1,z) + 
+              (*fprime)(posx+1,posy-1,z);
+              suma += (*fprime)(posx-1,posy,z) + (*fprime)(posx,posy,z) + 
+              (*fprime)(posx+1,posy,z);
+              suma += (*fprime)(posx-1,posy+1,z) + (*fprime)(posx,posy+1,z) + 
+              (*fprime)(posx+1,posy+1,z);
+              fprime->BufferPos(posx,posy,z);
+              fprime->FixeValeur(suma/9);
+            }
+          }
+          //With the averaged image, we compute the sums of the rows with the 
+          //subimage
+          for (SL=0, k=ll1; k<=ll2; k++) 
+            SL += (*fprime)(fprimex+k,fprimey-1,z);
+          for (SM=0, k=mm1; k<=mm2; k++) 
+            SM += (*fprime)(fprimex+k,fprimey,z);
+          for (SR=0, k=rr1; k<=rr2; k++) 
+            SR += (*fprime)(fprimex+k,fprimey+1,z);
+          delete(fprime);
+        }
+        else //Else, we compute the sums of the rows with the big image
+        {                    
+          //Calculate sums of the rows 
+          for (SL=0, k=l1; k<=l2; k++) 
+            SL += FF(x+k,y-1,z);
+          for (SM=0, k=m1; k<=m2; k++) 
+            SM += FF(x+k,y,z);
+          for (SR=0, k=r1; k<=r2; k++) 
+            SR += FF(x+k,y+1,z);
+        }
+
+        //Calculate the coefficients of the curve
+        f = 2 * (A-B);
+        a = (2*SM - (1+2*mm2)*A - (1-2*mm1)*B) / f;
+        b = (SR - SL + A*(ll2-rr2) + B*(rr1-ll1)) / f;    
+        if (!linear_case) {
+          c = (SL + SR - 2*SM + A*(2*mm2-ll2-rr2) - B*(2*mm1-ll1-rr1)) / f;
+          a -= ((1+24*A01+48*A11)/12) * c;
+        }
+        
+        //Calculate gradient, displacement and curvature
+        f = (A-B) / sqrt(1+b*b);
+        gx = f;
+        gy = b * f;
+        des = -a;
+        if (!linear_case) {
+          cu = sqrt (1+b*b);
+          cu *= cu * cu;
+          cu = 2*c / cu;
+          if (parx<0) 
+            cu = -cu;
+        }
+                  
+        //Set the calculated values on the borderPixel object
+        pixel.setBorderPixelValues(A, B, XMAX, a, b, c, cu, x, y);
+        //Add edge pixel to the vector
+        borderPixelVector.push_back(pixel);
+        
+        UpdateImages(input_copy.get(), C.get(), I.get(), x, y, z, XMAX, gx, gy, des, 
+                      cu, A, B, linear_case, m, l1, l2, m1, m2, r1, r2);
       }
     }
   }
+  //Con las imágenes resultantes, se rellena la nueva imagen de entrada
+  //With the result, we fill the input image for the next iteration
+  for (int y = 0; y < G->DimY(); y++)
+  {
+    for (int x = 0; x < G->DimX(); x++)
+    {
+      if ((*C)(x,y,z) > 0)
+      {
+        input->BufferPos(x,y,z);
+        //The value is the quotien of the intensity and the counter
+        input->FixeValeur(((*I)(x,y,z))/((*C)(x,y,z)));
+      }
+    }
+  }
+}
+
+  
+//------------------------------------------------------------------------------
+void SubPixel2D::SubpixelDenoising_Init()
+{
+  //Counters image
+  C = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
+                                               input->DimZ(), WT_UNSIGNED_SHORT,
+                                               "counters.inr.gz"));
+  //Intensities image
+  I = InrImage::ptr(new InrImage(input->DimX(), input->DimY(), 
+                                               input->DimZ(), WT_DOUBLE,
+                                               "intensities.inr.gz"));
+  //Averaged image
+  G = InrImage::ptr(new InrImage(input->DimX(), input->DimY(),
+                                               input->DimZ(), WT_DOUBLE,
+                                               "averaged.inr.gz"));
+  input_copy= InrImage::ptr(new InrImage(WT_DOUBLE,"input_copy.inr.gz",input));
+}
+
+//------------------------------------------------------------------------------
+void SubPixel2D::SubpixelDenoising_End()
+{
+  C.reset();
+  I.reset();
+  G.reset();
+  input_copy.reset();
+}
+
+//------------------------------------------------------------------------------
+//Iterative version with floating window and very close edges
+//
+void SubPixel2D::SubpixelDenoising(int niter)
+{
+  SubPixel2D::SubpixelDenoising_Init();
+  //Begins the iterative method
+  for(int index=0; index<niter; index++)
+  {
+    SubpixelDenoising_Iterate();
+  }
+  SubpixelDenoising_End();
 }
 
 
