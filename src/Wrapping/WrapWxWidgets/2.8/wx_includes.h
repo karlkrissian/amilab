@@ -20,6 +20,7 @@
 #include <wx/dir.h>
 #include <wx/dynlib.h>
 #include <wx/event.h>
+#include <wx/fileconf.h>
 #include <wx/filename.h>
 #include <wx/ffile.h>
 #include <wx/html/htmlwin.h>
