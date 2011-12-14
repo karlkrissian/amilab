@@ -366,7 +366,7 @@ void wxStcFrame::OnFileOpen (wxCommandEvent &WXUNUSED(event)) {
   if (!notebook) return;
 #if wxUSE_FILEDLG
   wxString fname;
-  wxFileDialog dlg (this, _T("Open file"), wxEmptyString, wxEmptyString, _T("Any file (*)|*|amilab scripts (*.amil)"),
+  wxFileDialog dlg (this, _T("Open file"), wxEmptyString, wxEmptyString, _T("amilab scripts (*.amil)|*.amil|graphiz (*.dot;*.gv)|*.dot;*.gv|ALL (*)|*"),
                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
   if (dlg.ShowModal() != wxID_OK) return;
   fname = dlg.GetPath ();

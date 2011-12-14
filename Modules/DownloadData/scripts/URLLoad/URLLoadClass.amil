@@ -28,7 +28,9 @@ if (!exists(URLLoadClass)) {
       sipi_re.Compile(sipi_exp)
       #printn "IsValid = %1%" % sipi_re.IsValid()
       if sipi_re.IsValid() {
+        SetStatusText("Parsing SIPI misc file")
         for n =0 to f.GetLineCount()-1 {
+          SetProgress(100*n/f.GetLineCount())
           current_line = f[n]
           #printn "*"
           if sipi_re.Matches(&current_line) {
@@ -36,15 +38,17 @@ if (!exists(URLLoadClass)) {
             im_desc  = wx.FromWxString(sipi_re.GetMatch(&current_line,2))
             im_size  = wx.FromWxString(sipi_re.GetMatch(&current_line,5))
             im_color = wx.FromWxString(sipi_re.GetMatch(&current_line,6))
-            print " '%1%' " % im_name
-            print " '%1%' " %im_desc
-            print " '%1%' " %im_size
-            print " '%1%' " %im_color+"\n"
+            #printn " '%1%' " % im_name + \
+                    #" '%1%' " %im_desc  + \
+                    #" '%1%' " %im_size  + \
+                    #" '%1%' " %im_color
             ::sipi_misc += im_name
           } else {
             printn "no match;"
           }
         }
+        SetStatusText("Done")
+        SetProgress(0)
       }
       #::sipi_misc.Display()
       ::sipi_misc_has_icon = VarVector(::sipi_misc.size(),false)
@@ -81,7 +85,9 @@ if (!exists(URLLoadClass)) {
       }
 
       #printn "IsValid = %1%" % sipi_re.IsValid()
+      SetStatusText("Parsing Osirix file")
       for n =0 to f.GetLineCount()-1 {
+        SetProgress(100*n/f.GetLineCount())
         current_line = f[n]
         #printn "*"
         if name_re.Matches(&current_line) {
@@ -107,6 +113,8 @@ if (!exists(URLLoadClass)) {
           printn "no match;"
         }
       }
+      SetStatusText("Done")
+      SetProgress(0)
       #::sipi_misc.Display()
       ::osirix_examples_has_icon = VarVector(::osirix_examples.size(),false)
     }
@@ -214,8 +222,10 @@ if (!exists(URLLoadClass)) {
     }
 
     #---------------------------------------------------------------------------
+    SetStatusText("Creating SIPI callbacks")
     for n=0 to ::sipi_misc.size()-1\
     {
+      SetProgress(100.0*n/::sipi_misc.size())
       imname = ::sipi_misc[n]
       varname = ::Im2Var_sipi_misc(::sipi_misc[n])
       cmd = "proc ::Load_%1%( ) " % varname +\
@@ -224,9 +234,13 @@ if (!exists(URLLoadClass)) {
       #printn cmd
       eval cmd
     }
+    SetStatusText("Done")
+    SetProgress(0)
 
+    SetStatusText("Creating Orisix callbacks")
     for n=0 to ::osirix_examples.size()-1\
     {
+      SetProgress(100.0*n/::osirix_examples.size())
       imname = ::osirix_examples[n].name
       varname = ::Im2Var_osirix_examples(::osirix_examples[n].name)
       cmd = "proc ::Load_%1%( ) " % varname +\
@@ -235,6 +249,8 @@ if (!exists(URLLoadClass)) {
       #printn cmd
       eval cmd
     }
+    SetStatusText("Done")
+    SetProgress(0)
 
     #---------------------------------------------------------------------------
     proc ::IconFileName( STRING imname ) \
@@ -263,7 +279,7 @@ if (!exists(URLLoadClass)) {
     #---------------------------------------------------------------------------
     proc ::AddImageButton( STRING varname) \
     {
-      printn "Starting ::AddImageButton(%1%)" %varname
+      #printn "Starting ::AddImageButton(%1%)" %varname
       return=::LoadImageIcon(varname);
       eval "bmp = wx.wxBitmap(&::%1%_icon.Scale(32,32));" % varname
       #eval "::bmp_%1% = &bmp;" % varname
@@ -366,10 +382,12 @@ if (!exists(URLLoadClass)) {
         ::win.AddButton("Load Previews",&::SIPI_misc_load_previews)
         ::win.BeginHorizontal()
         c=0
+        SetStatusText("Adding SIPI misc bitmap buttons")
         for n=0 to ::sipi_misc.size()-1 {
+          SetProgress(100*n/::sipi_misc.size())
           #printn "1"
           imname = ::sipi_misc[n]
-          printn imname
+          #printn imname
           varname = ::Im2Var_sipi_misc(::sipi_misc[n])
           ok = ::AddImageButton(varname)
           ::sipi_misc_has_icon[n] = ok
@@ -379,6 +397,8 @@ if (!exists(URLLoadClass)) {
             ::win.BeginHorizontal()
           }
         }
+        SetStatusText("Done")
+        SetProgress(0)
         ::win.EndHorizontal()
       ::win.EndBoxPanel()
     }
@@ -390,7 +410,9 @@ if (!exists(URLLoadClass)) {
         ::win.AddButton("Load Previews",&::Osirix_load_previews)
         ::win.BeginHorizontal()
         c=0
+        SetStatusText("Adding Osirix bitmap buttons")
         for n=0 to ::osirix_examples.size()-1 {
+          SetProgress(100*n/::osirix_examples.size())
           #printn "1"
           imname = ::osirix_examples[n].name
           varname = ::Im2Var_osirix_examples(::osirix_examples[n].name)
@@ -410,6 +432,8 @@ if (!exists(URLLoadClass)) {
             ::win.BeginHorizontal()
           }
         }
+        SetStatusText("Done")
+        SetProgress(0)
         ::win.EndHorizontal()
       ::win.EndBoxPanel()
     }

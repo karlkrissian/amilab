@@ -21,6 +21,7 @@ if (!exists(alGraphVizClass)) {
 
     func "WxUtils/alWxFileList"
     alWxFileList ::filelistgui
+    //::filelistgui.max_scan=5
 
     Class ::ShadowParamClass {
       # Shadow parameters
@@ -52,7 +53,7 @@ if (!exists(alGraphVizClass)) {
       ::ReadConfig()
     
       # try to read the user dir
-      ::graphviz_program = "dot"
+      ::graphviz_program = "dot.exe"
 
       ::ShowOnRun = UCHAR(1), "Automatically show after run"
 
@@ -119,7 +120,7 @@ if (!exists(alGraphVizClass)) {
     proc ::OutputAuto() \
     {
       f = wx.wxFileName(::graphviz_file)
-      f.SetPath("/tmp")
+      f.SetPath(wx.wxFileName.GetTempDir())
       f.SetExt("png")
       ::output_file = f.GetFullPath().c_str()
       ::win.Update(-1)
@@ -142,7 +143,7 @@ if (!exists(alGraphVizClass)) {
     //---------------------------------------------------
     proc ::Run() \
     {
-      cmd = ::graphviz_bindir+"/"+::graphviz_program+" -T%1%" % ::graphviz_lang \
+      cmd = "\""+::graphviz_bindir+"/"+::graphviz_program+"\""+" -T%1%" % ::graphviz_lang \
               +" %1%" % ::graphviz_file \
               + " -o"+ ::output_file
       mess = "GraphViz command : "+cmd
@@ -274,7 +275,11 @@ if (!exists(alGraphVizClass)) {
     #---------------------------------------------------------------------------
     proc ::OnSelection() \
     {
+      printn "OnSelection"
       selection = ::filelistgui.GetSelected()
+      printn "selection.size() = '%1%'" % selection.size()
+      printn "selection.back() = '%1%'" % selection.back()
+      
 
       # keep only the last selected file for the moment
       if selection.size()>0 {

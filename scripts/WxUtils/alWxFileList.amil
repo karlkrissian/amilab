@@ -69,6 +69,8 @@ Class alWxFileList \
     while ok {
       #printn "item = %1%" % item
       list_item = wx.wxListItem()
+      # need to set the mask of information to retreive ... especially for windows
+      list_item.SetMask(wx.wxLIST_MASK_TEXT)
       list_item.SetId(item)
       # Get subpath
       list_item.SetColumn(0)
@@ -79,6 +81,7 @@ Class alWxFileList \
       list_item.SetColumn(1)
       ::listctrl.GetItem(&list_item)
       filename = wx.FromWxString(list_item.GetText())
+      #printn "filename=%1%" % filename
       # Get path ID
       #list_item.SetId(item)
       list_item.SetColumn(2)
@@ -87,6 +90,7 @@ Class alWxFileList \
 
       #fullname = ::graphviz_dotdir+"/"+subpath+"/"+filename
       fullname = ::paths[path_id]+"/"+subpath+"/"+filename
+      #printn "fullname = %1%" % fullname
 
       # cleanup the name
       fullname = wx.FromWxString(wx.wxFileName(fullname).GetFullPath())
