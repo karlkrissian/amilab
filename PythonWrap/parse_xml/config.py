@@ -95,6 +95,8 @@ members_blacklist=[
   'vtkFixedPointVolumeRayCastMapper::GetGradientNormal', # double pointer pb
   'vtkCellArray::GetNextCell', # reference to pointer
   'vtkCellArray::GetCell', # reference to pointer
+  'Variable<AMIObject>::Value', # problem of undefined method public: static class boost::shared_ptr<class BasicVariable> __cdecl AMILabType<class AMIObject>::CreateVar(class AMIObject const &)
+  'Variable<WrapClassMember>::Value', # problem of undefined method public: static class boost::shared_ptr<class BasicVariable> __cdecl AMILabType<class AMIObject>::CreateVar(class AMIObject const &)
 ]
 
 
