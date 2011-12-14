@@ -1,9 +1,30 @@
 
+del SimplevtkVolumeClass
+
 if (!exists(SimplevtkVolumeClass)) {
   #-----------------------------------------------------
   #  SimplevtkVolumeClass
   #-----------------------------------------------------
   Class SimplevtkVolumeClass {
+
+    proc ::GetIndent(NUM n) {
+      res = ""
+      for k=1 to n {
+        res += "  "
+      }
+      return=res
+    }
+    ::trace2=true, "gives tracing information"
+    member = "\"SimplevtkVolumeClass::\"+" 
+    #"language.Vars.GetObjectContext().GetName()::"
+    member += "language.Vars.GetCurrentContext().GetName()"
+    ::trace2_begin="printn \"**\"+"+ \
+                  "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
+                  "\" Begin \"+%1%;" % member
+    ::trace2_end  ="printn \"**\"+"+\
+                  "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
+                  "\" End   \"+%1%;" % member
+
     #----------------------------
     proc ::Init( ) \
     {
@@ -35,7 +56,9 @@ if (!exists(SimplevtkVolumeClass)) {
       ::scalar_opacity_unitdistance = 0.8919, "scalar opacity unit distance"
 
       ::blend_mode = INT(0), "0: Composite, 1: Maximum Intensity, 2:Minimum Intensity, 3:Additive_blend"
-      ::volrenmapper_type = INT(0), "Volume Rendering Mapper type 0: GPU, 1: Fixed Point 2: Standard"
+      ::volrenmapper_type = INT(0), "Volume Rendering Mapper type 0: GPU, 1: Fixed Point 2: Standard, 3: AMILab Multi-VolRen"
+
+      ::move_2 = UCHAR(1)
     }
 
     #----------------------------
@@ -97,6 +120,7 @@ if (!exists(SimplevtkVolumeClass)) {
     #----------------------------
     #Initialize Iterator,Renderer, RendererWindow and variables
     proc ::InitManager( OBJECT inter ) {
+      if ::trace2 { eval ::trace2_begin; }
       #reset
       ::ResetVTK()
       #Init
@@ -114,10 +138,12 @@ if (!exists(SimplevtkVolumeClass)) {
 
       ::renwininter.SetRenderWindow(&::renwin)
       ::initialized = 1
+      if ::trace2 { eval ::trace2_end; }
     }
 
     #----------------------------
     proc ::AddAnnotatedCube(){
+      if ::trace2 { eval ::trace2_begin; }
       if (exists(::renwininter)){
         axesActor = vtk.vtkAnnotatedCubeActor.New()
         axesActor.SetXPlusFaceText( "L")
@@ -139,14 +165,17 @@ if (!exists(SimplevtkVolumeClass)) {
           ::axes.InteractiveOff()
         //}
       }
+      if ::trace2 { eval ::trace2_end; }
     }
 
     #----------------------------
     #Init renderer
     proc ::InitRenderer(){
+      if ::trace2 { eval ::trace2_begin; }
       ::renderer.ResetCameraClippingRange()
       #default ::renderer.SetBackground(0, 0, 0)
       ::renderer.ResetCamera()
+      if ::trace2 { eval ::trace2_end; }
     } 
 
     #----------------------------
@@ -203,16 +232,21 @@ if (!exists(SimplevtkVolumeClass)) {
     }
     #----------------------------
     proc ::SetColorFun(OBJECT  f) {
+      if ::trace2 { eval ::trace2_begin; }
       del ::colorFun
       ::colorFun  = &f
+      if ::trace2 { eval ::trace2_end; }
     }
     #----------------------------
     proc ::SetOpacityFun(OBJECT  f) {
+      if ::trace2 { eval ::trace2_begin; }
       del ::opacityFun
       ::opacityFun  = &f
+      if ::trace2 { eval ::trace2_end; }
     }
     #----------------------------
     proc ::SetProperty(OBJECT  f) {
+      if ::trace2 { eval ::trace2_begin; }
        del ::property
        # Create the property and attach the transfer functions
       ::property=&f
@@ -220,19 +254,25 @@ if (!exists(SimplevtkVolumeClass)) {
       ::property.SetColor( &::colorFun )
       ::property.SetScalarOpacity( &::opacityFun )
       ::property.SetInterpolationTypeToLinear()
+      if ::trace2 { eval ::trace2_end; }
     }
     #----------------------------
     proc ::SetColorFun2(OBJECT  f) {
+      if ::trace2 { eval ::trace2_begin; }
       del ::colorFun2
       ::colorFun2  = &f
+      if ::trace2 { eval ::trace2_end; }
     }
     #----------------------------
     proc ::SetOpacityFun2(OBJECT  f) {
+      if ::trace2 { eval ::trace2_begin; }
       del ::opacityFun2
       ::opacityFun2  = &f
+      if ::trace2 { eval ::trace2_end; }
     }
     #----------------------------
     proc ::SetProperty2(OBJECT  f) {
+      if ::trace2 { eval ::trace2_begin; }
        del ::property2
        # Create the property and attach the transfer functions
       ::property2=&f
@@ -240,11 +280,14 @@ if (!exists(SimplevtkVolumeClass)) {
       ::property2.SetColor( &::colorFun2 )
       ::property2.SetScalarOpacity( &::opacityFun2 )
       ::property2.SetInterpolationTypeToLinear()
+      if ::trace2 { eval ::trace2_end; }
     }
 
     #----------------------------
     proc ::SetVolRenMapper( NUM type ) {
+      if ::trace2 { eval ::trace2_begin; }
       ::volrenmapper_type = type
+      if ::trace2 { eval ::trace2_end; }
     }
     #----------------------------
     proc ::SetVolMapperMode () {
@@ -298,103 +341,51 @@ if (!exists(SimplevtkVolumeClass)) {
         #printn "CreateVTK 1"
       #del ::input
       #::input = &input_image
-    proc ::CreateVTK( ){
-      #::DefaultProperties() #define init properties 
-      if (exists(::input)&& exists(::input2) && ::volrenmapper_type==3){
-        ::CreateVTK2( )
-      } else {
-          if (exists(::input)){
-            if (::volrenmapper_type==3){
-              SetStatusText(  "Missing second input for Multiple VolRen"+\
-                              ", switching to vtkGPUVolumeMapper")
-              ::volrenmapper_type=0
-            }
-            ::CreateVTK1( )
-          }
-      }
-    }
-    
-
-    proc ::CreateVTK1( ) {
-      # check that we have a volume
-      if (::input.tx<2)||(::input.ty<2)||(::input.tz<2) {
-        InfoDialog "Input image is not a volume!"
-        return = false
-      } else {
-
-        ::property.SetInterpolationTypeToLinear()
- 
-        #printn "CreateVTK 2"
-
-        ::vol       = vtk.vtkVolume.New()
-        # don"t put the boxwidget for the moment
-        # convert input to vtkimage
-        ::SetVolMapperMode ()
-        ::vtkinput  = vtktools.ToVtkImageData(&::input)
-        if (exists(::mask)){
-          ::volmapper.SetMaskInput(&::mask)
+    proc ::CreateVTK( ) \
+    {
+      if ::trace2 { eval ::trace2_begin; }
+      if exists(::input) {
+        if (::volrenmapper_type==3)&&(!exists(::input2)) {
+            SetStatusText(  "Missing second input for Multiple VolRen"+\
+                            ", switching to vtkGPUVolumeMapper")
+            ::volrenmapper_type=0
         }
-        ::volmapper.SetInput(&::vtkinput)
-        
-        
-        ::volmapper.SetBlendMode(::blend_mode)
-        # connect up the volume to the property and the mapper
-        ::vol.SetProperty( &::property )
-        ::vol.SetMapper( &::volmapper )
-        ::initialized = 1
+        #::DefaultProperties() #define init properties 
 
-        #Add volume to renderer
-        if (exists(::renderer)){
-          ::renderer.AddVolume(&::vol)
-        }
-        return = true
-      }
-    }
-
-
-
-   proc ::CreateVTK2( ) {
-      printn "CreateVTK2"
-      # check that we have a volume
-      if (::input.tx<2)||(::input.ty<2)||(::input.tz<2 ||\
-          ::input2.tx<2)||(::input2.ty<2)||(::input2.tz<2) {
-        InfoDialog "Input image is not a volume!"
-        return = false
-      } else {
-
-        #funcion a tener en cuenta
-        #volumeGradientOpacity = vtk.vtkPiecewiseFunction.New()
-        #volumeGradientOpacity.AddPoint(0,   0.0)
-        #volumeGradientOpacity.AddPoint(90,  0.5)
-        #volumeGradientOpacity.AddPoint(100, 1.0)
-        #::property.SetGradientOpacity(&volumeGradientOpacity)
-
-        #::property.SetInterpolationTypeToLinear()
-        #::property2.SetInterpolationTypeToLinear()
-        
-        #printn "CreateVTK 2"
-
-        ::vol = vtk.vtkVolume.New()
-        # don"t put the boxwidget for the moment
-        # convert input to vtkimage
-        ::SetVolMapperMode ()
-        if (::volrenmapper_type!=3){
-          printn "ERROR volrenmapper_type not accepted"
+        # check that we have a volume
+        if (::input.tx<2)||(::input.ty<2)||(::input.tz<2) {
+          InfoDialog "Input image is not a volume!"
           return = false
-        }else{
+        } else {
+
+          ::property.SetInterpolationTypeToLinear()
+          ::property2.SetInterpolationTypeToLinear()
+
+          ::vol       = vtk.vtkVolume.New()
+          # don"t put the boxwidget for the moment
+          # convert input to vtkimage
+          ::SetVolMapperMode ()
+
+          # Set first input
           ::vtkinput  = vtktools.ToVtkImageData(&::input)
+          if (exists(::mask)){
+            ::volmapper.SetMaskInput(&::mask)
+          }
           ::volmapper.SetInput(&::vtkinput)
-
-
-          ::vtkinput2 = vtktools.ToVtkImageData(&::input2)
-          ::volmapper.SetInput2(&::vtkinput2)        
+          
+          if (::volrenmapper_type==3) {
+            ::vtkinput2 = vtktools.ToVtkImageData(&::input2)
+            ::volmapper.SetInput2(&::vtkinput2)
+          }
           
           ::volmapper.SetBlendMode(::blend_mode)
           # connect up the volume to the property and the mapper
           ::vol.SetProperty( &::property )
-          #propertier for the second volume 
-          ::volmapper.SetProperty2( &::property2 )
           ::vol.SetMapper( &::volmapper )
+          if (::volrenmapper_type==3) {
+            #propertier for the second volume 
+            ::volmapper.SetProperty2( &::property2 )
+          }
           ::initialized = 1
 
           #Add volume to renderer
@@ -404,10 +395,110 @@ if (!exists(SimplevtkVolumeClass)) {
           return = true
         }
       }
+      if ::trace2 { eval ::trace2_end; }
     }
+
+    ##---------------------------------------------------------------------------
+    #proc ::CreateVTK1( ) \
+    #{
+      #if ::trace2 { eval ::trace2_begin; }
+      ## check that we have a volume
+      #if (::input.tx<2)||(::input.ty<2)||(::input.tz<2) {
+        #InfoDialog "Input image is not a volume!"
+        #return = false
+      #} else {
+
+        #::property.SetInterpolationTypeToLinear()
+ 
+        ##printn "CreateVTK 2"
+
+        #::vol       = vtk.vtkVolume.New()
+        ## don"t put the boxwidget for the moment
+        ## convert input to vtkimage
+        #::SetVolMapperMode ()
+        #::vtkinput  = vtktools.ToVtkImageData(&::input)
+        #if (exists(::mask)){
+          #::volmapper.SetMaskInput(&::mask)
+        #}
+        #::volmapper.SetInput(&::vtkinput)
+        
+        
+        #::volmapper.SetBlendMode(::blend_mode)
+        ## connect up the volume to the property and the mapper
+        #::vol.SetProperty( &::property )
+        #::vol.SetMapper( &::volmapper )
+        #::initialized = 1
+
+
+        ##Add volume to renderer
+        #if (exists(::renderer)){
+          #::renderer.AddVolume(&::vol)
+        #}
+        #return = true
+      #}
+      #if ::trace2 { eval ::trace2_end; }
+    #}
+
+
+
+    ##---------------------------------------------------------------------------
+    #proc ::CreateVTK2( ) \
+    #{
+      #if ::trace2 { eval ::trace2_begin; }
+      ## check that we have a volume
+      #if (::input.tx<2)||(::input.ty<2)||(::input.tz<2 ||\
+          #::input2.tx<2)||(::input2.ty<2)||(::input2.tz<2) {
+        #InfoDialog "Input image is not a volume!"
+        #return = false
+      #} else {
+
+        ##funcion a tener en cuenta
+        ##volumeGradientOpacity = vtk.vtkPiecewiseFunction.New()
+        ##volumeGradientOpacity.AddPoint(0,   0.0)
+        ##volumeGradientOpacity.AddPoint(90,  0.5)
+        ##volumeGradientOpacity.AddPoint(100, 1.0)
+        ##::property.SetGradientOpacity(&volumeGradientOpacity)
+
+        ##::property.SetInterpolationTypeToLinear()
+        ##::property2.SetInterpolationTypeToLinear()
+        
+        ##printn "CreateVTK 2"
+
+        #::vol = vtk.vtkVolume.New()
+        ## don"t put the boxwidget for the moment
+        ## convert input to vtkimage
+        #::SetVolMapperMode ()
+        #if (::volrenmapper_type!=3){
+          #printn "ERROR volrenmapper_type not accepted"
+          #return = false
+        #}else{
+          #::vtkinput  = vtktools.ToVtkImageData(&::input)
+          #::volmapper.SetInput(&::vtkinput)
+
+          #::vtkinput2 = vtktools.ToVtkImageData(&::input2)
+          #::volmapper.SetInput2(&::vtkinput2)        
+          
+          #::volmapper.SetBlendMode(::blend_mode)
+          ## connect up the volume to the property and the mapper
+          #::vol.SetProperty( &::property )
+          ##propertier for the second volume 
+          #::volmapper.SetProperty2( &::property2 )
+          #::vol.SetMapper( &::volmapper )
+          #::initialized = 1
+
+          ##Add volume to renderer
+          #if (exists(::renderer)){
+            #::renderer.AddVolume(&::vol)
+          #}
+          #return = true
+        #}
+      #}
+      #if ::trace2 { eval ::trace2_end; }
+    #}
 
    #----------------------------
    proc ::DefaultProperties( ){
+      if ::trace2 { eval ::trace2_begin; }
       del ::colorFun
       del ::opacityFun
       del ::property
@@ -430,9 +521,11 @@ if (!exists(SimplevtkVolumeClass)) {
       ::property2.SetIndependentComponents(1)
       ::property2.SetColor( &::colorFun2 )
       ::property2.SetScalarOpacity( &::opacityFun2 )
+      if ::trace2 { eval ::trace2_end; }
    }
    #----------------------------
    proc ::DelVTK( ) {
+      if ::trace2 { eval ::trace2_begin; }
       if (exists (::vol)){
         ::renderer.RemoveVolume(&::vol)
       }
@@ -451,6 +544,7 @@ if (!exists(SimplevtkVolumeClass)) {
      ::renwininter.Render()
 
      //::InitCamera()
+      if ::trace2 { eval ::trace2_end; }
     }
 
    #----------------------------Obsolete method
@@ -494,6 +588,7 @@ if (!exists(SimplevtkVolumeClass)) {
     #----------------------------
     proc ::ResetVTK() \
     {
+      if ::trace2 { eval ::trace2_begin; }
       ::initialized = 0
       del ::renwininter # it is a reference, no call to Delete()
       del ::input
@@ -506,32 +601,41 @@ if (!exists(SimplevtkVolumeClass)) {
       del ::colorFun2
       del ::opacityFun2
       del ::property2
+      if ::trace2 { eval ::trace2_end; }
     }
 
     #----------------------------
     proc ::ReCompute() \
     {
+      if ::trace2 { eval ::trace2_begin; }
         # connect up the volume to the property and the mapper
         if (exists(::property)){
           ::vol.SetProperty( &::property )
         }
-        if (exists(::property2) && ::volrenmapper_type==3){
-          ::volmapper.SetProperty2( &::property2 )
+printn "::move_2 = %1%" % ::move_2
+        if ::move_2 {
+          if (exists(::property2) && ::volrenmapper_type==3){
+            ::volmapper.SetProperty2( &::property2 )
+            printn "::volmapper.SetProperty2( &::property2 )"
+          }
         }
         if (exists(::volmapper)){
           ::volmapper.SetBlendMode(::blend_mode)
         }
+      if ::trace2 { eval ::trace2_end; }
     }
 
     #----------------------------
     proc ::OnRender() \
     {
+      if ::trace2 { eval ::trace2_begin; }
       if (exists(::renwininter)&&(::initialized>0.5)) { 
         ::ReCompute()
         if (exists(::renwininter)) {
           ::renwininter.Render()
         }
       }
+      if ::trace2 { eval ::trace2_end; }
     }
     #----------------------------
     proc ::OnWindow() \

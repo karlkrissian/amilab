@@ -2,6 +2,8 @@
 func "Common/ScriptGui"
 func "Visualization/VolRen/SimplevtkVolumeClass"
 
+del vtkVolumeClass
+
 if (!exists(vtkVolumeClass)) {
 
   #-----------------------------------------------------
@@ -20,8 +22,28 @@ if (!exists(vtkVolumeClass)) {
     # Input/Output operations to work with the curve on the histogram
     dwCurveIOClass                  ::CurveIO
 
+    proc ::GetIndent(NUM n) {
+      res = ""
+      for k=1 to n {
+        res += "  "
+      }
+      return=res
+    }
+    ::trace=true, "gives tracing information"
+    member = "\"vtkVolumeClass::\"+" 
+    #"language.Vars.GetObjectContext().GetName()::"
+    member += "language.Vars.GetCurrentContext().GetName()"
+    ::trace_begin="printn \"**\"+"+ \
+                  "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
+                  "\" Begin \"+%1%;" % member
+    ::trace_end  ="printn \"**\"+"+\
+                  "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
+                  "\" End   \"+%1%;" % member
+
     #----------------------------
-    proc ::Init( ) {
+    proc ::Init( ) \
+    {
+      if ::trace { eval ::trace_begin; }
       #comentado
       ::InitInherit()
       #::clip = UCHAR(0), "Enable/Disable clipping box"
@@ -53,10 +75,13 @@ if (!exists(vtkVolumeClass)) {
 
       ::opacity_attenuation = 1, "Attenuation factor for the opacity"
       #comentado
+      if ::trace { eval ::trace_end; }
     }
 
-   #----------------------------
-    proc ::SaveVTKCurve(STRING path){
+    #----------------------------
+    proc ::SaveVTKCurve(STRING path)\
+    {
+      if ::trace { eval ::trace_begin; }
       del aux_curve
       ::vtkcurveclass aux_curve
 
@@ -97,21 +122,25 @@ if (!exists(vtkVolumeClass)) {
       }
       aux_curve.blend_mode  = ::blend_mode
       aux_curve.Save(path)
+      if ::trace { eval ::trace_end; }
     }
  
     #----------------------------
     proc ::CB_Clip(OBJECT caller, NUM id) \
     {
+      if ::trace { eval ::trace_begin; }
       if (::clip_interactive) {
         planes = vtk.vtkPlanes.New()
         ::box.GetPlanes(&planes)
         ::volmapper->SetClippingPlanes(&planes);
       }
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::InitBoxWidget() \
     {
+      if ::trace { eval ::trace_begin; }
       ::box = vtk.vtkBoxWidget.New()
       if (::clip) \
       {
@@ -132,12 +161,14 @@ if (!exists(vtkVolumeClass)) {
         ::box.EnabledOn()
         #::box.GetSelectedFaceProperty().SetOpacity(0.0)
       }
+      if ::trace { eval ::trace_end; }
     }
 
 
     #----------------------------
     proc ::SetLinearCurve( OBJECT curve) \
     {
+      if ::trace { eval ::trace_begin; }
         ccurv = &::imhisto1.dw.GetControlledCurves()
         #printn "linearcurve1_id %1%" %::linearcurve1_id
         if (::linearcurve1_id<ccurv.size()) {
@@ -149,21 +180,25 @@ if (!exists(vtkVolumeClass)) {
         ::imhisto1.dw.UpdateLinearCM()
         ::imhisto1.dw.DrawLinearCM()
         ::SetLinearCurve_first=false
+      if ::trace { eval ::trace_end; }
     }
 
     #---------------------------
     proc ::OnLinearColormap() \
     {
+      if ::trace { eval ::trace_begin; }
       #printn "::OnLinearColormap()"
       ::imhisto1.dw._Paint()
       ::imhisto1.ColormapMinMax()
       ::imhisto1.UpdateCM()
       ::OnRender()
+      if ::trace { eval ::trace_end; }
     }
     
     #----------------------------
     proc ::SaveCurve(  ) \
     {
+      if ::trace { eval ::trace_begin; }
       thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
       if(thefilename.FileExists()) {
         msg = "The %1% file exists." %thefilename.GetFullName().c_str()
@@ -176,6 +211,7 @@ if (!exists(vtkVolumeClass)) {
         }
       }
       InfoDialog msg
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
@@ -194,6 +230,7 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::ResetLinearCurve1() \
     {
+      if ::trace { eval ::trace_begin; }
       if (!exists(::imhisto1->h)) {
         ::UpdateHistogram()
       }
@@ -283,11 +320,13 @@ if (!exists(vtkVolumeClass)) {
          //}
       }
         
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::SetShadingProperties() \
     {
+      if ::trace { eval ::trace_begin; }
       ::property.SetShade(::use_shade)
       ::property.SetAmbient(::ambient)
       ::property.SetDiffuse(::diffuse)
@@ -303,11 +342,13 @@ if (!exists(vtkVolumeClass)) {
         ::property2.SetSpecularPower(::specular_power)
         ::property2.SetScalarOpacityUnitDistance(::scalar_opacity_unitdistance)
       }
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::BlendLinearCurve1() \
     {
+      if ::trace { eval ::trace_begin; }
       #printn "BlendLinearCurve1"
       if (!exists(::imhisto1->h)) {
         ::UpdateHistogram()
@@ -318,10 +359,12 @@ if (!exists(vtkVolumeClass)) {
       ::colorFun=vtk.vtkColorTransferFunction.New()
       ::opacityFun=vtk.vtkPiecewiseFunction.New()
 
-      del ::colorFun2
+ if ::move_2 {
+     del ::colorFun2
       del ::opacityFun2
       ::colorFun2=vtk.vtkColorTransferFunction.New()
       ::opacityFun2=vtk.vtkPiecewiseFunction.New()
+}
       
       if (exists(::imhisto1->h)) {
         curves = ::imhisto1.dw.GetControlledCurves()
@@ -349,33 +392,39 @@ if (!exists(vtkVolumeClass)) {
                                   mp,\
                                   s);
 
+if ::move_2 {
           ::colorFun2.AddRGBPoint( pos, \
                                   1.0/255*col.Red(), \
                                   1.0/255*col.Green(),\
                                   1.0/255*col.Blue(),\
                                   mp,\
                                   s);
-    
+}    
           
           y = -max(-y,-1)
           ::opacityFun.AddPoint(  pos, y , mp,s)
+if ::move_2 {
           ::opacityFun2.AddPoint(  pos, y , mp,s)
+}
         }
         ::SetShadingProperties()
       ::property.SetColor( &::colorFun )
       ::property.SetScalarOpacity( &::opacityFun )
 
+if ::move_2 {
       ::property2.SetColor( &::colorFun2 )
       ::property2.SetScalarOpacity( &::opacityFun2 )
-
+}
       } else {
         InfoDialog "No histogram available."
       }
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::PreviewApplied(OBJECT vtkcurve) \
     {
+      if ::trace { eval ::trace_begin; }
       del ::selected_curv
       //::selected_curv = &::previewer.GetSelection()
       ::selected_curv = &vtkcurve
@@ -421,11 +470,13 @@ if (!exists(vtkVolumeClass)) {
       ::SetLinearCurve(&curve)
       ::OnRender()
       ::win.Update(-1)
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::ReCompute() \
     {
+      if ::trace { eval ::trace_begin; }
       ###printn "::Recompute"
       #del ::colorFun
       #del ::opacityFun
@@ -458,12 +509,27 @@ if (!exists(vtkVolumeClass)) {
         #::volmapper.SetProperty2( &::property2 )
       #}
       ::BlendLinearCurve1()       
+
+
+      if (exists(::property)){
+        ::vol.SetProperty( &::property )
+      }
+      printn "::move_2 = %1%" % ::move_2
+      if ::move_2 {
+        if (exists(::property2) && ::volrenmapper_type==3){
+          ::volmapper.SetProperty2( &::property2 )
+          printn "::volmapper.SetProperty2( &::property2 )"
+        }
+      }
+
       ::volmapper.SetBlendMode(::blend_mode)
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::Draw_colorFun() \
     {
+      if ::trace { eval ::trace_begin; }
       ctf = &::colorFun
       if (exists(::imhisto1->h)) {
         h = (FLOAT)::imhisto1.h[0]
@@ -500,6 +566,7 @@ if (!exists(vtkVolumeClass)) {
         }
         
       }
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
@@ -630,6 +697,9 @@ if (!exists(vtkVolumeClass)) {
 
         ::imhisto1.SetParentPanel(&::win)
         ::imhisto1.Gui()
+
+        ::win.AddBoolean(&::move_2,"move_2")
+
         ::win.AddPage("Blend", &::imhisto1->win)
           ::win.BeginHorizontal()
             ::icons.LoadIconPNG2("Chart xy","Chart_xy")
@@ -641,6 +711,7 @@ if (!exists(vtkVolumeClass)) {
               ::win.AddEnumChoice(::blend_mode_id,"Min. Int.")
               ::win.AddEnumChoice(::blend_mode_id,"Additive.")
          ::win.EndHorizontal()
+
 
          ::win.AddPage("Clip")
           ::win.AddBoolean(&::clip, "Clip")

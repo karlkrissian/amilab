@@ -35,9 +35,28 @@ if (!exists(VolRenClass)) {
     # volume(s)
     ::vtkvol = &vtkVolumeClass 
 
+    proc ::GetIndent(NUM n) {
+      res = ""
+      for k=1 to n {
+        res += "  "
+      }
+      return=res
+    }
+    ::trace=true, "gives tracing information"
+    member = "\"VolRenClass::\"+" 
+    #"language.Vars.GetObjectContext().GetName()::"
+    member += "language.Vars.GetCurrentContext().GetName()"
+    ::trace_begin="printn \"**\"+"+ \
+                  "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
+                  "\" Begin \"+%1%;" % member
+    ::trace_end  ="printn \"**\"+"+\
+                  "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
+                  "\" End   \"+%1%;" % member
+
     #----------------------------
     proc ::Init() \
     {
+
       ::input_name  =  "", "name of the input image"
       ::input2_name =  "", "name of the second input image"
       ::input_size  = "0 Mb",  "input volume size in Mb (2^20 bytes)"
@@ -77,6 +96,7 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::Preview() \
     {
+      if ::trace { eval ::trace_begin; }
       #del ::previewer
       #::previewerclass ::previewer
       #::previewer.Gui()
@@ -90,10 +110,12 @@ if (!exists(VolRenClass)) {
         ::previewer.Show()
         ::previewer.SetInput(&::volVector[index].input)
       }
+      if ::trace { eval ::trace_end; }
     }
     #----------------------------
     proc ::AddToolbar_VR() \
     {
+      if ::trace { eval ::trace_begin; }
       ::mgr = &ami.MainFrame.GetAuiManager()
       #del ::tb
       ::tb = wx.wxAuiToolBar(&ami.MainFrame, wx.wxID_ANY);
@@ -169,20 +191,24 @@ if (!exists(VolRenClass)) {
       ::tb.Connect( tb_id+id, wx.wxEVT_COMMAND_MENU_SELECTED \
                   ,&::evh_tb_sc.GetEventFunction(),\
                   &NULL,&::evh_tb_sc)
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::set_input(IMAGE image) {
+      if ::trace { eval ::trace_begin; }
       ::input<<=image
       ::UpdateImageInfo(&::input,&::input_size)
       ::win.SetLabelValue(::input_size_id,::input_size)
       ::UpdateVolPages()
       ::win.Update(-1)
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::ShowHistogram() {
-     if (::volVector.size()>0){
+      if ::trace { eval ::trace_begin; }
+      if (::volVector.size()>0){
         index=::vbCtrl.GetSelection()
         if (::hist_mode==1){
         ::volVector[index].imhisto1.dw.Show(true)
@@ -203,9 +229,11 @@ if (!exists(VolRenClass)) {
           ::splitter.SplitHorizontally(&::renwin_interact, &::panel2,h)
         }
       }
+      if ::trace { eval ::trace_end; }
     }
     #----------------------------
     proc ::load_input() {
+      if ::trace { eval ::trace_begin; }
       del ::input
       eval "::input = &"+::input_name+";"
       if (::input_name=="BrowseImage") {
@@ -221,10 +249,12 @@ if (!exists(VolRenClass)) {
         #::UpdateVolPages()
         #::win.Update(-1)
       }
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::UpdateImageInfo( IMAGE im, STRING res ) {
+      if ::trace { eval ::trace_begin; }
       if (im.vdim>1) {
         InfoDialog "Warning: input is a vector field ..."
       }
@@ -273,10 +303,12 @@ if (!exists(VolRenClass)) {
       res = "%1% Mb " % (INT) (size*format_size[pixel_format]/(1024*1024))
       res = res+"(%1%)" % format_name[pixel_format]
       
+      if ::trace { eval ::trace_end; }
     }
   
     #----------------------------
     proc ::load_input2() {
+      if ::trace { eval ::trace_begin; }
       if (exists(::input2)) { del ::input2; }
       eval "::input2 = &"+::input2_name+";"
       if (::input2_name=="BrowseImage") {
@@ -292,17 +324,21 @@ if (!exists(VolRenClass)) {
         #::UpdateVolPages()
         #::win.Update(-1)
       }
+      if ::trace { eval ::trace_end; }
     }
   
     #----------------------------
     proc ::UpdateVolPages() \
     {
+      if ::trace { eval ::trace_begin; }
       ::win.EnablePanel(::vol1_page , exists(::input))
       ::win.EnablePanel(::vol2_page , exists(::input2)&&(::volrenmapper_type!=3))
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::UpdateIntensityLimits() {
+      if ::trace { eval ::trace_begin; }
       if (exists(::input)) {
         printn "min"
         ::min_val = min(::input)
@@ -312,10 +348,12 @@ if (!exists(VolRenClass)) {
         ::win.FloatConstraints(::opacitywindow_id,::min_val,::max_val,::opacitywindow)
         ::win.Update(-1)
       }
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::ImLoad(){
+      if ::trace { eval ::trace_begin; }
       del ::input
       eval "::input = &"+::input_name+";"
       if (::input_name!="BrowseImage") {
@@ -328,6 +366,7 @@ if (!exists(VolRenClass)) {
         printn "Load 2"
         ::load_input2()
       }
+      if ::trace { eval ::trace_end; }
     }
     Comments(::ImLoad,"Loads the input image. (Needed by AMILab mapper)")
 
@@ -335,7 +374,9 @@ if (!exists(VolRenClass)) {
 
     proc ::ImReload() \
     {
+      if ::trace { eval ::trace_begin; }
       ::load_input()
+      if ::trace { eval ::trace_end; }
     }
     Comments(::ImReload,"(Re)Loads the input image.")
 
@@ -343,7 +384,9 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::ImReload2() \
     {
+      if ::trace { eval ::trace_begin; }
       ::load_input2()
+      if ::trace { eval ::trace_end; }
     }
     Comments(::ImReload2,"(Re)Loads the second input image.")
 
@@ -351,6 +394,7 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::Resize_Vol1() \
     {
+      if ::trace { eval ::trace_begin; }
       if (!exists(::input)) {
         ::load_input()
       }
@@ -366,12 +410,14 @@ if (!exists(VolRenClass)) {
         ::UpdateVolPages()
         ::win.Update(-1)
       }
+      if ::trace { eval ::trace_end; }
     }
     Comments(::Resize_Vol1,"Resize Volume 1 by half")
 
     #----------------------------
     proc ::Resize_Vol2() \
     {
+      if ::trace { eval ::trace_begin; }
       if (!exists(::input2)) {
         ::load_input2()
       }
@@ -387,25 +433,31 @@ if (!exists(VolRenClass)) {
         ::UpdateVolPages()
         ::win.Update(-1)
       }
+      if ::trace { eval ::trace_end; }
     }
     Comments(::Resize_Vol2,"Resize Volume 2 by half")
     #----------------------------
     proc ::DeleteVariables() {
+      if ::trace { eval ::trace_begin; }
       del ::renwin_interact
       del ::renwin
       del ::renderer
       # etc ...
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::CameraCallback() \
     {
+      if ::trace { eval ::trace_begin; }
       ::renwin_interact.Render()
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
     proc ::StartNew() \
     {
+      if ::trace { eval ::trace_begin; }
       if (::volrenmapper_type!=3){
         if (::resizevol1==0){
           ::load_input()
@@ -462,11 +514,13 @@ if (!exists(VolRenClass)) {
         ::UpdateVolPages()
         ::win.Update(-1)
       }
+      if ::trace { eval ::trace_end; }
     }
     Comments(::StartNew,"Starts rendering of first volume.")
 
     #----------------------------
     proc ::EnableGPUmode(NUM x) {
+      if ::trace { eval ::trace_begin; }
       ::win.EnablePanel(::volVector[x].GPU_page,0)
       if  (::volVector[x].volrenmapper_type==0)||\
           (::volVector[x].volrenmapper_type==3) {
@@ -476,6 +530,7 @@ if (!exists(VolRenClass)) {
         ::win.Update(-1)
         ::win.EnablePanel(::volVector[x].GPU_page,1)
       }
+      if ::trace { eval ::trace_end; }
     }
     #----------------------------
     proc ::SetRendererBg() \
@@ -492,6 +547,7 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::AddVolume2() \
     {
+      if ::trace { eval ::trace_begin; }
     
       if (::resizevol2==0){
         ::load_input2()
@@ -521,6 +577,7 @@ if (!exists(VolRenClass)) {
         ::UpdateVolPages()
         ::win.Update(-1)
       }
+      if ::trace { eval ::trace_end; }
     }
     Comments(::AddVolume2,"Adds rendering of second volume.")
 
@@ -528,6 +585,7 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::MainBook_AddVolRenTab()  \
     {
+      if ::trace { eval ::trace_begin; }
        mb = ami.MainFrame.GetMainBook()
 
       ::panel = wx.wxPanel(&ami.MainFrame)
@@ -574,6 +632,7 @@ if (!exists(VolRenClass)) {
       mb.AddPage( &::panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
       ::volren_pageindex = mb.GetPageIndex(&::panel)
       
+      if ::trace { eval ::trace_end; }
     }
 
     #----------------------------
