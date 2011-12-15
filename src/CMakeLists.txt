@@ -665,9 +665,12 @@ SET(amilab_bin_HDRS
   myTreeCtrl.h
 )
 
+SET(amilab_scripts_dir ../scripts)
+
 SET(amilab_bin_SRCS
-     ${amilab_bin_SRCS}
-     ${amilab_bin_HDRS}
+  ${amilab_bin_SRCS}
+  ${amilab_bin_HDRS}
+  ${amilab_scripts_dir}
 )
 
 if (WIN32)

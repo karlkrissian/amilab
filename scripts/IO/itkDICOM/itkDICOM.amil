@@ -206,6 +206,8 @@ if (!exists(DICOMClass)) {
         ::File2Varname(&wx_im_name)
 
         im_name =  wx.FromWxString(wx_im_name)
+        ::image_name = im_name
+        ::win.Update(-1)
         sub_path = wx.FromWxString(list_item.GetText())
         full_path = ::dicom_folder+sub_path
         cmd =  "::%1% <<= itk.DICOMRead(full_path);" % im_name 
