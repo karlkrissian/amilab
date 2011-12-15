@@ -1,0 +1,35 @@
+digraph {
+  size=8
+  node [ shape="box"]
+  // nodes
+  VolRenClass
+  vtkAmiVolRen
+  vtkVolumeClass
+  vtkCameraClass
+  PreviewerClass
+  ImageHistogramClass
+  dwCurveIOClass
+  vtkCurveClass
+  SimpleVTKVolumeClass
+  
+  // agregacion
+  edge [ dir="back" arrowtail="diamond"]
+  // edges
+  VolRenClass -> vtkAmiVolRen [ headlabel="0..1" taillabel="1"]
+  VolRenClass -> vtkCameraClass
+  VolRenClass -> PreviewerClass
+  VolRenClass -> SimpleVTKVolumeClass [ headlabel="1..*" taillabel="1"]
+  PreviewerClass -> SimpleVTKVolumeClass [ headlabel="1..*" taillabel="1"]
+  rank=same vtkAmiVolRen vtkVolumeClass vtkCameraClass PreviewerClass
+  
+  //
+  vtkVolumeClass -> ImageHistogramClass
+  vtkVolumeClass -> dwCurveIOClass
+  vtkVolumeClass -> vtkCurveClass
+  rank=same ImageHistogramClass dwCurveIOClass vtkCurveClass  
+  // herencias
+  edge [ dir="back" arrowtail="empty"]
+  SimpleVTKVolumeClass -> vtkVolumeClass
+
+  rankdir=LR
+}

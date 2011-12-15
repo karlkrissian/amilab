@@ -1944,6 +1944,8 @@ vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::vtkAMILabOpenGLGPUMultiVolumeRayCast
   this->CurrentMask=0;
 
   this->ActualSampleDistance=1.0;
+  
+
   this->LastProgressEventTime=0.0; // date in seconds
 
   this->PreserveOrientation=true;
@@ -5031,11 +5033,20 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderBlock(vtkRenderer *ren,
     }
   else
     {
+    std::cout<<"! AutoAdjustSampleDistances"<<std::endl;
     double datasetSpacing[3]; // from input. same for each block in streaming.
     // different for each block in AMR. Given in dataset space.
 
     input->GetSpacing(datasetSpacing);
+  
+//carlos
+    double datasetSpacing2[3]; // from input. same for each block in streaming.
+    // different for each block in AMR. Given in dataset space.
 
+    input2->GetSpacing(datasetSpacing2);    
+//
+
+     
     vtkMatrix4x4 *worldToDataset=vol->GetMatrix();
     double minWorldSpacing=VTK_DOUBLE_MAX;
     int i=0;
@@ -5055,12 +5066,35 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderBlock(vtkRenderer *ren,
         }
       ++i;
       }
+      
+      
+//carlos
+    i=0;
+    double minWorldSpacing2=VTK_DOUBLE_MAX;
+    while(i<3)
+      {
+      double tmp=worldToDataset->GetElement(0,i);
+      double tmp2=tmp*tmp;
+      tmp=worldToDataset->GetElement(1,i);
+      tmp2+=tmp*tmp;
+      tmp=worldToDataset->GetElement(2,i);
+
+      // we use fabs() in case the spacing is negative.
+      double worldSpacing=fabs(datasetSpacing2[i]*sqrt(tmp2+tmp*tmp));
+      if(worldSpacing<minWorldSpacing2)
+        {
+        minWorldSpacing2=worldSpacing;
+        }
+      ++i;
+      }
+      
+//
     // minWorldSpacing is the optimal sample distance in world space.
     // To go faster (reduceFactor<1.0), we multiply this distance
     // by 1/reduceFactor.
 
     this->ActualSampleDistance=static_cast<float>(minWorldSpacing);
-
+    
     if ( this->ReductionFactor < 1.0 )
       {
       this->ActualSampleDistance /= static_cast<GLfloat>(this->ReductionFactor*0.5);

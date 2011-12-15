@@ -86,25 +86,12 @@ void trace(void)
       // opacity is the sampled texture value in the 1D opacity texture at
       // scalarValue
 
-
-//       opacity=texture1D(opacityTexture,scalar)+texture1D(opacityTexture,scalar2);
-//       if(opacity.a>0.0)
-//         {
-//         color=shade(value)+shade2(value2);
-//         color=color*opacity.a;
-//         destColor=destColor+color*remainOpacity;
-//         remainOpacity=remainOpacity*(1.0-opacity.a);
-//         }
-
       //Texture1
       opacity=texture1D(opacityTexture,scalar);
       if(opacity.a>0.0)
         {
         text1=true;
         color=shade(value);
-//         vec3 col= mix(color.rgb,value.rgb,value.a);
-//         color= vec4(col,color.a); 
-
         color=color*opacity.a;
         destColor=destColor+color*remainOpacity;
         remainOpacity=remainOpacity*(1.0-opacity.a);
@@ -113,7 +100,7 @@ void trace(void)
       opacity2=texture1D(opacityTexture2,scalar2);
       if(opacity2.a>0.0)
         {
-        text2=true;
+        text1=true;
         color2=shade2(value2);
         color2=color2*opacity2.a;
         destColor=destColor+color2*remainOpacity;
@@ -132,7 +119,6 @@ void trace(void)
         && (remainOpacity>=0.0039); // 1/255=0.0039
       }
     }
-   gl_FragColor = destColor;
-   //gl_FragColor = vec4 (destColor.rgb, destColor.a)
-   gl_FragColor.a = 1.0-remainOpacity;
+  gl_FragColor = destColor;
+  gl_FragColor.a = 1.0-remainOpacity;
 }

@@ -450,7 +450,7 @@ protected:
   vtkKWMask *CurrentMask;
 
   float ActualSampleDistance;
-
+  
   double LastProgressEventTime; // initial value is 0.0. Expressed in seconds.
 
   bool PreserveOrientation;

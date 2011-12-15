@@ -1,0 +1,39 @@
+digraph G {
+  size="8" 
+  node [ shape="box"]
+  
+  render [ label="vtkRenderInteractor"];
+  vtkvol [ label="vtkVolume"];
+  vtkprop3d [ label="vtkProp3D"];
+  vtkmapper [ label="vtkVolumeMapper"];
+
+  vtkproperty1 [ label = "vtkProperty"];
+  input1 [ label = "vtkDataSet"];
+
+  vtkgpuvolumemapper [label="vtkGPUVolumeMapper"];
+  vtkopenglgpuvolumemapper [ label="vtkOpenGLGPUVolumeMapper"];
+ 
+  node [ style=filled, fillcolor="#DDDDDD"]
+  vtkproperty2 [ label = "vtkVolumeProperty"];;
+  vtkgpumultivolumemapper [label="vtkGPUMultiVolumeMapper"];
+  vtkopenglgpumultivolumemapper [ label="vtkOpenGLGPUMultiVolumeMapper"];
+
+
+  input2 [ label = "vtkDataSet"];
+
+  // agregacion
+  edge [ dir="back" arrowtail="diamond"]
+  render -> vtkvol ;
+  vtkvol->vtkmapper;
+  vtkvol->vtkproperty1;
+  vtkmapper->input1;
+  vtkgpumultivolumemapper->input2;
+  vtkgpumultivolumemapper->vtkproperty2;
+  // herencias
+  edge [ dir="back" arrowtail="empty"]
+  vtkmapper->vtkgpuvolumemapper->vtkopenglgpuvolumemapper ;
+  vtkmapper->vtkgpumultivolumemapper->vtkopenglgpumultivolumemapper ;
+  
+  rankdir=LR
+}
+
