@@ -197,9 +197,8 @@ Class PreviewerClass \
           ::SVCVector[n].SetInput( &::input)
           #::SVCVector[n].CreateVTK( &::input)
           ::SVCVector[n].CreateVTK( )
-          ::SVCVector[n].OnRender()
           ::SVCVector[n].InitRenderer()
-          ::RWIVector[n].Render()
+          ::SVCVector[n].OnRender()
           #::RWIVector[n].Refresh()
         } # end if
       } # end for

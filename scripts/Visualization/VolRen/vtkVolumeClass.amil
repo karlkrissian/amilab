@@ -19,6 +19,7 @@ if (!exists(vtkVolumeClass)) {
     ::vtkcurveclass = &vtkCurveClass
 
     ImageHistogramClass             ::imhisto1
+    ImageHistogramClass             ::imhisto2
     # Input/Output operations to work with the curve on the histogram
     dwCurveIOClass                  ::CurveIO
 
@@ -29,7 +30,7 @@ if (!exists(vtkVolumeClass)) {
       }
       return=res
     }
-    ::trace=true, "gives tracing information"
+    ::trace=false, "gives tracing information"
     member = "\"vtkVolumeClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
@@ -46,25 +47,6 @@ if (!exists(vtkVolumeClass)) {
       if ::trace { eval ::trace_begin; }
       #comentado
       ::InitInherit()
-      #::clip = UCHAR(0), "Enable/Disable clipping box"
-      #::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
-      #::clip_interactive = UCHAR(1), "Interactive clipping"
-      #::initialized=0
-      #::maxmemory = INT(512), "Max. 3D texture GPU memory in Mb (2^8 bytes)"
-      #::maxmemoryfraction = 1, "Maximal fraction of 3D max. 3D texture memory to use."
-      #::SampleDistance = 1, "distance between samples used for rendering"
-      #::ImageSampleDistance = 1, "Sampling distance in the XY image dimensions. Default value of 1 meaning 1 ray cast per pixel. If set to 0.5, 4 rays will be cast per pixel. If set to 2.0, 1 ray will be cast for every 4 (2 by 2) pixels. This value will be adjusted to meet a desired frame rate when AutoAdjustSampleDistances is on. "
-      #::AutoAdjustSampleDistances = UCHAR(1), "Auto-adjust sample distances"
-      #::use_shade = UCHAR(1), "use shading"
-      #::ambient   = 0.15, "ambient coefficient"
-      #::diffuse   = 0.9, "diffuse coefficient"
-      #::specular  = 0.3, "specular coefficient"
-      #::specular_power = 15.0, "specular power"
-      #::scalar_opacity_unitdistance = 0.8919, "scalar opacity unit distance"
-      ##::volrenmapper_type = INT(0), "Volume Rendering Mapper type 0: GPU, 1: Fixed Point 2: Standard"
-      #::blend_mode = INT(0), "0: Composite, 1: Maximum Intensity, 2:Minimum Intensity, 3:Additive_blend"
-
-
       ::curve_folder    =  "", "Histogram curve Path Folder"
       ::curve_filename  =  "Curve.amil", "name of the input/output histogram curve"
 
@@ -74,6 +56,8 @@ if (!exists(vtkVolumeClass)) {
       ::dw_active_blend_curves = 0, "Number of curves created for the current blend type in the Histogram drawing area."
 
       ::opacity_attenuation = 1, "Attenuation factor for the opacity"
+
+
       #comentado
       if ::trace { eval ::trace_end; }
     }
@@ -179,10 +163,25 @@ if (!exists(vtkVolumeClass)) {
         }
         ::imhisto1.dw.UpdateLinearCM()
         ::imhisto1.dw.DrawLinearCM()
-        ::SetLinearCurve_first=false
       if ::trace { eval ::trace_end; }
     }
 
+    #----------------------------
+    proc ::SetLinearCurve2( OBJECT curve) \
+    {
+      if ::trace { eval ::trace_begin; }
+        ccurv = &::imhisto2.dw.GetControlledCurves()
+        #printn "linearcurve1_id %1%" %::linearcurve1_id
+        if (::linearcurve2_id<ccurv.size()) {
+          ccurv[::linearcurve2_id] = curve
+        } else {
+          ccurv.push_back(&curve)
+          ::linearcurve2_id = ccurv.size()-1
+        }
+        ::imhisto2.dw.UpdateLinearCM()
+        ::imhisto2.dw.DrawLinearCM()
+      if ::trace { eval ::trace_end; }
+    }
     #---------------------------
     proc ::OnLinearColormap() \
     {
@@ -194,7 +193,19 @@ if (!exists(vtkVolumeClass)) {
       ::OnRender()
       if ::trace { eval ::trace_end; }
     }
-    
+        #---------------------------
+    proc ::OnLinearColormap2() \
+    {
+      if ::trace { eval ::trace_begin; }
+      #printn "::OnLinearColormap()"
+
+      ::imhisto2.dw._Paint()
+      ::imhisto2.ColormapMinMax()
+      ::imhisto2.UpdateCM()
+
+      ::OnRender()
+      if ::trace { eval ::trace_end; }
+    }
     #----------------------------
     proc ::SaveCurve(  ) \
     {
@@ -308,12 +319,14 @@ if (!exists(vtkVolumeClass)) {
         cp3.Setsharpness(0)
         curve.GetControlPoints().push_back(&cp3)
 
-        ::SetBlendMode(0)
+        #::SetBlendMode(0)
         curve.SetType(1) # solid
-        ::SetLinearCurve(&curve)
+  
         #::imhisto1.dw.SetCtrlPointCallback(&::OnCtrlPoint)
         ::imhisto1.dw.SetLinearColormapCallback(&::OnLinearColormap)
+
         ::use_shade=1
+        ::SetLinearCurve(&curve)
       } else {
          //if (::volrenmapper_type!=3){
           InfoDialog "No histogram available."
@@ -322,7 +335,97 @@ if (!exists(vtkVolumeClass)) {
         
       if ::trace { eval ::trace_end; }
     }
+    #----------------------------
+    proc ::ResetLinearCurve2() \
+    {
+      if (!exists(::imhisto2->h)) {
+        ::UpdateHistogram2()
+      }
+      if (exists(::imhisto2->h)) {
+        hmax = max(::imhisto2.h[0])
 
+        # http://www.wikiradiography.com/page/Hounsfield++unit
+        #It is the definition for CT scanners that are calibrated with reference to water.
+        #Tissue CT number (HU)
+        #Bone  1000
+        #Liver   40 - 60
+        #White matter  ~20-30 HU
+        #Grey matter   ~37-45 HU
+        #Blood   40
+        #Muscle  10 - 40
+        #Kidney  30
+        #Cerebrospinal fluid   15
+        #Water   0
+        #Fat   -50 - -100
+        #Air   -1000
+
+        # default intensity values
+        px1 = 1080
+        px3 = 1130
+        px4 = 1390
+        px2 = 1100
+        o1 = 0
+        o2 = 0.005
+        o3 = 0.08
+        o4 = 0.5
+        imin = ::imhisto2.minval
+        imax = ::imhisto2.maxval
+        if  (imin>px1)||(imax<px1)||(imin>px2)||(imax<px2) \
+        { 
+          # set position within intensity range
+          px1 = imin+(imax-imin)*0.4
+          px2 = imin+(imax-imin)*0.5
+          px3 = imin+(imax-imin)*0.6
+          px4 = imin+(imax-imin)*0.9
+          o1 = 0
+          o2 = 0.3
+          o3 = 0.4
+          o4 = 0.9
+        }
+
+        # Create the curve
+        curve = ami.dwControlledCurve()
+
+        # black point
+        cp0 = ami.dwControlPoint(px1,o1*hmax)
+        cp0.SetYLocked(1)
+        cp0.SetColour(wx.wxColour(0,0,0))
+        cp0.Setmidpoint( 0.5)
+        cp0.Setsharpness(0)     
+        curve.GetControlPoints().push_back(&cp0)
+
+        # red point
+        cp1 = ami.dwControlPoint(px2,o2*hmax)
+        cp1.SetColour(wx.wxColour(255,0,0))
+        cp1.Setmidpoint( 0.5)
+        cp1.Setsharpness(0)
+        curve.GetControlPoints().push_back(&cp1)
+
+        # yellow point
+        cp2 = ami.dwControlPoint(px3,o3*hmax)
+        cp2.SetColour(wx.wxColour(255,255,0))
+        cp2.Setmidpoint( 0.5)
+        cp2.Setsharpness(0)
+        curve.GetControlPoints().push_back(&cp2)
+
+        # white point
+        cp3 = ami.dwControlPoint(px4,o4*hmax)
+        cp3.SetColour(wx.wxColour(255,255,255))
+        cp3.Setmidpoint( 0.5)
+        cp3.Setsharpness(0)
+        curve.GetControlPoints().push_back(&cp3)
+
+        #::SetBlendMode(0)
+        curve.SetType(1) # solid
+  
+        #::imhisto1.dw.SetCtrlPointCallback(&::OnCtrlPoint)
+        ::imhisto2.dw.SetLinearColormapCallback(&::OnLinearColormap2)
+        ::use_shade=1
+        ::SetLinearCurve2(&curve)
+      } else {
+          InfoDialog "No histogram available."
+      } 
+    }
     #----------------------------
     proc ::SetShadingProperties() \
     {
@@ -359,12 +462,12 @@ if (!exists(vtkVolumeClass)) {
       ::colorFun=vtk.vtkColorTransferFunction.New()
       ::opacityFun=vtk.vtkPiecewiseFunction.New()
 
- if ::move_2 {
-     del ::colorFun2
-      del ::opacityFun2
-      ::colorFun2=vtk.vtkColorTransferFunction.New()
-      ::opacityFun2=vtk.vtkPiecewiseFunction.New()
-}
+ #if ::move_2 {
+     #del ::colorFun2
+      #del ::opacityFun2
+      #::colorFun2=vtk.vtkColorTransferFunction.New()
+      #::opacityFun2=vtk.vtkPiecewiseFunction.New()
+#}
       
       if (exists(::imhisto1->h)) {
         curves = ::imhisto1.dw.GetControlledCurves()
@@ -392,34 +495,95 @@ if (!exists(vtkVolumeClass)) {
                                   mp,\
                                   s);
 
-if ::move_2 {
+#if ::move_2 {
+          #::colorFun2.AddRGBPoint( pos, \
+                                  #1.0/255*col.Red(), \
+                                  #1.0/255*col.Green(),\
+                                  #1.0/255*col.Blue(),\
+                                  #mp,\
+                                  #s);
+#}    
+          
+          y = -max(-y,-1)
+          ::opacityFun.AddPoint(  pos, y , mp,s)
+#if ::move_2 {
+          #::opacityFun2.AddPoint(  pos, y , mp,s)
+#}
+        }
+        ::SetShadingProperties()
+      ::property.SetColor( &::colorFun )
+      ::property.SetScalarOpacity( &::opacityFun )
+
+#if ::move_2 {
+      #::property2.SetColor( &::colorFun2 )
+      #::property2.SetScalarOpacity( &::opacityFun2 )
+#}
+      } else {
+        InfoDialog "No histogram available."
+      }
+      if ::trace { eval ::trace_end; }
+    }
+
+
+   #----------------------------
+    proc ::BlendLinearCurve2() \
+    {
+      if ::trace { eval ::trace_begin; }
+      if (!exists(::imhisto2->h)) {
+        ::UpdateHistogram2()
+      }
+
+      del ::colorFun2
+      del ::opacityFun2
+      ::colorFun2=vtk.vtkColorTransferFunction.New()
+      ::opacityFun2=vtk.vtkPiecewiseFunction.New()
+      
+      if (exists(::imhisto2->h)) {
+        curves = ::imhisto2.dw.GetControlledCurves()
+        numcurves = curves.size()
+        if (!exists(::linearcurve2_id)) {
+          printn "--"
+          ::linearcurve2_id   = numcurves
+          ::ResetLinearCurve2()
+        }
+
+        # Create colors based on the curve
+        hmax = max(::imhisto2.h[0])
+     
+        for n=0 to ::imhisto2.dw.GetSizelinearCM()-1 {
+          #printn "-point number %1%" %n
+          y =  ::opacity_attenuation/hmax*::imhisto2.dw.GetAlphalinearCM(n)
+          pos = ::imhisto2.dw.GetPoslinearCM(n)
+          col = ::imhisto2.dw.GetColourlinearCM(n)
+          mp  = ::imhisto2.dw.GetMidpointlinearCM(n)
+          s   = ::imhisto2.dw.GetSharpnesslinearCM(n)
+
+
           ::colorFun2.AddRGBPoint( pos, \
                                   1.0/255*col.Red(), \
                                   1.0/255*col.Green(),\
                                   1.0/255*col.Blue(),\
                                   mp,\
                                   s);
-}    
+    
           
           y = -max(-y,-1)
-          ::opacityFun.AddPoint(  pos, y , mp,s)
-if ::move_2 {
           ::opacityFun2.AddPoint(  pos, y , mp,s)
-}
+
         }
         ::SetShadingProperties()
-      ::property.SetColor( &::colorFun )
-      ::property.SetScalarOpacity( &::opacityFun )
 
-if ::move_2 {
-      ::property2.SetColor( &::colorFun2 )
-      ::property2.SetScalarOpacity( &::opacityFun2 )
-}
+
+        ::property2.SetColor( &::colorFun2 )
+        ::property2.SetScalarOpacity( &::opacityFun2 )
+
       } else {
         InfoDialog "No histogram available."
       }
       if ::trace { eval ::trace_end; }
     }
+
+
 
     #----------------------------
     proc ::PreviewApplied(OBJECT vtkcurve) \
@@ -477,39 +641,10 @@ if ::move_2 {
     proc ::ReCompute() \
     {
       if ::trace { eval ::trace_begin; }
-      ###printn "::Recompute"
-      #del ::colorFun
-      #del ::opacityFun
-      #del ::property
-
-      #::colorFun=vtk.vtkColorTransferFunction.New()
-      #::opacityFun=vtk.vtkPiecewiseFunction.New()
-      ## Create the property and attach the transfer functions
-      #::property = vtk.vtkVolumeProperty.New()
-      #::property.SetIndependentComponents(1)
-      #::property.SetColor( &::colorFun )
-      #::property.SetScalarOpacity( &::opacityFun )
-      #::property.SetInterpolationTypeToLinear()
-
-      ##connect up the volume to the property and the mapper
-      #::vol.SetProperty( &::property )
-      #if(exists(::input2)&&::volrenmapper_type==3){
-        #del ::colorFun2
-        #del ::opacityFun2
-        #del ::property2
-
-        #::colorFun2=vtk.vtkColorTransferFunction.New()
-        #::opacityFun2=vtk.vtkPiecewiseFunction.New()
-        ## Create the property and attach the transfer functions
-        #::property2 = vtk.vtkVolumeProperty.New()
-        #::property2.SetIndependentComponents(1)
-        #::property2.SetColor( &::colorFun )
-        #::property2.SetScalarOpacity( &::opacityFun )
-        #::property2.SetInterpolationTypeToLinear()
-        #::volmapper.SetProperty2( &::property2 )
-      #}
       ::BlendLinearCurve1()       
-
+      if (::volrenmapper_type==3){
+        ::BlendLinearCurve2()  
+      }
 
       if (exists(::property)){
         ::vol.SetProperty( &::property )
@@ -667,7 +802,19 @@ if ::move_2 {
     }
     Comments(::UpdateHistogram,"Updates the histogram with the current input image.")
 
-
+    #----------------------------
+    proc ::UpdateHistogram2() \
+    {
+      if (exists(::imhisto2))&&(exists(::input2)) {
+        #printn "*"
+        if (exists(::min_val2)) {
+          ::imhisto2.SetInput2(&::input2,::min_val2,::max_val2)
+        } else {
+          ::imhisto2.SetInput(&::input2)
+        }
+      }
+    }
+    Comments(::UpdateHistogram,"Updates the histogram with the current input image.")
      #----------------------------
     proc ::OnSampleDistance() \
     {
@@ -713,6 +860,20 @@ if ::move_2 {
          ::win.EndHorizontal()
 
 
+        ::imhisto2.SetParentPanel(&::win)
+        ::imhisto2.Gui()
+        ::win.AddPage("Blend2", &::imhisto2->win)
+          ::win.BeginHorizontal()
+            #::icons.LoadIconPNG2("Chart xy","Chart_xy")
+            #::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
+            #::win.AddButton("DrawTr",&::Draw_Functions)
+            #::blend_mode_id = ::win.AddEnum(&::blend_mode,"Mode")
+              #::win.AddEnumChoice(::blend_mode_id,"Composite")
+              #::win.AddEnumChoice(::blend_mode_id,"Max. Int.")
+              #::win.AddEnumChoice(::blend_mode_id,"Min. Int.")
+              #::win.AddEnumChoice(::blend_mode_id,"Additive.")
+         ::win.EndHorizontal()
+
          ::win.AddPage("Clip")
           ::win.AddBoolean(&::clip, "Clip")
           ::win.SetCallback( &::OnClip)
@@ -751,7 +912,6 @@ if ::move_2 {
             ::win.SetCallback( &::OnTextureMemory)
           ::win.EndBoxPanel()
 
-          //::GPU_page = 
           ::win.AddPage("Rend")
           ::win.BeginBoxPanel("Sample distances")
             ::win.AddBoolean(&::AutoAdjustSampleDistances,"Auto")

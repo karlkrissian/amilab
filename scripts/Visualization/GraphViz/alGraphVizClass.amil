@@ -47,13 +47,21 @@ if (!exists(alGraphVizClass)) {
     //---------------------------------------------------
     proc ::Init() \
     {
+      ::platform = wx.FromWxString(\
+                  wx.wxPlatformInfo.Get().GetOperatingSystemFamilyName())
+
       # use global AMILabConfig to read/save configuration of the script
       ::config_path = "/scripts/Visualization/GraphViz"
       ::graphviz_dotdir = ".", "Default file directory"
       ::ReadConfig()
     
       # try to read the user dir
-      ::graphviz_program = "dot.exe"
+
+      if ::platform=="Windows"   { 
+        ::graphviz_program = "dot.exe"
+      } else {
+        ::graphviz_program = "dot"
+      }
 
       ::ShowOnRun = UCHAR(1), "Automatically show after run"
 
@@ -82,8 +90,13 @@ if (!exists(alGraphVizClass)) {
       config_path_bak = ami.AMILabConfig.GetPath()
       ami.AMILabConfig.SetPath(::config_path)
 
-      ::graphviz_bindir = wx.FromWxString(ami.AMILabConfig.\
-        Read_11("GRAPHVIZ_BINDIR","/usr/bin"))
+      if ::platform=="Windows"   { 
+        ::graphviz_bindir = wx.FromWxString(ami.AMILabConfig.\
+          Read_11("GRAPHVIZ_BINDIR","C:/Program Files/"))
+      } else {
+        ::graphviz_bindir = wx.FromWxString(ami.AMILabConfig.\
+          Read_11("GRAPHVIZ_BINDIR","/usr/bin"))
+      }
 
       # Set/Create the directory of the graph files
       sp = wx.wxStandardPathsBase.Get()

@@ -14,7 +14,7 @@ if (!exists(SimplevtkVolumeClass)) {
       }
       return=res
     }
-    ::trace2=true, "gives tracing information"
+    ::trace2=false, "gives tracing information"
     member = "\"SimplevtkVolumeClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
@@ -359,8 +359,6 @@ if (!exists(SimplevtkVolumeClass)) {
         } else {
 
           ::property.SetInterpolationTypeToLinear()
-          ::property2.SetInterpolationTypeToLinear()
-
           ::vol       = vtk.vtkVolume.New()
           # don"t put the boxwidget for the moment
           # convert input to vtkimage
@@ -374,6 +372,7 @@ if (!exists(SimplevtkVolumeClass)) {
           ::volmapper.SetInput(&::vtkinput)
           
           if (::volrenmapper_type==3) {
+            ::property2.SetInterpolationTypeToLinear()
             ::vtkinput2 = vtktools.ToVtkImageData(&::input2)
             ::volmapper.SetInput2(&::vtkinput2)
           }
@@ -422,6 +421,8 @@ if (!exists(SimplevtkVolumeClass)) {
         #}
         #::volmapper.SetInput(&::vtkinput)
         
+        #::property.SetInterpolationTypeToLinear()
+        #::property2.SetInterpolationTypeToLinear()
         
         #::volmapper.SetBlendMode(::blend_mode)
         ## connect up the volume to the property and the mapper
