@@ -1,9 +1,12 @@
 digraph G {
   size="8" 
   node [ shape="box"]
-  
+
+  // existing VTK classes  
   renderer [ label="vtkRenderer"];
   vtkvol [ label="vtkVolume"];
+  
+
   vtkprop3d [ label="vtkProp3D"];
   vtkvolmapper [ label="vtkVolumeMapper"];
   vtkabstractvolmapper [ label="vtkAbstractVolumeMapper"];
@@ -14,27 +17,38 @@ digraph G {
   vtkgpuvolumemapper [label="vtkGPUVolumeMapper"];
   vtkopenglgpuvolumemapper [ label="vtkOpenGLGPUVolumeMapper"];
  
-   
+  // New classes   
   node [ style=filled, fillcolor="#DDDDDD"]
   vtkgpumultivolumemapper [label="vtkGPUMultiVolumeMapper"];
   vtkopenglgpumultivolumemapper [ label="vtkOpenGLGPUMultiVolumeMapper"];
+  vtkmvol [ label="vtkMultiVolume"]
+  vtkmvolmapper [ label="vtkMulipleVolumeMapper"];
+  
+  subgraph {
+  rank=same vtkvolmapper vtkmvolmapper
+  }
 
-
+  subgraph {
+  rank=same vtkvol vtkmvol
+  }
 
   // agregacion
   edge [ dir="front" arrowtail="normal" color="#DD33DD" style="dashed"]
   renderer -> vtkvol ;
   vtkvol->vtkabstractvolmapper;
-  vtkvol->vtkvolproperty;
-  vtkvolmapper->input;
-  vtkgpumultivolumemapper->input;
-  vtkgpumultivolumemapper->vtkvolproperty;
+  vtkvolmapper->input [label="input"];
+  vtkmvolmapper->input [label="input2"];
+  //vtkgpumultivolumemapper->vtkvolproperty;
+  vtkvol->vtkvolproperty  [label="volprop"];
+  vtkmvol->vtkvolproperty [label="volprop2"];
   // herencias
   edge [ dir="back" arrowtail="normal" color="#000000" style="solid"]
   vtkvolmapper->vtkgpuvolumemapper->vtkopenglgpuvolumemapper ;
-  vtkvolmapper->vtkgpumultivolumemapper->vtkopenglgpumultivolumemapper ;
-  vtkprop3d->vtkvol
-  vtkabstractvolmapper->vtkvolmapper
+  vtkmvolmapper->vtkgpumultivolumemapper->vtkopenglgpumultivolumemapper ;
+  vtkprop3d->vtkvol;
+  vtkvol->vtkmvol;
+  vtkvolmapper->vtkmvolmapper;
+  vtkabstractvolmapper->vtkvolmapper;
   
   rankdir=LR
 }
