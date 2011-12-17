@@ -1395,6 +1395,9 @@ def WrapClass(classname,include_file,inputfile):
 
     for f in fm.Fields:
       typename=config.types[f.typeid].GetString()
+      shared_type = config.IsSharedPtr(typename)
+      if shared_type!=None:
+        typename=shared_type
       fulltypename=config.types[f.typeid].GetFullString()
       ispointer= config.types[f.typeid].GetType()=="PointerType"
       isconstpointer = fulltypename.endswith("const *")
@@ -1424,9 +1427,16 @@ def WrapClass(classname,include_file,inputfile):
       if ispointer:
         refstring=""
       else:
-        refstring="&"
-      add_public_fields += indent+"boost::shared_ptr<{0} > var_{1}_ptr({2}GetObj()->{1}, smartpointer_nodeleter<{0} >());\n".\
-        format(typename,f.name,refstring)
+        if shared_type==None:
+          refstring="&"
+        else:
+          refstring=""
+      if shared_type==None:
+        deleter = ", smartpointer_nodeleter<{0} >()".format(typename)
+      else:
+        deleter = ""
+      add_public_fields += indent+"boost::shared_ptr<{0} > var_{1}_ptr({2}GetObj()->{1} {3});\n".\
+        format(typename,f.name,refstring,deleter)
       add_public_fields += indent+"if (var_{0}_ptr.get()) ".format(f.name)+'{\n'
       add_public_fields += indent+"  BasicVariable::ptr var_{1} = AMILabType<{0} >::CreateVarFromSmtPtr(var_{1}_ptr);\n".format(typename,f.name)
       add_public_fields += indent+"  if (var_{0}.get()) ".format(f.name)+'{\n'

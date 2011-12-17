@@ -32,8 +32,8 @@ ENDIF( NOT EXISTS ${GENERATED_DIR})
 
 WRAP_INIT("Wrapping ${KIT}")
 
-SET(XML_OUTPUT "${GENERATED_DIR}/${CMAKE_PROJECT_NAME}_includes.xml")
-SET(XML_INPUT  "${WRAP_DIR}/${CMAKE_PROJECT_NAME}_includes.h")
+SET(XML_OUTPUT "${GENERATED_DIR}/${KIT}_includes.xml")
+SET(XML_INPUT  "${WRAP_DIR}/${KIT}_includes.h")
 SET(GCCXML_result 0)
 
 WRAP_MESSAGE("Try to generate XML file...")
@@ -96,7 +96,7 @@ ELSE(GCCXML_CMD_RESULT)
   # Read list of functions to wrap
   READ_FUNCTIONS("${WRAP_DIR}/functions.txt")
 
-  SET(LIBNAME "${CMAKE_PROJECT_NAME}")
+  SET(LIBNAME "${KIT}")
   SET(GENERATE_HTML_HELP ${${KIT}_GENERATE_HTML_HELP})
   CREATE_ANCESTORS()
 
@@ -130,15 +130,15 @@ ELSE(GCCXML_CMD_RESULT)
     #    (DEFINED OUTPUT_LIST ) )
     IF ((${NB_MISSING_CLASSES}   GREATER 0) OR 
         (${NB_MISSING_FUNCTIONS} GREATER 0) OR
-        (NOT EXISTS ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.h) OR
-        (NOT EXISTS ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.cpp))
+        (NOT EXISTS ${GENERATED_DIR}/addwrap_${KIT}.h) OR
+        (NOT EXISTS ${GENERATED_DIR}/addwrap_${KIT}.cpp))
 
       WRAP_MESSAGE("Try to generate wrapping...")
 
       SET(MYCOMMAND_3 ${PYTHON_EXECUTABLE})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} ${AMI_WRAPPER})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} ${XML_OUTPUT})
-      SET(MYCOMMAND_3 ${MYCOMMAND_3} "--libname" "${CMAKE_PROJECT_NAME}")
+      SET(MYCOMMAND_3 ${MYCOMMAND_3} "--libname" "${KIT}")
       #SET(MYCOMMAND_3 ${MYCOMMAND_3} "--filter" "\"wx*\"")
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--classes" ${MISSING_CLASSES})
       SET(MYCOMMAND_3 ${MYCOMMAND_3} "--available_classes" ${ancestors_list})
@@ -176,8 +176,8 @@ ELSE(GCCXML_CMD_RESULT)
       ADD_CUSTOM_COMMAND(
         OUTPUT
           ${OUTPUT_LIST} ${methodpointers_list} 
-          ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.h
-          ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.cpp
+          ${GENERATED_DIR}/addwrap_${KIT}.h
+          ${GENERATED_DIR}/addwrap_${KIT}.cpp
         COMMAND
           ${MYCOMMAND_3}
         DEPENDS
@@ -186,26 +186,26 @@ ELSE(GCCXML_CMD_RESULT)
       )
     ENDIF ((${NB_MISSING_CLASSES}   GREATER 0) OR 
         (${NB_MISSING_FUNCTIONS} GREATER 0) OR
-        (NOT EXISTS ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.h) OR
-        (NOT EXISTS ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.cpp))
+        (NOT EXISTS ${GENERATED_DIR}/addwrap_${KIT}.h) OR
+        (NOT EXISTS ${GENERATED_DIR}/addwrap_${KIT}.cpp))
 
     FOREACH( class ${ancestors_list} ${functions_list} )
       ClassUsedName( class m_class )
-      SET( ${CMAKE_PROJECT_NAME}_HDRS 
-            ${GENERATED_DIR}/wrap_${m_class}.h ${${CMAKE_PROJECT_NAME}_HDRS})
-      SET( ${CMAKE_PROJECT_NAME}_SRCS 
-            ${GENERATED_DIR}/wrap_${m_class}.cpp ${${CMAKE_PROJECT_NAME}_SRCS})
+      SET( ${KIT}_HDRS 
+            ${GENERATED_DIR}/wrap_${m_class}.h ${${KIT}_HDRS})
+      SET( ${KIT}_SRCS 
+            ${GENERATED_DIR}/wrap_${m_class}.cpp ${${KIT}_SRCS})
     ENDFOREACH( class ${ancestors_list} )
 
-    SET( ${CMAKE_PROJECT_NAME}_HDRS 
-        ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.h
-        ${${CMAKE_PROJECT_NAME}_HDRS})
+    SET( ${KIT}_HDRS 
+        ${GENERATED_DIR}/addwrap_${KIT}.h
+        ${${KIT}_HDRS})
 
-    SET( ${CMAKE_PROJECT_NAME}_SRCS 
-        ${GENERATED_DIR}/addwrap_${CMAKE_PROJECT_NAME}.cpp 
-        ${${CMAKE_PROJECT_NAME}_SRCS})
+    SET( ${KIT}_SRCS 
+        ${GENERATED_DIR}/addwrap_${KIT}.cpp 
+        ${${KIT}_SRCS})
 
-#MESSAGE("${CMAKE_PROJECT_NAME}_HDR = ${${CMAKE_PROJECT_NAME}_HDR}")
+#MESSAGE("${KIT}_HDR = ${${KIT}_HDR}")
 #   ENDIF(MYCOMMAND_2_RESULT)
 
   WRAP_MESSAGE("End wrapping")
