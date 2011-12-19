@@ -121,8 +121,8 @@ vec4 shade(vec4 value)
   
   vec4 color=colorFromValue(value);
 
-
-  if (true) {
+  // trying implicit cylinder: change false to true
+  if (false) {
    float dist =  (pos.x-0.5)*(pos.x-0.5)+(pos.y-0.5)*(pos.y-0.5);
    if (dist<0.1*0.1) {
 
