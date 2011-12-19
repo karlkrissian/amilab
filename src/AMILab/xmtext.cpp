@@ -68,23 +68,66 @@ LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 using namespace std;
 
-static unsigned char in_changed_value = 0;
+static bool in_changed_value = false;
 
 
-BEGIN_EVENT_TABLE(TextControl, wxTextCtrl)
-  EVT_CHAR(       TextControl::OnChar)
+BEGIN_EVENT_TABLE(TextControl, wxTextCtrlClass)
+//  EVT_CHAR(       TextControl::OnChar)
   EVT_TEXT(       wxID_ANY,   TextControl::OnUpdate)
-  //EVT_KEY_DOWN(   TextControl::OnKeyDown)
-  //EVT_TEXT(       wxID_PASTE, TextControl::OnPaste)
+  EVT_KEY_DOWN(   TextControl::OnChar)
+  EVT_RICHTEXT_CONTENT_INSERTED( wxID_PASTE, TextControl::OnContentInserted)
+  //EVT_SET_CURSOR(TextControl::OnSetCursor)
+  EVT_TEXT(       wxID_PASTE, TextControl::OnPaste)
   //EVT_IDLE(TextControl::DoIdle)
 END_EVENT_TABLE()
 
 
 //--------------------------------------------------
+void TextControl::InitRichText()
+{
+  // many new, no delete !!!
+  
+  // Create fonts ...
+  wxFont romanFont(12, wxROMAN, wxNORMAL, wxNORMAL);
+
+  wxRichTextParagraphStyleDefinition* normalPara = new \
+    wxRichTextParagraphStyleDefinition(_T("Normal"));
+  wxRichTextAttr* normalAttr = new wxRichTextAttr();
+  normalAttr->SetFontFaceName(romanFont.GetFaceName());
+  normalAttr->SetFontSize(12);
+  // Let's set all attributes for this style
+  normalAttr->SetFlags(wxTEXT_ATTR_FONT | wxTEXT_ATTR_BACKGROUND_COLOUR | 
+                      wxTEXT_ATTR_TEXT_COLOUR|wxTEXT_ATTR_ALIGNMENT|
+                      wxTEXT_ATTR_LEFT_INDENT|wxTEXT_ATTR_RIGHT_INDENT|
+                      wxTEXT_ATTR_TABS|
+                      wxTEXT_ATTR_PARA_SPACING_BEFORE|
+                      wxTEXT_ATTR_PARA_SPACING_AFTER|
+                      wxTEXT_ATTR_LINE_SPACING|
+                      wxTEXT_ATTR_BULLET_STYLE|wxTEXT_ATTR_BULLET_NUMBER);
+  normalPara->SetStyle(*normalAttr);
+
+  wxRichTextStyleSheet* m_styleSheet = new wxRichTextStyleSheet();
+  m_styleSheet->AddParagraphStyle(normalPara);
+
+  this->SetStyleSheet(m_styleSheet);
+  wxFont * font = new wxFont(11, wxROMAN, wxNORMAL, wxNORMAL);
+  this->SetFont(*font);
+  _basic_style = new wxTextAttrEx();
+  _basic_style->SetTextColour(wxColour(0,0,0));
+  _basic_style->SetFont(*font);
+  //_basic_style->SetLeftIndent(50);
+  SetDefaultStyle(*_basic_style);
+  SetBasicStyle(*_basic_style);
+}
+
+//--------------------------------------------------
 void TextControl::ConsoleReset()
 {
   CLASS_MESSAGE("Resetting the console");
-  this->text=_T("");
+/*  BeginAlignment(wxTEXT_ALIGNMENT_CENTRE);
+    WriteText(title_text);
+  EndAlignment();*/
+  text=_T("");
   this->AddPrompt(false);
 }
 
@@ -93,6 +136,7 @@ void TextControl::ConsoleClear()
 {
   CLASS_MESSAGE("Clear the console");
   UpdateText();
+  //MoveEnd();
 }
 
 //--------------------------------------------------
@@ -117,8 +161,8 @@ void TextControl::IncCommand( const wxString& cmd)
 {
 //  text.Append(" ");
 //  text.Append(cmd);
-  AppendText(wxString::FromAscii(" "));
-  AppendText(cmd);
+  WriteText(wxString::FromAscii(" "));
+  WriteText(cmd);
   //GB_driver.ws_print(cmd.c_str());
   //this->UpdateText();
 }
@@ -142,7 +186,7 @@ void TextControl::AddPrompt(bool newline)
     // adds it to the file too
     GB_DriverBase->ws_print("\n");
   }
-  text.Append(wxString::FromAscii("[AMILab] "));
+  text.Append(wxString::FromAscii("> "));
   UpdateText();
   lastprompt_position = GetLastPosition();
   //if (HasScrollbar(wxHORIZONTAL))
@@ -159,11 +203,28 @@ void TextControl::AddPrompt(bool newline)
 //--------------------------------------------------
 void TextControl::UpdateText()
 {
+  CLASS_MESSAGE("begin")
   _protect = 0;
-  this->SetDefaultStyle(wxTextAttr(*wxBLUE));
-  this->SetValue(text);
-  this->SetDefaultStyle(wxTextAttr(*wxBLACK));
+  Clear();
+
+  SetAndShowDefaultStyle(*_basic_style);
+  BeginAlignment(wxTEXT_ALIGNMENT_CENTRE);
+    wxTextAttrEx ta;
+    ta.SetBackgroundColour(wxColour(200,200,200));
+    BeginStyle(ta);
+      WriteText(title_text);
+    EndStyle();
+  EndAlignment();
+
+  BeginItalic();
+    BeginTextColour(*wxBLUE);
+      this->WriteText(text);
+    EndTextColour();
+  EndItalic();
+
   this->SetInsertionPointEnd();
+  SetAndShowDefaultStyle(*_basic_style);
+  //SetDefaultStyleToCursorStyle();
   _protect = 1;
   if (GB_debug) {
     std::cerr << "TextControl::Update() text ="
@@ -171,18 +232,34 @@ void TextControl::UpdateText()
          << "Is ASCII ?" << text.IsAscii()
          << std::endl;
   }
+  CLASS_MESSAGE("end")
 }
 
 //--------------------------------------------------
-void TextControl::OnPaste(wxCommandEvent& event)
+void TextControl::OnContentInserted(wxRichTextEvent& event)
 //                -------
 {
   CLASS_MESSAGE("begin");
-  event.Skip();
+  std::cout << "Position " << event.GetPosition() << std::endl;
+  std::cout << "Len " << this->text.Len() << std::endl;
+  
+  if (event.GetPosition()>=this->text.Len())
+    event.Skip();
 }
 
 
-//--------------------------------------------------
+//------------------------------------------------------------------------------
+void TextControl::OnPaste(  wxCommandEvent& event)
+{
+  std::cout << "OnPaste()" << std::endl;
+  if (this->GetInsertionPoint() < lastprompt_position) {
+    ConsoleClear();
+    MoveEnd();
+  } else 
+    event.Skip();
+}
+
+//------------------------------------------------------------------------------
 void TextControl::OnUpdate(wxCommandEvent&  event)
 {
 
@@ -190,15 +267,26 @@ void TextControl::OnUpdate(wxCommandEvent&  event)
 
   if (in_changed_value) {
     //printf("in_changed_value\n");
-    event.Skip(); return;}
+    event.Skip(); 
+    return;
+  }
+  
   if (!_protect)        {
     //printf("!_protect\n");
-    event.Skip(); return;}
+    event.Skip();
+    return;
+  }
 
+  //event.Skip();
   if (GB_debug)
     std::cerr  << " insertion position "
           << (int) this->GetInsertionPoint()
           << " " << lastprompt_position << std::endl;
+
+  if (this->GetInsertionPoint() < lastprompt_position) {
+    ConsoleClear();
+    MoveEnd();
+  }
 }
 
 //--------------------------------------------------
@@ -207,6 +295,12 @@ void TextControl::DisplayCompletion()
     this->UpdateText();
     this->WriteText ( completion_lastcommand+(*completions)[completion_count]);
 
+}
+
+//--------------------------------------------------
+wxString TextControl::GetContents()
+{
+  return this->GetRange(title_text.Length(),GetLastPosition());
 }
 
 //--------------------------------------------------
@@ -221,7 +315,8 @@ void TextControl::ProcessTab()
 
   // get the last word
   wxString   alltext;
-  alltext = this->GetValue();
+  alltext = this->GetContents(); //this->GetValue();
+  
   if (alltext==wxEmptyString) {
     CLASS_ERROR("Empty string");
     return;
@@ -326,8 +421,10 @@ void TextControl::ProcessTab()
   if (GB_debug)
    std::cout << "going for it " << completions->GetCount() << std::endl;
   if (completions->GetCount()>0) {
-    int last_command_size = this->GetValue().Length()-this->text.Length()-last_variable.Length();
-    completion_lastcommand = this->GetValue().Mid ( this->text.Len(), last_command_size );
+    //int last_command_size = this->GetValue().Length()-this->text.Length()-last_variable.Length();
+    //completion_lastcommand = this->GetValue().Mid ( this->text.Len(), last_command_size );
+    int last_command_size = this->GetContents().Length()-this->text.Length()-last_variable.Length();
+    completion_lastcommand = this->GetContents().Mid ( this->text.Len(), last_command_size );
     in_completion = 1;
     completion_count = 0;
     DisplayCompletion();
@@ -348,7 +445,8 @@ bool TextControl::ProcessReturn()
 
   in_changed_value = 1;
 
-  alltext = this->GetValue();
+  //alltext = this->GetValue();
+  alltext = this->GetContents();
   TCsize  = this->GetAcceptedSize();
 
   // substring
@@ -408,7 +506,8 @@ bool TextControl::ProcessReturn()
   }
   
 
-  alltext = this->GetValue();
+  //alltext = this->GetValue();
+  alltext = this->GetContents();
   TCsize  = this->GetAcceptedSize();
   // substring
   last_cmd =alltext.Mid(TCsize);
@@ -428,7 +527,8 @@ bool TextControl::ProcessReturn()
     CLASS_ERROR("Error in last command");
     //yyERROR=0;
   } else {
-    alltext = this->GetValue();
+    //alltext = this->GetValue();
+    alltext = this->GetContents();
     last_cmd =alltext.Mid(TCsize);
     last_cmd += '\n';
     this->AddCommand(last_cmd);
@@ -454,6 +554,15 @@ void TextControl::OnEnter(wxCommandEvent&  event)
 }
 
 
+//--------------------------------------------------
+void TextControl::TextOnKeyDown(wxKeyEvent& event)
+{
+  CLASS_MESSAGE("Begin");
+  wxString key;
+  long keycode = event.GetKeyCode();
+  event.Skip();
+
+}
 
 //--------------------------------------------------
 void TextControl::OnChar(wxKeyEvent& event)
@@ -475,9 +584,9 @@ void TextControl::OnChar(wxKeyEvent& event)
       if ((keycode != WXK_TAB)&&(in_completion)) {
               in_completion=0;
               this->UpdateText();
-              this->AppendText ( completion_lastcommand);
+              this->WriteText ( completion_lastcommand);
               if (keycode != WXK_BACK)
-                this->AppendText((*completions)[completion_count]);
+                this->WriteText((*completions)[completion_count]);
               this->SetInsertionPointEnd();
       }
 
@@ -644,6 +753,8 @@ void TextControl::OnChar(wxKeyEvent& event)
     }
 
     if (GB_debug) std::cerr <<  key << std::endl;
+  SetAndShowDefaultStyle(*_basic_style);
+  //SetDefaultStyleToCursorStyle();
     event.Skip();
 } // OnChar()
 
@@ -657,11 +768,12 @@ void TextControl::PreviousCommand()
     {
         // to do: save current line
         cmdline_displaypos = cmdlines_pos;
-        cmd_lines[cmdline_displaypos] = this->GetValue().Mid ( this->text.Len() );
+        //cmd_lines[cmdline_displaypos] = this->GetValue().Mid ( this->text.Len() );
+        cmd_lines[cmdline_displaypos] = this->GetContents().Mid ( this->text.Len() );
         // show the previous line
         cmdline_displaypos = ( cmdline_displaypos+MAX_SAVED_COMMANDS-1 ) %MAX_SAVED_COMMANDS;
         this->UpdateText();
-        this->WriteText ( cmd_lines[cmdline_displaypos] );
+        this->WriteText(cmd_lines[cmdline_displaypos] );
         this->SetInsertionPointEnd();
     }
     else
@@ -685,7 +797,7 @@ void TextControl::NextCommand()
     {
         cmdline_displaypos = ( cmdline_displaypos+1 ) %MAX_SAVED_COMMANDS;
         this->UpdateText();
-        this->WriteText ( cmd_lines[cmdline_displaypos] );
+        this->WriteText(cmd_lines[cmdline_displaypos]);
         this->SetInsertionPointEnd();
     }
 }

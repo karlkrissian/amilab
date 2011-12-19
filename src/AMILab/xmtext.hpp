@@ -25,14 +25,19 @@
 //using -- namespace std;
 
 #include "DefineClass.hpp"
+#include <wx/richtext/richtextctrl.h>
+#include <wx/richtext/richtextstyles.h>
 
-class TextControl : public wxTextCtrl {
+#define wxTextCtrlClass wxRichTextCtrl
+
+class TextControl : public wxTextCtrlClass {
 
   DEFINE_CLASS(TextControl)
 
 protected:
 
 //  wxString   alltext;
+  wxString   title_text;
   wxString   text;
   wxString*  cmd_lines; // saved previous lines
   int        cmdlines_pos;
@@ -56,7 +61,7 @@ protected:
               const wxString& value,
               int flags,
               const wxValidator &      validator = wxDefaultValidator)
-        : wxTextCtrl(
+        : wxTextCtrlClass(
                       parent,
                       id,
                       value,
@@ -79,11 +84,17 @@ protected:
     completion_count   = 0;
     SetSizeHints(wxSize(200,100));
     SetToolTip(_T("Amilab command line console, \n \tKeyboard shortcuts: \n \tCtrl-F: load a filename as a string. \n \tTab: complete a keyword or a variable name. \n \tUp-Down arrows to browse command history. "));    
+    
+    this->title_text=_T("AMILab Console\n");
+    InitRichText();
   };
+
+  void InitRichText();
 
   ~TextControl() {
     //std::cout << "~TextControl()" << std::endl;
     delete[] cmd_lines;
+    delete _basic_style;
   }
 
   void ConsoleReset();
@@ -102,8 +113,17 @@ protected:
 
   void UpdateText();
 
-  void OnPaste  (wxCommandEvent& event);
+  void OnContentInserted(wxRichTextEvent& event);
   void OnUpdate (wxCommandEvent& event);
+  void OnPaste(  wxCommandEvent& event);
+  
+  /**
+   * @brief Returns the contents of the console without the title.
+   *
+   * @return wxString
+   **/
+  
+  wxString GetContents();
 
   void DisplayCompletion();
 
@@ -123,6 +143,8 @@ protected:
   void NextCommand();
 
   void OnChar(wxKeyEvent& event);
+  void TextOnKeyDown(wxKeyEvent& event);
+  
   wxTextCtrl* GetLog()      { return _logtextctrl;     }
   void SetLog(wxTextCtrl* log) { _logtextctrl=log; }
 
@@ -130,6 +152,7 @@ protected:
 
 private:
   DECLARE_EVENT_TABLE()
+  wxTextAttrEx* _basic_style;
 };
 
 

@@ -88,11 +88,26 @@ void trace(void)
 
       //Texture1
       opacity=texture1D(opacityTexture,scalar);
+
+      bool cylinder=false;
+      if (true) {
+        float dist =  (pos.x-0.5)*(pos.x-0.5)+(pos.y-0.5)*(pos.y-0.5);
+        if (dist<0.1*0.1) {
+          opacity.a = 0.9;
+    cylinder=true;
+    color[0] = abs(1.0-sin(pos.z*24.0)/2.0);
+    color[1] = abs(0.2+sin(pos.z*24.0))*1.5;
+    color[2] = 0.2;
+    color[3] = 0.5;
+          //value.x=50.0;
+        }
+      }
+
       if(opacity.a>0.0)
         {
         text1=true;
         color=shade(value);
-        color=color*opacity.a;
+        if (!cylinder) color=color*opacity.a;
         destColor=destColor+color*remainOpacity;
         remainOpacity=remainOpacity*(1.0-opacity.a);
         }
