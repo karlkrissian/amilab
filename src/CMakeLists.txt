@@ -47,7 +47,7 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
 
 SET(AMILAB_VERSION_MAJOR "3")
 SET(AMILAB_VERSION_MINOR "2")
-SET(AMILAB_VERSION_PATCH "0")
+SET(AMILAB_VERSION_PATCH "1")
 SET(AMILAB_VERSION "${AMILAB_VERSION_MAJOR}.${AMILAB_VERSION_MINOR}.${AMILAB_VERSION_PATCH}")
 
 
@@ -665,7 +665,7 @@ SET(amilab_bin_HDRS
   myTreeCtrl.h
 )
 
-SET(amilab_scripts_dir ../scripts)
+SET(amilab_scripts_dir ../scripts/Common)
 
 SET(amilab_bin_SRCS
   ${amilab_bin_SRCS}

@@ -1,54 +1,113 @@
 
-Class TestSizer \
+#-------------------------------------------------------------------------------
+proc ex2_AddButton(NUM i, OBJECT sizer, NUM prop) \
 {
-  proc ::Init() \
-  {
-    # Create a Frame
-    ::f2 = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,"Frame Title",\
-          wx.wxPoint(100,100),wx.wxSize(300,300),\
-          wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX,"test")
-    ::f2.Show()
-
-    # Create a panel with a sizer
-    ::panel = wx.wxPanel(&::f2)
-    ::panel.SetBackgroundColour(wx.wxColour(100,100,40))
-    # Create a BoxSizer
-    ::boxsizer = wx.wxBoxSizer(wx.wxVERTICAL)
-
-    ::flexsizer =  wx.wxFlexGridSizer(0)
-
-    ::flexsizer.AddGrowableRow(0,1)
-    ::flexsizer.AddGrowableCol(0,1)
-    #::boxsizer.Add(&::flexsizer, 1, wx.wxALL | wx.wxEXPAND | wx.wxCENTER, 10);
-    ::boxsizer.Add(&::flexsizer, &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
-
-
-    ::AddButton(1, & ::boxsizer , 0)
-
-    ::wxvtk = global::wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
-    ::flexsizer.Add(&::wxvtk,&wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
-
-    #::AddButton(2, & ::flexsizer, 1)
-    ::AddButton(3, & ::flexsizer, 1)
-    ::AddButton(4, & ::flexsizer, 1)
-
-    ::panel.SetSizer(&::boxsizer)
-    #::flexsizer.SetSizeHints( &::f2 )   # set size hints to honour minimum size
-  }
-
-  proc ::AddButton(NUM i, OBJECT sizer, NUM prop) \
-  {
-    label = "but%1%" % i
-    b = wx.wxButton(&::panel,wx.wxID_ANY,label)
-    sizer.Add(&b,&wx.wxSizerFlags(prop).Center().Border(wx.wxALL, 2).Expand())
-    # Save the button
-    eval "::b%1% = &b;"%i
-  }
-
-  proc ::Close() \
-  {
-    ::f2.Destroy()
-  }
-
+  label = "but%1%" % i
+  b = wx.wxButton(&::panel,wx.wxID_ANY,label)
+  sizer.Add(&b,&wx.wxSizerFlags(prop).Center().Border(wx.wxALL, 2).Expand())
+  # Return the created button
+  return = &b
 }
+
+
+#-------------------------------------------------------------------------------
+ex2_fr = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,"Frame Title",\
+      wx.wxPoint(100,100),wx.wxSize(300,300),\
+      wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX,"test")
+ex2_fr.Show()
+
+ex2_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+ex2_fr.SetSizer(&ex2_sizer)
+
+# Create a panel with a sizer
+ex2_panel = wx.wxPanel(&ex2_fr)
+ex2_sizer.Add(&ex2_panel,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 10))
+
+ex2_panel.SetBackgroundColour(wx.wxColour(100,100,40))
+# Create a BoxSizer
+ex2_boxsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+
+ex2_flexsizer =  wx.wxFlexGridSizer(0)
+
+ex2_flexsizer.AddGrowableRow(0,1)
+ex2_flexsizer.AddGrowableCol(0,1)
+#::boxsizer.Add(&ex2_flexsizer, 1, wx.wxALL | wx.wxEXPAND | wx.wxCENTER, 10);
+ex2_boxsizer.Add(&ex2_flexsizer, &wx.wxSizerFlags(1).Center().\
+                                  Border(wx.wxALL, 2).Expand())
+
+ex2_b1 = ex2_AddButton(1, & ex2_boxsizer , 0)
+
+ex2_wxvtk = vtktools.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+ex2_flexsizer.Add(&ex2_wxvtk,&wx.wxSizerFlags(1).Center().\
+                                Border(wx.wxALL, 2).Expand())
+
+#ex2_AddButton(2, & ex2_flexsizer, 1)
+ex2_b3 = ex2_AddButton(3, & ex2_flexsizer, 1)
+ex2_b4 = ex2_AddButton(4, & ex2_flexsizer, 1)
+
+::panel.SetSizer(&ex2_boxsizer)
+#ex2_flexsizer.SetSizeHints( &ex2_fr )   # set size hints to honour minimum size
+ex2_fr.Layout()
+
+
+#del TestSizer
+
+#Class TestSizer \
+#{
+  #proc ::Init() \
+  #{
+    ## Create a Frame
+    #::f2 = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,"Frame Title",\
+          #wx.wxPoint(100,100),wx.wxSize(300,300),\
+          #wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX,"test")
+    #::f2.Show()
+
+    ## need to create an initial sizer
+    #::f2_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+    #::f2.SetSizer(&::f2_sizer)
+    #::f2_sizer.Add(&::f2,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 10))
+
+    ## Create a panel with a sizer
+    #::panel = wx.wxPanel(&::f2)
+    #::panel.SetBackgroundColour(wx.wxColour(100,100,40))
+    ## Create a BoxSizer
+    #::boxsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+
+    #::flexsizer =  wx.wxFlexGridSizer(0)
+
+    #::flexsizer.AddGrowableRow(0,1)
+    #::flexsizer.AddGrowableCol(0,1)
+    ##::boxsizer.Add(&::flexsizer, 1, wx.wxALL | wx.wxEXPAND | wx.wxCENTER, 10);
+    #::boxsizer.Add(&::flexsizer, &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
+
+
+    #::AddButton(1, & ::boxsizer , 0)
+
+    #::wxvtk = vtktools.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+    #::flexsizer.Add(&::wxvtk,&wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
+
+    ##::AddButton(2, & ::flexsizer, 1)
+    #::AddButton(3, & ::flexsizer, 1)
+    #::AddButton(4, & ::flexsizer, 1)
+
+    #::panel.SetSizer(&::boxsizer)
+    ##::flexsizer.SetSizeHints( &::f2 )   # set size hints to honour minimum size
+    #::f2.Layout()
+  #}
+
+  #proc ::AddButton(NUM i, OBJECT sizer, NUM prop) \
+  #{
+    #label = "but%1%" % i
+    #b = wx.wxButton(&::panel,wx.wxID_ANY,label)
+    #sizer.Add(&b,&wx.wxSizerFlags(prop).Center().Border(wx.wxALL, 2).Expand())
+    ## Save the button
+    #eval "::b%1% = &b;"%i
+  #}
+
+  #proc ::Close() \
+  #{
+    #::f2.Destroy()
+  #}
+
+#}
 

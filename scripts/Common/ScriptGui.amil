@@ -43,6 +43,7 @@ if (!exists(ScriptGui)) \
       if exists(::helpw) {
         ::helpw.Destroy()
       }
+      ::Attach()
       ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
@@ -100,6 +101,60 @@ if (!exists(ScriptGui)) \
     }
 
     #------------------------------------
+    proc ::Attach() {
+      
+      if (exists(::frame)) {
+        # Save frame size and position for future detach
+        ::detach_position = ::frame.GetPosition()
+        ::detach_size     = ::frame.GetSize()
+        ::win.Reparent(&::win_parent)
+        ::frame.Close()
+        del ::frame
+        del ::boxsizer
+        del ::win_parent
+        ::win.GetParent().Layout()
+      }
+    }
+
+    #------------------------------------
+    proc ::Detach() {
+      
+      if (!exists(::frame)) {
+        ::frame = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,"Timer",\
+              wx.wxPoint(100,100),wx.wxSize(300,400),\
+              wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX,"Timer")
+        if exists(::detach_position) {
+          ::frame.SetPosition(::detach_position)
+        }
+        if exists(::detach_size) {
+          ::frame.SetSize(::detach_size)
+        }
+        ::frame.Show()
+
+        # Create a BoxSizer
+        ::boxsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+    
+        ::win_parent = ::win.GetParent()
+        ::win.Reparent(&::frame)
+        ::boxsizer.Add(&::win, &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
+
+        #::panel.SetSizer(&::boxsizer)
+        ::frame.SetSizer(&::boxsizer)
+        ::frame.Layout()
+      }
+    }
+
+    #------------------------------------
+    proc ::AttachDetach() {
+      if (exists(::frame)) {
+        ::Attach()
+      } else {
+        ::Detach()
+      }    
+    }
+    Comments(::AttachDetach,"Attach/Detach tab")
+
+    #------------------------------------
     proc ::AddStandardButtons( OBJECT win) \
     {
       win.BeginHorizontal()
@@ -114,6 +169,10 @@ if (!exists(ScriptGui)) \
           ::AddBitmapButton16(&win, &::icons._Help,     "OpenInBrowser")
           ::AddBitmapButton16(&win, &::icons._DokuWiki, "LaunchWiki")
           #::AddBitmapButton16(&win, &::icons._Help,   "HelpWindow")
+
+          ::icons.LoadIconPNG("Pin")
+          ::AddBitmapButton(&::win, &::icons._Pin, 16, "AttachDetach")
+
           if (!exists(::wiki_help)) {
             win.Enable(::LaunchWiki_but_id,false)
           }

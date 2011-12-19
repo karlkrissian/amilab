@@ -34,40 +34,6 @@ if (!exists(TimerClass)) {
       ::timer.Stop()
     }
 
-    #------------------------------------
-    proc ::Attach() {
-      
-      if (exists(::frame)) {
-        ::win.Reparent(&::win_parent)
-        ::frame.Close()
-        del ::frame
-        del ::panel
-        del ::boxsizer
-        del ::win_parent
-      }
-    }
-
-    #------------------------------------
-    proc ::Detach() {
-      
-      if (!exists(::frame)) {
-        ::frame = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,"Timer",\
-              wx.wxPoint(100,100),wx.wxSize(300,300),\
-              wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX,"Timer")
-        ::frame.Show()
-
-        ::panel = wx.wxPanel(&::frame)
-        ::panel.SetBackgroundColour(wx.wxColour(100,100,40))
-        # Create a BoxSizer
-        ::boxsizer = wx.wxBoxSizer(wx.wxVERTICAL)
-    
-        ::win_parent = ::win.GetParent()
-        ::win.Reparent(&::panel)
-        ::boxsizer.Add(&::win, &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
-
-        ::panel.SetSizer(&::boxsizer)
-      }
-    }
 
     #------------------------------------
     proc ::CB_timer() {
@@ -81,6 +47,7 @@ if (!exists(TimerClass)) {
     #
     proc ::Close() {
       ::Stop()
+      ::Attach()
       ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
@@ -112,9 +79,7 @@ if (!exists(TimerClass)) {
           ::win.BeginBoxPanel("Elapsed Time")
             ::label_id = ::win.AddLabel("","")
           ::win.EndBoxPanel()
-          ::win.AddButton("Attach", &::Attach)
-          ::win.AddButton("Detach", &::Detach)
-
+          
       ::win.EndBook()
       ::AddStandardButtons(&::win)
       

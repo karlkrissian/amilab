@@ -126,9 +126,9 @@ void myTreeCtrl::OnItemMenu(wxTreeEvent& event)
                                         : NULL;
 */
   wxPoint clientpt = event.GetPoint();
-  wxPoint screenpt = ClientToScreen(clientpt);
 
 /*
+  wxPoint screenpt = ClientToScreen(clientpt);
   wxLogMessage(wxT("OnItemMenu for item \"%s\" at screen coords (%i, %i)"), 
                 item ? item->GetDesc() : _T(""), screenpt.x, screenpt.y);
 */

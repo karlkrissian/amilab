@@ -22,6 +22,7 @@
 #include "MainFrame.h"
 
 #include "wrap_wxAuiManager.h"
+#include "wrap_wxRichTextCtrl.h"
 #include "wrap_wxAuiNotebook.h"
 #include "wrap_wxAuiPaneInfo.h"
 
@@ -163,6 +164,22 @@ BasicVariable::ptr WrapClass_MainFrame::
 {
   wxAuiNotebook* nb =   this->_objectptr->_obj->GetMainBook();
   return AMILabType<wxAuiNotebook>::CreateVar(nb,true);
+}
+
+//---------------------------------------------------
+//  GetConsole
+//---------------------------------------------------
+void WrapClass_MainFrame::
+      wrap_GetConsole::SetParametersComments() 
+{
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_MainFrame::
+      wrap_GetConsole::CallMember( ParamList* p)
+{
+  boost::shared_ptr<wxRichTextCtrl> cons = \
+    this->_objectptr->_obj->GetConsole();
+  return AMILabType<wxRichTextCtrl>::CreateVarFromSmtPtr(cons);
 }
 
 //---------------------------------------------------
