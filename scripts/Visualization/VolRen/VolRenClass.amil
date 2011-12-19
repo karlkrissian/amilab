@@ -8,10 +8,13 @@ comments="VolRen: VTK GPU RayCasting."
 
 func "Common/ScriptGui"
 
-
 if (!exists(global::vtkAmiVolRenPlugin_obj)) {
-  func "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen"
-  #::AmiVol= global::vtkAmiVolRenPlugin_obj.LoadOK()  
+  #func "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen"
+  ModulePlugin global::vtkAmiVolRenPlugin_obj
+  global::vtkAmiVolRenPlugin_obj.SetModuleName("vtkAmiVolRen")
+  global::vtkAmiVolRenPlugin_obj.SetQuiet(true)
+  global::vtkAmiVolRenPlugin_obj.Load()
+
 } else {
   func "../Modules/vtkAmiVolRen/scripts/ReLoad_vtkAmiVolRen"
 }
@@ -478,6 +481,7 @@ if (!exists(VolRenClass)) {
           ::volVector[0].AddAnnotatedCube() 
         }
         ::volVector[0].DelVTK()
+        ::volVector[0].DefaultProperties() 
         ::volVector[0].SetVolRenMapper(::volrenmapper_type)
         #::volVector[0].CreateVTK( &::input)
         if (::volrenmapper_type!=3){
@@ -486,7 +490,7 @@ if (!exists(VolRenClass)) {
           ::volVector[0].SetInput(&::input)
           ::volVector[0].SetInput2(&::input2)
         }
-        ::volVector[0].DefaultProperties() 
+
         ::volVector[0].CreateVTK()
         if (::volrenmapper_type!=::volVector[0].volrenmapper_type) {
           ::volrenmapper_type=::volVector[0].volrenmapper_type
@@ -556,6 +560,7 @@ if (!exists(VolRenClass)) {
       if (exists(::input2)) {
         ::volVector[1].cpManager(&::volVector[0])
         ::volVector[1].DelVTK()
+        ::volVector[1].DefaultProperties() 
         #::volVector[1].CreateVTK( &::input2)
         ::volVector[1].SetInput(&::input2)
         ::volVector[1].CreateVTK()
