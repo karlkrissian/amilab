@@ -829,7 +829,7 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
 #  if classname="" then can be used for a standard function
 #------------------------------------------------------------------
 def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
-
+  #print "ImplementMethodWrap {0} {1} {2}".format(classname,method.usedname,constructor)
   wrapmethod_name = method.usedname
   if classname!="":
     wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
@@ -869,7 +869,13 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
     argnum=0
     for a in method.args:
       argnum+=1
-      noconstructor_call = constructor and (config.types[a.typeid].GetString()==classname)
+      # the second condition is only valid for non-template classes
+      arg_type = config.types[a.typeid].GetString()
+      arg_type = arg_type.replace(','  ,', ')
+      arg_type = arg_type.replace(',  ',', ')
+      noconstructor_call = constructor and (arg_type==classname)
+      #print "argument {0}  {1}, '{2}', '{3}' '{4}".format(argnum,noconstructor_call,\
+      #        arg_type,ClassConstructor(classname),classname)
       res += "\n"
       if a.default!=None:
         res += "  // Check the number of parameters here for default arguments\n"
