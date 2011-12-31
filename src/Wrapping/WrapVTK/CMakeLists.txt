@@ -66,7 +66,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   #------------------------------------------------------------
 
   # Read list of classes to wrap
-  READ_CLASSES("${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt") 
+  READ_CLASSES2(
+    "${CMAKE_CURRENT_SOURCE_DIR}/classes_common.txt"
+    "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt"
+  ) 
+  #MESSAGE("classes.txt : ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt")
 
   #------------------------------------------------------------
   # Generating and reading ancestors
