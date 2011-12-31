@@ -17,13 +17,17 @@ FIND_PACKAGE( GCCXML REQUIRED)
 
 INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
 
-IF(EXISTS ${PROJECT_SOURCE_DIR}/Wrapping)
-  SET(WRAP_DIR ${PROJECT_SOURCE_DIR}/Wrapping)
-ENDIF(EXISTS ${PROJECT_SOURCE_DIR}/Wrapping)
+IF(EXISTS ${${KIT}_SOURCE_DIR}/Wrapping)
+  SET(WRAP_DIR ${${KIT}_SOURCE_DIR}/Wrapping)
+ELSE(EXISTS ${${KIT}_SOURCE_DIR}/Wrapping)
+  IF(EXISTS ${PROJECT_SOURCE_DIR}/Wrapping)
+    SET(WRAP_DIR ${PROJECT_SOURCE_DIR}/Wrapping)
+  ENDIF(EXISTS ${PROJECT_SOURCE_DIR}/Wrapping)
 
-IF(EXISTS ${PROJECT_SOURCE_DIR}/src/Wrapping)
-  SET(WRAP_DIR ${PROJECT_SOURCE_DIR}/src/Wrapping)
-ENDIF(EXISTS ${PROJECT_SOURCE_DIR}/src/Wrapping)
+  IF(EXISTS ${PROJECT_SOURCE_DIR}/src/Wrapping)
+    SET(WRAP_DIR ${PROJECT_SOURCE_DIR}/src/Wrapping)
+  ENDIF(EXISTS ${PROJECT_SOURCE_DIR}/src/Wrapping)
+ENDIF(EXISTS ${${KIT}_SOURCE_DIR}/Wrapping)
 
 SET(GENERATED_DIR ${WRAP_DIR}/Generated)
 IF( NOT EXISTS ${GENERATED_DIR})
@@ -166,10 +170,14 @@ ELSE(GCCXML_CMD_RESULT)
       IF(${KIT}_GENERATE_HTML_HELP)
         # flag to generate html help
         SET(MYCOMMAND_3 ${MYCOMMAND_3} "--generate-html")
-        # base URL html help
-        SET(MYCOMMAND_3 ${MYCOMMAND_3} "--url" "${CLASSES_URL_LIST}")
-        #HTML directory
+        IF(CLASSES_URL_LIST)
+          # base URL html help
+          SET(MYCOMMAND_3 ${MYCOMMAND_3} "--url" "${CLASSES_URL_LIST}")
+        ENDIF(CLASSES_URL_LIST)
+          IF(HTML_DIR)
+          #HTML directory
         SET(MYCOMMAND_3 ${MYCOMMAND_3} "--outputhtmldir" ${HTML_DIR})
+        ENDIF(HTML_DIR)
       ENDIF(${KIT}_GENERATE_HTML_HELP)
 
       WRAP_MESSAGE("COMMAND 3: ${MYCOMMAND_3}")

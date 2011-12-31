@@ -1,5 +1,6 @@
 
 
+#-------------------------------------------------------------------------------
 #
 # needs 
 #  GENERATED_DIR
@@ -19,6 +20,7 @@ MACRO(WRAP_INIT mess)
   MESSAGE("Details in '${GENERATED_DIR}/Wrapping.log'")
 ENDMACRO(WRAP_INIT)
 
+#-------------------------------------------------------------------------------
 #
 # needs GENERATED_DIR
 #
@@ -39,6 +41,7 @@ MACRO(WRAP_MESSAGE mess)
   ENDIF(DEFINED GENERATED_DIR)
 ENDMACRO(WRAP_MESSAGE mess)
 
+#-------------------------------------------------------------------------------
 #
 # Running gccxml command for amilab wrapping
 #
@@ -81,6 +84,7 @@ MACRO( RUN_GCCXML XML_INPUT XML_OUTPUT)
 
 ENDMACRO( RUN_GCCXML )
 
+#-------------------------------------------------------------------------------
 #
 # Read the list of classes
 #
@@ -88,19 +92,48 @@ ENDMACRO( RUN_GCCXML )
 # output: classes_txt classes_list HAS_CLASSES
 #
 MACRO( READ_CLASSES filename)
+  #MESSAGE("READ_CLASSES *")
   # Read list of classes to wrap
   IF(EXISTS ${filename})
+    #MESSAGE("READ_CLASSES *")
     FILE(READ "${filename}" classes_txt)
     # skip comments
-    STRING(REGEX REPLACE "#[^\n]*\n" "\n"  classes_list_cleaned ${classes_txt} )
-    STRING(REGEX REPLACE "#[^\n]*$"  ""    classes_list_cleaned ${classes_list_cleaned} )
-    #STRING(REGEX REPLACE "\n#[^\n]*\n" "\n" classes_list_cleaned ${classes_list_cleaned} )
+    STRING(REGEX REPLACE "#[^\n]*\n" "\n"  classes_list_cleaned 
+                          ${classes_txt} )
+    STRING(REGEX REPLACE "#[^\n]*$"  ""    classes_list_cleaned 
+                          ${classes_list_cleaned} )
     STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_list_cleaned} )
-    #MESSAGE("classes_list = ${classes_list}")
     SET(HAS_CLASSES "1")
   ENDIF(EXISTS ${filename})
 ENDMACRO( READ_CLASSES )
 
+#-------------------------------------------------------------------------------
+#
+# Read the list of classes including a common list for all versions of the 
+# library
+#
+# input:  filename containing the list of classes to wrap
+# output: classes_txt classes_list HAS_CLASSES
+#
+MACRO( READ_CLASSES2 filename_common filename)
+  # Read list of classes to wrap
+  IF(EXISTS ${filename_common})
+    FILE(READ "${filename_common}" classes_common_txt)
+    # skip comments
+    STRING(REGEX REPLACE "#[^\n]*\n" "\n"  classes_common_list_cleaned 
+                          ${classes_common_txt} )
+    STRING(REGEX REPLACE "#[^\n]*$"  ""    classes_common_list_cleaned 
+                          ${classes_common_list_cleaned} )
+    STRING(REGEX REPLACE "[\r\n]" ";" classes_common_list 
+                          ${classes_common_list_cleaned} )
+    SET(HAS_CLASSES "1")
+  ENDIF(EXISTS ${filename_common})
+  READ_CLASSES(${filename})
+  SET( classes_list ${classes_common_list} ${classes_list})
+  MESSAGE("classes_list = ${classes_list}")
+ENDMACRO( READ_CLASSES2 )
+
+#-------------------------------------------------------------------------------
 #
 # Read the list of functions
 #
@@ -122,6 +155,7 @@ MACRO( READ_FUNCTIONS filename)
 ENDMACRO( READ_FUNCTIONS )
 
 
+#-------------------------------------------------------------------------------
 #
 # Create ancestors file
 #
@@ -159,14 +193,14 @@ MACRO( CREATE_ANCESTORS )
     #  SET(ANCESTORS_CMD ${ANCESTORS_CMD} "\"${C}\"" )
     #ENDFOREACH(C ${AVAILABLE_EXTERNAL_CLASSES})
   ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
-  IF(GENERATE_HTML_HELP)
+  IF(GENERATE_HTML_HELP AND CLASSES_URL_LIST AND HTML_DIR)
     # flag to generate html help
     SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--generate-html")
     # base URL html help
     SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--url" "${CLASSES_URL_LIST}")
     #HTML directory
     SET(ANCESTORS_CMD ${ANCESTORS_CMD} "--outputhtmldir" ${HTML_DIR})
-  ENDIF(GENERATE_HTML_HELP)
+  ENDIF(GENERATE_HTML_HELP AND CLASSES_URL_LIST AND HTML_DIR)
 
   SET( ANCESTORS_CMD_TXT "")
   FOREACH( C ${ANCESTORS_CMD})  
@@ -210,6 +244,7 @@ MACRO( CHECK_WRAPPED_FILES ELTS_LIST MISSING_VAR)
 ENDMACRO( CHECK_WRAPPED_FILES ELTS_LIST MISSING_VAR)
 
 
+#-------------------------------------------------------------------------------
 #
 # Wrap the classes and functions
 #
@@ -326,6 +361,13 @@ MACRO( WRAP_CODE )
     ENDFOREACH( C ${WRAP_CMD})
     WRAP_MESSAGE("WRAP_CMD: ${WRAP_CMD_TXT}")
 
+    IF(EXISTS  ${GENERATED_DIR}/../classes.txt)
+      SET( CLASSES_FILES ${GENERATED_DIR}/../classes.txt)
+    ENDIF(EXISTS  ${GENERATED_DIR}/../classes.txt)
+    IF(EXISTS  ${GENERATED_DIR}/../../classes_common.txt)
+      SET( CLASSES_FILES ${CLASSES_FILES} ${GENERATED_DIR}/../../classes_common.txt)
+    ENDIF(EXISTS  ${GENERATED_DIR}/../../classes_common.txt)
+
     ADD_CUSTOM_COMMAND(
       OUTPUT
         ${OUTPUT_LIST} 
@@ -334,7 +376,7 @@ MACRO( WRAP_CODE )
       COMMAND
         ${WRAP_CMD}
       DEPENDS
-        ${GENERATED_DIR}/../classes.txt
+        ${CLASSES_FILES}
       VERBATIM
     )
   ENDIF ( (${NB_MISSING_CLASSES}   GREATER 0)                 OR 
