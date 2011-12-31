@@ -142,16 +142,18 @@ void TextControl::ConsoleClear()
 //--------------------------------------------------
 void TextControl::AddCommand( const wxString& cmd)
 {
+  std::cout << "AddCommand( '" << cmd.ToAscii() << "')" << std::endl;
   text.Append(cmd);
   wxString unformat_cmd = cmd;
   unformat_cmd.Replace(_T("%"),_T("%%"));
   GB_DriverBase->ws_print((const char*) unformat_cmd.mb_str(wxConvUTF8));
 
-  cmd_lines[cmdlines_pos] = cmd;
+  cmd_lines.push_back(cmd);
   // get rid of the "\n" character at the end
-  cmd_lines[cmdlines_pos].RemoveLast();
-  cmdlines_pos = (cmdlines_pos+1)%MAX_SAVED_COMMANDS;
-  cmdline_displaypos = -1;
+  cmd_lines.back().RemoveLast();
+  //cmd_lines.size() = (cmd_lines.size()+1)%MAX_SAVED_COMMANDS;
+  cmdline_displaypos = cmd_lines.size();
+  std::cout << "cmd_lines.size() = " << cmd_lines.size() << std::endl;
 }
 
 
@@ -159,6 +161,7 @@ void TextControl::AddCommand( const wxString& cmd)
 //--------------------------------------------------
 void TextControl::IncCommand( const wxString& cmd)
 {
+  std::cout << "IncCommand( '" << cmd.ToAscii() << "')" << std::endl;
 //  text.Append(" ");
 //  text.Append(cmd);
   WriteText(wxString::FromAscii(" "));
@@ -210,7 +213,7 @@ void TextControl::UpdateText()
   SetAndShowDefaultStyle(*_basic_style);
   BeginAlignment(wxTEXT_ALIGNMENT_CENTRE);
     wxTextAttrEx ta;
-    ta.SetBackgroundColour(wxColour(200,200,200));
+    ta.SetBackgroundColour(wxColour(230,230,230));
     BeginStyle(ta);
       WriteText(title_text);
     EndStyle();
@@ -223,6 +226,7 @@ void TextControl::UpdateText()
   EndItalic();
 
   this->SetInsertionPointEnd();
+  ShowPosition(GetLastPosition());
   SetAndShowDefaultStyle(*_basic_style);
   //SetDefaultStyleToCursorStyle();
   _protect = 1;
@@ -533,6 +537,7 @@ bool TextControl::ProcessReturn()
     last_cmd += '\n';
     this->AddCommand(last_cmd);
     this->AddPrompt(false);
+    current_commandline = _T("");
   }
 
   // Add now the newline character ...
@@ -616,12 +621,15 @@ void TextControl::OnChar(wxKeyEvent& event)
 
 
             case WXK_BACK:
-                // Don't allow deleting the prompt ...
-                if (GB_debug) std::cerr << "OnChar BACK" << std::endl;
-                if (this->GetInsertionPoint()==lastprompt_position)
-                  this->SetInsertionPoint(this->text.Len());
-                if ((int)this->GetInsertionPoint()>lastprompt_position) event.Skip();
-                return;
+/*              std::cout << "WXK_BACK" << std::endl;
+              std::cout << this->GetInsertionPoint() << "; " << lastprompt_position << std::endl;
+              std::cout << (title_text+text).Len() << std::endl;*/
+              // Don't allow deleting the prompt ...
+              if (GB_debug) std::cerr << "OnChar BACK" << std::endl;
+              if (this->GetInsertionPoint()<=lastprompt_position)
+                this->SetInsertionPoint((title_text+text).Len());
+              if ((int)this->GetInsertionPoint()>lastprompt_position) event.Skip();
+              return;
 
 
             case WXK_UP:
@@ -762,43 +770,70 @@ void TextControl::OnChar(wxKeyEvent& event)
 //--------------------------------------------------
 void TextControl::PreviousCommand()
 {
-    // 1. if displaypos==-1 save current line
-    // 2. go up in the command list
-    if ( ( cmdline_displaypos==-1 ) || ( cmdline_displaypos == cmdlines_pos ) )
-    {
-        // to do: save current line
-        cmdline_displaypos = cmdlines_pos;
-        //cmd_lines[cmdline_displaypos] = this->GetValue().Mid ( this->text.Len() );
-        cmd_lines[cmdline_displaypos] = this->GetContents().Mid ( this->text.Len() );
-        // show the previous line
-        cmdline_displaypos = ( cmdline_displaypos+MAX_SAVED_COMMANDS-1 ) %MAX_SAVED_COMMANDS;
-        this->UpdateText();
-        this->WriteText(cmd_lines[cmdline_displaypos] );
-        this->SetInsertionPointEnd();
-    }
-    else
-    {
-       if (cmdline_displaypos>0) {
-        cmdline_displaypos = ( cmdline_displaypos+MAX_SAVED_COMMANDS-1 ) %MAX_SAVED_COMMANDS;
-        this->UpdateText();
-//                    this->AppendText(cmd_lines[cmdline_displaypos].Left(cmd_lines[cmdline_displaypos].Len()-1));
+  std::cout << "cmdline_displaypos = " << cmdline_displaypos << std::endl;
+  std::cout << "current_commandline = '" << current_commandline.ToAscii() << "'" << std::endl;
+  for(int i=0;i<cmd_lines.size();i++) {
+    std::cout << " command " << i << ": '" <<  cmd_lines[i].ToAscii() << "'" << std::endl;
+  }
+
+  // Do nothing if we are at the first command or there is only one command
+  if ((cmdline_displaypos==0)||(cmd_lines.size()==0)) { return; }
+  
+  // 1. if displaypos==-1 save current line
+  // 2. go up in the command list
+  if (cmdline_displaypos == cmd_lines.size())
+  {
+      // to do: save current line
+      current_commandline = this->GetContents().Mid ( this->text.Len() );
+      //cmd_lines.size()++;
+      std::cout << "saving command " << cmdline_displaypos << " : '"
+                << current_commandline.ToAscii() << "'" << std::endl;
+      // show the previous line
+      cmdline_displaypos--;
+      this->UpdateText();
+      this->WriteText(cmd_lines[cmdline_displaypos] );
+      this->SetInsertionPointEnd();
+  }
+  else
+  {
+    if (cmdline_displaypos>0) {
+      cmdline_displaypos--;
+      this->UpdateText();
+      //this->AppendText(cmd_lines[cmdline_displaypos].Left(cmd_lines[cmdline_displaypos].Len()-1));
+      if (cmd_lines[cmdline_displaypos].Length() != 0)
         this->WriteText ( cmd_lines[cmdline_displaypos] );
-        this->SetInsertionPointEnd();
-       }
+      this->SetInsertionPointEnd();
     }
+  }
 }
 
 //--------------------------------------------------
 void TextControl::NextCommand()
 {
-    // 1. if displaypos==-1 do nothing
-    // 2. otherwise go down in the command list
-    if ( ( cmdline_displaypos!=-1 ) && ( cmdline_displaypos!=cmdlines_pos ) )
-    {
-        cmdline_displaypos = ( cmdline_displaypos+1 ) %MAX_SAVED_COMMANDS;
-        this->UpdateText();
+  std::cout << "cmdline_displaypos = " << cmdline_displaypos << std::endl;
+  std::cout << "current_commandline = '" << current_commandline.ToAscii() << "'" << std::endl;
+  for(int i=0;i<cmd_lines.size();i++) {
+    std::cout << " command " << i << ": '" <<  cmd_lines[i].ToAscii() << "'" << std::endl;
+  }
+  // 1. if displaypos==-1 do nothing
+  // 2. otherwise go down in the command list
+  if  (cmdline_displaypos<(int)cmd_lines.size()-1)
+  {
+      cmdline_displaypos++;
+      this->UpdateText();
+      if (cmd_lines[cmdline_displaypos].Length() != 0)
         this->WriteText(cmd_lines[cmdline_displaypos]);
+      this->SetInsertionPointEnd();
+  } else 
+    if (cmdline_displaypos==(int)cmd_lines.size()-1) {
+      // bring back the command previously saved
+      cmdline_displaypos++;
+      this->UpdateText();
+      if (current_commandline.Length()!=0) 
+      {
+        this->WriteText(current_commandline);
         this->SetInsertionPointEnd();
+      }
     }
 }
 
