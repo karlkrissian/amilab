@@ -294,6 +294,13 @@ if (!exists(SimplevtkVolumeClass)) {
         del ::volmapper
         #printn "VolMapper Mode = %1%" %::volrenmapper_type
 
+        if ::volrenmapper_type==4 {
+          if exists(vtk->vtkSmartVolumeMapper) {
+            ::volmapper = vtk.vtkSmartVolumeMapper.New()
+          } else {
+            ::volmapper_type = 0
+          }
+        }
         if (::volrenmapper_type==0)||(::volrenmapper_type==3) {
           if  (::volrenmapper_type==3) && \
               (exists(vtkAmiVolRen)) {
@@ -311,7 +318,7 @@ if (!exists(SimplevtkVolumeClass)) {
             printn mess
             #InfoDialog mess
             del ::volmapper
-            ::volrenmapper_type=2
+            ::volrenmapper_type=1
           } 
         } 
         if ::volrenmapper_type==1 {
@@ -348,7 +355,7 @@ if (!exists(SimplevtkVolumeClass)) {
         if (::volrenmapper_type==3)&&(!exists(::input2)) {
             SetStatusText(  "Missing second input for Multiple VolRen"+\
                             ", switching to vtkGPUVolumeMapper")
-            ::volrenmapper_type=0
+            ::volrenmapper_type=4
         }
         #::DefaultProperties() #define init properties 
 
@@ -677,7 +684,8 @@ printn "::move_2 = %1%" % ::move_2
       if (exists(::volmapper)) {
         if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
             (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") || \
-            (::volmapper.GetClassName()=="vtkAMILabOpenGLGPUMultiVolumeRayCastMapper") \
+            (::volmapper.GetClassName()=="vtkAMILabOpenGLGPUMultiVolumeRayCastMapper") ||\
+            (::volmapper.GetClassName()=="vtkSmartVolumeMapper") \
         {
           printn "Texture =  %1%" %::volmapper.GetClassName()
           # update volmapper GPU settings
