@@ -4,7 +4,7 @@
 #
 
 # itk::Image<unsigned char, 2>
-ImageType ="Image_uchar_2u"
+ImageType ="Image_UC_2u"
 
 # ImageType::Pointer
 ImageType_Pointer="itk.SmartPointer_"+ImageType
@@ -48,7 +48,7 @@ proc CreateImage(OBJECT image) \
   transl[1] = 20
   transform.Translate(&transl)
  
-  resampleFilter_ptr = itk.ResampleImageFilter_Image_uchar_2u_Image_uchar_2u_double.New()
+  resampleFilter_ptr = itk.ResampleImageFilter_Image_UC_2u_Image_UC_2u_double.New()
   resampleFilter = resampleFilter_ptr.GetPointer()
   resampleFilter.SetTransform(&transform)
   resampleFilter.SetInput(&im)
@@ -71,7 +71,7 @@ proc CreateImage(OBJECT image) \
   resampleFilter.SetSize(&size )
   resampleFilter.Update()
  
-  writer_sp  = itk.ImageFileWriter_Image_uchar_2u.New()
+  writer_sp  = itk.ImageFileWriter_Image_UC_2u.New()
   writer = writer_sp.GetPointer()
   writer.SetFileName( "res.png" )
   writer.SetInput( &resampleFilter.GetOutput() )

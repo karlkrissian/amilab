@@ -6,14 +6,14 @@ output="tmp2.png"
  
 # need to keep the Smart Pointer alive
 # TODO: -> operator !!!
-reader_sp  = itk.ImageFileReader_Image_uchar_2u_DefaultConvertPixelTraits_uchar.New()
+reader_sp  = itk.ImageFileReader_Image_UC_2u_DefaultConvertPixelTraits_UC.New()
 reader = reader_sp.GetPointer()
-writer_sp  = itk.ImageFileWriter_Image_uchar_2u.New()
+writer_sp  = itk.ImageFileWriter_Image_UC_2u.New()
 writer = writer_sp.GetPointer()
 
 
 #filter is a keyword ...
-filter_sp  = itk.BinaryThresholdImageFilter_Image_uchar_2u_Image_uchar_2u.New()
+filter_sp  = itk.BinaryThresholdImageFilter_Image_UC_2u_Image_UC_2u.New()
 filter1 = filter_sp.GetPointer()
 reader.SetFileName_1( input )
 reader.Update()

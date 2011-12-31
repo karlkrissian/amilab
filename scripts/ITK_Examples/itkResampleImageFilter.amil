@@ -3,16 +3,19 @@
 # Example works
 #
 
-  input = $1
+  input = Image($1)
 
   # itk::Image<unsigned char, 2>
-  ImageType ="Image_uchar_2u"
+  ImageType ="Image_UC_2u"
 
   # ImageType::Pointer
   ImageType_Pointer="itk.SmartPointer_"+ImageType
 
   # 1. Get Input image
   input_itk = itk.amiConvert.ToITK_US2(&input)
+
+  eval "resampleFilter_ptr = itk.ResampleImageFilter_%1%_%1%_double.New();" % ImageType
+  resampleFilter = resampleFilter_ptr.GetPointer()
 
   # 1. Put a transform 
   transform_ptr = itk.TranslationTransform_double_2u.New()
@@ -24,30 +27,28 @@
   transl[1] = 0
   transform.Translate(&transl)
  
- 
   # 2. Set spacing
   spacing = vector_double(2,0)
   spacing[0] = 1.0;
   spacing[1] = 1.0;
-  resampleFilter->SetOutputSpacing( &spacing[0] );
+  resampleFilter.SetOutputSpacing( &spacing[0] );
  
   # 2. Set origin
   origin = vector_double(2,0)
   origin[0] = 0.0;
   origin[1] = 0.0;
-  resampleFilter->SetOutputOrigin( &origin[0] );
+  resampleFilter.SetOutputOrigin( &origin[0] );
  
   #// Without this, the program crashes
-  size = im.GetLargestPossibleRegion().GetSize()
+  size = input_itk.GetPointer().GetLargestPossibleRegion().GetSize()
   resampleFilter.SetSize(&size )
 
-  eval "resampleFilter_ptr = itk.ResampleImageFilter_%1_%1_double.New();" % ImageType
-  resampleFilter = resampleFilter_ptr.GetPointer()
   resampleFilter.SetTransform(&transform)
-  resampleFilter.SetInput(&input_itk)
+  resampleFilter.SetInput(&input_itk.GetPointer())
 
   resampleFilter.Update()
 
-  res = itk.amiConvert.FromITK_US2(&resampleFilter.GetOutput())
+  res_itk = itk.SmartPointer_Image_UC_2u.SmartPointer(&resampleFilter.GetOutput())
+  res = itk.amiConvert.FromITK_US2(&res_itk)
   show res
 
