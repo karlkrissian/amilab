@@ -8,6 +8,9 @@ if (!exists(standard_icons)) {
   LoadIcons standard_icons
 }
 
+# We can reload always
+del ScriptGui
+
 if (!exists(ScriptGui)) \
 {
 
@@ -29,14 +32,14 @@ if (!exists(ScriptGui)) \
     # TODO: Create the link to the documentation
 
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::SetParentPanel(OBJECT pp) \
     {
       ::parent_panel = &pp
     }
     Comments( ::SetParentPanel, "Sets the panel showing the user interface.")
     
-    #----------------------------
+    #---------------------------------------------------------------------------
     # Closes only the object instance
     #
     proc ::Close() {
@@ -49,7 +52,7 @@ if (!exists(ScriptGui)) \
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
       
-    #----------------------------
+    #---------------------------------------------------------------------------
     # Closes the class and the instance 
     #
     proc ::CloseAll() {
@@ -59,7 +62,7 @@ if (!exists(ScriptGui)) \
     }
     Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
       
-    #----------------------------
+    #---------------------------------------------------------------------------
     # Reloads the script
     #
     proc ::ReloadScript() {
@@ -71,7 +74,7 @@ if (!exists(ScriptGui)) \
     }
     Comments( ::ReloadScript, "Reloads the script from disk.")
       
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::EditScript() {
       # add wxEditor widget
       ed = ami->MainFrame.GetAmilabEditor()
@@ -90,7 +93,7 @@ if (!exists(ScriptGui)) \
       eval "return = win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
     }
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     # Adds a bitmap button after resizing the image to 16x16
     #
     proc ::AddBitmapButton16( OBJECT win, OBJECT icon_im, STRING callback_name) \
@@ -100,7 +103,7 @@ if (!exists(ScriptGui)) \
       eval "::%1%_but_id = ::win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
     }
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Attach() {
       
       if (exists(::frame)) {
@@ -116,13 +119,14 @@ if (!exists(ScriptGui)) \
       }
     }
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Detach() {
       
       if (!exists(::frame)) {
-        ::frame = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,"Timer",\
+        ::frame = wx.wxFrame(&ami.MainFrame,wx.wxID_ANY,"Gui",\
               wx.wxPoint(100,100),wx.wxSize(300,400),\
-              wx.wxRESIZE_BORDER|wx.wxCLOSE_BOX,"Timer")
+              wx.wxRESIZE_BORDER ,"Gui")
+#|wx.wxCLOSE_BOX\
         if exists(::detach_position) {
           ::frame.SetPosition(::detach_position)
         }
@@ -144,7 +148,7 @@ if (!exists(ScriptGui)) \
       }
     }
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::AttachDetach() {
       if (exists(::frame)) {
         ::Attach()
@@ -154,7 +158,7 @@ if (!exists(ScriptGui)) \
     }
     Comments(::AttachDetach,"Attach/Detach tab")
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::AddStandardButtons( OBJECT win) \
     {
       win.BeginHorizontal()
@@ -188,7 +192,7 @@ if (!exists(ScriptGui)) \
       win.EndHorizontal()  
     }
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::AddLimitedButtons( OBJECT win) \
     {
       win.BeginHorizontal()
@@ -203,7 +207,7 @@ if (!exists(ScriptGui)) \
       win.EndHorizontal()  
     }
 
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     # needs to have the variable ::wiki_help defined
     #
     proc ::LaunchWiki() {
@@ -215,7 +219,7 @@ if (!exists(ScriptGui)) \
     }
     Comments( ::LaunchWiki, "Launch the corresponding wiki tutorial page on the default browser.")
   
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     # needs ::html and ::html_filename
     #
     proc ::HtmlHome() {
@@ -223,19 +227,19 @@ if (!exists(ScriptGui)) \
     }
     Comments( ::HtmlHome, "Back to the initial page.")
   
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::HtmlBack() {
       res = ::html.HistoryBack()
     }
     Comments( ::HtmlBack, "Back to the previous page.")
   
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::HtmlForward() {
       res = ::html.HistoryForward()
     }
     Comments( ::HtmlForward, "Go to the forward page.")
   
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     # needs ::html and ::html_filename
     #
     proc ::Html2Home() {
@@ -243,7 +247,7 @@ if (!exists(ScriptGui)) \
     }
     Comments( ::Html2Home, "Back to the initial page.")
 
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     # needs ::html and ::html_filename
     #
     proc ::OpenInBrowser() {
@@ -251,25 +255,25 @@ if (!exists(ScriptGui)) \
     }
     Comments( ::OpenInBrowser, "Open the file in the default browser.")
   
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Html2Back() {
       res = ::html2.HistoryBack()
     }
     Comments( ::Html2Back, "Back to the previous page.")
   
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Html2Forward() {
       res = ::html2.HistoryForward()
     }
     Comments( ::Html2Forward, "Go to the forward page.")
 
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Html2Reload() {
       res = ::html2.LoadPage(::html2.GetOpenedPage())
     }
     Comments( ::Html2Reload, "Reload the current page.")
 
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Html2Hover(OBJECT event) \
     {
       cell = event.GetCell()
@@ -283,7 +287,7 @@ if (!exists(ScriptGui)) \
     }
     Comments( ::Html2Hover, "Callback when going over a link.")
 
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::OnHtmlLinkClicked(OBJECT event) \
     {
       http_link = wx.wxRegEx("[:blank:]*http://.*")
@@ -298,7 +302,7 @@ if (!exists(ScriptGui)) \
       }
     }
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     # Add the standard help page for Gui scripts
     #
     proc ::AddHelpPage( OBJECT win) \
@@ -330,7 +334,180 @@ if (!exists(ScriptGui)) \
         win.AddWidget(&::html,1)
     }
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
+    proc ::GetParamFilename( ) \
+    {
+printn "::GetParamFilename begin"
+      # Use input image if available
+      if exists(::input_name) {
+printn "1"
+        # make replacements to have a valid name
+        wx_name = wx.wxString(::input_name)
+        wx_name.Replace("/","_")
+        wx_name.Replace("::","_")
+        wx_name.Replace(" ", "_")
+        wx_name.Replace(".", "_")
+        wx_name.Replace("(", "_")
+        wx_name.Replace(")", "_")
+        wx_name.Replace("[", "_")
+        wx_name.Replace("]", "_")
+        wx_name.Replace("-", "_")
+        wx_name.Replace("+", "_")
+        return = wx.FromWxString(wx_name)
+      } else {
+printn "2"
+        return = ::classname
+      }
+printn return
+printn "::GetParamFilename end"
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SaveParamInfo( OBJECT params) \
+    {
+      n=0
+      fileexists=true
+      filename0 = ::GetParamFilename()
+      while fileexists {
+        n++
+        filename = ::scriptdata_path+"/"+filename0+".param%1%" % n
+        fileexists=wx.wxFileName.FileExists(filename)
+      }
+      SetStatusText("Saving %1%" % filename)
+      params.WriteFile(filename)
+      ::PARAMfilelistgui.Scan()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SaveParameters() \
+    {
+printn "::SaveParameters begin"
+      # using ::params variable that shoud have a type that inherit from 
+      # ObjectIO
+      if exists(::params) {
+printn "*"
+        ::SaveParamInfo(&::params)
+      }
+printn "::SaveParameters end"
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ScanParameters() \
+    {
+      ::PARAMfilelistgui.Scan()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ReadParameters() \
+    {
+      selection = ::PARAMfilelistgui.GetSelected()
+      # keep only the last selected file for the moment
+      if selection.size()>0 {
+        param_file = selection.back()
+        del ::params_bak
+        ::ParamClass ::params_bak
+        ::params_back = &::params
+        ::params.ReadFile(param_file)
+        ::win.Update(-1)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ReadPARAM() \
+    {
+      selection = ::PARAMfilelistgui.GetSelected()
+
+      # keep only the last selected file for the moment
+      if selection.size()>0 {
+        param_file = selection.back()
+        # TODO: need to have the constant wxRICHTEXT_TYPE_ANY ..., 
+        # using value 1 here
+        ::txtctrl.DoLoadFile(param_file,1)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ParamFilterAll() \
+    {
+      ::PARAMfilelistgui.ClearFileSpecs()
+      ::PARAMfilelistgui.AddFileSpec("*.param*")
+      ::ScanParameters()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ParamFilterCurrent() \
+    {
+      ::PARAMfilelistgui.ClearFileSpecs()
+      filename = ::GetParamFilename()
+      ::PARAMfilelistgui.AddFileSpec(filename+".param*")
+      ::ScanParameters()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::InitUserScriptData() \
+    {
+      # Set/Create the directory of the graph files
+      sp = wx.wxStandardPathsBase.Get()
+      user_app_path = wx.FromWxString(sp.GetUserLocalDataDir())
+      if !wx.wxDir.Exists(user_app_path) {
+        wx.wxFileName.Mkdir(user_app_path)
+      }
+      ::scriptdata_path = user_app_path + "/%1%" % ::classname
+      if !wx.wxDir.Exists(::scriptdata_path) {
+        wx.wxFileName.Mkdir(::scriptdata_path)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    #
+    proc ::AddParamPage( OBJECT win) \
+    {
+      # using alWxFileList
+      func "WxUtils/alWxFileList"
+      alWxFileList ::PARAMfilelistgui
+
+      # Setup ::filelistgui
+      ::PARAMfilelistgui.AddFileSpec("*.param*")
+      #::ROIfilelistgui.SetSelectionCommand(&::OnSelection)
+
+      ::PARAMfilelistgui.ClearPaths()
+      ::InitUserScriptData()
+      printn "::scriptdata_path %1%" % ::scriptdata_path
+      ::PARAMfilelistgui.AddPath(::scriptdata_path)
+      ::PARAMfilelistgui.SetSelectionCommand(&::ReadPARAM)
+
+      win.AddPage("ParamIO")
+        win.BeginHorizontal()
+          win.AddButton("Save",&::SaveParameters)
+          win.SetPositionProp(1,2)
+          win.AddButton("Read",&::ReadParameters)
+          win.SetPositionProp(1,2)
+          win.AddButton("Scan",&::ScanParameters)
+          win.SetPositionProp(1,2)
+        win.EndHorizontal()
+
+        win.BeginBoxPanel("Filter")
+          win.BeginHorizontal()
+            win.AddButton("All",&::ParamFilterAll)
+            win.SetPositionProp(1,2)
+            win.AddButton("Current",&::ParamFilterCurrent)
+            win.SetPositionProp(1,2)
+          win.EndHorizontal()
+        win.EndBoxPanel()
+
+        # if there is a description field in the parameters
+        if exists(::params->description) \
+        {
+          win.AddString(&::params.description,"description")
+        }
+
+        ::PARAMfilelistgui.AddGui(&win)
+        ::txtctrl = wx.wxRichTextCtrl(&win.CurrentParent())
+        win.AddWidget(&::txtctrl,1)
+      ::ScanParameters()
+    }
+
+    #---------------------------------------------------------------------------
     # closing help window
     proc ::CloseHelp(OBJECT event) \
     {
@@ -338,7 +515,7 @@ if (!exists(ScriptGui)) \
       del ::helpw
     }
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     # Opens Helps in a separate window
     # at the end not used because of problems with equations
     # figure badly aligned in wxHTML widget

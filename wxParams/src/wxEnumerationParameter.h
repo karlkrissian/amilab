@@ -24,6 +24,7 @@
 #include <boost/shared_ptr.hpp>
 //#include "wxParamTypes.hpp"
 
+#include "CallBackBase.h"
 
 
 typedef boost::shared_ptr<std::string>     string_ptr;
@@ -62,7 +63,12 @@ class myChoice: public wxChoice
      _updatelist_calldata=cd;
   }
 
-  void OnChoiceUpdate( wxCommandEvent &WXUNUSED(event) )
+  void SetUpdateListCallbackFunctor(CallBackBase::ptr cb) 
+  {
+     _updatelist_callback_functor=cb;
+  }
+
+void OnChoiceUpdate( wxCommandEvent &WXUNUSED(event) )
   {
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
@@ -81,6 +87,9 @@ protected:
 
   void* _updatelist_callback;
   void* _updatelist_calldata;
+  
+  /// if available, use the callback functor
+  CallBackBase::ptr _updatelist_callback_functor;
 private:
     DECLARE_EVENT_TABLE()
 };
@@ -126,6 +135,8 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
 
   void AddUpdateCallback(void* update_cb,
   const std::string& tooltip);
+
+  void SetUpdateListCallbackFunctor(CallBackBase::ptr cb);
 
   void SetSelection(int n);
   

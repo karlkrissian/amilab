@@ -42,6 +42,7 @@
 AMILab_VAR_IMPORT MainFrame*     GB_main_wxFrame;
 
 #include "LanguageBaseConfigure.h"
+#include <CallBackBase.h>
 LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 void CB_ParamWin( void* cd );
@@ -864,26 +865,63 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddImageChoice::CallMember( ParamL
   RETURN_VARINT(var_id,var->Name());
 }
 
-//--------------------------------------------------
+
+#include "wxEnumerationParameter.h"
+
+//------------------------------------------------------------------------------
+class UpdateObjectList : public CallBackBase
+{
+  DEFINE_CLASS(UpdateObjectList);
+  
+public:
+  wxEnumerationParameter* AMIObjectlist_gui;
+  std::string ObjectTypename;
+
+  UpdateObjectList(): AMIObjectlist_gui(NULL) {}
+  
+  void SetwxEnumParam(wxEnumerationParameter* e)
+  {
+    AMIObjectlist_gui=e;
+  }
+  
+  void SetObjectTypename( std::string otn)
+  {
+    ObjectTypename = otn;
+  }
+  
+  virtual bool operator()()
+  {
+    boost::shared_ptr<wxArrayString> AMIObjectlist;
+
+    AMIObjectlist = Vars.SearchAMIObjectTypeVariables(ObjectTypename.c_str());
+    AMIObjectlist->Add(_T("Select object variable ..."));
+    AMIObjectlist_gui->SetChoices(AMIObjectlist);
+  }
+};
+
+//------------------------------------------------------------------------------
 // AddAMIObjectChoice
-//--------------------------------------------------
+//------------------------------------------------------------------------------
 void WrapClass_ParamPanel::wrap_AddAMIObjectChoice::SetParametersComments()
 {
   ADDPARAMCOMMENT("string variable that will contain the name of the selected AMIObject");
   ADDPARAMCOMMENT("string label: description of the AMIObject to select");
+  ADDPARAMCOMMENT("string object type:  AMIObject type to select");
   return_comments = "Identifier of the new widget (int variable).";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_ParamPanel::wrap_AddAMIObjectChoice::CallMember( ParamList* p)
 {
   Variable<std::string>::ptr var;
-  std::string* label = NULL;
+  std::string label;
+  std::string object_type;
   int  n = 0;
   boost::shared_ptr<wxArrayString> AMIObjectlist;
   int  var_id;
 
   if (!get_var_param<std::string>(var, p, n))          ClassHelpAndReturn;
-  if (!get_val_ptr_param<std::string>( label, p, n))   ClassHelpAndReturn;
+  if (!AMILabType<std::string>::get_val_param(label,       p, n)) ClassHelpAndReturn;
+  if (!AMILabType<std::string>::get_val_param(object_type, p, n)) ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
 
@@ -893,14 +931,23 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddAMIObjectChoice::CallMember( Pa
   // Get list of image names
   this->_objectptr->GetObj()->AddListChoice( &var_id,
       var->Pointer(),
-      label->c_str(), // TODO: check param type
+      label.c_str(), // TODO: check param type
       AMIObjectlist,
-      (void*)CB_update_AMIObjectlist, // TODO: check declaration
+      NULL,
+      //(void*)CB_update_AMIObjectlist, // TODO: check declaration
       EnumOptionMenu,
       tooltip,
       true // allowing drop
                               );
 
+  UpdateObjectList::ptr uol(new UpdateObjectList());
+  ParamInfo pi = this->_objectptr->GetObj()->GetLastParamInfo();
+  wxEnumerationParameter* ep = dynamic_cast<wxEnumerationParameter*>(
+                                      pi.GetWidget());
+  uol->SetwxEnumParam(ep);
+  uol->SetObjectTypename(object_type);
+  ep->SetUpdateListCallbackFunctor(uol);
+  
   // create integer variable to return
   RETURN_VARINT(var_id,var->Name());
 }

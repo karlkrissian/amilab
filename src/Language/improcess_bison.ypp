@@ -7877,6 +7877,68 @@ primary_var:
         }
 
       }
+    |
+    T_MIN T_OP_PAR expr_var T_COMMA expr_var T_CL_PAR
+    {
+      /** 
+      Description:
+        The 2 parameters can be either images or numbers,
+        for 2 images:
+          Returns the image corresponding to the pointwise minimum between 2 images.
+        for 2 numbers:
+          Returns the minimal value.
+
+
+      See also:
+              max, median
+        **/
+
+        BasicVariable::ptr param2(driver.var_stack.GetLastBasicVar());
+        BasicVariable::ptr param1(driver.var_stack.GetLastBasicVar());
+
+        if (param1.get()&&param2.get()) {
+          if ((param1->IsNumeric())&&(param2->IsNumeric())) {
+            double val1 = param1->GetValueAsDouble();
+            double val2 = param2->GetValueAsDouble();
+            double res = (val1<val2)?val1:val2;
+            ADD_VARSTACK_FLOAT(res);
+          }
+          else
+          if ((param1->Type()==type_image)&&(param2->Type()==type_image)) {
+            DYNAMIC_CAST_VARIABLE(InrImage,param1,varim1) 
+            DYNAMIC_CAST_VARIABLE(InrImage,param2,varim2) 
+
+            InrImage::ptr im1(varim1->Pointer());
+            InrImage::ptr im2(varim2->Pointer());
+            double val1,val2;
+            InrImage::ptr res;
+            // TODO: take advantage of temporary images here??
+            res = InrImage::ptr(new InrImage( im1->GetFormat(),
+                                              im1->GetVDim(),
+                                              "max_im_op.ami.gz",
+                                              im1.get()));
+            (*res) = (*im1);
+
+            // TODO: use image iterator here
+            res->InitBuffer();
+            im2->InitBuffer();
+            Repeter
+              val1 = res->ValeurBuffer();
+              val2 = im2->ValeurBuffer();
+              Si val2<val1 AlorsFait res->FixeValeur(val2);
+              im2->IncBuffer();
+            JusquA Non(res->IncBuffer())
+            FinRepeter
+            Variable<InrImage>::ptr new_var(new Variable<InrImage>(res));
+            driver.var_stack.AddVar(new_var);
+          }
+          else {
+            driver.err_print("max operator with these types of parameters not available");
+            YYABORT;
+          }
+        }
+
+      }
 /*
       |
       function_variable T_OP_PAR param_list T_CL_PAR 

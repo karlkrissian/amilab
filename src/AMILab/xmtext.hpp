@@ -29,6 +29,7 @@
 #include <wx/richtext/richtextstyles.h>
 
 #define wxTextCtrlClass wxRichTextCtrl
+#include <vector>
 
 class TextControl : public wxTextCtrlClass {
 
@@ -39,9 +40,16 @@ protected:
 //  wxString   alltext;
   wxString   title_text;
   wxString   text;
-  wxString*  cmd_lines; // saved previous lines
-  int        cmdlines_pos;
+
+  //! saved previous lines
+  std::vector<wxString>  cmd_lines; 
+  
+  //! backup of the current commandline to allow navigating in the history
+  wxString   current_commandline;
+  
+  //! position of the currently displayed command line
   int        cmdline_displaypos;
+  
   wxString   last_line;
   unsigned char _protect;
   wxTextCtrl*  _logtextctrl;
@@ -75,17 +83,15 @@ protected:
                       validator
                     )
   {
-    cmd_lines = new wxString[MAX_SAVED_COMMANDS];
-    for(int i=0; i<MAX_SAVED_COMMANDS; i++) cmd_lines[i]=wxString::FromAscii("");
-    cmdline_displaypos = -1;
-    cmdlines_pos       = 0;
+    cmd_lines.empty();
+    cmdline_displaypos = 0;
     in_completion      = 0;
     completions =  boost::shared_ptr<wxArrayString>(new wxArrayString());
     completion_count   = 0;
     SetSizeHints(wxSize(200,100));
     SetToolTip(_T("Amilab command line console, \n \tKeyboard shortcuts: \n \tCtrl-F: load a filename as a string. \n \tTab: complete a keyword or a variable name. \n \tUp-Down arrows to browse command history. "));    
     
-    this->title_text=_T("AMILab Console\n");
+    this->title_text=_T("  AMILab Console  \n");
     InitRichText();
   };
 
@@ -93,7 +99,6 @@ protected:
 
   ~TextControl() {
     //std::cout << "~TextControl()" << std::endl;
-    delete[] cmd_lines;
     delete _basic_style;
   }
 
@@ -109,6 +114,11 @@ protected:
 
   const wxString GetText() { return (const wxString) text; }
 
+  /**
+  * @brief Return the size of the accepted text (including prompts but not title)
+  *
+  * @return int
+  **/
   int GetAcceptedSize() { return text.Len(); }
 
   void UpdateText();
@@ -122,7 +132,6 @@ protected:
    *
    * @return wxString
    **/
-  
   wxString GetContents();
 
   void DisplayCompletion();

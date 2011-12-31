@@ -88,10 +88,13 @@ void myChoice::Callback()
 void myChoice::UpdateListCallback()
 //
 {
-  if (this->_updatelist_callback!=NULL) {
-    void (*pf)( void*) = (void (*)(void*)) this->_updatelist_callback;
-    pf( this->_updatelist_calldata);
-  }
+  if (this->_updatelist_callback_functor.get()) {
+    (*_updatelist_callback_functor)();
+  } else 
+    if (this->_updatelist_callback!=NULL) {
+      void (*pf)( void*) = (void (*)(void*)) this->_updatelist_callback;
+      pf( this->_updatelist_calldata);
+    }
 }
 
 //---------------------------------------------------------------
@@ -171,7 +174,7 @@ wxEnumerationParameter::~wxEnumerationParameter()
   */
   }
 
-//----------------------------------------------
+//------------------------------------------------------------------------------
 void wxEnumerationParameter::AddUpdateCallback( void* update_cb,
   const std::string& tooltip)
 {
@@ -187,6 +190,12 @@ void wxEnumerationParameter::AddUpdateCallback( void* update_cb,
 */
 
   _choice->SetUpdateListCallback(update_cb,(void*) this);
+}
+
+//------------------------------------------------------------------------------
+void wxEnumerationParameter::SetUpdateListCallbackFunctor(CallBackBase::ptr cb)
+{
+  _choice->SetUpdateListCallbackFunctor(cb);
 }
 
 

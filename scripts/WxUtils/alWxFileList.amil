@@ -20,7 +20,7 @@ Class alWxFileList \
   }
 
   #-------------------------------------------------------------------------
-  proc ::ClearFileSpecs( STRING spec) \
+  proc ::ClearFileSpecs() \
   {
     ::file_specs.clear()
   }

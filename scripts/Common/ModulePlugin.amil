@@ -127,11 +127,14 @@ Class ModulePlugin \
   }
 
   proc ::UnLoad() {
-    # should delete variables in Builtin
-    eval "del %1%;" % ::ModuleName
-    # need to call detach first, otherwise SEGFAULT!
-    ::plugin_mgr.Detach()
-    ::plugin_mgr.Unload()
+    if ::IsLoaded {
+      # should delete variables in Builtin
+      eval "del %1%;" % ::ModuleName
+      # need to call detach first, otherwise SEGFAULT!
+      ::plugin_mgr.Detach()
+      ::plugin_mgr.Unload()
+      ::IsLoaded = false
+    }
   }
 
   proc ::ReLoad() {

@@ -1,0 +1,77 @@
+#
+# Class that parses the members of an AMILab scripting object
+# and automatically writes the values of specific members (of predefined types)
+# to a text file
+# that can be automatically loaded with the function ReadFile(filename)
+#
+
+del ObjectIO
+
+Class ObjectIO {
+
+  proc ::Init() \
+  {
+    # list of types to accept
+    ::accept = VarVector()
+      ::accept.push_back("int")
+      ::accept.push_back("float")
+      ::accept.push_back("double")
+      ::accept.push_back("bool")
+      ::accept.push_back("unsigned char")
+      ::accept.push_back("std::string")
+
+    ::writeformat = VarVector()
+      ::writeformat.push_back("%1%")
+      ::writeformat.push_back("%1%")
+      ::writeformat.push_back("%1%")
+      ::writeformat.push_back("%1%")
+      ::writeformat.push_back("%1%")
+      ::writeformat.push_back("\"%1%\"")
+
+    # list of variable name to ignore
+    ::ignore = VarVector()
+      ::ignore.push_back("classname")
+      ::ignore.push_back("classfilename")
+      ::ignore.push_back("objectfilename")
+  }
+
+  proc ::ReadFile( STRING filename) \
+  {
+    func filename
+  }
+
+  proc ::WriteFile( STRING filename) \
+  {
+    oc = language.Vars.GetObjectContext()
+    f = File(filename,"w")
+    f._printn("#")
+    f._printn("# Saving structure %1%" % ::classname)
+    f._printn("#")
+    # list variables in the context
+    for n=0 to oc.GetSize()-1 {
+      name  = oc[n].Name()
+      type  = oc[n].GetTypeName()
+      value = oc[n].GetValueAsString()
+      printn "name: %1%" % name + "\ttype: %1%" % type + "\tvalue: %1%" % value
+      name_ok = true
+      for k=0 to ::ignore.size()-1 {
+        name_ok = name_ok && (name!=::ignore[k])
+      }
+      type_ok = false
+      for k=0 to ::accept.size()-1 {
+        accept = (type==::accept[k])
+        if accept { type_id = k; }
+        type_ok = type_ok || accept
+      }
+      printn "format='%1%'" % ::writeformat[type_id]
+      if name_ok && type_ok {
+        res = "::%1%" % name + " = "+ \
+                ::writeformat[type_id] % value
+        printn "****  '%1%'" % res 
+        f._printn("  "+res)
+      }
+    }
+  }
+  
+  ::Init()
+}

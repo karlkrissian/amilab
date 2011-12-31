@@ -458,7 +458,7 @@ bool MyApp::OnInit()
     if (amilab_config.FileExists())
       try {
           GB_driver.parse_file(string(amilab_config.GetFullPath().mb_str(wxConvUTF8)));
-          GB_main_wxFrame->GetConsole()->ProcessReturn();
+          //GB_main_wxFrame->GetConsole()->ProcessReturn();
       }
       catch (char * str ) {
           std::cerr << "Error catched ! " << str << std::endl;
@@ -472,7 +472,7 @@ bool MyApp::OnInit()
     if (amilab_menuscripts.FileExists()&&(!noscriptsmenu))
     try {
         GB_driver.parse_file(string(amilab_menuscripts.GetFullPath().mb_str(wxConvUTF8)));
-        GB_main_wxFrame->GetConsole()->ProcessReturn();
+        //GB_main_wxFrame->GetConsole()->ProcessReturn();
     }
     catch (char * str ) {
         std::cerr << "Error catched ! " << str << std::endl;

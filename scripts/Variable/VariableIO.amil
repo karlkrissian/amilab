@@ -1,0 +1,32 @@
+
+#----------------------------------------------------------
+proc ListVariables( OBJECT v) \
+{
+  # 1. wrap the variable
+  wv = language.WrapVariable(&v)
+  # 2. convert it to Variable<AMIObject>
+  ov = language.Variable_AMIObject.DynCast(&wv)
+  # 3. get the AMIObject context
+  oc = ov.Pointer().GetContext()
+
+
+  # list variables in the context
+  for n=0 to oc.GetSize()-1 {
+    name  = oc[n].Name()
+    type  = oc[n].GetTypeName()
+    value = oc[n].GetValueAsString()
+    printn "name: %1%" % name + "\ttype: %1%" % type + "\tvalue: %1%" % value
+    name_ok = true
+    for k=0 to ignore.size()-1 {
+      name_ok = name_ok && (name!=ignore[k])
+    }
+    type_ok = false
+    for k=0 to accept.size()-1 {
+      type_ok = type_ok || (type==accept[k])
+    }
+    if name_ok && type_ok {
+      printn "****  "+"::%1%" % name + " = %1%" % value
+    }
+  }
+}
+

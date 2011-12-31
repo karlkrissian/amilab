@@ -36,6 +36,7 @@ SET(  wxParams_SRCS
 
 
 SET(  wxParams_HDRS
+  CallBackBase.h
   MyToolBar.h
   ParamBox.hpp
   widget.hpp

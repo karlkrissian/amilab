@@ -255,6 +255,14 @@ public:
   int NbParameters() { return _tab_param.size(); } 
   //
 
+  ParamInfo GetLastParamInfo() 
+  {
+    if (_tab_param.size()>0)
+      return _tab_param[_tab_param.size()-1];
+    else
+      return ParamInfo();
+  }
+
   int NbBoxes() { return _tab_boxes.size(); } 
   //
   int NbPanels() { return _tab_panels.size(); } 
