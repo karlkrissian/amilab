@@ -54,8 +54,9 @@
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
 
-//#include "MainFrame.h"
-//extern MainFrame*   GB_main_wxFrame;
+#include "AMILabConfigure.h"
+#include "MainFrame.h"
+AMILab_VAR_IMPORT MainFrame* GB_main_wxFrame;
 
 // for completion search
 #include "VarContexts.hpp"
@@ -544,8 +545,8 @@ bool TextControl::ProcessReturn()
   in_changed_value = 0;
 
   // Too slow now, need a clever way to update only visible information ...
-  //if (GB_main_wxFrame)
-  //  GB_main_wxFrame->UpdateVarsDisplay();
+  if (GB_main_wxFrame)
+    GB_main_wxFrame->UpdateVarsDisplay();
 
   return parseok;
   // event.Skip();

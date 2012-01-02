@@ -1660,68 +1660,46 @@ void MainFrame::UpdateVarList()
  * @return void
  **/
 void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch, 
-                                Variables::ptr context, int rec_level)
+                                Variables::ptr context, int rec_level, 
+                                std::string varpath)
 {
   if (rec_level>MAX_VARTREE_LEVEL) return;
-
+  
   // delete children of root
   _var_tree->DeleteChildren(rootbranch);
   boost::shared_ptr<wxArrayString> variables;
+  BasicVariable::ptr emptyvar;
 
-  // TODO: avoid creation of all branches at each update
+  std::map<std::string,wxTreeItemId> categories_id;
+  std::string cat[] = { "Images", "Surfaces", "Numbers", "Strings", 
+                        "Functions", "Classes", "Objects", 
+                        "Wrapped Image Functions", "Wrapped Procedures",
+                        "Wrapped Var. Func.", "Others", ""
+                      }; 
+
   // create all the first branches
-  wxTreeItemId vartree_images    = _var_tree->AppendItem(rootbranch,_T("Images"));
-  wxTreeItemId vartree_surfaces  = _var_tree->AppendItem(rootbranch,_T("Surfaces"));
-  wxTreeItemId vartree_numbers   = _var_tree->AppendItem(rootbranch,_T("Numbers"));
-  wxTreeItemId vartree_strings   = _var_tree->AppendItem(rootbranch,_T("Strings"));
-  wxTreeItemId vartree_functions = _var_tree->AppendItem(rootbranch,_T("Functions"));
-  wxTreeItemId vartree_classes   = _var_tree->AppendItem(rootbranch,_T("Classes"));
-  wxTreeItemId vartree_objects   = _var_tree->AppendItem(rootbranch,_T("Objects"));
-  wxTreeItemId vartree_wrapped_functions = _var_tree->AppendItem(rootbranch,_T("Wrapped Image Functions"));
-  wxTreeItemId vartree_wrapped_procedures = _var_tree->AppendItem(rootbranch,_T("Wrapped Procedures"));
-  wxTreeItemId vartree_wrapped_var_functions = _var_tree->AppendItem(rootbranch,_T("Wrapped Var. Func."));
-  wxTreeItemId vartree_others    = _var_tree->AppendItem(rootbranch,_T("Others"));
-
   wxFont root_font = _var_tree->GetItemFont(rootbranch);
   wxColour vartype_colour = *wxBLUE;
   root_font.SetStyle(wxFONTSTYLE_ITALIC);
   root_font.SetWeight(wxLIGHT);
-  //_var_tree->SetItemFont(rootbranch,root_font);
-  _var_tree->SetItemFont(      vartree_images,root_font);
-  _var_tree->SetItemTextColour(vartree_images,vartype_colour);
 
-  _var_tree->SetItemFont(      vartree_surfaces,root_font);
-  _var_tree->SetItemTextColour(vartree_surfaces,vartype_colour);
-
-  _var_tree->SetItemFont(vartree_numbers,root_font);
-  _var_tree->SetItemTextColour(vartree_numbers,vartype_colour);
-
-  _var_tree->SetItemFont(vartree_strings,root_font);
-  _var_tree->SetItemTextColour(vartree_strings,vartype_colour);
-
-  _var_tree->SetItemFont(vartree_functions,root_font);
-  _var_tree->SetItemTextColour(vartree_functions,vartype_colour);
-
-  _var_tree->SetItemFont(vartree_classes,root_font);
-  _var_tree->SetItemTextColour(vartree_classes,vartype_colour);
-
-  _var_tree->SetItemFont(vartree_objects,root_font);
-  _var_tree->SetItemTextColour(vartree_objects,vartype_colour);
-
-  _var_tree->SetItemFont(vartree_wrapped_functions,root_font);
-  _var_tree->SetItemTextColour(vartree_wrapped_functions,vartype_colour);
-
-  _var_tree->SetItemFont(vartree_wrapped_procedures,root_font);
-  _var_tree->SetItemTextColour(vartree_wrapped_procedures,vartype_colour);
-
-  _var_tree->SetItemFont(vartree_wrapped_var_functions,root_font);
-  _var_tree->SetItemTextColour(vartree_wrapped_var_functions,vartype_colour);
-
-  _var_tree->SetItemFont(vartree_others,root_font);
-  _var_tree->SetItemTextColour(vartree_others,vartype_colour);
+  int n=0;
+  std::string current_cat;
+  wxTreeItemId current_id;
+  while (cat[n]!="") 
+  {
+    current_id =  _var_tree->AppendItem( rootbranch,
+                                         wxString(cat[n].c_str(), wxConvUTF8),
+                                         -1,-1,
+                                         new MyTreeItemData(emptyvar,varpath));
+    categories_id[cat[n]] = current_id;
+    _var_tree->SetItemFont(      current_id,root_font);
+    _var_tree->SetItemTextColour(current_id,vartype_colour);
+    n++;
+  }
 
   root_font.SetFamily(wxFONTFAMILY_MODERN);
-//wxFONTSTYLE_NORMAL);
+  //wxFONTSTYLE_NORMAL);
   root_font.SetWeight(wxNORMAL);
   wxTreeItemId itemid;
 
@@ -1753,47 +1731,30 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
                             % im->GetVDim()
                             % (im->GetDataSize()/1000000)).str();
         //cout << text << std::endl;
-        append_id = vartree_images;
+        append_id = categories_id[std::string("Images")];
         total_image_size += im->GetDataSize();
       } else
-/* TODO: arrange tree display for type_ami_object
-      if (var->Type() == type_surface) {
-        DYNAMIC_CAST_VARIABLE(SurfacePoly,var,varsurf);
-        SurfacePoly::ptr surf (varsurf->Pointer());
-        std::string text = (boost::format("%1% %15t pts: %2% %25t poly:%3%")
-                            % var->Name()
-                            % surf->GetNumberOfPoints()
-                            % surf->GetNumberOfPolys()).str();
-        //cout << text << std::endl;
-        itemid = _var_tree->AppendItem(
-              vartree_surfaces,
-              wxString(text.c_str(), wxConvUTF8),
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
-      } else
-*/
       if (var->IsNumeric())
       {
         text = var->TreeCtrlInfo();
         valtext = var->GetValueAsString();
-        append_id = vartree_numbers;
+        append_id = categories_id[std::string("Numbers")];
       } else
       if (var->Type() == type_string)
       {
         text = var->TreeCtrlInfo();
         valtext = (boost::format("'%1%'") %var->GetValueAsString()).str();
-        append_id = vartree_strings;
+        append_id = categories_id[std::string("Strings")];
       } else
       if (var->Type() == type_ami_function)
       {
         text = var->TreeCtrlInfo();
-        append_id = vartree_functions;
+        append_id = categories_id[std::string("Functions")];
       } else
       if (var->Type() == type_ami_class)
       {
         text = var->TreeCtrlInfo();
-        append_id = vartree_classes;
+        append_id = categories_id[std::string("Classes")];
       } else
       if ((var->Type() == type_ami_object))
       {
@@ -1806,32 +1767,32 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
             valtext = (boost::format("[%1%]") % 
                           wrapped_base->ObjPointerAsString()).str();
         }
-        append_id = vartree_objects;
+        append_id = categories_id[std::string("Objects")];
       } else
       if (var->Type() == type_c_image_function)
       {
         text = var->TreeCtrlInfo();
-        append_id = vartree_wrapped_functions;
+        append_id = categories_id[std::string("Wrapped Image Functions")];
       } else
       if ((var->Type() == type_c_procedure))
       {
         text = var->TreeCtrlInfo();
-        append_id = vartree_wrapped_procedures;
+        append_id = categories_id[std::string("Wrapped Procedures")];
       } else
       if ((var->Type() == type_c_function)||(var->Type() == type_class_member))
       {
         text = var->TreeCtrlInfo();
-        append_id = vartree_wrapped_var_functions;
+        append_id = categories_id[std::string("Wrapped Var. Func.")];
       } else {
         text = var->TreeCtrlInfo();
-        append_id = vartree_others;
+        append_id = categories_id[std::string("Others")];
       }
 
       itemid = _var_tree->AppendItem(
             append_id,
             wxString(var->Name().c_str(), wxConvUTF8),
             -1,-1,
-            new MyTreeItemData(var));
+            new MyTreeItemData(var,varpath));
 
       _var_tree->SetItemText(itemid,_vartree_col_type,
           wxString(var->GetTypeName().c_str(), wxConvUTF8));
@@ -1847,12 +1808,24 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
 
       _var_tree->SetItemFont(itemid,root_font);
 
-      if ((var->Type() == type_ami_object)) {
-        // get the pointer to the objet
-        DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
-        AMIObject::ptr obj( varobj->Pointer());
-        // create the tree by recursive call
-        this->UpdateVarTree(itemid, obj->GetContext(),rec_level+1);
+      if ((var->Type() == type_ami_object)) 
+      {
+        // Expand if needed
+        if (expanded_items.find(varpath+"->"+var->Name())!=expanded_items.end())
+        {
+          // get the pointer to the objet
+          DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
+          AMIObject::ptr obj( varobj->Pointer());
+          // create the tree by recursive call
+          std::string path = varpath;
+          if ((path!="")&&(path!="global::")) path +=".";
+          path += var->Name();
+          this->UpdateVarTree(itemid, obj->GetContext(),rec_level+1,path);
+          _var_tree->Expand(itemid);
+        } else {
+          // add an element to allow expanding
+          _var_tree->AppendItem(itemid,_T("to expand ..."));
+        }
       }
     } // end if var.get()
 
@@ -1862,56 +1835,23 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   if (total_image_size != 0) {
     std::string text = (boost::format(" %45t total = %55t %|1$+5| Mb")
                         % (total_image_size/1000000)).str();
-    _var_tree->AppendItem(vartree_images,wxString(text.c_str(), wxConvUTF8));
+    _var_tree->AppendItem(categories_id[std::string("Images")],
+                          wxString(text.c_str(), wxConvUTF8));
   }
 
-  // delete empty branches
-/*
-  if (!_var_tree->ItemHasChildren(vartree_images)) 
-    _var_tree->Delete(vartree_images);
-  if (!_var_tree->ItemHasChildren(vartree_surfaces)) 
-    _var_tree->Delete(vartree_surfaces);
-  if (!_var_tree->ItemHasChildren(vartree_numbers)) 
-    _var_tree->Delete(vartree_numbers);
-  if (!_var_tree->ItemHasChildren(vartree_strings)) 
-    _var_tree->Delete(vartree_strings);
-  if (!_var_tree->ItemHasChildren(vartree_functions)) 
-    _var_tree->Delete(vartree_functions);
-  if (!_var_tree->ItemHasChildren(vartree_classes)) 
-    _var_tree->Delete(vartree_classes);
-  if (!_var_tree->ItemHasChildren(vartree_objects)) 
-    _var_tree->Delete(vartree_objects);
-  if (!_var_tree->ItemHasChildren(vartree_wrapped_functions)) 
-    _var_tree->Delete(vartree_wrapped_functions);
-  if (!_var_tree->ItemHasChildren(vartree_wrapped_procedures)) 
-    _var_tree->Delete(vartree_wrapped_procedures);
-  if (!_var_tree->ItemHasChildren(vartree_wrapped_var_functions)) 
-    _var_tree->Delete(vartree_wrapped_var_functions);
-  if (!_var_tree->ItemHasChildren(vartree_others)) 
-    _var_tree->Delete(vartree_others);
-*/
-  if (_var_tree->GetChildrenCount(vartree_images)==0) 
-    _var_tree->Delete(vartree_images);
-  if (_var_tree->GetChildrenCount(vartree_surfaces)==0) 
-    _var_tree->Delete(vartree_surfaces);
-  if (_var_tree->GetChildrenCount(vartree_numbers)==0) 
-    _var_tree->Delete(vartree_numbers);
-  if (_var_tree->GetChildrenCount(vartree_strings)==0) 
-    _var_tree->Delete(vartree_strings);
-  if (_var_tree->GetChildrenCount(vartree_functions)==0) 
-    _var_tree->Delete(vartree_functions);
-  if (_var_tree->GetChildrenCount(vartree_classes)==0) 
-    _var_tree->Delete(vartree_classes);
-  if (_var_tree->GetChildrenCount(vartree_objects)==0) 
-    _var_tree->Delete(vartree_objects);
-  if (_var_tree->GetChildrenCount(vartree_wrapped_functions)==0) 
-    _var_tree->Delete(vartree_wrapped_functions);
-  if (_var_tree->GetChildrenCount(vartree_wrapped_procedures)==0) 
-    _var_tree->Delete(vartree_wrapped_procedures);
-  if (_var_tree->GetChildrenCount(vartree_wrapped_var_functions)==0) 
-    _var_tree->Delete(vartree_wrapped_var_functions);
-  if (_var_tree->GetChildrenCount(vartree_others)==0) 
-    _var_tree->Delete(vartree_others);
+  // update category item expansion and remove empty ones
+  n=0;
+  while (cat[n]!="") 
+  {
+    current_id = categories_id[cat[n]];
+
+    if (expanded_items.find(varpath+"->"+cat[n])!=expanded_items.end()) 
+      _var_tree->Expand(current_id);
+    if (_var_tree->GetChildrenCount(current_id)==0) 
+      _var_tree->Delete(current_id);
+    n++;
+  }
+
   //_var_list->Show();
 }
 
@@ -2537,6 +2477,31 @@ void MainFrame::UpdateVarsDisplay()
   _var_dataview->Expand( m_amilab_model->GetBuiltinNode() );  
 
 #else
+  // get list of expanded items
+  wxTreeItemId itemid;
+  MyTreeItemData *item;
+  wxString text;
+  std::string current_item_name;
+  
+  expanded_items.clear();
+  
+  itemid = _var_tree->GetFirstExpandedItem();
+  while (itemid.IsOk()) {
+    current_item_name = "";
+    if (_var_tree->IsExpanded(itemid)) {
+      item = (MyTreeItemData *)_var_tree->GetItemData(itemid);
+      if (item != NULL) {
+        current_item_name += item->GetPath();
+      }
+      text = _var_tree->GetItemText(itemid);
+      current_item_name += "->";
+      current_item_name += text.ToAscii();
+      std::cout << " item: '" << current_item_name << "'"<< std::endl;
+      expanded_items.insert(current_item_name);
+    }
+    itemid = _var_tree->GetNextExpanded(itemid);
+  }
+  
   wxFont root_font = _var_tree->GetItemFont(_vartree_root);
   root_font.SetStyle(wxFONTSTYLE_ITALIC);
   root_font.SetWeight(wxFONTWEIGHT_BOLD);
@@ -2547,7 +2512,7 @@ void MainFrame::UpdateVarsDisplay()
 
   _var_tree->Expand(  _vartree_root);
 
-  UpdateVarTree(_vartree_global, Vars.GetCurrentContext(),0);
+  UpdateVarTree(_vartree_global, Vars.GetCurrentContext(),0,"global::");
   _var_tree->Expand(  _vartree_global);
 
   UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext(),0);

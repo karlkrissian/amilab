@@ -28,12 +28,15 @@ AMILab_VAR_IMPORT MainFrame*    GB_main_wxFrame;
 //#include "wxDragAndDrop.h"
 #include <wx/dnd.h>
 #include <wx/dataobj.h>
+#include <vartype.h>
 
 //Used for &About menu item
 enum
 {
   wxID_myABOUT = 1000,
-  wxID_ToConsole
+  wxID_ToConsole,
+  wxID_Expand,
+  wxID_Collapse,
 };
 
 //BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
@@ -45,6 +48,8 @@ BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeListCtrl)
 #if wxUSE_DRAG_AND_DROP
     EVT_TREE_BEGIN_DRAG(wxID_ANY, myTreeCtrl::OnBeginDrag)
 #endif   
+//  EVT_TREE_ITEM_EXPANDING( wxID_Expand,   myTreeCtrl::OnExpanding)
+//  EVT_TREE_ITEM_COLLAPSING(wxID_Collapse, myTreeCtrl::OnCollapsing)
 /*
   EVT_ERASE_BACKGROUND(    myTreeCtrl::OnEraseBackground)
   EVT_PAINT(               myTreeCtrl::OnPaint)
@@ -59,6 +64,10 @@ myTreeCtrl::myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos, cons
 wxTreeListCtrl(parent,id,pos,size,style,validator,name)
 {
   Connect(wxEVT_COMMAND_TREE_ITEM_MENU,wxTreeEventHandler(myTreeCtrl::OnItemMenu));
+
+  Connect(wxEVT_COMMAND_TREE_ITEM_EXPANDING ,wxTreeEventHandler(myTreeCtrl::OnExpanding));
+  Connect(wxEVT_COMMAND_TREE_ITEM_COLLAPSING,wxTreeEventHandler(myTreeCtrl::OnCollapsing));
+
   //Connect(wxEVT_COMMAND_TREE_BEGIN_DRAG,wxTreeEventHandler(myTreeCtrl::OnBeginDrag));
   //Connect(wxEVT_LEFT_DOWN,wxTreeEventHandler(myTreeCtrl::OnBeginDrag));
   //Connect(wxEVT_LEFT_DOWN,wxTreeEventHandler(myTreeCtrl::OnBeginDrag));
@@ -181,13 +190,48 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
   msg.ShowModal();
 }
 
+//------------------------------------------------------------------------------
 void myTreeCtrl::ToConsole(wxCommandEvent& event)
 {
   BasicVariable::ptr var(_currentmenu_var.lock());
   GB_main_wxFrame->GetConsole()->IncCommand(var->Name());
 }
 
+//------------------------------------------------------------------------------
+void myTreeCtrl::OnExpanding(wxTreeEvent& event)
+{
+  std::cout << "Expanding" << std::endl;
+  wxTreeItemId itemId = event.GetItem();
+  MyTreeItemData *item = (MyTreeItemData *)GetItemData(itemId);
+  if (item) {
+    BasicVariable::ptr var = item->GetVar().lock();
+    if (var.get()) {
+      // check if type is AMIObject
+      if (var->Type()==type_ami_object) 
+      {
+        // get the pointer to the objet
+        DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
+        AMIObject::ptr obj( varobj->Pointer());
+        // create the tree by recursive call
+        std::string path = item->GetPath();
+        if ((path!="")&&(path!="global::")) path +=".";
+        path += var->Name();
+        GB_main_wxFrame->UpdateVarTree(itemId, obj->GetContext(),1,path);
+        std::cout << "new path = " << path << std::endl;
+      }
+    }
+  }
+  event.Skip();
+}
+
+//------------------------------------------------------------------------------
+void myTreeCtrl::OnCollapsing(wxTreeEvent& event)
+{
+  std::cout << "Collapsing" << std::endl;
+}
+
 #if wxUSE_DRAG_AND_DROP
+//------------------------------------------------------------------------------
 void myTreeCtrl::OnBeginDrag(wxTreeEvent& event)
 {
   wxTreeItemId itemid( event.GetItem() );

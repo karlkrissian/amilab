@@ -81,6 +81,7 @@ class ParamPanel;
 #include <iosfwd>
 #include <list>
 #include <map>
+#include <set>
 
 class wxStcFrame;
 
@@ -216,7 +217,7 @@ public:
   void UpdateVarList();
 
   void UpdateVarTree( const wxTreeItemId& rootbranch, Variables::ptr context,
-                      int rec_level );
+                      int rec_level, std::string varpath="");
 
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))
@@ -340,6 +341,7 @@ protected:
   wxTreeItemId _vartree_root;
   wxTreeItemId _vartree_global;
   wxTreeItemId _vartree_builtin;
+  std::set<std::string> expanded_items;
 
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))

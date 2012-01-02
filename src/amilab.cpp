@@ -514,7 +514,8 @@ bool MyApp::OnInit()
     #endif
   }
 
-mainframe->LoadToolBar();
+  mainframe->LoadToolBar();
+  mainframe->UpdateVarsDisplay();
 
   return true;
 

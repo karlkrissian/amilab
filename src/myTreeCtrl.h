@@ -38,13 +38,16 @@ class BasicVariable;
 class MyTreeItemData : public wxTreeItemData
 {
 public:
-    MyTreeItemData(boost::shared_ptr<BasicVariable> lvar) : _var(lvar) { }
+    MyTreeItemData( boost::shared_ptr<BasicVariable> lvar,
+                    std::string path="") : _var(lvar), _path(path) { }
 
     boost::weak_ptr<BasicVariable> GetVar() const { return _var; }
+    std::string GetPath() const { return _path; }
 
 private:
     /// weak pointer to the Variable
     boost::weak_ptr<BasicVariable> _var;
+    std::string _path;
 };
 
 //=======================================================
@@ -65,6 +68,9 @@ protected:
 //  void OnBeginDrag(wxTreeEvent& event);
 //  void OnLeftDown(wxMouseEvent& event);
 
+  void OnExpanding(  wxTreeEvent& event);
+  void OnCollapsing( wxTreeEvent& event);
+  
 #if wxUSE_DRAG_AND_DROP
     void OnBeginDrag( wxTreeEvent& event );
 #endif  
