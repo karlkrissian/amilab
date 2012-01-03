@@ -36,7 +36,14 @@
 
 #ifndef _WITHOUT_ITK_
 #include <stddef.h>
-#include "itkOrientedImage.h"
+#include <itkVersion.h>
+
+#if ITK_VERSION_MAJOR<4
+  #include "itkOrientedImage.h"
+#else
+  #include "itkImage.h"
+#endif
+
 #include "itkImageSeriesReader.h"
 #include "itkDICOMImageIO2.h"
 #include "itkDICOMSeriesFileNames.h"
@@ -51,7 +58,11 @@
 
 template<class PixelType, unsigned int Dimension>
 class itkReadDICOMClass {
+#if ITK_VERSION_MAJOR<4
   typedef itk::OrientedImage< PixelType, Dimension > ImageType;
+#else
+  typedef itk::Image< PixelType, Dimension > ImageType;
+#endif
   typedef itk::ImageSeriesReader< ImageType > ReaderType;
   
   private:
