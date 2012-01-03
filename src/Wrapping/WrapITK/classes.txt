@@ -13,6 +13,9 @@ vnl_vector_fixed<double, 3u>
 #-----------------
 # ITK Classes
 #-----------------
+
+itk::Version
+
 itk::SmartPointer<itk::Image<float, 2u> >
 itk::SmartPointer<itk::Image<unsigned char, 2u> >
 itk::ImageRegion<2u>

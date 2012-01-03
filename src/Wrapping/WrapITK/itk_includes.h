@@ -17,6 +17,7 @@
 
 // ITK CLASSES
 
+#include <itkVersion.h>
 #include <itkImage.h>
 #include <itkSmartPointer.h>
 #include <itkDefaultPixelAccessor.h>

@@ -131,11 +131,19 @@ SET (Common_SRCS
 #my_add_shared_library (Common)
 my_add_library (Common)
 
+IF( NOT DEFINED ITK_LIBRARIES )
+  SET(ITK_LIBRARIES 
+    ITKIO
+    ITKAlgorithms
+    itkvnl
+    itkvnl_algo
+  )
+ENDIF( NOT DEFINED ITK_LIBRARIES )
 
 target_link_libraries(Common 
   vtkIO 
   vtkImaging
-  ITKIO
+  ${ITK_LIBRARIES}
   ${wxWidgets_LIBRARIES}
   ${Boost_LIBRARIES}
 )

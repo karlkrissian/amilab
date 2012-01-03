@@ -645,8 +645,11 @@ IF(AMI_USE_VTK)
 ENDIF(AMI_USE_VTK)
 
 INCLUDE(${wxWidgets_USE_FILE})
+
 INCLUDE( ${USE_ITK_FILE} )
 MESSAGE( "*** USE_ITK_FILE = ${USE_ITK_FILE}")
+# same 
+#MESSAGE( "*** ITK_USE_FILE = ${ITK_USE_FILE}")
 
 SET(amilab_bin_SRCS 
   myDataViewModels.cpp
@@ -801,15 +804,25 @@ ENDIF(AMI_USE_VTK)
 
 MESSAGE( "Boost_LIBRARIES=${Boost_LIBRARIES}" )
 
+MESSAGE( "ITK_LIBRARIES=${ITK_LIBRARIES}")
+
+IF( NOT DEFINED ITK_LIBRARIES )
+  SET(ITK_LIBRARIES 
+    ITKIO
+    ITKAlgorithms
+    itkvnl
+    itkvnl_algo
+  )
+ENDIF( NOT DEFINED ITK_LIBRARIES )
+
+MESSAGE( "ITK_LIBRARIES=${ITK_LIBRARIES}")
+
 # conflict between freetype and vtkfreetype
 TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   ${amilab_ownlibs}
   ${LINK_VTK}
-  ITKIO
-  ITKAlgorithms
-  itkvnl
-  itkvnl_algo
   ${AMIFLUID_LIBRARIES}
+  ${ITK_LIBRARIES}
   #  ${wxParams_LIBRARIES}
   wxParams
   ${OPENGL_LIBRARIES}
