@@ -5,7 +5,7 @@ func "Centerlines/MultiLines/MultiLinesClass"
 # Main
 #----------------------------
 
-if (!exists(multilines)) {
+if (!exists(MultiLines_obj)) {
   MultiLinesClass MultiLines_obj
   MultiLines_obj.Gui()
   

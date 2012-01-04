@@ -866,6 +866,7 @@ if (!exists(vtkVolumeClass)) {
         ::imhisto2.Gui()
         ::win.AddPage("Blend2", &::imhisto2->win)
           ::win.BeginHorizontal()
+            ::win.AddLabel("Second Dataset in the vtkVolume","")
             #::icons.LoadIconPNG2("Chart xy","Chart_xy")
             #::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
             #::win.AddButton("DrawTr",&::Draw_Functions)
@@ -874,7 +875,7 @@ if (!exists(vtkVolumeClass)) {
               #::win.AddEnumChoice(::blend_mode_id,"Max. Int.")
               #::win.AddEnumChoice(::blend_mode_id,"Min. Int.")
               #::win.AddEnumChoice(::blend_mode_id,"Additive.")
-         ::win.EndHorizontal()
+          ::win.EndHorizontal()
 
          ::win.AddPage("Clip")
           ::win.AddBoolean(&::clip, "Clip")

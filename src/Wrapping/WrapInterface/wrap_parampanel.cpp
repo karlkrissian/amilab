@@ -896,6 +896,7 @@ public:
     AMIObjectlist = Vars.SearchAMIObjectTypeVariables(ObjectTypename.c_str());
     AMIObjectlist->Add(_T("Select object variable ..."));
     AMIObjectlist_gui->SetChoices(AMIObjectlist);
+    return true;
   }
 };
 
