@@ -28,6 +28,7 @@
 #include "treelistctrl.h"
 
 #include <boost/weak_ptr.hpp>
+#include <string>
 
 class BasicVariable;
 //template <class T> class Variable;
