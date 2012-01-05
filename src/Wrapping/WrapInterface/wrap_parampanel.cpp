@@ -24,7 +24,7 @@
 #include "MainFrame.h"
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
-#ifdef WIN32
+#ifdef USING_AUINB
   #include "wrap_wxAuiNotebook.h"
 #else
   #include "wrap_wxNotebook.h"

@@ -28,6 +28,7 @@
 #include <wx/tooltip.h>
 #include <wx/toolbar.h>
 #include <wx/combobox.h>
+#include <wx/gauge.h>
 #include <iostream>
 #include <cstring>
 #include "myTreeCtrl.h"

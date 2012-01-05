@@ -25,6 +25,7 @@ if (!exists(ImageHistogramClass)) {
       ::step = 1, "histogram step"
       ::standalone = 1, "1: runs standalone with input image selector, 0: runs within other Gui."
       ::cumulative = UCHAR(0), "Show cumulative histogram"
+      ::log10 = UCHAR(0), "Show logarithm (base 10) histogram"
       ::use_colormap_curve = 0, "Enable/Disable a second display limited to the colormap range"
       ::InitColours()
     }
@@ -204,8 +205,13 @@ if (!exists(ImageHistogramClass)) {
           } else {
             ::h.push_back( cumhisto(::input[n],::minval,::maxval,(::maxval-::minval)/::step+1))
           }
+          if (::log10) {
+            # set a positive minimum to 10
+            ::h[n] = ::h[n]*(::h[n]>10)+(::h[n]<=10)*10
+            ::h[n] <<= ln((DOUBLE)::h[n])/ln(10)
+          }
           ::dw->SetXLimits(::minval,::maxval)
-          ::dw->SetYLimits(min(::h[n]),max(::h[n]))
+          ::dw->SetYLimits(min(::h[n]),max(::h[n])*1.01)
           ::dw->SetCurve(::h[n],n)
           ::dw->SetCurveProperties(n,::ColoursVector[n%6])
         }
@@ -543,6 +549,7 @@ if (!exists(ImageHistogramClass)) {
             ::win.EndHorizontal()
 
           ::win.AddBoolean(&::cumulative,"Cumulative")
+          ::win.AddBoolean(&::log10,"Logarithm (base 10)")
 
           # add Drawing Window
           d = ::win.CurrentParent()

@@ -845,6 +845,7 @@ if (!exists(vtkVolumeClass)) {
       ::win.BeginBook()
 
         ::imhisto1.SetParentPanel(&::win)
+        ::imhisto1.log10=true
         ::imhisto1.Gui()
 
         ::win.AddBoolean(&::move_2,"move_2")
@@ -863,6 +864,7 @@ if (!exists(vtkVolumeClass)) {
 
 
         ::imhisto2.SetParentPanel(&::win)
+        ::imhisto2.log10=true
         ::imhisto2.Gui()
         ::win.AddPage("Blend2", &::imhisto2->win)
           ::win.BeginHorizontal()

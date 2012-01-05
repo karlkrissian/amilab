@@ -86,6 +86,7 @@ BEGIN_EVENT_TABLE(TextControl, wxTextCtrlClass)
   EVT_RICHTEXT_RETURN(            wxID_ANY, TextControl::OnReturn)
   EVT_TEXT(                       wxID_ANY, TextControl::OnUpdate)
   EVT_KEY_DOWN(                   TextControl::ProcessKeyEvent)
+  EVT_CHAR(                       TextControl::ProcessKeyEvent)
 END_EVENT_TABLE()
 
   //EVT_RICHTEXT_CHARACTER(         wxID_ANY, TextControl::OnCharacter)
@@ -93,7 +94,6 @@ END_EVENT_TABLE()
   //EVT_TEXT(                       wxID_ANY, TextControl::OnTextUpdated)
   //EVT_IDLE(TextControl::DoIdle)
   //EVT_TEXT_ENTER(        wxID_ANY,     TextControl::OnEnter)
-  //EVT_CHAR(       TextControl::ProcessKeyEvent)
 
 
 

@@ -37,7 +37,7 @@ if (!exists(SimplevtkVolumeClass)) {
       ::clip = UCHAR(0), "Enable/Disable clipping box"
       ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
       ::clip_interactive = UCHAR(1), "Interactive clipping"
-      ::initialized=0
+      ::initialized=false
 
       #::opacity_attenuation = 1, "Attenuation factor for the opacity"
 
@@ -118,7 +118,7 @@ if (!exists(SimplevtkVolumeClass)) {
       #::camera.SetPosition(0,-100,0)
     }
     #----------------------------
-    #Initialize Iterator,Renderer, RendererWindow and variables
+    #Initialize Interactor,Renderer, RendererWindow and variables
     proc ::InitManager( OBJECT inter ) {
       if ::trace2 { eval ::trace2_begin; }
       #reset
@@ -130,14 +130,13 @@ if (!exists(SimplevtkVolumeClass)) {
       ::InitCamera()
 
       ::renwininter.GetRenderWindow().AddRenderer(&::renderer)
-      del interact
       interact = vtk.vtkInteractorStyleTrackballCamera.New()
       ::renwininter.SetInteractorStyle(&interact)
       #This is the actor with the planes
       ::renwin   = ::renwininter.GetRenderWindow()
 
-      ::renwininter.SetRenderWindow(&::renwin)
-      ::initialized = 1
+      #::renwininter.SetRenderWindow(&::renwin)
+      //::initialized = true
       if ::trace2 { eval ::trace2_end; }
     }
 
@@ -392,7 +391,7 @@ if (!exists(SimplevtkVolumeClass)) {
             #propertier for the second volume 
             ::volmapper.SetProperty2( &::property2 )
           }
-          ::initialized = 1
+          ::initialized = true
 
           #Add volume to renderer
           if (exists(::renderer)){
@@ -597,7 +596,7 @@ if (!exists(SimplevtkVolumeClass)) {
     proc ::ResetVTK() \
     {
       if ::trace2 { eval ::trace2_begin; }
-      ::initialized = 0
+      ::initialized = false
       del ::renwininter # it is a reference, no call to Delete()
       del ::input
       del ::input2
@@ -637,7 +636,7 @@ printn "::move_2 = %1%" % ::move_2
     proc ::OnRender() \
     {
       if ::trace2 { eval ::trace2_begin; }
-      if (exists(::renwininter)&&(::initialized>0.5)) { 
+      if (exists(::renwininter)&&(::initialized)) { 
         ::ReCompute()
         if (exists(::renwininter)) {
           ::renwininter.Render()

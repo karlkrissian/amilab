@@ -50,6 +50,7 @@
 #include "wx/aui/aui.h"
 
 class myTreeCtrl;
+class wxGauge;
 //#include "myTreeCtrl.h"
 
 //class myDataViewCtrl;

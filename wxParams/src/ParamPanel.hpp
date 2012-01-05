@@ -76,7 +76,11 @@
 #include <wx/toolbar.h>
 */
 
-#ifdef WIN32
+//#ifdef WIN32
+  #define USING_AUINB
+//#endif
+
+#ifdef USING_AUINB
   #define NotebookClass wxAuiNotebook
   class wxAuiNotebook;
 #else

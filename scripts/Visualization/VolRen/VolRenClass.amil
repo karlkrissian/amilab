@@ -479,11 +479,10 @@ if (!exists(VolRenClass)) {
       ::resizevol1=0
 
       if (exists(::input)){
-        if (::volVector[0].initialized==0){
-          ::renwin_interact.Initialize()
-          ::volVector[0].InitManager(&::renwin_interact)
-          ::volVector[0].AddAnnotatedCube() 
-        }
+        #if (!::volVector[0].initialized){
+        #  ::volVector[0].InitManager(&::renwin_interact)
+        #  ::volVector[0].AddAnnotatedCube() 
+        #}
         ::volVector[0].DelVTK()
         ::volVector[0].DefaultProperties() 
         ::volVector[0].SetVolRenMapper(::volrenmapper_type)
@@ -612,6 +611,7 @@ if (!exists(VolRenClass)) {
       ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::splitter,-1)
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.Enable(true)
+      ::renwin_interact.Initialize()
       # Still drawing problem (missed exposed events???)
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
       ::panel2 = wx.wxPanel(&::splitter)
@@ -642,6 +642,11 @@ if (!exists(VolRenClass)) {
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
       mb.AddPage( &::panel,  "VolRen",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
       ::volren_pageindex = mb.GetPageIndex(&::panel)
+      
+      # initialize the renderer, camera, renderwindow in volvVctor[0]
+      ::volVector[0].InitManager(&::renwin_interact)
+      ::volVector[0].AddAnnotatedCube() 
+      ::SetRendererBg()
       
       if ::trace { eval ::trace_end; }
     }
@@ -690,7 +695,7 @@ if (!exists(VolRenClass)) {
     #proc ::LoadCurve()  \
     #{
       #index=::vbCtrl.GetSelection()
-      #//if (::volVector[index].initialized>0.5){
+      #//if (::volVector[index].initialized){
         #pathname=wx.FromWxString(wx.wxFileName.GetCwd())
 #//aa=wx.wxFileDialog.wxFileDialog_2(::win,"Load Curve")
         ##del ::selected_curv
@@ -704,7 +709,7 @@ if (!exists(VolRenClass)) {
     proc ::SaveCurve()  \
     {
       index=::vbCtrl.GetSelection()
-      if (::volVector[index].initialized>0.5){
+      if (::volVector[index].initialized){
         pathname=wx.FromWxString(wx.wxFileName.GetCwd())
 
        ::volVector[index].SaveVTKCurve(pathname+wx.FromWxString(wx.wxFileName.GetPathSeparator()))
@@ -715,7 +720,7 @@ if (!exists(VolRenClass)) {
     proc ::GetSnapshot()  \
     {    
       capturefilter = vtk.vtkWindowToImageFilter.New()
-      if (::volVector[0].initialized>0.5){
+      if (::volVector[0].initialized){
         renwin=&::volVector[0].renwin
         capturefilter.SetInput( &renwin)
         capturefilter.Update()

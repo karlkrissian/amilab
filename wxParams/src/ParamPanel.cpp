@@ -56,7 +56,7 @@
 #include <iostream>
 //#include <wx/artprov.h>
 
-#ifdef WIN32
+#ifdef USING_AUINB
   #include <wx/aui/auibook.h>
 #else
   #include <wx/notebook.h>
@@ -161,9 +161,10 @@ int ParamPanel::BeginBook()
                           ,wxID_ANY
                           ,wxDefaultPosition
                           ,wxDefaultSize
-#ifdef WIN32
-                          , wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | 
-                            wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS
+#ifdef USING_AUINB
+                          , wxAUI_NB_TOP 
+                            //| wxAUI_NB_TAB_SPLIT 
+                            | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS
 #endif
                       //wxVSCROLL
                       );

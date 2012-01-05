@@ -4,6 +4,7 @@
 #include "driver.h"
 #include "VarContexts.hpp"
 #include <wx/config.h>
+#include <wx/app.h>
 #include "MainFrame.h"
 
 AMILab_VAR_EXPORT int         GB_argc;
