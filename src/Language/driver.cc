@@ -18,6 +18,7 @@
 #include "VarContexts.hpp"
 #include "CoutwxString.h"
 #include "MainFrame.h"
+#include "xmtext.hpp"
 #include "ImageStack.h"
 #include "wxStcFrame.h"
 

@@ -71,7 +71,8 @@ class myTreeCtrl;
 
 #include <wx/docview.h>
 
-#include "xmtext.hpp"
+//#include "xmtext.hpp"
+class TextControl;
 
 //#include "ParamPanel.hpp"
 class ParamPanel;
@@ -141,7 +142,7 @@ public:
   void LoadToolBar();
   wxAuiManager& GetAuiManager() {return m_mgr; };
 
-  TextControl::ptr GetConsole() { return TC; }
+  boost::shared_ptr<TextControl> GetConsole() { return TC; }
 
   bool AddMainPage(wxWindow* page, const wxString& caption,
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
@@ -314,7 +315,7 @@ protected:
   wxBoxSizer*  vardataviewpanel_sizer;
 
   boost::shared_ptr<wxTextValidator> _textcontrol_validator;
-  TextControl::ptr TC;
+  boost::shared_ptr<TextControl> TC;
   wxTextCtrl*  _log_text;
   wxPanel*     _keywords_panel;
   

@@ -24,6 +24,7 @@
 #include "fonctions.h"
 
 #include "MainFrame.h"
+#include "xmtext.hpp"
 #include "CallBackAMIFunction.h"
 
 #include "DriverBase.h"

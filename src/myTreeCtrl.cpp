@@ -19,6 +19,7 @@
 #include "wx/artprov.h"
 
 #include "MainFrame.h"
+#include "xmtext.hpp"
 
 #include "AMILabConfigure.h"
 AMILab_VAR_IMPORT MainFrame*    GB_main_wxFrame;

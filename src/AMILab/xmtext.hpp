@@ -51,7 +51,6 @@ protected:
   int        cmdline_displaypos;
   
   wxString   last_line;
-  unsigned char _protect;
   wxTextCtrl*  _logtextctrl;
 
   wxString        completion_lastcommand;
@@ -68,32 +67,8 @@ protected:
              wxWindowID id,
               const wxString& value,
               int flags,
-              const wxValidator &      validator = wxDefaultValidator)
-        : wxTextCtrlClass(
-                      parent,
-                      id,
-                      value,
-                      wxDefaultPosition,
-                      wxDefaultSize,
-                      flags
-                      | wxTE_PROCESS_ENTER
-                      | wxTE_PROCESS_TAB
-//                      | wxHSCROLL
-                      ,
-                      validator
-                    )
-  {
-    cmd_lines.empty();
-    cmdline_displaypos = 0;
-    in_completion      = 0;
-    completions =  boost::shared_ptr<wxArrayString>(new wxArrayString());
-    completion_count   = 0;
-    SetSizeHints(wxSize(200,100));
-    SetToolTip(_T("Amilab command line console, \n \tKeyboard shortcuts: \n \tCtrl-F: load a filename as a string. \n \tTab: complete a keyword or a variable name. \n \tUp-Down arrows to browse command history. "));    
-    
-    this->title_text=_T("  AMILab Console  \n");
-    InitRichText();
-  };
+              const wxValidator &      validator = wxDefaultValidator);
+
 
   void InitRichText();
 
@@ -123,9 +98,17 @@ protected:
 
   void UpdateText();
 
-  void OnContentInserted(wxRichTextEvent& event);
-  void OnUpdate (wxCommandEvent& event);
-  void OnPaste(  wxCommandEvent& event);
+
+  void OnContentInserted( wxRichTextEvent& event);
+  void OnReturn(          wxRichTextEvent& event);
+  void OnUpdate (         wxCommandEvent&  event);
+  void ProcessKeyEvent(   wxKeyEvent& event);
+
+  //void OnCharacter   ( wxRichTextEvent& event);
+  //void OnTextUpdated ( wxCommandEvent&  event);
+  //void OnEnter       ( wxCommandEvent&  event);
+  //void TextOnKeyDown ( wxKeyEvent&      event);
+  //void OnKeyDown     ( wxKeyEvent&      event);
   
   /**
    * @brief Returns the contents of the console without the title.
@@ -140,7 +123,6 @@ protected:
 
   bool ProcessReturn();
 
-  void OnEnter(wxCommandEvent& event);
 
   void DoIdle( wxIdleEvent &event )
   {
@@ -150,18 +132,16 @@ protected:
 
   void PreviousCommand();
   void NextCommand();
-
-  void OnChar(wxKeyEvent& event);
-  void TextOnKeyDown(wxKeyEvent& event);
   
   wxTextCtrl* GetLog()      { return _logtextctrl;     }
   void SetLog(wxTextCtrl* log) { _logtextctrl=log; }
 
-  void OnKeyDown(wxKeyEvent& event) {}
-
 private:
   DECLARE_EVENT_TABLE()
   wxTextAttrEx* _basic_style;
+  bool in_changed_value;
+  bool _protect;
+
 };
 
 

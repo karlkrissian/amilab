@@ -20,6 +20,7 @@
 #include "ami_function.h"
 
 #include "MainFrame.h"
+#include "xmtext.hpp"
 
 #include "wrap_wxAuiManager.h"
 #include "wrap_wxRichTextCtrl.h"

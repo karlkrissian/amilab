@@ -32,7 +32,10 @@ class WrapClass_StdVector : public WrapClass<std::vector<T> >, public virtual Wr
 
   public:
 
-    /// Constructor
+    std::string ObjPointerAsString() { return std::string("std::vector<")+
+      AMILabType<T>::name_as_string()+" >"; }
+
+     /// Constructor
     WrapClass_StdVector(boost::shared_ptr< std::vector<T> > si): WrapClass<std::vector<T> >(si) { }
 
     /// Create a variable from a standard pointer

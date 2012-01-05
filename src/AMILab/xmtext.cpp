@@ -69,18 +69,65 @@ LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 using namespace std;
 
-static bool in_changed_value = false;
 
+/*
+enum
+{
+  wxID_OnTextInserted = 2000,
+  wxID_OnCharacter,
+  wxID_OnReturn,
+  wxID_OnEnter,
+};
+*/
 
+// now seems to work on windows, why?? does wxID_ANY have importance ??
 BEGIN_EVENT_TABLE(TextControl, wxTextCtrlClass)
-//  EVT_CHAR(       TextControl::OnChar)
-  EVT_TEXT(       wxID_ANY,   TextControl::OnUpdate)
-  EVT_KEY_DOWN(   TextControl::OnChar)
-  EVT_RICHTEXT_CONTENT_INSERTED( wxID_PASTE, TextControl::OnContentInserted)
-  //EVT_SET_CURSOR(TextControl::OnSetCursor)
-  EVT_TEXT(       wxID_PASTE, TextControl::OnPaste)
-  //EVT_IDLE(TextControl::DoIdle)
+  EVT_RICHTEXT_CONTENT_INSERTED(  wxID_ANY, TextControl::OnContentInserted)
+  EVT_RICHTEXT_RETURN(            wxID_ANY, TextControl::OnReturn)
+  EVT_TEXT(                       wxID_ANY, TextControl::OnUpdate)
+  EVT_KEY_DOWN(                   TextControl::ProcessKeyEvent)
 END_EVENT_TABLE()
+
+  //EVT_RICHTEXT_CHARACTER(         wxID_ANY, TextControl::OnCharacter)
+  //EVT_SET_CURSOR(TextControl::OnSetCursor)
+  //EVT_TEXT(                       wxID_ANY, TextControl::OnTextUpdated)
+  //EVT_IDLE(TextControl::DoIdle)
+  //EVT_TEXT_ENTER(        wxID_ANY,     TextControl::OnEnter)
+  //EVT_CHAR(       TextControl::ProcessKeyEvent)
+
+
+
+TextControl::TextControl(wxWindow *parent,
+             wxWindowID id,
+              const wxString& value,
+              int flags,
+              const wxValidator & validator)
+        : wxTextCtrlClass(
+                      parent,
+                      id,
+                      value,
+                      wxDefaultPosition,
+                      wxDefaultSize,
+                      wxWANTS_CHARS|wxRE_MULTILINE
+//                      flags
+//                      | wxTE_PROCESS_TAB
+//                      | wxHSCROLL
+                      ,
+                      validator
+                    )
+{
+  cmd_lines.empty();
+  cmdline_displaypos = 0;
+  in_completion      = 0;
+  in_changed_value   = false;
+  completions =  boost::shared_ptr<wxArrayString>(new wxArrayString());
+  completion_count   = 0;
+  SetSizeHints(wxSize(200,100));
+  SetToolTip(_T("Amilab command line console, \n \tKeyboard shortcuts: \n \tCtrl-F: load a filename as a string. \n \tTab: complete a keyword or a variable name. \n \tUp-Down arrows to browse command history. "));    
+  
+  this->title_text=_T("  AMILab Console  \n");
+  InitRichText();
+};
 
 
 //--------------------------------------------------
@@ -143,7 +190,7 @@ void TextControl::ConsoleClear()
 //--------------------------------------------------
 void TextControl::AddCommand( const wxString& cmd)
 {
-  std::cout << "AddCommand( '" << cmd.ToAscii() << "')" << std::endl;
+  //std::cout << "AddCommand( '" << cmd.ToAscii() << "')" << std::endl;
   text.Append(cmd);
   wxString unformat_cmd = cmd;
   unformat_cmd.Replace(_T("%"),_T("%%"));
@@ -154,7 +201,7 @@ void TextControl::AddCommand( const wxString& cmd)
   cmd_lines.back().RemoveLast();
   //cmd_lines.size() = (cmd_lines.size()+1)%MAX_SAVED_COMMANDS;
   cmdline_displaypos = cmd_lines.size();
-  std::cout << "cmd_lines.size() = " << cmd_lines.size() << std::endl;
+  //std::cout << "cmd_lines.size() = " << cmd_lines.size() << std::endl;
 }
 
 
@@ -162,7 +209,7 @@ void TextControl::AddCommand( const wxString& cmd)
 //--------------------------------------------------
 void TextControl::IncCommand( const wxString& cmd)
 {
-  std::cout << "IncCommand( '" << cmd.ToAscii() << "')" << std::endl;
+  //std::cout << "IncCommand( '" << cmd.ToAscii() << "')" << std::endl;
 //  text.Append(" ");
 //  text.Append(cmd);
   WriteText(wxString::FromAscii(" "));
@@ -178,7 +225,7 @@ void TextControl::IncCommand( const std::string& cmd)
   const char* stval = cmd.c_str();
   // conversion failed ...
   wxString val(stval,wxConvUTF8);
-  std::cout << "val = " << stval << "; "<< val.mb_str(wxConvUTF8) << std::endl;
+  //std::cout << "val = " << stval << "; "<< val.mb_str(wxConvUTF8) << std::endl;
   IncCommand(val);
 }
 
@@ -208,7 +255,7 @@ void TextControl::AddPrompt(bool newline)
 void TextControl::UpdateText()
 {
   CLASS_MESSAGE("begin")
-  _protect = 0;
+  _protect = false;
   Clear();
 
   SetAndShowDefaultStyle(*_basic_style);
@@ -230,7 +277,7 @@ void TextControl::UpdateText()
   ShowPosition(GetLastPosition());
   SetAndShowDefaultStyle(*_basic_style);
   //SetDefaultStyleToCursorStyle();
-  _protect = 1;
+  _protect = true;
   if (GB_debug) {
     std::cerr << "TextControl::Update() text ="
          << text.Len()
@@ -245,24 +292,44 @@ void TextControl::OnContentInserted(wxRichTextEvent& event)
 //                -------
 {
   CLASS_MESSAGE("begin");
-  std::cout << "Position " << event.GetPosition() << std::endl;
-  std::cout << "Len " << this->text.Len() << std::endl;
+  //std::cout << "Position " << event.GetPosition() << std::endl;
+  //std::cout << "lastprompt_position " << lastprompt_position << std::endl;
   
-  if (event.GetPosition()>=this->text.Len())
+  if (in_changed_value) {
+    //printf("in_changed_value\n");
+    event.Skip(); 
+    return;
+  }
+  
+  if (!_protect)        {
+    //printf("!_protect\n");
     event.Skip();
+    return;
+  }
+
+  if (event.GetPosition()>=lastprompt_position) {
+    event.Skip();
+  } else {
+    ConsoleClear();
+    MoveEnd();
+    // the Veto does not seem to affect ...
+    event.Veto();
+  }
 }
 
 
+/*
 //------------------------------------------------------------------------------
-void TextControl::OnPaste(  wxCommandEvent& event)
+void TextControl::OnTextUpdated(  wxCommandEvent& event)
 {
-  std::cout << "OnPaste()" << std::endl;
+  std::cout << "OnTextUpdated()" << std::endl;
   if (this->GetInsertionPoint() < lastprompt_position) {
     ConsoleClear();
     MoveEnd();
   } else 
     event.Skip();
 }
+*/
 
 //------------------------------------------------------------------------------
 void TextControl::OnUpdate(wxCommandEvent&  event)
@@ -448,7 +515,7 @@ bool TextControl::ProcessReturn()
   int  TCsize;
   CLASS_MESSAGE("begin")
 
-  in_changed_value = 1;
+  in_changed_value = true;
 
   //alltext = this->GetValue();
   alltext = this->GetContents();
@@ -469,7 +536,7 @@ bool TextControl::ProcessReturn()
     res=AskImage(name);
     if (!res) {
       GB_DriverBase->yyiperror(" Need Image \n");
-      in_changed_value = 0;
+      in_changed_value = false;
       return false;
     }
 
@@ -495,7 +562,7 @@ bool TextControl::ProcessReturn()
     res=AskSurface(name);
     if (!res) {
       GB_DriverBase->yyiperror(" Need Image \n");
-      in_changed_value = 0;
+      in_changed_value = false;
       return false;
     }
 
@@ -542,24 +609,30 @@ bool TextControl::ProcessReturn()
   }
 
   // Add now the newline character ...
-  in_changed_value = 0;
+  //in_changed_value = true;
 
   // Too slow now, need a clever way to update only visible information ...
   if (GB_main_wxFrame)
     GB_main_wxFrame->UpdateVarsDisplay();
 
+  in_changed_value = false;
   return parseok;
   // event.Skip();
 }
 
+/*
 //--------------------------------------------------
 void TextControl::OnEnter(wxCommandEvent&  event)
 {
-  printf("OnEnter\n");
-  event.Skip();
+  if (in_changed_value)
+    event.Skip();
+  else
+    this->ProcessReturn();
+  return;
 }
+*/
 
-
+/*
 //--------------------------------------------------
 void TextControl::TextOnKeyDown(wxKeyEvent& event)
 {
@@ -569,213 +642,223 @@ void TextControl::TextOnKeyDown(wxKeyEvent& event)
   event.Skip();
 
 }
+*/
 
 //--------------------------------------------------
-void TextControl::OnChar(wxKeyEvent& event)
+void TextControl::ProcessKeyEvent(wxKeyEvent& event)
 {
-    CLASS_MESSAGE("OnChar");
-    wxString key;
-    long keycode = event.GetKeyCode();
+  CLASS_MESSAGE("ProcessKeyEvent");
+  wxString key;
+  long keycode = event.GetKeyCode();
 
-   if (this->GetInsertionPoint()<lastprompt_position) {
-     this->SetInsertionPoint(this->text.Len());
-    if (GB_debug) std::cerr << format("TextControl::OnChar  insertion point %1% <  last position %2% ")
-        % GetInsertionPoint()
-        % lastprompt_position
-        << "text = [" << this->text << "]"
-        << std::endl;
+  if (this->GetInsertionPoint()<lastprompt_position) {
+   this->SetInsertionPoint(lastprompt_position);
+  if (GB_debug) std::cerr << format("TextControl::OnKeyDown  insertion point %1% <  last position %2% ")
+      % GetInsertionPoint()
+      % lastprompt_position
+      << "text = [" << this->text << "]"
+      << std::endl;
      return;
-   }
+  }
 
-      if ((keycode != WXK_TAB)&&(in_completion)) {
-              in_completion=0;
-              this->UpdateText();
-              this->WriteText ( completion_lastcommand);
-              if (keycode != WXK_BACK)
-                this->WriteText((*completions)[completion_count]);
-              this->SetInsertionPointEnd();
-      }
+  if ((keycode != WXK_TAB)&&(in_completion)) {
+          in_completion=0;
+          this->UpdateText();
+          this->WriteText ( completion_lastcommand);
+          if (keycode != WXK_BACK)
+            this->WriteText((*completions)[completion_count]);
+          this->SetInsertionPointEnd();
+  }
 
-     if (!(keycode>0)&&(keycode<128)) {
-      char c[2];
-      c[0] = keycode;
-      c[1] = 0;
-      if (GB_debug) std::cerr << format(" OnChar() \t non ASCII character %s") % c << std::endl;
-    }
+  if (!(keycode>0)&&(keycode<128)) {
+    char c[2];
+    c[0] = keycode;
+    c[1] = 0;
+    if (GB_debug) std::cerr << format(" OnKeyDown() \t non ASCII character %s") % c << std::endl;
+  }
 
+  {
+    switch ( keycode )
     {
-        switch ( keycode )
-        {
-            case WXK_TAB:
-              // process the new line
-              this->ProcessTab();
-              return;
+      case WXK_TAB:
+        // process the new line
+        this->ProcessTab();
+        return;
 
-            case WXK_RETURN: //key = _T("RETURN"); break;
-              // process the new line
-              //cout << "OnChar return" << std::endl;
-              if (in_changed_value)
-                event.Skip();
-              else
-                this->ProcessReturn();
-              return;
+      case WXK_RETURN: //key = _T("RETURN"); break;
+        // process the new line
+        //cout << "OnKeyDown return" << std::endl;
+        if (in_changed_value)
+          event.Skip();
+        else
+          this->ProcessReturn();
+        return;
 
 
-            case WXK_BACK:
-/*              std::cout << "WXK_BACK" << std::endl;
-              std::cout << this->GetInsertionPoint() << "; " << lastprompt_position << std::endl;
-              std::cout << (title_text+text).Len() << std::endl;*/
-              // Don't allow deleting the prompt ...
-              if (GB_debug) std::cerr << "OnChar BACK" << std::endl;
-              if (this->GetInsertionPoint()<=lastprompt_position)
-                this->SetInsertionPoint((title_text+text).Len());
-              if ((int)this->GetInsertionPoint()>lastprompt_position) event.Skip();
-              return;
+      case WXK_BACK:
+        /*std::cout << "WXK_BACK" << std::endl;
+        std::cout << this->GetInsertionPoint() << "; " << lastprompt_position << std::endl;
+        std::cout << (title_text+text).Len() << std::endl;*/
+        // Don't allow deleting the prompt ...
+        if (GB_debug) std::cerr << "OnKeyDown BACK" << std::endl;
+        if (this->GetInsertionPoint()<=lastprompt_position)
+          this->SetInsertionPoint((title_text+text).Len());
+        if ((int)this->GetInsertionPoint()>lastprompt_position) event.Skip();
+        return;
 
 
-            case WXK_UP:
-              this->PreviousCommand();
-              return;
+      case WXK_UP:
+        this->PreviousCommand();
+        return;
 
-            case WXK_DOWN:
-              this->NextCommand();
-              return;
+      case WXK_DOWN:
+        this->NextCommand();
+        return;
 
-            case WXK_HOME:
-              this->SetInsertionPoint(this->text.Len());
-              return;
+      case WXK_HOME:
+        this->SetInsertionPoint(this->text.Len());
+        return;
 
-            case WXK_LEFT:
-             if (this->GetInsertionPoint()==lastprompt_position)
-                return;
+      case WXK_LEFT:
+       if (this->GetInsertionPoint()==lastprompt_position)
+          return;
 
-            case '.':
-            case ',':
-            case '(':
-            case '[':
-              // Check for putting color to last word
-            break;
+      case '.':
+      case ',':
+      case '(':
+      case '[':
+        // Check for putting color to last word
+      break;
 
-            case WXK_ESCAPE: key = _T("ESCAPE"); break;
-            case WXK_START: key = _T("START"); break;
-            case WXK_LBUTTON: key = _T("LBUTTON"); break;
-            case WXK_RBUTTON: key = _T("RBUTTON"); break;
-            case WXK_CANCEL: key = _T("CANCEL"); break;
-            case WXK_MBUTTON: key = _T("MBUTTON"); break;
-            case WXK_CLEAR: key = _T("CLEAR"); break;
-            case WXK_SHIFT: key = _T("SHIFT"); break;
-            case WXK_ALT: key = _T("ALT"); break;
-            case WXK_CONTROL: key = _T("CONTROL"); break;
-            case WXK_MENU: key = _T("MENU"); break;
-            case WXK_PAUSE: key = _T("PAUSE"); break;
-            case WXK_CAPITAL: key = _T("CAPITAL"); break;
+      case WXK_ESCAPE: key = _T("ESCAPE"); break;
+      case WXK_START: key = _T("START"); break;
+      case WXK_LBUTTON: key = _T("LBUTTON"); break;
+      case WXK_RBUTTON: key = _T("RBUTTON"); break;
+      case WXK_CANCEL: key = _T("CANCEL"); break;
+      case WXK_MBUTTON: key = _T("MBUTTON"); break;
+      case WXK_CLEAR: key = _T("CLEAR"); break;
+      case WXK_SHIFT: key = _T("SHIFT"); break;
+      case WXK_ALT: key = _T("ALT"); break;
+      case WXK_CONTROL: key = _T("CONTROL"); break;
+      case WXK_MENU: key = _T("MENU"); break;
+      case WXK_PAUSE: key = _T("PAUSE"); break;
+      case WXK_CAPITAL: key = _T("CAPITAL"); break;
 
-            //case WXK_PRIOR: key = _T("PRIOR"); break;
-            //case WXK_NEXT: key = _T("NEXT"); break;
+      //case WXK_PRIOR: key = _T("PRIOR"); break;
+      //case WXK_NEXT: key = _T("NEXT"); break;
 
-            case WXK_END: key = _T("END"); break;
-            case WXK_SELECT: key = _T("SELECT"); break;
-            case WXK_PRINT: key = _T("PRINT"); break;
-            case WXK_EXECUTE: key = _T("EXECUTE"); break;
-            case WXK_SNAPSHOT: key = _T("SNAPSHOT"); break;
-            case WXK_INSERT: key = _T("INSERT"); break;
-            case WXK_HELP: key = _T("HELP"); break;
-            case WXK_NUMPAD0: key = _T("NUMPAD0"); break;
-            case WXK_NUMPAD1: key = _T("NUMPAD1"); break;
-            case WXK_NUMPAD2: key = _T("NUMPAD2"); break;
-            case WXK_NUMPAD3: key = _T("NUMPAD3"); break;
-            case WXK_NUMPAD4: key = _T("NUMPAD4"); break;
-            case WXK_NUMPAD5: key = _T("NUMPAD5"); break;
-            case WXK_NUMPAD6: key = _T("NUMPAD6"); break;
-            case WXK_NUMPAD7: key = _T("NUMPAD7"); break;
-            case WXK_NUMPAD8: key = _T("NUMPAD8"); break;
-            case WXK_NUMPAD9: key = _T("NUMPAD9"); break;
-            case WXK_MULTIPLY: key = _T("MULTIPLY"); break;
-            case WXK_ADD: key = _T("ADD"); break;
-            case WXK_SEPARATOR: key = _T("SEPARATOR"); break;
-            case WXK_SUBTRACT: key = _T("SUBTRACT"); break;
-            case WXK_DECIMAL: key = _T("DECIMAL"); break;
-            case WXK_DIVIDE: key = _T("DIVIDE"); break;
-            case WXK_F1: key = _T("F1"); break;
-            case WXK_F2: key = _T("F2"); break;
-            case WXK_F3: key = _T("F3"); break;
-            case WXK_F4: key = _T("F4"); break;
-            case WXK_F5: key = _T("F5"); break;
-            case WXK_F6: key = _T("F6"); break;
-            case WXK_F7: key = _T("F7"); break;
-            case WXK_F8: key = _T("F8"); break;
-            case WXK_F9: key = _T("F9"); break;
-            case WXK_F10: key = _T("F10"); break;
-            case WXK_F11: key = _T("F11"); break;
-            case WXK_F12: key = _T("F12"); break;
-            case WXK_F13: key = _T("F13"); break;
-            case WXK_F14: key = _T("F14"); break;
-            case WXK_F15: key = _T("F15"); break;
-            case WXK_F16: key = _T("F16"); break;
-            case WXK_F17: key = _T("F17"); break;
-            case WXK_F18: key = _T("F18"); break;
-            case WXK_F19: key = _T("F19"); break;
-            case WXK_F20: key = _T("F20"); break;
-            case WXK_F21: key = _T("F21"); break;
-            case WXK_F22: key = _T("F22"); break;
-            case WXK_F23: key = _T("F23"); break;
-            case WXK_F24: key = _T("F24"); break;
-            case WXK_NUMLOCK: key = _T("NUMLOCK"); break;
-            case WXK_SCROLL: key = _T("SCROLL"); break;
-//            case WXK_PAGEUP: key = _T("PAGEUP"); break;
-//            case WXK_PAGEDOWN: key = _T("PAGEDOWN"); break;
-            default:
-            {
-              if ( wxIsprint((int)keycode) )
-                  key.Printf(_T("'%c'"), (char)keycode);
-              else if ( keycode > 0 && keycode < 27 ) {
-                key.Printf(_("Ctrl-%c"), _T('A') + keycode - 1);
-                // remove the last character
+      case WXK_END: key = _T("END"); break;
+      case WXK_SELECT: key = _T("SELECT"); break;
+      case WXK_PRINT: key = _T("PRINT"); break;
+      case WXK_EXECUTE: key = _T("EXECUTE"); break;
+      case WXK_SNAPSHOT: key = _T("SNAPSHOT"); break;
+      case WXK_INSERT: key = _T("INSERT"); break;
+      case WXK_HELP: key = _T("HELP"); break;
+      case WXK_NUMPAD0: key = _T("NUMPAD0"); break;
+      case WXK_NUMPAD1: key = _T("NUMPAD1"); break;
+      case WXK_NUMPAD2: key = _T("NUMPAD2"); break;
+      case WXK_NUMPAD3: key = _T("NUMPAD3"); break;
+      case WXK_NUMPAD4: key = _T("NUMPAD4"); break;
+      case WXK_NUMPAD5: key = _T("NUMPAD5"); break;
+      case WXK_NUMPAD6: key = _T("NUMPAD6"); break;
+      case WXK_NUMPAD7: key = _T("NUMPAD7"); break;
+      case WXK_NUMPAD8: key = _T("NUMPAD8"); break;
+      case WXK_NUMPAD9: key = _T("NUMPAD9"); break;
+      case WXK_MULTIPLY: key = _T("MULTIPLY"); break;
+      case WXK_ADD: key = _T("ADD"); break;
+      case WXK_SEPARATOR: key = _T("SEPARATOR"); break;
+      case WXK_SUBTRACT: key = _T("SUBTRACT"); break;
+      case WXK_DECIMAL: key = _T("DECIMAL"); break;
+      case WXK_DIVIDE: key = _T("DIVIDE"); break;
+      case WXK_F1: key = _T("F1"); break;
+      case WXK_F2: key = _T("F2"); break;
+      case WXK_F3: key = _T("F3"); break;
+      case WXK_F4: key = _T("F4"); break;
+      case WXK_F5: key = _T("F5"); break;
+      case WXK_F6: key = _T("F6"); break;
+      case WXK_F7: key = _T("F7"); break;
+      case WXK_F8: key = _T("F8"); break;
+      case WXK_F9: key = _T("F9"); break;
+      case WXK_F10: key = _T("F10"); break;
+      case WXK_F11: key = _T("F11"); break;
+      case WXK_F12: key = _T("F12"); break;
+      case WXK_F13: key = _T("F13"); break;
+      case WXK_F14: key = _T("F14"); break;
+      case WXK_F15: key = _T("F15"); break;
+      case WXK_F16: key = _T("F16"); break;
+      case WXK_F17: key = _T("F17"); break;
+      case WXK_F18: key = _T("F18"); break;
+      case WXK_F19: key = _T("F19"); break;
+      case WXK_F20: key = _T("F20"); break;
+      case WXK_F21: key = _T("F21"); break;
+      case WXK_F22: key = _T("F22"); break;
+      case WXK_F23: key = _T("F23"); break;
+      case WXK_F24: key = _T("F24"); break;
+      case WXK_NUMLOCK: key = _T("NUMLOCK"); break;
+      case WXK_SCROLL: key = _T("SCROLL"); break;
+      //            case WXK_PAGEUP: key = _T("PAGEUP"); break;
+      //            case WXK_PAGEDOWN: key = _T("PAGEDOWN"); break;
+      default:
+      {
+        if ( wxIsprint((int)keycode) )
+            key.Printf(_T("'%c'"), (char)keycode);
+        else if ( keycode > 0 && keycode < 27 ) {
+          key.Printf(_("Ctrl-%c"), _T('A') + keycode - 1);
+          // remove the last character
 
-                // Use Ctrl-F to write a filename in the console
-                if (_T('A') + keycode - 1 == _T('F')) {
+          // Use Ctrl-F to write a filename in the console
+          if (_T('A') + keycode - 1 == _T('F')) {
 
-                  int res;
-                  string name;
-                  string inc_cmd; // increment the command line string
+            int res;
+            string name;
+            string inc_cmd; // increment the command line string
 
-                  res=AskFilename(name);
-                  if (!res) {
-                    GB_DriverBase->yyiperror(" No filename given! \n");
-                  } else {
-  
-                    wxFileName filename(wxString(name.c_str(), wxConvUTF8));
-                    filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
-                    wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
-                                        filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
-                                        filename.GetPathSeparator(wxPATH_UNIX)+
-                                        filename.GetFullName());
-                    inc_cmd = str(format(" \"%1%\" ") % newname.mb_str());
-                    this->IncCommand(wxString(inc_cmd.c_str(),wxConvUTF8));
-                  }
-                }
-              }
-              else
-                  key.Printf(_T("unknown (%ld)"), keycode);
+            res=AskFilename(name);
+            if (!res) {
+              GB_DriverBase->yyiperror(" No filename given! \n");
+            } else {
+
+              wxFileName filename(wxString(name.c_str(), wxConvUTF8));
+              filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
+              wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
+                                  filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
+                                  filename.GetPathSeparator(wxPATH_UNIX)+
+                                  filename.GetFullName());
+              inc_cmd = str(format(" \"%1%\" ") % newname.mb_str());
+              this->IncCommand(wxString(inc_cmd.c_str(),wxConvUTF8));
             }
+          }
         }
+        else
+            key.Printf(_T("unknown (%ld)"), keycode);
+      }
     }
+  }
 
-    if (GB_debug) std::cerr <<  key << std::endl;
+  if (GB_debug) std::cerr <<  key << std::endl;
   SetAndShowDefaultStyle(*_basic_style);
   //SetDefaultStyleToCursorStyle();
-    event.Skip();
-} // OnChar()
+  event.Skip();
+} // OnKeyDown()
 
+
+/*
+//--------------------------------------------------
+void TextControl::OnKeyDown(wxKeyEvent& event)
+{
+  CLASS_MESSAGE("OnKeyDown");
+  ProcessKeyEvent(event);
+}
+*/
 
 //--------------------------------------------------
 void TextControl::PreviousCommand()
 {
-  std::cout << "cmdline_displaypos = " << cmdline_displaypos << std::endl;
-  std::cout << "current_commandline = '" << current_commandline.ToAscii() << "'" << std::endl;
-  for(int i=0;i<cmd_lines.size();i++) {
-    std::cout << " command " << i << ": '" <<  cmd_lines[i].ToAscii() << "'" << std::endl;
-  }
+  //std::cout << "cmdline_displaypos = " << cmdline_displaypos << std::endl;
+  //std::cout << "current_commandline = '" << current_commandline.ToAscii() << "'" << std::endl;
+  //for(int i=0;i<(int)cmd_lines.size();i++) {
+    //std::cout << " command " << i << ": '" <<  cmd_lines[i].ToAscii() << "'" << std::endl;
+  //}
 
   // Do nothing if we are at the first command or there is only one command
   if ((cmdline_displaypos==0)||(cmd_lines.size()==0)) { return; }
@@ -787,8 +870,8 @@ void TextControl::PreviousCommand()
       // to do: save current line
       current_commandline = this->GetContents().Mid ( this->text.Len() );
       //cmd_lines.size()++;
-      std::cout << "saving command " << cmdline_displaypos << " : '"
-                << current_commandline.ToAscii() << "'" << std::endl;
+      //std::cout << "saving command " << cmdline_displaypos << " : '"
+                //<< current_commandline.ToAscii() << "'" << std::endl;
       // show the previous line
       cmdline_displaypos--;
       this->UpdateText();
@@ -811,11 +894,11 @@ void TextControl::PreviousCommand()
 //--------------------------------------------------
 void TextControl::NextCommand()
 {
-  std::cout << "cmdline_displaypos = " << cmdline_displaypos << std::endl;
-  std::cout << "current_commandline = '" << current_commandline.ToAscii() << "'" << std::endl;
-  for(int i=0;i<cmd_lines.size();i++) {
-    std::cout << " command " << i << ": '" <<  cmd_lines[i].ToAscii() << "'" << std::endl;
-  }
+  //std::cout << "cmdline_displaypos = " << cmdline_displaypos << std::endl;
+  //std::cout << "current_commandline = '" << current_commandline.ToAscii() << "'" << std::endl;
+  //for(int i=0;i<(int)cmd_lines.size();i++) {
+    //std::cout << " command " << i << ": '" <<  cmd_lines[i].ToAscii() << "'" << std::endl;
+  //}
   // 1. if displaypos==-1 do nothing
   // 2. otherwise go down in the command list
   if  (cmdline_displaypos<(int)cmd_lines.size()-1)
@@ -838,3 +921,20 @@ void TextControl::NextCommand()
     }
 }
 
+
+/*
+void TextControl::OnCharacter(wxRichTextEvent& event)
+{
+  std::cout << "OnCharacter" << std::endl;
+  event.Skip();
+}
+*/
+
+void TextControl::OnReturn(wxRichTextEvent& event)
+{
+  //std::cout << "OnReturn" << std::endl;
+  if (in_changed_value)
+    event.Skip();
+  else
+    this->ProcessReturn();
+}
