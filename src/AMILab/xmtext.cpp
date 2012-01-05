@@ -256,6 +256,7 @@ void TextControl::UpdateText()
 {
   CLASS_MESSAGE("begin")
   _protect = false;
+  BeginSuppressUndo();
   Clear();
 
   SetAndShowDefaultStyle(*_basic_style);
@@ -277,6 +278,7 @@ void TextControl::UpdateText()
   ShowPosition(GetLastPosition());
   SetAndShowDefaultStyle(*_basic_style);
   //SetDefaultStyleToCursorStyle();
+  EndSuppressUndo();
   _protect = true;
   if (GB_debug) {
     std::cerr << "TextControl::Update() text ="
