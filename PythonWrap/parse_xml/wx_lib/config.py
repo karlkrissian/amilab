@@ -53,6 +53,7 @@ def get_include_file(classname, filename):
   if classname=="wxAppConsole": s = "wx/app.h"
   #if classname=="wxTextEntry":       s = "wx_includes.h"
   #if classname=="wxTextEntryBase":   s = "wx_includes.h"
+  if classname=="wxSlider":   s = "wx/slider.h"
   #print "including class {0} from file '{1}' will use '{2}'".format(classname,incfile,s)
   s1 = '#include "{0}"'.format(s)
   if s.find("tipdlg.h"):

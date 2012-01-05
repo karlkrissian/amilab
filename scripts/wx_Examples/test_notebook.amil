@@ -1,0 +1,59 @@
+
+delvars "ex_*"
+
+ex_fr = wx.wxFrame( &ami.MainFrame, wx.wxID_ANY, "Frame Title",\
+                     wx.wxPoint(100,100), wx.wxSize(400,600))
+ex_fr.Show()
+ex_topsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+ex_fr.SetSizer( &ex_topsizer )      # use the sizer for layout
+
+#-------------------------------------------------------------------------------
+# Create a panel page
+proc CreatePage( OBJECT nb, STRING name ) {
+  panel = wx.wxPanel(&nb)
+  nb.AddPage(&panel,name)
+  return = &panel
+}
+
+#-------------------------------------------------------------------------------
+# Create Contents
+# problem of 3 level nested notebook on windows (drawing and resizing problems)
+# solved with wxAuiNoteBook 
+
+proc CreateContents( OBJECT parent, NUM level, STRING text) \
+{
+  sflags = wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand()
+  if level<4 {
+    slider = wx.wxSlider(&parent,wx.wxID_ANY,0,-5,10)
+    parent.GetSizer().Add(&slider,&sflags.Proportion(0))
+    but = wx.wxButton(&parent,wx.wxID_ANY, "Button  %1%" % text)
+    parent.GetSizer().Add(&but,&sflags.Proportion(0))
+    # Create a new notebook with pages
+    nb = wx.wxAuiNotebook(&parent,wx.wxID_ANY)
+    for n=1 to 2 {
+      eval "panel%1% = global::CreatePage(&nb,\"page%1%\");" % n
+      eval "sizer%1% = wx.wxBoxSizer(wx.wxVERTICAL);" % n
+      eval "panel%1%.SetSizer(&sizer%1%);" % n
+      eval "mess = text + \"::page%1%\";" %n
+      eval "global::CreateContents( &panel%1%," %n + \
+                                    "%1%," % (level+1) + \
+                                    "mess);"
+    }
+    parent.GetSizer().Add(&nb,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 10))
+  } else {
+    # Create buttons
+    printn "Creating buttons"
+    but1 = wx.wxButton(&parent,wx.wxID_ANY, "Button 1  %1%" % text)
+    but2 = wx.wxButton(&parent,wx.wxID_ANY, "Button 2  %1%" % text)
+    parent.GetSizer().Add(&but1,&sflags.Proportion(0))
+    parent.GetSizer().Add(&but2,&sflags.Proportion(0))
+    # create a slider
+    #sizer=wx.wxBoxSizer(wx.wxVERTICAL)
+    slider = wx.wxSlider(&parent,wx.wxID_ANY,0,-5,10)
+    #  sizer.Add(&slider,&sflags)
+    parent.GetSizer().Add(&slider,&sflags.Proportion(1))
+  }
+  parent.Layout()
+}
+
+CreateContents(&ex_fr,0, "")

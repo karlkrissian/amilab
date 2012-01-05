@@ -56,6 +56,12 @@
 #include <iostream>
 //#include <wx/artprov.h>
 
+#ifdef WIN32
+  #include <wx/aui/auibook.h>
+#else
+  #include <wx/notebook.h>
+#endif
+
 using namespace std;
 
 #include "boost/format.hpp"
@@ -148,11 +154,17 @@ ParamPanel::ParamPanel( wxWindow* parent,
 //---------------------------------------------------------------
 int ParamPanel::BeginBook()
 {
-  wxNotebook* nb;
+  NotebookClass* nb;
 
-  nb = new wxNotebook(CurrentParent(), wxID_ANY,
-                      wxDefaultPosition,
-                      wxDefaultSize
+
+  nb = new NotebookClass( CurrentParent()
+                          ,wxID_ANY
+                          ,wxDefaultPosition
+                          ,wxDefaultSize
+#ifdef WIN32
+                          , wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | 
+                            wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS
+#endif
                       //wxVSCROLL
                       );
   //  nb->SetFont(wxFont(12, wxDEFAULT, wxNORMAL, wxBOLD));
@@ -169,7 +181,7 @@ int ParamPanel::BeginBook()
 //---------------------------------------------------------------
 void ParamPanel::EndBook()
 {
-  wxNotebook* book = GetBookCtrl();
+  NotebookClass* book = GetBookCtrl();
 
   if (book) {
     // closes previous page if any
@@ -214,9 +226,10 @@ int ParamPanel::AddPage(wxScrolledWindow* panel, const std::string& panel_name)
                           wxString::FromAscii(panel_name.c_str()));
   LastPanel()->SetToolTip(wxString::FromAscii(panel_name.c_str()));
   panelsizer = dynamic_cast<wxBoxSizer*>(LastPanel()->GetSizer());
-  if (panelsizer==NULL)
+  if (panelsizer==NULL) {
     panelsizer   = new wxBoxSizer( wxVERTICAL );
-  LastPanel()->SetSizer(panelsizer);
+    LastPanel()->SetSizer(panelsizer);
+  }
   _current_sizer.push(panelsizer);
 
   return _tab_panels.size()-1;
@@ -827,9 +840,9 @@ void ParamPanel::FixeVisible( int id, unsigned char visible)
   macro_CheckParameterId(id, return)
 
   if ((wxGenericWidget*) _tab_param[id].GetWidget() !=NULL) {
-
-    if ((bool)visible!=_tab_param[id].GetSizerItem()->IsShown())
-    _tab_param[id].GetSizerItem()->Show((bool)visible);
+    // TODO: change visible to bool type
+    if ((visible!=0)!=_tab_param[id].GetSizerItem()->IsShown())
+    _tab_param[id].GetSizerItem()->Show((visible!=0));
   }
 } // FixeVisible()
 
@@ -1204,8 +1217,8 @@ void ParamPanel::EnablePanel( int id, bool enable) {
 void ParamPanel::SelectPage( int book_id, int panel_nb)
 {
   if (book_id<(int)_tab_books.size()) {
-    wxNotebook* book = _tab_books[book_id];
-    book->ChangeSelection(panel_nb);
+    NotebookClass* book = _tab_books[book_id];
+    book->SetSelection(panel_nb);
   } else {
     cerr  << __func__ << " " \
           << this->GetName().mb_str() << "\t" \

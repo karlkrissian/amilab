@@ -69,16 +69,24 @@
 #endif
 #include <wx/propdlg.h>
 #include <wx/notebook.h>
+#include <wx/aui/auibook.h>
 #include <wx/panel.h>
 //#include "ParamBox.hpp"
 #include <wx/scrolwin.h>
 #include <wx/toolbar.h>
 */
 
+#ifdef WIN32
+  #define NotebookClass wxAuiNotebook
+  class wxAuiNotebook;
+#else
+  #define NotebookClass wxNotebook
+  class wxNotebook;
+#endif
+
 // forward declarations
 class wxStaticBox;
 class wxWindow;
-class wxNotebook;
 class wxBoxSizer;
 
 //#include "NoyauParametre.hpp"
@@ -90,7 +98,6 @@ class wxBoxSizer;
 #include <vector>
 #include <stack>
 #include <string>
-
 
 #define  wxP_DefaultProportion 0
 #define  wxP_DefaultBorder     5
@@ -162,11 +169,12 @@ private:
   std::vector<ParamInfo>    _tab_param;
   std::vector<wxStaticBox*> _tab_boxes;
   std::vector<wxWindow*>    _tab_panels;
-  std::vector<wxNotebook*>  _tab_books;
+
+  std::vector<NotebookClass*>  _tab_books;
 
   std::stack<wxBoxSizer*>  _current_sizer;
-  std::stack<wxWindow*>     _panels;
-  std::stack<wxNotebook*>  _current_book;
+  std::stack<wxWindow*>    _panels;
+  std::stack<NotebookClass*>  _current_book;
 
   wxBoxSizer*  _main_sizer;
 
@@ -191,7 +199,7 @@ public:
 //(wxPROPSHEET_SHRINKTOFIT| wxPROPSHEET_TOOLBOOK) 
                         );
 
-  wxNotebook* GetBookCtrl() 
+  NotebookClass* GetBookCtrl() 
   {
     if (!_current_book.empty())
       return _current_book.top(); 

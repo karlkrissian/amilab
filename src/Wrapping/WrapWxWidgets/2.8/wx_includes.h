@@ -30,6 +30,7 @@
 #include <wx/regex.h> 
 #include <wx/richtext/richtextctrl.h>
 #include <wx/richtext/richtextstyles.h>
+#include <wx/slider.h>
 #include <wx/splitter.h>
 #include <wx/stc/stc.h>
 #include <wx/stdpaths.h>

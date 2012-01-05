@@ -150,6 +150,7 @@ wxSizer
 wxSizerFlags
 wxSizerItem
 wxSizerItemList
+wxSlider
 wxSplitterWindow
 wxStandardPaths
 wxStaticBox

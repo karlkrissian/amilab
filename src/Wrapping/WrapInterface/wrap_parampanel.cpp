@@ -24,7 +24,11 @@
 #include "MainFrame.h"
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
-#include "wrap_wxNotebook.h"
+#ifdef WIN32
+  #include "wrap_wxAuiNotebook.h"
+#else
+  #include "wrap_wxNotebook.h"
+#endif
 #include "wrap_wxSizerItem.h"
 #include "wrap_wxBoxSizer.h"
 
@@ -178,12 +182,12 @@ void WrapClass_ParamPanel::wrap_GetBookCtrl::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_ParamPanel::wrap_GetBookCtrl::CallMember( ParamList* p)
 {
-  wxNotebook* b = this->_objectptr->GetObj()->GetBookCtrl();
+  NotebookClass* b = this->_objectptr->GetObj()->GetBookCtrl();
 
   if (b==NULL)
     return BasicVariable::ptr();
   else
-    return AMILabType<wxNotebook>::CreateVar(b,true);
+    return AMILabType<NotebookClass>::CreateVar(b,true);
 
 }
 
