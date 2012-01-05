@@ -113,10 +113,29 @@ if (!exists(SimplevtkVolumeClass)) {
     #----------------------------
      proc ::InitCamera() {
       ::camera=::renderer.GetActiveCamera()
+      ::camera.SetPosition(0,-100,0)
       ::camera.SetViewUp(0,0,1) # change orientation
       #::camera.SetParallelProjection(true)
-      #::camera.SetPosition(0,-100,0)
     }
+
+    #----------------------------
+    #Initialize Interactor,Renderer, RendererWindow and variables
+    proc ::CreateRenderer( OBJECT inter ) \
+    {
+      inter.Show()
+      inter.Update()
+      del ::renwininter # it is a reference, no call to Delete()
+      ::renwininter = &inter
+      ::renderer = vtk.vtkRenderer.New()
+      ::renderer.ResetCamera()   # carlos
+      ::renwininter.GetRenderWindow().AddRenderer(&::renderer)
+      interact = vtk.vtkInteractorStyleTrackballCamera.New()
+      ::renwininter.SetInteractorStyle(&interact)
+      del ::renwin
+      ::renwin   = ::renwininter.GetRenderWindow()
+      ::InitCamera()
+    }
+
     #----------------------------
     #Initialize Interactor,Renderer, RendererWindow and variables
     proc ::InitManager( OBJECT inter ) {
@@ -124,19 +143,15 @@ if (!exists(SimplevtkVolumeClass)) {
       #reset
       ::ResetVTK()
       #Init
-      ::renwininter = &inter
-      ::renderer = vtk.vtkRenderer.New()
-      ::renderer.ResetCamera()   # carlos
-      ::InitCamera()
-
-      ::renwininter.GetRenderWindow().AddRenderer(&::renderer)
-      interact = vtk.vtkInteractorStyleTrackballCamera.New()
-      ::renwininter.SetInteractorStyle(&interact)
-      #This is the actor with the planes
-      ::renwin   = ::renwininter.GetRenderWindow()
+      if (!exists(::renderer)) {
+        # remove existing renderer and recreate it
+        #inter.GetRenderWindow().RemoveRenderer(&::renderer)
+        #del ::renderer
+        ::CreateRenderer(&inter)
+      }
 
       #::renwininter.SetRenderWindow(&::renwin)
-      //::initialized = true
+      #::initialized = true
       if ::trace2 { eval ::trace2_end; }
     }
 
@@ -597,7 +612,6 @@ if (!exists(SimplevtkVolumeClass)) {
     {
       if ::trace2 { eval ::trace2_begin; }
       ::initialized = false
-      del ::renwininter # it is a reference, no call to Delete()
       del ::input
       del ::input2
       del ::vol

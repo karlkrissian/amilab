@@ -96,7 +96,7 @@ protected:
   **/
   int GetAcceptedSize() { return text.Len(); }
 
-  void UpdateText();
+  void UpdateText(bool setendinsertion=true);
 
 
   void OnContentInserted( wxRichTextEvent& event);

@@ -233,7 +233,7 @@ if (!exists(VolRenClass)) {
           ::splitter.Unsplit();
           sizer=(::splitter.GetWindow1()).GetVirtualSize()
           h=sizer.GetHeight()*0.8
-          ::splitter.SplitHorizontally(&::renwin_interact, &::panel2,h)
+          ::splitter.SplitHorizontally(&::panel1, &::panel2,h)
         }
       }
       if ::trace { eval ::trace_end; }
@@ -479,10 +479,10 @@ if (!exists(VolRenClass)) {
       ::resizevol1=0
 
       if (exists(::input)){
-        #if (!::volVector[0].initialized){
-        #  ::volVector[0].InitManager(&::renwin_interact)
-        #  ::volVector[0].AddAnnotatedCube() 
-        #}
+        if (!::volVector[0].initialized){
+          ::volVector[0].InitManager(&::renwin_interact)
+          ::volVector[0].AddAnnotatedCube() 
+        }
         ::volVector[0].DelVTK()
         ::volVector[0].DefaultProperties() 
         ::volVector[0].SetVolRenMapper(::volrenmapper_type)
@@ -608,7 +608,13 @@ if (!exists(VolRenClass)) {
 
       sbox_sizer.Add( &::splitter, 1, wx.wxALL | wx.wxEXPAND,2)
       # create widget here
-      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::splitter,-1)
+      ::panel1 = wx.wxPanel(&::splitter)
+      #::panel1.SetBackgroundColour(wx.wxColour(0,0,50))
+      ::panel1_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+      ::panel1.SetSizer(&::panel1_sizer)   
+      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel1,wx.wxID_ANY)
+      ::panel1_sizer.Add(&::renwin_interact,1,wx.wxEXPAND )
+      #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.Enable(true)
       ::renwin_interact.Initialize()
@@ -636,7 +642,7 @@ if (!exists(VolRenClass)) {
 
       //::splitter.SetSashGravity(1)//(0.8)
       
-      ::splitter.SplitHorizontally(&::renwin_interact, &::panel2)
+      ::splitter.SplitHorizontally(&::panel1, &::panel2)
       ::splitter.Unsplit()
       # Add to main book
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
@@ -644,7 +650,14 @@ if (!exists(VolRenClass)) {
       ::volren_pageindex = mb.GetPageIndex(&::panel)
       
       # initialize the renderer, camera, renderwindow in volvVctor[0]
-      ::volVector[0].InitManager(&::renwin_interact)
+      #::renwin_interact.Hide()
+      # NEED TO CALL SHOW AND UPDATE TO MAKE IT WORK ON WINDOWS !!!
+      ::renwin_interact.Show()
+      ::panel.Show()
+      ::renwin_interact.Update()
+      ::panel.Update()
+      # now can create the renderer
+      ::volVector[0].CreateRenderer(&::renwin_interact)
       ::volVector[0].AddAnnotatedCube() 
       ::SetRendererBg()
       

@@ -53,6 +53,7 @@ if (!exists(alGraphVizClass)) {
       # use global AMILabConfig to read/save configuration of the script
       ::config_path = "/scripts/Visualization/GraphViz"
       ::graphviz_dotdir = ".", "Default file directory"
+      ::graphviz_bindir = "", "Path to the graphviz 'dot' program"
       ::ReadConfig()
     
       # try to read the user dir
@@ -350,7 +351,10 @@ if (!exists(alGraphVizClass)) {
 
       #::res_shadow = (RGB) res
       #show ::res_shadow
-      shadow_filename="/tmp/shadow.png"
+      f = wx.wxFileName("shadow")
+      f.SetPath(wx.wxFileName.GetTempDir())
+      f.SetExt("png")
+      shadow_filename = f.GetFullPath().c_str()
       ::res_shadow.save shadow_filename
       ::ShowShadow(shadow_filename)
 

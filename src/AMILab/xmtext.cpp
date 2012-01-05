@@ -252,7 +252,7 @@ void TextControl::AddPrompt(bool newline)
 
 
 //--------------------------------------------------
-void TextControl::UpdateText()
+void TextControl::UpdateText( bool setendinsertion)
 {
   CLASS_MESSAGE("begin")
   _protect = false;
@@ -274,7 +274,8 @@ void TextControl::UpdateText()
     EndTextColour();
   EndItalic();
 
-  this->SetInsertionPointEnd();
+  if (setendinsertion)
+    this->SetInsertionPointEnd();
   ShowPosition(GetLastPosition());
   SetAndShowDefaultStyle(*_basic_style);
   //SetDefaultStyleToCursorStyle();
@@ -664,12 +665,13 @@ void TextControl::ProcessKeyEvent(wxKeyEvent& event)
   }
 
   if ((keycode != WXK_TAB)&&(in_completion)) {
-          in_completion=0;
-          this->UpdateText();
-          this->WriteText ( completion_lastcommand);
-          if (keycode != WXK_BACK)
-            this->WriteText((*completions)[completion_count]);
-          this->SetInsertionPointEnd();
+    in_completion=0;
+    this->UpdateText(false);
+    if (!completion_lastcommand.IsEmpty())
+      this->WriteText ( completion_lastcommand);
+    if (keycode != WXK_BACK)
+      this->WriteText((*completions)[completion_count]);
+    this->SetInsertionPointEnd();
   }
 
   if (!(keycode>0)&&(keycode<128)) {
