@@ -207,7 +207,8 @@ if (!exists(ImageHistogramClass)) {
           }
           if (::log10) {
             # set a positive minimum to 10
-            ::h[n] = ::h[n]*(::h[n]>10)+(::h[n]<=10)*10
+            hmin=1 # 10
+            ::h[n] = ::h[n]*(::h[n]>hmin)+(::h[n]<=hmin)*hmin
             ::h[n] <<= ln((DOUBLE)::h[n])/ln(10)
           }
           ::dw->SetXLimits(::minval,::maxval)
