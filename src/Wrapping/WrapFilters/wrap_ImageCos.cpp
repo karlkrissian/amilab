@@ -14,8 +14,9 @@
 
 #include "AMILabConfig.h"
 #include "wrapfunctions.hpp"
-#include "ImageToImageFilter.h"
-#include "ImageCos.h"
+#include "amiImageToImageFilter.h"
+#include "amiImageCos.h"
+
 
 void wrap_ImageCos( ParamList* p)
 {
@@ -34,8 +35,8 @@ void wrap_ImageCos( ParamList* p)
   if (!get_val_smtptr_param<InrImage>( input,       p, n, true)) HelpAndReturn;
   if (!get_int_param                 ( num_threads, p, n      )) HelpAndReturn;
 
-  ImageToImageFilterParam param;
-  ImageCos imcos;
+  ami::ImageToImageFilterParam param;
+  ami::ImageCos imcos;
 
   param.SetInput(input);
   param.SetNumberOfThreads(num_threads);

@@ -15,11 +15,12 @@
 
 #include "inrimage.hpp"
 #include "imageextent.h"
-#include "ImageToImageFilter.h"
+#include "amiImageToImageFilter.h"
 #include <vector>
 #include "DefineClass.hpp"
 
-// use amilab namespace here ??
+
+namespace ami {
 
 // 
 // ImageToImageFilterParam
@@ -33,8 +34,6 @@ class ImageAddScalar : public ImageToImageFilter
   DEFINE_CLASS(ImageAddScalar);
 
   double scalar;
-  typedef ImageExtent<int> extenttype;
-  std::vector<extenttype> extents;
 
   /// filter mode: 1 or 2, trying different code for optimization; 1: use iterators, 2: use pointers
   int _mode;
@@ -45,10 +44,6 @@ public:
   { 
   }
 
-  /**
-   * Creates the extents for each thread
-   */
-  void Init();
 
   void SetMode( int mode) { _mode = mode; }
 
@@ -73,5 +68,7 @@ public:
   void Process( int threadid = 0);
 
 }; // ImageAddFilter
+
+} // end namespace ami
 
 #endif // _ImageAddScalar_h_

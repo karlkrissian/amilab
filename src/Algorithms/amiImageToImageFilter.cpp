@@ -1,5 +1,5 @@
 //
-// C++ Implementation: ImageToImageFilter
+// C++ Implementation: ami::ImageToImageFilter
 //
 // Description: 
 //
@@ -10,9 +10,12 @@
 //
 //
 
-#include "ImageToImageFilter.h"
+#include "amiImageToImageFilter.h"
 #include <pthread.h>
 #include <iostream>
+
+
+namespace ami {
 
 template <class T>
 struct thread_info {
@@ -22,6 +25,50 @@ struct thread_info {
     T* _this;         /* pointer to the class instance */
 };
 
+
+void ImageToImageFilter::Init()
+{
+  
+  InrImage::ptr in = params.GetInput();
+  int nt = params.GetNumberOfThreads();
+
+  if (in.get()) {
+    extenttype extent(in.get());
+#define SPLIT_Z_FIRST
+#ifdef SPLIT_Z_FIRST
+    // Set which dimension to split
+    int splitaxis=2;
+    while ( (extent.GetSize(splitaxis)<nt)&&
+            (splitaxis>=0))
+      splitaxis--;
+#else
+    // Set which dimension to split
+    int splitaxis=0;
+    while ( (extent.GetSize(splitaxis)<nt)&&
+            (splitaxis<=2))
+      splitaxis++;
+#endif
+
+    if (extent.GetSize(splitaxis)<nt) {
+      // Change the number of threads to the bigger axis size
+      splitaxis = 2;
+      if (extent.GetSize(splitaxis)<extent.GetSize(1)) 
+        splitaxis = 1;
+      if (extent.GetSize(splitaxis)<extent.GetSize(0)) 
+        splitaxis = 0;
+      params.SetNumberOfThreads(extent.GetSize(splitaxis));
+    }
+
+    int axis_size   = extent.GetSize(splitaxis);
+    double thread_size = ((double) axis_size)/nt;
+    for(int i=0;i<nt;i++) {
+      int extmin = round(i*thread_size);
+      int extmax = round((i+1)*thread_size-1);
+      extent.SetMinMax(splitaxis,extmin,extmax);
+      extents.push_back(extent);
+    }
+  }
+}
 
 
 //------------------------------------------------------------------
@@ -105,4 +152,6 @@ void ImageToImageFilter::Run()
   Run_multithreads();
   Close();
 } // ImageToImageFilter::Run()
+
+} // end namespace ami
 

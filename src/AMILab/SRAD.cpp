@@ -177,7 +177,8 @@ double Compute_sigma2_MRI(InrImage* im, ImageExtent<float>* extent)
 
 
 //--------------------------------------------------------------------------------
-double Compute_sigma2_MRI_mode(InrImage* im, ImageExtent<float>* extent)
+double Compute_sigma2_MRI_mode(InrImage* im, ImageExtent<float>* extent, 
+                               bool square_root = true)
 //
 {
   InrImage* im1;
@@ -196,15 +197,18 @@ double Compute_sigma2_MRI_mode(InrImage* im, ImageExtent<float>* extent)
 
   // compute square root of image
   im1 = new InrImage(WT_FLOAT,"im1.ami.gz",subvol);
-  im1->InitBuffer();
-  subvol->InitBuffer();
-  do {
-    tmp = subvol->ValeurBuffer();
-    if (tmp<0) tmp = 0;
-    im1->FixeValeur(sqrt(tmp));
-    subvol->IncBuffer();
-  }
-  while(im1->IncBuffer());
+  if (square_root) {
+    im1->InitBuffer();
+    subvol->InitBuffer();
+    do {
+      tmp = subvol->ValeurBuffer();
+      if (tmp<0) tmp = 0;
+      im1->FixeValeur(sqrt(tmp));
+      subvol->IncBuffer();
+    }
+    while(im1->IncBuffer());
+  } else 
+    *im1 = *subvol;
 
   delete subvol;
   
@@ -315,14 +319,14 @@ double Compute_q0_2(InrImage* im, InrImage* meanI, InrImage* meanI2, int mode, i
       mean1 = Ixm+Ixp+Iym+Iyp;
       mean2 = Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp;
       if (im->DimZ()==1) {
-	mean1/=4.0;
-	mean2/=4.0;
+        mean1/=4.0;
+        mean2/=4.0;
       }
       else {
-	mean1+=Izm+Izp;
-	mean2+=Izm*Izm+Izp*Izp;
-	mean1/=6.0;
-	mean2/=6.0;
+        mean1+=Izm+Izp;
+        mean2+=Izm*Izm+Izp*Izp;
+        mean1/=6.0;
+        mean2/=6.0;
       }
       break;
     default:
@@ -554,14 +558,14 @@ void Compute_d_coeff(InrImage* image_res,InrImage* image_c,InrImage* image_d, do
       mean1 = Ixm+Ixp+Iym+Iyp;
       mean2 = Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp;
       if (tz==1) {
-	mean1/=4.0;
-	mean2/=4.0;
+        mean1/=4.0;
+        mean2/=4.0;
       }
       else {
-	mean1+=Izm+Izp;
-	mean2+=Izm*Izm+Izp*Izp;
-	mean1/=6.0;
-	mean2/=6.0;
+        mean1+=Izm+Izp;
+        mean2+=Izm*Izm+Izp*Izp;
+        mean1/=6.0;
+        mean2/=6.0;
       }
       break;
     default:
@@ -664,8 +668,8 @@ InrImage* Func_SRAD_qcoeff( InrImage* input) {
 // explicit scheme
 InrImage* Func_SRAD( InrImage* input, float dt, int numit, int mode,  
 //        ---------
-		     int neighborhood,
-		     ImageExtent<float>* extent) 
+                      int neighborhood,
+                      ImageExtent<float>* extent) 
 {
 
   
@@ -710,13 +714,13 @@ InrImage* Func_SRAD( InrImage* input, float dt, int numit, int mode,
     do {
 
       if (image_res->DimZ()==1)
-	new_val = image_res->ValeurBuffer()+image_d->ValeurBuffer()*dt1/4.0;
+        new_val = image_res->ValeurBuffer()+image_d->ValeurBuffer()*dt1/4.0;
       else
-	new_val = image_res->ValeurBuffer()+image_d->ValeurBuffer()*dt1/6.0;
+        new_val = image_res->ValeurBuffer()+image_d->ValeurBuffer()*dt1/6.0;
       
       // prevent negative values ...
       if (new_val>0)
-	image_res->FixeValeur(new_val);
+        image_res->FixeValeur(new_val);
       image_d->IncBuffer();
     }
     while (image_res->IncBuffer());
@@ -749,6 +753,7 @@ void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* im
   int tz = image_res->_tz;
 
   float q0_2 = 0.0;
+  float q0_2_test = 0.0;
   float sigma2 = 0.0;
   //  float tmp;
   double mean1,mean2,q2;
@@ -762,6 +767,8 @@ void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* im
     case MODE_ADDITIVE:
         q0_2= Compute_q0_2(image_res,mode, extent);
         printf("q0_2 = %f \n",q0_2);
+        q0_2_test =  Compute_sigma2_MRI_mode(image_res,extent,false);
+        printf("q0_2_test = %f \n",q0_2_test);
         break;
     case MODE_MRI:
     case MODE_MRI_NEW:
@@ -804,14 +811,14 @@ void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* im
       mean1 = Ixm+Ixp+Iym+Iyp;
       mean2 = Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp;
       if (tz==1) {
-	mean1/=4.0;
-	mean2/=4.0;
+        mean1/=4.0;
+        mean2/=4.0;
       }
       else {
-	mean1+=Izm+Izp;
-	mean2+=Izm*Izm+Izp*Izp;
-	mean1/=6.0;
-	mean2/=6.0;
+        mean1+=Izm+Izp;
+        mean2+=Izm*Izm+Izp*Izp;
+        mean1/=6.0;
+        mean2/=6.0;
       }
       break;
     default:
@@ -876,8 +883,8 @@ void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* im
       center_coeff    = (Cxp+Cxm+Cyp+Cym+4*C)/2.0; 
     } else {
       neighbors_coeff = ((Cxp+C)*Ixp+(Cxm+C)*Ixm+
-			 (Cyp+C)*Iyp+(Cym+C)*Iym+
-			 (Czp+C)*Izp+(Czm+C)*Izm)/2.0;
+      (Cyp+C)*Iyp+(Cym+C)*Iym+
+      (Czp+C)*Izp+(Czm+C)*Izm)/2.0;
       center_coeff    = (Cxp+Cxm+Cyp+Cym+Czp+Czm+6*C)/2.0; 
     }
     image_d->FixeValeur( (I + dt*neighbors_coeff)/(1+dt*center_coeff));
@@ -897,9 +904,9 @@ void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* im
 // semi-implicit scheme
 //
 InrImage* Func_SRAD2( InrImage* input, float dt, int numit, 
-		      int mode, 
-		      int neighborhood,
-		      ImageExtent<float>* extent)
+                      int mode, 
+                      int neighborhood,
+                      ImageExtent<float>* extent)
 {
 //
 // neighborhood:

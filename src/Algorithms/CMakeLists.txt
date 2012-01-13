@@ -32,9 +32,9 @@ IF(AMI_USE_FASTNLMEANS)
 ENDIF(AMI_USE_FASTNLMEANS)
 
 SET(Algorithms_SRCS
-  ImageToImageFilter.cpp
-  ImageAddScalar.cpp
-  ImageCos.cpp
+  amiImageToImageFilter.cpp
+  amiImageAddScalar.cpp
+  amiImageCos.cpp
   localstats.cpp
   ShortestPathClass.cpp
 
@@ -98,9 +98,9 @@ SET(Algorithms_SRCS
 
 
 SET(Algorithms_HDRS
-  include/ImageToImageFilter.h
-  include/ImageAddScalar.h
-  include/ImageCos.h
+  include/amiImageToImageFilter.h
+  include/amiImageAddScalar.h
+  include/amiImageCos.h
   include/localstats.h
   include/ShortestPathClass.h
 

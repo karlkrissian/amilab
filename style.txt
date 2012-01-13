@@ -18,7 +18,7 @@ documentation
 
 
 C++ code:
-  - amilab C++ class, will start with 'ami' lower case amiClassName
+  - amilab C++ class, will be in namespace 'ami' lower case ami::ClassName
   - header amiClassName.h
   - implementation amiClassName.cpp
   - one file per class

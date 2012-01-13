@@ -14,8 +14,8 @@
 
 #include "AMILabConfig.h"
 #include "wrapfunctions.hpp"
-#include "ImageToImageFilter.h"
-#include "ImageAddScalar.h"
+//#include "ImageToImageFilter.h"
+#include "amiImageAddScalar.h"
 #include <iostream>
 
 void wrap_ImageAddScalar( ParamList* p)
@@ -41,8 +41,8 @@ void wrap_ImageAddScalar( ParamList* p)
   if (!get_int_param                 ( num_threads, p, n)) HelpAndReturn;
   if (!get_int_param                 ( mode,        p, n)) HelpAndReturn;
 
-  ImageToImageFilterParam param;
-  ImageAddScalar add_scalar;
+  ami::ImageToImageFilterParam param;
+  ami::ImageAddScalar add_scalar;
 
   param.SetInput(input);
   param.SetNumberOfThreads(num_threads);

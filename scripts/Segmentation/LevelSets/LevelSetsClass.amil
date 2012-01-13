@@ -61,6 +61,10 @@ if (!exists(LevelSetsClass)) {
                               "Experimental: use of affine curvature "+\
                               "(0: 2D affine curvature 1: 2D mean curvature)"
 
+        # Geodesic framework
+        ::use_geodesic = UCHAR(0), "Use the geodesic framework if the weight "+\
+                                    "image is available."
+
         # Velocity parameters
         ::use_velocity        = UCHAR(0), "Use Velocity Force"
         ::velcoeff  = 0.0
@@ -102,6 +106,8 @@ if (!exists(LevelSetsClass)) {
           ::smoothingtype         = p.smoothingtype
           ::affinecurv            = p.affinecurv
 
+          ::use_geodesic          = p.use_geodesic
+
           ::use_velocity          = p.use_velocity
           ::velcoeff              = p.velcoeff
 
@@ -123,6 +129,7 @@ if (!exists(LevelSetsClass)) {
 
         ::input_name   = "","Name of the input image variable"
         ::initial_name = "","Name of the initial level set image variable"
+        ::geodesicimage_name = "", "Name of the input geodesic weight image"
 
         ::inputmin = 0
         ::inputmax = 32000
@@ -157,6 +164,60 @@ if (!exists(LevelSetsClass)) {
         ::own_viewer = UCHAR(1), "if using own image viewer"
         ::isocontour_index = 1, "isocontour number to show the evolving level set"
     }
+
+
+    #---------------------------------------------------------------------------
+    proc  ::LoadGeodesicWeightImage()\
+    {
+      # Restriction on geodesic image type: FLOAT ???
+
+      if (::geodesicimage_name=="BrowseImage") {
+        InfoDisplay "Select input image"
+      } else {
+        ::params.use_geodesic = true
+        del ::geodesic_weight
+        eval "::geodesic_weight    = &"+::geodesicimage_name+";"
+
+        W = &::geodesic_weight
+
+        # Compute discrite derivatives
+        Ip = filters.ImTranslate(&W,-1,0,0)
+        Im = filters.ImTranslate(&W, 1,0,0)
+        diff = (Ip-Im)/2
+        ::geodesic_weight_dx = diff
+
+        # Compute discrite derivatives
+        Ip = filters.ImTranslate(&W, 0,-1,0)
+        Im = filters.ImTranslate(&W, 0, 1,0)
+        diff = (Ip-Im)/2
+        ::geodesic_weight_dy = diff
+ 
+        # does it work for 2D
+        # Compute discrite derivatives
+        Ip = filters.ImTranslate(&W,0,0,-1)
+        Im = filters.ImTranslate(&W,0,0, 1)
+        diff = (Ip-Im)/2
+        ::geodesic_weight_dz = diff
+
+        if (exists(::win)) {
+          ::win.Update(-1)
+        }
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    # Set the geodesic weight image and its gradient
+    # to enable geodesic active contour for smoothing and advection terms
+    #
+    proc ::SetGeodesicWeights( IMAGE W, IMAGE Wx, IMAGE Wy, IMAGE Wz) \
+    {
+      ::params.use_geodesic = true
+      ::geodesic_weight    = &W
+      ::geodesic_weight_dx = &Wx
+      ::geodesic_weight_dy = &Wy
+      ::geodesic_weight_dz = &Wz
+    }
+
 
     #---------------------------------------------------------------------------
     proc ::LSSaveParameters() {
@@ -544,6 +605,15 @@ if (!exists(LevelSetsClass)) {
     
       if (exists(::velfield)) {
         ::levelset.SetVelocity(::velfield,::params.velcoeff)
+      }
+
+      if (::params.use_geodesic) {
+        if exists(::geodesic_weight) {
+          ::levelset.SetCurvWeights(&::geodesic_weight)
+          ::levelset.SetAdvectionField( &::geodesic_weight_dx,\
+                                        &::geodesic_weight_dy, \
+                                        &::geodesic_weight_dz )
+        }
       }
     
       print "Compute Expansion Image \n"
@@ -936,6 +1006,13 @@ if (!exists(LevelSetsClass)) {
                 ::win.AddEnumChoice(::smoothtype_id,"mean curv")
               ::win.AddBoolean( &::params.affinecurv,"Affine curv")
       
+            ::vel_pid = ::win.AddPage("Geo")
+              ::win.BeginBoxPanel("Geodesic Parameters")
+                ::win.AddBoolean(&::params.use_geodesic, "Use Geodesic Framework")
+                ::win.AddImageChoice( &::geodesicimage_name, "")
+                ::win.AddButton("Load and apply", &::LoadGeodesicWeightImage)
+              ::win.EndBoxPanel()
+
             ::vel_pid = ::win.AddPage("Vel")
               ::win.AddFloat( &::params.velcoeff,"Weight",0,1)
     

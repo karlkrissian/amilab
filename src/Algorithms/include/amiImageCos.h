@@ -15,12 +15,11 @@
 
 #include "inrimage.hpp"
 #include "imageextent.h"
-#include "ImageToImageFilter.h"
+#include "amiImageToImageFilter.h"
 #include <vector>
 #include "DefineClass.hpp"
 
-// use amilab namespace here ??
-
+namespace ami {
 // 
 // ImageToImageFilterParam
 // features needed:
@@ -31,17 +30,8 @@ class ImageCos : public ImageToImageFilter
 {
   DEFINE_CLASS(ImageCos);
 
-protected:
-  double scalar;
-  typedef ImageExtent<int> extenttype;
-  std::vector<extenttype> extents;
 
 public:
-
-  /**
-   * Creates the extents for each thread
-   */
-  void Init();
 
   
   /**
@@ -59,4 +49,7 @@ public:
 
 }; // ImageAddFilter
 
+} // end namespace ami
+
 #endif // _ImageCos_h_
+

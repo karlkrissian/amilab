@@ -1,5 +1,5 @@
 //
-// C++ Interface: ImageToImageFilter
+// C++ Interface: amiImageToImageFilter
 //
 // Description: 
 //
@@ -10,13 +10,18 @@
 //
 //
 
-#ifndef _ImageToImageFilter_h_
-#define _ImageToImageFilter_h_
+#pragma once
+#ifndef _ami_ImageToImageFilter_h_
+#define _ami_ImageToImageFilter_h_
 
 #include "inrimage.hpp"
 #include "imageextent.h"
 
-// use amilab namespace here ??
+#include <vector>
+
+
+
+namespace ami {
 
 // 
 // ImageToImageFilterParam
@@ -79,6 +84,8 @@ class ImageToImageFilter {
 
 protected:
   ImageToImageFilterParam params;
+  typedef ImageExtent<int> extenttype;
+  std::vector<extenttype> extents;
 
 public:
 
@@ -90,7 +97,12 @@ public:
     params = p;
   }
 
-  virtual void Init() {}
+  ImageToImageFilterParam& GetParameters( )
+  {
+    return params;
+  }
+
+  virtual void Init();
 
   virtual void Process( int threadid = 0) = 0;
 
@@ -103,4 +115,6 @@ public:
 
 }; // ImageToImageFilter
 
-#endif // _ImageToImageFilter_h_
+} // namespace ami
+
+#endif // _ami_ImageToImageFilter_h_
