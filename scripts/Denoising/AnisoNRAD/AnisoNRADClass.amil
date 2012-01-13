@@ -29,53 +29,105 @@ if (!exists(AnisoNRADClass)) {
 
   Class AnisoNRADClass : public ScriptGui {
 
-    #----------------------------
+    func "Variable/ObjectIO"
+    # 
+    #===========================================================================
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+        ::dt   = 1.0/6.0, "Time step for the Partial Differential Equation"
+        ::t    = 2.0,     "Total diffusion time of the equation"
+  
+        # 0: Lee, 1: Kuan, 2: Additive, 3: MRI
+        ::scalar_modes = VarVector()
+          ::scalar_modes.push_back("Lee")
+          ::scalar_modes.push_back("Kuan")
+          ::scalar_modes.push_back("Additive")
+          ::scalar_modes.push_back("MRI")
+          ::scalar_modes.push_back("MRI new")
+        mess = ""
+        for n=0 to ::scalar_modes.size()-1 { mess += "'%1%' " % ::scalar_modes[n]; }
+        ::scalar_mode = INT(3), "Scalar mode (%1%)" % mess
+  
+        # 0: Grad, 1: MRI,  2:MRI_NEW 
+        ::matrix_mode  = INT(2), "Matrix mode: 0:Gradient, 1:MRI or 2:MRI_new"
+        ::neighborhood = INT(1),  "Size of the neighborhood for local "+\
+                                  "statistics, the window size is (2n+1)^3, "+\
+                                  "where n is the parameter"
+  
+        ::sigma = 0.7,  "Gaussian convolution standard deviation for "+\
+                        "computing the local structure"
+        # Local Structure 0: princ. curv 1: struct tensor
+        ::local_struct = INT(1),    "Local Structure mode: either gradient "+\
+                                    "and principal curvature directions, or "+\
+                                    "structure tensor eigenvectors"
+        # Eigenvalues mode 0: SUM 1: MAX
+        ::eigen_mode = INT(0),  "Eigenvalues mode, decides how to combine "+\
+                                "the diffusions along each line, plane and "+\
+                                "local volume: either the sum, or the maximum "+\
+                                "(default is sum)"
+  
+        # 0: scalar diffusion, 1: matrix diffusion equation
+        ::equation_types = VarVector()
+          ::equation_types.push_back("Scalar")
+          ::equation_types.push_back("Matrix")
+        mess = ""
+        for n=0 to ::equation_types.size()-1 { 
+          mess += "'%1%' " % ::equation_types[n];
+        }
+        ::equation_type = INT(0), "Equation type (%1%)" % mess
+  
+        # Scheme, 0: explicit 1: semi-implicit
+        ::scheme = INT(1),        "Numerical scheme: explicit or semi-implicit"
+    
+        ::run_on_roi = UCHAR(0),  "Run only on the selected region-of-interest"
+
+        ::remove_bias = UCHAR(1), "Remove bias due to Rician noise model"
+
+        #-----------------------------------------------------------------------
+        proc ::__assign__( VAR p) {
+          ::t                     = p.t
+          ::dt                    = p.dt
+          ::scalar_mode           = p.scalar_mode
+          ::matrix_mode           = p.matrix_mode
+          ::neighborhood          = p.neighborhood
+          ::sigma                 = p.sigma
+          ::local_struct          = p.local_struct
+          ::eigen_mode            = p.eigen_mode
+          ::equation_type         = p.equation_type
+          ::scheme                = p.scheme
+          ::run_on_roi            = p.run_on_roi
+          ::remove_bias           = p.remove_bias
+        }
+    }
+
+    #---------------------------------------------------------------------------
     proc ::Init() \
     {
         ::class_name ="global::AnisoNRADClass"
         ::input_name = ""
         # suggested 1/6 in 3D and 1/4 in 2D
-        ::dt   = 1.0/6.0, "Time step for the Partial Differential Equation"
-        ::t    = 2.0, "Total diffusion time of the equation"
   
-        # 0: Lee, 1: Kuan, 2: Additive, 3: MRI
-        ::scalar_mode = INT(3), "Scalar mode: Lee, Kuan, Additive or MRI"
+        ::result_imagename = "global::AnisoNRAD_result", \
+                              "Name of the resulting global variable."
+        ::result_filename = "AnisoNRAD_result.ami.gz", \
+                              "Disk filename for the resulting image."
   
-        # 0: Grad, 1: MRI,  2:MRI_NEW 
-        ::matrix_mode = INT(2), "Matrix mode: 0:Gradient, 1:MRI or 2:MRI_new"
-  
-        ::neighborhood = INT(1), "Size of the neighborhood for local statistics, the window size is (2n+1)^3, where n is the parameter"
-  
-        ::sigma = 0.7, "Gaussian convolution standard deviation for computing the local structure"
-        # Local Structure 0: princ. curv 1: struct tensor
-        ::local_struct = INT(1), "Local Structure mode: either gradient and principal curvature directions, or structure tensor eigenvectors"
-        # Eigenvalues mode 0: SUM 1: MAX
-        ::eigen_mode = INT(0), "Eigenvalues mode, decides how to combine the diffusions along each line, plane and local volume: either the sum, or the maximum (default is sum)"
-  
-        # 0: scalar diffusion, 1: matrix diffusion equation
-        ::equation_type = INT(0), "Equation type: 0:scalar or 1:matrix"
-  
-        # Scheme, 0: explicit 1: semi-implicit
-        ::scheme = INT(1), "Numerical scheme: explicit or semi-implicit"
-    
-        ::run_on_roi = UCHAR(0), "Run only on the selected region-of-interest"
+        ::ParamClass ::params
 
-        ::remove_bias = UCHAR(1), "Remove bias due to Rician noise model"
-  
-        ::result_imagename = "global::AnisoNRAD_result", "Name of the resulting global variable."
-        ::result_filename = "AnisoNRAD_result.ami.gz", "Disk filename for the resulting image."
-  
-  
         ::wiki_help = ::AmilabWiki("tutorial-nrad") 
   
-        ::html_filename = GetScriptsDir+"/Denoising/AnisoNRAD/Doc/AnisoNRAD_gui/index.html"
+        ::html_filename = GetScriptsDir+\
+                          "/Denoising/AnisoNRAD/Doc/AnisoNRAD_gui/index.html"
 #       ::html_filename = GetScriptsDir+"/Denoising/AnisoNRAD/Doc/AnisoNRAD_gui.html"
   
         ::CreateWindow()
         # ::ROI 
     }
     
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::load_input() {
       if (::input_name=="BrowseImage") {
         # read image using browser
@@ -88,14 +140,14 @@ if (!exists(AnisoNRADClass)) {
     }
   
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::SetNoiseStandardDeviation(NUM nsd) {
       ::exact_noise_sd = nsd
     }
 
     
 
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::SetGroundTruth( IMAGE gt, NUM sigma) {
       
     
@@ -103,7 +155,7 @@ if (!exists(AnisoNRADClass)) {
       ::noisesigma  = sigma
     }
     
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::ComputeMSE( IMAGE res) {
       res1=res*res-2*::noisesigma*::noisesigma
       res1 = sqrt(res1*(res1>0))
@@ -114,7 +166,7 @@ if (!exists(AnisoNRADClass)) {
       printn sprint("MSE %3.2f (I>0) \n",mean[::groundtruth>0]((res1-::groundtruth)*(res1-::groundtruth)))
     }
     
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::ReloadInput() \
     {
       if (exists(::input)) {
@@ -127,13 +179,13 @@ if (!exists(AnisoNRADClass)) {
     }
     Comments( ::ReloadInput, "Reload input image.")
     
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::SetRoiImage( IMAGE _roi) \
     {
       ::roi <<= _roi
     }
   
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::GetRoi() \
     {
       if (!exists(::input)) {
@@ -147,16 +199,16 @@ if (!exists(AnisoNRADClass)) {
     }
     Comments( ::GetRoi, "Select the Region of Interest (ROI) for noise estimation.")
     
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::FilterFlux() \
     {
       if (!exists(::input)) {
         ::load_input
       }
-      numit = ::t/::dt
+      numit = ::params.t/::params.dt
       # running on the squared image
       input1 = ::input*::input
-      if (::run_on_roi) {
+      if (::params.run_on_roi) {
         input1 <<= input1[::roi.GetExtent]
       }
     
@@ -165,29 +217,30 @@ if (!exists(AnisoNRADClass)) {
       # sigma = 0.7
       # threshold = 1 // not used
       # data attachment = 0
-      ::NRADfilter.Init(input1,::sigma,1,0)
-      ::NRADfilter.Setneighborhood(::neighborhood)
-      ::NRADfilter.Setdt(::dt)
+      ::NRADfilter.Init(input1,::params.sigma,1,0)
+      ::NRADfilter.Setneighborhood(::params.neighborhood)
+      ::NRADfilter.Setdt(::params.dt)
       # diffusion coefficient in minimal and maximal curvature directions
       ::NRADfilter.setcoeff(0.5,0.01)
     
-      if (::matrix_mode==1) {
+      if (::params.matrix_mode==1) {
         # set Rician Noise Reducing Anisotropic Diffusion and the ROI
-        # important here to use reference to the image, otherwise the temporary copy will be automatically deleted !!!
+        # important here to use reference to the image, 
+        # otherwise the temporary copy will be automatically deleted !!!
         ::NRADfilter.SetRNRADROI(&::roi)
       }
-      if (::matrix_mode==2) {
+      if (::params.matrix_mode==2) {
         # set Rician Noise Reducing Anisotropic Diffusion and the ROI
         # same comment as above
         ::NRADfilter.SetRNRADROI_NEW(&::roi)
       }
     
-      ::NRADfilter.SetLocalStruct(::local_struct)
-      ::NRADfilter.SetEigenMode(  ::eigen_mode)
+      ::NRADfilter.SetLocalStruct(::params.local_struct)
+      ::NRADfilter.SetEigenMode(  ::params.eigen_mode)
     
       # process iterations
       ::res0 <<= ::NRADfilter.GetOutput()
-      if (::run_on_roi) {
+      if (::params.run_on_roi) {
         ::res <<= ::input
         ::res0 = sqrt(::res0)
         ::res.putimage(::res0)
@@ -227,8 +280,8 @@ if (!exists(AnisoNRADClass)) {
         ::NRADfilter.Iterate()
         ::res0 = ::NRADfilter.GetOutput()
         ::res0 = ::res0*(::res0>0)
-        if (::run_on_roi) {
-          if (::remove_bias) {
+        if (::params.run_on_roi) {
+          if (::params.remove_bias) {
             ::res0 = ::res0 - 2*noise_variance
             ::res0 = ::res0*(::res0>0)
             ::res0 = sqrt(::res0)
@@ -237,7 +290,7 @@ if (!exists(AnisoNRADClass)) {
           }
           ::res.putimage(::res0)
         } else {
-          if (::remove_bias) {
+          if (::params.remove_bias) {
             ::res0 = ::res0 - 2*noise_variance
             ::res0 = ::res0*(::res0>0)
             ::res = sqrt(::res0)
@@ -260,8 +313,9 @@ if (!exists(AnisoNRADClass)) {
     //  hide ::res
     }
     
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Filter() {
+      inittime = wx.wxDateTime.UNow()
       if (!exists(::input)) {
         ::load_input
       }
@@ -270,36 +324,44 @@ if (!exists(AnisoNRADClass)) {
         ::roi = ::input
       }
   
-      if (::equation_type==1) {
+      if (::params.equation_types[::params.equation_type]=="Matrix") {
         ::FilterFlux()
       } else {
-        numit = ::t/::dt
-        if (::scalar_mode==3) {
+        numit = ::params.t/::params.dt
+        if (::params.scalar_modes[::params.scalar_mode]=="MRI") {
             printn "running on squared image"
             local::input1 = ::input*::input
-            ::res <<= AnisoNRAD(input1,::scalar_mode,\
-                        ::dt,numit,::neighborhood,::roi.GetExtent)
+            ::res <<= AnisoNRAD(input1,::params.scalar_mode,\
+                        ::params.dt,numit,::params.neighborhood,::roi.GetExtent)
             ::res <<= sqrt(::res)
         } else {
           if (::input.vdim ==1) {
-            ::res <<= AnisoNRAD(::input,::scalar_mode,\
-                        ::dt,numit,::neighborhood,::roi.GetExtent)
+            ::res <<= AnisoNRAD(::input,::params.scalar_mode,\
+                        ::params.dt,numit,::params.neighborhood,::roi.GetExtent)
           } else {
             ::res <<= ::input
             for n=0 to ::input.vdim-1 {
               if exists(tmp) { del tmp; }
               tmp = &::input[n]
-              res = AnisoNRAD(tmp,::scalar_mode,\
-                        ::dt,numit,::neighborhood,::roi.GetExtent)
+              res = AnisoNRAD(tmp,::params.scalar_mode,\
+                        ::params.dt,numit,::params.neighborhood,::roi.GetExtent)
               ::res.SetComponent(n, res)
             }
           }
         }
       }
+      diff=wx.wxDateTime.UNow()-inittime
+      time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      SetStatusText("Denoising \tDone (%1%)" % time_elapsed)
     }
-    Comments( ::Filter, "Run the denoising algorithm, using the following criteria:       - if equation_type is 0 (scalar):          - if scalar_mode is 3 (MRI) runs AnisoRNAD on the image squared,          - otherwise, runs AnisoRNAD on the initial image      - otherwise (matrix equation):          - calls ::FilterFlux ")
+    Comments( ::Filter, "Run the denoising algorithm, using the following "   +\
+                        "criteria:       - if equation_type is 0 (scalar): "  +\
+                        "- if scalar_mode is 3 (MRI) runs AnisoRNAD on the "  +\
+                        "image squared,          - otherwise, runs AnisoRNAD "+\
+                        "on the initial image      - otherwise (matrix "      +\
+                        "equation):          - calls ::FilterFlux ")
     
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Display() {
       
       if (!exists(::input)) {
@@ -369,18 +431,18 @@ if (!exists(AnisoNRADClass)) {
     Comments( ::SaveToImage, "Save to global image variable.")
     
     proc ::new_eq_type() {
-      ::win.EnablePanel(::mat_boxid, ::equation_type==1)
-      #::win.Enable(::sigma_id, ::equation_type==1)
-      #::win.Enable(::matrix_mode_id, ::equation_type==1)
-      #::win.Enable(::localstruct_id, ::equation_type==1)
-      #::win.Enable(::eigenmode_id, ::equation_type==1)
+      ::win.EnablePanel(::mat_boxid, ::params.equation_type==1)
+      #::win.Enable(::sigma_id, ::params.equation_type==1)
+      #::win.Enable(::matrix_mode_id, ::params.equation_type==1)
+      #::win.Enable(::localstruct_id, ::params.equation_type==1)
+      #::win.Enable(::eigenmode_id, ::params.equation_type==1)
   
-      ::win.EnablePanel(::scal_boxid,::equation_type!=1)
-      #::win.Enable(::scalar_mode_id,::equation_type!=1)
+      ::win.EnablePanel(::scal_boxid,::params.equation_type!=1)
+      #::win.Enable(::params.scalar_mode_id,::params.equation_type!=1)
     }
     
   
-    #------------------------------------
+    #---------------------------------------------------------------------------
     proc ::CreateWindow() {
       # parameters window
       ::win = ParamPanel("NRAD")
@@ -388,43 +450,45 @@ if (!exists(AnisoNRADClass)) {
       ::win.BeginBook()
         ::win.AddPage("Param")
           ::win.AddImageChoice( &::input_name, "Input")
-          ::win.AddFloat( &::dt,"dt",0.01,1)
-          ::win.AddFloat( &::t,"T",0,10)
+          ::win.AddFloat( &::params.dt,"dt",0.01,1)
+          ::win.AddFloat( &::params.t,"T",0,10)
           
-          ::win.AddInt( &::neighborhood,"Neighborhood",0,4)
+          ::win.AddInt( &::params.neighborhood,"Neighborhood",0,4)
       
           ::win.BeginHorizontal()
-            ::scheme_id       = ::win.AddEnum( &::scheme,"Sch.")
+            ::scheme_id       = ::win.AddEnum( &::params.scheme,"Sch.")
               ::win.AddEnumChoice(::scheme_id,"Expl.")
               ::win.AddEnumChoice(::scheme_id,"Semi-impl.")
           
-            ::eq_type_id      = ::win.AddEnum( &::equation_type,"Eq.")
-              ::win.AddEnumChoice(::eq_type_id,"Scalar")
-              ::win.AddEnumChoice(::eq_type_id,"Matrix")
+            ::eq_type_id      = ::win.AddEnum( &::params.equation_type,"Eq.")
+              for n=0 to ::params.equation_types.size()-1 { 
+                ::win.AddEnumChoice(::eq_type_id,::params.equation_types[n])
+              }
             ::win.SetCallback( &::new_eq_type)
           ::win.EndHorizontal()
       
           ::scal_boxid = ::win.BeginBoxPanel("Scalar diffusion parameters")
-            ::scalar_mode_id = ::win.AddEnum( &::scalar_mode,"Scalar mode")
-              ::win.AddEnumChoice(::scalar_mode_id,"Lee")
-              ::win.AddEnumChoice(::scalar_mode_id,"Kuan")
-              ::win.AddEnumChoice(::scalar_mode_id,"Additive")
-              ::win.AddEnumChoice(::scalar_mode_id,"MRI")
-              ::win.AddEnumChoice(::scalar_mode_id,"MRI new")
+            ::scalar_mode_id = ::win.AddEnum( &::params.scalar_mode,\
+                                              "Scalar mode")
+              for n=0 to ::params.scalar_modes.size()-1 { 
+                ::win.AddEnumChoice(::scalar_mode_id,::params.scalar_modes[n])
+              }
           ::win.EndBoxPanel()
   
           ::mat_boxid = ::win.BeginBoxPanel("Matrix diffusion parameters")
-            ::sigma_id = ::win.AddFloat( &::sigma,"sigma",0.01,10)
-            ::matrix_mode_id = ::win.AddEnum( &::matrix_mode,"Matrix mode")
+            ::sigma_id = ::win.AddFloat( &::params.sigma,"sigma",0.01,10)
+            ::matrix_mode_id = ::win.AddEnum( &::params.matrix_mode,\
+                                              "Matrix mode")
               ::win.AddEnumChoice(::matrix_mode_id,"Grad")
               ::win.AddEnumChoice(::matrix_mode_id,"MRI")
               ::win.AddEnumChoice(::matrix_mode_id,"MRI new")
     
-            ::localstruct_id = ::win.AddEnum( &::local_struct,"Local Struct.")
+            ::localstruct_id = ::win.AddEnum( &::params.local_struct,\
+                                              "Local Struct.")
               ::win.AddEnumChoice(::localstruct_id,"Grad & Curv. Dir.")
               ::win.AddEnumChoice(::localstruct_id,"Struct. Tensor")
         
-            ::eigenmode_id = ::win.AddEnum( &::eigen_mode,"Eigen mode")
+            ::eigenmode_id = ::win.AddEnum( &::params.eigen_mode,"Eigen mode")
               ::win.AddEnumChoice(::eigenmode_id,"Sum")
               ::win.AddEnumChoice(::eigenmode_id,"Max")
           ::win.EndBoxPanel()
@@ -440,8 +504,8 @@ if (!exists(AnisoNRADClass)) {
               ::AddBitmapButton(&::win, &::icons._Show,      32, "Display")
               ::win.SetPositionProp(-1,0)
             ::win.EndHorizontal()
-            ::win.AddBoolean( &::run_on_roi,"Run on ROI")
-            ::win.AddBoolean( &::remove_bias,"Remove Bias")
+            ::win.AddBoolean( &::params.run_on_roi,"Run on ROI")
+            ::win.AddBoolean( &::params.remove_bias,"Remove Bias")
             ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
             ::win.BeginBoxPanel("Result --> disk")
               ::win.BeginHorizontal()
@@ -460,6 +524,7 @@ if (!exists(AnisoNRADClass)) {
               ::win.EndHorizontal()
             ::win.EndBoxPanel()
 
+          ::AddParamPage(&::win)
           ::AddHelpPage(&::win)
   
       ::win.EndBook()
@@ -470,10 +535,9 @@ if (!exists(AnisoNRADClass)) {
       ::win.Update(-1)
       ::new_eq_type
     }
+    #---------------------------------------------------------------------------
     
-    #------------------------------------
-    
-    ::Init
+    ::Init()
   
   }#End of Class
 

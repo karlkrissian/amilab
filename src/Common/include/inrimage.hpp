@@ -1038,7 +1038,7 @@ public:
 
 
     //  {\bf Operator(x,y,z) }
-    double operator()( int x, int y, int z) throw (DepassementLimites)
+    double operator()( int x, int y, int z) const throw (DepassementLimites)
     //         --------
     {
 
@@ -1056,7 +1056,7 @@ public:
 
 
     //  {\bf Operator(x,y,z) }
-    double operator()( int x, int y) throw (DepassementLimites)
+    double operator()( int x, int y) const throw (DepassementLimites)
     //         --------
     {
 
@@ -1073,14 +1073,14 @@ public:
 
 
     //  {\em Operator(x,y,z,coord) }
-    double GetValue( int x, int y, int z, int coord)
+    double GetValue( int x, int y, int z, int coord) const
     //         --------
     {
       return _positions->GetValue(x,y,z,coord);
     }
 
     //  {\em Operator(x,y,z,coord) }
-    double operator()( int x, int y, int z, int coord)
+    double operator()( int x, int y, int z, int coord) const
     {
         return GetValue(x,y,z,coord);
     }
