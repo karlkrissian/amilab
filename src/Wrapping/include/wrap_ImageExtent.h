@@ -19,7 +19,7 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "imageextent.h"
+#include "amiImageExtent.h"
 
 
 

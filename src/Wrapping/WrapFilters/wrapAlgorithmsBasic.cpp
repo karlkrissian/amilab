@@ -23,7 +23,7 @@
 LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 #include "wrapAlgorithmsBasic.h"
-#include "imageextent.h"
+#include "amiImageExtent.h"
 
 //-------
 
@@ -81,7 +81,7 @@ InrImage* wrapFastLocalSumDir(ParamList* p)
   result = new InrImage( WT_FLOAT, "FastLocalSumDir2.ami.gz", input);
   (*result)=(*input);
 
-  ImageExtent<int> extent(input);
+  ami::ImageExtent<int> extent(input);
 
   if (mode==0)
     FastLocalSumDir<float>(input1.get(),result,wsize,axis,extent);

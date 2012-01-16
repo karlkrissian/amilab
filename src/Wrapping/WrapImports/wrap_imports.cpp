@@ -77,7 +77,7 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 #include "MainFrame.h"
 
 #include "wrap_ReadRawImages.h"
-#include "wrap_ImageExtent.h"
+//#include "wrap_amiImageExtent.h"
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
 
@@ -195,7 +195,7 @@ void AddWrapImports()
 
     // Add Wrapped classes and functions
     AddWrapIO(              amiobject);
-    AddWrapImage(           amiobject);
+    //AddWrapImage(           amiobject);
     AddWrapSurface(         amiobject);
     AddWrapGLTransfMatrix(  amiobject);
     AddWrapBasicTypes(      amiobject);
@@ -474,7 +474,7 @@ void AddWrapIO(AMIObject::ptr& obj)
     obj->GetContext());
 }
 
-
+/*
 //--------------------------------------------
 void AddWrapImage(AMIObject::ptr& obj)
 {
@@ -489,6 +489,7 @@ void AddWrapImage(AMIObject::ptr& obj)
     amiobject,
     obj->GetContext());
 }
+*/
 
 //--------------------------------------------
 void AddWrapSurface(AMIObject::ptr& obj)
