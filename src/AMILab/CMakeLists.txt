@@ -44,7 +44,6 @@ SET(AMILab_SRCS
     Resize.cpp
     Rudin.cpp
     SNR.cpp
-    SRAD.cpp
     Skeleton2lines.cpp
     SmoothLines.cpp
     SmoothLinesToSplines.cpp

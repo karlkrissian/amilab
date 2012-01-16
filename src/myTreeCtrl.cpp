@@ -201,7 +201,7 @@ void myTreeCtrl::ToConsole(wxCommandEvent& event)
 //------------------------------------------------------------------------------
 void myTreeCtrl::OnExpanding(wxTreeEvent& event)
 {
-  std::cout << "Expanding" << std::endl;
+  //std::cout << "Expanding" << std::endl;
   wxTreeItemId itemId = event.GetItem();
   MyTreeItemData *item = (MyTreeItemData *)GetItemData(itemId);
   if (item) {
@@ -218,7 +218,7 @@ void myTreeCtrl::OnExpanding(wxTreeEvent& event)
         if ((path!="")&&(path!="global::")) path +=".";
         path += var->Name();
         GB_main_wxFrame->UpdateVarTree(itemId, obj->GetContext(),1,path);
-        std::cout << "new path = " << path << std::endl;
+        //std::cout << "new path = " << path << std::endl;
       }
     }
   }
@@ -228,7 +228,7 @@ void myTreeCtrl::OnExpanding(wxTreeEvent& event)
 //------------------------------------------------------------------------------
 void myTreeCtrl::OnCollapsing(wxTreeEvent& event)
 {
-  std::cout << "Collapsing" << std::endl;
+  //std::cout << "Collapsing" << std::endl;
 }
 
 #if wxUSE_DRAG_AND_DROP

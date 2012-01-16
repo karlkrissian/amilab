@@ -27,11 +27,11 @@ LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
   return Variable<type>::ptr( new Variable<type>(newval));
 
 #include "inrimage.hpp"
-#include "wrap_ImageExtent.h"
+#include "wrap_ami_ImageExtent_L_float_G_.h"
 //#include "wrap_DessinImage.h"
 #include "wrap_ImageViewerBase.h"
 #include "wrapfunctions.hpp"
-#include "imageextent.h"
+#include "amiImageExtent.h"
 
 // TODO: should be defined as functions ...
 #define UNARYOP_IMAGE(im,operator)      \
@@ -642,8 +642,12 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator[](const
     return Image_Brackets(this,pos);
   } 
   else {
+
+    boost::shared_ptr<ami::ImageExtent<float> > extent;
+    
+    extent = AMILabType<ami::ImageExtent<float> >::GetValue(v);
     // try to get an image extent
-    GET_WRAPPED_TEMPLATE_OBJECT(ImageExtent, float ,v,extent);
+    //GET_WRAPPED_TEMPLATE_OBJECT(ImageExtent, float ,v,extent);
 
 /*
     DYNAMIC_CAST_VARIABLE(AMIObject, v, varobj) 
@@ -687,7 +691,8 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator[](const
         std::string comment;
     
         draw->GetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
-        ImageExtent<float>* extent=new ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
+        ami::ImageExtent<float>* extent=
+          new ami::ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
         extent->SetMode(1); // relative extent
     
         comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")

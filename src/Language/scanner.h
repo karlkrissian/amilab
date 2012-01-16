@@ -32,7 +32,7 @@
 
 #include "IdentifierInfo.h"
 #include "Variable.hpp"
-#include "imageextent.h"
+#include "amiImageExtent.h"
 #include "AmiInstructionBlock.h"
 
 #include "improcess_bison.tab.hpp"

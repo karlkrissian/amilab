@@ -676,12 +676,13 @@ void MainFrame::CreateMainBook(wxWindow* parent)
    _main_book = new wxAuiNotebook(this, wxID_ANY,
                                     wxPoint(client_size.x, client_size.y),
                                     wxDefaultSize,
-                                    wxAUI_NB_TOP          |
+                                    wxAUI_NB_TOP          
                                     #ifndef __WXGTK__ 
-                                      wxAUI_NB_TAB_SPLIT    |
+                                      |wxAUI_NB_TAB_SPLIT    
                                     #endif
-                                    wxAUI_NB_TAB_MOVE     |
-                                    wxAUI_NB_SCROLL_BUTTONS
+                                    |wxAUI_NB_TAB_MOVE     
+                                    |wxAUI_NB_WINDOWLIST_BUTTON
+                                    |wxAUI_NB_SCROLL_BUTTONS
                                   );
 
    wxBitmap page_bmp = wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16));
@@ -708,10 +709,13 @@ void MainFrame::CreateParamBook(wxWindow* parent)
    _param_book = new wxAuiNotebook(this, wxID_ANY,
                                     wxPoint(client_size.x, client_size.y),
                                     wxDefaultSize,
-                                    wxAUI_NB_TOP          |
-                                    wxAUI_NB_TAB_SPLIT    |
-                                    wxAUI_NB_TAB_MOVE     |
-                                    wxAUI_NB_SCROLL_BUTTONS
+                                     wxAUI_NB_TOP          
+                                    #ifndef __WXGTK__ 
+                                      |wxAUI_NB_TAB_SPLIT    
+                                    #endif
+                                    |wxAUI_NB_TAB_MOVE     
+                                    |wxAUI_NB_SCROLL_BUTTONS
+                                    |wxAUI_NB_WINDOWLIST_BUTTON
                                   );
 
   _param_book->Fit();
@@ -2497,7 +2501,7 @@ void MainFrame::UpdateVarsDisplay()
       text = _var_tree->GetItemText(itemid);
       current_item_name += "->";
       current_item_name += text.ToAscii();
-      std::cout << " item: '" << current_item_name << "'"<< std::endl;
+      //std::cout << " item: '" << current_item_name << "'"<< std::endl;
       expanded_items.insert(current_item_name);
     }
     itemid = _var_tree->GetNextExpanded(itemid);

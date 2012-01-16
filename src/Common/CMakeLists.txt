@@ -90,7 +90,7 @@ SET(Common_HDRS
   include/MultiCrest2.hpp
 
   # from Images
-  include/imageextent.h
+  include/amiImageExtent.h
   include/inrimage.hpp
   include/ImageLinearInterpolator.h
   include/ImagePositionsBase.h

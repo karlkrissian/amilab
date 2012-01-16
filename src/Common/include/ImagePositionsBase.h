@@ -14,7 +14,7 @@
 #ifndef _ImagePositionsBase_h_
 #define _ImagePositionsBase_h_
 
-#include "inrimage.hpp"
+//#include "inrimage.hpp"
 
 
 class ImagePositionsBase

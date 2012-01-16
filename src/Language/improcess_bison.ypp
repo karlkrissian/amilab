@@ -68,6 +68,8 @@
 #include "ami_object.h"
 #include "IdentifierInfo.h"
 
+#include "amiSRAD.h"
+
 #include "localstats.h"
 //#include "dist_squared.hpp"
 #include "improcess_bison.tab.hpp"
@@ -89,7 +91,7 @@
 //#include "PruneLines.h"
 
 #include "wrapfunction_class.h"
-#include "wrap_ImageExtent.h"
+#include "wrap_ami_ImageExtent_L_float_G_.h"
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
 #include "wrap_Viewer3D.h"
@@ -518,13 +520,12 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 
 %token T_FluxDiffusion
 %token T_AnisoWeickert T_AnisoCW
-%token T_SRAD_qcoeff
-%token T_AnisoSRAD
-%token T_AnisoSRAD2
-%token T_AnisoLeeAdd2
-%token T_AnisoDPAD
-%token T_AnisoDPAD2
-%token T_AnisoNRAD
+// %token T_AnisoSRAD   deprecated
+// %token T_AnisoSRAD2     "
+// %token T_AnisoDPAD      "
+// %token T_AnisoDPAD2     "
+// %token T_AnisoNRAD      "
+// %token T_AnisoLeeAdd2   "
 %token T_AnisoRudinMult
 %token T_point_Init 
 %token T_point_iterate T_point_end 
@@ -6069,51 +6070,6 @@ image:
         InrImage::ptr res ( Func_AutoCrop(im.get(),(int)$5));
         ADD_VARSTACK_PTR(InrImage,res);
     }
-/*
-    |
-    var_image T_OP_BR image_extent T_CL_BR
-    {
-      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
-      GET_VARSTACK_VALUE(InrImage,im);
-
-      //extent->print();
-      extent->SetRelative(im.get());
-  
-      //extent->print();
-      //cout << "xmax = " << (int)  extent->Xmax() << std::endl;
-      //cout << "xmax = " << (int)  round((double)extent->Xmax()) << std::endl;
-      InrImage::ptr res ( Func_SubImage( im.get(),
-                  (int)  round((double)extent->Xmin()),
-                  (int)  round((double)extent->Ymin()),
-                  (int)  round((double)extent->Zmin()),
-                  (int)  round((double)extent->Xmax()),
-                  (int)  round((double)extent->Ymax()),
-                  (int)  round((double)extent->Zmax())
-                  ));
-      Si !res.get() Alors
-        fprintf(stderr,"SubImage() erreur ... \n");
-      FinSi
-        ADD_VARSTACK_PTR(InrImage,res);
-    }
-*/
-/* Deprecated
-    |
-    var_image
-      T_OP_BR  T_COLON  T_COMMA
-      T_COLON  T_COMMA
-      expr T_COLON expr T_CL_BR
-    {
-      GET_VARSTACK_VALUE(InrImage, im);
-
-      InrImage::ptr res (Func_SubImage( im.get(),
-                  0, 0,  (int) round($7),
-                  im->DimX()-1,  im->DimY()-1, (int) round($9)));
-        if (!res.get()) {
-          fprintf(stderr,"SubImage() erreur ... \n");
-        }
-      ADD_VARSTACK_PTR(InrImage,res);
-      }
-*/
       |
       SubImage
       T_OP_PAR var_image
@@ -6463,28 +6419,19 @@ image:
         fprintf(stderr,"Func_InitWeickert() erreur ... \n");
       FinSi
       ADD_VARSTACK_PTR(InrImage,res);
-        }
-        |
-        T_SRAD_qcoeff T_OP_PAR var_image T_CL_PAR
-        {
-      GET_VARSTACK_VALUE(InrImage, im);
-      InrImage::ptr res ( Func_SRAD_qcoeff( im.get()));
-      Si !res.get() Alors
-        fprintf(stderr,"Func_SRAD_qcoeff() erreur ... \n");
-      FinSi
-      ADD_VARSTACK_PTR(InrImage,res);
-        }
-        |
-        T_AnisoSRAD
-        T_OP_PAR var_image
-        T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    }
+/* Deprecated
+   |
+    T_AnisoSRAD
+    T_OP_PAR var_image
+    T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
 
-      InrImage::ptr res ( Func_SRAD( im.get(),dt,numit,
-               0, // Lee mode
+      InrImage::ptr res ( ami::SRAD::SRAD_ver1( im.get(),dt,numit,
+               (ami::SRAD::EquationType)0, // Lee mode
                0,  // Yu neighborhood
                NULL)); // no extent
 
@@ -6497,13 +6444,22 @@ image:
     T_AnisoSRAD
     T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
-      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
+      Variable<AMIObject>::ptr objvar(driver.var_stack.GetLastVar<AMIObject>()); 
+      if (!objvar.get()) { 
+        driver.yyiperror(" Expecting an AMIObject variable.");
+        YYABORT;
+      }
+      ami::ImageExtent<float>::ptr extent;
+      extent = AMILabType<ami::ImageExtent<float> >::GetValue(objvar);
+
+      //GET_VARSTACK_OBJECT2(ImageExtent, ami::ImageExtent<float>, extent)
+
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
 
-      InrImage::ptr res ( Func_SRAD( im.get(),dt,numit,
-               0, // Lee mode
+      InrImage::ptr res ( ami::SRAD::SRAD_ver1( im.get(),dt,numit,
+               (ami::SRAD::EquationType)0, // Lee mode
                0, // Yu neighborhood
                extent.get()));
 
@@ -6516,14 +6472,22 @@ image:
     T_AnisoSRAD
     T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
-      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
+      Variable<AMIObject>::ptr objvar(driver.var_stack.GetLastVar<AMIObject>()); 
+      if (!objvar.get()) { 
+        driver.yyiperror(" Expecting an AMIObject variable.");
+        YYABORT;
+      }
+      ami::ImageExtent<float>::ptr extent;
+      extent = AMILabType<ami::ImageExtent<float> >::GetValue(objvar);
+      //GET_VARSTACK_OBJECT2(ImageExtent, ami::ImageExtent<float>, extent)
+
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
 
-      InrImage::ptr res ( Func_SRAD( im.get(),dt,numit,
-               0, // Lee mode
+      InrImage::ptr res ( ami::SRAD::SRAD_ver1( im.get(),dt,numit,
+               (ami::SRAD::EquationType)0, // Lee mode
                neighborhood,
                extent.get()));
 
@@ -6536,13 +6500,21 @@ image:
     T_AnisoSRAD2
     T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
-      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
+      Variable<AMIObject>::ptr objvar(driver.var_stack.GetLastVar<AMIObject>()); 
+      if (!objvar.get()) { 
+        driver.yyiperror(" Expecting an AMIObject variable.");
+        YYABORT;
+      }
+      ami::ImageExtent<float>::ptr extent;
+      extent = AMILabType<ami::ImageExtent<float> >::GetValue(objvar);
+      //GET_VARSTACK_OBJECT2(ImageExtent, ami::ImageExtent<float>, extent)
+      
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
 
-      InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
-                0, // Lee function
+      InrImage::ptr res ( ami::SRAD::SRAD_ver2( im.get(),dt,numit,
+                (ami::SRAD::EquationType)0, // Lee function
                 0, // Yu neighborhood
                 extent.get()
                 ));
@@ -6558,14 +6530,22 @@ image:
       T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA
       expr T_COMMA postfix_var T_CL_PAR
     {
-      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
+      Variable<AMIObject>::ptr objvar(driver.var_stack.GetLastVar<AMIObject>()); 
+      if (!objvar.get()) { 
+        driver.yyiperror(" Expecting an AMIObject variable.");
+        YYABORT;
+      }
+      ami::ImageExtent<float>::ptr extent;
+      extent = AMILabType<ami::ImageExtent<float> >::GetValue(objvar);
+
+      //GET_VARSTACK_OBJECT2(ImageExtent, ami::ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
 
-      InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
-                0, // Lee function
+      InrImage::ptr res ( ami::SRAD::SRAD_ver2( im.get(),dt,numit,
+                (ami::SRAD::EquationType)0, // Lee function
                 neighborhood, // neighborhood size
                 extent.get() // bounding box
                 ));
@@ -6575,104 +6555,36 @@ image:
 
       ADD_VARSTACK_PTR(InrImage,res);
     }
+    */
+/* Deprecated
     |
     T_AnisoLeeAdd2 T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
     {
-      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
+      Variable<AMIObject>::ptr objvar(driver.var_stack.GetLastVar<AMIObject>()); 
+      if (!objvar.get()) { 
+        driver.yyiperror(" Expecting an AMIObject variable.");
+        YYABORT;
+      }
+      ami::ImageExtent<float>::ptr extent;
+      extent = AMILabType<ami::ImageExtent<float> >::GetValue(objvar);
+      //GET_VARSTACK_OBJECT2(ImageExtent, ami::ImageExtent<float>, extent)
+      
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
 
-      InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
-                2, // Additive mode
+      InrImage::ptr res ( ami::SRAD::SRAD_ver2( im.get(),dt,numit,
+                (ami::SRAD::EquationType)2, // Additive mode
                 0, // Yu neighborhood
                 extent.get() // constant region
                 ));
-
+// 
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       ADD_VARSTACK_PTR(InrImage,res);
     }
-    |
-    T_AnisoDPAD T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
-    {
-      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
-      GET_VARSTACK_VALUE(InrImage, im);
-      float dt         = (float) $5;
-      int numit        = (int) $7;
-      int neighborhood = (int) $9;
-
-      InrImage::ptr res ( Func_SRAD( im.get(),dt,numit,
-               1, // Kuan's function
-               neighborhood, // Yu neighborhood
-               extent.get()));
-
-      Si !res.get() Alors
-        fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
-      FinSi
-      ADD_VARSTACK_PTR(InrImage,res);
-    }
-    |
-    T_AnisoDPAD2
-    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
-    {
-      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
-      GET_VARSTACK_VALUE(InrImage, im);
-      float dt = (float) $5;
-      int numit = (int) $7;
-      int neighborhood = (int) $9;
-
-      InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
-                1, // Kuan's function
-                neighborhood, // Yu neighborhood
-                extent.get()
-                ));
-      Si !res.get() Alors
-        fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
-      FinSi
-      ADD_VARSTACK_PTR(InrImage,res);
-    }
-    |
-    T_AnisoNRAD
-    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA postfix_var T_CL_PAR
-    {
-    /**
-      Parameters:
-        (3) var_image: input image
-        (5) numerical expression: mode, 0 for Lee Filter, 1: Kuan Filter,
-              2: additive, 3: MRI denoising
-        (7) numerical expression: dt, time step
-        (9) numerical expression: numit, number of iterations
-        (11) numerical expression: size of the neighborhood n, neighborhood is
-            (2n+1)^N, where N is the dimension of the image domain.
-        (13) image extent: area of interest to calculate the noise
-              standard deviation, usually a constant area, for MRI denoising: background area
-
-      Description:
-        Runs a noise reducing anisotropic diffusion, Lee and Kuan's mode are
-        for speckle noise in ultrasound images, additive mode is for additive
-        stationary noise and MRI is for MRI style noise. In the case of MRI,
-        the filter is designed to run on the square of the image intensity.
-      **/
-      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
-      GET_VARSTACK_VALUE(InrImage, im);
-      int mode = (int) $5;
-      float dt = (float) $7;
-      int numit = (int) $9;
-      int neighborhood = (int) $11;
-
-      InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
-                  mode, // fiter mode
-                  neighborhood, //  neighborhood size
-                  extent.get()
-                  ));
-
-      Si !res.get() Alors
-        fprintf(stderr,"Func_AnisoNRAD() erreur ... \n");
-      FinSi
-      ADD_VARSTACK_PTR(InrImage,res);
-    }
+    */
     |
     T_AnisoRudinMult
     T_OP_PAR var_image
@@ -8133,7 +8045,7 @@ postfix_var:
                 ADD_VARSTACK(int,new int(im->GetFormat()));
               } else
               if (id=="GetExtent") {
-                ImageExtent<float>* extent=new ImageExtent<float>();
+                ami::ImageExtent<float>* extent=new ami::ImageExtent<float>();
                 extent->SetMode(0); // absolute
                 extent->SetXmin( im->SpacePosX(0));
                 extent->SetXmax( im->SpacePosX(im->DimX()-1));
@@ -8142,7 +8054,8 @@ postfix_var:
                 extent->SetZmin( im->SpacePosZ(0));
                 extent->SetZmax( im->SpacePosZ(im->DimZ()-1));
                 //extent->print();
-                BasicVariable::ptr res(CreateVar_ImageExtent(extent));
+                BasicVariable::ptr res(AMILabType<ami::ImageExtent<float> >::
+                                        CreateVar(extent));
                 driver.var_stack.AddVar(res);
               } else
               {
@@ -8301,7 +8214,7 @@ postfix_var:
       Description: 
         Rule to apply image[image_extent]
     ** /
-    GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
+    GET_VARSTACK_OBJECT2(ImageExtent, ami::ImageExtent<float>, extent)
     GET_VARSTACK_VALUE(InrImage,im);
 
     if (!im.get()) {
@@ -9710,11 +9623,12 @@ image_extent:
       GET_VARSTACK_VALUE(float,ymin)
       GET_VARSTACK_VALUE(float,xmax)
       GET_VARSTACK_VALUE(float,xmin)
-      ImageExtent<float>* extent=new ImageExtent<float>(  *xmin, *xmax, 
+      ami::ImageExtent<float>* extent=new ami::ImageExtent<float>(  *xmin, *xmax, 
                                                           *ymin, *ymax, 
                                                           *zmin, *zmax);
       extent->SetMode(1); // relative
-      BasicVariable::ptr res(CreateVar_ImageExtent(extent));
+      BasicVariable::ptr res;
+      res = AMILabType<ami::ImageExtent<float> >::CreateVar(extent);
       driver.var_stack.AddVar(res);
     }
     |
@@ -9729,9 +9643,10 @@ image_extent:
       GET_VARSTACK_VALUE(float,xmax)
       GET_VARSTACK_VALUE(float,xmin)
 
-      ImageExtent<float>* extent=new ImageExtent<float>( *xmin, *xmax, *ymin, *ymax);
+      ami::ImageExtent<float>* extent=new ami::ImageExtent<float>( *xmin, *xmax, *ymin, *ymax);
       extent->SetMode(1); // relative
-      BasicVariable::ptr res(CreateVar_ImageExtent(extent));
+      BasicVariable::ptr res;
+      res = AMILabType<ami::ImageExtent<float> >::CreateVar(extent);
       driver.var_stack.AddVar(res);
     }
     |
@@ -9747,12 +9662,13 @@ image_extent:
       GET_VARSTACK_VALUE(float,zmin)
 
       float float_max = std::numeric_limits<float>::max();
-      ImageExtent<float>* extent=new ImageExtent<float>(
+      ami::ImageExtent<float>* extent=new ami::ImageExtent<float>(
           -float_max,float_max,
           -float_max,float_max,
           *zmin,*zmax);
       extent->SetMode(1); // relative
-      BasicVariable::ptr res(CreateVar_ImageExtent(extent));
+      BasicVariable::ptr res;
+      res = AMILabType<ami::ImageExtent<float> >::CreateVar(extent);
       driver.var_stack.AddVar(res);
     }
     /*
@@ -9761,7 +9677,7 @@ image_extent:
     {
       GET_VARSTACK_VALUE(InrImage, im);
 
-      ImageExtent<float>* extent=new ImageExtent<float>();
+      ami::ImageExtent<float>* extent=new ami::ImageExtent<float>();
       extent->SetMode(0); // absolute
       extent->SetXmin( im->SpacePosX(0));
       extent->SetXmax( im->SpacePosX(im->DimX()-1));
@@ -9787,7 +9703,7 @@ image_extent:
       string comment;
   
       draw->GetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
-      ImageExtent<float>* extent=new ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
+      ami::ImageExtent<float>* extent=new ami::ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
       extent->SetMode(1); // relative extent
   
       comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")

@@ -7,7 +7,6 @@
 
 #include "IdentifierInfo.h"
 //#include "Variable.hpp"
-#include "imageextent.h"
 #include "AmiInstructionBlock.h"
 #include "driver.h"
 
@@ -40,7 +39,6 @@ typedef yyip::Parser::token_type token_type;
 
 #include "IdentifierInfo.h"
 #include "Variable.hpp"
-#include "imageextent.h"
 #include "AmiInstructionBlock.h"
 
 #include "improcess_bison.tab.hpp"
@@ -512,14 +510,6 @@ AnisoSmoothGS     return(token::AnisoSmoothGS); /*{AnisoSmoothGS,AnisoSmoothGS}*
 
 AnisoWeickert     return(token::T_AnisoWeickert); /*{AnisoWeickert,T_AnisoWeickert}*/
 AnisoCW           return(token::T_AnisoCW); /*{AnisoCW,T_AnisoCW}*/
-
-SRAD_qcoeff       return(token::T_SRAD_qcoeff); /*{SRAD_qcoeff,T_SRAD_qcoeff}*/
-AnisoSRAD         return(token::T_AnisoSRAD); /*{AnisoSRAD,T_AnisoSRAD}*/
-AnisoSRAD2        return(token::T_AnisoSRAD2); /*{AnisoSRAD2,T_AnisoSRAD2}*/
-AnisoDPAD         return(token::T_AnisoDPAD); /*{AnisoDPAD,T_AnisoDPAD}*/
-AnisoDPAD2        return(token::T_AnisoDPAD2); /*{AnisoDPAD2,T_AnisoDPAD2}*/
-AnisoNRAD         return(token::T_AnisoNRAD); /*{AnisoNRAD,T_AnisoNRAD}*/
-AnisoLeeAdd2      return(token::T_AnisoLeeAdd2); /*{AnisoLeeAdd2,T_AnisoLeeAdd2}*/
 
 AnisoRudinMult    return(token::T_AnisoRudinMult); /*{AnisoRudinMult,T_AnisoRudinMult}*/
 

@@ -10,10 +10,11 @@
 //
 //
 
-#ifndef _imageextent_h_
-#define _imageextent_h_
+#ifndef _amiImageExtent_h_
+#define _amiImageExtent_h_
 
 #include "inrimage.hpp"
+#include "boost/shared_ptr.hpp"
 
 // TODO deal with this problem once and for all
 #include <limits>
@@ -24,18 +25,24 @@
   #undef max
 #endif
 
+namespace ami {
+
 //
 // image extent can work in float or in integer limits
 //
 template <class T>
 class ImageExtent {
 
-  protected:
+public:
+  typedef ImageExtent<T> ClassType; 
+  typedef typename boost::shared_ptr<ClassType > ptr;
+
+protected:
 
     T extent[3][2]; // limits for each of the 3 dimensions
     unsigned char mode; // 0: absolute, 1: relative
 
- public:
+public:
   ImageExtent() {
     for(int i=0; i<3; i++)
       for(int j=0; j<2; j++) extent[i][j]=0;
@@ -254,4 +261,6 @@ class ImageExtent {
 
 };
 
-#endif // _imageextent_h_
+}
+
+#endif // _amiImageExtent_h_

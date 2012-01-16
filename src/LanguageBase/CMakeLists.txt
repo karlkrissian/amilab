@@ -9,7 +9,9 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Wrapping/include
-  )
+  # can this dependency be a problem for the dynamic library and the modules???
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapAlgorithms/Generated
+)
 
 # Difficult to avoid wxwidgets: used in Variables.cpp
 INCLUDE(${wxWidgets_USE_FILE})
@@ -147,6 +149,6 @@ INSTALL(TARGETS LanguageBase
 )
 
 
-#add_dependencies ( LanguageBase
-#  WrapWxWidgets 
-#)
+add_dependencies ( LanguageBase
+  WrapAlgorithms # dependency because of wrap_ImageExtent ...
+)

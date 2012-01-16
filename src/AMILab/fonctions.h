@@ -71,9 +71,6 @@ extern int yyERROR;
 #include "CommonConfigure.h"
 COMMON_VAR_IMPORT unsigned char GB_debug;
 
-#include "imageextent.h"
-
-
 
 InrImage* Func_OpImage( InrImage* im1, InrImage* im2, InrImage* im3,
             char* exprmath,
@@ -110,18 +107,6 @@ InrImage* Func_InitWeickertCoherence(InrImage* in,
                      );
 
 
-//----------- SRAD --------------
-//
-InrImage* Func_SRAD_qcoeff( InrImage* input);
-//         ---------------
-
-InrImage* Func_SRAD( InrImage* input, float dt, int numit, int mode, int neighborhood,
-             ImageExtent<float>* extent);
-//        ---------
-
-InrImage* Func_SRAD2( InrImage* input, float dt,  int numit, int mode, int neighborhood,
-              ImageExtent<float>* extent);
-//        ---------
 
 //----------------------------------------------------------------------
 

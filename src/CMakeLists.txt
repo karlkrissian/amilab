@@ -372,8 +372,10 @@ ENDIF(AMI_USE_VTK)
 OPTION(AMI_USE_ITK "Use ITK: recommended" ON)
 
 IF(AMI_USE_ITK)
-  FIND_PACKAGE ( ITK )
+  FIND_PACKAGE ( ITK ) # COMPONENTS ITKVNL )
   IF(ITK_FOUND)
+    #MESSAGE("ITK_INCLUDE_DIRS = ${ITK_INCLUDE_DIRS} ")
+    #MESSAGE("ITKVNL_INCLUDE_DIRS = ${ITKVNL_INCLUDE_DIRS} ")
     SET(AMI_ITK_VERSION "${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}")
   ENDIF(ITK_FOUND)
 ENDIF(AMI_USE_ITK)
@@ -723,7 +725,7 @@ SET(amilab_ownlibs
   WrapBasicTypes
   WrapCommon
   WrapIO
-  WrapImage
+  #WrapImage
   LanguageBase
   Language
   WrapVTK
@@ -822,7 +824,8 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   ${amilab_ownlibs}
   ${LINK_VTK}
   ${AMIFLUID_LIBRARIES}
-  ${ITK_LIBRARIES}
+  ${ITK_LIBRARIES} 
+  -lgdcmDSED
   #  ${wxParams_LIBRARIES}
   wxParams
   ${OPENGL_LIBRARIES}
