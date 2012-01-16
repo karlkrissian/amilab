@@ -137,8 +137,11 @@ MESSAGE("wxParams_INCLUDE_DIRS ${wxParams_INCLUDE_DIRS} ")
   # Generate the classes list
 
   # Read list of classes to wrap
-  FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt" classes_txt)
-  STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+  READ_CLASSES(
+    "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"
+  ) 
+  #FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt" classes_txt)
+  #STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
 
   # Read vtk ancestors list
   SET( VTK_OUTDIR ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated)

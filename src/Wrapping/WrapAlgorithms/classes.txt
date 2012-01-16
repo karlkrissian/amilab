@@ -1,8 +1,22 @@
+
+# vtk style classes
+vtkLevelSetFastMarching
+vtkFastMarching_nD_plus
+
 CalculRepCercle
 GeneralGaussianFilter
 CircleBoundaries3D
-vtkLevelSetFastMarching
 Gradient
-vtkFastMarching_nD_plus
 Curvatures
 ShortestPathClass
+
+# new classes within ami namespace
+ami::ImageAddScalar
+ami::ImageToImageFilterParam
+ami::GrayscaleMorpho
+
+# Image Extent
+ami::ImageExtent<float>
+
+# Denoising
+ami::SRAD

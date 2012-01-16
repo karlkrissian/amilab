@@ -9,6 +9,18 @@
 #include "ShortestPathClass.h"
 #include "Curvatures.h"
 
+#include "amiImageAddScalar.h"
+#include "amiGrayscaleMorpho.h"
+
+#include "amiImageExtent.h"
+
+#ifdef __GCCXML__
+  template class ami::ImageExtent<float>;
+#endif // __GCCXML__
+
+#include "amiSRAD.h"
+
+
 // why do I need this include ??
 //#include "vcl_config_compiler.h"
 //#define vcl_generic_complex_STD 
