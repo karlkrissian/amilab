@@ -64,6 +64,10 @@ if (!exists(LevelSetsClass)) {
         # Geodesic framework
         ::use_geodesic = UCHAR(0), "Use the geodesic framework if the weight "+\
                                     "image is available."
+        ::geoweights_sigma = 2, "Gaussian standard deviation use to compute "+\
+                                "the local variance from the input image "+\
+                                "in the geodesic framework"
+        ::geoweights_minimum = 0.3, "minimal value of geodesic weights"
 
         # Velocity parameters
         ::use_velocity        = UCHAR(0), "Use Velocity Force"
@@ -167,19 +171,9 @@ if (!exists(LevelSetsClass)) {
 
 
     #---------------------------------------------------------------------------
-    proc  ::LoadGeodesicWeightImage()\
+    proc  ::InitGeodesicWeightImage( IMAGE w)\
     {
-      # Restriction on geodesic image type: FLOAT ???
-
-      if (::geodesicimage_name=="BrowseImage") {
-        InfoDisplay "Select input image"
-      } else {
-        ::params.use_geodesic = true
-        del ::geodesic_weight
-        eval "::geodesic_weight    = &"+::geodesicimage_name+";"
-
-        W = &::geodesic_weight
-
+        W = &w
         # Compute discrite derivatives
         Ip = filters.ImTranslate(&W,-1,0,0)
         Im = filters.ImTranslate(&W, 1,0,0)
@@ -198,13 +192,65 @@ if (!exists(LevelSetsClass)) {
         Im = filters.ImTranslate(&W,0,0, 1)
         diff = (Ip-Im)/2
         ::geodesic_weight_dz = diff
+    }
 
+    #---------------------------------------------------------------------------
+    proc  ::LoadGeodesicWeightImage()\
+    {
+      # Restriction on geodesic image type: FLOAT ???
+
+      if (::geodesicimage_name=="BrowseImage") {
+        InfoDisplay "Select input image"
+      } else {
+        ::params.use_geodesic = true
+        del ::geodesic_weight
+        eval "::geodesic_weight    = &"+::geodesicimage_name+";"
+
+        ::InitGeodesicWeightImage(&::geodesic_weight)
+        
         if (exists(::win)) {
           ::win.Update(-1)
         }
       }
     }
 
+    #---------------------------------------------------------------------------
+    proc  ::ComputeGeodesicWeightImage()\
+    {
+      if exists(::inls0) \
+      {
+        SetStatusText("Computing Geodesic Weights")
+        inittime = wx.wxDateTime.UNow()
+        # get local variable of input image
+        
+        i = &::input
+        i_var = filter(i*i,::params.geoweights_sigma,0,0,0)
+        is    = filter(i  ,::params.geoweights_sigma,0,0,0)
+        i_var = i_var -is*is
+        del is
+        i_var_mean= mean[::inls0>0](i_var)
+        w = exp(-i_var/i_var_mean)
+        w = w*(1-::params.geoweights_minimum)+::params.geoweights_minimum
+        del i_var
+
+        del ::geodesic_weight
+        ::geodesic_weight = &w
+        del w
+        ::InitGeodesicWeightImage(&::geodesic_weight)
+
+        if (exists(::win)) {
+          ::win.Update(-1)
+        }
+
+        diff=wx.wxDateTime.UNow()-inittime
+        time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+        SetStatusText("Geodesic Weights \tDone (%1%)" % time_elapsed)
+      } else \
+      {
+        InfoDialog "No initial contour image !"
+      }
+    }
+    
     #---------------------------------------------------------------------------
     # Set the geodesic weight image and its gradient
     # to enable geodesic active contour for smoothing and advection terms
@@ -312,6 +358,7 @@ if (!exists(LevelSetsClass)) {
       if (exists(::viewer)) \
       {
         ::viewer.Paint()
+        ::viewer.update()
       }
     }
 
@@ -413,7 +460,7 @@ if (!exists(LevelSetsClass)) {
             ::initial_name = "::initial_name"
             ::win.Update(-1)
           }
-          ::ComputeIntensityStats
+          ::ComputeIntensityStats()
         } else {
           ::inls <<= ::input*0-1
         }
@@ -725,7 +772,7 @@ if (!exists(LevelSetsClass)) {
             ::lsres = ::levelset.GetOutputImage()
             k = 0
             ::UpdateViewer()
-            ProcessEvents(100)
+            ProcessEvents(200)
           }
           SetProgress((FLOAT)n/it*100.0)
           if (::params.check_convergence) {
@@ -916,7 +963,13 @@ if (!exists(LevelSetsClass)) {
       }
       
       ::win.BeginBook()
-    
+      b = ::win.GetBookCtrl()
+      b_classname =  b.GetClassInfo().GetClassName()
+      if b_classname=="wxAuiNotebook" {
+        b.SetWindowStyle( wx.wxAUI_NB_BOTTOM|\
+                          wx.wxAUI_NB_WINDOWLIST_BUTTON )
+      }
+   
         ::win.AddPage("Init")
 
           ::win.BeginBoxPanel("Input Image")
@@ -1007,10 +1060,17 @@ if (!exists(LevelSetsClass)) {
               ::win.AddBoolean( &::params.affinecurv,"Affine curv")
       
             ::vel_pid = ::win.AddPage("Geo")
-              ::win.BeginBoxPanel("Geodesic Parameters")
-                ::win.AddBoolean(&::params.use_geodesic, "Use Geodesic Framework")
-                ::win.AddImageChoice( &::geodesicimage_name, "")
-                ::win.AddButton("Load and apply", &::LoadGeodesicWeightImage)
+              ::win.AddBoolean(&::params.use_geodesic, "Use Geodesic Framework")
+              ::win.BeginBoxPanel("Input Weight Image")
+                ::win.BeginBoxPanel("Load")
+                  ::win.AddImageChoice( &::geodesicimage_name, "")
+                  ::win.AddButton("Load and apply", &::LoadGeodesicWeightImage)
+                ::win.EndBoxPanel()
+                ::win.BeginBoxPanel("Compute from initial contour")
+                  ::win.AddFloat(&::params.geoweights_sigma,"sigma",0.6,5)
+                  ::win.AddFloat(&::params.geoweights_minimum,"weights minimum",0,1)
+                  ::win.AddButton("Compute", &::ComputeGeodesicWeightImage)
+                ::win.EndBoxPanel()
               ::win.EndBoxPanel()
 
             ::vel_pid = ::win.AddPage("Vel")

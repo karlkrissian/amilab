@@ -164,7 +164,9 @@ int ParamPanel::BeginBook()
 #ifdef USING_AUINB
                           , wxAUI_NB_TOP 
                             //| wxAUI_NB_TAB_SPLIT 
-                            | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS
+                            //| wxAUI_NB_TAB_MOVE 
+                            | wxAUI_NB_SCROLL_BUTTONS
+                            | wxAUI_NB_WINDOWLIST_BUTTON 
 #endif
                       //wxVSCROLL
                       );

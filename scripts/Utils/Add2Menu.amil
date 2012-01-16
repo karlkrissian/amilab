@@ -29,3 +29,5 @@ if exists(global::scripts_toolbar) {
 
  ami.MainFrame.AddToMenu("&Scripts","&Utils","&RegEx",  "Utils/RegEx/RegExGui")
 
+ ami.MainFrame.AddToMenu("&Scripts","&Utils","&SystemInfo",  "Utils/SystemInfo/SystemInfoGui")
+

@@ -49,6 +49,6 @@
   resampleFilter.Update()
 
   res_itk = itk.SmartPointer_Image_UC_2u.SmartPointer(&resampleFilter.GetOutput())
-  res = itk.amiConvert.FromITK_US2(&res_itk)
+  res = itk.amiConvert.FromITK_UC2(&res_itk)
   show res
 

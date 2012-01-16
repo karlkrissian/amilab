@@ -1,0 +1,40 @@
+  # vtkSphere source example, for C++ code, see:
+  #  http://www.vtk.org/Wiki/VTK/Examples/Cxx/GeometricObjects/Sphere
+  #
+
+# delete previous Class definition if necessary
+del wxVTK_Example1
+
+Class wxVTK_Example1 \
+{
+  #--- Create frame, sizer and interactor
+  ::frame = wx.wxFrame( &ami.MainFrame,wx.wxID_ANY,"wxVTK example")
+  ::frame.Show(); ::frame.Update()
+  ::frame.SetSizer(&wx.wxBoxSizer(wx.wxVERTICAL))
+  ::renwinint = vtktools.wxVTKRenderWindowInteractor(&::frame,wx.wxID_ANY)
+  ::renwinint.UseCaptureMouseOn()  
+  ::renwinint.SetInteractorStyle(&vtk.vtkInteractorStyleTrackballCamera.New())
+  ::frame.GetSizer().Add(&::renwinint, wx.wxSizerFlags().Expand().Proportion(1))
+
+  #--- Create Sphere source, default center is (0,0,0) and radius is 5
+  ::sphereSource = vtk.vtkSphereSource.New()
+
+  #--- Create mapper
+  ::mapper = vtk.vtkPolyDataMapper.New()
+  ::mapper.SetInputConnection(&::sphereSource.GetOutputPort())
+
+  #--- Create Actor
+  ::actor = vtk.vtkActor.New()
+  ::actor.SetMapper(&::mapper)
+
+  #--- Create and add Renderer with actor, and update the frame
+  ::renderer = vtk.vtkRenderer.New()
+  ::renderer.AddActor(&::actor)
+  ::renwinint.GetRenderWindow().AddRenderer(&::renderer)
+  ::renderer.SetBackground(0.3, 0.6, 0.3) # Background color green
+  ::frame.SetSize(wx.wxSize(400,400))
+  ::frame.Layout()
+}
+
+del wv1 
+wxVTK_Example1 wv1

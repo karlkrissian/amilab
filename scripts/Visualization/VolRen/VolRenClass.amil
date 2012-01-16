@@ -568,6 +568,7 @@ if (!exists(VolRenClass)) {
         ::volVector[1].DefaultProperties() 
         #::volVector[1].CreateVTK( &::input2)
         ::volVector[1].SetInput(&::input2)
+        # try to mix 2 volume if available
         ::volVector[1].CreateVTK()
         if (::volrenmapper_type!=::volVector[1].volrenmapper_type) {
           ::volrenmapper_type=::volVector[1].volrenmapper_type

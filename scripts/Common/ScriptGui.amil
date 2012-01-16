@@ -446,7 +446,7 @@ printn "::SaveParameters end"
     #---------------------------------------------------------------------------
     proc ::InitUserScriptData() \
     {
-      # Set/Create the directory of the graph files
+      # Set/Create the directory of the script files
       sp = wx.wxStandardPathsBase.Get()
       user_app_path = wx.FromWxString(sp.GetUserLocalDataDir())
       if !wx.wxDir.Exists(user_app_path) {
@@ -606,5 +606,17 @@ printn "::SaveParameters end"
       }
     }
 
+    #---------------------------------------------------------------------------
+    proc ::SetNoteBookAtBottom(OBJECT win) \
+    {
+        b = win.GetBookCtrl()
+        b_classname =  b.GetClassInfo().GetClassName()
+        if b_classname=="wxAuiNotebook" {
+          b.SetWindowStyle( wx.wxAUI_NB_BOTTOM|\
+                            wx.wxAUI_NB_WINDOWLIST_BUTTON )
+        }
+    }
+
   }
+
 }

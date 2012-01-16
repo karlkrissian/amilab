@@ -64,10 +64,9 @@ if (!exists(alGraphVizClass)) {
         ::graphviz_program = "dot"
       }
 
-      ::ShowOnRun = UCHAR(1), "Automatically show after run"
+      ::RunOnSelect = UCHAR(1), "Automatically show after run"
 
       ::graphviz_file = "graph.dot", "filename containing the graph description"
-      ::graphviz_lang = "png"
       ::output_file = "graph.png", "output image filename"
       ::html_filename = GetScriptsDir+"/GraphViz/Doc/GraphViz/index.html"
       
@@ -83,6 +82,19 @@ if (!exists(alGraphVizClass)) {
       ::filelistgui.AddPath(::examples_path)
 
       ::ShadowParamClass ::shadowparam
+      
+      ::output_formats = VarVector()
+      ::output_formats.push_back("png")
+      ::output_formats.push_back("eps")
+      ::output_formats.push_back("jpeg")
+      ::output_formats.push_back("ps")
+      ::output_formats.push_back("ps2")
+      ::output_formats.push_back("svg")
+      ::output_formats.push_back("svgz")
+      ::output_formats.push_back("tiff")
+      ::output_formats.push_back("ico")
+
+      ::output_format = INT(0), "Output format"
     }
 
     //---------------------------------------------------
@@ -135,7 +147,7 @@ if (!exists(alGraphVizClass)) {
     {
       f = wx.wxFileName(::graphviz_file)
       f.SetPath(wx.wxFileName.GetTempDir())
-      f.SetExt("png")
+      f.SetExt(::output_formats[::output_format])
       ::output_file = f.GetFullPath().c_str()
       ::win.Update(-1)
     }
@@ -157,20 +169,30 @@ if (!exists(alGraphVizClass)) {
     //---------------------------------------------------
     proc ::Run() \
     {
-      cmd = "\""+::graphviz_bindir+"/"+::graphviz_program+"\""+" -T%1%" % ::graphviz_lang \
+      cmd = "\""+::graphviz_bindir+"/"+::graphviz_program+"\""\
+              +" -T%1%" % ::output_formats[::output_format] \
               +" %1%" % ::graphviz_file \
               + " -o"+ ::output_file
+      if ::output_formats[::output_format]!="png" {
+        # also produce png output
+        cmd += " -Tpng"
+        output_file_png = wx.wxFileName(::output_file)
+        output_file_png.SetExt("png")
+        cmd += " -o"+wx.FromWxString(output_file_png.GetFullPath())
+      }
       mess = "GraphViz command : "+cmd
       printn mess
       SetStatusText(mess)
       sh cmd
-      if ::ShowOnRun { ::Show(); }
+      ::Show();
     }
 
     //---------------------------------------------------
     proc ::Show() {
       # 1. check existence of output file ?
-      im = wx.wxImage(::output_file)
+      output_file_png = wx.wxFileName(::output_file)
+      output_file_png.SetExt("png")
+      im = wx.wxImage(output_file_png.GetFullPath())
       if im.IsOk() {
         ::preview.SetwxImage(&im)
         # Adjust scrolling size
@@ -250,7 +272,8 @@ if (!exists(alGraphVizClass)) {
  
         # Add page to main book. This add the panel
         ::wxim = wx.wxImage(op_system.GetCurrentScriptDir()+\
-                            "/graphviz_icon16.png")
+                            "/graphviz_icon16."+\
+                            ::output_formats[::output_format])
         ::bm = wx.wxBitmap(&::wxim.Rescale(16,16))
         mb.AddPage( &::panel,  "GraphViz",1, &::bm)
         ::GraphViz_pageindex = mb.GetPageIndex(&::panel)
@@ -299,7 +322,7 @@ if (!exists(alGraphVizClass)) {
       if selection.size()>0 {
         ::graphviz_file = selection.back()
         ::OutputAuto()
-        ::Run()
+        if ::RunOnSelect { ::Run(); }
       }
     }
 
@@ -353,7 +376,7 @@ if (!exists(alGraphVizClass)) {
       #show ::res_shadow
       f = wx.wxFileName("shadow")
       f.SetPath(wx.wxFileName.GetTempDir())
-      f.SetExt("png")
+      f.SetExt(::output_formats[::output_format])
       shadow_filename = f.GetFullPath().c_str()
       ::res_shadow.save shadow_filename
       ::ShowShadow(shadow_filename)
@@ -378,8 +401,15 @@ if (!exists(alGraphVizClass)) {
                             "DOT (*.dot;*.gv)|*.dot;*.gv|Text (*.txt)|*.txt|ALL (*.*)|*.*")
           ::win.SetCallback(&::OutputAuto)
           ::win.AddButton("Set Output",&::OutputAuto)
-          ::win.AddFilename(&::output_file,"output",".","*.png")
-          ::win.AddBoolean(&::ShowOnRun,"Show on run")
+          
+          ::outformat_id = ::win.AddEnum(&::output_format,"Output Format")
+          for k=0 to ::output_formats.size()-1 {
+            ::win.AddEnumChoice(::outformat_id, ::output_formats[k] )
+          }
+          #::win.SetCallback(&::OnOutputFormat)
+          
+          ::win.AddFilename(&::output_file,"output",".","*.*")
+          ::win.AddBoolean(&::RunOnSelect,"Run on select")
 
         ::win.AddPage("Config")
           ::win.BeginBoxPanel("Paths")

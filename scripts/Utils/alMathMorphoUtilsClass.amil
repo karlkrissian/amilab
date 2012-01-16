@@ -1,0 +1,85 @@
+#!/home/karl/projects/Sourceforge/amilab/trunk/src/build/relwithdebinfo/amilab_3.2.1_relwithdebinfo 
+# pa1_st1_se3_half = Image "/home/karl/projects/Sourceforge/amilab/trunk/src/build/debug/pa1_st1_se3_half.ami.gz" // from menu
+
+del alMathMorphoUtilsClass
+
+Class alMathMorphoUtilsClass \
+{
+
+  ::numthreads          = INT(wx.wxThread.GetCPUCount()), "Number of threads"
+  ::use_intensity_range = false, "Limit processing within an intensity range"
+
+  proc ::SetIntensityRange(NUM Imin, NUM Imax) \
+  {
+    ::Imin = Imin
+    ::Imax = Imax
+    ::use_intensity_range = true
+  }
+
+  proc ::Dilate(IMAGE im, NUM rad) \
+  {
+    m = algorithms.ami_GrayscaleMorpho.GrayscaleMorpho()
+    mp = m.GetParameters()
+    mp.SetNumberOfThreads(::numthreads)
+    mp.SetInput(&im)
+    m.UseIntensityRange(::use_intensity_range)
+    if exists(::Imin) && exists(::Imax) {
+      m.SetIntensityRange(::Imin,::Imax)
+    }
+    m.SetOperation( algorithms.ami_GrayscaleMorpho.Dilate)
+    m.SetRadius(rad)
+    inittime = wx.wxDateTime.UNow()
+    m.Run()
+    diff=wx.wxDateTime.UNow()-inittime
+    time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+    printn "Duration \tDone (%1%)" % time_elapsed
+    return = m.GetOutput()
+  }
+
+  proc ::Erode(IMAGE im, NUM rad) \
+  {
+    m = algorithms.ami_GrayscaleMorpho.GrayscaleMorpho()
+    mp = m.GetParameters()
+    mp.SetNumberOfThreads(::numthreads)
+    mp.SetInput(&im)
+    m.UseIntensityRange(::use_intensity_range)
+    if exists(::Imin) && exists(::Imax) {
+      m.SetIntensityRange(::Imin,::Imax)
+    }
+    m.SetOperation( algorithms.ami_GrayscaleMorpho.Erode)
+    m.SetRadius(rad)
+    inittime = wx.wxDateTime.UNow()
+    m.Run()
+    diff=wx.wxDateTime.UNow()-inittime
+    time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+    printn "Duration \tDone (%1%)" % time_elapsed
+    return = m.GetOutput()
+  }
+
+  proc ::Open(IMAGE im, NUM rad) \
+  {
+    return = ::Erode(&im,rad)
+    return = ::Dilate(&return,rad)
+  }
+
+  proc ::Close(IMAGE im, NUM rad) \
+  {
+    return = ::Dilate(&im,rad)
+    return = ::Erode(&return,rad)
+  }
+
+  proc ::WhiteTopHat(IMAGE im, NUM rad) \
+  {
+    return = im - ::Open(&im,rad)
+  }
+
+  proc ::BlackTopHat(IMAGE im, NUM rad) \
+  {
+    return = ::Close(&im,rad) -im
+  }
+
+}
+
+del alMathMorpho
+alMathMorphoUtilsClass alMathMorpho
+

@@ -14,12 +14,32 @@ if (!exists(GreyMorphoClass)) {
 
         ::result_filename = "greymorpho_res.ami.gz", "filename for saving the resulting image to disk"
 
-        ::operation = INT(0), "0: dilation 1: erosion 2: opening 3: closing"
+        ::operation_types = VarVector()
+          ::operation_types.push_back("Dilate")
+          ::operation_types.push_back("Erode")
+          ::operation_types.push_back("Open")
+          ::operation_types.push_back("Close")
+          ::operation_types.push_back("White top-hat")
+          ::operation_types.push_back("Back top-hat")
+        mess = ::operation_types[0]
+        for n=1 to ::operation_types.size()-1 { 
+          mess += ", %1%" % ::operation_types[n]; 
+        }
+        ::operation = INT(0), "type of operation (%1%)" % mess
   
         ::step = 0.5,   "step size for the PDE"
         ::size = 1,     "Size in pixels of the operation"
 
         ::surf_scaling = 1
+
+        ::algorithm_types = VarVector()
+          ::algorithm_types.push_back("PDE")
+          ::algorithm_types.push_back("min/max")
+        mess = ::algorithm_types[0]
+        for n=1 to ::algorithm_types.size()-1 { 
+          mess += ", %1%" % ::algorithm_types[n]; 
+        }
+        ::algorithm_type = INT(0), "type of algorithm used (%1%)" % mess
   
         #  
         ::Imin = 0, "Minimal intensity"
@@ -51,32 +71,25 @@ if (!exists(GreyMorphoClass)) {
     }
     Comments( ::load_input, "Copies the input image in a local image member named 'input'")
 
-    #----------------------------
-    proc ::ProcessImage( IMAGE input, NUM component) \
+    #---------------------------------------------------------------------------
+    proc ::ProcessImagePDE( IMAGE input, NUM component) \
     {
       morph = filters.ContinuousMorphology()
       morph.SetLimits(::Imin,::Imax)
       #::txtctrl_cmd += "morph.SetLimits(%1%,"%::Imin+"%1%)\n"%::Imax
 
-      if (::operation==0) {
-#        input = EDPdilate(input,::size,::step)
-        input = morph.Dilate(input,::size,::step)
-        op = "Dilate"
+      op = ::operation_types[::operation]
+      if (op!="White top-hat")&&(op=="Black top-hat") \
+      {
+        eval "input = morph.%1%(input,::size,::step);" % op
       }
-      if (::operation==1) {
-#        input = EDPerode(input,::size,::step)
-        input = morph.Erode(input,::size,::step)
-        op = "Erode"
+      if (op!="White top-hat") {
+        input = input - morph.Open(input,::size,::step)
+        op="{not avail}"
       }
-      if (::operation==2) {
-#        input = EDPclose(input,::size,::step)
-        input = morph.Close(input,::size,::step)
-        op = "Close"
-      }
-      if (::operation==3) {
-#        input = EDPopen(input,::size,::step)
-        input = morph.Open(input,::size,::step)
-        op = "Open"
+      if (op!="Back top-hat") {
+        input = morph.Close(input,::size,::step) - input
+        op="{not avail}"
       }
 
       if (component<0) {
@@ -93,7 +106,7 @@ if (!exists(GreyMorphoClass)) {
     }
 
     #----------------------------
-    proc ::Process() {
+    proc ::ProcessPDE() {
 
       if (!exists(::res)) {
         ::Restart()
@@ -106,12 +119,69 @@ if (!exists(GreyMorphoClass)) {
 
       RestartTime;InitTime
       if (::res.vdim==1) {
-        ::ProcessImage(&::res,-1)
+        ::ProcessImagePDE(&::res,-1)
       } else {
         ::txtctrl.WriteText("res = input\n")
         for k=0 to ::res.vdim-1 {
           _c = (FLOAT) ::res[k]
-          ::ProcessImage(&_c,k)
+          ::ProcessImagePDE(&_c,k)
+          ::res.SetComponent( k, _c)
+        }
+      }
+      EndTime
+      SetStatusText("Time Spent (hh:mm:ss) = "+TimeSpent)
+      EndTime
+      eval ::result_image_name+" <<= ::res;"
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ProcessImageMinMax( IMAGE input, NUM component) \
+    {
+      func "Utils/alMathMorphoUtilsClass"
+      alMathMorpho.SetIntensityRange(::Imin,::Imax)
+
+      #::txtctrl_cmd += "morph.SetLimits(%1%,"%::Imin+"%1%)\n"%::Imax
+
+
+      op = ::operation_types[::operation]
+      if (op=="White top-hat") { op = "WhiteTopHat"; }
+      if (op=="Black top-hat") { op = "BlackTopHat"; }
+
+      eval "input = alMathMorpho.%1%(&input,::size);" % op
+
+      if (component<0) {
+        ::txtctrl_cmd =  "res = alMathMorpho.%1%(input," % op + \
+                          "%1%)"%::size 
+      } else {
+        ::txtctrl_cmd =  "res.SetComponent(%1%, " % component+\
+                          " alMathMorpho.%1%(" % op + \
+                         " input[%1%],"%component+\
+                          "%1%))"%::size
+      }
+      ::txtctrl.WriteText(::txtctrl_cmd+"\n")
+      
+    }
+
+    #----------------------------
+    proc ::ProcessMinMax() {
+
+      if (!exists(::res)) {
+        ::Restart()
+      }
+
+      ::txtctrl_cmd =""
+      ::txtctrl_cmd += "func \"Utils/alMathMorphoUtilsClass\"\n"
+      ::txtctrl.WriteText(::txtctrl_cmd)
+      
+
+      RestartTime;InitTime
+      if (::res.vdim==1) {
+        ::ProcessImageMinMax(&::res,-1)
+      } else {
+        ::txtctrl.WriteText("res = input\n")
+        for k=0 to ::res.vdim-1 {
+          _c = (FLOAT) ::res[k]
+          ::ProcessImageMinMax(&_c,k)
           ::res.SetComponent( k, _c)
         }
       }
@@ -127,7 +197,12 @@ if (!exists(GreyMorphoClass)) {
       if (!exists(::input)) {
         Infodialog "First load the input image !"
       } else {
-        ::Process()
+        if (::algorithm_types[::algorithm_type]=="PDE") {
+          ::ProcessPDE()
+        }
+        if (::algorithm_types[::algorithm_type]=="min/max") {
+          ::ProcessMinMax()
+        }
       }
     }
 
@@ -186,7 +261,9 @@ if (!exists(GreyMorphoClass)) {
     #----------------------------
     proc ::Restart() \
     {
-      ::load_input()
+      if (!exists(::input)) {
+        ::load_input()
+      }
       ::res <<= ::input
       show ::res
       ::txtctrl.Clear()
@@ -199,6 +276,13 @@ if (!exists(GreyMorphoClass)) {
       ::res.save ::result_filename
     }
     Comments( ::Save, "Save image to disk")
+
+    #---------------------------------------------------------------------------
+    proc ::OnAlgorithm() \
+    {
+      ::win.Enable(&::step_id, (::algorithm_types[::algorithm_type]=="PDE"))
+      #::win.
+    }
 
     //---------------------------------------------------
     proc ::Gui() {
@@ -224,14 +308,20 @@ if (!exists(GreyMorphoClass)) {
           ::win.AddString( &::result_image_name,"Result image")
 
         ::win.AddPage("Param")
-          operation_id = ::win.AddEnum( &::operation,"Method")
-            ::win.AddEnumChoice(operation_id,"Dilate")
-            ::win.AddEnumChoice(operation_id,"Erode")
-            ::win.AddEnumChoice(operation_id,"Close")
-            ::win.AddEnumChoice(operation_id,"Open")
+
+          ::algotype_id = ::win.AddEnum( &::algorithm_type, "type")
+          for n=0 to ::algorithm_types.size()-1 {
+            ::win.AddEnumChoice(::algotype_id,::algorithm_types[n])
+          }
+          ::win.SetCallback(&::OnAlgorithm)
+
+          ::operation_id = ::win.AddEnum( &::operation,"Method")
+          for n=0 to ::operation_types.size()-1 {
+            ::win.AddEnumChoice(::operation_id,::operation_types[n])
+          }
 
           ::win.BeginBoxPanel("Parameters")
-            ::win.AddFloat( &::step,  "step",  0.01,1)
+            ::step_id = ::win.AddFloat( &::step,  "step",  0.01,1)
             ::win.AddFloat( &::size,  "size",  1,   30 )
             ::win.AddFloat( &::Imin,  "Imin",  0,   30 )
             ::win.AddFloat( &::Imax,  "Imax",  0,   30 )
@@ -242,8 +332,8 @@ if (!exists(GreyMorphoClass)) {
               ::win.BeginHorizontal()
                   restart_id = ::win.AddButton("Restart", ::Restart)
               ::win.EndHorizontal()
-              ::win.AddButton("Run",     ::Process)
-              ::win.AddButton("ShowDiff",::ShowDiff)
+              ::win.AddButton("Run",     &::Run)
+              ::win.AddButton("ShowDiff",&::ShowDiff)
           ::win.EndBoxPanel()
   
           ::win.BeginBoxPanel("Result")

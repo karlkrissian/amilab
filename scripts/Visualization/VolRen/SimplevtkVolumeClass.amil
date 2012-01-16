@@ -59,6 +59,7 @@ if (!exists(SimplevtkVolumeClass)) {
       ::volrenmapper_type = INT(0), "Volume Rendering Mapper type 0: GPU, 1: Fixed Point 2: Standard, 3: AMILab Multi-VolRen"
 
       ::move_2 = UCHAR(1)
+
     }
 
     #----------------------------
@@ -303,8 +304,11 @@ if (!exists(SimplevtkVolumeClass)) {
       ::volrenmapper_type = type
       if ::trace2 { eval ::trace2_end; }
     }
+    
+    
     #----------------------------
-    proc ::SetVolMapperMode () {
+    proc ::SetVolMapperMode () \
+    {
         del ::volmapper
         #printn "VolMapper Mode = %1%" %::volrenmapper_type
 
@@ -384,6 +388,9 @@ if (!exists(SimplevtkVolumeClass)) {
           # don"t put the boxwidget for the moment
           # convert input to vtkimage
           ::SetVolMapperMode ()
+          if exists(::volmapper->IntermixIntersectingGeometryOn) {
+            ::volmapper.IntermixIntersectingGeometryOn()
+          }
 
           # Set first input
           ::vtkinput  = vtktools.ToVtkImageData(&::input)
@@ -658,16 +665,19 @@ printn "::move_2 = %1%" % ::move_2
       }
       if ::trace2 { eval ::trace2_end; }
     }
+
     #----------------------------
     proc ::OnWindow() \
     {
       ::OnRender()
     }
+
     #----------------------------
     proc ::OnLevel() \
     {
       ::OnRender()
     }
+
     #----------------------------
     proc ::OnClip() \
     {

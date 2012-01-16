@@ -8,6 +8,7 @@ func "AnisoNRADClass.amil"
 if (!exists(aniNRAD)) {
 
   AnisoNRADClass aniNRAD  
+  aniNRAD.Gui()
    
   if (argc>=1) {
     printn "reading image"

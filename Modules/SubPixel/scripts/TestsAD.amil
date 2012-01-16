@@ -205,7 +205,9 @@ if (!exists(thickTADClass)){
           res_noise <<= AddGaussNoise(::res,0,j)
           #Denoise the image using AnisoNRAD command
           if(exists(res_noise_draw)) { del res_noise_draw; }
-          res_denoised <<= AnisoNRAD(res_noise, 2, dt, t/dt, 1, noise_extent.GetExtent)
+          res_denoised <<= algorithms.ami_SRAD.AnisoNRAD(&res_noise, 2, dt, \
+                                                         t/dt, 1, \
+                                                         noise_extent.GetExtent)
 
           # use thickness 4
           ::Statistics(&res_denoised,4)
@@ -253,7 +255,9 @@ if (!exists(thickTADClass)){
           for k=1 to ::num_experiments {
             res_noise <<= AddGaussNoise(::res,0,j)
             #Denoise the image using AnisoNRAD command
-            res_denoised <<= AnisoNRAD(res_noise, 2, dt, t/dt, 1, noise_extent.GetExtent)
+            res_denoised <<= \
+              algorithms.ami_SRAD.AnisoNRAD(&res_noise, 2, dt, \
+                                            t/dt, 1, noise_extent.GetExtent)
             ::Statistics(&res_denoised,i)
             local_mean += ::dis_mean
             local_std  += ::dis_std

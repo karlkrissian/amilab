@@ -73,17 +73,24 @@ if (!exists(SkeletonClass)) {
         ::input_name = "::input"
         ::win.Update(-1)
       }
-  
       if (exists(::win)) {
         ::inputmin          = min(::input)
         ::inputmax          = max(::input)
         ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
       }
-
-
     }
     Comments( ::load_input, "Copies the input image in a local image member named 'input'")
 
+    #---------------------------------------------------------------------------
+    proc ::set_input( IMAGE input) \
+    {
+      ::input <<= (FLOAT) input
+      if (exists(::win)) {
+        ::inputmin          = min(::input)
+        ::inputmax          = max(::input)
+        ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
+      }
+    }
 
     //---------------------------------------------------
     proc ::GuiUpdateIntensityLimits( NUM _min, NUM _max) {
@@ -224,8 +231,12 @@ if (!exists(SkeletonClass)) {
     
     #---------------------------------------------------
     proc ::ConnectLines() {
-      ::res <<= ::res.ConnectLines(::connect_dist,::connect_dir)
-    }
+      ::res = ::res.ConnectLines(::connect_dist,::connect_dir)
+      if (exists(::res_draw)) {
+        del ::res_draw
+        show ::res
+      }
+   }
     
     #---------------------------------------------------
     proc ::Display() {

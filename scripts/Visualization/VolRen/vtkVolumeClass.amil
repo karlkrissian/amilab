@@ -57,6 +57,10 @@ if (!exists(vtkVolumeClass)) {
 
       ::opacity_attenuation = 1, "Attenuation factor for the opacity"
 
+      # plane widget
+      ::planeX = UCHAR(0), "Use ImagePlaneWidget X"
+      ::planeY = UCHAR(0), "Use ImagePlaneWidget Y"
+      ::planeZ = UCHAR(0), "Use ImagePlaneWidget Z"
 
       #comentado
       if ::trace { eval ::trace_end; }
@@ -815,7 +819,8 @@ if (!exists(vtkVolumeClass)) {
       }
     }
     Comments(::UpdateHistogram,"Updates the histogram with the current input image.")
-     #----------------------------
+
+    #----------------------------
     proc ::OnSampleDistance() \
     {
       if (::volmapper.GetClassName()!="vtkSmartVolumeMapper") {
@@ -825,6 +830,43 @@ if (!exists(vtkVolumeClass)) {
         ::renwininter.Render()
       }
     }
+
+    #----------------------------
+    proc ::OnPlane() \
+    {
+      if (!exists(::planeWidgets)) {
+        ::picker = vtk.vtkCellPicker.New() 
+        ::picker.SetTolerance(0.005)
+
+        ::planeWidgets = VarVector()
+        for n=0 to 2 {
+          ::planeWidgets.push_back(&vtk.vtkImagePlaneWidget.New())
+          ::planeWidgets[n].DisplayTextOn()
+          ::planeWidgets[n].SetInput(&::vtkinput)
+          ::planeWidgets[n].SetPicker(&::picker)
+          ::planeWidgets[n].SetInteractor(&::renwininter)
+        }
+        ::planeWidgets[0].SetPlaneOrientationToXAxes()
+        ::planeWidgets[0].SetKeyPressActivationValue("x")
+        ::planeWidgets[0].GetPlaneProperty().SetColor(1, 0, 0)
+        ::planeWidgets[0].SetSliceIndex(::input.tx/2)
+        ::planeWidgets[1].SetPlaneOrientationToYAxes()
+        ::planeWidgets[1].SetKeyPressActivationValue("y")
+        ::planeWidgets[1].GetPlaneProperty().SetColor(1, 1, 0)
+        ::planeWidgets[1].SetLookupTable(&::planeWidgets[0].GetLookupTable())
+        ::planeWidgets[1].SetSliceIndex(::input.ty/2)
+        ::planeWidgets[2].SetPlaneOrientationToZAxes()
+        ::planeWidgets[2].SetKeyPressActivationValue("z")
+        ::planeWidgets[2].GetPlaneProperty().SetColor(0, 0, 1)
+        ::planeWidgets[2].SetSliceIndex(::input.tz/2)
+        ::planeWidgets[2].SetLookupTable(&::planeWidgets[0].GetLookupTable())
+      }
+      if ::planeX { ::planeWidgets[0].On(); } else { ::planeWidgets[0].Off(); }
+      if ::planeY { ::planeWidgets[1].On(); } else { ::planeWidgets[1].Off(); }
+      if ::planeZ { ::planeWidgets[2].On(); } else { ::planeWidgets[2].Off(); }
+
+    }
+
     #----------------------------
     proc ::Close() \
     {
@@ -927,6 +969,14 @@ if (!exists(vtkVolumeClass)) {
             ::win.AddButton("Apply",&::OnSampleDistance)
           ::win.EndBoxPanel()
           
+        ::Plane_page = ::win.AddPage("Plane")
+          ::win.AddBoolean(&::planeX, "PlaneX")
+          ::win.SetCallback( &::OnPlane)
+          ::win.AddBoolean(&::planeY, "PlaneY")
+          ::win.SetCallback( &::OnPlane)
+          ::win.AddBoolean(&::planeZ, "PlaneZ")
+          ::win.SetCallback( &::OnPlane)
+
       ::win.EndBook()
 
       printn "vtkVolumeClass::AddGui end"
