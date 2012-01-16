@@ -54,9 +54,13 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
       ENDFOREACH(inc ${ITK_INCLUDE_DIRS})
       WRAP_MESSAGE("ITK_UTILITIES_PATH = ${ITK_UTILITIES_PATH}")
       # for unknown reasons I had to add those two directories
-      SET( GCCXML_ITK_INCLUDES ${GCCXML_ITK_INCLUDES} -I${ITK_UTILITIES_PATH}/vxl/vcl/iso/)
-      SET( GCCXML_ITK_INCLUDES ${GCCXML_ITK_INCLUDES} -I${ITK_UTILITIES_PATH}/vxl/core/vnl/)
-      SET( GCCXML_ITK_INCLUDES ${GCCXML_ITK_INCLUDES} -I${ITK_UTILITIES_PATH}/vxl/core/generic/)
+      IF (${ITK_VERSION_MAJOR} EQUAL "3")
+        SET( GCCXML_ITK_INCLUDES ${GCCXML_ITK_INCLUDES} -I${ITK_UTILITIES_PATH}/vxl/vcl/iso/)
+        SET( GCCXML_ITK_INCLUDES ${GCCXML_ITK_INCLUDES} -I${ITK_UTILITIES_PATH}/vxl/core/vnl/)
+        SET( GCCXML_ITK_INCLUDES ${GCCXML_ITK_INCLUDES} -I${ITK_UTILITIES_PATH}/vxl/core/generic/)
+      ELSE (${ITK_VERSION_MAJOR} EQUAL "3")
+        SET( GCCXML_ITK_INCLUDES ${GCCXML_ITK_INCLUDES} -I${ITKVNL_INCLUDE_DIRS}/vnl/)
+      ENDIF (${ITK_VERSION_MAJOR} EQUAL "3")
       #SET( GCCXML_ITK_INCLUDES -I/home/karl/projects/Install/amilab/InsightToolkit-3.20.0/Utilities/vxl/vcl/generic/ ${GCCXML_ITK_INCLUDES} )
       #SET( GCCXML_ITK_INCLUDES -I/home/karl/projects/Install/amilab/InsightToolkit-3.20.0/Utilities/vxl/core/vnl/ ${GCCXML_ITK_INCLUDES} )
     ENDIF(ITK_INCLUDE_DIRS)
@@ -86,6 +90,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Wrapping/include")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Common/include")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/CommonBase")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${CMAKE_CURRENT_SOURCE_DIR}")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${CMAKE_BINARY_DIR}")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${Boost_INCLUDE_DIR}")
 
@@ -245,6 +250,7 @@ SET(  WrapITK_SRCS
     wrapitkLocalMeanImageFilter.cpp
     wrapitkTranslateImageFilter.cpp
     itkamiConvert.cpp
+    itkAmiCommand.cpp
 )
 
 SET(WrapITK_HDRS
@@ -265,6 +271,7 @@ SET(WrapITK_HDRS
     ../include/wrapitkTranslateImageFilter.h
     ../include/itkBasicNLMeansFilter.txx
     ../include/itkamiConvert.h
+    itkAmiCommand.h
 )
 
 
