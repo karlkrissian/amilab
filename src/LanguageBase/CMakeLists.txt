@@ -127,6 +127,7 @@ target_link_libraries(LanguageBase
   CommonBase
   Common
   WrapCommon
+  WrapAlgorithms
   ${wxWidgets_LIBRARIES}
   ${Boost_LIBRARIES}
 )

@@ -819,13 +819,20 @@ ENDIF( NOT DEFINED ITK_LIBRARIES )
 
 MESSAGE( "ITK_LIBRARIES=${ITK_LIBRARIES}")
 
+# pb with missing library for ITK ???
+IF (UNIX)
+#  SET(ITK_LIBRARIES 
+#       ${ITK_LIBRARIES}
+#       -lgdcmDSED
+#    )
+ENDIF (UNIX)
+
 # conflict between freetype and vtkfreetype
 TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   ${amilab_ownlibs}
   ${LINK_VTK}
   ${AMIFLUID_LIBRARIES}
   ${ITK_LIBRARIES} 
-  -lgdcmDSED
   #  ${wxParams_LIBRARIES}
   wxParams
   ${OPENGL_LIBRARIES}
