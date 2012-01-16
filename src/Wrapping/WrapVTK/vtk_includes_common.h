@@ -36,6 +36,7 @@
 #include <vtkImageFourierCenter.h>
 #include <vtkImageHSIToRGB.h>
 #include <vtkImageHSVToRGB.h>
+#include <vtkImagePlaneWidget.h>
 #include <vtkImageReader2Factory.h>
 #include <vtkImageReader2.h>
 #include <vtkImageResample.h>
@@ -47,6 +48,7 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkInteractorStyleTrackball.h>
 #include <vtkJPEGReader.h>
+#include <vtkLookupTable.h>
 #include <vtkOpenGLGPUVolumeRayCastMapper.h>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkOutlineFilter.h>

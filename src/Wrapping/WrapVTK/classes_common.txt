@@ -48,6 +48,7 @@ vtkImageFFT
 vtkImageFourierCenter
 vtkImageHSIToRGB
 vtkImageHSVToRGB
+vtkImagePlaneWidget
 vtkImageReader2
 vtkImageReader2Factory
 vtkImageResample
@@ -67,6 +68,7 @@ vtkInteractorStyleTrackball
 vtkInteractorStyleTrackballCamera
 vtkJPEGReader
 vtkLinearTransform
+vtkLookupTable
 vtkMapper
 vtkMatrix4x4
 vtkObject
