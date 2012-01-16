@@ -104,6 +104,7 @@ class_types = ['Class','Struct']
 
 # amilab available_types
 available_classes=[]
+available_classes_usedname=[]
 parsed_classes=[]
 wrapped_classes=[]
 incomplete_classes=[]
@@ -163,11 +164,12 @@ def ClassUsedName(classname):
   res = res.replace('>','_G_')
   res = res.replace(',','_')
   res = res.replace('::','_')
+  res = res.replace('unsigned char', 'UC')
+  res = res.replace('unsigned short','US')
+  res = res.replace('unsigned int',  'UI')
+  res = res.replace('unsigned long', 'UL')
+  res = res.replace('short int',     'short')
   res = res.replace(' ','')
-  res = res.replace('unsignedchar', 'UC')
-  res = res.replace('unsignedshort','US')
-  res = res.replace('unsignedint',  'UI')
-  res = res.replace('unsignedlong', 'UL')
   res = res.replace('itk_', '')
   return res
 
@@ -183,11 +185,12 @@ def ClassShortName(classname,libnamespace=""):
   res = res.replace('>','')
   res = res.replace(',','_')
   res = res.replace('::','_')
+  res = res.replace('unsigned char', 'UC')
+  res = res.replace('unsigned short','US')
+  res = res.replace('unsigned int',  'UI')
+  res = res.replace('unsigned long', 'UL')
+  res = res.replace('short int',     'short')
   res = res.replace(' ','')
-  res = res.replace('unsignedchar', 'UC')
-  res = res.replace('unsignedshort','US')
-  res = res.replace('unsignedint',  'UI')
-  res = res.replace('unsignedlong', 'UL')
   res = res.replace('itk_', '')
   return res
 

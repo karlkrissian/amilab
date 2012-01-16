@@ -272,7 +272,8 @@ def ConvertSmtPtrToDoublePtr_void(typeid,substvar,typevar):
 # Generic calls
 #
 def ConvertValFrom(typeid,typevar,substvar):
-  typename=config.types[typeid].GetString()
+  maintypeid = config.types[typeid].GetMainTypeId()
+  typename=config.types[maintypeid].GetString()
   substtype = type_substitute[typename]
   shorttypename=GetShortName(typename)
   if shorttypename=="wchar_t":
@@ -286,7 +287,8 @@ def ConvertValFrom(typeid,typevar,substvar):
 
 
 def ConvertPtrFrom(typeid,typevar,substvar):
-  typename=config.types[typeid].GetString()
+  maintypeid = config.types[typeid].GetMainTypeId()
+  typename=config.types[maintypeid].GetString()
   substtype = type_substitute[typename]
   shorttypename=GetShortName(typename)
   try:

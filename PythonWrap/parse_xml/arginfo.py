@@ -276,7 +276,8 @@ class ArgInfo:
     return res
   
   def WrapGetParam(self,noconstructor_call,returnstring,quiet):
-    self.typename = config.types[self.typeid].GetDemangled()
+    self.maintypeid = config.types[self.typeid].GetMainTypeId()
+    self.typename = config.types[self.maintypeid].GetDemangled()
     #print "WrapGetParam {0}, {1}, '{2}'".format(self.name,config.types[self.typeid].GetType(), config.types[self.typeid].GetFullString())
     self.returnstring=returnstring
     self.quiet=quiet

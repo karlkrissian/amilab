@@ -173,8 +173,10 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
 def MissingTypes(classname,method,check_includes=False):
   missing_types=[]
   if method.returntype!=None:
-    typename = config.types[method.returntype].GetDemangled()
+    #typename = config.types[method.returntype].GetDemangled()
     typeid=config.types[method.returntype].GetMainTypeId()
+    # allow typedefs (using demangled from maintypeid) ...
+    typename = config.types[typeid].GetDemangled()
     shared_type = config.IsSharedPtr(typename)
     if shared_type!=None:
       avail = AvailableType(shared_type,typeid,missing_types,check_includes,True)
@@ -195,6 +197,8 @@ def MissingTypes(classname,method,check_includes=False):
         missing_types.append(typefullname)
       else:
         typeid=config.types[a.typeid].GetMainTypeId()
+        # allow typedefs (using demangled from maintypeid)...
+        typename = config.types[typeid].GetDemangled()
         shared_type = config.IsSharedPtr(typename)
         if shared_type!=None:
           avail = AvailableType(shared_type,typeid,missing_types,check_includes)
@@ -668,7 +672,8 @@ def ImplementMethodDescription(classname, method, constructor=False, methodcount
   res += "    wrap_{0}::SetParametersComments()\n".format(wrapmethod_name) 
   res += "{\n"
   for a in method.args:
-    typename=config.types[a.typeid].GetDemangled()
+    maintypeid = config.types[a.typeid].GetMainTypeId()
+    typename=config.types[maintypeid].GetDemangled()
     if typename in typesubst.type_substitute.keys():
       typename=typesubst.type_substitute[typename]
     
@@ -684,7 +689,8 @@ def ImplementMethodDescription(classname, method, constructor=False, methodcount
       res+= ' (def:{0})'.format(FormatArgDefault(a.default))
     res += '")\n'
   if method.returntype!=None:
-    returntypest=config.types[method.returntype].GetString()
+    maintypeid = config.types[method.returntype].GetMainTypeId()
+    returntypest=config.types[maintypeid].GetString()
     if returntypest!="void":
       if returntypest in typesubst.type_substitute.keys():
         returntypest=typesubst.type_substitute[returntypest]
@@ -762,7 +768,9 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
       res += ident+'  {0};\n'.format(methodcall)
       res += ident+'  return BasicVariable::ptr();\n'
     else:
-      returntypest = config.types[method.returntype].GetString()
+      # Dealing better with typedefs ...
+      maintypeid   = config.types[method.returntype].GetMainTypeId()
+      returntypest = config.types[maintypeid].GetString()
       # create a string topointer to convert result to a pointer for calling WrapClass_...::CreateVar ...
       returnpointer= (config.types[method.returntype].GetType()=="PointerType")
       pointercount = config.types[method.returntype].GetFullString().count("*")
@@ -1046,6 +1054,7 @@ def WrapClass(classname,include_file,inputfile):
   if found:
     classid = config.classes[classname]
     dh = config.types[classid]
+    #print "fileid = '{0}'".format(dh.fileid)
     utils.WarningMessage( "{0} id= {1}".format(classname,classid))
     # Create the handler
     #print "classname is ",classname
@@ -1211,10 +1220,11 @@ def WrapClass(classname,include_file,inputfile):
         virtualstring="virtual"
       # problem to find the base class because of spaces mismatch after the ',' 
       # in templates, small trick here to try to fix it
-      basename1 = basename.replace(',',', ')
-      basename1 = basename1.replace(',  ',', ')
-      basename_ok = basename in config.available_classes or \
-                    basename1 in config.available_classes
+      #basename.replace(',',', ')
+      #basename1 = basename1.replace(',  ',', ')
+      #basename_ok = basename in config.available_classes or \
+      #              basename1 in config.available_classes
+      basename_ok = baseusedname in config.available_classes_usedname
       if basename_ok:
         include_bases+='#include "wrap_{0}.h"\n'.format(baseusedname)
         inherit_bases+=', public {0}  {1}'.format(\
@@ -1222,8 +1232,9 @@ def WrapClass(classname,include_file,inputfile):
         constructor_bases+=', {0}(si)'.format(wrapped_base)
       else:
         print "basename = ", basename
-        print "basename1 = ", basename1
-        print "config.available_classes = ", config.available_classes
+        print "baseusedname = ", baseusedname
+        print "config.available_classes_usedname = ", \
+          config.available_classes_usedname
         config.new_needed_classes.append(basename)
         include_bases+='//#include "wrap_{0}.h"\n'.format(baseusedname)
         inherit_bases+='//, public {0} {1}'.format(virtualstring,wrapped_base)

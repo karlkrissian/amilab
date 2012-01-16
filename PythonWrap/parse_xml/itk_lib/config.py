@@ -11,7 +11,7 @@ def get_include_file(classname,filename):
   #return "{0}.h".format(classname)
   
 def get_var_filter():
-  return "(itk::|vnl_).*"
+  return "(itk::|vnl_|itkAmi).*"
   
 def wrap_public_fields(classname):
   return False

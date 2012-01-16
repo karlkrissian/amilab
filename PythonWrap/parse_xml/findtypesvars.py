@@ -97,6 +97,7 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # File id
     self.argtype.fileid = attrs.get('file', None)
+    #print "fileid = ", self.argtype.fileid 
     
     # Not sure about the utility of this condition!!!
     #if demangled==self.search_classname and classname!=demangled:

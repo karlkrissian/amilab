@@ -204,6 +204,11 @@ if __name__ == '__main__':
     FindAvailableClasses()
     print "available classes:", config.available_classes
     
+    # create a list of available_classes with changed name to simplify further
+    # search (and avoid differences like short int, short, etc ...)
+    for c in config.available_classes:
+      config.available_classes_usedname.append(config.ClassUsedName(c))
+    
     if (args.val.profile):
       t1 = time.clock()
       print t1 - t0, "seconds process time"
