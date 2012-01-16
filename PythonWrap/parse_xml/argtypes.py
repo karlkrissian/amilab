@@ -177,9 +177,13 @@ class TypedefInfo(ArgTypeBase):
       typename=self._reftypeid
     return typename
 
-  def GetMainTypeId(self):
+  def GetMainTypeId(self):    
     if self._reftypeid in config.types.keys():
-      return config.types[self._reftypeid].GetId()
+      # Do an exception for MethodType ...
+      if config.types[self._reftypeid].GetString()=="__MethodType__":
+        return self.GetId()
+      else:
+        return config.types[self._reftypeid].GetId()
     else:
       return self.GetId()
 
