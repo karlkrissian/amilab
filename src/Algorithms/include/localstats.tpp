@@ -74,7 +74,7 @@ extern Timing localmeanZ;
 template<class T,class TInc>
 void FastLocalDiffX( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const ImageExtent<int>& extent,
+                      const ami::ImageExtent<int>& extent,
                       const unsigned char& stepsize=4)
 {
 
@@ -244,8 +244,8 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumX_noborder( InrImage* in, InrImage* out, 
                               int size, 
-                              const ImageExtent<int>& input_extent,
-                              const ImageExtent<int>& output_extent
+                              const ami::ImageExtent<int>& input_extent,
+                              const ami::ImageExtent<int>& output_extent
                             )
 {
 
@@ -318,7 +318,7 @@ void FastLocalSumX_noborder( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalMeanX_noborder( InrImage* in, InrImage* out, 
                       const unsigned char size, 
-                      const ImageExtent<int>& extent)
+                      const ami::ImageExtent<int>& extent)
 {
 
   START_TIMING(boost::format("%1%, %2%") 
@@ -382,8 +382,8 @@ void FastLocalMeanX_noborder( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumY_noborder( InrImage* in, InrImage* out, 
                       int size, 
-                      const ImageExtent<int>& input_extent,
-                      const ImageExtent<int>& output_extent,
+                      const ami::ImageExtent<int>& input_extent,
+                      const ami::ImageExtent<int>& output_extent,
                       const unsigned char& stepsize=4)
 {
   START_TIMING(boost::format("%1%, %2%, x%3%") 
@@ -497,7 +497,7 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumZ_noborder( InrImage* in, InrImage* out, 
                       int size, 
-                      const ImageExtent<int>& extent,
+                      const ami::ImageExtent<int>& extent,
                       const unsigned char& stepsize=4)
 {
   START_TIMING(boost::format("%1%, %2%, x%3%") 
@@ -617,8 +617,8 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out, 
                       int size, 
-                      const ImageExtent<int>& input_extent,
-                      const ImageExtent<int>& output_extent,
+                      const ami::ImageExtent<int>& input_extent,
+                      const ami::ImageExtent<int>& output_extent,
                       const unsigned char& stepsize=4)
 {
   START_TIMING(boost::format("%1%, %2%, x%3%") 
@@ -729,7 +729,7 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumX( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const ImageExtent<int>& extent,
+                      const ami::ImageExtent<int>& extent,
                       const unsigned char& stepsize=4)
 {
 
@@ -906,7 +906,7 @@ void FastLocalSumX( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumDirNonX( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const ImageExtent<int>& extent,
+                      const ami::ImageExtent<int>& extent,
                       const unsigned char& stepsize=8)
 {
 
@@ -1089,7 +1089,7 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
 template<class T>
 void FastLocalSumDirNonX( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const ImageExtent<int>& extent,
+                      const ami::ImageExtent<int>& extent,
                       const unsigned char& stepsize=8
                       )
 {
@@ -1129,7 +1129,7 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumDir( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const ImageExtent<int>& extent)
+                      const ami::ImageExtent<int>& extent)
 {
   START_TIMING(boost::format("%1%, %2%") 
                   % typeid(T).name() 
@@ -1299,7 +1299,7 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
 template<class T>
 void FastLocalSumDir( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const ImageExtent<int>& extent)
+                      const ami::ImageExtent<int>& extent)
 {
   START_TIMING(boost::format("%1% size = %2%, axis = %3%") 
                   % typeid(T).name() % size % axis)
@@ -1334,7 +1334,7 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
 template <class T>
 void     Func_localsum( InrImage* im, InrImage*& res, 
                         InrImage*& tmp, int size,
-                        ImageExtent<int>& extent)
+                        ami::ImageExtent<int>& extent)
 {
 
   START_TIMING(boost::format("%1%") 
@@ -1463,8 +1463,8 @@ void     Func_localsum( InrImage* im, InrImage*& res,
 template <class T>
 void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res, 
                         int size,
-                        ImageExtent<int>& input_extent,
-                        ImageExtent<int>& output_extent
+                        ami::ImageExtent<int>& input_extent,
+                        ami::ImageExtent<int>& output_extent
                       )
 {
 
@@ -1481,13 +1481,13 @@ void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
 */
   //input_extent.print();
   //output_extent.print();
-  ImageExtent<int> Xoutputextent(input_extent);
+  ami::ImageExtent<int> Xoutputextent(input_extent);
   // only set the output extent for X direction
   Xoutputextent.SetMinMax(0,output_extent.GetMin(0),output_extent.GetMax(0));
   FastLocalSumX_noborder<T,unsigned char>(  tmp.get(),res.get(),size,
                                             input_extent,Xoutputextent);
 
-  ImageExtent<int> Youtputextent(Xoutputextent);
+  ami::ImageExtent<int> Youtputextent(Xoutputextent);
   // set the output extent for y direction
   Youtputextent.SetMinMax(1,output_extent.GetMin(1),output_extent.GetMax(1));
 

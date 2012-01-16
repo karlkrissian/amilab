@@ -15,7 +15,7 @@
 #define _ami_ImageToImageFilter_h_
 
 #include "inrimage.hpp"
-#include "imageextent.h"
+#include "amiImageExtent.h"
 
 #include <vector>
 

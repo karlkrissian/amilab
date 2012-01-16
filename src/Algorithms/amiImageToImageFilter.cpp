@@ -61,10 +61,12 @@ void ImageToImageFilter::Init()
 
     int axis_size   = extent.GetSize(splitaxis);
     double thread_size = ((double) axis_size)/nt;
+    int minpos = extent.GetMin(splitaxis);
     for(int i=0;i<nt;i++) {
       int extmin = round(i*thread_size);
       int extmax = round((i+1)*thread_size-1);
-      extent.SetMinMax(splitaxis,extmin,extmax);
+      // need to add the minimal position in splitaxis here !!!
+      extent.SetMinMax(splitaxis,minpos+extmin,minpos+extmax);
       extents.push_back(extent);
     }
   }

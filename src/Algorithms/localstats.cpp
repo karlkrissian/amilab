@@ -85,7 +85,7 @@ void     Func_localmean2( InrImage* im, InrImage*& res,
   //  { tmp1=p1; p1 = p2; p2 = tmp1; }
   int numpoints;
   
-  ImageExtent<int> extent(im);
+  ami::ImageExtent<int> extent(im);
 
   Func_localsum<float>(im,res,tmp,size,extent);
 

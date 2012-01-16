@@ -31,7 +31,7 @@
 
 
 #include "inrimage.hpp"
-#include "imageextent.h"
+#include "amiImageExtent.h"
 
 
 
@@ -44,7 +44,7 @@ InrImage*     Func_localmean( InrImage* im, int size);
 template <class T>
 void     Func_localsum( InrImage* im, InrImage*& res,
                         InrImage*& tmp, int size,
-                        ImageExtent<int>& extent);
+                        ami::ImageExtent<int>& extent);
 
 // separable optimized version 
 // version with smart pointers
@@ -52,7 +52,7 @@ void     Func_localsum( InrImage* im, InrImage*& res,
 template <class T>
 void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
                         int size,
-                        ImageExtent<int>& extent);
+                        ami::ImageExtent<int>& extent);
 
 
 // separable optimized version

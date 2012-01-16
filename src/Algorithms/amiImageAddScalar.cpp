@@ -14,7 +14,7 @@
 #include "boost/format.hpp"
 
 #include "amiImageAddScalar.h"
-#include "imageextent.h"
+#include "amiImageExtent.h"
 #include "InrImageIteratorBase.h"
 #include "InrImageIterator.h"
 #include "amilab_messages.h"

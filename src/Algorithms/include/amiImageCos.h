@@ -14,7 +14,7 @@
 #define _ImageCos_h_
 
 #include "inrimage.hpp"
-#include "imageextent.h"
+#include "amiImageExtent.h"
 #include "amiImageToImageFilter.h"
 #include <vector>
 #include "DefineClass.hpp"

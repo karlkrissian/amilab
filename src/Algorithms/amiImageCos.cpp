@@ -15,7 +15,7 @@
 #include "boost/format.hpp"
 
 #include "amiImageCos.h"
-#include "imageextent.h"
+#include "amiImageExtent.h"
 #include "amilab_messages.h"
 #include <iostream>
 

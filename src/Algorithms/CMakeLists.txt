@@ -35,6 +35,9 @@ SET(Algorithms_SRCS
   amiImageToImageFilter.cpp
   amiImageAddScalar.cpp
   amiImageCos.cpp
+  amiGrayscaleMorpho.cpp
+  amiSRAD.cpp
+
   localstats.cpp
   ShortestPathClass.cpp
 
@@ -101,6 +104,9 @@ SET(Algorithms_HDRS
   include/amiImageToImageFilter.h
   include/amiImageAddScalar.h
   include/amiImageCos.h
+  include/amiGrayscaleMorpho.h
+  include/amiSRAD.h
+
   include/localstats.h
   include/ShortestPathClass.h
 

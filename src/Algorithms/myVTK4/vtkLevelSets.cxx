@@ -2403,6 +2403,7 @@ void vtkLevelSets::Evolve3D( int first_band, int last_band)
         }
 
       if (DoMean) curvterm = meancurv_grad   ;
+      // should it be the minimal in absolute value ???
       else        curvterm = smallercurv_grad;
 
       // limit the curvature in high values
@@ -2715,22 +2716,22 @@ void vtkLevelSets::Evolve3D( int first_band, int last_band)
     // new intensity
     //--------------------------------------------------
 
-      //      if (isotropic_voxels) sqrtdelta0 /= 2;
+    //      if (isotropic_voxels) sqrtdelta0 /= 2;
 
 
-      if (curvature_data!=NULL) curvature_data[p] = curvterm*StepDt;
-      if (advection_data!=NULL) advection_data[p] = -imcomp*StepDt;
-      if (velocity_data !=NULL) velocity_data [p] = -vel*StepDt;
-      if (balloon_data  !=NULL) balloon_data  [p] = -balloonterm*StepDt;
+    if (curvature_data!=NULL) curvature_data[p] = curvterm*StepDt;
+    if (advection_data!=NULL) advection_data[p] = -imcomp*StepDt;
+    if (velocity_data !=NULL) velocity_data [p] = -vel*StepDt;
+    if (balloon_data  !=NULL) balloon_data  [p] = -balloonterm*StepDt;
 
 
-      //ut = min(max(StepDt*ut,-Band),Band);
-      newU[p]=u0+StepDt*ut;
-      if ((fabs(newU[p])>Band+1)&&(verbose)) {
-    fprintf(stderr,"pb: absf(newU[p])>Band+1, p=%d, newU[p] = %f \n",p,newU[p]);
-    fprintf(stderr,"pb: curvterm = %f, imcomp = %f, balloonterm = %f, vel = %f, \n",curvterm, imcomp,balloonterm, vel);
-      }
-      newU[p] = min(max(newU[p],-Band-1),Band+1);
+    //ut = min(max(StepDt*ut,-Band),Band);
+    newU[p]=u0+StepDt*ut;
+    if ((fabs(newU[p])>Band+1)&&(verbose)) {
+      fprintf(stderr,"pb: absf(newU[p])>Band+1, p=%d, newU[p] = %f \n",p,newU[p]);
+      fprintf(stderr,"pb: curvterm = %f, imcomp = %f, balloonterm = %f, vel = %f, \n",curvterm, imcomp,balloonterm, vel);
+    }
+    newU[p] = min(max(newU[p],-Band-1),Band+1);
 
       /*
     }
