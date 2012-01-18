@@ -70,7 +70,6 @@
 #endif // _MSC_VER
 
 #include <iostream>
-//using -- namespace std;
 
 #include "math.h"
 #include "style.hpp"

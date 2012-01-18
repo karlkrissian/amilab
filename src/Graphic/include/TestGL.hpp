@@ -67,7 +67,6 @@ extern "C" {
 
 #include "GLparam.hpp"
 #include "surface.hpp"
-//using namespace amilab;
 
 #include "DessinImageParam.hpp"
 

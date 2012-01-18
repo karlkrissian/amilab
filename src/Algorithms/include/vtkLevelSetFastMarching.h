@@ -51,7 +51,6 @@
 //ETX
 
 #include <list>
-//using -- namespace std;
 
 #define VTK_VAL_ACCEPTED 0
 #define VTK_VAL_TRIAL    1

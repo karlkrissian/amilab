@@ -695,7 +695,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator[](const
           new ami::ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
         extent->SetMode(1); // relative extent
     
-        comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
+        comment = str(boost::format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
             % xmin % xmax % ymin % ymax % zmin % zmax);
         if (GB_DriverBase->InConsole()) 
           GB_AmiMessage.IncCommand(comment);

@@ -45,7 +45,6 @@
 
 #include <wx/aui/auibook.h> //wxAuiNotebook for editor
 #include <vector>
-// using -- namespace std;
 
 
 //----------------------------------------------------------------------------

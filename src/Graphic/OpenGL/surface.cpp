@@ -105,28 +105,28 @@ COMMON_VAR_IMPORT unsigned char      GB_verbose;
 #define my_glGenLists(a,b) \
   { \
     if (GB_debug) \
-      std::cerr << format("%1% = glGenLists( %2% ); // value %3% ") % #a %b % a << std::endl; \
+      std::cerr << boost::format("%1% = glGenLists( %2% ); // value %3% ") % #a %b % a << std::endl; \
     a=glGenLists(b);\
   }
 
 #define my_glNewLists(a,b) \
   { \
     if (GB_debug) \
-      std::cerr << format("%1% = glNewLists( %2%); // value %3% ") % #a %b % a << std::endl; \
+      std::cerr << boost::format("%1% = glNewLists( %2%); // value %3% ") % #a %b % a << std::endl; \
     a=glNewLists(b);\
   }
 
 #define my_glNewList(a,b) \
   { \
     if (GB_debug) \
-      std::cerr << format("glNewList( %1%, %2%);") % #a %b << std::endl; \
+      std::cerr << boost::format("glNewList( %1%, %2%);") % #a %b << std::endl; \
     glNewList(a,b); \
   }
 
 #define my_glDeleteLists(a,b) \
   { \
     if (GB_debug) \
-      std::cerr << format("glDeleteLists(%1%,%2%);") % a % b << std::endl; \
+      std::cerr << boost::format("glDeleteLists(%1%,%2%);") % a % b << std::endl; \
       glDeleteLists(a,b);\
   }
 
@@ -767,12 +767,12 @@ int Surface :: BColor( int u, int v)
 
 #define my_glNormal3f(a,b,c) \
   if (GB_debug) \
-    std::cerr << format(" glNormal3f(%1%, %2%, %3%);") %a %b %c << std::endl; \
+    std::cerr << boost::format(" glNormal3f(%1%, %2%, %3%);") %a %b %c << std::endl; \
     glNormal3f(a, b, c);
 
 #define my_glVertex3f(a,b,c) \
   if (GB_debug) \
-    std::cerr << format(" glVertex3f(%1%, %2%, %3%);") %a %b %c << std::endl; \
+    std::cerr << boost::format(" glVertex3f(%1%, %2%, %3%);") %a %b %c << std::endl; \
     glVertex3f(a, b, c);
 
 

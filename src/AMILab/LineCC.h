@@ -16,7 +16,6 @@
 #define _LineCC_h_
 
 #include "surface.hpp"
-//using namespace amilab;
 
 // Get the connected component from a line number
 amilab::SurfacePoly* GetConnectedComponent( int line_id);

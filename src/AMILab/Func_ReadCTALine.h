@@ -14,7 +14,6 @@
 #define _Func_ReadCTALine_h
 
 #include "surface.hpp"
-//using namespace amilab;
 
 #include <string>
 

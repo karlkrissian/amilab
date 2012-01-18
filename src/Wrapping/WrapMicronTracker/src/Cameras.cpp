@@ -18,6 +18,8 @@
 #include "MTC.h"
 #include "MTVideo.h"
 
+using namespace std;
+
 /****************************/
 /** Constructor */
 Cameras::Cameras()

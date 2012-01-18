@@ -1032,7 +1032,7 @@ BasicVariable::ptr Wrap_EigenDecomp(ParamList* p) {
     if (result[n]!=NULL)
       array->InitElement<InrImage>( n,
            result[n],
-           str(format("eigen_decomp_%d") %n).c_str());
+           str(boost::format("eigen_decomp_%d") %n).c_str());
 
   Variable<VarArray>::ptr varres(
     new Variable<VarArray>("EigenDecomp_result",array ));

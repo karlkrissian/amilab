@@ -53,16 +53,6 @@
 
 #include "CommonConfigure.h"
 
-/*
-#include <fstream>
-#include <iostream>
-
-//using namespace boost::iostreams;
-//using namespace boost;
-
-//using -- namespace std;
-*/
-
 #include <stdio.h>
 #include "DefineClass.hpp"
 

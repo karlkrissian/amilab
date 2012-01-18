@@ -30,7 +30,6 @@ COMMON_VAR_IMPORT unsigned char GB_debug;
 
 #include <string>
 #include <vector>
-//using -- namespace std;
 
 #ifndef __APPLE__
 //  extern template class __declspec(dllimport) std::vector<BasicVariable::ptr>;

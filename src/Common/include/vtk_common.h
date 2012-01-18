@@ -21,8 +21,6 @@
 #include "DefineClass.hpp"
 #include "amilab_messages.h"
 
-//using namespace boost;
-
 
 template<class T>
 class vtk_deleter

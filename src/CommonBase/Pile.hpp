@@ -58,8 +58,6 @@
 #include "style.hpp"
 //#include "Erreurs.hpp"
 #include <iostream>
-//using -- namespace std;
-
 
 template < class T > class Pile;
 

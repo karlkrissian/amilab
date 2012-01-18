@@ -37,8 +37,6 @@
 #include "AmiInstructionBlock.h"
 #include "ami_class.h"
 
-//using namespace boost;
-
 // forward declaration of WrapClassBase
 class  WrapClassBase;
 

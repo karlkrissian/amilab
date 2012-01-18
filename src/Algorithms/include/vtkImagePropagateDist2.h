@@ -61,7 +61,6 @@
 #include "vtkFloatArray.h"
 
 #include <list>
-//using -- namespace std;
 
 typedef std::list<int> int_list;
 typedef std::list<int>::iterator int_list_it;

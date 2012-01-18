@@ -656,7 +656,7 @@ void TextControl::ProcessKeyEvent(wxKeyEvent& event)
 
   if (this->GetInsertionPoint()<lastprompt_position) {
    this->SetInsertionPoint(lastprompt_position);
-  if (GB_debug) std::cerr << format("TextControl::OnKeyDown  insertion point %1% <  last position %2% ")
+  if (GB_debug) std::cerr << boost::format("TextControl::OnKeyDown  insertion point %1% <  last position %2% ")
       % GetInsertionPoint()
       % lastprompt_position
       << "text = [" << this->text << "]"
@@ -678,7 +678,7 @@ void TextControl::ProcessKeyEvent(wxKeyEvent& event)
     char c[2];
     c[0] = keycode;
     c[1] = 0;
-    if (GB_debug) std::cerr << format(" OnKeyDown() \t non ASCII character %s") % c << std::endl;
+    if (GB_debug) std::cerr << boost::format(" OnKeyDown() \t non ASCII character %s") % c << std::endl;
   }
 
   {
@@ -828,7 +828,7 @@ void TextControl::ProcessKeyEvent(wxKeyEvent& event)
                                   filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
                                   filename.GetPathSeparator(wxPATH_UNIX)+
                                   filename.GetFullName());
-              inc_cmd = str(format(" \"%1%\" ") % newname.mb_str());
+              inc_cmd = str(boost::format(" \"%1%\" ") % newname.mb_str());
               this->IncCommand(wxString(inc_cmd.c_str(),wxConvUTF8));
             }
           }

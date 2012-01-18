@@ -50,8 +50,6 @@ int gettimeofday(struct timeval* tp, void* tzp);
 #endif
 
 #include <string>
-//using -- namespace std;
-
 
 //======================================================================
 class CommonBase_EXPORT Timing

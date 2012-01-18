@@ -37,8 +37,6 @@
 #include "AmiInstructionBlock.h"
 #include <vector>
 
-using namespace boost;
-
 #include "LanguageBaseConfigure.h"
 
 class LanguageBase_EXPORT AMIClass {

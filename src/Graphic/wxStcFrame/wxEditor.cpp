@@ -267,7 +267,7 @@ bool isFound (wxEditor* editor, wxString* findText, bool wholeWord, bool matchCa
       result = editor->FindText(minPos, maxPos, *findText, wxSTC_FIND_MATCHCASE);
     }
     else { //Else we only find the text without flags
-      result = editor->FindText(minPos, maxPos, *findText, NULL);
+      result = editor->FindText(minPos, maxPos, *findText);
     }
   }
   if (result != -1) {
@@ -406,7 +406,7 @@ void FindAndReplace::OnNextButtonClick (wxCommandEvent &event) {
         result = editor->SearchNext(wxSTC_FIND_MATCHCASE, findText);
       }
       else { //Else we only search the text without flags
-        result = editor->SearchNext(NULL, findText);
+        result = editor->SearchNext(0, findText);
       }
     }
     int line = editor->LineFromPosition(editor->GetCurrentPos());
@@ -438,7 +438,7 @@ void FindAndReplace::OnNextButtonClick (wxCommandEvent &event) {
             result = editor->SearchNext(wxSTC_FIND_MATCHCASE, findText);
           }
           else {
-            result = editor->SearchNext(NULL, findText);
+            result = editor->SearchNext(0, findText);
           }
         }
         int line = editor->LineFromPosition(editor->GetCurrentPos());
@@ -481,7 +481,7 @@ void FindAndReplace::OnPrevButtonClick (wxCommandEvent &event) {
         result = editor->SearchPrev(wxSTC_FIND_MATCHCASE, findText);
       }
       else { //Else we only search the text without flags
-        result = editor->SearchPrev(NULL, findText);
+        result = editor->SearchPrev(0, findText);
       }
     }
     int line = editor->LineFromPosition(editor->GetCurrentPos());
@@ -513,7 +513,7 @@ void FindAndReplace::OnPrevButtonClick (wxCommandEvent &event) {
             result = editor->SearchPrev(wxSTC_FIND_MATCHCASE, findText);
           }
           else {
-            result = editor->SearchPrev(NULL, findText);
+            result = editor->SearchPrev(0, findText);
           }
         }
         int line = editor->LineFromPosition(editor->GetCurrentPos());
@@ -620,7 +620,7 @@ void FindAndReplace::OnReplaceAllButtonClick( wxCommandEvent &event) {
             result = editor->SearchNext(wxSTC_FIND_MATCHCASE, findText);
           }
           else { //Else we only search the text without flags
-            result = editor->SearchNext(NULL, findText);
+            result = editor->SearchNext(0, findText);
           }
         }
         if (result != -1) {

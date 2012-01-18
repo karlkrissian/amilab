@@ -96,19 +96,6 @@ public:\
 
 #include "amilab_boost.h"
 
- 
-
-/*
-namespace MyNS_ForOutput {
-  using std::cout; using std::cerr;
-  using std::string;
-  using std::endl; using std::flush;
-
-  using boost::format;
-  using boost::io::group;
-}
-using namespace MyNS_ForOutput;
-*/
 
 #ifdef  _MSC_VER
   #define AMI_DLLEXPORT __declspec( dllexport )

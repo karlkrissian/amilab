@@ -40,7 +40,6 @@
 #include "AmiInstructionBlock.h"
 #include "Variables.hpp"
 
-using namespace boost;
 #include "LanguageBaseConfigure.h"
 
 /**

@@ -80,7 +80,6 @@
 #define CREATE_TOPLEVEL_SHELL   3
 
 #include <boost/scoped_ptr.hpp>
-//using namespace boost;
 
 typedef boost::shared_ptr<wxBitmap>    wxBitmap_ptr;
 typedef boost::shared_ptr<wxImage>    wxImage_ptr;

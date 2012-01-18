@@ -15,7 +15,6 @@
 
 #include "style.hpp"
 #include <iosfwd>
-//using - namespace std;
 #include "Coordonnees.hpp"
 #include "math1.hpp"
 

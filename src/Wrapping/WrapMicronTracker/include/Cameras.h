@@ -19,7 +19,7 @@
 
 //#define MaxCameras 5
 
-using namespace std;
+//using namespace std;
 
 class Cameras
 {
@@ -46,7 +46,7 @@ public:
 	bool grabFrame(MCamera *cam = NULL); // returns true for success
 
 	// need to lear how to hide it, and keep same access syntax
-	vector<MCamera *> m_vCameras;
+	std::vector<MCamera *> m_vCameras;
 
 
 private:

@@ -41,7 +41,6 @@
 #include "style.hpp"
 
 #include <iosfwd>
-//using -- namespace std;
 
 #include "chaine.hpp"
 #include <string>

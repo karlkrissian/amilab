@@ -1194,7 +1194,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   param = di->GetParam();
   float val=param->_pos._x;
   std::string comment;
-  comment = str(format(" //  xpos=%3d") % param->_pos._x);
+  comment = str(boost::format(" //  xpos=%3d") % param->_pos._x);
   if(GB_DriverBase->InConsole())
     GB_main_wxFrame->GetConsole()
                     ->IncCommand(wxString::FromAscii(comment.c_str()));
@@ -1221,7 +1221,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   param = di->GetParam();
   float val=param->_pos._y;
   std::string comment;
-  comment = str( format(" //  ypos=%3d") % param->_pos._y);
+  comment = str( boost::format(" //  ypos=%3d") % param->_pos._y);
   if(GB_DriverBase->InConsole())
     GB_main_wxFrame->GetConsole()
                     ->IncCommand(wxString::FromAscii(comment.c_str()));
@@ -1248,7 +1248,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   param = di->GetParam();
   float val=param->_pos._z;
   std::string comment;
-  comment = str( format(" //  zpos=%3d") % param->_pos._z);
+  comment = str( boost::format(" //  zpos=%3d") % param->_pos._z);
   if(GB_DriverBase->InConsole())
     GB_main_wxFrame->GetConsole()
                     ->IncCommand(wxString::FromAscii(comment.c_str()));

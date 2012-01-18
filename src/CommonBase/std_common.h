@@ -3,7 +3,7 @@
 #define _std_common_h_
 
 #include <vector>
-//using -- namespace std;
+
 typedef std::vector<float>           float_vec;
 typedef float_vec::iterator     float_vec_it;
 typedef float_vec::size_type    vector_size;

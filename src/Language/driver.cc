@@ -352,7 +352,7 @@ bool Driver::parse_script(  const char* filename)
   wxFileName newname(GetwxStr(filename));
 
   if (!inputname.IsOk()) {
-    tmp_string = (format("Problem with the filename %s\n") 
+    tmp_string = (boost::format("Problem with the filename %s\n") 
                % inputname.GetFullPath().mb_str()).str();
     err_print(tmp_string.c_str());
     return 0;
@@ -401,7 +401,7 @@ bool Driver::parse_script(  const char* filename)
   }
 
   if (!newname.IsFileReadable()) {
-    string mess =  (format("Error in reading %s \n") % inputname.GetFullPath().mb_str()).str();
+    string mess =  (boost::format("Error in reading %s \n") % inputname.GetFullPath().mb_str()).str();
     err_print(mess.c_str());
     return 0;
   }
@@ -410,7 +410,7 @@ bool Driver::parse_script(  const char* filename)
  std::cout << "current name " << newname.GetFullPath() << std::endl;
   yyipin=fopen(newname.GetFullPath().mb_str(),"r");
   if (!yyipin) {
-    string mess =  (format("Error in reading %s \n") % newname.GetFullPath().c_str()).str();
+    string mess =  (boost::format("Error in reading %s \n") % newname.GetFullPath().c_str()).str();
     wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),wxT("Error"),wxOK | wxICON_ERROR);
     err_msg->ShowModal();
     return 0;
@@ -446,16 +446,16 @@ void Driver::yyiperror(const char *s)
   if ((yyiplineno)&&(this->lexer)) {
     const char* text = this->lexer->YYText();
     if (text) {
-      tmpstr = str(format("%s:%d\t %s \n\t ==> at '%s'  \n")
+      tmpstr = str(boost::format("%s:%d\t %s \n\t ==> at '%s'  \n")
         %this->current_file.c_str()
         %this->yyiplineno
         %s
         %text
       );
-    } else tmpstr = str(format("%s \n")%s);
+    } else tmpstr = str(boost::format("%s \n")%s);
     err_print(tmpstr.c_str());
   } else {
-    tmpstr = str(format("%s \n")%s);
+    tmpstr = str(boost::format("%s \n")%s);
     err_print(tmpstr.c_str());
   } // end else 
   //fflush(stdout);
@@ -509,7 +509,7 @@ int Driver::err_print(const char* st)
   if (GB_main_wxFrame)
     *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st,wxConvUTF8);
   std::cout << "Error: " << st << std::endl;
-  string mess =  (format("Error %s \n") % st).str();
+  string mess =  (boost::format("Error %s \n") % st).str();
   if (InConsole()) 
     mess = mess + " Abort current parsing ?";
   else 
@@ -549,7 +549,7 @@ int Driver::err_print(const char* st, const class location& l)
   if (GB_main_wxFrame)
     *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st,wxConvUTF8);
   std::cout << "Error: " << st << std::endl;
-  string mess =  (format("Error %s \n") % st).str();
+  string mess =  (boost::format("Error %s \n") % st).str();
   if (InConsole()) 
     mess = mess + " Abort current parsing ?";
   else 
@@ -592,7 +592,7 @@ void Driver::info_print(const char* st)
 {
   if (GB_main_wxFrame)
     *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st,wxConvUTF8);
-  string mess =  (format("Information: %s \n") % st).str();
+  string mess =  (boost::format("Information: %s \n") % st).str();
   if (!nomessagedialog) {
     wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
     err_msg->ShowModal();
@@ -688,7 +688,7 @@ void Driver::init_cmdhistory()
     std::system("mkdir .improcess");
 
   i = 0;
-  format ws_filename_format(".improcess/cmdhistory%03d");
+  boost::format ws_filename_format(".improcess/cmdhistory%03d");
   filename = str( ws_filename_format % i);
 #ifndef F_OK
 #define F_OK 0
@@ -698,7 +698,7 @@ void Driver::init_cmdhistory()
     filename = str( ws_filename_format % i);
   FinTantQue
 
- std::cout << format("Opening %1% \n") % filename;
+ std::cout << boost::format("Opening %1% \n") % filename;
   cmdhistory=FILE_ptr(fopen(filename.c_str(),"w"),file_deleter());
 
   // change properties to allow execution
@@ -707,7 +707,7 @@ void Driver::init_cmdhistory()
   #endif
 
   if (!cmdhistory) {
-    std::cerr << format("Error in opening %s\n") % filename;
+    std::cerr << boost::format("Error in opening %s\n") % filename;
     FILE_ptr stdout_ptr = CreateSmartPointer<FILE>()(stdout);
     cmdhistory.swap(stdout_ptr);
   } else

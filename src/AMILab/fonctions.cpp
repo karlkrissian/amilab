@@ -220,7 +220,7 @@ int AskFilename(std::string& name)
     {
       if (p!=formats.begin())
         format_choices << wxString::FromAscii("|");
-      format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
+      format_choices << wxString::FromAscii(str(boost::format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
     }
     if (GB_debug) std::cerr << format_choices << std::endl;
 
@@ -279,7 +279,8 @@ int AskImage(std::string& name)
     {
       if (p!=formats.begin())
         format_choices << wxString::FromAscii("|");
-      format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
+      format_choices << wxString::FromAscii(
+          str(boost::format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
     }
     if (GB_debug) std::cerr << format_choices << std::endl;
 
@@ -394,7 +395,7 @@ int AskScript(std::string& name)
     {
       if (p!=formats.begin())
         format_choices << wxString::FromAscii("|");
-      format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
+      format_choices << wxString::FromAscii(str(boost::format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
     }
     if (GB_debug) std::cerr << format_choices << std::endl;
 

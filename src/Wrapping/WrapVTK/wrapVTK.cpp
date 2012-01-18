@@ -169,7 +169,7 @@ InrImage* vtkAnisoGS(ParamList* p) {
 
     vtkImageData_ptr                vtk_image;
     InrImage*                       res;
-    shared_ptr<vtkAnisoGaussSeidel> vtk_aniso;
+    boost::shared_ptr<vtkAnisoGaussSeidel> vtk_aniso;
     //  printf("1 \n");
     vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*input));
     //    printf("2 \n");
@@ -223,7 +223,7 @@ BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
 
 
     vtkImageData_ptr                vtk_image;
-    shared_ptr<vtkSkeleton2Lines>   vtk_skel2lines;
+    boost::shared_ptr<vtkSkeleton2Lines>   vtk_skel2lines;
     //  printf("1 \n");
     vtk_image = (vtkImageData_ptr) (*input);
     //    printf("2 \n");
@@ -281,7 +281,7 @@ BasicVariable::ptr Wrap_vtkSphere( ParamList* p)
     if (!get_int_param(           phires,      p, n)) HelpAndReturnVarPtr;
     if (!get_several_params<float,3>(  center,      p, n)) HelpAndReturnVarPtr;
 
-    shared_ptr<vtkSphereSource>   vtk_sphere;
+    boost::shared_ptr<vtkSphereSource>   vtk_sphere;
 
     vtk_sphere = vtk_new<vtkSphereSource>()();
 

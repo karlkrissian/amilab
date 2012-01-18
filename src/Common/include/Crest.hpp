@@ -78,9 +78,6 @@
 #include <string.h>
 #include <math.h>
 #include <iostream>
-//using -- namespace std;
-
-
 
 #include "math1.hpp"
 #include "TableauDyn.hpp"

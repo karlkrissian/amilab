@@ -167,7 +167,6 @@ class ParamBox;
 #include "CallBackBase.h"
 
 #include <iosfwd>
-//using -- namespace std;
 
 //#include "Viewer3D.hpp"
 class Viewer3D;

@@ -1211,7 +1211,7 @@ func_inst :
 
         driver.res_print( newname);
         driver.res_print("\n");
-        inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
+        inc_cmd = str(boost::format(" \"%1%\" // from browser ") % newname.mb_str());
         if (driver.InConsole())
           GB_main_wxFrame->GetConsole()
                           ->IncCommand(wxString(inc_cmd.c_str(),wxConvUTF8));
@@ -2170,7 +2170,7 @@ command:
 
           if ((var_context>=0)||
               (var_context==OBJECT_CONTEXT_NUMBER)) {
-            titre = str(format("%s_draw") % surfvar->Name());
+            titre = str(boost::format("%s_draw") % surfvar->Name());
             var = Vars.GetVar(titre.c_str(),var_context);
 
             if (!var.get()) {
@@ -2716,32 +2716,32 @@ command:
 
 
       // Check for directory
-      help_file = str( format("%s/%s") % GB_help_dir.c_str() % $2);
+      help_file = str( boost::format("%s/%s") % GB_help_dir.c_str() % $2);
 
       Si GB_debug AlorsFait fprintf(stderr,"3\n");
-          help_cmd = str(format("test -d %s") % help_file.c_str());
+          help_cmd = str(boost::format("test -d %s") % help_file.c_str());
           Si (std::system(help_cmd.c_str()) == 0) Alors
             printf("\nAvailable help files in %s:\n",$2);
-            help_cmd = str( format("cd %s; ls *.amih ") % help_file.c_str());
+            help_cmd = str( boost::format("cd %s; ls *.amih ") % help_file.c_str());
             std::system(help_cmd.c_str());
           Sinon
 
          Si GB_debug AlorsFait fprintf(stderr,"4\n");
             // Check for file
-            help_file = str( format("%s/%s.amih") % GB_help_dir.c_str() %$2);
+            help_file = str( boost::format("%s/%s.amih") % GB_help_dir.c_str() %$2);
 
-            help_cmd = str(format("test -r %s") % help_file.c_str());
+            help_cmd = str(boost::format("test -r %s") % help_file.c_str());
             Si (std::system(help_cmd.c_str()) == 0) Alors
-              help_cmd = str( format("more %s") % help_file.c_str());
+              help_cmd = str( boost::format("more %s") % help_file.c_str());
               std::system(help_cmd.c_str());
             Sinon
               Si GB_debug AlorsFait fprintf(stderr,"5\n");
               // Try to find it in any subdirectory of the help dir
-              help_cmd = str(format("test -r `find %s -name \"%s.amih\"` 2> /dev/null")
+              help_cmd = str(boost::format("test -r `find %s -name \"%s.amih\"` 2> /dev/null")
                             % GB_help_dir.c_str()
                             % $2);
               Si std::system(help_cmd.c_str())==0 Alors
-                help_cmd = str(format("find %s -name \"%s.amih\" -exec ls {} \\; -exec more {} \\;")
+                help_cmd = str(boost::format("find %s -name \"%s.amih\" -exec ls {} \\; -exec more {} \\;")
                   % GB_help_dir.c_str()
                   % $2);
                 std::system(help_cmd.c_str());
@@ -2749,11 +2749,11 @@ command:
                 fprintf(stderr,"\nNo help file (%s) found for this command \n",
             help_file.c_str());
             printf("\nAvailable help directories:\n");
-            help_cmd = str(format("cd %s; find . -type d  ") % GB_help_dir.c_str());
+            help_cmd = str(boost::format("cd %s; find . -type d  ") % GB_help_dir.c_str());
                 std::system(help_cmd.c_str());
 
                 printf("\nAvailable help files:\n");
-            help_cmd = str(format("ls *.amih ") %
+            help_cmd = str(boost::format("ls *.amih ") %
                 std::system(help_cmd.c_str()));
           FinSi
             FinSi
@@ -4384,7 +4384,7 @@ instr_block: begin_block
           {
         $$=$2;
         if (GB_debug)
-          std::cerr << format("ablock : %s")
+          std::cerr << boost::format("ablock : %s")
                   % $2->GetBody()
                 << std::endl;
           };
@@ -5151,7 +5151,7 @@ var_image:
           if (!array.get()) {
             // create a small image to avoid problems
             InrImage::ptr im (new InrImage(1,1,1,WT_UNSIGNED_CHAR));
-            string name = str(format("%s[%d]") % var->Name() % i);
+            string name = str(boost::format("%s[%d]") % var->Name() % i);
             array->InitElement<InrImage>( i, im, name.c_str());
           }
           driver.var_stack.AddVar(array->GetVar(i));
@@ -5308,7 +5308,7 @@ image:
       int vdim   = (int) $5;
       string  imname;
 
-      imname = str(format("newimagefrom_%s.ami.gz")
+      imname = str(boost::format("newimagefrom_%s.ami.gz")
                   % var->Name());
 
       InrImage::ptr im (new InrImage(imformat,vdim,

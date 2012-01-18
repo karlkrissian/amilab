@@ -890,7 +890,8 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
   {
     if (p!=formats.begin())
       format_choices << wxString::FromAscii("|");
-    format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
+    format_choices << wxString::FromAscii(str(boost::format(" %1% (%2%) |%2%") 
+      % p->first % p->second).c_str());
   }
 
 // @cond wxCHECK

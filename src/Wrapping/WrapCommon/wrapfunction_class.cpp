@@ -21,7 +21,7 @@
 #include <sstream>
 
 /// global Null variable
-Variable<int>::ptr nullvar(new Variable<int>(boost::shared_ptr<int>(new int(NULL))));
+Variable<int>::ptr nullvar(new Variable<int>(boost::shared_ptr<int>(new int(0))));
 
 /**
  * Function to check if the next parameter to parse is the pre-defined NULL variable

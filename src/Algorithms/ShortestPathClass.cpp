@@ -31,15 +31,16 @@ using namespace std;
 #undef max
 #endif
 
-SurfacePoly* ShortestPathClass::Func_shortestpath( SurfacePoly* lines, 
+amilab::SurfacePoly* ShortestPathClass::Func_shortestpath( 
+                                amilab::SurfacePoly* lines, 
                                 float pt1_x, float pt1_y, float pt1_z,
                                 float pt2_x, float pt2_y, float pt2_z)
 {
 
   int last_point;
   int current_point,previous_point;
-  Point3DPoly pt;
-  Point3DPoly p0,p1;
+  amilab::Point3DPoly pt;
+  amilab::Point3DPoly p0,p1;
   float dist1_min=0;
   float dist2_min=0;
   float dist;
@@ -151,7 +152,7 @@ SurfacePoly* ShortestPathClass::Func_shortestpath( SurfacePoly* lines,
   }
 
   int total_points=0;
-  SurfacePoly* res = new SurfacePoly();
+  amilab::SurfacePoly* res = new amilab::SurfacePoly();
   res->NewLine();
 
   bool line1_included = false;
@@ -235,15 +236,16 @@ public:
 // looks for shortest path within an image
 // where each voxel has a positive value
 // voxels of intensity value higher that the threshold are not taken into account
-SurfacePoly* ShortestPathClass::Func_shortestpath_image( InrImage* imweights,
+amilab::SurfacePoly* ShortestPathClass::Func_shortestpath_image( 
+                                      InrImage* imweights,
                                       double threshold,
                                       float pt1_x, float pt1_y, float pt1_z,
                                       float pt2_x, float pt2_y, float pt2_z)
 {
 
   long current_point,previous_point;
-  Point3DPoly pt;
-  Point3DPoly p0,p1;
+  amilab::Point3DPoly pt;
+  amilab::Point3DPoly p0,p1;
 
   // create a list of voxels that will be nodes for the graph
   InrImage::ptr     inside_voxels;
@@ -540,7 +542,7 @@ SurfacePoly* ShortestPathClass::Func_shortestpath_image( InrImage* imweights,
   }
 
   int total_points=0;
-  SurfacePoly* res = new SurfacePoly();
+  amilab::SurfacePoly* res = new amilab::SurfacePoly();
   res->NewLine();
 
 //  bool line1_included = false;
@@ -577,7 +579,7 @@ SurfacePoly* ShortestPathClass::Func_shortestpath_image( InrImage* imweights,
 
 
 //-------------------------------------------------------
-SurfacePoly* ShortestPathClass::Func_path_from_displ( InrImage* displ,
+amilab::SurfacePoly* ShortestPathClass::Func_path_from_displ( InrImage* displ,
                                    int startx, int starty, int startz)
 {
   int px = startx;
@@ -594,7 +596,7 @@ SurfacePoly* ShortestPathClass::Func_path_from_displ( InrImage* displ,
     return NULL;
   }
 
-  SurfacePoly* res = new SurfacePoly();
+  amilab::SurfacePoly* res = new amilab::SurfacePoly();
   res->NewLine();
 
   tx = displ->DimX();
@@ -646,7 +648,8 @@ SurfacePoly* ShortestPathClass::Func_path_from_displ( InrImage* displ,
 // delta is the small increment used to estimate the derivatives
 // based on linear interpolation
 // only for 3D images
-SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr displ,
+amilab::SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield(  
+                                        InrImage::ptr displ,
                                         double start[3],
                                         double step_size,
                                         double max_length,
@@ -676,10 +679,10 @@ SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr dis
     std::cerr  << "Func_path_from_vectfield() \t "
           << "initial point not within image domain "
           << std::endl;
-    return SurfacePoly::ptr();
+    return amilab::SurfacePoly::ptr();
   }
 
-  SurfacePoly* res = new SurfacePoly();
+  amilab::SurfacePoly* res = new amilab::SurfacePoly();
   res->NewLine();
   for(int i=0;i<2;i++) q[i] = p[i];
 
@@ -775,7 +778,7 @@ SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr dis
           vz = (zmin-vpz)*displ->VoxSizeZ();
           nv = sqrt(vx*vx+vy*vy+vz*vz);
          FILE_ERROR((boost::format(" minimum found at  %1% %2% %3% :") % xmin % ymin % zmin).str().c_str());
-         FILE_ERROR((format(" new vector %1% %2% %3% norm %4%")
+         FILE_ERROR((boost::format(" new vector %1% %2% %3% norm %4%")
           % vx % vy % vz % nv
           ).str().c_str());
         } else  {
@@ -808,33 +811,33 @@ SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr dis
     int zpos = round(vox_p[2]);
     if ((xpos==74)&(ypos==78)&(zpos==72)) {
       FILE_MESSAGE((boost::format(" point %1% ") % num_points).str().c_str());
-      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+      FILE_MESSAGE(( boost::format(" ( %0.2f, %0.2f %0.2f )") 
                            % p[0] % p[1] % p[2]).str().c_str());
-      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+      FILE_MESSAGE(( boost::format(" ( %0.2f, %0.2f %0.2f )") 
                            % vox_p[0] % vox_p[1] % vox_p[2] ).str().c_str());
-      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+      FILE_MESSAGE(( boost::format(" ( %0.2f, %0.2f %0.2f )") 
                      % vx % vy % vz).str().c_str());
-      FILE_MESSAGE(( format("  nv %0.3f") %  nv ).str().c_str());
-      FILE_MESSAGE(( format("  current val %0.4f %0.4f")
+      FILE_MESSAGE(( boost::format("  nv %0.3f") %  nv ).str().c_str());
+      FILE_MESSAGE(( boost::format("  current val %0.4f %0.4f")
               % displ->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
               % closest_point_intensity).str().c_str());
-      FILE_MESSAGE(( format("  d= %0.3f mm") %  distance ).str().c_str());
+      FILE_MESSAGE(( boost::format("  d= %0.3f mm") %  distance ).str().c_str());
     }
     if ((distance>=prev_dist+10)||(distance<2)) {
       prev_dist = distance;
       for(int i=0;i<2;i++) q[i] = p[i];
-      FILE_MESSAGE((format(" point %1% ") % num_points).str().c_str());
-      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+      FILE_MESSAGE((boost::format(" point %1% ") % num_points).str().c_str());
+      FILE_MESSAGE(( boost::format(" ( %0.2f, %0.2f %0.2f )") 
                            % p[0] % p[1] % p[2]).str().c_str());
-      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+      FILE_MESSAGE(( boost::format(" ( %0.2f, %0.2f %0.2f )") 
                            % vox_p[0] % vox_p[1] % vox_p[2] ).str().c_str());
-      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+      FILE_MESSAGE(( boost::format(" ( %0.2f, %0.2f %0.2f )") 
                      % vx % vy % vz).str().c_str());
-      FILE_MESSAGE(( format("  nv %0.3f") %  nv ).str().c_str());
-      FILE_MESSAGE(( format("  current val %0.4f %0.4f")
+      FILE_MESSAGE(( boost::format("  nv %0.3f") %  nv ).str().c_str());
+      FILE_MESSAGE(( boost::format("  current val %0.4f %0.4f")
               % displ->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
               % closest_point_intensity).str().c_str());
-      FILE_MESSAGE(( format("  d= %0.3f mm") %  distance ).str().c_str());
+      FILE_MESSAGE(( boost::format("  d= %0.3f mm") %  distance ).str().c_str());
     }
 
     p[0] += vx*step_size;
@@ -864,20 +867,20 @@ SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield(  InrImage::ptr dis
 
   // cannot check for end point here
  std::cout  << " Finished point " << num_points 
-        << format(" ( %0.2f, %0.2f %0.2f )") 
+        << boost::format(" ( %0.2f, %0.2f %0.2f )") 
               % p[0] % p[1] % p[2]
-        << format(" ( %0.2f, %0.2f %0.2f )") 
+        << boost::format(" ( %0.2f, %0.2f %0.2f )") 
               % vox_p[0] % vox_p[1] % vox_p[2]
-        << format(" ( %0.2f, %0.2f %0.2f )") 
+        << boost::format(" ( %0.2f, %0.2f %0.2f )") 
               % vx % vy % vz
-        << format("  nv %0.3f") %  nv
-        << format("  current val %0.2f %0.2f")
+        << boost::format("  nv %0.3f") %  nv
+        << boost::format("  current val %0.2f %0.2f")
           % displ->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
           % closest_point_intensity
-        << format("  d= %0.3f mm") %  distance
+        << boost::format("  d= %0.3f mm") %  distance
         << std::endl;
 
-  SurfacePoly::ptr res_ptr(res);
+  amilab::SurfacePoly::ptr res_ptr(res);
   std::cout << "Number of points = "<< res_ptr->GetNumberOfPoints() << std::endl;
   return res_ptr;
 
@@ -904,7 +907,7 @@ bool CoordOK_4D(InrImage::ptr& im, const int& x, const int& y, const int& z, con
 }
 
 //-------------------------------------------------------
-SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
+amilab::SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
                                                 double start[4],
                                                 double step_size,
                                                 double max_length,
@@ -941,7 +944,7 @@ SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
     return NULL;
   }
 
-  SurfacePoly* res = new SurfacePoly();
+  amilab::SurfacePoly* res = new amilab::SurfacePoly();
   res->NewLine();
 
   while (!end_reached) {
@@ -1049,7 +1052,7 @@ SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
         vt = (tmin-vpt)*voxel_size_t;
         nv = sqrt(vx*vx+vy*vy+vz*vz+vt*vt);
         FILE_ERROR((boost::format(" minimum found at  %1% %2% %3% %4% :") % xmin % ymin % zmin % tmin).str().c_str());
-        FILE_ERROR((format(" new vector %1% %2% %3% %4% norm %5%")
+        FILE_ERROR((boost::format(" new vector %1% %2% %3% %4% norm %5%")
         % vx % vy % vz % vt % nv
         ).str().c_str());
       } else  {
@@ -1079,18 +1082,18 @@ SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
 
     if ((distance>=prev_dist+10)||(distance<2)) {
       prev_dist = distance;
-      FILE_MESSAGE((format(" point %1% ") % num_points).str().c_str());
-      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+      FILE_MESSAGE((boost::format(" point %1% ") % num_points).str().c_str());
+      FILE_MESSAGE(( boost::format(" ( %0.2f, %0.2f %0.2f )") 
                            % p[0] % p[1] % p[2]).str().c_str());
-      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+      FILE_MESSAGE(( boost::format(" ( %0.2f, %0.2f %0.2f )") 
                            % vox_p[0] % vox_p[1] % vox_p[2] ).str().c_str());
-      FILE_MESSAGE(( format(" ( %0.2f, %0.2f %0.2f )") 
+      FILE_MESSAGE(( boost::format(" ( %0.2f, %0.2f %0.2f )") 
                      % vx % vy % vz).str().c_str());
-      FILE_MESSAGE(( format("  nv %0.3f") %  nv ).str().c_str());
-      FILE_MESSAGE(( format("  current val %0.4f %0.4f")
+      FILE_MESSAGE(( boost::format("  nv %0.3f") %  nv ).str().c_str());
+      FILE_MESSAGE(( boost::format("  current val %0.4f %0.4f")
               % speed->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
               % closest_point_intensity).str().c_str());
-      FILE_MESSAGE(( format("  d= %0.3f mm") %  distance ).str().c_str());
+      FILE_MESSAGE(( boost::format("  d= %0.3f mm") %  distance ).str().c_str());
     }
 
     p[0] += vx*step_size;
@@ -1125,17 +1128,17 @@ SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
 
   // cannot check for end point here
   std::cout  << " Finished point " << num_points 
-        << format(" ( %0.2f, %0.2f %0.2f %0.2f)") 
+        << boost::format(" ( %0.2f, %0.2f %0.2f %0.2f)") 
               % p[0] % p[1] % p[2] %p[3]
-        << format(" ( %0.2f, %0.2f %0.2f %0.2f)") 
+        << boost::format(" ( %0.2f, %0.2f %0.2f %0.2f)") 
               % vox_p[0] % vox_p[1] % vox_p[2] %vox_p[3]
-        << format(" ( %0.2f, %0.2f %0.2f %0.2f)") 
+        << boost::format(" ( %0.2f, %0.2f %0.2f %0.2f)") 
               % vx % vy % vz %vt
-        << format("  nv %0.3f") %  nv
-        << format("  current val %0.2f %0.2f")
+        << boost::format("  nv %0.3f") %  nv
+        << boost::format("  current val %0.2f %0.2f")
           % speed->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2],vox_p[3])
           % closest_point_intensity
-        << format("  d= %0.3f mm") %  distance
+        << boost::format("  d= %0.3f mm") %  distance
         << std::endl;
 
   return res;
@@ -1144,17 +1147,18 @@ SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
 
 
 //-------------------------------------------------------
-SurfacePoly* ShortestPathClass::Func_path_4D_2points(   InrImage::ptr speed,
+amilab::SurfacePoly* ShortestPathClass::Func_path_4D_2points(   
+                                                InrImage::ptr speed,
                                                 double start[4],
                                                 double end[4],
                                                 double step_size,
                                                 double max_length,
                                                 double delta)
 {
-  FILE_MESSAGE((format(" expected endpoint %0.2f %0.2f %0.2f %0.2f ") 
+  FILE_MESSAGE((boost::format(" expected endpoint %0.2f %0.2f %0.2f %0.2f ") 
       % end[0] % end[1] % end[2] % end[3] ).str().c_str());
 
-  SurfacePoly* res(ShortestPathClass::Func_path_4D(speed,start,step_size,max_length,delta));
+  amilab::SurfacePoly* res(ShortestPathClass::Func_path_4D(speed,start,step_size,max_length,delta));
 
   std::cout << "Number of points = "<< res->GetNumberOfPoints() << std::endl;
 
@@ -1167,7 +1171,7 @@ SurfacePoly* ShortestPathClass::Func_path_4D_2points(   InrImage::ptr speed,
   // get the last point of the line
   T_Line&      l = res->GetLine(0);
   if (l.NbElts()>0) {
-    Point3DPoly& pt = res->GetPoint(l[l.NbElts()-1]);
+    amilab::Point3DPoly& pt = res->GetPoint(l[l.NbElts()-1]);
     float p[3] = { pt.pt.x, pt.pt.y, pt.pt.z };
 
     double dist_end;
@@ -1183,7 +1187,7 @@ SurfacePoly* ShortestPathClass::Func_path_4D_2points(   InrImage::ptr speed,
      std::cout << "*** Could Add reached end point ***" << std::endl;
     } else
      std::cout << "*** End point not reached  ***" 
-            << format(" %1% > %2% ") % dist_end % voxdis
+            << boost::format(" %1% > %2% ") % dist_end % voxdis
             << std::endl;
   
   } else
@@ -1198,7 +1202,8 @@ SurfacePoly* ShortestPathClass::Func_path_4D_2points(   InrImage::ptr speed,
 // delta is the small increment used to estimate the derivatives
 // based on linear interpolation
 // only for 3D images
-SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield( InrImage::ptr displ,
+amilab::SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield( 
+                                      InrImage::ptr displ,
                                       double start[3],
                                       double end[3],
                                       double step_size,
@@ -1206,10 +1211,10 @@ SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield( InrImage::ptr disp
                                       double delta)
 {
 
-  FILE_MESSAGE((format(" expected endpoint %0.2f %0.2f %0.2f ") 
+  FILE_MESSAGE((boost::format(" expected endpoint %0.2f %0.2f %0.2f ") 
                       % end[0] % end[1] % end[2] ).str().c_str());
 
-  SurfacePoly::ptr res(ShortestPathClass::Func_path_from_vectfield(displ,start,step_size,max_length,delta));
+  amilab::SurfacePoly::ptr res(ShortestPathClass::Func_path_from_vectfield(displ,start,step_size,max_length,delta));
 
   std::cout << "Number of points = "<< res->GetNumberOfPoints() << std::endl;
 
@@ -1222,7 +1227,7 @@ SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield( InrImage::ptr disp
   // get the last point of the line
   T_Line&      l = res->GetLine(0);
   if (l.NbElts()>0) {
-    Point3DPoly& pt = res->GetPoint(l[l.NbElts()-1]);
+    amilab::Point3DPoly& pt = res->GetPoint(l[l.NbElts()-1]);
     float p[3] = { pt.pt.x, pt.pt.y, pt.pt.z };
 
     double dist_end;
@@ -1238,7 +1243,7 @@ SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield( InrImage::ptr disp
      std::cout << "*** Could Add reached end point ***" << std::endl;
     } else
      std::cout << "*** End point not reached  ***" 
-            << format(" %1% > %2% ") % dist_end % voxdis
+            << boost::format(" %1% > %2% ") % dist_end % voxdis
             << std::endl;
   
   } else

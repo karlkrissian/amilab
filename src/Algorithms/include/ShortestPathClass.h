@@ -14,7 +14,6 @@
 #define _func_shortestpath_h_
 
 #include "surface.hpp"
-using namespace amilab;
 
 #include "inrimage.hpp"
 
@@ -23,18 +22,18 @@ class ShortestPathClass {
 public:
 
   //-------------------------------------------------------
-  static SurfacePoly* Func_shortestpath( SurfacePoly* lines, 
+  static amilab::SurfacePoly* Func_shortestpath( amilab::SurfacePoly* lines, 
                                   float pt1_x, float pt1_y, float pt1_z,
                                   float pt2_x, float pt2_y, float pt2_z);
 
   //-------------------------------------------------------
-  static SurfacePoly* Func_shortestpath_image( InrImage* weights,
+  static amilab::SurfacePoly* Func_shortestpath_image( InrImage* weights,
                                         double threshold,
                                         float pt1_x, float pt1_y, float pt1_z,
                                         float pt2_x, float pt2_y, float pt2_z);
 
   //-------------------------------------------------------
-  static SurfacePoly* Func_path_from_displ( InrImage* displ,
+  static amilab::SurfacePoly* Func_path_from_displ( InrImage* displ,
                                     int startx, int starty, int startz);
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,7 +45,7 @@ public:
   /// \param delta      step for computing local derivatives
   /// \return resulting 3D path as a amilab::SurfacePoly object
 
-  static SurfacePoly* Func_path_4D(   InrImage::ptr speed,
+  static amilab::SurfacePoly* Func_path_4D(   InrImage::ptr speed,
                                       double start[4],
                                       double step_size,
                                       double max_length,
@@ -62,7 +61,7 @@ public:
   /// \param delta      step for computing local derivatives
   /// \return resulting 3D path as a amilab::SurfacePoly object
 
-  static SurfacePoly* Func_path_4D_2points(   InrImage::ptr speed,
+  static amilab::SurfacePoly* Func_path_4D_2points(   InrImage::ptr speed,
                                       double start[4],
                                       double end[4],
                                       double step_size,
@@ -70,7 +69,7 @@ public:
                                       double delta = 0.05);
 
   //-------------------------------------------------------
-  static SurfacePoly::ptr Func_path_from_vectfield(  InrImage::ptr displ,
+  static amilab::SurfacePoly::ptr Func_path_from_vectfield(  InrImage::ptr displ,
                                           double start[3],
                                           double step_size,
                                           double max_length,
@@ -94,7 +93,7 @@ public:
   /// \param max_length maximal length of the path
   /// \param delta      step for computing local derivatives
   /// \return resulting 3D path as a amilab::SurfacePoly object
-  static SurfacePoly::ptr Func_path_from_vectfield( InrImage::ptr displ,
+  static amilab::SurfacePoly::ptr Func_path_from_vectfield( InrImage::ptr displ,
                                         double start[3],
                                         double end[3],
                                         double step_size,
@@ -129,7 +128,7 @@ public:
         - the closest voxel to the current location has a negative intensity
         - the current gradient is very low
       GET_VARSTACK_VALUE(InrImage,im);
-      SurfacePoly* surf;
+      amilab::SurfacePoly* surf;
 
       double start[3] = {$9,$11,$13};
       surf = ShortestPathClass::Func_path_from_vectfield(  im,

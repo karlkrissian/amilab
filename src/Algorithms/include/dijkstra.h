@@ -11,22 +11,20 @@
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/shared_ptr.hpp>
 
-using namespace boost;
-//using -- namespace std;
-
 
 typedef float weight_type;
 
-typedef adjacency_list <  listS, 
-                          vecS, 
-                          undirectedS,
-                          no_property, 
-                          property < edge_weight_t, weight_type > 
+typedef boost::adjacency_list <   boost::listS, 
+                                  boost::vecS, 
+                                  boost::undirectedS,
+                                  boost::no_property, 
+                                  boost::property < boost::edge_weight_t, 
+                                                    weight_type > 
                       > graph_t;
-typedef shared_ptr<graph_t> graph_ptr;
+typedef boost::shared_ptr<graph_t> graph_ptr;
 
-typedef graph_traits < graph_t >::vertex_descriptor vertex_descriptor;
-typedef graph_traits < graph_t >::edge_descriptor edge_descriptor;
+typedef boost::graph_traits < graph_t >::vertex_descriptor vertex_descriptor;
+typedef boost::graph_traits < graph_t >::edge_descriptor edge_descriptor;
 
 typedef std::vector<weight_type>   weight_vec;
 typedef std::pair<int,int> Edge; 

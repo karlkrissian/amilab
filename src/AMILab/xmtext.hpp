@@ -22,7 +22,6 @@
 
 #include <string>
 #include <iosfwd>
-//using -- namespace std;
 
 #include "DefineClass.hpp"
 #include <wx/richtext/richtextctrl.h>
