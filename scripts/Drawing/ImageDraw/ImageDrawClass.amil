@@ -1,0 +1,266 @@
+
+func "Common/ScriptGui"
+
+if (!exists(ImageDrawClass)) {
+
+  Class ImageDrawClass : public ScriptGui \
+  {
+    
+    #---------------------------------------------------------------------------
+    proc ::Init() \
+    {
+      
+      ::input_name   = "","Name of the input image variable"
+      ::last_input_name = ""
+
+      ::mask_color  = wx.wxColour(250,10,10,255)
+      Comments( ::mask_color, "Displayed color of the manually segmented image")
+      ::mask_opacity = INT(150), "mask opacity (alpha component)" 
+      ::enable_mask  = UCHAR(1), "enable/disable mask"
+
+      ::mask_color.Set(   ::mask_color.Red(),::mask_color.Green()\
+                         ,::mask_color.Blue(),::mask_opacity)
+
+      ::html_filename = GetScriptsDir+"/ImageDraw/Doc/ImageDraw/index.html"
+
+      ::options = VarVector()
+        ::options.push_back("Draw")
+        ::options.push_back("Erase")
+      ::draw_value = VarVector()
+        ::draw_value.push_back(255)
+        ::draw_value.push_back(0)
+      mess = ""
+      for n=0 to ::options.size()-1 { mess += "'%1%' " % ::options[n]; }
+      ::paint_option = INT(0), "Painting options (%1%)" % mess
+
+      ::enable_draw = UCHAR(1), "Enable/Disable drawing"
+
+      ::pencil_thickness = INT(1), "Pencil thickness"
+
+      ::in_update = 0
+
+      ::x = INT(0)
+      ::y = INT(0)
+      ::z = INT(0)
+      ::_slice = INT(0)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::load_input() {
+
+      if (::input_name!=::last_input_name) { 
+        del ::input_draw; 
+        del ::input; 
+      }
+      eval "::input = &"+::input_name+";"
+      ::last_input_name = ::input_name
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+      # Create mask image from input
+      ::mask_image <<= (UCHAR) ::input
+      ::mask_image = 0
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "References the input image in a local image "+\
+                            "member named 'input'")
+
+    #---------------------------------------------------------------------------
+    proc ::OnMotion( OBJECT event) \
+    {
+      dopaint = ::enable_draw && event.AltDown()
+      if dopaint {
+        #::input_draw.CursorToImage(event.GetX(),event.GetY(),\
+                                    #&::x,&::y,&::z,&::_slice)
+        #printn "%1%" % event.GetX() + ", %1%" % event.GetY()
+        #printn ::_slice
+        #printn "%1%" %::x + ", %1%" % ::y + ", %1%" %  ::z
+        if (exists(::input_draw)) {
+          ::input_draw.CursorToImage(event.GetX(),event.GetY(),\
+                                     &::x,&::y,&::z,&::_slice)
+          #printn ::_slice
+          #printn "%1%" %::x + ", %1%" % ::y + ", %1%" %  ::z
+          if ::_slice!=-1 {
+            ::DrawFast(::x,::y,::z)
+          }
+          #::input_draw.Paint()
+          ::input_draw.update()
+        }
+        #printn "MD motion"
+      } else {
+        event.Skip(); 
+      } 
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Display() \
+    {
+      if (!exists(::input) || (::input_name!=::last_input_name)) { 
+        ::load_input(); 
+      }
+      show ::input
+      ::input_draw.SetMaskImage(  &::mask_image)
+      ::input_draw.SetMaskColor(  &::mask_color)
+      ::input_draw.SetUseMask(    ::enable_mask)
+      #::input_draw.PaintCallback( &::Draw)
+
+      # Set Mouse Event
+      ::evh_mouse     = wx.wxAmiEventHandler(&::OnMotion)
+      ::input_draw.GetDrawingWindow().Connect( wx.wxEVT_MOTION,\
+                      &::evh_mouse.GetMouseEventFunction(),\
+                      &NULL,&::evh_mouse)
+
+    }
+    Comments(::Display, "Display the current image")
+    
+    #---------------------------------------------------------------------------
+    proc ::Update() {
+      if (!::in_update) {
+        ::in_update = 1
+        #printn "::Update"
+        ::input_draw.update()
+        ::in_update = 0
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::DrawFast( NUM x, NUM y, NUM z) \
+    {
+      if ::pencil_thickness==1 {
+        ::mask_image.setpos( x,y,z)
+        ::mask_image.set(::draw_value[::paint_option])
+      } else {
+        min_t = floor((FLOAT)::pencil_thickness/2-0.1)
+        max_t = floor((FLOAT)::pencil_thickness/2)
+        val = ::draw_value[::paint_option]
+        if ::_slice == 0 {
+          for i=-min_t to max_t {
+            for j=-min_t to max_t {
+              ::mask_image.setpos(x+i,y+j,z)
+              ::mask_image.set(val)
+            }
+          }
+        } else {
+          if ::_slice == 1 {
+            for i=-min_t to max_t {
+              for j=-min_t to max_t {
+                ::mask_image.setpos(x+i,y,z+j)
+                ::mask_image.set(val)
+              }
+            }
+          } else {
+            if ::_slice == 2 {
+              for i=-min_t to max_t {
+                for j=-min_t to max_t {
+                  ::mask_image.setpos(x,y+i,z+j)
+                  ::mask_image.set(val)
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Draw() {
+      if (!::in_update) {
+        if (!exists(::input_draw)) { ::load_input(); }
+        if (::enable_draw)&&(exists(::input_draw)) {
+          x = ::input_draw.GetXPos()
+          y = ::input_draw.GetYPos()
+          z = ::input_draw.GetZPos()
+          ::DrawFast(x,y,z)
+        }
+      }
+    }
+    
+
+    #---------------------------------------------------------------------------
+    proc ::OnColor() \
+    {
+      ::input_draw.SetMaskColor(&::mask_color)
+      ::Update()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnOpacity() \
+    {
+      ::mask_color.Set(   ::mask_color.Red(),::mask_color.Green()\
+                         ,::mask_color.Blue(),::mask_opacity)
+      ::input_draw.SetMaskColor(&::mask_color)
+      ::Update()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnEnableMask() \
+    {
+      ::input_draw.SetUseMask(&::enable_mask)
+      ::Update()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("ImageDraw",&::parent_panel)
+      } else {
+        ::win = ParamPanel("ImageDraw")
+      }
+      
+      ::win.AddLabel("Info:","Press the 'Alt' Key to draw")
+      ::win.BeginBook()
+    
+        ::win.AddPage("Param")
+
+          ::win.AddImageChoice( &::input_name, "input")
+
+          ::win.AddColor( "Mask color", &::mask_color)
+          ::win.SetCallback(&::OnColor)
+
+          ::win.AddInt(&::mask_opacity,"Opacity",0,255)
+          ::win.SetCallback(&::OnOpacity)
+
+          ::win.AddBoolean(&::enable_mask, "Enable label")
+          ::win.SetCallback(&::OnEnableMask)
+
+          ::win.AddBoolean(&::enable_draw, "Enable draw")
+          ::win.SetCallback(&::Display)
+ 
+          ::options_id  = ::win.AddEnum( &::paint_option,"Paint")
+          for n=0 to ::options.size()-1 { 
+            ::win.AddEnumChoice(::options_id,::options[n])
+          }
+          ::win.SetCallback(&::Display)
+
+          ::win.AddInt(&::pencil_thickness,"Thickness",1,10)
+
+          ::win.AddButton("Display",    &::Display)
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

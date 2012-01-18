@@ -273,112 +273,119 @@ public:
   //----------------------------------------------------
   //For new classes ImageDraw_X
   //ImageDraw_PositionParam
-  InrImage::ptr& Get_image()                              { return _image; }
+  InrImage::ptr& Get_image()                  { return _image; }
   
   //ImageDraw_Intensity
-  float* Get_intensite_float_min()                        { return &_intensite_float_min; }
-  void Set_intensite_float_min(float newMin)              { _intensite_float_min = newMin; }
+  float* Get_intensite_float_min()            { return &_intensite_float_min; }
+  void Set_intensite_float_min(float newMin)  { _intensite_float_min = newMin; }
   
-  float* Get_intensite_float_max()                        { return &_intensite_float_max; }
-  void Set_intensite_float_max(float newMax)              { _intensite_float_max = newMax; }
+  float* Get_intensite_float_max()            { return &_intensite_float_max; }
+  void Set_intensite_float_max(float newMax)  { _intensite_float_max = newMax; }
   
-  int* Get_intensite_entier_min()                         { return &_intensite_entier_min; }
-  void Set_intensite_entier_min(int newMin)               { _intensite_entier_min = newMin; }
+  int* Get_intensite_entier_min()             { return &_intensite_entier_min; }
+  void Set_intensite_entier_min(int newMin)   { _intensite_entier_min = newMin;}
   
-  int* Get_intensite_entier_max()                         { return &_intensite_entier_max; }
-  void Set_intensite_entier_max(int newMax)               { _intensite_entier_max = newMax; }
+  int* Get_intensite_entier_max()             { return &_intensite_entier_max; }
+  void Set_intensite_entier_max(int newMax)   { _intensite_entier_max = newMax;}
   
-  float* Get_val_min()                                    { return &_val_min; }
-  float* Get_val_max()                                    { return &_val_max; }
+  float* Get_val_min()                        { return &_val_min; }
+  float* Get_val_max()                        { return &_val_max; }
   
-  void SetPaletteGrey(int newPalette)                     { _palette->ChangeTypePalette(newPalette); }
-  void SetPaletteRU(unsigned char* newPalette)            { _palette->TypePaletteTC(newPalette); }
-  InrImage::ptr& Get_user_colormap()                      { return _user_colormap; }
-  bool VerifyMinMax()                                     { return VerifieMinMax(); }
+  void SetPaletteGrey(int newPalette)         
+                                    { _palette->ChangeTypePalette(newPalette); }
+  void SetPaletteRU(unsigned char* newPalette)    
+                                    { _palette->TypePaletteTC(newPalette); }
+  InrImage::ptr& Get_user_colormap()          { return _user_colormap; }
+  bool VerifyMinMax()                         { return VerifieMinMax(); }
   
-  void MinMaxChecker()                                    { CheckMinMax(); }
+  void MinMaxChecker()                        { CheckMinMax(); }
 
   //ImageDraw_VectorsParam
-  unsigned char* Get_display_vectors()                    { return &_display_vectors; }
-  int* Get_vector_distance_unit()                         { return &_vector_distance_unit; }
-  float* Get_taille_vecteur()                             { return &_taille_vecteur; }
-  int* Get_espacement_vecteur()                           { return &_espacement_vecteur; }
-  int* Get_vecteur_type()                                 { return &_vecteur_type; }
-  int* Get_id_vecteur_direction()                         { return &_id_vecteur_direction; }
-  std::vector<vectorfield_info>* Get_vector_fields()      { return &_vector_fields; }
+  unsigned char* Get_display_vectors()        { return &_display_vectors; }
+  int* Get_vector_distance_unit()             { return &_vector_distance_unit; }
+  float* Get_taille_vecteur()                 { return &_taille_vecteur; }
+  int* Get_espacement_vecteur()               { return &_espacement_vecteur; }
+  int* Get_vecteur_type()                     { return &_vecteur_type; }
+  int* Get_id_vecteur_direction()             { return &_id_vecteur_direction; }
+  std::vector<vectorfield_info>* Get_vector_fields()
+                                              { return &_vector_fields; }
   
-  void Set_PosPoint(int x, int y, int x0, int y0, int z0) { _MIP->PosPoint(x, y, x0, y0, z0); }
-  void Call_DessineChampVecteurs( )                       { DessineChampVecteurs(); }
+  void Set_PosPoint(int x, int y, int x0, int y0, int z0) 
+                                          { _MIP->PosPoint(x, y, x0, y0, z0); }
+  void Call_DessineChampVecteurs( )           { DessineChampVecteurs(); }
   
   //ImageDraw_IsoContourParam
-  std::vector<isocontour_info>* Get_isocontours()         { return &_isocontours; }
-  unsigned char* Get_all_contours()                       { return &_all_contours; }
-  float* Get_step_contours()                              { return &_step_contours; }
-  float* Get_contours_winsize()                           { return &_contours_winsize; }
-  bool Call_CheckGLWindow()                               { return CheckGLWindow(); }
-  Viewer3D_ptr Lock_GLWindow()                            { return _GLWindow.lock(); }
+  std::vector<isocontour_info>* Get_isocontours()  { return &_isocontours; }
+  unsigned char* Get_all_contours()           { return &_all_contours; }
+  float* Get_step_contours()                  { return &_step_contours; }
+  float* Get_contours_winsize()               { return &_contours_winsize; }
+  bool Call_CheckGLWindow()                   { return CheckGLWindow(); }
+  Viewer3D_ptr Lock_GLWindow()                { return _GLWindow.lock(); }
   
   //ImageDraw_ImageSurfaceParam
-  float* Get_imsurf_zscale()                              { return &_imsurf_zscale; }
+  float* Get_imsurf_zscale()                  { return &_imsurf_zscale; }
   
   //ImageDraw_ColorsParam
-  ClasseCouleur* Get_couleur_fond()                       { return &_couleur_fond; }
-  ClasseCouleur* Get_couleur_objet()                      { return &_couleur_objet; }
-  ClasseCouleur* Get_couleur_lignes()                     { return &_couleur_lignes; }
-  void Set_Couleur ()                                     { _couleur_curseur = _couleur_lignes; }
+  ClasseCouleur* Get_couleur_fond()           { return &_couleur_fond; }
+  ClasseCouleur* Get_couleur_objet()          { return &_couleur_objet; }
+  ClasseCouleur* Get_couleur_lignes()         { return &_couleur_lignes; }
+  void Set_Couleur ()                         
+                                        { _couleur_curseur = _couleur_lignes; }
   
   //ImageDraw_Sections3DParam
-  unsigned char* Get_sectionXY_visible()                  { return &_sectionXY_visible; }
-  unsigned char* Get_sectionXZ_visible()                  { return &_sectionXZ_visible; }
-  unsigned char* Get_sectionYZ_visible()                  { return &_sectionYZ_visible; }
+  unsigned char* Get_sectionXY_visible()      { return &_sectionXY_visible; }
+  unsigned char* Get_sectionXZ_visible()      { return &_sectionXZ_visible; }
+  unsigned char* Get_sectionYZ_visible()      { return &_sectionYZ_visible; }
   
   //ImageDraw_VolRenParam
-  int* Get_volren_mode()                                  { return &_volren_mode; }
-  int* Get_volren_planes()                                { return &_volren_planes; }
-  unsigned char* Get_volren_texture()                     { return &_volren_texture; }
-  unsigned char* Get_volren_power2dim()                   { return &_volren_power2dim; }
-  InrImage::ptr Get_volren_opacity()                      { return _volren_opacity; }
+  int* Get_volren_mode()                      { return &_volren_mode; }
+  int* Get_volren_planes()                    { return &_volren_planes; }
+  unsigned char* Get_volren_texture()         { return &_volren_texture; }
+  unsigned char* Get_volren_power2dim()       { return &_volren_power2dim; }
+  InrImage::ptr Get_volren_opacity()          { return _volren_opacity; }
   
   //ImageDraw__GLMIPParam
-  float* Get_GLMIP_seuilbas()                             { return &_GLMIP_seuilbas; }
-  float* Get_GLMIP_seuilhaut()                            { return &_GLMIP_seuilhaut; }
-  int* Get_GLMIP_maxquads()                               { return &_GLMIP_maxquads; }
+  float* Get_GLMIP_seuilbas()                 { return &_GLMIP_seuilbas; }
+  float* Get_GLMIP_seuilhaut()                { return &_GLMIP_seuilhaut; }
+  int* Get_GLMIP_maxquads()                   { return &_GLMIP_maxquads; }
   
   //ImageDraw_Voxels3DParam
-  float* Get_voxels3D_seuilbas()                          { return &_voxels3D_seuilbas; }
-  float* Get_voxels3D_seuilhaut()                         { return &_voxels3D_seuilhaut; }
+  float* Get_voxels3D_seuilbas()              { return &_voxels3D_seuilbas; }
+  float* Get_voxels3D_seuilhaut()             { return &_voxels3D_seuilhaut; }
   
   //ImageDraw_CirclesParam
-  float* Get_circles_min_radius()                         { return &_circles_min_radius; }
-  float* Get_circles_max_radius()                         { return &_circles_max_radius; }
-  unsigned char* Get_circles_fill()                       { return &_circles_fill; }
-  ClasseCouleur* Get_circles_positive_color()             { return &_circles_positive_color; }
-  ClasseCouleur* Get_circles_negative_color()             { return &_circles_negative_color; }
-  unsigned char* Get_circles_ON()                         { return &_circles_ON; }
+  float* Get_circles_min_radius()             { return &_circles_min_radius; }
+  float* Get_circles_max_radius()             { return &_circles_max_radius; }
+  unsigned char* Get_circles_fill()           { return &_circles_fill; }
+  ClasseCouleur* Get_circles_positive_color() 
+                                          { return &_circles_positive_color; }
+  ClasseCouleur* Get_circles_negative_color() 
+                                          { return &_circles_negative_color; }
+  unsigned char* Get_circles_ON()             { return &_circles_ON; }
   
   //ImageDraw_ZoomFactorParam
-  int* Get_type_facteur()                                 { return &_type_facteur; }
-  int* Get_facteur_entier()                               { return &_facteur_entier; }
-  float* Get_facteur_reel()                               { return &_facteur_reel; }
+  int* Get_type_facteur()                     { return &_type_facteur; }
+  int* Get_facteur_entier()                   { return &_facteur_entier; }
+  float* Get_facteur_reel()                   { return &_facteur_reel; }
   
   //ImageDraw_MIPParam
-  InrImage::ptr& Get_image_MIP()                          { return _image_MIP; }
-  ImageMIP* Get_MIP()                                     { return _MIP; }
-  void Set_MIP_parametres_visibles()                      { _MIP_parametres_visibles = false; }
-  void Call_ToggleParamPanel()                            { ToggleParamPanel(_param_mip.get()); }
+  InrImage::ptr& Get_image_MIP()              { return _image_MIP; }
+  ImageMIP* Get_MIP()                         { return _MIP; }
+  void Set_MIP_parametres_visibles()    { _MIP_parametres_visibles = false; }
+  void Call_ToggleParamPanel()          { ToggleParamPanel(_param_mip.get()); }
   
   //ImageDraw_AnimationParam
-  int* Get_ANIM_vitesse()                                 { return &_ANIM_vitesse; }
-  int* Get_type_animation()                               { return &_type_animation; }
-  void Set_ANIM_PLAY()                                    { _ANIM_etat = ANIM_PLAY; }
-  void Set_ANIM_STOP()                                    { _ANIM_etat = ANIM_STOP; }
+  int* Get_ANIM_vitesse()                     { return &_ANIM_vitesse; }
+  int* Get_type_animation()                   { return &_type_animation; }
+  void Set_ANIM_PLAY()                        { _ANIM_etat = ANIM_PLAY; }
+  void Set_ANIM_STOP()                        { _ANIM_etat = ANIM_STOP; }
   
   //ImageDraw_VoxelSizeParam
-  void Call_ChangeImage()                                 { ChangeImage(_image_MIP); }
+  void Call_ChangeImage()                     { ChangeImage(_image_MIP); }
   
   //ImageDraw_InfoParam
-  InrImage* Get_image_masque()                            { return _image_masque; }
-  unsigned char* Get_dessine_masque()                     { return &_dessine_masque; }
+  InrImage::wptr Get_image_mask()             { return _mask_image; }
+  unsigned char* Get_draw_mask()              { return &_draw_mask; }
   
 protected:
   

@@ -116,6 +116,11 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
     ADD_CLASS_METHOD(SetIntensityRange, "Sets the lower and upper limits of the intensity look-up table.");
     ADD_CLASS_METHOD(SetRGBTransform, "Sets a RGB transformation for visualization of color images");
 
+    ADD_CLASS_METHOD(SetMaskImage,  "Sets the mask image.");
+    ADD_CLASS_METHOD(SetUseMask,    "Enable/Disable mask image")
+    ADD_CLASS_METHOD(SetMaskColor,  "Sets the mask color")
+    ADD_CLASS_METHOD(CursorToImage, "Gets the image position based on the cursor")
+
     void AddMethods(WrapClass<DessinImage>::ptr this_ptr )
     {
 
@@ -164,6 +169,10 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
       AddVar_DrawLines(             this_ptr);
       AddVar_SetIntensityRange(     this_ptr);
       AddVar_SetRGBTransform(       this_ptr);
+      AddVar_SetMaskImage(          this_ptr);
+      AddVar_SetUseMask(            this_ptr);
+      AddVar_SetMaskColor(          this_ptr);
+      AddVar_CursorToImage(         this_ptr);
       
       // Adding Bases
 //       WrapClass_FenetreDessin::ptr parent_obj(

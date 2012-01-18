@@ -37,6 +37,7 @@ LanguageBase_VAR_IMPORT void CB_delete_varlist( void* var);
 AMILab_VAR_IMPORT MainFrame*  GB_main_wxFrame;
 
 #include "wrap_RGBTransformBase.h"
+#include "wrap_wxColour.h"
 
 //
 // static member for creating a variable from a ParamList
@@ -1380,5 +1381,138 @@ BasicVariable::ptr WrapClass_DessinImage::
   return BasicVariable::ptr();
 }
 
+//---------------------------------------------------
+//  SetMaskImage
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_SetMaskImage::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(InrImage, "Input mask Image (no parameter will reset).");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_SetMaskImage::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  int n=0;
+  if (p->GetNumParam()==0) 
+  {
+    // reset
+    di->Get_image_mask().reset();
+    di->SetUseMask(false);
+  } 
+  else 
+  {
+    boost::shared_ptr<InrImage > input_smtptr;
+    if (!AMILabType<InrImage>::get_val_smtptr_param(input_smtptr,p,n,
+                                                     true,false,false))
+      ClassHelpAndReturn;
+    di->SetMaskImage(input_smtptr);
+  }
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  SetUseMask
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_SetUseMask::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(bool, "Enable/Disable the use of the mask image.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_SetUseMask::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  int n=0;
+  if (p->GetNumParam()>=1) {
+    bool use_mask;
+    if (!AMILabType<bool>::get_val_param(use_mask,p,n, true,false,false))
+      ClassHelpAndReturn;
+    di->SetUseMask(use_mask);
+  }
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  SetMaskColor
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_SetMaskColor::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(wxColour, "the new color of the mask.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_SetMaskColor::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  int n=0;
+  if (p->GetNumParam()>=1) {
+    wxColour col;
+    if (!AMILabType<wxColour>::get_val_param(col,p,n, true,false,false))
+      ClassHelpAndReturn;
+    di->SetMaskColor(col);
+  }
+  return BasicVariable::ptr();
+}
+
+
+/*
+ *  CursorToImage
+ * void DessinImageBase::CursorToImage(  const int cursor_x, 
+ *                                     const int cursor_y, 
+ *                                     int& x, int& y, int& z, 
+ *                                     int& slice)
+*/
+void WrapClass_DessinImage::
+      wrap_CursorToImage::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int, "cursor_x : cursor position in X");
+  ADDPARAMCOMMENT_TYPE(int, "cursor_y : cursor position in Y");
+  ADDPARAMCOMMENT_TYPE(int, "x        : returned 3D image postion in X");
+  ADDPARAMCOMMENT_TYPE(int, "y        : returned 3D image postion in Y");
+  ADDPARAMCOMMENT_TYPE(int, "z        : returned 3D image postion in Z");
+  ADDPARAMCOMMENT_TYPE(int, "slice    : returned image plane where the cursor is found");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_CursorToImage::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  int n=0;
+  if (p->GetNumParam()>=6) {
+    int cursor_x;
+    int cursor_y;
+    if (!AMILabType<int>::get_val_param(cursor_x,p,n, true,false,false))
+      ClassHelpAndReturn;
+    if (!AMILabType<int>::get_val_param(cursor_y,p,n, true,false,false))
+      ClassHelpAndReturn;
+
+    boost::shared_ptr<int > x_smtptr;
+    if (!AMILabType<int>::get_val_smtptr_param(x_smtptr,p,n,true,false,false)) 
+      ClassHelpAndReturn;
+    int & x = *x_smtptr;
+
+    boost::shared_ptr<int > y_smtptr;
+    if (!AMILabType<int>::get_val_smtptr_param(y_smtptr,p,n,true,false,false)) 
+      ClassHelpAndReturn;
+    int & y = *y_smtptr;
+    
+    boost::shared_ptr<int > z_smtptr;
+    if (!AMILabType<int>::get_val_smtptr_param(z_smtptr,p,n,true,false,false)) 
+      ClassHelpAndReturn;
+    int & z = *z_smtptr;
+    
+    boost::shared_ptr<int > slice_smtptr;
+    if (!AMILabType<int>::get_val_smtptr_param(slice_smtptr,p,n,true,false,false)) 
+      ClassHelpAndReturn;
+    int & slice = *slice_smtptr;
+    
+    di->CursorToImage(cursor_x,cursor_y,x,y,z,slice);
+  }
+  return BasicVariable::ptr();
+}
 
 

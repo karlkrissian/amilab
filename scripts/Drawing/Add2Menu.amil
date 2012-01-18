@@ -1,0 +1,2 @@
+ ami.MainFrame.AddToMenu("&Scripts","&Drawing","&ImageDraw",  "Drawing/ImageDraw/ImageDrawGui")
+

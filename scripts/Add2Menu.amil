@@ -4,15 +4,16 @@
 # Adding main GUI scripts to the menu interface
 #
 printn "Main Add2Menu begin"
-for dir in  "BasicFilters","Filtering","Denoising",\
-            "Noise","Segmentation","SyntheticImages",\
-            "Visualization","IO","Centerlines",\
-            "QualityMeasures", "Fitting", "Optimization", \
-            "OpticFlow", \
-            "CarotidBifurcationWorkshop2009", \
-            "Utils", \
-            "Vessels", \
-            "Variable" \
+for dir in  "BasicFilters","Filtering","Denoising"\
+            ,"Noise","Segmentation","SyntheticImages"\
+            ,"Visualization","IO","Centerlines"\
+            ,"QualityMeasures", "Fitting", "Optimization" \
+            ,"OpticFlow" \
+            ,"CarotidBifurcationWorkshop2009" \
+            ,"Utils" \
+            ,"Vessels" \
+            ,"Variable" \
+            ,"Drawing" \
 {
   del local_f
   local_f = wx.wxFileName(GetScriptsDir)

@@ -380,17 +380,16 @@ protected:
 
 //@}
 
-   //-----------------------------------------------------
-/** @name Image de Masque
+/** @name Mask Image
  */
 //@{
-   Chaine          _nom_image_masque;
-   InrImage*       _image_masque;
-   unsigned char   _dessine_masque;
-   ClasseCouleur   _couleur_masque;
+   Chaine          _mask_image_name;
+   /// weak pointer of the mask image
+   InrImage::wptr  _mask_image;
+   unsigned char   _draw_mask;
+   ClasseCouleur   _mask_color;
 //@}
 
-   //-----------------------------------------------------
 /** @name IsoContour
  */
 
@@ -511,7 +510,7 @@ int        _nb_images_XY;
    int       _intensite_entier_max;
 //@}
 
-/** @name Type de courbe pour l'intensit� */
+/** @name Type de courbe pour l'intensité */
 //@{
 //  int       _type_courbe;
 
@@ -691,18 +690,6 @@ protected:
   void     InitCouleurs();
 
 
-  /**
-   * Computes the 3D image position of the window cursor position.
-   * The cursor position is given by cursor_x,cursor_y.
-   * slice gives the slice number where the cursor position is or -1 if the cursor is out of the current drawn image.
-   */
-  void CursorToImage( const int cursor_x, const int cursor_y, 
-                      int& x, int& y, int& z, int& slice);
-  //   --------------
-  //  Renvoie la position dans l'image du curseur,
-  //  etat vaut -1 s'il y a une erreur
-  //               sinon il indique l'image cliqu� : IMAGE_XY, IMAGE_XZ ou IMAGE_ZY
-
 
   ///
   void     LigneHorizontale( wxDC* dc, int xmin, int xmax, int xcentre, int y);
@@ -819,6 +806,18 @@ public:
             unsigned char& green,
             unsigned char& blue);
 
+  /**
+   * Computes the 3D image position of the window cursor position.
+   * The cursor position is given by cursor_x,cursor_y.
+   * slice gives the slice number where the cursor position is or -1 if the cursor is out of the current drawn image.
+   */
+  void CursorToImage( const int cursor_x, const int cursor_y, 
+                      int& x, int& y, int& z, int& slice);
+  //   --------------
+  //  Renvoie la position dans l'image du curseur,
+  //  etat vaut -1 s'il y a une erreur
+  //               sinon il indique l'image cliquée : IMAGE_XY, IMAGE_XZ ou IMAGE_ZY
+
 
   ///
   void     DessineCurseur( int x, int y, int z, int type);
@@ -835,13 +834,28 @@ public:
   //   ----------------
   // active ou desactive la memorisation des coupes XY
 
+
+  /**
+   * @brief Intialize mask image
+   *
+   * @param  mask input mask image
+   * @return void
+   **/
+  void SetMaskImage( InrImage::ptr mask);
+  
   ///
-  void InitMasque( Chaine nom_masque);
+  void SetUseMask( unsigned char );
   //   ----------
 
-  ///
-  void FixeMasque( unsigned char );
-  //   ----------
+  /**
+   * @brief Set the color of the mask, using the alpha component format
+   * opacity
+   *
+   * @param col input color
+   * @return void
+   **/
+  void SetMaskColor( const wxColour & col);
+  //   -----------
 
   ///
   void InitIsoContour( InrImage::ptr image_isocontour, float seuil, int num=0);

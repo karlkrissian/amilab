@@ -1,0 +1,11 @@
+
+func "ImageDrawClass"
+
+if (!exists(ImageDraw_obj)) {
+  ImageDrawClass ImageDraw_obj
+  ImageDraw_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

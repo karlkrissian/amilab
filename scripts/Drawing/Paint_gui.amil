@@ -27,12 +27,11 @@ Class PaintClass : public ScriptGui {
   }
   
   #-----------------------------------------
-  proc ::Display() {
+  proc ::Display() 
+  {
   
     if (!exists(::input)) { ::load_input(); }
-  
     show ::input
-  
     ::input_draw.PaintCallback(&::Draw)
   }
   Comments(::Display, "Display the current image")

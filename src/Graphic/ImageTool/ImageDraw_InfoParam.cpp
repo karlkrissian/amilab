@@ -99,8 +99,9 @@ void ImageDraw_InfoParam:: CB_info_stat (void* cd)
   }
   DessinImage*    di = (DessinImage*) _this->parent_class;
   InrImage::ptr _image = di->Get_image();
-  InrImage* _image_masque = di->Get_image_masque();
-  unsigned char* _dessine_masque = di->Get_dessine_masque();
+  InrImage::ptr _image_mask    = di->Get_image_mask().lock();
+  unsigned char* _dessine_mask = di->Get_draw_mask();
+  
 
   float         min=0,max=0;
   double        mean, sd,tmp,val;
@@ -114,16 +115,16 @@ void ImageDraw_InfoParam:: CB_info_stat (void* cd)
   mean = 0;
   numpoints = 0;
   _image->InitBuffer();
-  if (*_dessine_masque)
-    _image_masque->InitBuffer();
+  if (*_dessine_mask)
+    _image_mask->InitBuffer();
 
   do
   { 
     val = _image->ValeurBuffer();
     
-    if (*_dessine_masque)
+    if (*_dessine_mask)
     {
-      mask_ok = (_image_masque->ValeurBuffer() > 127);
+      mask_ok = (_image_mask->ValeurBuffer() > 127);
     }
     else
     {
@@ -143,8 +144,8 @@ void ImageDraw_InfoParam:: CB_info_stat (void* cd)
     }
 
 
-    if (*_dessine_masque)
-      _image_masque->IncBuffer();
+    if (*_dessine_mask)
+      _image_mask->IncBuffer();
 
   } while (!(!(_image->IncBuffer())));
 
@@ -192,16 +193,16 @@ void ImageDraw_InfoParam:: CB_info_stat (void* cd)
   // Standard Deviation
   sd = 0;
   _image->InitBuffer();
-  if (*_dessine_masque)
-    _image_masque->InitBuffer();
+  if (*_dessine_mask)
+    _image_mask->InitBuffer();
 
   do
   {
     val = _image->ValeurBuffer();
 
-    if (*_dessine_masque)
+    if (*_dessine_mask)
     {
-      mask_ok = (_image_masque->ValeurBuffer() > 127);
+      mask_ok = (_image_mask->ValeurBuffer() > 127);
     }
     else
     {
@@ -215,8 +216,8 @@ void ImageDraw_InfoParam:: CB_info_stat (void* cd)
       sd += tmp*tmp;
     }
 
-    if (*_dessine_masque)
-      _image_masque->IncBuffer();
+    if (*_dessine_mask)
+      _image_mask->IncBuffer();
 
   } while (!( !(_image->IncBuffer())));
 

@@ -89,9 +89,11 @@ public:
   //   ----------
                   unsigned char r,
                   unsigned char g,
-                  unsigned char b)
+                  unsigned char b,
+                  unsigned char a = 255
+                 )
   {
-    Set(r,g,b);
+    Set(r,g,b,a);
     compact_color.r = r;
     compact_color.g = g;
     compact_color.b = b;

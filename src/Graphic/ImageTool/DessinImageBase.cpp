@@ -262,12 +262,12 @@ inline void DessinImageBase::FastImagePoint(
 
   #ifdef _SAFETY_CHECK_
   } else {
-    std::cerr << "FastImageRectangle() no drawing context!" << std::endl;
+    std::cerr << "FastImagePoint() no drawing context!" << std::endl;
   }
   #endif
 
 
-} // FastImageRectangle()
+} // FastImagePoint()
 
 
 /*
@@ -321,7 +321,7 @@ void DessinImageBase :: AlloueImagesXY( unsigned int largeur, unsigned int haute
 #if defined(__WXMOTIF__)
     int n;
 
-  Si (largeur != _largeur_XY) Ou (hauteur != _hauteur_XY) Alors
+  if ( (largeur != _largeur_XY) || (hauteur != _hauteur_XY)) {
 
   //    printf("Allocation Images XY \n");
 
@@ -340,16 +340,16 @@ void DessinImageBase :: AlloueImagesXY( unsigned int largeur, unsigned int haute
           largeur, hauteur,
           8*_ximage_octets, 0 );
 
-      Si (_tab_ximage_XY_data[n] == NULL) Ou (_tab_ximage_XY[n] == NULL) Alors
+      if ( (_tab_ximage_XY_data[n] == NULL) || (_tab_ximage_XY[n] == NULL)) {
         printf("DessinImageBase::AlloueImagesXY() \t erreur d'allocation de l'image ... \n");
-      FinSi
+      } // end if
 
     FinPour // n
 
     _largeur_XY = largeur;
     _hauteur_XY = hauteur;
 
-  FinSi
+  } // end if
 #endif
 } // AlloueImagesXY()
 
@@ -589,14 +589,14 @@ unsigned char DessinImageBase :: VerifieMinMax()
 
     case WT_DOUBLE:
     case WT_FLOAT:
-      Si fabs(_intensite_float_min - _intensite_float_max) < 1E-6 AlorsRetourne false;
+      if ( fabs(_intensite_float_min - _intensite_float_max) < 1E-6 AlorsRetourne false;
     break;
 
     case WT_UNSIGNED_CHAR:
     case WT_UNSIGNED_SHORT:
     case WT_SIGNED_SHORT:
     case WT_SIGNED_INT:
-      Si _intensite_entier_min == _intensite_entier_max  AlorsRetourne false;
+      if ( _intensite_entier_min == _intensite_entier_max  AlorsRetourne false;
     break;
 
     default: ;
@@ -658,21 +658,21 @@ void DessinImageBase::CursorToImage(  const int cursor_x,
 
 
   // On teste si la souris est dans la coupe ZY
-  Si (slice == -1) Et ((Param._type_coupe+1) & (TYPE_COUPE_ZY+1)) Alors
+  if ( (slice == -1) && ((Param._type_coupe+1) & (TYPE_COUPE_ZY+1))) {
     pos_x = _souris_x - _tab_ximage_pos_x[IMAGE_ZY];
     pos_y = _souris_y - _tab_ximage_pos_y[IMAGE_ZY];
 
-    Si pos_x >= 0                         Et
-       pos_x <  GetImageWidth(IMAGE_ZY)   Et
-       pos_y >= 0                         Et
-       pos_y <  GetImageHeight(IMAGE_ZY)  Alors
+    if ( pos_x >= 0                         &&
+       pos_x <  GetImageWidth(IMAGE_ZY)   &&
+       pos_y >= 0                         &&
+       pos_y <  GetImageHeight(IMAGE_ZY))  {
 
       x = Param._pos._x;
       y = (int) (pos_y/_size_y) + Param._Zoom._ymin;
       z = (int) (pos_x/_size_z) + Param._Zoom._zmin;
       slice = IMAGE_ZY;
-    FinSi
-  FinSi
+    } // end if
+  } // end if
 
 } // CursorToImage()
 
@@ -687,17 +687,17 @@ void DessinImageBase::LigneHorizontale( wxDC* dc,
 {
     int marge = 5;
 
-  Si xcentre - marge > xmin Alors
+  if ( xcentre - marge > xmin ) {
     dc->DrawLine( xmin,    y, xcentre - marge, y);
-  Sinon
+  } else {
     dc->DrawLine( xmin,    y, xcentre, y);
-  FinSi
+  } // end if
 
-  Si xcentre + marge < xmax Alors
+  if ( xcentre + marge < xmax ) {
     dc->DrawLine( xcentre+marge, y, xmax,    y);
-  Sinon
+  } else {
     dc->DrawLine( xcentre, y, xmax,    y);
-  FinSi
+  } // end if
 
 } // LigneHorizontale()
 
@@ -712,17 +712,17 @@ void  DessinImageBase::LigneVerticale(  wxDC* dc,
 {
     int marge = 5;
 
-  Si ycentre - marge > ymin Alors
+  if ( ycentre - marge > ymin ) {
     dc->DrawLine( x, ymin, x, ycentre - marge);
-  Sinon
+  } else {
     dc->DrawLine( x, ymin, x, ycentre);
-  FinSi
+  } // end if
 
-  Si ycentre + marge < ymax Alors
+  if ( ycentre + marge < ymax ){
     dc->DrawLine( x, ycentre+marge, x, ymax);
-  Sinon
+  } else {
     dc->DrawLine( x, ycentre,       x, ymax);
-  FinSi
+  } // end if
 
 } // LigneVerticale()
 
@@ -745,14 +745,14 @@ DessinImageBase:: DessinImageBase(
 
   if (GB_debug) printf("FenetreDessin::DessinImageBase title = %s \n",ATitle.c_str());
 
-  Si GB_debug AlorsFait printf("DessinImageBase::DessinImageBase 2\n");
+  if ( GB_debug ) printf("DessinImageBase::DessinImageBase 2\n");
 
 
-  _nom_image_masque = "";
-  _image_masque     = NULL;
-  _dessine_masque   = false;
-//  printf("DessinImageBase::Constructor\t _dessine_masque false\n");
-  _couleur_masque.Set( 0,0,0);
+  _mask_image_name = "";
+  _mask_image.reset();
+  _draw_mask   = false;
+//  printf("DessinImageBase::Constructor\t _draw_mask false\n");
+  _mask_color.Set( 0,0,0);
 
 
 
@@ -814,48 +814,25 @@ DessinImageBase :: ~DessinImageBase()
 //                           -----------
 {
 
-  Si GB_debug AlorsFait fprintf(stderr,
+  if ( GB_debug ) fprintf(stderr,
         "DessinImageBase %s destructeur \n",
         (char*) _name);
 
-// Source of bug ?
-
-//  delete _message_erreur;
-
-  Si _image_masque     != NULL Alors
-    delete _image_masque;
-    _image_masque = NULL;
-  FinSi
-
-
   delete _MIP;
 
-  Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1 \n");
+  if ( GB_debug ) fprintf(stderr,"DessinImageBase destructeur  1 \n");
 
- // LibereTabImagesXY();
-/*
-  Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.1 \n");
-//  EffaceImage( IMAGE_XY);
-  Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.2 \n");
-  EffaceImage( IMAGE_XZ);
-  Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.3 \n");
-  EffaceImage( IMAGE_ZY);
-  Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.4 \n");
-  EffaceImage( IMAGE_MASQUE_XY);
-  Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.5 \n");
-  EffaceImage( IMAGE_COUPES);
-*/
-  Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.6 \n");
+  if ( GB_debug ) fprintf(stderr,"DessinImageBase destructeur  1.6 \n");
 
   delete [] _tab_ximage_pos_x;
   delete [] _tab_ximage_pos_y;
 
 
-  Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  2 \n");
+  if ( GB_debug ) fprintf(stderr,"DessinImageBase destructeur  2 \n");
 
 
 
-  Si GB_debug AlorsFait fprintf(stderr,
+  if ( GB_debug ) fprintf(stderr,
         "DessinImageBase %s destructeur Fin \n",
         (char*) _name);
 
@@ -867,7 +844,7 @@ DessinImageBase :: ~DessinImageBase()
 void DessinImageBase :: CreateWxMenu()
 {
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Image \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() Image \n");
 
     // Image Menu
     menuImage = new wxMenu;
@@ -889,19 +866,19 @@ void DessinImageBase :: CreateWxMenu()
     menuImage->Append( ID_MenuImage_close, GetwxStr("&Close" )     );
 
     menuBar = new wxMenuBar;
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() MenuBar \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() MenuBar \n");
   SetMenuBar( menuBar );
 
     menuBar->Append( menuImage, GetwxStr("&Image") );
     //menuBar->SetOwnBackgroundColour("GREEN");
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Options \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() Options \n");
 
 
     // Option Menu
     menuOptions = new wxMenu;
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Option \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() Option \n");
 
 //    _wxm_mode = new wxMenuEnum( menuOptions,
 //                                &Param._option_traitement,
@@ -919,7 +896,7 @@ void DessinImageBase :: CreateWxMenu()
 //
 //    menuOptions->AppendSeparator();
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Slice \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() Slice \n");
 
 //    _wxm_type_coupe = new wxMenuEnum(menuOptions,&Param._type_coupe, "&Slice");
 //    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXY,
@@ -950,7 +927,7 @@ void DessinImageBase :: CreateWxMenu()
 //
 //    menuOptions->AppendSeparator();
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Size \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() Size \n");
 
 //    _wxm_type_taille = new wxMenuEnum(  menuOptions,
 //                                        &Param._type_taille,
@@ -965,7 +942,7 @@ void DessinImageBase :: CreateWxMenu()
 //
 //    menuOptions->AppendSeparator();
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Original Size \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() Original Size \n");
 
     menuOptions->Append( ID_MenuImage_original_size, GetwxStr("&Original Size"));
 
@@ -993,18 +970,18 @@ void DessinImageBase :: CreateWxMenu()
     _wxm_interp_subdiv->AddChoice(ID_MenuOptions_interp_submax,  GetwxStr("max"),    GetwxStr("max"));
     _wxm_interp_subdiv->SetSelection(ID_MenuOptions_interp_submax);
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Interpolation \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() Interpolation \n");
 
     menuOptions->Append( ID_MenuOptions_Interpolation, GetwxStr("&Interpolation")  ,interp_submenu  );
     menuOptions->Enable(ID_MenuOptions_Interpolation,false);
     menuOptions->AppendSeparator();
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Vector Field \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() Vector Field \n");
 
 //    menuOptions->Append( ID_MenuOptions_circlefield,  GetwxStr("&Circle field"   ));
 //    menuOptions->AppendSeparator();
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Voxels 3D \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() Voxels 3D \n");
 
 //    menuOptions->Append( ID_MenuOptions_voxels3D,     GetwxStr("Vo&xels 3D"        ));
 //    menuOptions->Append( ID_MenuOptions_OpenGLMIP,    GetwxStr("OpenGL &MIP"       ));
@@ -1025,7 +1002,7 @@ void DessinImageBase :: CreateWxMenu()
     menuOptions->AppendSeparator();
 
     menuOptions->AppendCheckItem( ID_MenuOptions_display_mask,     GetwxStr("Display &Mask"  ));
-    menuOptions->Check(ID_MenuOptions_display_mask,_dessine_masque);
+    menuOptions->Check(ID_MenuOptions_display_mask,_draw_mask);
     menuOptions->AppendCheckItem( ID_MenuOptions_display_cursor,   GetwxStr("Display &Cursor"  ));
     menuOptions->Check(ID_MenuOptions_display_cursor,Param._curseur._visible);
 //    menuOptions->AppendCheckItem( ID_MenuOptions_paramwin,         GetwxStr("&Parameters"  ));
@@ -1034,7 +1011,7 @@ void DessinImageBase :: CreateWxMenu()
 
     menuBar->Append( menuOptions, GetwxStr("&Options" ));
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() MIP \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() MIP \n");
 
     // Option MIP
     menuMIP = new wxMenu;
@@ -1117,7 +1094,7 @@ void DessinImageBase :: CreateWxMenu()
 */
 
 
-  Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() End \n");
+  if ( GB_debug ) printf("DessinImageBase::CreateWxMenu() End \n");
 
 }
 
@@ -1167,7 +1144,7 @@ void DessinImageBase :: DessineCurseur(  int x, int y, int z, int type)
     }
   }
 
-  Si GB_debug AlorsFait
+  if ( GB_debug )
     fprintf(stderr,"DessineCurseur() \tdebut\n");
 
   if (_transf_matrix!=NULL) {
@@ -1195,13 +1172,13 @@ void DessinImageBase :: DessineCurseur(  int x, int y, int z, int type)
 
   }
 
-  Si x<0 AlorsFait x = 0;
-  Si y<0 AlorsFait y = 0;
-  Si z<0 AlorsFait z = 0;
+  if ( x<0 ) x = 0;
+  if ( y<0 ) y = 0;
+  if ( z<0 ) z = 0;
 
-  Si x>=_image->_tx AlorsFait x = _image->_tx-1;
-  Si y>=_image->_ty AlorsFait y = _image->_ty-1;
-  Si z>=_image->_tz AlorsFait z = _image->_tz-1;
+  if ( x>=_image->_tx ) x = _image->_tx-1;
+  if ( y>=_image->_ty ) y = _image->_ty-1;
+  if ( z>=_image->_tz ) z = _image->_tz-1;
 
 
   switch ( type ){
@@ -1227,7 +1204,7 @@ void DessinImageBase :: DessineCurseur(  int x, int y, int z, int type)
 
   drawcontext->SetPen(*_current_pen);
 
-  Si (Param._type_coupe+1) & (TYPE_COUPE_XY+1) Alors
+  if ( (Param._type_coupe+1) & (TYPE_COUPE_XY+1) ){
 
     pos_x = (int) (_tab_ximage_pos_x[IMAGE_XY] + (x - Param._Zoom._xmin + 0.5)*_size_x);
     pos_y = (int) (_tab_ximage_pos_y[IMAGE_XY] + (y - Param._Zoom._ymin + 0.5)*_size_y);
@@ -1239,9 +1216,9 @@ void DessinImageBase :: DessineCurseur(  int x, int y, int z, int type)
     LigneVerticale(  drawcontext, _tab_ximage_pos_y[IMAGE_XY],
                      _tab_ximage_pos_y[IMAGE_XY]+ height[IMAGE_XY],
                      pos_y, pos_x);
-  FinSi
+  } // end if
 
-  Si (Param._type_coupe+1) & (TYPE_COUPE_XZ+1) Alors
+  if ( (Param._type_coupe+1) & (TYPE_COUPE_XZ+1)) {
 
     pos_x = (int) ( _tab_ximage_pos_x[IMAGE_XZ] + (x - Param._Zoom._xmin + 0.5)*_size_x);
     pos_y = (int) ( _tab_ximage_pos_y[IMAGE_XZ] + (z - Param._Zoom._zmin + 0.5)*_size_z);
@@ -1255,10 +1232,10 @@ void DessinImageBase :: DessineCurseur(  int x, int y, int z, int type)
                      _tab_ximage_pos_y[IMAGE_XZ]+
                      height[IMAGE_XZ],
                      pos_y, pos_x);
-  FinSi
+  } // end if
 
 
-  Si (Param._type_coupe+1) & (TYPE_COUPE_ZY+1) Alors
+  if ( (Param._type_coupe+1) & (TYPE_COUPE_ZY+1) ){
 
     pos_x = (int) ( _tab_ximage_pos_x[IMAGE_ZY] + (z - Param._Zoom._zmin + 0.5)*_size_z);
     pos_y = (int) ( _tab_ximage_pos_y[IMAGE_ZY] + (y - Param._Zoom._ymin + 0.5)*_size_y);
@@ -1274,13 +1251,13 @@ void DessinImageBase :: DessineCurseur(  int x, int y, int z, int type)
                      pos_y, pos_x);
 
 
-  FinSi
+  } // end if
 
   Param._curseur._ON = Non(Param._curseur._ON);
 
   drawcontext->SetLogicalFunction( wxCOPY);
 
-  Si GB_debug AlorsFait
+  if ( GB_debug )
     fprintf(stderr,"DessineCurseur() \tfin\n");
 
 } // DessineCurseur()
@@ -1303,74 +1280,66 @@ void DessinImageBase :: DessineSpatialCurseur(  float x, float y, float z, int t
 } // DessineSpatialCurseur()
 
 
-//----------------------------------------------------------------
+//------------------------------------------------------------------------------
 void DessinImageBase ::  MemoriseCoupesXY( unsigned char activation )
-//                                 ----------------
 {
 
-  Si activation == _memorise_coupes_XY AlorsRetourne; // pas de changement
+  if ( activation == _memorise_coupes_XY AlorsRetourne; // pas de changement
 
-  std::cerr << "MemoriseCoupesXY() not yet available in this platform" << std::endl;
+  std::cerr << "MemoriseCoupesXY() not yet available in this platform" 
+            << std::endl;
 
 } // MemoriseCoupesXY()
 
 
-//----------------------------------------------------------------
-void DessinImageBase ::  InitMasque( Chaine nom_masque )
-//                                 ----------
+//------------------------------------------------------------------------------
+void DessinImageBase::SetMaskImage( InrImage::ptr mask_image )
 {
 
-  _nom_image_masque = nom_masque;
+  if ( (mask_image->DimX() != _image->DimX()) ||
+       (mask_image->DimY() != _image->DimY()) ||
+       (mask_image->DimZ() != _image->DimZ()) ||
+       (mask_image->_format != WT_UNSIGNED_CHAR))
+  {
+    CLASS_ERROR(
+      (std::string("The mask image needs to have the same size ")+
+      "as the image drawn and of type unsigned char !").c_str() );
+    return;
+  } else {
+    _mask_image = mask_image;
+  } // end if
 
-  Si _image_masque != NULL Alors
-    delete _image_masque;
-  Sinon
-    _image_masque = new InrImage( _nom_image_masque);
-    Si _image_masque->_tx != _image->_tx Ou
-       _image_masque->_ty != _image->_ty Ou
-       _image_masque->_tz != _image->_tz
-    Alors
-      printf("DessinImageBase::InitMasque\t erreur\t");
-      printf("masque de dimensions diff�entes de l'image initiale\n");
-      delete _image_masque;
-      _image_masque = NULL;
-    FinSi
-
-    Si _image_masque->_format != WT_UNSIGNED_CHAR
-    Alors
-      printf("DessinImageBase::InitMasque\t erreur\t");
-      printf("masque de format diff�ent de WT_UNSIGNED_CHAR\n");
-      delete _image_masque;
-      _image_masque = NULL;
-    FinSi
-  FinSi
-
-} // InitMasque()
+} // SetMaskImage()
 
 
-//----------------------------------------------------------------
-void DessinImageBase :: FixeMasque( unsigned char active)
-//                                ----------
+//------------------------------------------------------------------------------
+void DessinImageBase :: SetUseMask( unsigned char active)
 {
 
-  Si _image_masque == NULL Alors
-    _dessine_masque = false;
-  Sinon
-    _dessine_masque = active;
-  FinSi
+  if ( _mask_image.expired()) {
+    _draw_mask = false;
+  } else {
+    _draw_mask = active;
+  } // end if
 //  _Moptions_masque_visible->MAJ();
   Param._MAJ.MAJCoupes();
   Paint();
 
-  //  printf("_dessine_masque %d\n",_dessine_masque);
+  //  printf("_draw_mask %d\n",_draw_mask);
 
-} // FixeMasque()
+} // SetUseMask()
 
 
-//----------------------------------------------------------------
-void DessinImageBase ::  InitIsoContour( InrImage::ptr image_isocontour,
-//                                 --------------
-               float seuil, int num )
+//------------------------------------------------------------------------------
+void DessinImageBase::SetMaskColor( const wxColour&  col)
+{
+  _mask_color.FixeValeur(col.Red(),col.Green(),col.Blue(),col.Alpha());
+}
+
+
+//------------------------------------------------------------------------------
+void DessinImageBase ::  InitIsoContour(  InrImage::ptr image_isocontour,
+                                          float seuil, int num )
 {
     // check that the image number is correct
     if ((num<0)||(num>(int)_isocontours.size())) {
@@ -1379,25 +1348,24 @@ void DessinImageBase ::  InitIsoContour( InrImage::ptr image_isocontour,
     }
 
 
-  Si image_isocontour->DimX() != _image->DimX() Ou
-     image_isocontour->DimY() != _image->DimY() Ou
-     image_isocontour->DimZ() != _image->DimZ()
-  Alors
+  if ( image_isocontour->DimX() != _image->DimX() ||
+       image_isocontour->DimY() != _image->DimY() ||
+       image_isocontour->DimZ() != _image->DimZ() )
+  {
     printf("DessinImageBase::InitIsocontour\t Error\t");
     printf("The isocontour image needs to have the same size as the image drawn !\n");
     return;
-  Sinon
+  } else {
     _isocontours[num].image     = image_isocontour;
     _isocontours[num].threshold = seuil;
-  FinSi
+  } // end if
 
 
 } // InitIsoContour()
 
 
-//----------------------------------------------------------------
+//------------------------------------------------------------------------------
 void DessinImageBase ::  DrawIsoContour( int num, int val )
-//                                 --------------
 {
 
   if ((num<0)||(num>(int)_isocontours.size()-1)) {
@@ -1414,11 +1382,11 @@ void DessinImageBase ::  DrawIsoContour( int num, int val )
 void DessinImageBase::SetIsoContourParam( int num, int thickness, int style)
 //   ------------------
 {
-    Si num<0                    AlorsFait num = 0;
-    Si num>=(int)_isocontours.size() AlorsFait num = _isocontours.size()-1;
+    if ( num<0                    ) num = 0;
+    if ( num>=(int)_isocontours.size() ) num = _isocontours.size()-1;
     _isocontours[num].thickness = thickness;
-    Si style<0 AlorsFait style=0;
-    Si style>2 AlorsFait style=2;
+    if ( style<0 ) style=0;
+    if ( style>2 ) style=2;
     _isocontours[num].style = style;
 } // SetIsoContourParam()
 
@@ -1467,20 +1435,20 @@ void DessinImageBase::DessineIsoContour( int n)
     image = InrImage::ptr(_isocontours[n].image);
 
 
-  Si ((Param._type_coupe+1) & (TYPE_COUPE_ZY+1)) Alors
+  if ( ((Param._type_coupe+1) & (TYPE_COUPE_ZY+1)) {
     AfficheImage( IMAGE_ZY);
     DessinePlanXIsoContour(image,seuil);
-  FinSi
+  } // end if
 
-  Si ((Param._type_coupe+1) & (TYPE_COUPE_XZ+1)) Alors
+  if ( ((Param._type_coupe+1) & (TYPE_COUPE_XZ+1)) {
     AfficheImage( IMAGE_XZ);
     DessinePlanYIsoContour(image,seuil);
-  FinSi
+  } // end if
 
-  Si ((Param._type_coupe+1) & (TYPE_COUPE_XY+1)) Alors
+  if ( ((Param._type_coupe+1) & (TYPE_COUPE_XY+1)) {
     AfficheImage( IMAGE_XY);
     DessinePlanZIsoContour(image,seuil);
-  FinSi
+  } // end if
 
 } // DessineIsoContour()
 */
@@ -1491,16 +1459,16 @@ void DessinImageBase ::  InitImage( inrimage* image)
 //                                 ---------
 {
 
-  Si _image_initiale->_tx != image->ncols Ou
-     _image_initiale->_ty != image->nrows Ou
+  if ( _image_initiale->_tx != image->ncols ||
+     _image_initiale->_ty != image->nrows ||
      _image_initiale->_tz != image->nplanes
-  Alors
+  {
     printf(" %d %d %d \n", image->ncols, image->nrows, image->nplanes);
     printf("DessinImageBase::InitImage\t erreur\t");
     printf("image de dimensions diff�entes de l'image initiale\n");
-  Sinon
+  } else {
     _image = InrImage::ptr(new InrImage(image));
-  FinSi
+  } // end if
 
 
 } // InitImage()
@@ -1606,10 +1574,9 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
 
   // look for nearest higher acceptable value
   Pour(i,0,NUM_ACCEP_VAL-1)
-    Si acceptable_values[i]>=text_unit_step
-    AlorsFait break;
+    if ( acceptable_values[i]>=text_unit_step ) break;
   FinPour
-  Si i==NUM_ACCEP_VAL AlorsFait i=NUM_ACCEP_VAL-1;
+  if ( i==NUM_ACCEP_VAL ) i=NUM_ACCEP_VAL-1;
   text_pixel_step  = acceptable_values[i];
   small_pixel_step = corresp_values[i];
 
@@ -1770,7 +1737,7 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
     } // end while
   } // end if orientation
 
-  Si GB_debug AlorsFait
+  if ( GB_debug )
     fprintf(stderr,"DessinImageBase::DrawAxis() end\n");
 
 } // DrawAxis()
@@ -1781,7 +1748,7 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
 void DessinImageBase :: DessineAxesXY( )
 //                      -------------
 {
-  Si GB_debug AlorsFait
+  if ( GB_debug )
     fprintf(stderr,"DessinImageBase::DessineAxesXY() begin\n");
 
   if (!(Param._show_axes)) return;
@@ -1801,7 +1768,7 @@ void DessinImageBase :: DessineAxesXY( )
             _tab_ximage_pos_y[IMAGE_XY]
           );
 
-  Si GB_debug AlorsFait
+  if ( GB_debug )
     fprintf(stderr,"DessinImageBase::DessineAxesXY() end\n");
 
 } // DessineAxesXY()
@@ -1811,7 +1778,7 @@ void DessinImageBase :: DessineAxesXY( )
 void DessinImageBase :: DessineAxesXZ( )
 //                                ------------
 {
-  Si GB_debug AlorsFait
+  if ( GB_debug )
     fprintf(stderr,"DessinImageBase::DessineAxesXZ() begin\n");
 
   if (!(Param._show_axes)) return;
@@ -1825,7 +1792,7 @@ void DessinImageBase :: DessineAxesXZ( )
           );
 
 
-  Si GB_debug AlorsFait
+  if ( GB_debug )
     fprintf(stderr,"DessinImageBase::DessineAxesXZ() end\n");
 } // DessineAxesXZ()
 
@@ -1834,7 +1801,7 @@ void DessinImageBase :: DessineAxesXZ( )
 void DessinImageBase :: DessineAxesZY( )
 //                                ------------
 {
-  Si GB_debug AlorsFait
+  if ( GB_debug )
     fprintf(stderr,"DessinImageBase::DessineAxesZY() begin\n");
 
   if (!(Param._show_axes)) return;
@@ -1847,7 +1814,7 @@ void DessinImageBase :: DessineAxesZY( )
               GetImageHeight(IMAGE_ZY)
           );
 
-  Si GB_debug AlorsFait
+  if ( GB_debug )
     fprintf(stderr,"DessinImageBase::DessineAxesZY() end\n");
 
 } // DessineAxesZY()
@@ -1857,10 +1824,10 @@ void DessinImageBase :: DessineAxesZY( )
 void DessinImageBase :: DrawColorBar( )
 //                      ------------
 {
-  Si Non(Param._show_colorbar) AlorsFait return;
+  if ( Non(Param._show_colorbar) ) return;
 
-  Si _image->_format == WT_RGB AlorsFait return;
-  Si _image->_format == WT_RGBA AlorsFait return;
+  if ( _image->_format == WT_RGB ) return;
+  if ( _image->_format == WT_RGBA ) return;
 
   if (Param._type_coupe == TYPE_COUPES) return;
 
@@ -1887,29 +1854,29 @@ void DessinImageBase :: DrawColorBar( )
   char_ymax = maxCharHeight;
 
 /*
- *  Si (_image->_format == WT_FLOAT ) Ou
-     (_image->_format == WT_DOUBLE) Alors
+ *  if ( (_image->_format == WT_FLOAT ) ||
+     (_image->_format == WT_DOUBLE) {
     Imin = _intensite_float_min;
     Imax = _intensite_float_max;
-  Sinon
+  } else {
     Imin = _intensite_entier_min;
     Imax = _intensite_entier_max;
-  FinSi
+  } // end if
 */
   valmin = _val_min;
   valmax = _val_max;
 
-  Si valmax - valmin >= 100 Alors
+  if ( valmax - valmin >= 100 ) {
     sprintf(Istring_max,"%3.0f",valmax);
     sprintf(Istring_min,"%3.0f",valmin);
-  Autrement
-  Si valmax - valmin >= 10 Alors
+  } else
+  if ( valmax - valmin >= 10 ) {
     sprintf(Istring_max,"%2.1f",valmax);
     sprintf(Istring_min,"%2.1f",valmin);
-  Sinon
+  } else {
     sprintf(Istring_max,"%1.2f",valmax);
     sprintf(Istring_min,"%1.2f",valmin);
-  FinSi
+  } // end if
 
   int maxwidth1,maxwidth2,maxwidth;
   wxCoord descent;
@@ -1933,15 +1900,15 @@ void DessinImageBase :: DrawColorBar( )
   step = (b-t)/256.0;
 
   text_step = 256;
-  TantQue ((step*text_step)>2*(char_ymax+1)) Et (text_step>1) Faire
+  TantQue ((step*text_step)>2*(char_ymax+1)) && (text_step>1) Faire
     text_step/=2;
   FinTantQue
 
-  Si l<0 Ou t>b Alors
+  if ( l<0 || t>b ) {
   //    fprintf(stderr,"DessinImageBase::DrawColorBar() \t");
   //    fprintf(stderr," l=%d r=%d t=%d b=%d \n",l,r,t,b);
     return;
-  FinSi
+  } // end if
 
   vpos2 = b;
 
@@ -1963,15 +1930,15 @@ void DessinImageBase :: DrawColorBar( )
               r,
               (int) (step+vpos2));
 
-   Si (i==0) Ou ((i+1)%text_step==0) Alors
-     Si valmax - valmin >= 100 Alors
+   if ( (i==0) || ((i+1)%text_step==0)) {
+     if ( valmax - valmin >= 100 ) {
       sprintf(Istring,"%3.0f",val);
-     Autrement
-     Si valmax - valmin >= 10 Alors
+     } else
+     if ( valmax - valmin >= 10 ) {
       sprintf(Istring,"%2.1f",val);
-     Sinon
+     } else {
       sprintf(Istring,"%1.2f",val);
-     FinSi
+     } // end if
 
      SetTextFg( *wxBLACK);
      //Texte(r+2,(int)(vpos2+step+char_ymax/2),Istring);
@@ -1987,7 +1954,7 @@ void DessinImageBase :: DrawColorBar( )
           );
      SetLineParameters(0,wxTRANSPARENT);
      Texte(r+2,(int)(vpos2-char_ymax/2),Istring);
-   FinSi
+   } // end if
 
    val += val_step;
   FinPour
@@ -2052,17 +2019,20 @@ void DessinImageBase::DrawSlice( int slice_id )
 
   /* todo: adapt these methods
   // Dans le cas d'un masque
-  Si _dessine_masque Et Param._option_traitement != OPTION_MIP Alors
+  if ( _draw_mask && Param._option_traitement != OPTION_MIP {
     DessinePlanMasqueZ();
     return;
-  FinSi
+  } // end if
 
-  // Si interpolation lineaire:
-  Si _interpole_image Alors
+  // if ( interpolation lineaire:
+  if ( _interpole_image {
     DessinePlanInterpZ();
     return;
-  FinSi
+  } // end if
   */
+
+  InrImage::ptr maskimage;
+  if (_draw_mask)  maskimage = _mask_image.lock();
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir 0.99999 a la valeur
   //    superieure et d'eviter
@@ -2130,9 +2100,12 @@ void DessinImageBase::DrawSlice( int slice_id )
     py1=py+nvsy;
     buf_pos[cix] = cmin_x;
     buf_pos[ciy] = y;
-    //if (_dessine_masque)
-    //  _image_masque->BufferPos( buf_pos[0], buf_pos[1], buf_pos[2]);
+    //if (_draw_mask)
+    //  _mask_image->BufferPos( buf_pos[0], buf_pos[1], buf_pos[2]);
+    // TODO: use iterators here !!!
     image->BufferPos( buf_pos[0], buf_pos[1], buf_pos[2]);
+    if (_draw_mask)
+      maskimage->BufferPos( buf_pos[0], buf_pos[1], buf_pos[2]);
     px = 0;
     for( x = cmin_x; x  <= maxx; x+=stepx )
     {
@@ -2158,6 +2131,18 @@ void DessinImageBase::DrawSlice( int slice_id )
           (unsigned char) image->VectValeurBuffer(1),
           (unsigned char) image->VectValeurBuffer(2)
                                 );
+        }
+      }
+      if (_draw_mask) {
+        // should combine with mask color
+        if (maskimage->ValeurBuffer()>0) {
+          double alpha = _mask_color.Alpha();
+          alpha /= 255;
+          couleur.FixeValeur(
+             couleur.Red()  *(1-alpha)+_mask_color.Red()  *alpha
+            ,couleur.Green()*(1-alpha)+_mask_color.Green()*alpha
+            ,couleur.Blue() *(1-alpha)+_mask_color.Blue() *alpha
+          );
         }
       }
 
@@ -2203,14 +2188,15 @@ void DessinImageBase::DrawSlice( int slice_id )
                             couleur);
       }
       image->IncBuffer(nincr_x);
+      if (_draw_mask) maskimage->IncBuffer(nincr_x);
       px = px1;
     } // x
     py = py1;
   } // y
 
-  //--- Si on memorise les coupes, on precise que cette coupe XY est a jour
+  //--- if ( on memorise les coupes, on precise que cette coupe XY est a jour
 #if defined(__MOTIF__)
-  Si _memorise_coupes_XY AlorsFait
+  if ( _memorise_coupes_XY )
     _image_XY_a_jour[ Param._pos._z] = true;
 #endif
 
@@ -2226,36 +2212,40 @@ void DessinImageBase::DessinePlanZ( )
      register double           px, py;
      register double           px1, py1;
 
+
+  InrImage::ptr maskimage;
+  if (_draw_mask)  maskimage = _mask_image.lock();
+
   // Dans le cas d'un masque
-  Si _dessine_masque Et Param._option_traitement != OPTION_MIP Alors
+  if ( _draw_mask && Param._option_traitement != OPTION_MIP ) {
     DessinePlanMasqueZ();
     return;
-  FinSi
+  } // end if
 
-  // Si interpolation lineaire:
-  Si _interpole_image Alors
+  // if ( interpolation lineaire:
+  if ( _interpole_image ) {
     DessinePlanInterpZ();
     return;
-  FinSi
+  } // end if
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir 0.99999 a la valeur
   //    superieure et d'eviter
   //--- un plantage
-  Si _memorise_coupes_XY Alors
+  if ( _memorise_coupes_XY ) {
 #if defined(__MOTIF__)
     //--- On verifie l'allocation des images avec les bonnes dimensions
     AlloueImagesXY( (int) (Param._Zoom._zoom_size_x*_size_x+1E-4), (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
     //--- On utilise la coupe deja allouee
     _tab_ximage_data[IMAGE_XY] = _tab_ximage_XY_data[ Param._pos._z];
     _tab_ximage[IMAGE_XY] = _tab_ximage_XY[ Param._pos._z];
-    //--- Si l'image est a jour, on sort de la fonction
-    Si _image_XY_a_jour[ Param._pos._z] AlorsRetourne;
+    //--- if ( l'image est a jour, on sort de la fonction
+    if ( _image_XY_a_jour[ Param._pos._z] AlorsRetourne;
 #endif
-  Sinon
+  } else {
     CreeImage( IMAGE_XY,
          (int) (round(Param._Zoom._zoom_size_x*_size_x+1E-4)),
          (int) (round(Param._Zoom._zoom_size_y*_size_y+1E-4)));
-  FinSi
+  } // end if
 
   FixeImageCourante( IMAGE_XY);
   register rgb_color* image_data  = (rgb_color*)
@@ -2284,10 +2274,10 @@ void DessinImageBase::DessinePlanZ( )
   {
     py1=py+_size_y;
 
-    if (_dessine_masque)
-      _image_masque->BufferPos( Param._Zoom._xmin,
-                                y,
-                                Param._pos._z);
+    if (_draw_mask)
+      maskimage->BufferPos( Param._Zoom._xmin,
+                            y,
+                            Param._pos._z);
     image->BufferPos( Param._Zoom._xmin,
                       y,
                       Param._pos._z);
@@ -2296,18 +2286,18 @@ void DessinImageBase::DessinePlanZ( )
       {
       px1=px+_size_x; // add epsilon ??
 
-      Si (image_format != WT_RGB)&&
-         (image_format != WT_RGBA)
-      Alors
+      if ( (image_format != WT_RGB)&&
+         (image_format != WT_RGBA) )
+      {
         couleur = colors[ LookUpTable(image->ValeurBuffer(),
                           image_format) ];
-      Sinon
+      } else {
         couleur = ClasseCouleur(
         (unsigned char) image->VectValeurBuffer(0),
         (unsigned char) image->VectValeurBuffer(1),
         (unsigned char) image->VectValeurBuffer(2)
                                );
-      FinSi
+      } // end if
 
       FastImageRectangle( image_data, image_width,
                           (int) round(px),
@@ -2322,8 +2312,8 @@ void DessinImageBase::DessinePlanZ( )
     py = py1;
   } // y
 
-  //--- Si on memorise les coupes, on precise que cette coupe XY est a jour
-  Si _memorise_coupes_XY AlorsFait
+  //--- if ( on memorise les coupes, on precise que cette coupe XY est a jour
+  if ( _memorise_coupes_XY )
     _image_XY_a_jour[ Param._pos._z] = true;
 
 } // DessinePlanZ()
@@ -2338,17 +2328,22 @@ void DessinImageBase :: DessinePlanY( )
      register float           px1,pz1;
      register ClasseCouleur   couleur;
 
+  InrImage::ptr maskimage;
+  if (_draw_mask) {
+    maskimage = _mask_image.lock();
+  }
+
   // Dans le cas d'un masque
-  Si _dessine_masque Et Param._option_traitement != OPTION_MIP Alors
+  if ( _draw_mask && Param._option_traitement != OPTION_MIP ) {
     DessinePlanMasqueY();
     return;
-  FinSi
+  } // end if
 
-  // Si interpolation lineaire:
-  Si _interpole_image Alors
+  // if ( interpolation lineaire:
+  if ( _interpole_image ) {
     DessinePlanInterpY();
     return;
-  FinSi
+  } // end if
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir 0.99999 a la valeur superieure
   //    et d'eviter
@@ -2370,7 +2365,7 @@ void DessinImageBase :: DessinePlanY( )
 
     pz1 = pz + _size_z;
 
-    Si _dessine_masque AlorsFait _image_masque->BufferPos( Param._Zoom._xmin, Param._pos._y, z);
+    if ( _draw_mask ) maskimage->BufferPos( Param._Zoom._xmin, Param._pos._y, z);
     BufferPos( Param._Zoom._xmin, Param._pos._y, z);
     px = 0;
     for(  x = Param._Zoom._xmin
@@ -2379,17 +2374,17 @@ void DessinImageBase :: DessinePlanY( )
 
       px1 = px+_size_x;
 
-      Si (_image->GetFormat() != WT_RGB)&&
-         (_image->GetFormat() != WT_RGBA)
-      Alors
+      if ( (_image->GetFormat() != WT_RGB)&&
+         (_image->GetFormat() != WT_RGBA) )
+      {
         couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
-      Sinon
+      } else {
         couleur.Set(
         (unsigned char) _image->VectValeurBuffer(0),
         (unsigned char) _image->VectValeurBuffer(1),
         (unsigned char) _image->VectValeurBuffer(2)
                                );
-      FinSi
+      } // end if
 
       FastImageRectangle( image_data, image_width,
                           (int) round(px) ,  
@@ -2419,17 +2414,22 @@ void DessinImageBase :: DessinePlanX( )
      register float           py1,pz1;
      register ClasseCouleur   couleur;
 
+  InrImage::ptr maskimage;
+  if (_draw_mask) {
+    maskimage = _mask_image.lock();
+  }
+
   // Dans le cas d'un masque
-  Si _dessine_masque Et Param._option_traitement != OPTION_MIP Alors
+  if ( _draw_mask && Param._option_traitement != OPTION_MIP ) {
     DessinePlanMasqueX();
     return;
-  FinSi
+  } // end if
 
-  // Si interpolation lineaire:
-  Si _interpole_image Alors
+  // if ( interpolation lineaire:
+  if ( _interpole_image ) {
     DessinePlanInterpX();
     return;
-  FinSi
+  } // end if
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir a la valeur superieure et d'eviter
   //--- un plantage
@@ -2441,7 +2441,7 @@ void DessinImageBase :: DessinePlanX( )
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
   register  int               image_width = _current_slice->GetWidth();
 
-  Si _dessine_masque AlorsFait _image_masque->InitBuffer( );
+  if ( _draw_mask ) maskimage->InitBuffer( );
   InitBuffer( );
 
   pz = 0;
@@ -2456,17 +2456,17 @@ void DessinImageBase :: DessinePlanX( )
 
       py1 = py+_size_y;
 
-      Si (_image->_format != WT_RGB)&&
-          (_image->_format != WT_RGBA)
-     Alors
+      if ( (_image->_format != WT_RGB)&&
+          (_image->_format != WT_RGBA) )
+     {
         couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
-      Sinon
+      } else {
         couleur = ClasseCouleur(
         (unsigned short) _image->VectValeurBuffer(0),
         (unsigned short) _image->VectValeurBuffer(1),
         (unsigned short) _image->VectValeurBuffer(2)
                                );
-      FinSi
+      } // end if
 
       FastImageRectangle( image_data, image_width,
                           (int) round(pz),
@@ -2501,11 +2501,16 @@ void DessinImageBase :: DessineCoupes( )
      register ClasseCouleur couleur;
      float     val,dimx,dimy;
 
+  InrImage::ptr maskimage;
+  if (_draw_mask) {
+    maskimage = _mask_image.lock();
+  }
+
   // Dans le cas d'un masque
-  Si _dessine_masque Et Param._option_traitement != OPTION_MIP Alors
+  if ( _draw_mask && Param._option_traitement != OPTION_MIP ) {
     DessineMasqueCoupes();
     return;
-  FinSi
+  } // end if
 
   //--- Calcul de la disposition des coupes ------------------
   // dimensions d'une image, on respecte le rappport dimx/dimy
@@ -2514,8 +2519,8 @@ void DessinImageBase :: DessineCoupes( )
 
   nx = (int) sqrt(1.0*(_largeur/dimx)/(_hauteur/dimy)*Param._Zoom._zoom_size_z);
   ny = (int) (Param._Zoom._zoom_size_z/nx);
-  Si nx*ny < Param._Zoom._zoom_size_z AlorsFait nx++;
-  Si nx*ny < Param._Zoom._zoom_size_z AlorsFait ny++;
+  if ( nx*ny < Param._Zoom._zoom_size_z ) nx++;
+  if ( nx*ny < Param._Zoom._zoom_size_z ) ny++;
 
   _size_x = (1.0 * _largeur / nx - 2.0) / dimx;
   _size_y = (1.0 * _hauteur / ny - 2.0) / dimy;
@@ -2543,11 +2548,11 @@ void DessinImageBase :: DessineCoupes( )
   planZ = Param._Zoom._zmin;
 
   for(  qy = 0, pos_y = 0
-  ;  (qy < ny) Et (planZ <= Param._Zoom._zmax)
+  ;  (qy < ny) && (planZ <= Param._Zoom._zmax)
   ;  qy++, pos_y += (int) (Param._Zoom._zoom_size_y*_size_y + 2) Faire
 
     for(  qx = 0, pos_x = 0
-    ;  (qx < nx)  Et (planZ <= Param._Zoom._zmax)
+    ;  (qx < nx)  && (planZ <= Param._Zoom._zmax)
     ;  qx++, pos_x += (int) (Param._Zoom._zoom_size_x*_size_x + 2) Faire
 
 
@@ -2560,16 +2565,16 @@ void DessinImageBase :: DessineCoupes( )
       px = 0;
 
       Pour( x, Param._Zoom._xmin, Param._Zoom._xmax)
-        Si (_image->_format != WT_RGB)&&(_image->_format != WT_RGBA)
-        Alors
+        if ( (_image->_format != WT_RGB)&&(_image->_format != WT_RGBA) )
+        {
           couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
-        Sinon
+        } else {
           couleur.Set(
         (unsigned char) _image->VectValeurBuffer(0),
         (unsigned char) _image->VectValeurBuffer(1),
         (unsigned char) _image->VectValeurBuffer(2)
                                );
-        FinSi
+        } // end if
 
         FastImageRectangle( image_data, image_width,
                             (int) round(px + pos_x),    
@@ -2603,7 +2608,7 @@ void DessinImageBase :: DessinePlanMasqueZ( )
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir 0.99999 a la valeur superieure et d'eviter
   //--- un plantage
-  Si _memorise_coupes_XY Alors
+  if ( _memorise_coupes_XY ) {
 #if defined(__MOTIF__)
     //--- On verifie l'allocation des images avec les bonnes dimensions
     AlloueImagesXY( (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
@@ -2611,19 +2616,21 @@ void DessinImageBase :: DessinePlanMasqueZ( )
     //--- On utilise la coupe deja allouee
     _tab_ximage_data[IMAGE_XY]  = _tab_ximage_XY_data[ Param._pos._z];
     _tab_ximage[IMAGE_XY]       = _tab_ximage_XY[ Param._pos._z];
-    //--- Si l'image est a jour, on sort de la fonction
-    Si _image_XY_a_jour[ Param._pos._z] AlorsRetourne;
+    //--- if ( l'image est a jour, on sort de la fonction
+    if ( _image_XY_a_jour[ Param._pos._z] AlorsRetourne;
 #endif
-  Sinon
+  } else {
     CreeImage( IMAGE_XY,(int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
                         (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
-  FinSi
+  } // end if
 
   FixeImageCourante( IMAGE_XY);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
   register  int               image_width = _current_slice->GetWidth();
 
-  Si _dessine_masque AlorsFait _image_masque->InitBuffer( );
+  InrImage::ptr maskimage;
+  if (_draw_mask) maskimage = _mask_image.lock();
+  if ( _draw_mask ) maskimage->InitBuffer( );
 
   InitBuffer( );
 
@@ -2634,7 +2641,7 @@ void DessinImageBase :: DessinePlanMasqueZ( )
 
     py1 = py + _size_y;
 
-    Si _dessine_masque AlorsFait _image_masque->BufferPos( Param._Zoom._xmin, y, Param._pos._z);
+    if ( _draw_mask ) maskimage->BufferPos( Param._Zoom._xmin, y, Param._pos._z);
     BufferPos( Param._Zoom._xmin, y, Param._pos._z);
     px = 0;
     for(  x = Param._Zoom._xmin
@@ -2643,24 +2650,24 @@ void DessinImageBase :: DessinePlanMasqueZ( )
 
       px1 = px + _size_x;
 
-      Si  (_image->_format != WT_RGB)&&
-          (_image->_format != WT_RGBA)
-      Alors
+      if (  (_image->_format != WT_RGB)&&
+          (_image->_format != WT_RGBA) )
+      {
         couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
-      Sinon
+      } else {
         couleur = ClasseCouleur(
         (unsigned short) _image->VectValeurBuffer(0),
         (unsigned short) _image->VectValeurBuffer(1),
         (unsigned short) _image->VectValeurBuffer(2)
                                );
-      FinSi
+      } // end if
 
-      Si _dessine_masque Alors
-        Si _image_masque->ValeurBuffer() > 127 Alors
-          couleur = _couleur_masque;
-        FinSi
-        _image_masque->IncBuffer();
-      FinSi
+      if ( _draw_mask ) {
+        if ( maskimage->ValeurBuffer() > 127 ) {
+          couleur = _mask_color;
+        } // end if
+        maskimage->IncBuffer();
+      } // end if
 
       FastImageRectangle( image_data, image_width,
                           (int) px,  (int) py,
@@ -2676,8 +2683,8 @@ void DessinImageBase :: DessinePlanMasqueZ( )
 
   } // end for // y
 
-  //--- Si on memorise les coupes, on precise que cette coupe XY est a jour
-  Si _memorise_coupes_XY AlorsFait
+  //--- if ( on memorise les coupes, on precise que cette coupe XY est a jour
+  if ( _memorise_coupes_XY )
     _image_XY_a_jour[ Param._pos._z] = true;
 
 } // DessinePlanMasqueZ()
@@ -2700,7 +2707,11 @@ void DessinImageBase :: DessinePlanMasqueY( )
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
   register  int               image_width = _current_slice->GetWidth();
 
-  Si _dessine_masque AlorsFait _image_masque->InitBuffer( );
+  InrImage::ptr maskimage;
+  if (_draw_mask) {
+    maskimage = _mask_image.lock();
+  }
+  if ( _draw_mask ) maskimage->InitBuffer( );
   InitBuffer( );
 
   pz = 0;
@@ -2710,7 +2721,7 @@ void DessinImageBase :: DessinePlanMasqueY( )
 
     pz1 = pz + _size_z;
 
-    Si _dessine_masque AlorsFait _image_masque->BufferPos( Param._Zoom._xmin, Param._pos._y, z);
+    if ( _draw_mask ) maskimage->BufferPos( Param._Zoom._xmin, Param._pos._y, z);
     BufferPos( Param._Zoom._xmin, Param._pos._y, z);
     px = 0;
     for(  x = Param._Zoom._xmin
@@ -2719,24 +2730,24 @@ void DessinImageBase :: DessinePlanMasqueY( )
 
       px1 = px + _size_x;
 
-      Si (_image->_format != WT_RGB)&&
-          (_image->_format != WT_RGBA)
-      Alors
+      if ( (_image->_format != WT_RGB)&&
+          (_image->_format != WT_RGBA) )
+      {
         couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
-      Sinon
+      } else {
         couleur.Set(
         (unsigned char) _image->VectValeurBuffer(0),
         (unsigned char) _image->VectValeurBuffer(1),
         (unsigned char) _image->VectValeurBuffer(2)
                                );
-      FinSi
+      } // end if
 
-      Si _dessine_masque Alors
-        Si _image_masque->ValeurBuffer() > 127 Alors
-          couleur = _couleur_masque;
-        FinSi
-        _image_masque->IncBuffer();
-      FinSi
+      if ( _draw_mask ) {
+        if ( maskimage->ValeurBuffer() > 127 ) {
+          couleur = _mask_color;
+        } // end if
+        maskimage->IncBuffer();
+      } // end if
 
       FastImageRectangle( image_data, image_width,
                           (int) px, (int) pz,
@@ -2772,7 +2783,11 @@ void DessinImageBase :: DessinePlanMasqueX( )
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
   register  int               image_width = _current_slice->GetWidth();
 
-  Si _dessine_masque AlorsFait _image_masque->InitBuffer( );
+  InrImage::ptr maskimage;
+  if (_draw_mask) {
+    maskimage = _mask_image.lock();
+  }
+  if ( _draw_mask ) maskimage->InitBuffer( );
   InitBuffer( );
 
   pz = 0;
@@ -2782,7 +2797,7 @@ void DessinImageBase :: DessinePlanMasqueX( )
 
     pz1 = pz + _size_z;
 
-    Si _dessine_masque AlorsFait _image_masque->BufferPos( Param._pos._x, Param._Zoom._ymin, z);
+    if ( _draw_mask ) maskimage->BufferPos( Param._pos._x, Param._Zoom._ymin, z);
     BufferPos( Param._pos._x, Param._Zoom._ymin, z);
     py = 0;
     for(  y = Param._Zoom._ymin
@@ -2791,24 +2806,24 @@ void DessinImageBase :: DessinePlanMasqueX( )
 
       py1 = py + _size_y;
 
-      Si  (_image->_format != WT_RGB) &&
-          (_image->_format != WT_RGBA)
-      Alors
+      if (  (_image->_format != WT_RGB) &&
+          (_image->_format != WT_RGBA) )
+      {
         couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
-      Sinon
+      } else {
         couleur.Set(
         (unsigned char) _image->VectValeurBuffer(0),
         (unsigned char) _image->VectValeurBuffer(1),
         (unsigned char) _image->VectValeurBuffer(2)
                                );
-      FinSi
+      } // end if
 
-      Si _dessine_masque Alors
-        Si _image_masque->ValeurBuffer() > 127 Alors
-          couleur = _couleur_masque;
-        FinSi
-        _image_masque->IncBuffer( _image->_tx);
-      FinSi
+      if ( _draw_mask ) {
+        if ( maskimage->ValeurBuffer() > 127 ) {
+          couleur = _mask_color;
+        } // end if
+        maskimage->IncBuffer( _image->_tx);
+      } // end if
 
       FastImageRectangle( image_data, image_width,
                           (int) pz,  (int) py,
@@ -2839,6 +2854,11 @@ void DessinImageBase :: DessineMasqueCoupes( )
      register ClasseCouleur couleur;
      float     val,dimx,dimy;
 
+  InrImage::ptr maskimage;
+  if (_draw_mask) {
+    maskimage = _mask_image.lock();
+  }
+
   //--- Calcul de la disposition des coupes ------------------
   // dimensions d'une image, on respecte le rappport dimx/dimy
   dimx = Param._Zoom._zoom_size_x*Param._dim._voxel_size_x;
@@ -2846,8 +2866,8 @@ void DessinImageBase :: DessineMasqueCoupes( )
 
   nx = (int) sqrt(1.0*(_largeur/dimx)/(_hauteur/dimy)*Param._Zoom._zoom_size_z);
   ny = (int) (Param._Zoom._zoom_size_z/nx);
-  Si nx*ny < Param._Zoom._zoom_size_z AlorsFait nx++;
-  Si nx*ny < Param._Zoom._zoom_size_z AlorsFait ny++;
+  if ( nx*ny < Param._Zoom._zoom_size_z ) nx++;
+  if ( nx*ny < Param._Zoom._zoom_size_z ) ny++;
 
   _size_x = (1.0 * _largeur / nx - 2.0) / dimx;
   _size_y = (1.0 * _hauteur / ny - 2.0) / dimy;
@@ -2874,11 +2894,11 @@ void DessinImageBase :: DessineMasqueCoupes( )
   planZ = Param._Zoom._zmin;
 
   for(  qy = 0, pos_y = 0
-  ;  (qy < ny) Et (planZ <= Param._Zoom._zmax)
+  ;  (qy < ny) && (planZ <= Param._Zoom._zmax)
   ;  qy++, pos_y += (int) (Param._Zoom._zoom_size_y*_size_y + 2) Faire
 
     for(  qx = 0, pos_x = 0
-    ;  (qx < nx)  Et (planZ <= Param._Zoom._zmax)
+    ;  (qx < nx)  && (planZ <= Param._Zoom._zmax)
     ;  qx++, pos_x += (int) (Param._Zoom._zoom_size_x*_size_x + 2) Faire
 
 
@@ -2886,30 +2906,30 @@ void DessinImageBase :: DessineMasqueCoupes( )
 
     Pour( y, Param._Zoom._ymin, Param._Zoom._ymax)
 
-      Si _dessine_masque AlorsFait _image_masque->BufferPos( Param._Zoom._xmin, y, planZ);
+      if ( _draw_mask ) maskimage->BufferPos( Param._Zoom._xmin, y, planZ);
       BufferPos( Param._Zoom._xmin, y, planZ);
 
       px = 0;
 
       Pour( x, Param._Zoom._xmin, Param._Zoom._xmax)
-        Si  (_image->_format != WT_RGB)&&
-            (_image->_format != WT_RGBA)
-        Alors
+        if (  (_image->_format != WT_RGB)&&
+            (_image->_format != WT_RGBA) )
+        {
           couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
-        Sinon
+        } else {
           couleur.Set(
             (unsigned char) _image->VectValeurBuffer(0),
             (unsigned char) _image->VectValeurBuffer(1),
             (unsigned char) _image->VectValeurBuffer(2)
                      );
-        FinSi
+        } // end if
 
-        Si _dessine_masque Alors
-          Si _image_masque->ValeurBuffer() > 127 Alors
-            couleur = _couleur_masque;
-          FinSi
-          _image_masque->IncBuffer();
-        FinSi
+        if ( _draw_mask ) {
+          if ( maskimage->ValeurBuffer() > 127 ) {
+            couleur = _mask_color;
+          } // end if
+          maskimage->IncBuffer();
+        } // end if
 
         FastImageRectangle( image_data, image_width,
                             (int) (px + pos_x),    (int) (py + pos_y),
@@ -2945,6 +2965,9 @@ void DessinImageBase :: DessinePlanXIsoContour(
      float                   S,f;
 
 
+  InrImage::ptr maskimage;
+  if (_draw_mask) maskimage = _mask_image.lock();
+
   image->InitBuffer();
 
   val01=val11=0; // initialize to avoid compilation warning
@@ -2956,13 +2979,13 @@ void DessinImageBase :: DessinePlanXIsoContour(
 
       val00 = val01;
       val10 = val11;
-      Si (z > Param._Zoom._zmin) AlorsFait
+      if ( (z > Param._Zoom._zmin) )
         val01 = image->ValeurBuffer( -image->_tx*image->_ty )-seuil;
       val11 = image->ValeurBuffer()-seuil;
 
-      Si (_image_masque == NULL) Ou
-         ((*_image_masque)(Param._pos._x, y, z)>127) AlorsFait
-      Si (y > Param._Zoom._ymin) Et (z > Param._Zoom._zmin) Alors
+      if ( (_mask_image.expired()) ||
+         ((*maskimage)(Param._pos._x, y, z)>127) )
+      if ( (y > Param._Zoom._ymin) && (z > Param._Zoom._zmin)) {
 
         p1 = InterpoleZero( val00, val01);
         p3 = InterpoleZero( val01, val11);
@@ -2982,43 +3005,43 @@ void DessinImageBase :: DessinePlanXIsoContour(
         P4y = (int) (pos_y+p4*_size_y);
 
         // in the case of 4 points, resolve the ambiguity ...
-        Si (p1!=-1)&&(p2!=-1)&&(p3!=-1)&&(p4!=-1) Alors
+        if ( (p1!=-1)&&(p2!=-1)&&(p3!=-1)&&(p4!=-1)) {
 
           S = val10+val01-val00-val11;
 
-          Si fabs((double)S)<1E-10 Alors
+          if ( fabs((double)S)<1E-10 ){
             fprintf(stderr,"DessinImageBase::DessinePlanZIsoContour() \t fabsf(S) < 1E-10 \n");
-          Sinon
+          } else {
             f = val00 + (val10-val00)*(val01-val00)/S;
 
             // If a and f have the same sign, connect a to d
-            Si ((val00>0)Et(f>0)) Ou ((val00<0)Et(f<0)) Alors
+            if ( ((val00>0)&&(f>0)) || ((val00<0)&&(f<0))) {
               Ligne( P1z,P1y,P3z,P3y);
               Ligne( P2z,P2y,P4z,P4y);
-            Sinon
+            } else {
               Ligne( P1z,P1y,P2z,P2y);
               Ligne( P3z,P3y,P4z,P4y);
-            FinSi
-          FinSi
+            } // end if
+          } // end if
 
-        Sinon
+        } else {
 
       // otherwise, connect the 2 points found
-          Si p1 != -1 Alors
-            Si p2 != -1 AlorsFait Ligne( P1z,P1y,P2z,P2y);
-            Si p3 != -1 AlorsFait Ligne( P1z,P1y,P3z,P3y);
-            Si p4 != -1 AlorsFait Ligne( P1z,P1y,P4z,P4y);
-          Autrement
-          Si p2 != -1 Alors
-            Si p4 != -1 AlorsFait Ligne( P2z,P2y,P4z,P4y);
-            Si p3 != -1 AlorsFait Ligne( P2z,P2y,P3z,P3y);
-          FinSi
+          if ( p1 != -1) {
+            if ( p2 != -1 ) Ligne( P1z,P1y,P2z,P2y);
+            if ( p3 != -1 ) Ligne( P1z,P1y,P3z,P3y);
+            if ( p4 != -1 ) Ligne( P1z,P1y,P4z,P4y);
+          } else
+          if ( p2 != -1 ){
+            if ( p4 != -1 ) Ligne( P2z,P2y,P4z,P4y);
+            if ( p3 != -1 ) Ligne( P2z,P2y,P3z,P3y);
+          } // end if
 
-          Si (p3 != -1) Et (p4 != -1) AlorsFait Ligne( P3z,P3y,P4z,P4y);
+          if ( (p3 != -1) && (p4 != -1) ) Ligne( P3z,P3y,P4z,P4y);
 
-        FinSi
+        } // end if
 
-      FinSi
+      } // end if
 
       image->IncBuffer( image->_tx);
 
@@ -3043,6 +3066,8 @@ void DessinImageBase :: DessinePlanYIsoContour(
      int                    P1x,P1z,P2x,P2z,P3x,P3z,P4x,P4z;
      float                   S,f;
 
+  InrImage::ptr maskimage;
+  if (_draw_mask) maskimage = _mask_image.lock();
 
   image->InitBuffer();
 
@@ -3055,13 +3080,13 @@ void DessinImageBase :: DessinePlanYIsoContour(
 
       val00 = val10;
       val01 = val11;
-      Si (z > Param._Zoom._zmin) AlorsFait
+      if ( (z > Param._Zoom._zmin) )
         val10 = image->ValeurBuffer( -image->_tx*image->_ty ) - seuil;
       val11 = image->ValeurBuffer() - seuil;
 
-      Si (_image_masque == NULL) Ou
-         ((*_image_masque)(x, Param._pos._y, z)>127) AlorsFait
-      Si (x > Param._Zoom._xmin) Et (z > Param._Zoom._zmin) Alors
+      if ( (_mask_image.expired()) ||
+         ((*maskimage)(x, Param._pos._y, z)>127) )
+      if ( (x > Param._Zoom._xmin) && (z > Param._Zoom._zmin)) {
 
         p1 = InterpoleZero( val00, val01);
         p3 = InterpoleZero( val01, val11);
@@ -3081,43 +3106,43 @@ void DessinImageBase :: DessinePlanYIsoContour(
         P4z = (int) (pos_z+p4*_size_z);
 
         // in the case of 4 points, resolve the ambiguity ...
-        Si (p1!=-1)&&(p2!=-1)&&(p3!=-1)&&(p4!=-1) Alors
+        if ( (p1!=-1)&&(p2!=-1)&&(p3!=-1)&&(p4!=-1)) {
 
           S = val10+val01-val00-val11;
 
-          Si fabs((double)S)<1E-10 Alors
+          if ( fabs((double)S)<1E-10 ){
             fprintf(stderr,"DessinImageBase::DessinePlanZIsoContour() \t fabsf(S) < 1E-10 \n");
-          Sinon
+          } else {
             f = val00 + (val10-val00)*(val01-val00)/S;
 
             // If val00 and f have the same sign, connect a to d
-            Si ((val00>0)Et(f>0)) Ou ((val00<0)Et(f<0)) Alors
+            if ( ((val00>0)&&(f>0)) || ((val00<0)&&(f<0))) {
           Ligne( P1x,P1z,P3x,P3z);
               Ligne( P2x,P2z,P4x,P4z);
-            Sinon
+            } else {
           Ligne( P1x,P1z,P2x,P2z);
               Ligne( P3x,P3z,P4x,P4z);
-            FinSi
-          FinSi
+            } // end if
+          } // end if
 
 
-        Sinon
+        } else {
 
       // otherwise, connect the 2 points found
-          Si p1 != -1 Alors
-            Si p2 != -1 AlorsFait Ligne( P1x,P1z,P2x,P2z);
-            Si p3 != -1 AlorsFait Ligne( P1x,P1z,P3x,P3z);
-            Si p4 != -1 AlorsFait Ligne( P1x,P1z,P4x,P4z);
-          Autrement
-          Si p2 != -1 Alors
-            Si p4 != -1 AlorsFait Ligne( P2x,P2z,P4x,P4z);
-            Si p3 != -1 AlorsFait Ligne( P2x,P2z,P3x,P3z);
-          FinSi
+          if ( p1 != -1 ){
+            if ( p2 != -1 ) Ligne( P1x,P1z,P2x,P2z);
+            if ( p3 != -1 ) Ligne( P1x,P1z,P3x,P3z);
+            if ( p4 != -1 ) Ligne( P1x,P1z,P4x,P4z);
+          } else
+          if ( p2 != -1 ){
+            if ( p4 != -1 ) Ligne( P2x,P2z,P4x,P4z);
+            if ( p3 != -1 ) Ligne( P2x,P2z,P3x,P3z);
+          } // end if
 
-          Si (p3 != -1) Et (p4 != -1) AlorsFait Ligne( P3x,P3z,P4x,P4z);
+          if ( (p3 != -1) && (p4 != -1) ) Ligne( P3x,P3z,P4x,P4z);
 
-        FinSi
-      FinSi
+        } // end if
+      } // end if
 
       image->IncBuffer();
 
@@ -3142,6 +3167,8 @@ void DessinImageBase :: DessinePlanZIsoContour(
      int                    P1x,P1y,P2x,P2y,P3x,P3y,P4x,P4y;
      float                   S,f;
 
+  InrImage::ptr maskimage;
+  if (_draw_mask) maskimage = _mask_image.lock();
 
   image->InitBuffer();
   val10=val11=0; // initialize to avoid compilation warning
@@ -3154,13 +3181,13 @@ void DessinImageBase :: DessinePlanZIsoContour(
 
       val00 = val10;
       val01 = val11;
-      Si (y > Param._Zoom._ymin) AlorsFait
+      if ( (y > Param._Zoom._ymin) )
         val10 = image->ValeurBuffer( -image->_tx ) - seuil;
       val11 = image->ValeurBuffer() - seuil;
 
-      Si (_image_masque == NULL) Ou
-         ((*_image_masque)(x, y, Param._pos._z)>127) AlorsFait
-      Si (x > Param._Zoom._xmin) Et (y > Param._Zoom._ymin) Alors
+      if ( (_mask_image.expired()) ||
+         ((*maskimage)(x, y, Param._pos._z)>127) )
+      if ( (x > Param._Zoom._xmin) && (y > Param._Zoom._ymin)) {
 
         p1 = InterpoleZero( val00, val01);
         p3 = InterpoleZero( val01, val11);
@@ -3180,42 +3207,42 @@ void DessinImageBase :: DessinePlanZIsoContour(
         P4y = (int) (pos_y+p4*_size_y);
 
         // in the case of 4 points, resolve the ambiguity ...
-        Si (p1!=-1)&&(p2!=-1)&&(p3!=-1)&&(p4!=-1) Alors
+        if ( (p1!=-1)&&(p2!=-1)&&(p3!=-1)&&(p4!=-1)) {
 
           S = val10+val01-val00-val11;
 
-          Si fabs((double)S)<1E-10 Alors
+          if ( fabs((double)S)<1E-10 ){
             fprintf(stderr,"DessinImageBase::DessinePlanZIsoContour() \t fabsf(S) < 1E-10 \n");
-          Sinon
+          } else {
             f = val00 + (val10-val00)*(val01-val00)/S;
 
             // If val00 and f have the same sign, connect a to d
-            Si ((val00>0)Et(f>0)) Ou ((val00<0)Et(f<0)) Alors
-          Ligne( P1x,P1y,P3x,P3y);
+            if ( ((val00>0)&&(f>0)) || ((val00<0)&&(f<0)) ){
+              Ligne( P1x,P1y,P3x,P3y);
               Ligne( P2x,P2y,P4x,P4y);
-            Sinon
-          Ligne( P1x,P1y,P2x,P2y);
+            } else {
+              Ligne( P1x,P1y,P2x,P2y);
               Ligne( P3x,P3y,P4x,P4y);
-            FinSi
-          FinSi
+            } // end if
+          } // end if
 
-        Sinon
+        } else {
 
       // otherwise, connect the 2 points found
-          Si p1 != -1 Alors
-            Si p2 != -1 AlorsFait Ligne( P1x,P1y,P2x,P2y);
-            Si p3 != -1 AlorsFait Ligne( P1x,P1y,P3x,P3y);
-            Si p4 != -1 AlorsFait Ligne( P1x,P1y,P4x,P4y);
-          Autrement
-          Si p2 != -1 Alors
-            Si p4 != -1 AlorsFait Ligne( P2x,P2y,P4x,P4y);
-            Si p3 != -1 AlorsFait Ligne( P2x,P2y,P3x,P3y);
-          FinSi
+          if ( p1 != -1 ){
+            if ( p2 != -1 ) Ligne( P1x,P1y,P2x,P2y);
+            if ( p3 != -1 ) Ligne( P1x,P1y,P3x,P3y);
+            if ( p4 != -1 ) Ligne( P1x,P1y,P4x,P4y);
+          } else
+          if ( p2 != -1 ){
+            if ( p4 != -1 ) Ligne( P2x,P2y,P4x,P4y);
+            if ( p3 != -1 ) Ligne( P2x,P2y,P3x,P3y);
+          } // end if
 
-          Si (p3 != -1) Et (p4 != -1) AlorsFait Ligne( P3x,P3y,P4x,P4y);
+          if ( (p3 != -1) && (p4 != -1) ) Ligne( P3x,P3y,P4x,P4y);
 
-        FinSi
-      FinSi
+        } // end if
+      } // end if
 
       image->IncBuffer();
 
@@ -3241,7 +3268,7 @@ void DessinImageBase::DessinePlanInterpZ( )
     case INTERP_SUB_8:   n = 8; break;
     case INTERP_SUB_MAX:
        n = (int) macro_max(_size_x, _size_y);
-       Si n < 1 AlorsFait n = 1;
+       if ( n < 1 ) n = 1;
     break;
     default:
        std::cerr << "DessinImageBase::DessinePlanInterpZ() \t";
@@ -3254,7 +3281,7 @@ void DessinImageBase::DessinePlanInterpZ( )
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir 0.99999 a la valeur superieure et d'eviter
   //--- un plantage
-  Si _memorise_coupes_XY Alors
+  if ( _memorise_coupes_XY ){
 #if defined(__MOTIF__)
     //--- On verifie l'allocation des images avec les bonnes dimensions
     AlloueImagesXY( (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
@@ -3262,20 +3289,24 @@ void DessinImageBase::DessinePlanInterpZ( )
     //--- On utilise la coupe deja allouee
     _tab_ximage_data[IMAGE_XY] = _tab_ximage_XY_data[ Param._pos._z];
     _tab_ximage[IMAGE_XY] = _tab_ximage_XY[ Param._pos._z];
-    //--- Si l'image est a jour, on sort de la fonction
-    Si _image_XY_a_jour[ Param._pos._z] AlorsRetourne;
+    //--- if ( l'image est a jour, on sort de la fonction
+    if ( _image_XY_a_jour[ Param._pos._z] AlorsRetourne;
 #endif
-  Sinon
+  } else {
     CreeImage( IMAGE_XY,
                (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
          (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
-  FinSi
+  } // end if
 
   FixeImageCourante( IMAGE_XY);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
   register  int               image_width = _current_slice->GetWidth();
 
-  Si _dessine_masque AlorsFait _image_masque->InitBuffer( );
+  InrImage::ptr maskimage;
+  if (_draw_mask) {
+    maskimage = _mask_image.lock();
+  }
+  if ( _draw_mask ) maskimage->InitBuffer( );
 
   InitBuffer( );
 
@@ -3290,13 +3321,13 @@ void DessinImageBase::DessinePlanInterpZ( )
 
       Pour(i, -n2, n-1-n2)
 
-        Si  (_image->_format != WT_RGB)&&
-            (_image->_format != WT_RGBA)
-        Alors
+        if (  (_image->_format != WT_RGB)&&
+            (_image->_format != WT_RGBA))
+        {
           couleur = _tab_intensite_couleur[ IntensiteBuffer(x+i*1.0/n,
                   y+j*1.0/n,
                   Param._pos._z) ];
-        Sinon
+        } else {
 
           float R,G,B;
           R = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z, 0);
@@ -3305,7 +3336,7 @@ void DessinImageBase::DessinePlanInterpZ( )
           couleur.Set((unsigned char) R,
                       (unsigned char) G,
                       (unsigned char) B);
-        FinSi
+        } // end if
 
         FastImageRectangle(
           image_data, image_width,
@@ -3327,8 +3358,8 @@ void DessinImageBase::DessinePlanInterpZ( )
 
   FinPour // y
 
-  //--- Si on memorise les coupes, on precise que cette coupe XY est a jour
-  Si _memorise_coupes_XY AlorsFait
+  //--- if ( on memorise les coupes, on precise que cette coupe XY est a jour
+  if ( _memorise_coupes_XY )
     _image_XY_a_jour[ Param._pos._z] = true;
 
 } // DessinePlanInterpZ()
@@ -3349,7 +3380,7 @@ void DessinImageBase :: DessinePlanInterpY( )
     case INTERP_SUB_8:   n = 8; break;
     case INTERP_SUB_MAX:
        n = (int) macro_max(_size_x, _size_z);
-       Si n < 1 AlorsFait n = 1;
+       if ( n < 1 ) n = 1;
     break;
     default:
        std::cerr << "DessinImageBase::DessinePlanInterpY() \t";
@@ -3370,7 +3401,9 @@ void DessinImageBase :: DessinePlanInterpY( )
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
   register  int               image_width = _current_slice->GetWidth();
 
-  Si _dessine_masque AlorsFait _image_masque->InitBuffer( );
+  InrImage::ptr maskimage;
+  if (_draw_mask) maskimage = _mask_image.lock();
+  if ( _draw_mask ) maskimage->InitBuffer( );
   InitBuffer( );
 
   pz = _size_z/2.0;
@@ -3384,19 +3417,19 @@ void DessinImageBase :: DessinePlanInterpY( )
 
       Pour(i,-n2,n-1-n2)
 
-        Si  (_image->_format != WT_RGB)&&
-            (_image->_format != WT_RGBA)
-        Alors
+        if (  (_image->_format != WT_RGB)&&
+            (_image->_format != WT_RGBA))
+        {
           couleur = _tab_intensite_couleur[ IntensiteBuffer(x+i*1.0/n,
                   Param._pos._y,
                   z+j*1.0/n ) ];
-        Sinon
+        } else {
           couleur.Set(
               (unsigned char) _image->VectValeurBuffer(0),
               (unsigned char) _image->VectValeurBuffer(1),
               (unsigned char) _image->VectValeurBuffer(2)
           );
-        FinSi
+        } // end if
 
         FastImageRectangle(
           image_data, image_width,
@@ -3436,7 +3469,7 @@ void DessinImageBase::DessinePlanInterpX( )
     case INTERP_SUB_8:   n = 8; break;
     case INTERP_SUB_MAX:
        n = (int) macro_max(_size_z, _size_y);
-       Si n < 1 AlorsFait n = 1;
+       if ( n < 1 ) n = 1;
     break;
     default:
        std::cerr << "DessinImageBase::DessinePlanInterpX() \t";
@@ -3476,20 +3509,20 @@ void DessinImageBase::DessinePlanInterpX( )
 
       Pour(i,-n2,n-1-n2)
 
-        Si  (_image->_format != WT_RGB)&&
-            (_image->_format != WT_RGBA)
-        Alors
+        if (  (_image->_format != WT_RGB)&&
+            (_image->_format != WT_RGBA))
+        {
           couleur = _tab_intensite_couleur[ IntensiteBuffer( Param._pos._x,
                    y+i*1.0/n,
                    z+j*1.0/n
                    ) ];
-        Sinon
+        } else {
           couleur.Set(
             (unsigned char) _image->VectValeurBuffer(0),
             (unsigned char) _image->VectValeurBuffer(1),
             (unsigned char) _image->VectValeurBuffer(2)
                       );
-        FinSi
+        } // end if
 
         FastImageRectangle(
           image_data, image_width,
@@ -3572,12 +3605,10 @@ void DessinImageBase :: SetCoupe( int coupe)
 {
 
   Param._pos._z = coupe;
-  Si Param._pos._z > Param._Zoom._zmax
-  AlorsFait
+  if ( Param._pos._z > Param._Zoom._zmax  )
     Param._pos._z = Param._Zoom._zmax;
 
-  Si Param._pos._z < Param._Zoom._zmin
-  AlorsFait
+  if ( Param._pos._z < Param._Zoom._zmin  )
     Param._pos._z = Param._Zoom._zmin;
 
   Param._MAJ._planXY = true;
@@ -3599,31 +3630,31 @@ void DessinImageBase :: IncCoupe()
 
   CursorToImage(_souris_x, _souris_y, pt.x,pt.y,pt.z,etat);
   // std::cout << pt << std::endl;
-  Si etat != -1 Alors
+  if ( etat != -1 ){
     switch ( etat ){
 
       case IMAGE_XY:
          Param._pos._z++;
-         Si Param._pos._z > Param._Zoom._zmax AlorsFait Param._pos._z = Param._Zoom._zmin;
+         if ( Param._pos._z > Param._Zoom._zmax ) Param._pos._z = Param._Zoom._zmin;
    //         _param_dialog->UpdateParameter(_id_planZ);
          Param._MAJ._planXY = true;
       break;
 
       case IMAGE_XZ:
          Param._pos._y++;
-         Si Param._pos._y > Param._Zoom._ymax AlorsFait Param._pos._y = Param._Zoom._ymin;
+         if ( Param._pos._y > Param._Zoom._ymax ) Param._pos._y = Param._Zoom._ymin;
          Param._MAJ._planXZ = true;
       break;
 
       case IMAGE_ZY:
          Param._pos._x++;
-         Si Param._pos._x > Param._Zoom._xmax AlorsFait Param._pos._x = Param._Zoom._xmin;
+         if ( Param._pos._x > Param._Zoom._xmax ) Param._pos._x = Param._Zoom._xmin;
          Param._MAJ._planZY = true;
       break;
 
     } // end switch
     Paint( false);
-  FinSi
+  } // end if
 
 
 } // IncCoupe()
@@ -3640,30 +3671,30 @@ void DessinImageBase :: DecCoupe()
 
   CursorToImage(_souris_x, _souris_y, pt.x,pt.y,pt.z,etat);
   // std::cout << pt << std::endl;
-  Si etat != -1 Alors
+  if ( etat != -1 ){
     switch ( etat ){
 
       case IMAGE_XY:
          Param._pos._z--;
-         Si Param._pos._z <  Param._Zoom._zmin AlorsFait Param._pos._z = Param._Zoom._zmax;
+         if ( Param._pos._z <  Param._Zoom._zmin ) Param._pos._z = Param._Zoom._zmax;
          Param._MAJ._planXY = true;
       break;
 
       case IMAGE_XZ:
          Param._pos._y--;
-         Si Param._pos._y < Param._Zoom._ymin AlorsFait Param._pos._y = Param._Zoom._ymax;
+         if ( Param._pos._y < Param._Zoom._ymin ) Param._pos._y = Param._Zoom._ymax;
          Param._MAJ._planXZ = true;
       break;
 
       case IMAGE_ZY:
          Param._pos._x--;
-         Si Param._pos._x < Param._Zoom._xmin AlorsFait Param._pos._x = Param._Zoom._xmax;
+         if ( Param._pos._x < Param._Zoom._xmin ) Param._pos._x = Param._Zoom._xmax;
          Param._MAJ._planZY = true;
       break;
 
     } // end switch
     Paint( false);
-  FinSi
+  } // end if
 
 
 } // DecCoupe()
@@ -3716,7 +3747,7 @@ void DessinImageBase::OnChar(wxKeyEvent& event)
         type = Param._type_coupe;
         Param._type_coupe = ((type+1) & (TYPE_COUPE_XY+1)) +
                             ((type+1) & (TYPE_COUPE_XZ+1));
-        Si ((type+1) & (TYPE_COUPE_ZY+1)) == 0  AlorsFait
+        if ( ((type+1) & (TYPE_COUPE_ZY+1)) == 0  )
           Param._type_coupe += TYPE_COUPE_ZY+1;
         Param._type_coupe -= 1;
        std::cout << " type " <<  Param._type_coupe << std::endl;
@@ -3734,7 +3765,7 @@ void DessinImageBase::OnChar(wxKeyEvent& event)
         type = Param._type_coupe;
         Param._type_coupe = ((type+1) & (TYPE_COUPE_XY+1)) +
                             ((type+1) & (TYPE_COUPE_ZY+1));
-        Si ((type+1) & (TYPE_COUPE_XZ+1)) == 0  AlorsFait
+        if ( ((type+1) & (TYPE_COUPE_XZ+1)) == 0  )
           Param._type_coupe += TYPE_COUPE_XZ+1;
         Param._type_coupe -= 1;
        std::cout << " type " <<  Param._type_coupe << std::endl;
@@ -3752,7 +3783,7 @@ void DessinImageBase::OnChar(wxKeyEvent& event)
         type = Param._type_coupe;
         Param._type_coupe = ((type+1) & (TYPE_COUPE_XZ+1)) +
                             ((type+1) & (TYPE_COUPE_ZY+1));
-        Si ((type+1) & (TYPE_COUPE_XY+1)) == 0  AlorsFait
+        if ( ((type+1) & (TYPE_COUPE_XY+1)) == 0  )
           Param._type_coupe += TYPE_COUPE_XY+1;
         Param._type_coupe -= 1;
        std::cout << " type " <<  Param._type_coupe << std::endl;
@@ -3775,13 +3806,13 @@ void DessinImageBase::OnChar(wxKeyEvent& event)
       case WXK_SUBTRACT:  DecCoupe(); break;
 
       default:
-        Si _keypressed_callback != NULL Alors
+        if ( _keypressed_callback != NULL ){
 /* TODO
           ((XtCallbackProc) _keypressed_callback)(_drawing_area,
               _keypressed_data,
               _key_event);
 */
-        FinSi
+        } // end if
         event.Skip();
         return;
     }

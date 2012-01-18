@@ -1036,7 +1036,7 @@ void DessinImage::InitPositionImages( )
 
   } // end switch // Param._type_coupe
 
-  Si _dessine_masque Alors
+  Si _draw_mask Alors
     _tab_ximage_pos_x[IMAGE_MASQUE_XY] = _tab_ximage_pos_x[IMAGE_XY];
     _tab_ximage_pos_y[IMAGE_MASQUE_XY] = _tab_ximage_pos_y[IMAGE_XY];
   FinSi
@@ -2860,7 +2860,7 @@ void DessinImage::InitPalette()
   _circles_negative_color.FixeValeur( 0, 200, 0);
 
   // Mask Color
-  _couleur_masque = _couleur_curseur;
+  _mask_color = _couleur_curseur;
 
   Pour(i,0,MAX_ISOCONTOURS-1)
 
@@ -6198,10 +6198,10 @@ void DessinImage::CB_MasqueVisible( wxCommandEvent& event)
 printf("1\n");
 //  _dessine_masque = menuOptions->IsChecked(ID_MenuOptions_display_mask);
 
-printf("1.1 %d \n",(int)_dessine_masque);
-  Si di->_image_masque == NULL Alors
-    di->_dessine_masque = false;
-    menuOptions->Check(ID_MenuOptions_display_mask,_image_masque);
+printf("1.1 %d \n",(int)_draw_mask);
+  Si di->_mask_image.expired() Alors
+    di->_draw_mask = false;
+    menuOptions->Check(ID_MenuOptions_display_mask,!_mask_image.expired());
 //(di->_Moptions_masque_visible)->MAJ();
   FinSi
 
