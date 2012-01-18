@@ -8,7 +8,7 @@ del alWxFileList
 Class alWxFileList \
 {
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   proc ::Init() \
   {
     ::paths=VarVector()
@@ -19,19 +19,20 @@ Class alWxFileList \
     ::list_files=true
   }
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   proc ::ClearFileSpecs() \
   {
     ::file_specs.clear()
   }
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   proc ::AddFileSpec( STRING spec) \
   {
     ::file_specs.push_back(spec)
   }
   
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
+
   # Sets the current searching path
   #
   proc ::ClearPaths( ) \
@@ -39,7 +40,7 @@ Class alWxFileList \
     ::paths.clear()
   }
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   # Sets the current searching path
   #
   proc ::AddPath( STRING path) \
@@ -47,7 +48,7 @@ Class alWxFileList \
     ::paths.push_back(path)
   }
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   # Sets the command to run on a given selection
   #
   proc ::SetSelectionCommand( VAR selcmd) \
@@ -55,7 +56,7 @@ Class alWxFileList \
     ::selection_cmd = &selcmd
   }
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   # returns the list of selected files
   # as a VarVector of strings
   #
@@ -105,7 +106,7 @@ Class alWxFileList \
 
   }
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   proc ::CB_ListItemSelected( OBJECT event ) \
   {
     #index = event.GetIndex()
@@ -125,7 +126,7 @@ Class alWxFileList \
     #::Run()
   }
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   proc ::AddToList( NUM pathid, STRING subpath, STRING disksize, \
                     STRING filename) \
   {
@@ -138,12 +139,13 @@ Class alWxFileList \
   }
 
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   proc ::ScanDir( NUM pathid, STRING dirpath, STRING subpath, \
                   STRING indent, NUM level) \
   {   
     if (level<=::scan_level)&&(::scan_count<::max_scan) {
-      SetStatusText("scanning %1%" % dirpath + "(%1%"%level+" | %1%)"%::scan_count)
+      SetStatusText(  "scanning %1%" % dirpath + \
+                      "(%1%"%level+" | %1%)"%::scan_count)
       printn "scanning %1%" % dirpath + "(%1%"%level+" | %1%)"%::scan_count
       nextDir = wx.wxDir(dirpath)
       ## create smart pointer to allow deleting the object
@@ -211,7 +213,7 @@ Class alWxFileList \
       #printn "4"
   }
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   proc ::Scan() \
   {   
     ::txtctrl.Clear()
@@ -230,7 +232,7 @@ Class alWxFileList \
     ::listctrl.SetColumnWidth(2, wx.wxLIST_AUTOSIZE)
   }
 
-  #-------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   proc ::AddGui( OBJECT win) \
   {
     win.BeginBook()

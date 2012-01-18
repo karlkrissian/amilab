@@ -1,0 +1,111 @@
+
+del alObjectList
+
+#===========================================================================
+# Parse directories and show results in a list with option to run a command
+# for a given selection
+# 
+Class alObjectList \
+{
+
+  #-----------------------------------------------------------------------------
+  proc ::Init() \
+  {
+  }
+
+  #-----------------------------------------------------------------------------
+  # Sets the command to run on a given selection
+  #
+  proc ::SetSelectionCommand( VAR selcmd) \
+  {
+    ::selection_cmd = &selcmd
+  }
+
+  #-----------------------------------------------------------------------------
+  # returns the list of selected elements
+  # as a VarVector of strings
+  #
+  proc ::GetSelected() \
+  {
+    return = VarVector()
+    item = ::listctrl.GetNextItem(-1,\
+                                  wx.wxLIST_NEXT_ALL,\
+                                  wx.wxLIST_STATE_SELECTED)
+    ok = (item!=-1)
+    while ok {
+      return.push_back(item)
+      item = ::listctrl.GetNextItem(item,\
+                                    wx.wxLIST_NEXT_ALL,\
+                                    wx.wxLIST_STATE_SELECTED)
+      ok = (item!=-1)
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_ListItemSelected( OBJECT event ) \
+  {
+    if exists(::selection_cmd) {
+      ::selection_cmd()
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::AddToList( NUM pathid, STRING subpath, STRING disksize, \
+                    STRING filename) \
+  {
+    n = ::listctrl.GetItemCount()
+    pos = ::listctrl.InsertItem(n,"%1%"%subpath)
+    ::listctrl.SetItemData(pos,n)
+    ::listctrl.SetItem(pos,1,"%1%"%filename)
+    ::listctrl.SetItem(pos,2,"%1%"%pathid)
+    ::listctrl.SetItem(pos,3,"%1%"%disksize)
+  }
+
+
+
+  #-----------------------------------------------------------------------------
+  proc ::Update() \
+  {   
+    ::txtctrl.Clear()
+    ::listctrl.DeleteAllItems()
+
+    # for now, just use the last path
+    ::scan_count = 0
+    for pathid=0 to ::paths.size()-1 \
+    {
+      path = ::paths[pathid]
+      printn "%1%" % pathid + ":%1%" % path
+      #::ScanDir( pathid, path+"/",".","",0)
+    }
+    ::listctrl.SetColumnWidth(0, wx.wxLIST_AUTOSIZE)
+    ::listctrl.SetColumnWidth(1, wx.wxLIST_AUTOSIZE)
+    ::listctrl.SetColumnWidth(2, wx.wxLIST_AUTOSIZE)
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::AddGui( OBJECT win) \
+  {
+    win.BeginBook()
+      win.AddPage("List")
+        ::listctrl = wx.wxListCtrl(&win.CurrentParent())
+        win.AddWidget(&::listctrl,1)
+        ::listctrl.SetWindowStyle(wx.wxLC_REPORT)
+        ::listctrl.InsertColumn_2(0,"Sub-path")
+        ::listctrl.InsertColumn_2(1,"File")
+        ::listctrl.InsertColumn_2(2,"Path ID")
+        ::listctrl.InsertColumn_2(3,"Description")
+
+        # connect event
+        ::evh_selected = wx.wxAmiEventHandler(&::CB_ListItemSelected)
+        ::evh_selected.SetSendListEvent(true)
+        ::listctrl.Connect( wx.wxEVT_COMMAND_LIST_ITEM_SELECTED\
+                            ,&::evh_selected.GetEventFunction(),\
+                            &NULL,&::evh_selected)
+      win.AddPage("Text")
+        ::txtctrl = wx.wxRichTextCtrl(&win.CurrentParent())
+        win.AddWidget(&::txtctrl,1)
+    win.EndBook()
+  }
+
+  ::Init()
+}

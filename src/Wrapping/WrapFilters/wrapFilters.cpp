@@ -19,7 +19,7 @@
 #include "wrapFilters.h"
 #include "LeastSquares.h"
 #include "wrap_StructureTensor.h"
-#include "RegionGrowingTest.h"
+//#include "RegionGrowingTest.h"
 #include <pthread.h>
 #include "ImageDerivatives.h"
 
@@ -82,7 +82,7 @@ void AddWrapFilters(AMIObject::ptr& obj)
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"EigenDecomp",Wrap_EigenDecomp);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"SplineResample",Wrap_SmoothLinesToSplines);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"RegionGrow",Wrap_RegionGrow);
+//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"RegionGrow",Wrap_RegionGrow);
   
   #ifdef AMI_USE_FASTNLMEANS
     ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NewNLmeans",    Wrap_NewNLmeans);
@@ -1081,49 +1081,50 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
 } // Wrap_SmoothLinesToSplines()
 
 
-// Region Growing
-BasicVariable::ptr Wrap_RegionGrow(ParamList* p)
-{
+// // Region Growing
+// BasicVariable::ptr Wrap_RegionGrow(ParamList* p)
+// {
+// 
+//   char functionname[] = "RegionGrow";
+//   char description[]=" \n\
+//       ";
+//   char parameters[] =" \n\
+//           Parameters:\n\
+//               input image\n\
+//               initial image image\n\
+//               min intensity \n\
+//               max intensity \n\
+//           Return:\n\
+//               Resulting state image\n\
+//       ";
+// 
+//   Variable<InrImage>::ptr input_var;
+//   Variable<InrImage>::ptr init_var;
+//   float int_min;
+//   float int_max;
+//   int n=0;
+// 
+//   if (!get_var_param<InrImage>( input_var, p, n)) HelpAndReturnVarPtr;
+//   if (!get_var_param<InrImage>( init_var, p, n)) HelpAndReturnVarPtr;
+//   if (!get_val_param<float>( int_min, p, n)) HelpAndReturnVarPtr;
+//   if (!get_val_param<float>( int_max, p, n)) HelpAndReturnVarPtr;
+// 
+//   InrImage::ptr input( input_var->Pointer());
+//   InrImage::ptr init ( init_var ->Pointer());
+// 
+//   IntensityBasedRegionGrowing::ptr regiongrow(
+//     new IntensityBasedRegionGrowing(input,init)
+//     );
+//   regiongrow->SetMin(int_min);
+//   regiongrow->SetMax(int_max);
+//   regiongrow->Evolve();
+// 
+//   Variable<InrImage>::ptr varres(
+//     new Variable<InrImage>( "RegionGrowingResult",
+//                             regiongrow->GetStateImage()));
+// 
+//   return varres;
+// 
+// 
+// } // Wrap_RegionGrow()
 
-  char functionname[] = "RegionGrow";
-  char description[]=" \n\
-      ";
-  char parameters[] =" \n\
-          Parameters:\n\
-              input image\n\
-              initial image image\n\
-              min intensity \n\
-              max intensity \n\
-          Return:\n\
-              Resulting state image\n\
-      ";
-
-  Variable<InrImage>::ptr input_var;
-  Variable<InrImage>::ptr init_var;
-  float int_min;
-  float int_max;
-  int n=0;
-
-  if (!get_var_param<InrImage>( input_var, p, n)) HelpAndReturnVarPtr;
-  if (!get_var_param<InrImage>( init_var, p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>( int_min, p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>( int_max, p, n)) HelpAndReturnVarPtr;
-
-  InrImage::ptr input( input_var->Pointer());
-  InrImage::ptr init ( init_var ->Pointer());
-
-  IntensityBasedRegionGrowing::ptr regiongrow(
-    new IntensityBasedRegionGrowing(input,init)
-    );
-  regiongrow->SetMin(int_min);
-  regiongrow->SetMax(int_max);
-  regiongrow->Evolve();
-
-  Variable<InrImage>::ptr varres(
-    new Variable<InrImage>( "RegionGrowingResult",
-                            regiongrow->GetStateImage()));
-
-  return varres;
-
-
-} // Wrap_RegionGrow()

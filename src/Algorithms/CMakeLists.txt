@@ -45,7 +45,7 @@ SET(Algorithms_SRCS
   WrapOld_AnisoGS.cpp
   NLmeans.cpp
 
-  RegionGrowingTest.cpp
+  amiRegionGrowingBase.cpp
 
   #AnalyticFunctionBase.cpp
   ComputePartialVolume.cpp
@@ -106,6 +106,8 @@ SET(Algorithms_HDRS
   include/amiImageCos.h
   include/amiGrayscaleMorpho.h
   include/amiSRAD.h
+  include/amiRegionGrowingBase.h
+  include/amiIntensityBasedRegionGrowing.h
 
   include/localstats.h
   include/ShortestPathClass.h
@@ -114,7 +116,6 @@ SET(Algorithms_HDRS
   include/WrapOld_AnisoGS.h
   include/NLmeans.h
 
-  include/RegionGrowingTest.h
 
   include/AnalyticFunctionBase.h
   include/ComputePartialVolume.h

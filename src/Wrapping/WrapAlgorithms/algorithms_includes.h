@@ -11,6 +11,7 @@
 
 #include "amiImageAddScalar.h"
 #include "amiGrayscaleMorpho.h"
+#include "amiIntensityBasedRegionGrowing.h"
 
 #include "amiImageExtent.h"
 
