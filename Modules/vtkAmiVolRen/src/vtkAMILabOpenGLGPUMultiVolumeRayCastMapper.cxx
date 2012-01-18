@@ -3735,7 +3735,9 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::ClipBoundingBox(vtkRenderer *re
     {
     this->Densify=vtkDensifyPolyData::New();
     this->Densify->SetInputConnection(this->Clip->GetOutputPort());
-    this->Densify->SetNumberOfSubdivisions(2);
+  
+    //this->Densify->SetNumberOfSubdivisions(2);
+    this->Densify->SetNumberOfSubdivisions(1);
     }
   this->Densify->Update();
   this->ClippedBoundingBox = this->Densify->GetOutput();
@@ -3790,6 +3792,16 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderClippedBoundingBox(
     loadedBounds=this->CurrentScalar->GetLoadedBounds();
     loadedExtent=this->CurrentScalar->GetLoadedExtent();
     }
+
+  double *loadedBounds2=0;
+  vtkIdType *loadedExtent2=0;
+
+  if ( tcoordFlag )
+    {
+    loadedBounds2=this->CurrentScalar2->GetLoadedBounds();
+    loadedExtent2=this->CurrentScalar2->GetLoadedExtent();
+    }
+
   double *spacing=this->GetInput()->GetSpacing();
   double spacingSign[3];
   i=0;
@@ -3806,7 +3818,23 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderClippedBoundingBox(
     ++i;
     }
 
-  // make it double for the ratio of the progress.
+  double *spacing2=this->GetInput2()->GetSpacing();
+  double spacingSign2[3];
+  i=0;
+  while(i<3)
+    {
+    if(spacing2[i]<0)
+      {
+      spacingSign2[i]=-1.0;
+      }
+    else
+      {
+      spacingSign2[i]=1.0;
+      }
+    ++i;
+    }
+
+// make it double for the ratio of the progress.
   int polyId=0;
   double polyCount=static_cast<double>(polys->GetNumberOfCells());
   polys->InitTraversal();
@@ -3859,38 +3887,56 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderClippedBoundingBox(
 
       double vert[3];
       double tcoord[3];
+      double tcoord2[3];
       for ( i = start; i != end; i += inc )
         {
         points->GetPoint(pts[i], vert);
         if ( tcoordFlag )
           {
-          for ( j = 0; j < 3; j++ )
+            for ( j = 0; j < 3; j++ )
             {
             // loaded bounds take both cell data and point date cases into
             // account
-            if(this->CellFlag) // texcoords between 0 and 1. More complex
+              if(this->CellFlag) // texcoords between 0 and 1. More complex
               // depends on the loaded texture
               {
-              tcoord[j] = spacingSign[j]*(vert[j] - loadedBounds[j*2]) /
-                (loadedBounds[j*2+1] - loadedBounds[j*2]);
+                tcoord[j] = spacingSign[j]*(vert[j] - loadedBounds[j*2]) /
+                  (loadedBounds[j*2+1] - loadedBounds[j*2]);
+                tcoord2[j] = spacingSign2[j]*(vert[j] - loadedBounds2[j*2]) /
+                  (loadedBounds2[j*2+1] - loadedBounds2[j*2]);
               }
-            else // texcoords between 1/2N and 1-1/2N.
+              else // texcoords between 1/2N and 1-1/2N.
               {
-              double tmp; // between 0 and 1
-              tmp = spacingSign[j]*(vert[j] - loadedBounds[j*2]) /
-                (loadedBounds[j*2+1] - loadedBounds[j*2]);
-              double delta=static_cast<double>(
-                loadedExtent[j*2+1]-loadedExtent[j*2]+1);
-              tcoord[j]=(tmp*(delta-1)+0.5)/delta;
+                double tmp; // between 0 and 1
+                double delta;
+                tmp = spacingSign[j]*(vert[j] - loadedBounds[j*2]) /
+                  (loadedBounds[j*2+1] - loadedBounds[j*2]);
+                delta=static_cast<double>(
+                  loadedExtent[j*2+1]-loadedExtent[j*2]+1);
+                tcoord[j]=(tmp*(delta-1)+0.5)/delta;
+
+                tmp = spacingSign2[j]*(vert[j] - loadedBounds2[j*2]) /
+                  (loadedBounds2[j*2+1] - loadedBounds2[j*2]);
+                delta=static_cast<double>(
+                  loadedExtent2[j*2+1]-loadedExtent2[j*2]+1);
+                tcoord2[j]=(tmp*(delta-1)+0.5)/delta;
+                
               }
             }
-          vtkgl::MultiTexCoord3dv(vtkgl::TEXTURE0, tcoord);
-//carlos sin fallo
+            vtkgl::MultiTexCoord3dv(vtkgl::TEXTURE0, tcoord);
+            vtkgl::MultiTexCoord3dv(vtkgl::TEXTURE7, tcoord2);
+
+            //carlos sin fallo
 //          if (carlos )
-//            vtkgl::MultiTexCoord3dv(vtkgl::TEXTURE7, tcoord);
 //
           }
         glVertex3dv(vert);
+        std::cout << "vert " << vert[0] << ", " 
+                  << vert[1] << ", " << vert[2] << std::endl;
+        std::cout << "tcoord " << tcoord[0] << ", " 
+                  << tcoord[1] << ", " << tcoord[2] << std::endl;
+        std::cout << "tcoord2 " << tcoord2[0] << ", " 
+                  << tcoord2[1] << ", " << tcoord2[2] << std::endl;
         }
       glEnd();
 
