@@ -48,7 +48,7 @@ private:
 public:
   
   enum  EndPointType {
-    ENDPOINT_LINE = 1,
+    ENDPOINT_LINE,
     ENDPOINT_SURFACE,
     ENDPOINT_LINE_OR_SURFACE,
     };
