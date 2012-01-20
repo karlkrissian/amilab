@@ -22,7 +22,7 @@ proc CreateSkeleton(IMAGE input, NUM threshold, IMAGE output) {
 #  show _idist
   _j = (UCHAR) (_res>0)*255
   print "Compute Skeleton\n"
-  output = Skeleton(_j,_idist,0,1000)
+  output = algorithms.ami_Thinning.Skeleton(&_j,&_idist,0,1000)
   print "Leaving CreateSkeleton\n"
 }
 #----------------------------------------------------------------------
@@ -40,7 +40,7 @@ proc CreateSkeleton2(IMAGE input, IMAGE output) {
   show _idist
   _j = (UCHAR) (input>0)*255
   print "Compute Skeleton\n"
-  output = Skeleton(_j,_idist,0,1000)
+  output = algorithms.ami_Thinning.Skeleton(&_j,&_idist,0,1000)
   print "Leaving CreateSkeleton\n"
 }
 
@@ -61,7 +61,7 @@ proc CreateSkeletonBin(IMAGE input, NUM threshold, IMAGE output) {
   _k1  = AndreDist(_j1)
 
   print "Compute Skeleton\n"
-  output = Skeleton(_j,_k1,0,1000)
+  output = algorithms.ami_Thinning.Skeleton(&_j,&_k1,0,1000)
   print "Leaving CreateSkeletonBin\n"
 }
 #----------------------------------------------------------------------

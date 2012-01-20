@@ -62,17 +62,19 @@ def cb(status, pc, spc, el, rem, c):
   return True # return False to cancel
         
 
-#------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 def installer_install_Linux_openSUSE(packages):
   for pkg in packages.split():
     os.system('sudo zypper -n install {0}'.format(pkg))
 
+#-------------------------------------------------------------------------------
 def installer_install_Linux_debian(packages):
   pkg_list = ''
   for pkg in packages.split():
     pkg_list += ' '+pkg
   os.system('su -c "apt-get -y install {0}"'.format(pkg_list))
 
+#-------------------------------------------------------------------------------
 def installer_install_Linux(packages):
   # packagekit not working in opensuse: getting stuck ...
   print "'{0}'".format(conf_dist)
@@ -85,6 +87,10 @@ def installer_install_Linux(packages):
     else:
       pk = packagekit_wrapper.PackageKitClient()
       for pkg in packages.split():
+        if conf_dist == 'config_Linux_Fedora' and \
+           platform.architecture()[0] == '64bit':
+             # ensure 64bit package since I had the problem with Julio
+             pkg = pkg + ".x86_64"
         print "  '{0}'".format(pkg)
         res = pk.Resolve('none',[pkg])
         print "  resolved"

@@ -1511,6 +1511,8 @@ BasicVariable::ptr WrapClass_DessinImage::
     int & slice = *slice_smtptr;
     
     di->CursorToImage(cursor_x,cursor_y,x,y,z,slice);
+    //std::cout << "cursor " << cursor_x << "," << cursor_y 
+    //          << "image: " << x << "," << y << "," << z << std::endl;
   }
   return BasicVariable::ptr();
 }

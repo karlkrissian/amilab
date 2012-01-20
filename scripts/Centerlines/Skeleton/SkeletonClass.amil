@@ -76,6 +76,7 @@ if (!exists(SkeletonClass)) {
       if (exists(::win)) {
         ::inputmin          = min(::input)
         ::inputmax          = max(::input)
+        ::Threshold         = (::inputmin+::inputmax)/2
         ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
       }
     }
@@ -157,8 +158,13 @@ if (!exists(SkeletonClass)) {
     
     #  show ::idist
       print "Compute Skeleton\n"
-      ::output <<= Skeleton(::bin,::idist,0,1000,\
-                                       ::endpoint_type+1)
+      #::output <<= Skeleton(::bin,::idist,0,1000,\
+                            #::endpoint_type+1)
+
+      ::output <<= algorithms.ami_Thinning.Skeleton( &::bin\
+                                                    ,&::idist\
+                                                    ,0,1000\
+                                                    ,::endpoint_type)
       
       print "Leaving CreateSkeleton\n"
     

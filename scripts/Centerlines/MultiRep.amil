@@ -47,7 +47,7 @@ e.save    name + "-ext.ami.gz"
 
 print "Thresholds and creates lines \n"
 b   = (UCHAR) ((e>ExtremaTh)*255)
-bsk = Skeleton(b,e,0,1000)
+bsk = algorithms.ami_Thinning.Skeleton(&b,&e,0,1000)
 bsk.save    name+ "-skel.ami.gz"
 
 

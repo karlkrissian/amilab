@@ -18,7 +18,7 @@ print "Processing the divergence of the gradient \n"
 Flux  = OutFlux(k1g)*-1
 
 print "Processing the skeleton ... \n"
-sk    = Skeleton(j,Flux,0,1000)
+sk    = algorithms.ami_Thinning.Skeleton(&j,&Flux,0,1000)
 skl   = Skeleton2lines(sk)
 skls  = SmoothLines(skl)
 

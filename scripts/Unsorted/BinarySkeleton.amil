@@ -21,7 +21,7 @@ proc BinarySkeleton( IMAGE im, IMAGE res, NUM th) {
   Flux  = OutFlux(k1g)*-1
 
   print "Processing the skeleton ... \n"
-  res   = Skeleton(j,Flux,0,1000)
+  res   = algorithms.ami_Thinning.Skeleton(&j,&Flux,0,1000)
 
 }
 // BinarySkeleton

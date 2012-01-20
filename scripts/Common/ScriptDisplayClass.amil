@@ -58,13 +58,13 @@ if (!exists(ScriptDisplayClass)) \
     # this method has to be overloaded ...
     proc ::IsActive() \
     {
-printn "IsActive 1"
+      #printn "IsActive 1"
       st = "return=exists(%1%);" % ::script_obj
-printn "IsActive 2"
+      #printn "IsActive 2"
       eval st
-printn "IsActive 3"
+      #printn "IsActive 3"
       printn "IsActive returns %1%" % return
-printn "IsActive 4"
+      #printn "IsActive 4"
     }
 
     proc ::CB_Toolbar() \

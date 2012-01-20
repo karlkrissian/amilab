@@ -48,7 +48,7 @@ e2 = e*((e*1.5)>rep1m)
 
 print "Thresholds and creates lines \n"
 b   = (UCHAR) ((e2>ExtremaTh)*255)
-bsk = Skeleton(b,e2,0,1000)
+bsk = algorithms.ami_Thinning.Skeleton(&b,&e2,0,1000)
 l   = Skeleton2lines(bsk)
 l1  = SmoothLines(l)
 

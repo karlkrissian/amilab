@@ -5720,10 +5720,11 @@ image:
     FinSi
     ADD_VARSTACK_PTR(InrImage,res);
       }
-      |
+/* Deprecated
+ *      |
       T_Skeleton T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-      /**
+      / **
         Parameters:
           (3) IMAGE: input image
           (5) IMAGE: criterion for thinning
@@ -5739,7 +5740,7 @@ image:
           can set than any point at distance lower than the minimal
           threshold shoud be removed automatically and any point
           at distance higher than the maximum should be kept.
-      **/
+      ** /
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
     InrImage::ptr res ( Func_Thinning( varim1->Pointer().get(),
@@ -5764,6 +5765,7 @@ image:
     FinSi
     ADD_VARSTACK_PTR(InrImage,res);
       }
+      */
       |
       T_CircleIntegral T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
                            expr T_COMMA var_image T_CL_PAR

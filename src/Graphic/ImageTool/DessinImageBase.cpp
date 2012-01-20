@@ -620,9 +620,11 @@ void DessinImageBase::CursorToImage(  const int cursor_x,
   slice = -1;
   // On teste si la souris est dans la coupe XY
   if ((Param._type_coupe+1) & (TYPE_COUPE_XY+1)) {
-
     pos_x = cursor_x - _tab_ximage_pos_x[IMAGE_XY];
     pos_y = cursor_y - _tab_ximage_pos_y[IMAGE_XY];
+    // std::cout << "pos_x" << pos_x << ", pos_y" << pos_y  << std::endl;
+    // std::cout << "width = " << GetImageWidth(IMAGE_XY) 
+    //           << ", height" << GetImageHeight(IMAGE_XY) << std::endl;
 
     if ((pos_x >= 0 )&&
         (pos_x <  GetImageWidth(IMAGE_XY)) &&
@@ -634,6 +636,7 @@ void DessinImageBase::CursorToImage(  const int cursor_x,
       y = (int) (pos_y/_size_y) + Param._Zoom._ymin;
       z = Param._pos._z;
       slice = IMAGE_XY;
+      // std::cout << "(" << x << ", " << y << "," << z << ")" << std::endl; 
     } // endif
   } // endif 
 
@@ -642,6 +645,9 @@ void DessinImageBase::CursorToImage(  const int cursor_x,
   {
     pos_x = _souris_x - _tab_ximage_pos_x[IMAGE_XZ];
     pos_y = _souris_y - _tab_ximage_pos_y[IMAGE_XZ];
+    // std::cout << "pos_x" << pos_x << ", pos_y" << pos_y  << std::endl;
+    // std::cout << "width = " << GetImageWidth(IMAGE_XZ) << ", height" 
+    //     << GetImageHeight(IMAGE_XZ) << std::endl;
 
     if (  (pos_x >= 0) &&
           (pos_x <  GetImageWidth(IMAGE_XZ)) &&
@@ -653,6 +659,7 @@ void DessinImageBase::CursorToImage(  const int cursor_x,
       y = Param._pos._y;
       z = (int) (pos_y/_size_z) + Param._Zoom._zmin;
       slice = IMAGE_XZ;
+      // std::cout << "(" << x << ", " << y << "," << z << ")" << std::endl; 
     } // endif
   } // endif
 
@@ -661,6 +668,9 @@ void DessinImageBase::CursorToImage(  const int cursor_x,
   if ( (slice == -1) && ((Param._type_coupe+1) & (TYPE_COUPE_ZY+1))) {
     pos_x = _souris_x - _tab_ximage_pos_x[IMAGE_ZY];
     pos_y = _souris_y - _tab_ximage_pos_y[IMAGE_ZY];
+    // std::cout << "pos_x" << pos_x << ", pos_y" << pos_y  << std::endl;
+    // std::cout << "width = " << GetImageWidth(IMAGE_ZY) 
+    //           << ", height" << GetImageHeight(IMAGE_ZY) << std::endl;
 
     if ( pos_x >= 0                         &&
        pos_x <  GetImageWidth(IMAGE_ZY)   &&
@@ -671,10 +681,91 @@ void DessinImageBase::CursorToImage(  const int cursor_x,
       y = (int) (pos_y/_size_y) + Param._Zoom._ymin;
       z = (int) (pos_x/_size_z) + Param._Zoom._zmin;
       slice = IMAGE_ZY;
+      // std::cout << "(" << x << ", " << y << "," << z << ")" << std::endl; 
     } // end if
   } // end if
 
 } // CursorToImage()
+
+
+//----------------------------------------------------------------
+void DessinImageBase::CursorToImageFloat(  const int cursor_x, 
+                                      const int cursor_y, 
+                                      float& x, float& y, float& z, 
+                                      int& slice)
+{
+
+    int     pos_x, pos_y;
+
+  slice = -1;
+  // On teste si la souris est dans la coupe XY
+  if ((Param._type_coupe+1) & (TYPE_COUPE_XY+1)) {
+    pos_x = cursor_x - _tab_ximage_pos_x[IMAGE_XY];
+    pos_y = cursor_y - _tab_ximage_pos_y[IMAGE_XY];
+    // std::cout << "pos_x" << pos_x << ", pos_y" << pos_y  << std::endl;
+    // std::cout << "width = " << GetImageWidth(IMAGE_XY) 
+    //           << ", height" << GetImageHeight(IMAGE_XY) << std::endl;
+
+    if ((pos_x >= 0 )&&
+        (pos_x <  GetImageWidth(IMAGE_XY)) &&
+        (pos_y >= 0 ) &&
+        (pos_y <  GetImageHeight(IMAGE_XY)))
+    {
+
+      x = pos_x/_size_x + Param._Zoom._xmin -0.5;
+      y = pos_y/_size_y + Param._Zoom._ymin -0.5;
+      z = Param._pos._z;
+      slice = IMAGE_XY;
+      // std::cout << "(" << x << ", " << y << "," << z << ")" << std::endl; 
+    } // endif
+  } // endif 
+
+  // On teste si la souris est dans la coupe XZ
+  if ((slice == -1) && ((Param._type_coupe+1) & (TYPE_COUPE_XZ+1)))
+  {
+    pos_x = _souris_x - _tab_ximage_pos_x[IMAGE_XZ];
+    pos_y = _souris_y - _tab_ximage_pos_y[IMAGE_XZ];
+    // std::cout << "pos_x" << pos_x << ", pos_y" << pos_y  << std::endl;
+    // std::cout << "width = " << GetImageWidth(IMAGE_XZ) << ", height" 
+    //     << GetImageHeight(IMAGE_XZ) << std::endl;
+
+    if (  (pos_x >= 0) &&
+          (pos_x <  GetImageWidth(IMAGE_XZ)) &&
+          (pos_y >= 0 ) &&
+          (pos_y <  GetImageHeight(IMAGE_XZ) ) ) 
+    {
+
+      x = pos_x/_size_x + Param._Zoom._xmin -0.5;
+      y = Param._pos._y;
+      z = pos_y/_size_z + Param._Zoom._zmin -0.5;
+      slice = IMAGE_XZ;
+      // std::cout << "(" << x << ", " << y << "," << z << ")" << std::endl; 
+    } // endif
+  } // endif
+
+
+  // On teste si la souris est dans la coupe ZY
+  if ( (slice == -1) && ((Param._type_coupe+1) & (TYPE_COUPE_ZY+1))) {
+    pos_x = _souris_x - _tab_ximage_pos_x[IMAGE_ZY];
+    pos_y = _souris_y - _tab_ximage_pos_y[IMAGE_ZY];
+    // std::cout << "pos_x" << pos_x << ", pos_y" << pos_y  << std::endl;
+    // std::cout << "width = " << GetImageWidth(IMAGE_ZY) 
+    //           << ", height" << GetImageHeight(IMAGE_ZY) << std::endl;
+
+    if ( pos_x >= 0                         &&
+       pos_x <  GetImageWidth(IMAGE_ZY)   &&
+       pos_y >= 0                         &&
+       pos_y <  GetImageHeight(IMAGE_ZY))  {
+
+      x = Param._pos._x;
+      y = pos_y/_size_y + Param._Zoom._ymin - 0.5;
+      z = pos_x/_size_z + Param._Zoom._zmin - 0.5;
+      slice = IMAGE_ZY;
+      // std::cout << "(" << x << ", " << y << "," << z << ")" << std::endl; 
+    } // end if
+  } // end if
+
+} // CursorToImageFloat()
 
 
 //----------------------------------------------------------------

@@ -239,7 +239,7 @@ public:
     /** instanciate an object of a given class
     * @param f smart pointer to the function
     */
-    void yyip_instanciate_object( const AMIClass::ptr& oclass,
+    void yyip_instanciate_object(  AMIClass::ptr& oclass,
       AMIObject::ptr& object);
 
     /** switching to a script file

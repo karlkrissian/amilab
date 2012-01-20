@@ -5,7 +5,15 @@ if (!exists(ImageDrawClass)) {
 
   Class ImageDrawClass : public ScriptGui \
   {
-    
+    Class ::backup_voxel {
+      ::x   = 0
+      ::y   = 0
+      ::z   = 0
+      ::val = 0
+      ::newval = 0
+    }
+
+
     #---------------------------------------------------------------------------
     proc ::Init() \
     {
@@ -43,6 +51,19 @@ if (!exists(ImageDrawClass)) {
       ::y = INT(0)
       ::z = INT(0)
       ::_slice = INT(0)
+
+      # TODO: backups
+      ::backup_actions = VarVector()
+      ::max_backups = 50
+      # add 10 backups
+      for n=0 to ::max_backups-1 {
+        del ptlist
+        ptlist = VarVector()
+        ::backup_actions.push_back( &ptlist)
+      }
+      ::first_backup   = 0
+      ::last_backup    = 0
+      ::current_backup = 0
     }
 
     #---------------------------------------------------------------------------
@@ -61,6 +82,7 @@ if (!exists(ImageDrawClass)) {
       # Create mask image from input
       ::mask_image <<= (UCHAR) ::input
       ::mask_image = 0
+      ::mask_backup <<= ::mask_image
       if (exists(::win)) {
         ::win.Update(-1)
       }
@@ -68,31 +90,137 @@ if (!exists(ImageDrawClass)) {
     Comments( ::load_input, "References the input image in a local image "+\
                             "member named 'input'")
 
+    
+    #printn "%1%: " % ::_slice  + "( %1% , " % ::x + "%1%, " % ::y + "%1%)" % ::z
+    #---------------------------------------------------------------------------
+    proc ::ApplyPencil() \
+    {
+      ::input_draw.CursorToImage( ::mouse_x,::mouse_y,\
+                                  &::x,&::y,&::z,&::_slice)
+      if ::_slice!=-1 {
+        ::DrawFast(::x,::y,::z)
+      }
+      ::input_draw.update()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnMouseDraw( OBJECT event) \
+    {
+      ::mouse_x = event.GetX()
+      ::mouse_y = event.GetY()
+      #printn " %1%, " % ::mouse_x + "%1%" % ::mouse_y
+      dopaint = ::enable_draw \
+                && event.LeftIsDown() \
+                && !event.ShiftDown() \
+                && !event.AltDown()   \
+                && !event.ControlDown() 
+      if dopaint {
+        ::ApplyPencil()
+      }
+      event.Skip(); 
+    }
+
     #---------------------------------------------------------------------------
     proc ::OnMotion( OBJECT event) \
     {
-      dopaint = ::enable_draw && event.AltDown()
-      if dopaint {
-        #::input_draw.CursorToImage(event.GetX(),event.GetY(),\
-                                    #&::x,&::y,&::z,&::_slice)
-        #printn "%1%" % event.GetX() + ", %1%" % event.GetY()
-        #printn ::_slice
-        #printn "%1%" %::x + ", %1%" % ::y + ", %1%" %  ::z
-        if (exists(::input_draw)) {
-          ::input_draw.CursorToImage(event.GetX(),event.GetY(),\
-                                     &::x,&::y,&::z,&::_slice)
-          #printn ::_slice
-          #printn "%1%" %::x + ", %1%" % ::y + ", %1%" %  ::z
-          if ::_slice!=-1 {
-            ::DrawFast(::x,::y,::z)
+      ::OnMouseDraw(&event)
+      ::DrawPencilLimits()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnLeftDown( OBJECT event) \
+    {
+      if ::enable_draw {
+        #printn "backup"
+        # Add a new backup if the current one is not empty
+        # or if there is only one left
+        if (::backup_actions[::current_backup].size() != 0) ||\
+            (::first_backup==::last_backup) {
+          ::current_backup = (::current_backup+1) % ::max_backups
+          if (::first_backup==::current_backup) {
+            ::first_backup = (::first_backup+1) % ::max_backups
           }
-          #::input_draw.Paint()
+          ::last_backup = ::current_backup
+          ::backup_actions[::current_backup].clear()
+        }
+        #::mask_backup = ::mask_image
+      }
+      ::OnMouseDraw(&event)
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::BackupInfo() \
+    {
+      printn "------------------------------------"
+      n = ::first_backup
+      ok =  true
+      while ok {
+        mess = " saved points for %1%: " % n + \
+                 "%1%" % ::backup_actions[n].size()
+        if n==::current_backup {
+          mess += "*** current ***"
+        }
+        printn mess
+        n = (n+1) % ::max_backups
+        ok = (n != ((::last_backup+1)%::max_backups))
+      }
+      printn "------------------------------------"
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnLeftUp( OBJECT event) \
+    {
+      ::BackupInfo()
+      event.Skip()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnWheel( OBJECT event) \
+    {
+      if event.ShiftDown() {
+        rot = event.GetWheelRotation()
+        if rot>0 {
+          if (::pencil_thickness<20) { ::pencil_thickness++;}
+        }
+        if rot<0 {
+          if (::pencil_thickness>0) { ::pencil_thickness--;}
+        }
+        ::input_draw.update()
+        ::win.Update(::pencil_thickness_id)
+      } else {
+        event.Skip()
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::DrawPencilLimits() \
+    {
+      if (exists(::mouse_x)) {
+        ::input_draw.CursorToImage( ::mouse_x,::mouse_y,\
+                                    &::x,&::y,&::z,&::_slice)
+        if ::enable_draw && (::_slice==0) {
+          ::input_draw.SetPenColor(&wx.wxColour(173,216,30))
+          if ::pencil_thickness % 2 ==1 {
+            d = (FLOAT)::pencil_thickness/2
+            #printn "impar "+ "%1%," % (::x-d) + "%1%," % (::x+d)
+            # put d first to get float result
+            ::input_draw.DrawLineZ(-d+::x,-d+::y, d+::x,-d+::y)
+            ::input_draw.DrawLineZ( d+::x,-d+::y, d+::x, d+::y)
+            ::input_draw.DrawLineZ( d+::x, d+::y,-d+::x, d+::y)
+            ::input_draw.DrawLineZ(-d+::x, d+::y,-d+::x,-d+::y)
+          } else {
+            d = (FLOAT)::pencil_thickness/2
+            #printn "par"+ "%1%," % (::x-d+0.5) + "%1%," % (::x+d+0.5)
+            ::input_draw.DrawLineZ(0.5+::x-d,0.5+::y-d,0.5+::x+d,0.5+::y-d)
+            ::input_draw.DrawLineZ(0.5+::x+d,0.5+::y-d,0.5+::x+d,0.5+::y+d)
+            ::input_draw.DrawLineZ(0.5+::x+d,0.5+::y+d,0.5+::x-d,0.5+::y+d)
+            ::input_draw.DrawLineZ(0.5+::x-d,0.5+::y+d,0.5+::x-d,0.5+::y-d)
+          }
           ::input_draw.update()
         }
-        #printn "MD motion"
-      } else {
-        event.Skip(); 
-      } 
+      }
+      
     }
 
     #---------------------------------------------------------------------------
@@ -102,20 +230,58 @@ if (!exists(ImageDrawClass)) {
         ::load_input(); 
       }
       show ::input
+      ::input_draw.PaintCallback(&::DrawPencilLimits);
       ::input_draw.SetMaskImage(  &::mask_image)
       ::input_draw.SetMaskColor(  &::mask_color)
       ::input_draw.SetUseMask(    ::enable_mask)
       #::input_draw.PaintCallback( &::Draw)
 
-      # Set Mouse Event
-      ::evh_mouse     = wx.wxAmiEventHandler(&::OnMotion)
+      # Set Mouse Motion Event
+      del ::evh_mouse_motion
+      ::evh_mouse_motion     = wx.wxAmiEventHandler(&::OnMotion)
       ::input_draw.GetDrawingWindow().Connect( wx.wxEVT_MOTION,\
-                      &::evh_mouse.GetMouseEventFunction(),\
-                      &NULL,&::evh_mouse)
+                      &::evh_mouse_motion.GetMouseEventFunction(),\
+                      &NULL,&::evh_mouse_motion)
+
+      # Set Mouse Left Button
+      del ::evh_mouse_left
+      ::evh_mouse_left     = wx.wxAmiEventHandler(&::OnLeftDown)
+      ::input_draw.GetDrawingWindow().Connect( wx.wxEVT_LEFT_DOWN,\
+                      &::evh_mouse_left.GetMouseEventFunction(),\
+                      &NULL,&::evh_mouse_left)
+
+      del ::evh_mouse_left_up
+      ::evh_mouse_left_up   = wx.wxAmiEventHandler(&::OnLeftUp)
+      ::input_draw.GetDrawingWindow().Connect( wx.wxEVT_LEFT_UP,\
+                      &::evh_mouse_left_up.GetMouseEventFunction(),\
+                      &NULL,&::evh_mouse_left_up)
+
+      del ::evh_mouse_wheel
+      ::evh_mouse_wheel   = wx.wxAmiEventHandler(&::OnWheel)
+      ::input_draw.GetDrawingWindow().Connect( wx.wxEVT_MOUSEWHEEL,\
+                      &::evh_mouse_wheel.GetMouseEventFunction(),\
+                      &NULL,&::evh_mouse_wheel)
+
+      # Set Char Event
+      del ::evh_char
+      ::evh_char     = wx.wxAmiEventHandler(&::OnChar)
+      ::input_draw.GetDrawingWindow().Connect( wx.wxEVT_CHAR,\
+                      &::evh_char.GetKeyEventFunction(),\
+                      &NULL,&::evh_char)
+
+      del ::initial_cursor
+      ::initial_cursor = ::input_draw.GetDrawingWindow().GetCursor()
 
     }
     Comments(::Display, "Display the current image")
     
+    #---------------------------------------------------------------------------
+    proc ::OnChar( OBJECT event) \
+    {
+      printn "OnChar '%1%'" %  event.GetUnicodeKey()
+      event.Skip()
+    }
+
     #---------------------------------------------------------------------------
     proc ::Update() {
       if (!::in_update) {
@@ -126,12 +292,27 @@ if (!exists(ImageDrawClass)) {
       }
     }
 
+
+    #---------------------------------------------------------------------------
+    # take care of backups
+    proc ::DrawPoint( NUM x, NUM y, NUM z, NUM val) \
+    {
+      ::backup_voxel v
+      ::mask_image.setpos(x,y,z)
+      current_val = ::mask_image(x,y,z)
+      if val!=current_val {
+        v.x = x; v.y = y; v.z = z; v.val = current_val; v.newval = val
+        ::backup_actions[::current_backup].push_back(&v)
+        ::mask_image.set(val)
+      }
+      #printn " saved points : %1%" % ::backup_actions[::current_backup].size()
+    }
+
     #---------------------------------------------------------------------------
     proc ::DrawFast( NUM x, NUM y, NUM z) \
     {
       if ::pencil_thickness==1 {
-        ::mask_image.setpos( x,y,z)
-        ::mask_image.set(::draw_value[::paint_option])
+        ::DrawPoint( x,y,z, ::draw_value[::paint_option])
       } else {
         min_t = floor((FLOAT)::pencil_thickness/2-0.1)
         max_t = floor((FLOAT)::pencil_thickness/2)
@@ -139,24 +320,21 @@ if (!exists(ImageDrawClass)) {
         if ::_slice == 0 {
           for i=-min_t to max_t {
             for j=-min_t to max_t {
-              ::mask_image.setpos(x+i,y+j,z)
-              ::mask_image.set(val)
+              ::DrawPoint(x+i,y+j,z,val)
             }
           }
         } else {
           if ::_slice == 1 {
             for i=-min_t to max_t {
               for j=-min_t to max_t {
-                ::mask_image.setpos(x+i,y,z+j)
-                ::mask_image.set(val)
+                ::DrawPoint(x+i,y,z+j,val)
               }
             }
           } else {
             if ::_slice == 2 {
               for i=-min_t to max_t {
                 for j=-min_t to max_t {
-                  ::mask_image.setpos(x,y+i,z+j)
-                  ::mask_image.set(val)
+                  ::DrawPoint(x,y+i,z+j,val)
                 }
               }
             }
@@ -203,15 +381,207 @@ if (!exists(ImageDrawClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::OnPencil() \
+    {
+      #tb_item = ::tb.FindToolByIndex(0)
+      #checked = tb_item.GetState() & wx.wxAUI_BUTTON_STATE_CHECKED
+      ::paint_option = 0
+      ::enable_draw  = 1
+      ::win.Update(-1)
+
+      if (exists(::input_draw)) {
+        ::input_draw.GetDrawingWindow().SetCursor(\
+            &wx.wxCursor(::icons._Pencil.Mirror(false).Rescale(16,16)))
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnEraser() \
+    {
+      ::paint_option = 1
+      ::enable_draw  = 1
+      ::win.Update(-1)
+
+      if (exists(::input_draw)) {
+        ::input_draw.GetDrawingWindow().SetCursor(\
+            &wx.wxCursor(::icons._Eraser.Mirror(false).Rescale(16,16)))
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnTarget() \
+    {
+      ::enable_draw = 0
+      ::win.Update(-1)
+
+      if (exists(::input_draw)) {
+        ::input_draw.GetDrawingWindow().SetCursor(\
+            &wx.wxCursor(&::initial_cursor))
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnUndo() \
+    {
+      if (::current_backup!=::first_backup) {
+        # revert current last backup
+        vlist = &::backup_actions[::current_backup]
+        for n = 0 to vlist.size()-1 {
+          del v
+          v = &vlist[n]
+          ::mask_image.setpos(v.x,v.y,v.z)
+          ::mask_image.set(v.val)
+        }
+        # decrement current_backup
+        ::current_backup = (::current_backup+::max_backups-1) % ::max_backups
+        ::input_draw.update()
+        ::BackupInfo()
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnRedo() \
+    {
+      if (::current_backup!=::last_backup) {
+        ::current_backup = (::current_backup+1) % ::max_backups
+        vlist = &::backup_actions[::current_backup]
+        for n = 0 to vlist.size()-1 {
+          del v
+          v = &vlist[n]
+          ::mask_image.setpos(v.x,v.y,v.z)
+          ::mask_image.set(v.newval)
+        }
+        ::input_draw.update()
+      }
+      ::BackupInfo()
+    }
+    
+    #---------------------------------------------------------------------------
+    # link the tool with index id to the method ::On+${toolname}
+    # for example toolname="Pencil", will use ::OnPencil
+    #
+    proc ::SetToolbarCommand( NUM id, STRING toolname) \
+    {
+      eval "::evh_On%1% = wx.wxAmiEventHandler(&::On%1%);" % toolname 
+      eval "::tb.Connect( id, wx.wxEVT_COMMAND_MENU_SELECTED"+\
+                         ",&::evh_On%1%.GetEventFunction()" % toolname +\
+                         ",&NULL,&::evh_On%1%);" % toolname
+    }
+
+    #---------------------------------------------------------------------------
+    # Add a tool to the toolbar
+    # @param id tool id
+    # @param tooliconname is the tool filename
+    # @param toolname is the name of the tool image variable
+    # @param toolhelp is the tooltip associated with the new tool
+    #
+    proc ::AddToolbarCommand(  NUM id \
+                              ,STRING tooliconname \
+                              ,STRING toolname \
+                              ,STRING toolhelp \
+                              ,NUM kind \
+                            ) \
+    {
+      eval "icon_ok = exists(::icons->_%1%);" % toolname
+      if !icon_ok { 
+        ::icons.LoadIconPNG2(tooliconname,toolname)
+      }
+      eval "iconimage = &::icons._%1%;" % toolname
+      bm = wx.wxBitmap(&iconimage.Copy().Rescale(16,16))
+      ::tb.AddTool( id, toolname, &bm, toolhelp, kind)
+      ::SetToolbarCommand( id, toolname)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::AddToolbar() \
+    {
+      ::mgr = &ami.MainFrame.GetAuiManager()
+      #del ::tb
+      ::tb = wx.wxAuiToolBar(&ami.MainFrame, wx.wxID_ANY);
+      ::tb.SetToolBitmapSize(wx.wxSize(16,16));
+
+      tb_id = 20000+::tb.GetToolCount()
+
+      #--------------------------------------------------
+      ::tb.AddSeparator()
+      #
+      # Radio items : drawing mode
+      #
+      # Add Pencil icon
+      id=0
+      ::AddToolbarCommand(  tb_id+id,"Pencil","Pencil","Draw with the pencil"\
+                            ,wx.wxITEM_RADIO)
+      # Eraser icon
+      id++
+      ::AddToolbarCommand(  tb_id+id,"Eraser","Eraser","Erase with the pencil"\
+                            ,wx.wxITEM_RADIO)
+
+      # Standard cursor icon
+      id++
+      ::AddToolbarCommand(  tb_id+id,"Target","Target"\
+                            ,"Standard features, drawing disabled"\
+                            ,wx.wxITEM_RADIO)
+
+      #--------------------------------------------------
+      ::tb.AddSeparator()
+      # Undo/Redo
+      id++
+      ::AddToolbarCommand(  tb_id+id,"Undo","Undo"\
+                            ,"Undo last draw"\
+                            ,wx.wxITEM_NORMAL)
+      id++
+      ::AddToolbarCommand(  tb_id+id,"Redo","Redo"\
+                            ,"Redo last undo"\
+                            ,wx.wxITEM_NORMAL)
+
+      #id=id+1
+      #icon_32=GetScriptsDir+"/Icons/png/32x32/Preview.png"
+      #wxim = wx.wxImage(icon_32)
+      #bm = wx.wxBitmap(&wxim.Rescale(16,16))
+      #::tb.AddTool( tb_id+id, "Preview", &bm,"Preview of the current volume")
+
+
+      ::tb.Realize()
+
+      #add the toolbars to the manager
+      pi = wx.wxAuiPaneInfo().\
+                  Name("ImageDraw").Caption("Image Drawing Tools").\
+                  ToolbarPane().Top().Position(2).\
+                  LeftDockable(false).RightDockable(false)
+      ::mgr.AddPane(&::tb, &pi);
+      ::mgr.Update()
+
+    }
+
+    #---------------------------------------------------------------------------
+    # Redefinition of Close to close the toolbar
+    #
+    proc ::Close() \
+    {
+      ::win.HidePanel()
+      ::mgr.DetachPane(&::tb)
+      ::tb.Destroy()
+      del ::tb
+      ::mgr.Update()
+
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close,  "Will close the interface and delete the "+\
+                        "corresponding "+\
+                        "object named '"+GetObjectName(::Close)+"'.")
+
+    #---------------------------------------------------------------------------
     proc ::Gui() {
     
+      ::AddToolbar()
+
       if (exists(::parent_panel)) {
         ::win = ParamPanel("ImageDraw",&::parent_panel)
       } else {
         ::win = ParamPanel("ImageDraw")
       }
       
-      ::win.AddLabel("Info:","Press the 'Alt' Key to draw")
+      #::win.AddLabel("Info:","Press the 'Alt' Key to draw")
       ::win.BeginBook()
     
         ::win.AddPage("Param")
@@ -236,7 +606,8 @@ if (!exists(ImageDrawClass)) {
           }
           ::win.SetCallback(&::Display)
 
-          ::win.AddInt(&::pencil_thickness,"Thickness",1,10)
+          ::pencil_thickness_id = ::win.AddInt( &::pencil_thickness,\
+                                                "Thickness",1,20)
 
           ::win.AddButton("Display",    &::Display)
 

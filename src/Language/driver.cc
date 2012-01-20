@@ -206,7 +206,7 @@ void Driver::ParseClassBody(const AMIClass::ptr& oclass)
 }
 
 //-----------------------------------------------------------
-void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
+void Driver::yyip_instanciate_object(  AMIClass::ptr& oclass,
       AMIObject::ptr& object)
 {
 
@@ -228,6 +228,10 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
 
   // Add some default variables as information
   // this
+
+  // class variable
+  object->GetContext()->AddVar<AMIClass>(oclass->GetName(),oclass,object->GetContext());
+
   // classname
   string_ptr classname(new string(oclass->GetName()));
   object->GetContext()->AddVar<string>("classname",classname,object->GetContext());

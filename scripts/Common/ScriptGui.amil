@@ -50,7 +50,8 @@ if (!exists(ScriptGui)) \
       ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding "+\
+                        "object named '"+GetObjectName(::Close)+"'.")
       
     #---------------------------------------------------------------------------
     # Closes the class and the instance 
@@ -87,7 +88,8 @@ if (!exists(ScriptGui)) \
     #------------------------------------
     # Adds a bitmap button after resizing the image to size x size
     #
-    proc ::AddBitmapButton( OBJECT win, OBJECT icon_im, NUM size, STRING callback_name) \
+    proc ::AddBitmapButton( OBJECT win, OBJECT icon_im, NUM size, \
+                            STRING callback_name) \
     {
       bmp = wx.wxBitmap(&icon_im.Scale(size,size))
       eval "return = win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
@@ -96,11 +98,13 @@ if (!exists(ScriptGui)) \
     #---------------------------------------------------------------------------
     # Adds a bitmap button after resizing the image to 16x16
     #
-    proc ::AddBitmapButton16( OBJECT win, OBJECT icon_im, STRING callback_name) \
+    proc ::AddBitmapButton16( OBJECT win, OBJECT icon_im, \
+                              STRING callback_name) \
     {
       size = 16
       bmp = wx.wxBitmap(&icon_im.Scale(size,size))
-      eval "::%1%_but_id = ::win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % callback_name
+      eval "::%1%_but_id = ::win.AddBitmapButton(\"%1%\", ::%1%, &bmp);" % \
+              callback_name
     }
 
     #---------------------------------------------------------------------------
@@ -140,7 +144,8 @@ if (!exists(ScriptGui)) \
     
         ::win_parent = ::win.GetParent()
         ::win.Reparent(&::frame)
-        ::boxsizer.Add(&::win, &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
+        ::boxsizer.Add(&::win, \
+                    &wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
 
         #::panel.SetSizer(&::boxsizer)
         ::frame.SetSizer(&::boxsizer)
@@ -217,7 +222,8 @@ if (!exists(ScriptGui)) \
         InfoDialog "Sorry, there is no wiki page for this script :("
       }
     }
-    Comments( ::LaunchWiki, "Launch the corresponding wiki tutorial page on the default browser.")
+    Comments( ::LaunchWiki,   "Launch the corresponding wiki tutorial page "+\
+                              "on the default browser.")
   
     #---------------------------------------------------------------------------
     # needs ::html and ::html_filename
@@ -319,9 +325,11 @@ if (!exists(ScriptGui)) \
             win.AddButton("Wiki", &::LaunchWiki)
           }
           
-          win.AddBitmapButton("Home", &::HtmlHome, &wx.wxBitmap(&::icons._Home.Scale(16,16)))
+          win.AddBitmapButton("Home", &::HtmlHome, \
+                                      &wx.wxBitmap(&::icons._Home.Scale(16,16)))
           win.SetPositionProp(-1,2)
-          win.AddBitmapButton("<--",  ::HtmlBack, &wx.wxBitmap(&::icons._Back.Scale(16,16)))
+          win.AddBitmapButton("<--",  ::HtmlBack, \
+                                      &wx.wxBitmap(&::icons._Back.Scale(16,16)))
           win.SetPositionProp(-1,2)
           win.AddBitmapButton("-->",  ::HtmlForward, \
             &wx.wxBitmap(&::icons._Forward.Scale(16,16)))
@@ -528,8 +536,9 @@ printn "::SaveParameters end"
       ::helpw.CreateStatusBar()
       ::helpw.Show()
       ::evh_hlp_close = wx.wxAmiEventHandler(&::CloseHelp)
-      ::helpw.Connect(wx.wxEVT_CLOSE_WINDOW,&::evh_hlp_close.GetCloseEventFunction(),\
-                  &NULL,&::evh_hlp_close)
+      ::helpw.Connect(  wx.wxEVT_CLOSE_WINDOW,\
+                        &::evh_hlp_close.GetCloseEventFunction(),\
+                        &NULL,&::evh_hlp_close)
       topsizer = wx.wxBoxSizer(wx.wxVERTICAL)
 
       butsizer = wx.wxBoxSizer(wx.wxHORIZONTAL)

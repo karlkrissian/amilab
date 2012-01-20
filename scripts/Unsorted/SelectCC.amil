@@ -36,7 +36,7 @@ for i=0 to 200 {
     cci1bin0 = (UCHAR) ((cci1>0.5)*255)
     cci1bin  = (UCHAR) ((cci1<0.5)*255)
     cci1dist = AndreDist(cci1bin)
-    cci1sk    = Skeleton(cci1bin0,cci1dist,0,1000)
+    cci1sk    = algorithms.ami_Thinning.Skeleton(&cci1bin0,&cci1dist,0,1000)
 #    imname=sprint("cc%05.0f.ami.gz",i)
 #    print "Image name : "; print imname ; print "\n";
 #    cci1.save imname

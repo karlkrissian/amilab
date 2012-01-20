@@ -818,6 +818,13 @@ public:
   //  etat vaut -1 s'il y a une erreur
   //               sinon il indique l'image cliquée : IMAGE_XY, IMAGE_XZ ou IMAGE_ZY
 
+  /**
+   * Computes the 3D image position of the window cursor position.
+   * The cursor position is given by cursor_x,cursor_y.
+   * slice gives the slice number where the cursor position is or -1 if the cursor is out of the current drawn image.
+   */
+  void CursorToImageFloat(  const int cursor_x, const int cursor_y, 
+                            float& x, float& y, float& z, int& slice);
 
   ///
   void     DessineCurseur( int x, int y, int z, int type);
