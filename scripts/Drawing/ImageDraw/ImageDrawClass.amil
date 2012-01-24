@@ -390,8 +390,10 @@ if (!exists(ImageDrawClass)) {
       ::win.Update(-1)
 
       if (exists(::input_draw)) {
+        im = ::icons._Pencil.Mirror(false).Rescale(16,16)
+        im.ConvertAlphaToMask()
         ::input_draw.GetDrawingWindow().SetCursor(\
-            &wx.wxCursor(::icons._Pencil.Mirror(false).Rescale(16,16)))
+            &wx.wxCursor(&im))
       }
     }
 
@@ -403,8 +405,10 @@ if (!exists(ImageDrawClass)) {
       ::win.Update(-1)
 
       if (exists(::input_draw)) {
+        im = ::icons._Eraser.Mirror(false).Rescale(16,16)
+        im.ConvertAlphaToMask()
         ::input_draw.GetDrawingWindow().SetCursor(\
-            &wx.wxCursor(::icons._Eraser.Mirror(false).Rescale(16,16)))
+            &wx.wxCursor(&im))
       }
     }
 
