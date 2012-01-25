@@ -330,7 +330,7 @@ if (!exists(SimplevtkVolumeClass)) {
           }
           # Check if the rendering is supported
           supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
-          #supported = 0
+          #supported = 1
           if (!supported) {
             mess= "vtkGPUVolumeRayCastMapper rendering is not supported, trying vtkVolumeRayCastMapper ..."
             printn mess
@@ -375,7 +375,9 @@ if (!exists(SimplevtkVolumeClass)) {
                             ", switching to vtkGPUVolumeMapper")
             ::volrenmapper_type=4
         }
-        #::DefaultProperties() #define init properties 
+        #if !exists(::property){
+          #::DefaultProperties() #define init properties
+        #} 
 
         # check that we have a volume
         if (::input.tx<2)||(::input.ty<2)||(::input.tz<2) {
@@ -383,7 +385,7 @@ if (!exists(SimplevtkVolumeClass)) {
           return = false
         } else {
 
-          ::property.SetInterpolationTypeToLinear()
+
           ::vol       = vtk.vtkVolume.New()
           # don"t put the boxwidget for the moment
           # convert input to vtkimage
@@ -400,7 +402,6 @@ if (!exists(SimplevtkVolumeClass)) {
           ::volmapper.SetInput(&::vtkinput)
           
           if (::volrenmapper_type==3) {
-            ::property2.SetInterpolationTypeToLinear()
             ::vtkinput2 = vtktools.ToVtkImageData(&::input2)
             ::volmapper.SetInput2(&::vtkinput2)
           }
@@ -409,6 +410,7 @@ if (!exists(SimplevtkVolumeClass)) {
           # connect up the volume to the property and the mapper
           ::vol.SetProperty( &::property )
           ::vol.SetMapper( &::volmapper )
+           
           if (::volrenmapper_type==3) {
             #propertier for the second volume 
             ::volmapper.SetProperty2( &::property2 )
@@ -419,6 +421,7 @@ if (!exists(SimplevtkVolumeClass)) {
           if (exists(::renderer)){
             ::renderer.AddVolume(&::vol)
           }
+
           return = true
         }
       }
@@ -550,6 +553,9 @@ if (!exists(SimplevtkVolumeClass)) {
       ::property2.SetIndependentComponents(1)
       ::property2.SetColor( &::colorFun2 )
       ::property2.SetScalarOpacity( &::opacityFun2 )
+
+      ::property.SetInterpolationTypeToLinear()
+      ::property2.SetInterpolationTypeToLinear()
       if ::trace2 { eval ::trace2_end; }
    }
    #----------------------------
@@ -640,7 +646,6 @@ if (!exists(SimplevtkVolumeClass)) {
         if (exists(::property)){
           ::vol.SetProperty( &::property )
         }
-printn "::move_2 = %1%" % ::move_2
         if ::move_2 {
           if (exists(::property2) && ::volrenmapper_type==3){
             ::volmapper.SetProperty2( &::property2 )
@@ -758,6 +763,30 @@ printn "::move_2 = %1%" % ::move_2
       ::input2  = &input_image
     }
 
+    #----------------------------
+    proc ::Info(){
+      printn "******************"
+      del v
+      v=vector_double(3,0)
+      ::vol.GetScale(&v[0])
+      printn "Scale x %1%" %v[0]
+      printn "Scale y %1%" %v[1]
+      printn "Scale z %1%" %v[2]
+
+      del v
+      v=vector_double(3,0)
+      ::vol.GetOrigin(&v[0])
+      printn "Origin x %1%" %v[0]
+      printn "Origin y %1%" %v[1]
+      printn "Origin z %1%" %v[2]
+
+      del v
+      v=vector_double(3,0)
+      ::vol.GetOrientation(&v[0])
+      printn "Orient x %1%" %v[0]
+      printn "Orient y %1%" %v[1]
+      printn "Orient z %1%" %v[2]
+    }
 
 
   } # end Class

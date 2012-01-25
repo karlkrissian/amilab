@@ -46,7 +46,7 @@ if (!exists(VolRenClass)) {
       }
       return=res
     }
-    ::trace=true, "gives tracing information"
+    ::trace=false, "gives tracing information"
     member = "\"VolRenClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
@@ -484,7 +484,7 @@ if (!exists(VolRenClass)) {
       if (exists(::input)){
         if (!::volVector[0].initialized){
           ::volVector[0].InitManager(&::renwin_interact)
-          ::volVector[0].AddAnnotatedCube() 
+          #::volVector[0].AddAnnotatedCube() 
         }
         ::volVector[0].DelVTK()
         ::volVector[0].DefaultProperties() 
@@ -662,7 +662,7 @@ if (!exists(VolRenClass)) {
       ::panel.Update()
       # now can create the renderer
       ::volVector[0].CreateRenderer(&::renwin_interact)
-      ::volVector[0].AddAnnotatedCube() 
+      #::volVector[0].AddAnnotatedCube() 
       ::SetRendererBg()
       
       if ::trace { eval ::trace_end; }

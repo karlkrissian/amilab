@@ -30,6 +30,10 @@ uniform vec2 invWindowSize;
 // Change-of-coordinate matrix from eye space to texture space
 uniform mat4 textureToEye;
 
+
+// Change-of-coordinate matrix from P2 space to P1 space
+uniform mat4 P2toP1;
+
 // Entry position (global scope)
 vec3 pos;
 // Incremental vector in texture space (global scope)

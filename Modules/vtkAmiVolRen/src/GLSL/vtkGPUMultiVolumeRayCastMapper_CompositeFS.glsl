@@ -23,6 +23,9 @@ uniform sampler1D opacityTexture;
 //carlos
 uniform sampler3D dataSetTexture2;
 uniform sampler1D opacityTexture2;
+// Change-of-coordinate matrix from P2 space to P1 space
+uniform mat4 P2toP1;
+
 // uniform sampler1D mask2ColorTexture;
 
 uniform vec3 lowBounds;
@@ -62,11 +65,12 @@ void trace(void)
   vec4 opacity2;
 
   initShade();
-  
+
   float t=0.0;
   bool text1=false;
   bool text2=false;
   
+  vec3 pos2 = pos;
   // We NEED two nested while loops. It is trick to work around hardware
   // limitation about the maximum number of loops.
 
@@ -74,19 +78,25 @@ void trace(void)
     {  
     while(inside)
       {
+      vec4 aux = vec4(1);
+      vec4 aux2 = vec4(1);
+      int i;
+      for (i=0;i<3;i++){
+        aux[i]=pos[i];
+      }
+      aux2= P2toP1*aux;
+
+      for (i=0;i<3;i++){
+        pos2[i]=aux2[i];
+      }    
       //float intensity,af;
       text1=false;
       text2=false;
-      //texture 1
+      //Texture 1
       vec4 value=texture3D(dataSetTexture,pos);
       float scalar=scalarFromValue(value);
-      //texture 2 (dataSetTexture2)
-      vec4 value2=texture3D(dataSetTexture2,pos);
-      float scalar2=scalarFromValue(value2);
       // opacity is the sampled texture value in the 1D opacity texture at
       // scalarValue
-
-      //Texture1
       opacity=texture1D(opacityTexture,scalar);
 
       bool cylinder=false;
@@ -112,16 +122,26 @@ void trace(void)
         destColor=destColor+color*remainOpacity;
         remainOpacity=remainOpacity*(1.0-opacity.a);
         }
-      //Texture2
-      opacity2=texture1D(opacityTexture2,scalar2);
-      if(opacity2.a>0.0)
-        {
-        text1=true;
-        color2=shade2(value2);
-        color2=color2*opacity2.a;
-        destColor=destColor+color2*remainOpacity;
-        remainOpacity=remainOpacity*(1.0-opacity2.a);
+
+      //Texture2 (dataSetTexture2)
+    if (all(greaterThanEqual(pos2,lowBounds))
+         && all(lessThanEqual(pos2,highBounds)))
+       {
+        vec4 value2=texture3D(dataSetTexture2,pos2);
+        float scalar2=scalarFromValue(value2);
+        // opacity is the sampled texture value in the 1D opacity texture at
+        // scalarValue
+        opacity2=texture1D(opacityTexture2,scalar2);
+        if(opacity2.a>0.0)
+          {
+          text1=true;
+          color2=shade2(value2);
+          color2=color2*opacity2.a;
+          destColor=destColor+color2*remainOpacity;
+          remainOpacity=remainOpacity*(1.0-opacity2.a);
+          }
         }
+
 
 //       if(text1 && text2)
 //         {

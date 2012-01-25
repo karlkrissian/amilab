@@ -205,14 +205,18 @@ if (!exists(ImageHistogramClass)) {
           } else {
             ::h.push_back( cumhisto(::input[n],::minval,::maxval,(::maxval-::minval)/::step+1))
           }
+          miny = min(::h[n])
           if (::log10) {
             # set a positive minimum to 10
             hmin=1 # 10
             ::h[n] = ::h[n]*(::h[n]>hmin)+(::h[n]<=hmin)*hmin
             ::h[n] <<= ln((DOUBLE)::h[n])/ln(10)
+            #::minval=::minval*(::minval>10)+(::minval<=10)*10
+            #::maxval=::maxval*(::maxval>10)+(::maxval<=10)*10
+            miny = 0
           }
           ::dw->SetXLimits(::minval,::maxval)
-          ::dw->SetYLimits(min(::h[n]),max(::h[n])*1.01)
+          ::dw->SetYLimits(miny,max(::h[n])*1.01)
           ::dw->SetCurve(::h[n],n)
           ::dw->SetCurveProperties(n,::ColoursVector[n%6])
         }

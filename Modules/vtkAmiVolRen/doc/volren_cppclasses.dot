@@ -16,8 +16,8 @@ digraph G {
  
    
   node [ style=filled, fillcolor="#DDDDDD"]
-  vtkgpumultivolumemapper [label="vtkGPUMultiVolumeMapper"];
-  vtkopenglgpumultivolumemapper [ label="vtkOpenGLGPUMultiVolumeMapper"];
+  vtkgpumultivolumemapper [label="vtkAmilabGPUMultiVolumeMapper"];
+  vtkopenglgpumultivolumemapper [ label="vtkAmilabOpenGLGPUMultiVolumeMapper"];
 
 
 
