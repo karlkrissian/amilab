@@ -1,0 +1,2 @@
+ ami.MainFrame.AddToMenu("&Scripts","&DistanceTransform","&FastMarchingDist",  "DistanceTransform/FastMarchingDist/FastMarchingDistGui")
+
