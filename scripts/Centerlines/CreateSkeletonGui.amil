@@ -217,7 +217,8 @@ if (!exists(CreateSkeletonClass)) {
             # compute distance inside the structure
             printn "Compute Fast Marching distance"
             initim = IsosurfDist(_i,0)
-            ::idist <<= vtkFastMarching((_i>0),initim,::DTmax)
+            ::idist <<= algorithms.ami_vtkFastMarchingFunctions.\
+                          FastMarching((_i>0),initim,::DTmax)
         } 
 
         #::idist = vtkPropDanielsson(_res,-1,50)
@@ -529,7 +530,8 @@ if (!exists(CreateSkeletonClass)) {
               AddSphere(&fminit,px2,py2,pz2,2)
               local::track = Image(INT,1,maxrepim_crop)
               track = 0
-              local::res = vtkFastMarching(maxrepim_crop,fminit,track,fm_max,1)
+              local::res = algorithms.ami_vtkFastMarchingFunctions.\
+                          FastMarchingTrack(maxrepim_crop,fminit,track,fm_max,1)
               maxrepim_crop.save sprint("v%0.0f_maxrepim_crop.ami.gz",\
                                       vessel_number)
               local::res.save sprint("v%0.0f_fm_result.ami.gz",\
@@ -546,9 +548,11 @@ if (!exists(CreateSkeletonClass)) {
               #maxrepim_crop = maxrepim_crop/10
               # running fast marching until the point 1 is reached
               printn "FMT"
-              local::res_1 = vtkFastMarchingTarget(maxrepim_crop,fminit,fm_max,\
+              local::res_1 = algorithms.ami_vtkFastMarchingFunctions.\
+                              FastMarchingTarget(maxrepim_crop,fminit,fm_max,\
                                             px1+0.5,py1+0.5,pz1+0.5)
-              local::res_2 = vtkFastMarchingTarget(maxrepim_crop,fminit,fm_max,\
+              local::res_2 = algorithms.ami_vtkFastMarchingFunctions.\
+                              FastMarchingTarget(maxrepim_crop,fminit,fm_max,\
                                             px2+0.5,py2+0.5,pz2+0.5)
               local::res = res_1
               maxrepim_crop.save sprint("v%0.0f_maxrepim_crop.ami.gz",\

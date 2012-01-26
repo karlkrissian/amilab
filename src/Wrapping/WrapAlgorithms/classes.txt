@@ -15,8 +15,10 @@ ami::ImageAddScalar
 ami::ImageToImageFilterParam
 ami::GrayscaleMorpho
 ami::IntensityBasedRegionGrowing
+ami::FieldOrientationRegionGrowing
 ami::Thinning
 ami::Find
+ami::vtkFastMarchingFunctions
 
 # Image Extent
 ami::ImageExtent<float>

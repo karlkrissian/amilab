@@ -150,7 +150,8 @@ if (!exists(SkeletonClass)) {
             # compute distance inside the structure
             printn "Compute Fast Marching distance"
             initim = IsosurfDist(_i,0)
-            ::idist <<= vtkFastMarching((_i>0),initim,::DTmax)
+            ::idist <<= algorithms.ami_vtkFastMarchingFunctions.\
+                        FastMarching((_i>0),initim,::DTmax)
         } 
 
         #::idist = vtkPropDanielsson(_res,-1,50)

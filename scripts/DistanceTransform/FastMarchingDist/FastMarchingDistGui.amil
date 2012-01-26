@@ -1,0 +1,11 @@
+
+func "FastMarchingDistClass"
+
+if (!exists(FastMarchingDist_obj)) {
+  FastMarchingDistClass FastMarchingDist_obj
+  FastMarchingDist_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

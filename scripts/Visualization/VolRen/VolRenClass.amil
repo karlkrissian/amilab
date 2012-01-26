@@ -81,6 +81,8 @@ if (!exists(VolRenClass)) {
       ::resizevol1 = 0
       ::resizevol2 = 0
       ::d          = INT(0), "Background"
+      
+      ::AnnotatedCubeVisible = UCHAR(true), "Displays or hides annotated cube"
 
       for n=0 to 1 { 
         del aux
@@ -484,7 +486,7 @@ if (!exists(VolRenClass)) {
       if (exists(::input)){
         if (!::volVector[0].initialized){
           ::volVector[0].InitManager(&::renwin_interact)
-          #::volVector[0].AddAnnotatedCube() 
+          ::volVector[0].AddAnnotatedCube() 
         }
         ::volVector[0].DelVTK()
         ::volVector[0].DefaultProperties() 
@@ -662,7 +664,7 @@ if (!exists(VolRenClass)) {
       ::panel.Update()
       # now can create the renderer
       ::volVector[0].CreateRenderer(&::renwin_interact)
-      #::volVector[0].AddAnnotatedCube() 
+      ::volVector[0].AddAnnotatedCube() 
       ::SetRendererBg()
       
       if ::trace { eval ::trace_end; }
@@ -889,6 +891,13 @@ if (!exists(VolRenClass)) {
                         "corresponding "+\
                         "object named '"+GetObjectName(::Close)+"'.")
 
+    #---------------------------------------------------------------------------
+    proc ::OnAnnotatedCube() \
+    {
+      ::volVector[0].cubeActor.SetVisibility(::AnnotatedCubeVisible)
+      ::renwin_interact.Render()
+    }
+
     #----------------------------
     proc ::Gui() {
     
@@ -975,6 +984,11 @@ if (!exists(VolRenClass)) {
               ::win.AddEnumChoice(::d_id,"Black")
               ::win.SetCallback(&::ChoiceBackground)
             ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Annotated Cube")
+            ::win.AddBoolean(&::AnnotatedCubeVisible,"Visible")
+            ::win.SetCallback(&::OnAnnotatedCube)
           ::win.EndBoxPanel()
 
           ::vtk_camera_gui.AddGui(&::win)

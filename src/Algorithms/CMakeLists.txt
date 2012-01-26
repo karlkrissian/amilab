@@ -38,6 +38,7 @@ SET(Algorithms_SRCS
   amiGrayscaleMorpho.cpp
   amiSRAD.cpp
   amiThinning.cpp
+  amivtkFastMarchingFunctions.cpp
 
   # functions
   amiFind.cpp
@@ -112,9 +113,11 @@ SET(Algorithms_HDRS
   include/amiSRAD.h
   include/amiRegionGrowingBase.h
   include/amiIntensityBasedRegionGrowing.h
+  include/amiFieldOrientationRegionGrowing.h
   include/amiThinning.h
   # functions
   include/amiFind.h
+  include/amivtkFastMarchingFunctions.h
 
   include/localstats.h
   include/ShortestPathClass.h

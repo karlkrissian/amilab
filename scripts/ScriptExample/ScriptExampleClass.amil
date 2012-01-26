@@ -6,17 +6,19 @@ if (!exists(ScriptExampleClass)) {
   Class ScriptExampleClass : public ScriptGui \
   {
     
-    //---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Init() {
       
-        ::input_name   = "","Name of the input image variable"
-        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+      ::input_name   = "","Name of the input image variable"
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
 
-        ::html_filename = GetScriptsDir+"/ScriptExample/Doc/ScriptExample/index.html"
+      ::html_filename = GetScriptsDir+\
+                        "/ScriptExample/Doc/ScriptExample/index.html"
     }
 
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::load_input() {
       eval "::input <<= (FLOAT)"+::input_name+";"
       if (::input_name=="BrowseImage") {
@@ -28,10 +30,11 @@ if (!exists(ScriptExampleClass)) {
         ::win.Update(-1)
       }
     }
-    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+    Comments( ::load_input, "Copies the input image in a local image "+\
+                            "member named 'input'")
 
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Run() \
     {
       if (!exists(::input)) {
@@ -41,7 +44,7 @@ if (!exists(ScriptExampleClass)) {
       }
     }
 
-    //---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Gui() {
     
       if (exists(::parent_panel)) {

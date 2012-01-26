@@ -15,6 +15,7 @@
 
 #include "inrimage.hpp"
 #include "boost/shared_ptr.hpp"
+//#include <iostream>
 
 // TODO deal with this problem once and for all
 #include <limits>
@@ -37,16 +38,24 @@ public:
   typedef ImageExtent<T> ClassType; 
   typedef typename boost::shared_ptr<ClassType > ptr;
 
+public:
+  
+  enum ExtentMode {
+    Absolute=0,
+    Relative
+  };
+
 protected:
 
     T extent[3][2]; // limits for each of the 3 dimensions
-    unsigned char mode; // 0: absolute, 1: relative
+    ExtentMode mode; // 0: absolute, 1: relative
 
 public:
+  
   ImageExtent() {
     for(int i=0; i<3; i++)
       for(int j=0; j<2; j++) extent[i][j]=0;
-    mode = 0;
+    mode = Absolute;
   }
 
   ImageExtent(int x1,int x2, int y1=0, int y2=0, int z1=0, int z2=0) {
@@ -56,7 +65,7 @@ public:
     extent[1][1]=y2;
     extent[2][0]=z1;
     extent[2][1]=z2;
-    mode = 0;
+    mode = Absolute;
   }
 
   ImageExtent(float x1,float x2, float y1=0, float y2=0, float z1=0, float z2=0) {
@@ -66,18 +75,21 @@ public:
     extent[1][1]=y2;
     extent[2][0]=z1;
     extent[2][1]=z2;
-    mode = 0;
+    mode = Absolute;
   }
 
   ImageExtent(InrImage* im)
   {
+    printf("ImageExtent(InrImage* im)\n");
+    // TODO: fix this constructor
+//    std::cout << "ImageExtent(InrImage* im)" << std::endl;
     extent[0][0] = 0;
     extent[1][0] = 0;
     extent[2][0] = 0;
     extent[0][1] = im->DimX()-1;
     extent[1][1] = im->DimY()-1;
     extent[2][1] = im->DimZ()-1;
-    mode = 0;
+    mode = Absolute;
   }
 
   const T& Xmin() const { return extent[0][0];}
@@ -94,13 +106,15 @@ public:
   void SetZmin(const T& val) {extent[2][0]=val;}
   void SetZmax(const T& val) {extent[2][1]=val;}
 
-  unsigned char GetMode() {return mode;}
-  void SetMode(unsigned char val) {mode = val;}
+  ExtentMode GetMode() {return mode;}
+  void SetMode(ExtentMode val) {mode = val;}
+
+  // TODO: void SetAbsolute( InrImage* im);
 
   void SetRelative( InrImage* im) {
     T minval = -std::numeric_limits<T>::max();
     T maxval =  std::numeric_limits<T>::max();
-    if (this->GetMode()==0) {
+    if (this->GetMode()==Absolute) {
       // dealing with numerical limits -infty and +infty
       if (extent[0][0]==minval)
         extent[0][0] = 0;
@@ -151,7 +165,7 @@ public:
             (float)extent[1][0],(float)extent[1][1],
             (float)extent[2][0],(float)extent[2][1]);
 */
-     mode = 1; // relative mode
+     mode = Relative; // relative mode
     }
     else {
       // still check for possible full ranges ...

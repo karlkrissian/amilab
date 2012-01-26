@@ -1,0 +1,123 @@
+
+del DicomSeriesReadImageWrite2
+
+Class DicomSeriesReadImageWrite2 \
+{
+  proc ::Init() \
+  {
+    ::ImageType ="Image_short_3u"
+    ::Dirname = ""
+  }
+
+  proc ::SetDirectory( STRING dir) \
+  {
+    ::Dirname = dir
+  }
+
+  #
+  # Will create 2 variables from calling the New() method of the classname:
+  #   - one is $resvar$_ptr which is a SmartPointer
+  #   - and the other is $resvar$ which is the corresponding standard pointer
+  #
+  proc ::CreateITK(STRING resvar, STRING itkclassname ) \
+  {
+    # free possible previous variables
+    eval "del ::%1%;" % resvar
+    eval "del ::%1%_ptr;" % resvar
+
+    eval "::%1%_ptr" % resvar +\
+         " = itk.%1%.New();" % itkclassname
+    eval "::%1% = ::%1%_ptr.GetPointer();" % resvar
+  }
+
+  proc ::PrintReaderInfo( ) \
+  {
+    reader = &::reader
+    del ::image_io
+    ::image_io = reader.GetImageIO()
+
+    image_component_type = ::image_io.GetComponentType()
+    image_pixel_type     = ::image_io.GetPixelType()
+    numcomp              = ::image_io.GetNumberOfComponents()
+
+    printn "  Component Type = %1%" % \
+            itk.ImageIOBase.GetComponentTypeAsString(image_component_type) 
+    printn "  Pixel Type = %1%" % \
+            itk.ImageIOBase.GetPixelTypeAsString(image_pixel_type)
+    printn "  Number of Dimensions = %1%" % ::image_io.GetNumberOfDimensions()
+    printn "  Number of Components = %1%" % numcomp
+  }
+  
+  proc ::OnProgress() {
+    SetProgress(::reader.GetProgress()*100)
+  }
+
+  proc ::Run() \
+  {
+    # new image series reader
+    ::CreateITK("reader",  "ImageSeriesReader_%1%" % ::ImageType)
+    ::CreateITK("dicomIO", "DICOMImageIO2")
+    #"GDCMImageIO")
+
+    ::reader.SetImageIO( &::dicomIO )
+
+    ::CreateITK("nameGenerator", "GDCMSeriesFileNames")
+    ::nameGenerator.SetUseSeriesDetails( true )
+    ::nameGenerator.AddSeriesRestriction("0008|0021")
+    ::nameGenerator.SetDirectory( ::Dirname )
+
+    # should use exceptions here ... or catch itk::Except::reader.GetImageIO()ions in amilab
+
+    # Identifies DICOM series:
+    # need std::vector<std::string> ...
+    SetStatusText("Getting list of series")
+    seriesUIDs = ::nameGenerator.GetSeriesUIDs()
+
+    if seriesUIDs.size()>0 {
+      for n=0 to seriesUIDs.size()-1 {
+        printn "series %1% :" %n+ seriesUIDs[n]
+      }
+      seriesIdentifier = seriesUIDs[0]
+      fileNames = ::nameGenerator.GetFileNames( seriesIdentifier )
+
+      SetStatusText("Checking image type")
+      # check image type
+      firstfilename = fileNames[0]
+      imageIO = ::reader.GetImageIO()
+      if imageIO.CanReadFile(firstfilename) {
+        imageIO.SetFileName(firstfilename)
+        imageIO.ReadImageInformation()
+        ::PrintReaderInfo()
+      }
+
+      # Should check the Pixel information here ...
+      # Create an ImageType string
+       
+      SetStatusText("Reading %1% files" % fileNames.size())
+      printn "Number of files : %1%" % fileNames.size()
+      ::reader.SetFileNames( &fileNames )
+      # here within exception ...
+      # set progress event
+      printn "1"
+      ::CreateITK("progress_cmd", "itkAmiCommand")
+      ::progress_cmd.SetAmiFunction(&::OnProgress)
+      ::reader.AddObserver(&itk.ProgressEvent(), &::progress_cmd);
+       printn "2"
+      ::reader.Update()
+      ::reader.GenerateOutputInformation()
+      SetProgress(0)
+
+      ::res_itk = itk.SmartPointer_Image_short_3u.SmartPointer(&::reader.GetOutput())
+      ::res = itk.amiConvert.FromITK_short3(&::res_itk)
+      show ::res
+
+      # now need to convert it to amilab image type
+      #::PrintReaderInfo()
+    } else {
+      InfoDialog "No dicom series found"
+    }
+
+  }
+  
+  ::Init()
+}

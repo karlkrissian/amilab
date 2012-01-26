@@ -693,7 +693,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator[](const
         draw->GetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
         ami::ImageExtent<float>* extent=
           new ami::ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
-        extent->SetMode(1); // relative extent
+        extent->SetMode(ami::ImageExtent<float>::Relative); // relative extent
     
         comment = str(boost::format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
             % xmin % xmax % ymin % ymax % zmin % zmax);

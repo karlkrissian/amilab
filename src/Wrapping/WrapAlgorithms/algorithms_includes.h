@@ -15,6 +15,8 @@
 #include "amiThinning.h"
 
 #include "amiFind.h"
+#include "amivtkFastMarchingFunctions.h"
+#include "amiFieldOrientationRegionGrowing.h"
 
 #include "amiImageExtent.h"
 

@@ -33,6 +33,7 @@
 //
 
 
+#pragma once
 #ifndef _MINHEAP_HPP
 #define _MINHEAP_HPP
 
@@ -40,6 +41,7 @@
 #include "style.hpp"
 #include <iosfwd>
 #include <stdio.h>
+#include <ostream>
 
 // Template ??
 //
@@ -95,13 +97,19 @@ public:
     array[pos] = t;
     if (move_func != NULL) move_func(t,pos,move_data);
   }
-
+  
   int Size() { return num_elts; }
 
   MinHeap<T>&  operator+=( T elt);
 
   T GetMin();
 
+  /**
+   * @brief Get the value at a heap position, position starts at 1.
+   *
+   * @param n value between 1 and heap size (included).
+   * @return T&
+   **/
   T& operator[](int n);
 
   void ChangeValue(int n, const T& elt);
@@ -109,7 +117,7 @@ public:
 //#if !(defined(_sgi_)) 
 //  friend std::ostream& operator << <>(std::ostream&, const MinHeap<T>& p);
 //#else
-  friend std::ostream& operator << (std::ostream&, const MinHeap<T>& p);
+//  friend  std::ostream& operator<<(std::ostream&, const MinHeap<T>& p);
 //#endif
 
 };
@@ -131,9 +139,7 @@ template<class T> void MinHeap<T>::Resize( int size)
   new_nbelts = size;
   new_array = new T [new_nbelts+1];
 
-  Pour(i,0,new_nbelts)
-    new_array[i] = array[i];
-  FinPour
+  for(i=0;i<=num_elts;i++)  new_array[i] = array[i];
 
   delete [] array;
 
@@ -191,9 +197,9 @@ template<class T> int MinHeap<T>::DownHeap( int pos)
       if ((down<num_elts)&&(array[down+1]<array[down])) down++;
 
       if (val>array[down]) {
-	SetValue(array[down],pos);
-	pos = down;
-	down <<= 1;
+        SetValue(array[down],pos);
+        pos = down;
+        down <<= 1;
       }
       else break;
 

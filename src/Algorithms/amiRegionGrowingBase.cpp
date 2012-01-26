@@ -17,13 +17,17 @@ namespace ami {
 
   RegionGrowingBase::RegionGrowingBase(InrImage::ptr& input, InrImage::ptr& init): _input(input)
   {
+    include_border=true;
+    
     double val = 0;
 
     // Create _state image and initialize it
     _state = InrImage::ptr(new InrImage(WT_UNSIGNED_CHAR,"state.ami.gz",_input.get()));
 
     _state->InitImage(RegionGrowingBase::UNPROCESSED);
-    stateit = _state->CreateIterator();
+    stateit = boost::dynamic_pointer_cast<InrImageIterator<unsigned char> >(
+        _state->CreateIterator());
+
     initit  = init  ->CreateIterator();
     // The images should have the same dimensions
     int x,y,z;
@@ -39,7 +43,11 @@ namespace ami {
         if (val>0.5) {
           stateit->SetDoubleValue(RegionGrowingBase::INSIDE);
           // add the point to the growing region
-          _growinglist.push_back(PointType(x,y,z));
+          //_growinglist.push_back(PointType(x,y,z));
+          if (_cost.get()) 
+            _growinglist += PointType(x,y,z,(*_cost)(x,y,z));
+          else 
+            _growinglist += PointType(x,y,z);
         }
         ++(*initit);
         ++(*stateit);
@@ -49,53 +57,97 @@ namespace ami {
   }
 
 
-  void RegionGrowingBase::ProcessNextPoint()
+  bool RegionGrowingBase::ProcessNextPoint()
   {
-    PointType point = _growinglist.front();
-    _growinglist.pop_front();
+    int x0;
+    int y0;
+    int z0;
+    int x;
+    int y;
+    int z;
+
+    if (_growinglist.Size()==0) return false;
+
+    PointType point = _growinglist.GetMin();
+    //_growinglist.pop_front();
     //cout << boost::format("processing (%1%,%2%,%3%) from the list") % point.X() % point.Y() % point.Z() << std::endl;
     // 1. check if the point is accepted
-    stateit->BufferPos(point.X(),point.Y(),point.Z());
+    x0 = point.X();
+    y0 = point.Y();
+    z0 = point.Z();
+    stateit->BufferPos(x0,y0,z0);
     bool accept = AcceptPoint(point);
+    if (!include_border)
+      accept = accept && _input->CoordOK(x0,y0,z0);
+
     if (accept) 
       // set the point inside
       // should avoid to use buffer pos
-      stateit->SetDoubleValue(RegionGrowingBase::INSIDE);
+      stateit->SetValue(RegionGrowingBase::INSIDE);
     else
-      stateit->SetDoubleValue(RegionGrowingBase::PROCESSED);
+      stateit->SetValue(RegionGrowingBase::PROCESSED);
     // 2. potentionally add the neighboors to the growing list
+      
+    int maxx = _input->DimX()-1;
+    int maxy = _input->DimY()-1;
+    int maxz = _input->DimZ()-1;
+
     if (accept) {
-      int x0 = point.X();
-      int y0 = point.Y();
-      int z0 = point.Z();
     
-      for (int z=z0-1;z<=z0+1;z++)
-      for (int y=y0-1;y<=y0+1;y++)
-      for (int x=x0-1;x<=x0+1;x++)
-      {
-        if ((x!=x0)||(y!=y0)||(z!=z0))
+      if (include_border) {
+        #define MACRO_MAX(a,b) ((a)>(b)?(a):(b))
+        #define MACRO_MIN(a,b) ((a)<(b)?(a):(b))
+
+        for (z=MACRO_MAX(0,z0-1);z<=MACRO_MIN(z0+1,maxz);z++) 
+        for (y=MACRO_MAX(0,y0-1);y<=MACRO_MIN(y0+1,maxy);y++)
+        for (x=MACRO_MAX(0,x0-1);x<=MACRO_MIN(x0+1,maxx);x++)
         {
-          if (_input->CoordOK(x,y,z)) {
+          if ((x!=x0)||(y!=y0)||(z!=z0))
+          {
             if ((*_state)(x,y,z)==UNPROCESSED) {
               // Add point to the list
-              _growinglist.push_back(PointType(x,y,z));
+              if (_cost.get()) 
+                _growinglist += PointType(x,y,z,(*_cost)(x,y,z));
+              else 
+                _growinglist += PointType(x,y,z);
               //cout << boost::format("adding (%1%,%2%,%3%) to the list") % x % y % z << std::endl;
               // change the state of the point
               stateit->BufferPos(x,y,z);
-              stateit->SetDoubleValue(TOBEPROCESSED);
+              stateit->SetValue(static_cast<unsigned char>(TOBEPROCESSED));
             } // end if
           } // end if
-        } // end if
-      } // end for x,y,z
+        } // end for x,y,z
+      } else {
+        for (z=z0-1;z<=z0+1;z++) 
+        for (y=y0-1;y<=y0+1;y++) 
+        {
+          stateit->BufferPos(x0-1,y,z);
+          for (x=x0-1;x<=x0+1;x++,(*stateit)++)
+          {
+            if (stateit->GetValue()==UNPROCESSED) {
+              // Add point to the list
+              if (_cost.get()) 
+                _growinglist += PointType(x,y,z,(*_cost)(x,y,z));
+              else 
+                _growinglist += PointType(x,y,z);
+              //cout << boost::format("adding (%1%,%2%,%3%) to the list") % x % y % z << std::endl;
+              // change the state of the point
+              stateit->SetValue(static_cast<unsigned char>(TOBEPROCESSED));
+            } // end if
+          } // end for x
+        } // end for y,z
+      }
     } // end if accept
+    return true;
   }
 
   void RegionGrowingBase::Evolve()
   {
     int i=0;
-    while(_growinglist.size()>0) {
-      if (i%1000==0) 
-        std::cout << " Size of growing list = " << _growinglist.size() << std::endl;
+    while(_growinglist.Size()>0) {
+      if (i%10000==0) 
+        std::cout << " Size of growing list = " << _growinglist.Size() 
+                  << std::endl;
       ProcessNextPoint();
       i++;
     }

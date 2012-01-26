@@ -1,0 +1,154 @@
+
+func "Common/ScriptGui"
+
+if (!exists(FastMarchingDistClass)) {
+
+  Class FastMarchingDistClass : public ScriptGui \
+  {
+    
+    # LevelSets Parameters
+    func "Variable/ObjectIO"
+
+    #===========================================================================
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+        ::maxtime = 1000, "Maximal evolution time"
+        ::init_iso = 0, "Initialization isocontour(/isosurface) value"
+        
+        #-----------------------------------------------------------------------
+        proc ::__assign__( VAR p) {
+          ::maxtime = p.maxtime
+          ::init_iso = p.init_iso
+        }
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::Init() \
+    {
+      ::input_name   = "","Name of the input image variable"
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/"+
+      # "doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::ParamClass ::params
+      ::html_filename = GetScriptsDir+\
+                        "/FastMarchingDist/Doc/FastMarchingDist/index.html"
+    }
+
+
+    #-----------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image member "+\
+                            "named 'input'")
+
+    #---------------------------------------------------------------------------
+    proc ::RunFM() \
+    { 
+        # Create initialization image
+        initim = (FLOAT) speed*0+maxtime
+        initim.setpos(x,y,z)
+        initim.set(-4)
+
+        # convert images to VTK images
+        vtk_input  = vtktools.ToVtkImageData(&speed)
+        vtk_init   = vtktools.ToVtkImageData(&initim)
+
+        vtk_FM = algorithms.vtkLevelSetFastMarching.New()
+
+        vtk_FM.SetInput(&vtk_input)
+        vtk_FM.Setinitimage(&vtk_init);
+        # if we set initiso to a different value than -1E10 (default value)
+        # the it will call InitIsoSurf which recomputes the distance close to the surface
+        # otherwise, it call InitWithImage which is much faster, and
+        # all values lower than initmaxdist will be accepted to start with.
+
+        vtk_FM.Setinitiso(   0);
+        vtk_FM.Setinitmaxdist(1+1E-3);
+        vtk_FM.SetmaxTime( maxtime);
+        vtk_FM.Update();
+
+        return = vtktools.FromVtkImageData(&vtk_FM.GetOutput())
+        vtk_FM.Delete()
+    }
+  
+    #---------------------------------------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+      }
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("FastMarchingDist",&::parent_panel)
+      } else {
+        ::win = ParamPanel("FastMarchingDist")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+          #::win.AddLabel("Info:","Set your parameters here")
+          ::win.BeginBoxPanel("Initialization")
+            ::win.AddFloat(&::params.init_iso,"Isocontour",-100,100)
+          ::win.EndBoxPanel()
+          ::win.BeginBoxPanel("Speed")
+          ::win.EndBoxPanel()
+          ::win.AddFloat(&::params.maxtime,"Maximum Time",0.1,2000)
+
+        ::win.AddPage("Run")
+          ::win.AddButton("Run Filter",::Run)
+
+        ::AddParamPage(&::win)
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

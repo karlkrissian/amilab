@@ -479,7 +479,7 @@ InrImage*    Func_vtkIsoContourDist( InrImage* im, float th)
 
 } // Func_vtkIsoContourDist()
 
-
+/* moved to ami::vtkFastMarchingFunctions
 
 //---------------------------------------------------------------------------
 // inittype 0: InitIsoSurf
@@ -775,7 +775,7 @@ InrImage*  Func_vtkFastMarching(
 #endif // AMI_USE_VTK
 
 } // Func_vtkFastMarching()
-
+*/
 
 //---------------------------------------------------------------------------
 InrImage*    Func_vtkSignedBorgefors(InrImage* im, float dmax)

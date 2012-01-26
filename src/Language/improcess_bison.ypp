@@ -115,7 +115,7 @@
 #include "CalculRepCercle.hpp"
 #include "ShortestPathClass.h"
 #include "WrapOld_AnisoGS.h"
-#include "LevelSetsCURVES.h"
+//#include "LevelSetsCURVES.h"
 #include "vtkwrap.h"
 
 #include "gnuplot.hpp"
@@ -515,8 +515,9 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_EndTime
 
 
-%token T_vtkFastMarching
-%token T_vtkFastMarchingTarget
+// deprecated
+//%token T_vtkFastMarching
+//%token T_vtkFastMarchingTarget
 
 %token T_FluxDiffusion
 %token T_AnisoWeickert T_AnisoCW
@@ -6834,7 +6835,8 @@ image:
       InrImage::ptr res ( Func_vtkIsoContourDist( im.get(), $5));
       ADD_VARSTACK_PTR(InrImage,res);
     }
-    |
+/* deprecated
+ *    |
     T_vtkFastMarching T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
     {
     /**
@@ -6844,7 +6846,7 @@ image:
       (7) maximal time
     Description:
       Runs the fast marching algorithm
-     **/
+     ** /
 
       // 2nd param
       GET_VARSTACK_VALUE(InrImage, init);
@@ -6871,7 +6873,7 @@ image:
       (13)              Z
     Description:
       Runs the fast marching algorithm
-     **/
+     ** /
 
       GET_VARSTACK_VALUE(InrImage,init);
       GET_VARSTACK_VALUE(InrImage,input);
@@ -6897,7 +6899,7 @@ image:
       (11) maximal time
     Description:
       Runs the fast marching algorithm
-     **/
+     ** /
 
       GET_VARSTACK_VALUE(InrImage,init);
       GET_VARSTACK_VALUE(InrImage,input);
@@ -6922,8 +6924,8 @@ image:
       (13) initialization type
     Description:
       Runs the fast marching algorithm
-     **/
-      /* Version without initialization */
+     ** /
+      /* Version without initialization * /
 
       GET_VARSTACK_VALUE(InrImage,init);
       GET_VARSTACK_VALUE(InrImage,input);
@@ -6951,8 +6953,8 @@ image:
     Description:
       Runs the fast marching algorithm using Dijkstra
       algorithm and tracking back the trajectories
-     **/
-      /* Version without initialization */
+     ** /
+      /* Version without initialization * /
 
       int     inittype   = (int)   $11;
       float   maxtime    = (float) $9;
@@ -6967,6 +6969,7 @@ image:
                   maxtime,inittype));
       ADD_VARSTACK_PTR(InrImage,res);
     }
+    */
     |
     T_Convolve T_OP_PAR var_image T_COMMA var_image T_CL_PAR
     {
@@ -8048,7 +8051,7 @@ postfix_var:
               } else
               if (id=="GetExtent") {
                 ami::ImageExtent<float>* extent=new ami::ImageExtent<float>();
-                extent->SetMode(0); // absolute
+                extent->SetMode(ami::ImageExtent<float>::Absolute); // absolute
                 extent->SetXmin( im->SpacePosX(0));
                 extent->SetXmax( im->SpacePosX(im->DimX()-1));
                 extent->SetYmin( im->SpacePosY(0));
@@ -9628,7 +9631,7 @@ image_extent:
       ami::ImageExtent<float>* extent=new ami::ImageExtent<float>(  *xmin, *xmax, 
                                                           *ymin, *ymax, 
                                                           *zmin, *zmax);
-      extent->SetMode(1); // relative
+      extent->SetMode(ami::ImageExtent<float>::Relative); // relative
       BasicVariable::ptr res;
       res = AMILabType<ami::ImageExtent<float> >::CreateVar(extent);
       driver.var_stack.AddVar(res);
@@ -9646,7 +9649,7 @@ image_extent:
       GET_VARSTACK_VALUE(float,xmin)
 
       ami::ImageExtent<float>* extent=new ami::ImageExtent<float>( *xmin, *xmax, *ymin, *ymax);
-      extent->SetMode(1); // relative
+      extent->SetMode(ami::ImageExtent<float>::Relative); // relative
       BasicVariable::ptr res;
       res = AMILabType<ami::ImageExtent<float> >::CreateVar(extent);
       driver.var_stack.AddVar(res);
@@ -9668,7 +9671,7 @@ image_extent:
           -float_max,float_max,
           -float_max,float_max,
           *zmin,*zmax);
-      extent->SetMode(1); // relative
+      extent->SetMode(ami::ImageExtent<float>::Relative); // relative
       BasicVariable::ptr res;
       res = AMILabType<ami::ImageExtent<float> >::CreateVar(extent);
       driver.var_stack.AddVar(res);
@@ -9815,6 +9818,3 @@ InrImage* ReadImage( const char* name)
   }
   return res;
 }
-
-
-

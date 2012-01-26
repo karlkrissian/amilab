@@ -37,9 +37,9 @@
 //  10/31/2001
 //
 
-
-#ifndef _MINHEAP_HPP
-#define _MINHEAP_HPP
+#pragma once
+#ifndef _vtkMINHEAP_HPP
+#define _vtkMINHEAP_HPP
 
 
 //#include "style.hpp"

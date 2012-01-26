@@ -1,16 +1,20 @@
 
 func "AddSphere"
 
-proc GaussFastMarching( IMAGE _init, IMAGE _res, NUM _fidx, NUM _fidy, NUM _fidz, NUM _mean, NUM _sd, NUM _maxtime ) {
+proc GaussFastMarching( IMAGE _init, IMAGE _res, NUM _fidx, \
+                        NUM _fidy, NUM _fidz, \
+                        NUM _mean, NUM _sd, NUM _maxtime ) \
+{
 
-_fm_init = (FLOAT) _init
-_fm_init.initvalue(_maxtime)
-AddSphere(&_fm_init,_fidx,_fidy,_fidz,2)
+  _fm_init = (FLOAT) _init
+  _fm_init.initvalue(_maxtime)
+  AddSphere(&_fm_init,_fidx,_fidy,_fidz,2)
 
-# last parameter 1 for fast initialization
-#
-print "Run the FastMarching\n"
-_res = vtkFastMarching(_init,_fm_init,_mean,_sd,_maxtime,1)
-print "end\n"
+  # last parameter 1 for fast initialization
+  #
+  print "Run the FastMarching\n"
+  _res = algorithms.ami_vtkFastMarchingFunctions.\
+              FastMarching(_init,_fm_init,_mean,_sd,_maxtime,1)
+  print "end\n"
 
 }

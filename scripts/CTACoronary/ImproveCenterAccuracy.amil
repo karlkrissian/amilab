@@ -17,7 +17,7 @@ radius = 1
 
   # 2 run Fast Marching within PDF up to the radius
   #maxrepim_crop = maxrepim_crop/10
-  res = vtkFastMarching(pdf,recons,radius)
+  res = algorithms.ami_vtkFastMarchingFunctions.FastMarching(pdf,recons,radius)
 
   # 3 Recompute line
 

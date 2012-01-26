@@ -500,9 +500,6 @@ SpacePos          return(token::T_SpacePos); /*{SpacePos,T_SpacePos}*/
 del               return(token::T_del); /*{del,T_del}*/
 delvars           return(token::T_delvars); /*{delvars,T_delvars}*/
 
-vtkFastMarching   return(token::T_vtkFastMarching); /*{vtkFastMarching,T_vtkFastMarching}*/
-vtkFastMarchingTarget   return(token::T_vtkFastMarchingTarget); /*{vtkFastMarchingTarget,T_vtkFastMarchingTarget}*/
-
 
 FluxDiffusion     return(token::T_FluxDiffusion); /*{FluxDiffusion,T_FluxDiffusion}*/
 vtkAnisoGS        return(token::T_vtkAnisoGS); /*{vtkAnisoGS,T_vtkAnisoGS}*/

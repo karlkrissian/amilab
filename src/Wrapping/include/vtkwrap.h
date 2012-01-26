@@ -40,6 +40,8 @@ InrImage*    Func_vtkConvexHull( InrImage* im, int order, float resolution);
 
 InrImage*    Func_vtkIsoContourDist( InrImage* im, float th);
 
+/* moved to ami::vtkFastMarchingFunctions
+ * 
 InrImage*    Func_vtkFastMarching( InrImage* input, InrImage* init,  
                    float maxtime, int inittype=0);
 
@@ -62,7 +64,7 @@ InrImage*    Func_vtkFastMarching( InrImage* input, InrImage* init,
                     float mean, float sd, float maxtime, 
                     int inittype=0,
                     int evol_scheme = 0);
-
+*/
 
 InrImage*    Func_vtkSignedBorgefors(InrImage* im, float dmax=10000);
 
