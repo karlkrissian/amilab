@@ -17,6 +17,7 @@
 #include "vtkRenderWindow.h"
 #include "vtkCamera.h"
 #include "vtkMatrix4x4.h"
+#include "vtkTransform.h"
 #include "vtkImageData.h"
 
 #include "vtkTimerLog.h"
@@ -86,7 +87,7 @@
 #include "vtkUniformVariables.h"
 #include "vtkShader2Collection.h"
 #include "vtkOpenGLRenderWindow.h"
-
+#include <vtkSmartPointer.h>
 
 // Uncomment the following line to debug Snow Leopard
 //#define APPLE_SNOW_LEOPARD_BUG
@@ -3750,8 +3751,8 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::ClipBoundingBox(vtkRenderer *re
     this->Densify=vtkDensifyPolyData::New();
     this->Densify->SetInputConnection(this->Clip->GetOutputPort());
   
-    //this->Densify->SetNumberOfSubdivisions(2);
-    this->Densify->SetNumberOfSubdivisions(1);
+    this->Densify->SetNumberOfSubdivisions(2);
+    //this->Densify->SetNumberOfSubdivisions(1);
     }
   this->Densify->Update();
   this->ClippedBoundingBox = this->Densify->GetOutput();
@@ -3800,20 +3801,15 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderClippedBoundingBox(
     center[2]/=static_cast<double>(npts);
     }
 
-  double *loadedBounds=0;
+  double    *loadedBounds=0;
   vtkIdType *loadedExtent=0;
+  double    *loadedBounds2=0;
+  vtkIdType *loadedExtent2=0;
 
   if ( tcoordFlag )
     {
     loadedBounds=this->CurrentScalar->GetLoadedBounds();
     loadedExtent=this->CurrentScalar->GetLoadedExtent();
-    }
-
-  double *loadedBounds2=0;
-  vtkIdType *loadedExtent2=0;
-
-  if ( tcoordFlag )
-    {
     loadedBounds2=this->CurrentScalar2->GetLoadedBounds();
     loadedExtent2=this->CurrentScalar2->GetLoadedExtent();
     }
@@ -3823,14 +3819,8 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderClippedBoundingBox(
   i=0;
   while(i<3)
     {
-    if(spacing[i]<0)
-      {
-      spacingSign[i]=-1.0;
-      }
-    else
-      {
-      spacingSign[i]=1.0;
-      }
+    if(spacing[i]<0) spacingSign[i] =-1.0;
+    else              spacingSign[i]= 1.0;
     ++i;
     }
 
@@ -3839,132 +3829,84 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderClippedBoundingBox(
   i=0;
   while(i<3)
     {
-    if(spacing2[i]<0)
-      {
-      spacingSign2[i]=-1.0;
-      }
-    else
-      {
-      spacingSign2[i]=1.0;
-      }
+    if(spacing2[i]<0) spacingSign2[i]=-1.0;
+    else              spacingSign2[i]= 1.0;
     ++i;
     }
 
 
-//Carlos
-//We calculate transformation matrix M1 and M2
-// Mx= Ex3*Tx2*Ex2*Ex1*Tx1
-  vtkMatrix4x4 *m=vtkMatrix4x4::New(); //M2 M1^-1
-  vtkMatrix4x4 *m1=vtkMatrix4x4::New();
-  vtkMatrix4x4 *m2=vtkMatrix4x4::New();
+  // Premultiply is the default for vtkTransform
+  vtkSmartPointer<vtkTransform> m = vtkSmartPointer<vtkTransform>::New();
+  vtkSmartPointer<vtkTransform> m1 = vtkSmartPointer<vtkTransform>::New();
+  vtkSmartPointer<vtkTransform> m2 = vtkSmartPointer<vtkTransform>::New();
   if ( tcoordFlag ) //We need the loadedBounds information 
-    {
-//     vtkMatrix4x4 *m1=vtkMatrix4x4::New();
-//     vtkMatrix4x4 *m2=vtkMatrix4x4::New();
+  {
+    m1->PostMultiply();
+    m1->Identity();
+    m1->Translate(-loadedBounds [0],-loadedBounds [2],-loadedBounds [4]);
+    m1->Scale( 
+                spacingSign[0]/(loadedBounds[1] - loadedBounds[0]),
+                spacingSign[1]/(loadedBounds[3] - loadedBounds[2]),
+                spacingSign[2]/(loadedBounds[5] - loadedBounds[4])    );
+    m1->Scale( 
+                 static_cast<double>(loadedExtent[1]-loadedExtent[0])
+                ,static_cast<double>(loadedExtent[3]-loadedExtent[2])
+                ,static_cast<double>(loadedExtent[5]-loadedExtent[4])
+              );
+    m1->Translate(0.5,0.5,0.5);
+    m1->Scale( 
+                 1.0/static_cast<double>(loadedExtent[0+1]-loadedExtent[0]+1)
+                ,1.0/static_cast<double>(loadedExtent[2+1]-loadedExtent[2]+1)
+                ,1.0/static_cast<double>(loadedExtent[4+1]-loadedExtent[4]+1)
+              );
 
-    vtkMatrix4x4 *s11=vtkMatrix4x4::New();
-    vtkMatrix4x4 *s12=vtkMatrix4x4::New();  
-    vtkMatrix4x4 *s13=vtkMatrix4x4::New();  
-    vtkMatrix4x4 *t11=vtkMatrix4x4::New();
-    vtkMatrix4x4 *t12=vtkMatrix4x4::New();      
-
-    vtkMatrix4x4 *s21=vtkMatrix4x4::New();
-    vtkMatrix4x4 *s22=vtkMatrix4x4::New();  
-    vtkMatrix4x4 *s23=vtkMatrix4x4::New();  
-    vtkMatrix4x4 *t21=vtkMatrix4x4::New();
-    vtkMatrix4x4 *t22=vtkMatrix4x4::New();      
-    //init
-    s11->Identity();
-    s12->Identity();  
-    s13->Identity(); 
-    s21->Identity();
-    s22->Identity();
-    s23->Identity();  
-    t11->Identity();
-    t12->Identity();  
-    t21->Identity();
-    t22->Identity(); 
+    m2->PostMultiply();
+    m2->Identity();
+    m2->Translate(-loadedBounds2[0],-loadedBounds2[2],-loadedBounds2[4]);
+    m2->Scale( 
+                spacingSign2[0]/(loadedBounds2[1] - loadedBounds2[0]),
+                spacingSign2[1]/(loadedBounds2[3] - loadedBounds2[2]),
+                spacingSign2[2]/(loadedBounds2[5] - loadedBounds2[4])    );
+#define PRINT_EXTENT(e) \
+    std::cout << #e << " = (" << e[0] << "," << e[1] << ";" \
+                              << e[2] << "," << e[3] << ";" \
+                              << e[4] << "," << e[5] << ")" << std::endl;
+    PRINT_EXTENT(loadedExtent)
+    PRINT_EXTENT(loadedExtent2)
+    m2->Scale( 
+                 static_cast<double>(loadedExtent2[1]-loadedExtent2[0])
+                ,static_cast<double>(loadedExtent2[3]-loadedExtent2[2])
+                ,static_cast<double>(loadedExtent2[5]-loadedExtent2[4])
+              );
+    m2->Translate(0.5,0.5,0.5);
+    m2->Scale( 
+                 1.0/static_cast<double>(loadedExtent2[1]-loadedExtent2[0]+1)
+                ,1.0/static_cast<double>(loadedExtent2[3]-loadedExtent2[2]+1)
+                ,1.0/static_cast<double>(loadedExtent2[5]-loadedExtent2[4]+1)
+              );
     
-    //Scale matrix
-    for(int i=0;i<3;i++)
-      {
-      double delta =static_cast<double>( loadedExtent[i*2+1]-loadedExtent[i*2]+1);
-      double delta2=static_cast<double>(loadedExtent2[i*2+1]-loadedExtent2[i*2]+1);
-
-      double tmp = spacingSign[i]/(loadedBounds[i*2+1] - loadedBounds[i*2]);               
-      double tmp2 = spacingSign2[i]/(loadedBounds2[i*2+1] - loadedBounds2[i*2]);
-
-      s11->SetElement(i,i,tmp);
-      s12->SetElement(i,i,delta-1);   
-      s13->SetElement(i,i,1/delta);  
-
-      s21->SetElement(i,i,tmp2);
-      s22->SetElement(i,i,delta2-1);   
-      s23->SetElement(i,i,1/delta2);  
-      }
+    m->PostMultiply();
+    m1->Inverse();
+    m->Concatenate(m1);
+    m->Concatenate(m2);
     
-    //Tras matrix
-    for(int i=0;i<3;i++)
-      {
-      std::cout<<"loadedBounds= "<<loadedBounds[i*2]<<" loadedBounds2= "<<loadedBounds2[i*2]<<std::endl;
-      t11->SetElement(i,3,-loadedBounds[i*2]);
-      t12->SetElement(i,3,0.5);
-
-      t21->SetElement(i,3,-loadedBounds2[i*2]);
-      t22->SetElement(i,3,0.5);        
-      }
-    
-      vtkMatrix4x4 *aux1=vtkMatrix4x4::New();  
-      vtkMatrix4x4 *aux2=vtkMatrix4x4::New();
-      vtkMatrix4x4 *aux3=vtkMatrix4x4::New();  
-      
-//       vtkMatrix4x4::Multiply4x4(s13,t12,aux1);   
-//       vtkMatrix4x4::Multiply4x4(s12,s11,aux2);
-//       vtkMatrix4x4::Multiply4x4(aux2,t11,aux3);
-//       vtkMatrix4x4::Multiply4x4(aux1,aux3,m1);
-//       vtkMatrix4x4::Multiply4x4(s23,t22,aux1);
-//       vtkMatrix4x4::Multiply4x4(s22,s21,aux2);
-//       vtkMatrix4x4::Multiply4x4(aux2,t21,aux3);
-//       vtkMatrix4x4::Multiply4x4(aux1,aux3,m2);
-      
-      
-      vtkMatrix4x4::Multiply4x4(t11,s11,aux1);   
-      vtkMatrix4x4::Multiply4x4(s12,t12,aux2);
-      vtkMatrix4x4::Multiply4x4(aux2,s13,aux3);
-      vtkMatrix4x4::Multiply4x4(aux1,aux3,m1);     
-      vtkMatrix4x4::Multiply4x4(t21,s21,aux1);   
-      vtkMatrix4x4::Multiply4x4(s22,t22,aux2);
-      vtkMatrix4x4::Multiply4x4(aux2,s23,aux3);
-      vtkMatrix4x4::Multiply4x4(aux1,aux3,m2);
-      
-      aux2->DeepCopy(m1);
-      vtkMatrix4x4::Invert(aux2,m1);   
-
-       
-//       vtkMatrix4x4::Multiply4x4(m2,m1,m);
-       vtkMatrix4x4::Multiply4x4(m1,m2,m);     
-//       for(int i=0;i<4;i++)
-//         for(int j=0;j<4;j++)
-//           std::cout<< "m ["<<i<<"]["<<j<<"] ="<< m->Element[i][j]<<std::endl;
+    vtkSmartPointer<vtkMatrix4x4> mat = vtkSmartPointer<vtkMatrix4x4>::New();
+    m->GetMatrix(mat);
   
-      //send to shader
-       
-      m->Transpose();
-      vtkUniformVariables *v=this->Program->GetUniformVariables();
-      GLfloat matrix[16];   
-      for(int i=0;i<4;i++)
-        {
-        for(int j=0;j<4;j++)
-          {
-          matrix[i*4+j]=static_cast<GLfloat>(m->Element[j][i]);
-          }
-        }
-      v->SetUniformMatrix("P2toP1",4,4,matrix);
+    //send to shader
+    vtkUniformVariables *v=this->Program->GetUniformVariables();
+    GLfloat matrix[16];   
+    for(int i=0;i<4;i++) {
+      for(int j=0;j<4;j++) {
+        matrix[i*4+j]=static_cast<GLfloat>(mat->Element[i][j]);
+        std::cout << matrix[i*4+j] << ", ";
+      }
+      std::cout << std::endl; 
     }
+    v->SetUniformMatrix("P1toP2",4,4,matrix);
+  }
 
-//
-
-// make it double for the ratio of the progress.
+  // make it double for the ratio of the progress.
   int polyId=0;
   double polyCount=static_cast<double>(polys->GetNumberOfCells());
   polys->InitTraversal();
@@ -4060,32 +4002,26 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderClippedBoundingBox(
 
           }
         glVertex3dv(vert);
-//         std::cout << "vert " << vert[0] << ", " 
-//                   << vert[1] << ", " << vert[2] << std::endl;
-        double tcoord1b[4],res[4], vertb[3],resv[4];
-        tcoord1b[0]=tcoord[0];
-        tcoord1b[1]=tcoord[1];
-        tcoord1b[2]=tcoord[2];
-        tcoord1b[3]=1;
         
-   
+/* code to check if transforms are OK
+ *        std::cout << "---------------------------" << std::endl;
+        double res[3], resv[3];
+        #define PRINT_VECTOR(v) \
+          std::cout << #v << "= \t(" << v[0] << ", " << v[1] << ", " << v[2] \
+                    << ")" << std::endl;
         
-        std::cout << "tcoord " << tcoord[0] << ", " 
-                  << tcoord[1] << ", " << tcoord[2] << std::endl;
+        PRINT_VECTOR(vert)
+        PRINT_VECTOR(tcoord)
+        m1->TransformPoint(vert,resv);
+        PRINT_VECTOR(resv)
 
-        vertb[0]=vert[0];
-        vertb[1]=vert[1];
-        vertb[2]=vert[2];
-        vertb[3]=1;       
-        m1->MultiplyPoint(vertb,resv);   
-         std::cout << "resv " << resv[0] << ", " 
-                   << resv[1] << ", " << resv[2] << std::endl;
-                  
-        m->MultiplyPoint(tcoord1b,res);
-        std::cout << "tcoord2 " << tcoord2[0] << ", " 
-                  << tcoord2[1] << ", " << tcoord2[2] << std::endl;
-        std::cout << "res " << res[0] << ", " 
-                  << res[1] << ", " << res[2] << std::endl;
+        PRINT_VECTOR(tcoord2)
+        m2->TransformPoint(vert,res);
+        PRINT_VECTOR(res)
+
+        m->TransformPoint(tcoord,res);
+        PRINT_VECTOR(res)*/
+        
         }
       glEnd();
       }
@@ -5955,10 +5891,12 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
     texture2->GetLoadedCellFlag()==this->CellFlag;
 
   vtkIdType *loadedExtent;
+  vtkIdType *loadedExtent2;
 
   if(loaded)
     {
     loadedExtent=texture->GetLoadedExtent();
+    loadedExtent2=texture2->GetLoadedExtent();
     i=0;
     while(loaded && i<6)
       {
@@ -6396,18 +6334,34 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
 
           float lowBounds[3];
           float highBounds[3];
+          // bound for second volume
+          float lowBounds2[3];
+          float highBounds2[3];
           if(!this->CurrentScalar->GetLoadedCellFlag()) // points
-            {
+          {
             j=0;
             while(j<3)
-              {
+            {
               double delta=
                 static_cast<double>(loadedExtent[j*2+1]-loadedExtent[j*2]);
-              lowBounds[j]=static_cast<float>((blocks[k].Extent[j*2]-static_cast<double>(loadedExtent[j*2]))/delta);
-              highBounds[j]=static_cast<float>((blocks[k].Extent[j*2+1]-static_cast<double>(loadedExtent[j*2]))/delta);
+              lowBounds[j]=static_cast<float>
+                             ((blocks[k].Extent[j*2]-
+                               static_cast<double>(loadedExtent[j*2]))/delta);
+              highBounds[j]=static_cast<float>
+                             ((blocks[k].Extent[j*2+1]-
+                               static_cast<double>(loadedExtent[j*2]))/delta);
+              // Second volume
+              double delta2=
+                static_cast<double>(loadedExtent2[j*2+1]-loadedExtent2[j*2]);
+              lowBounds2[j]=static_cast<float>
+                             ((blocks[k].Extent[j*2]-
+                               static_cast<double>(loadedExtent2[j*2]))/delta2);
+              highBounds2[j]=static_cast<float>
+                             ((blocks[k].Extent[j*2+1]-
+                               static_cast<double>(loadedExtent2[j*2]))/delta2);
               ++j;
-              }
             }
+          }
           else // cells
             {
             j=0;
@@ -6415,8 +6369,23 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
               {
               double delta=
                 static_cast<double>(loadedExtent[j*2+1]-loadedExtent[j*2]);
-              lowBounds[j]=static_cast<float>((blocks[k].Extent[j*2]-0.5-static_cast<double>(loadedExtent[j*2]))/delta);
-              highBounds[j]=static_cast<float>((blocks[k].Extent[j*2+1]-0.5-static_cast<double>(loadedExtent[j*2]))/delta);
+              lowBounds[j]=
+                static_cast<float>((blocks[k].Extent[j*2]-0.5-
+                                    static_cast<double>(loadedExtent[j*2]))/delta);
+              highBounds[j]=
+                static_cast<float>((blocks[k].Extent[j*2+1]-0.5-
+                                    static_cast<double>(loadedExtent[j*2]))/delta);
+              // Second volume
+              double delta2=
+                static_cast<double>(loadedExtent2[j*2+1]-loadedExtent2[j*2]);
+              lowBounds2[j]=
+                static_cast<float>((blocks[k].Extent[j*2]-0.5-
+                                    static_cast<double>(loadedExtent2[j*2]))
+                                   /delta2);
+              highBounds2[j]=
+                static_cast<float>((blocks[k].Extent[j*2+1]-0.5-
+                                    static_cast<double>(loadedExtent2[j*2]))
+                                   /delta2);
               ++j;
               }
             }
@@ -6426,7 +6395,6 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
 
           // bounds have to be normalized. There are used in the shader
           // as bounds to a value used to sample a texture.
-
           assert("check: positive_low_bounds0" && lowBounds[0]>=0.0);
           assert("check: positive_low_bounds1" && lowBounds[1]>=0.0);
           assert("check: positive_low_bounds2" && lowBounds[2]>=0.0);
@@ -6438,9 +6406,25 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
           assert("check: high_bounds1_less_than1" && highBounds[1]<=1.0);
           assert("check: high_bounds2_less_than1" && highBounds[2]<=1.0);
 
+          // bounds have to be normalized. There are used in the shader
+          // as bounds to a value used to sample a texture.
+          assert("check: positive_low_bounds0" && lowBounds2[0]>=0.0);
+          assert("check: positive_low_bounds1" && lowBounds2[1]>=0.0);
+          assert("check: positive_low_bounds2" && lowBounds2[2]>=0.0);
+
+          assert("check: increasing_bounds0" && lowBounds2[0]<=highBounds2[0]);
+          assert("check: increasing_bounds1" && lowBounds2[1]<=highBounds2[1]);
+          assert("check: increasing_bounds2" && lowBounds2[2]<=highBounds2[2]);
+          assert("check: high_bounds0_less_than1" && highBounds2[0]<=1.0);
+          assert("check: high_bounds1_less_than1" && highBounds2[1]<=1.0);
+          assert("check: high_bounds2_less_than1" && highBounds2[2]<=1.0);
+
           vtkUniformVariables *v=this->Program->GetUniformVariables();
           v->SetUniformf("lowBounds",3,lowBounds);
           v->SetUniformf("highBounds",3,highBounds);
+
+          v->SetUniformf("lowBounds2",3,lowBounds2);
+          v->SetUniformf("highBounds2",3,highBounds2);
 
           this->PrintError("uniform low/high bounds block");
           // other sub-volume rendering code
