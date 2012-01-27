@@ -101,6 +101,14 @@ if (!exists(VolRenClass)) {
       
       ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-volumerendering"
 
+      ::firstvolorig_x = 0, "Origin of first volume X"
+      ::firstvolorig_y = 0, "Origin of first volume Y"
+      ::firstvolorig_z = 0, "Origin of first volume Z"
+
+      ::secvolorig_x = 0, "Origin of second volume X"
+      ::secvolorig_y = 0, "Origin of second volume Y"
+      ::secvolorig_z = 0, "Origin of second volume Z"
+
     }
     #----------------------------
     proc ::Preview() \
@@ -524,6 +532,21 @@ if (!exists(VolRenClass)) {
         ::volVector[0].ResetLinearCurve1()
 
         ::UpdateVolPages()
+
+        # update input origin
+        origin = vector_double(3)
+        ::vol0.vtkinput.GetOrigin(&origin[0])
+        ::firstvolorig_x = origin[0]
+        ::firstvolorig_y = origin[1]
+        ::firstvolorig_z = origin[2]
+        
+        if (exists(::vol0->vtkinput2)) {
+          ::vol0.vtkinput2.GetOrigin(&origin[0])
+          ::secvolorig_x = origin[0]
+          ::secvolorig_y = origin[1]
+          ::secvolorig_z = origin[2]
+        }
+        
         ::win.Update(-1)
       }
       if ::trace { eval ::trace_end; }
@@ -898,6 +921,26 @@ if (!exists(VolRenClass)) {
       ::renwin_interact.Render()
     }
 
+    #---------------------------------------------------------------------------
+    proc ::OnOrigin1() \
+    {
+      ::vol0.vtkinput.SetOrigin( ::firstvolorig_x,\
+                                 ::firstvolorig_y,\
+                                 ::firstvolorig_z)
+      ::renwin_interact.Render()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnOrigin2() \
+    {
+      if exists(::vol0->vtkinput2) {
+        ::vol0.vtkinput2.SetOrigin( ::secvolorig_x,\
+                                    ::secvolorig_y,\
+                                    ::secvolorig_z)
+        ::renwin_interact.Render()
+      }
+    }
+
     #----------------------------
     proc ::Gui() {
     
@@ -1005,6 +1048,29 @@ if (!exists(VolRenClass)) {
               #::win.AddButton("Reset",&::ResetView)
             #::win.EndHorizontal()
           #::win.EndBoxPanel()
+
+        ::win.AddPage("Transf")
+          ::win.BeginBoxPanel("First Volume")
+            ::win.BeginBoxPanel("Origin")
+              ::win.AddFloat(&::firstvolorig_x, "X",-200,200)
+              ::win.SetCallback(&::OnOrigin1)
+              ::win.AddFloat(&::firstvolorig_y, "Y",-200,200)
+              ::win.SetCallback(&::OnOrigin1)
+              ::win.AddFloat(&::firstvolorig_z, "Z",-200,200)
+              ::win.SetCallback(&::OnOrigin1)
+            ::win.EndBoxPanel()
+          ::win.EndBoxPanel()
+          ::win.BeginBoxPanel("Second Volume")
+            ::win.BeginBoxPanel("Origin")
+              ::win.AddFloat(&::secvolorig_x, "X",-200,200)
+              ::win.SetCallback(&::OnOrigin2)
+              ::win.AddFloat(&::secvolorig_y, "Y",-200,200)
+              ::win.SetCallback(&::OnOrigin2)
+              ::win.AddFloat(&::secvolorig_z, "Z",-200,200)
+              ::win.SetCallback(&::OnOrigin2)
+            ::win.EndBoxPanel()
+          ::win.EndBoxPanel()
+
       ::win.EndBook()
       ::AddStandardButtons(&::win)
       

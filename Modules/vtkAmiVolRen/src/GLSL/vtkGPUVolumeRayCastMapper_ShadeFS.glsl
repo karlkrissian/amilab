@@ -37,7 +37,6 @@ uniform mat3 transposeTextureToEye;
 uniform vec3 cellStep;
 uniform vec3 cellScale;
 
-
 // Entry position (global scope), updated in the loop
 vec3 pos;
 // Incremental vector in texture space (global scope)
@@ -52,6 +51,7 @@ const vec4 clampMax=vec4(1.0,1.0,1.0,1.0);
 vec3 xvec;
 vec3 yvec;
 vec3 zvec;
+
 vec3 wReverseRayDir;
 vec3 lightPos;
 vec3 ldir;

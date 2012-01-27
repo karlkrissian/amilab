@@ -41,8 +41,12 @@
 //
 
 vtkInstantiatorNewMacro(vtkAMILabGPUMultiVolumeRayCastMapper);
-vtkCxxSetObjectMacro(vtkAMILabGPUMultiVolumeRayCastMapper, MaskInput, vtkImageData);
-vtkCxxSetObjectMacro(vtkAMILabGPUMultiVolumeRayCastMapper, TransformedInput, vtkImageData);
+vtkCxxSetObjectMacro(vtkAMILabGPUMultiVolumeRayCastMapper, MaskInput, 
+                     vtkImageData);
+vtkCxxSetObjectMacro(vtkAMILabGPUMultiVolumeRayCastMapper, TransformedInput,  
+                     vtkImageData);
+vtkCxxSetObjectMacro(vtkAMILabGPUMultiVolumeRayCastMapper, TransformedInput2, 
+                     vtkImageData);
 
 vtkAMILabGPUMultiVolumeRayCastMapper::vtkAMILabGPUMultiVolumeRayCastMapper()
 {
@@ -103,6 +107,8 @@ vtkAMILabGPUMultiVolumeRayCastMapper::vtkAMILabGPUMultiVolumeRayCastMapper()
 
   this->TransformedInput = NULL;
   this->LastInput = NULL;
+  this->TransformedInput2 = NULL;
+  this->LastInput2 = NULL;
   //carlos
   this->SetNumberOfInputPorts(2);
   //
@@ -114,6 +120,8 @@ vtkAMILabGPUMultiVolumeRayCastMapper::~vtkAMILabGPUMultiVolumeRayCastMapper()
   this->SetMaskInput(NULL);
   this->SetTransformedInput(NULL);
   this->LastInput = NULL;
+  this->SetTransformedInput2(NULL);
+  this->LastInput2 = NULL;
 }
 
 
@@ -137,6 +145,7 @@ void vtkAMILabGPUMultiVolumeRayCastMapper::SetInput2( vtkDataSet *genericInput )
 
 void vtkAMILabGPUMultiVolumeRayCastMapper::SetInput2( vtkImageData *input )
 {
+  //SetNumberOfInputPorts(2);
   if(input)
     {
     this->SecondVolLoad=true;
@@ -337,41 +346,63 @@ int vtkAMILabGPUMultiVolumeRayCastMapper::ValidateRender(vtkRenderer *ren,
 
   // Check that we have input data
   vtkImageData *input=this->GetInput();
+  vtkImageData *input2=this->GetInput2();
 
-  if(goodSoFar && input==0)
+  if(goodSoFar && (input==0||input2==0))
     {
-    vtkErrorMacro("Input is NULL but is required");
+    vtkErrorMacro("Input is NULL or Input2 is NULL but is required");
     goodSoFar = 0;
     }
 
   if(goodSoFar)
     {
     input->Update();
+    input2->Update();
     }
 
   // If we have a timestamp change or data change then create a new clone.
-  if(goodSoFar && (input != this->LastInput ||
-                   input->GetMTime() > this->TransformedInput->GetMTime()))
-    {
-    this->LastInput = input;
+  if(goodSoFar && (
+                      input != this->LastInput 
+                   || input->GetMTime() > this->TransformedInput->GetMTime()
+                   || input2 != this->LastInput2 
+                   || input2->GetMTime() > this->TransformedInput2->GetMTime()
+                  ))
+  {
+    this->LastInput  = input;
+    this->LastInput2 = input2;
 
     vtkImageData* clone;
     if(!this->TransformedInput)
-      {
+    {
       clone = vtkImageData::New();
       this->SetTransformedInput(clone);
       clone->Delete();
-      }
+    }
     else
-      {
+    {
       clone = this->TransformedInput;
-      }
+    }
 
     clone->ShallowCopy(input);
 
+    vtkImageData* clone2;
+    
+    if(!this->TransformedInput2)
+    {
+      clone2 = vtkImageData::New();
+      this->SetTransformedInput2(clone2);
+      clone2->Delete();
+    }
+    else
+    {
+      clone2 = this->TransformedInput2;
+    }
+
+    clone2->ShallowCopy(input2);
+    
     // @TODO: This is the workaround to deal with GPUVolumeRayCastMapper
     // not able to handle extents starting from non zero values.
-    // There is not a easy fix in the GPU volume ray cast mapper hence
+    // There is not an easy fix in the GPU volume ray cast mapper hence
     // this fix has been introduced.
 
     // Get the current extents.
@@ -385,21 +416,43 @@ int vtkAMILabGPUMultiVolumeRayCastMapper::ValidateRender(vtkRenderer *ren,
     clone->GetSpacing(spacing);
 
     for (int cc=0; cc < 3; cc++)
-      {
+    {
       // Transform the origin and the extents.
       origin[cc] = origin[cc] + extents[2*cc]*spacing[cc];
       extents[2*cc+1] -= extents[2*cc];
       extents[2*cc] -= extents[2*cc];
-      }
+    }
 
     clone->SetOrigin(origin);
     clone->SetExtent(extents);
-    }
+
+    // Get the current extents.
+    int extents2[6], real_extents2[6];
+    clone2->GetExtent(extents2);
+    clone2->GetExtent(real_extents2);
+
+    // Get the current origin and spacing.
+    double origin2[3], spacing2[3];
+    clone2->GetOrigin(origin2);
+    clone2->GetSpacing(spacing2);
+
+    for (int cc=0; cc < 3; cc++)
+      {
+      // Transform the origin and the extents.
+      origin2[cc] = origin2[cc] + extents2[2*cc]*spacing2[cc];
+      extents2[2*cc+1] -= extents2[2*cc];
+      extents2[2*cc] -= extents2[2*cc];
+      }
+
+    clone2->SetOrigin(origin2);
+    clone2->SetExtent(extents2);
+  }
 
   // Update the date then make sure we have scalars. Note
   // that we must have point or cell scalars because field
   // scalars are not supported.
   vtkDataArray *scalars = NULL;
+  vtkDataArray *scalars2 = NULL;
   if ( goodSoFar )
     {
     // Here is where we update the input
@@ -426,6 +479,33 @@ int vtkAMILabGPUMultiVolumeRayCastMapper::ValidateRender(vtkRenderer *ren,
       vtkErrorMacro("Only point or cell scalar support - found field scalars instead.");
       goodSoFar = 0;
       }
+
+    // Here is where we update the second input
+    this->TransformedInput2->UpdateInformation();
+    this->TransformedInput2->SetUpdateExtentToWholeExtent();
+    this->TransformedInput2->Update();
+
+    // Now make sure we can find scalars
+    scalars2=this->GetScalars(this->TransformedInput2,this->ScalarMode,
+                             this->ArrayAccessMode,
+                             this->ArrayId,
+                             this->ArrayName,
+                             this->CellFlag);
+
+    // We couldn't find scalars
+    if ( !scalars2 )
+      {
+      vtkErrorMacro("No scalars found on input.");
+      goodSoFar = 0;
+      }
+    // Even if we found scalars, if they are field data scalars that isn't good
+    else if ( this->CellFlag == 2 )
+      {
+      vtkErrorMacro("Only point or cell scalar support - found field scalars instead.");
+      goodSoFar = 0;
+      }
+      
+      
     }
 
   // Make sure the scalar type is actually supported. This mappers supports
@@ -433,6 +513,31 @@ int vtkAMILabGPUMultiVolumeRayCastMapper::ValidateRender(vtkRenderer *ren,
   if ( goodSoFar )
     {
     switch(scalars->GetDataType())
+      {
+      case VTK_CHAR:
+        vtkErrorMacro(<< "scalar of type VTK_CHAR is not supported "
+                      << "because this type is platform dependent. "
+                      << "Use VTK_SIGNED_CHAR or VTK_UNSIGNED_CHAR instead.");
+        goodSoFar = 0;
+        break;
+      case VTK_BIT:
+        vtkErrorMacro("scalar of type VTK_BIT is not supported by this mapper.");
+        goodSoFar = 0;
+        break;
+      case VTK_ID_TYPE:
+        vtkErrorMacro("scalar of type VTK_ID_TYPE is not supported by this mapper.");
+        goodSoFar = 0;
+        break;
+      case VTK_STRING:
+        vtkErrorMacro("scalar of type VTK_STRING is not supported by this mapper.");
+        goodSoFar = 0;
+        break;
+      default:
+        // Don't need to do anything here
+        break;
+      }
+    // for second input
+    switch(scalars2->GetDataType())
       {
       case VTK_CHAR:
         vtkErrorMacro(<< "scalar of type VTK_CHAR is not supported "
@@ -476,12 +581,20 @@ int vtkAMILabGPUMultiVolumeRayCastMapper::ValidateRender(vtkRenderer *ren,
   // This mapper supports 1 component data, or 4 component if it is not independent
   // component (i.e. the four components define RGBA)
   int numberOfComponents = 0;
+  int numberOfComponents2 = 0;
   if ( goodSoFar )
     {
     numberOfComponents=scalars->GetNumberOfComponents();
-    if( !( numberOfComponents==1 ||
+    numberOfComponents2=scalars2->GetNumberOfComponents();
+    if( 
+         !( numberOfComponents==1 ||
            (numberOfComponents==4 &&
-            vol->GetProperty()->GetIndependentComponents()==0)))
+            vol->GetProperty()->GetIndependentComponents()==0))
+        ||
+         !( numberOfComponents2==1 ||
+           (numberOfComponents2==4 &&
+            vol->GetProperty()->GetIndependentComponents()==0))
+      )
       {
       goodSoFar = 0;
       vtkErrorMacro(<< "Only one component scalars, or four "

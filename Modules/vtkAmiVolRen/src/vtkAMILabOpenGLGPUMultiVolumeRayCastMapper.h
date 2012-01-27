@@ -53,6 +53,10 @@ class vtkStdString;
 class vtkShaderProgram2;
 class vtkShader2;
 
+class vtkTransform;
+
+#include "vtkSmartPointer.h"
+
 //carlos public vtkGPUVolumeRayCastMapper vtkAMILabGPUMultiVolumeRayCastMapper
 class VTK_VOLUMERENDERING_EXPORT vtkAMILabOpenGLGPUMultiVolumeRayCastMapper : public vtkAMILabGPUMultiVolumeRayCastMapper
 {
@@ -448,6 +452,13 @@ protected:
   vtkKWScalarField *CurrentScalar;
   vtkKWScalarField *CurrentScalar2;   //carlos
   vtkKWMask *CurrentMask;
+
+
+  /**
+   * @brief transformation that convert texture coordinates from the first 
+   * to the second input volume.
+   **/
+  vtkSmartPointer<vtkTransform> TextureCoord_1to2;
 
   float ActualSampleDistance;
   

@@ -37,6 +37,7 @@ uniform vec3 highBounds2;
 
 // Entry position (global scope)
 vec3 pos;
+vec3 pos2;
 // Incremental vector in texture space (global scope)
 vec3 rayDir;
 
@@ -81,7 +82,7 @@ void trace(void)
     {  
     while(inside)
       {
-      vec3 pos2 = vec3(P1toP2*vec4(pos,1));
+      pos2 = vec3(P1toP2*vec4(pos,1));
 
       //float intensity,af;
       text1=false;

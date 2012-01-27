@@ -16,6 +16,9 @@ if (!exists(CreateTorusClass)) {
       ::dimx = INT(100), "Image dimension in X (in voxels)"
       ::dimy = INT(100), "Image dimension in Y (in voxels)"
       ::dimz = INT(100), "Image dimension in Z (in voxels)"
+      ::center_x = INT(50), "Center in X (in voxels)"
+      ::center_y = INT(50), "Center in Y (in voxels)"
+      ::center_z = INT(50), "Center in Z (in voxels)"
 
       ::bg = 0, "Background intensity"
 
@@ -52,9 +55,9 @@ if (!exists(CreateTorusClass)) {
     tmp_x = (FLOAT) Xpos(tmp)
     tmp_y = (FLOAT) Ypos(tmp)
     tmp_z = (FLOAT) Zpos(tmp)
-    tmp_x = tmp_x-::dimx/2
-    tmp_y = tmp_y-::dimy/2
-    tmp_z = tmp_z-::dimz/2
+    tmp_x = tmp_x-::center_x
+    tmp_y = tmp_y-::center_y
+    tmp_z = tmp_z-::center_z
     dxy=sqrt(tmp_x*tmp_x+tmp_y*tmp_y)-::R
     #dxy.info
     #tmp_z.info
@@ -119,6 +122,11 @@ if (!exists(CreateTorusClass)) {
           ::win.AddInt( &::dimx,  "::dimx", 1,1000)
           ::win.AddInt( &::dimy,  "::dimy", 1,1000)
           ::win.AddInt( &::dimz,  "::dimz", 1,1000)
+        ::win.EndBoxPanel()
+        ::win.BeginBoxPanel("Center")
+          ::win.AddInt( &::center_x,  "::X", 1,1000)
+          ::win.AddInt( &::center_y,  "::Y", 1,1000)
+          ::win.AddInt( &::center_z,  "::Z", 1,1000)
         ::win.EndBoxPanel()
         ::win.BeginBoxPanel("Automatic size")
           ::win.AddInt( &::margin,"margin",1,50)

@@ -42,9 +42,12 @@ uniform vec3 cellScale;
 
 // Entry position (global scope), updated in the loop
 vec3 pos;
+vec3 pos2;
 // Incremental vector in texture space (global scope)
 vec3 rayDir;
 
+uniform mat4 P1toP2;
+uniform mat4 P2toP1;
 
 // local to the implementation, shared between initShade() and shade()
 const vec3 minusOne=vec3(-1.0,-1.0,-1.0);
@@ -54,6 +57,12 @@ const vec4 clampMax=vec4(1.0,1.0,1.0,1.0);
 vec3 xvec;
 vec3 yvec;
 vec3 zvec;
+
+vec3 xvec2;
+vec3 yvec2;
+vec3 zvec2;
+
+
 vec3 wReverseRayDir;
 vec3 lightPos;
 vec3 ldir;
@@ -67,6 +76,10 @@ void initShade()
   yvec=vec3(0.0,cellStep.y,0.0);
   zvec=vec3(0.0,0.0,cellStep.z);
   
+  xvec2 = vec3(P1toP2*vec4(xvec,0));
+  yvec2 = vec3(P1toP2*vec4(yvec,0));  
+  zvec2 = vec3(P1toP2*vec4(zvec,0));
+
   // Reverse ray direction in eye space
   wReverseRayDir=eyeToTexture3*rayDir;
   wReverseRayDir=wReverseRayDir*minusOne;
@@ -222,19 +235,23 @@ vec4 shade(vec4 value)
 // ----------------------------------------------------------------------------
 vec4 shade2(vec4 value)
 {
+
+//  return colorFromValue2(value);
+
   vec3 g1;
   vec3 g2;
   vec4 tmp;
   float att;
   float spot;
   
-  g1.x=texture3D(dataSetTexture2,pos+xvec).x;
-  g1.y=texture3D(dataSetTexture2,pos+yvec).x;
-  g1.z=texture3D(dataSetTexture2,pos+zvec).x;
-  g2.x=texture3D(dataSetTexture2,pos-xvec).x;
-  g2.y=texture3D(dataSetTexture2,pos-yvec).x;
-  g2.z=texture3D(dataSetTexture2,pos-zvec).x;
-  // g1-g2 is  the gradient in texture coordinates
+  pos2 = vec3(P1toP2*vec4(pos,1));
+  g1.x=texture3D(dataSetTexture2,pos2+xvec2).x;
+  g1.y=texture3D(dataSetTexture2,pos2+yvec2).x;
+  g1.z=texture3D(dataSetTexture2,pos2+zvec2).x;
+  g2.x=texture3D(dataSetTexture2,pos2-xvec2).x;
+  g2.y=texture3D(dataSetTexture2,pos2-yvec2).x;
+  g2.z=texture3D(dataSetTexture2,pos2-zvec2).x;
+  // g1-g2 is  the gradient in texture coordinates of the first volume
   // the result is the normalized gradient in eye coordinates.
   
   g2=g1-g2;

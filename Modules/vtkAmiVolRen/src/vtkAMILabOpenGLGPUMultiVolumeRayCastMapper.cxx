@@ -587,7 +587,9 @@ public:
         }
       glBindTexture(vtkgl::TEXTURE_3D,this->TextureId);
 
-      int obsolete=needUpdate || !this->Loaded || input->GetMTime()>this->BuildTime;
+      int obsolete=needUpdate || !this->Loaded 
+          || input->GetMTime()>this->BuildTime
+          ;
       if(!obsolete)
         {
         obsolete=cellFlag!=this->LoadedCellFlag;
@@ -1170,7 +1172,10 @@ public:
       glBindTexture(vtkgl::TEXTURE_3D,this->TextureId);
 
       int obsolete=needUpdate || !this->Loaded
-        || input->GetMTime()>this->BuildTime;
+        || input->GetMTime()>this->BuildTime
+        || input2->GetMTime()>this->BuildTime
+        ;
+      // if obsolete: reload: too slow for fast transformations ...
       if(!obsolete)
         {
         obsolete=cellFlag!=this->LoadedCellFlag;
@@ -1955,6 +1960,10 @@ vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::vtkAMILabOpenGLGPUMultiVolumeRayCast
   this->Component=0;
   this->Shade=0;
   this->ScaleBiasProgram=0;
+
+  
+  this->TextureCoord_1to2 = vtkSmartPointer<vtkTransform>::New();
+  this->TextureCoord_1to2->Identity();
 }
 
 //-----------------------------------------------------------------------------
@@ -2412,7 +2421,8 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::LoadExtensions(
                      vtkAMILabOpenGLGPUMultiVolumeRayCastMapperShadeNo,
                      vtkAMILabOpenGLGPUMultiVolumeRayCastMapperComponentOne);
 
-  this->Program->SetPrintErrors(false);
+//  this->Program->SetPrintErrors(false);
+  this->Program->SetPrintErrors(true);
   this->Program->Build();
   this->Program->SetPrintErrors(true);
 
@@ -3890,20 +3900,23 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderClippedBoundingBox(
     m->Concatenate(m1);
     m->Concatenate(m2);
     
-    vtkSmartPointer<vtkMatrix4x4> mat = vtkSmartPointer<vtkMatrix4x4>::New();
+    TextureCoord_1to2->DeepCopy(m);
+    
+/*    vtkSmartPointer<vtkMatrix4x4> mat = vtkSmartPointer<vtkMatrix4x4>::New();
     m->GetMatrix(mat);
   
-    //send to shader
-    vtkUniformVariables *v=this->Program->GetUniformVariables();
-    GLfloat matrix[16];   
+    // prepare matrix for shader
+    GLfloat matrix_TextureCoord_1to2[16];   
     for(int i=0;i<4;i++) {
       for(int j=0;j<4;j++) {
-        matrix[i*4+j]=static_cast<GLfloat>(mat->Element[i][j]);
-        std::cout << matrix[i*4+j] << ", ";
+        matrix_TextureCoord_1to2[i*4+j]=static_cast<GLfloat>(mat->Element[i][j]);
+        std::cout << matrix_TextureCoord_1to2[i*4+j] << ", ";
       }
       std::cout << std::endl; 
-    }
-    v->SetUniformMatrix("P1toP2",4,4,matrix);
+    }*/
+/*    //send texture coordinate transform to shader
+    vtkUniformVariables *v=this->Program->GetUniformVariables();
+    v->SetUniformMatrix("P1toP2",4,4,matrix_TextureCoord_1to2);*/
   }
 
   // make it double for the ratio of the progress.
@@ -4333,6 +4346,7 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PreRender(vtkRenderer *ren,
                                                 int numberOfScalarComponents,
                                                 unsigned int numberOfLevels)
 {
+  std::cout << "PreRender" << std::endl;
   // make sure our window is the current OpenGL context.
   ren->GetRenderWindow()->MakeCurrent();
 
@@ -5372,7 +5386,7 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::PostRender(
 void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::GPURender(vtkRenderer *ren,
                                                   vtkVolume *vol)
 {
-  std::cout<< "  GPURender"<<std::endl;
+  std::cout<< "GPURender"<<std::endl;
   // We've already checked that we have input
   vtkImageData *input = this->GetTransformedInput();
 
@@ -5428,6 +5442,7 @@ void vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::GPURender(vtkRenderer *ren,
   // to fix into texture memory, it will be streamed through in the
   // RenderBlock method.
 
+  std::cout << "calling PreRender" << std::endl;
   this->PreRender(ren,vol,bounds,range,numberOfScalarComponents,1);
   if(this->LoadExtensionsSucceeded)
     {
@@ -5749,6 +5764,7 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
                                                        double bounds[6],
                                                        vtkVolume *volume)
 {
+  std::cout << "RenderSubVolume begin"<< std::endl;
   // Time to load scalar field
   size_t i;
   int wholeTextureExtent[6];
@@ -5851,7 +5867,7 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
    
  //carlos second volumen (mask place)
   vtkstd::map<vtkImageData *,vtkKWScalarField *>::iterator it2=
-    this->ScalarsTextures->Map.find(this->GetInput2());
+    this->ScalarsTextures->Map.find(this->GetTransformedInput2());
   vtkKWScalarField *texture2;
   if(it2==this->ScalarsTextures->Map.end())
     {
@@ -5887,7 +5903,7 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
   loaded = loaded &&
     texture2!=0 &&
     texture2->IsLoaded() &&
-    //this->GetTransformedInput()->GetMTime()<=texture->GetBuildTime() &&
+    this->GetTransformedInput2()->GetMTime()<=texture2->GetBuildTime() &&
     texture2->GetLoadedCellFlag()==this->CellFlag;
 
   vtkIdType *loadedExtent;
@@ -5909,7 +5925,8 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
 
   if(loaded)
     {
-    this->CurrentScalar=texture;
+    std::cout << "RenderSubVolume loaded"<< std::endl;
+    this->CurrentScalar=texture; 
     vtkgl::ActiveTexture(vtkgl::TEXTURE0);
     this->CurrentScalar->Bind();
   
@@ -5934,12 +5951,20 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
     {
     // 3. Not loaded: try to load the whole dataset
     //if(!this->LoadScalarField(this->GetTransformedInput(),this->MaskInput,wholeTextureExtent,volume))
-    if(!this->LoadScalarField(this->GetTransformedInput(),this->GetInput2(),wholeTextureExtent,volume))
+    if(!this->LoadScalarField(this->GetTransformedInput(),
+                              this->GetTransformedInput2(),
+                              wholeTextureExtent,volume))
       {
+    std::cout << "scalar field 1 not loaded"<< std::endl;
       // 4. loading the whole dataset failed: try to load the subvolume
       //if(!this->LoadScalarField(this->GetTransformedInput(),this->MaskInput, subvolumeTextureExtent,volume))
-      if(!this->LoadScalarField(this->GetTransformedInput(),this->GetInput2(), subvolumeTextureExtent,volume))
+      if(!this->LoadScalarField(this->GetTransformedInput(),
+                                this->GetTransformedInput2(), 
+                                subvolumeTextureExtent,volume))
         {
+    std::cout << "scalar field 2 not loaded"<< std::endl;
+
+          
         // 5. loading the subvolume failed: stream the subvolume
         // 5.1 do zslabs first, if too large then cut with x or y with the
         // largest dimension. order of zlabs depends on sign of spacing[2]
@@ -6272,6 +6297,7 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
               sizeof(vtkRegionDistance2),
               vtkRegionComparisonFunction);
 
+  std::cout << "RenderSubVolume loop over blocks"<< std::endl;
         // loop over all blocks we need to render
         i=0;
         int abort=0;
@@ -6314,7 +6340,9 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
 //           if(!this->LoadScalarField(this->GetInput(),this->MaskInput, blockTextureExtent,
 //                                     volume))
 //carlos
-          if(!this->LoadScalarField(this->GetInput(),this->GetInput2(), blockTextureExtent,
+          if(!this->LoadScalarField(this->GetInput(),
+                                    this->GetInput2(), 
+                                    blockTextureExtent,
                                     volume))
             {
             cout<<"Loading the streamed block FAILED!!!!!"<<endl;
@@ -6431,6 +6459,39 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
           this->LoadProjectionParameters(ren,volume);
           this->ClipBoundingBox(ren,blocks[k].Bounds,volume);
 
+          // Adds texture coordinate transform to shader
+          vtkMatrix4x4* mat = TextureCoord_1to2->GetMatrix();
+          mat->Transpose();
+          // prepare matrix for shader
+          GLfloat matrix_TextureCoord_1to2[16];   
+          for(int c=0;c<4;c++) {
+            for(int r=0;r<4;r++) {
+              matrix_TextureCoord_1to2[c*4+r]=
+                static_cast<GLfloat>(mat->Element[c][r]);
+              std::cout << matrix_TextureCoord_1to2[c*4+r] << ", ";
+            }
+            std::cout << std::endl; 
+          }
+          //vtkUniformVariables *v=this->Program->GetUniformVariables();
+          v->SetUniformMatrix("P1toP2",4,4,matrix_TextureCoord_1to2);
+
+          // Add inverse matrix
+          mat = TextureCoord_1to2->GetMatrix();
+          mat->Invert();
+          mat->Transpose();
+          // prepare matrix for shader
+          GLfloat matrix_TextureCoord_2to1[16];   
+          for(int c=0;c<4;c++) {
+            for(int r=0;r<4;r++) {
+              matrix_TextureCoord_2to1[c*4+r]=
+                static_cast<GLfloat>(mat->Element[c][r]);
+              //std::cout << matrix_TextureCoord_2to1[c*4+r] << ", ";
+            }
+            //std::cout << std::endl; 
+          }
+          //vtkUniformVariables *v=this->Program->GetUniformVariables();
+          v->SetUniformMatrix("P2toP1",4,4,matrix_TextureCoord_2to1);
+
           this->Program->SendUniforms();
           abort=this->RenderClippedBoundingBox(1,i,count,ren->GetRenderWindow());
           if (!abort)
@@ -6449,7 +6510,8 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
       }
     }
 
-  loadedExtent=this->CurrentScalar->GetLoadedExtent();
+    std::cout << "RenderSubVolume scalar fields loaded ok"<< std::endl;
+   loadedExtent=this->CurrentScalar->GetLoadedExtent();
 //carlos bounds    
 //   vtkIdType *loadedExtent2;
 //   loadedExtent2=this->CurrentScalar2->GetLoadedExtent();
@@ -6516,7 +6578,42 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
   // other sub-volume rendering code
   this->LoadProjectionParameters(ren,volume);
   this->ClipBoundingBox(ren,bounds,volume);
-  this->Program->SendUniforms();
+  
+    // Adds texture coordinate transform to shader
+    vtkMatrix4x4* mat = TextureCoord_1to2->GetMatrix();
+    mat->Transpose();
+    // prepare matrix for shader
+    GLfloat matrix_TextureCoord_1to2[16];   
+    for(int c=0;c<4;c++) {
+      for(int r=0;r<4;r++) {
+        matrix_TextureCoord_1to2[c*4+r]=
+          static_cast<GLfloat>(mat->Element[c][r]);
+        std::cout << matrix_TextureCoord_1to2[c*4+r] << ", ";
+      }
+      std::cout << std::endl; 
+    }
+    //vtkUniformVariables *v=this->Program->GetUniformVariables();
+    v->SetUniformMatrix("P1toP2",4,4,matrix_TextureCoord_1to2);
+
+    // Add inverse matrix
+    mat = TextureCoord_1to2->GetMatrix();
+    mat->Invert();
+    mat->Transpose();
+    // prepare matrix for shader
+    GLfloat matrix_TextureCoord_2to1[16];   
+    for(int c=0;c<4;c++) {
+      for(int r=0;r<4;r++) {
+        matrix_TextureCoord_2to1[c*4+r]=
+          static_cast<GLfloat>(mat->Element[c][r]);
+        //std::cout << matrix_TextureCoord_2to1[c*4+r] << ", ";
+      }
+      //std::cout << std::endl; 
+    }
+    //vtkUniformVariables *v=this->Program->GetUniformVariables();
+    v->SetUniformMatrix("P2toP1",4,4,matrix_TextureCoord_2to1);
+
+    
+    this->Program->SendUniforms();
 #ifdef APPLE_SNOW_LEOPARD_BUG
   if(!this->Program->IsValid())
     {

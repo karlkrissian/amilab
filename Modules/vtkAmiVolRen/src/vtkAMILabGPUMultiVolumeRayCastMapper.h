@@ -315,15 +315,22 @@ protected:
   vtkImageData * MaskInput;
   float          MaskBlendFactor;
   int            MaskType;
+
   vtkImageData * TransformedInput;
+  // need to duplicate the TransformedInput "system"
+  vtkImageData * TransformedInput2;
 
   vtkGetObjectMacro(TransformedInput, vtkImageData);
   void SetTransformedInput(vtkImageData*);
+
+  vtkGetObjectMacro(TransformedInput2, vtkImageData);
+  void SetTransformedInput2(vtkImageData*);
 
   // Description:
   // This is needed only to check if the input data has been changed since the last
   // Render() call.
   vtkImageData* LastInput;
+  vtkImageData* LastInput2;
 
 private:
   vtkAMILabGPUMultiVolumeRayCastMapper(const vtkAMILabGPUMultiVolumeRayCastMapper&);  // Not implemented.

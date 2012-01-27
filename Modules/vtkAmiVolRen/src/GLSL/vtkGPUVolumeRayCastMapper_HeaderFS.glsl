@@ -32,10 +32,13 @@ uniform mat4 textureToEye;
 
 
 // Change-of-coordinate matrix from P2 space to P1 space
+uniform mat4 P1toP2;
 uniform mat4 P2toP1;
+
 
 // Entry position (global scope)
 vec3 pos;
+vec3 pos2;
 // Incremental vector in texture space (global scope)
 vec3 rayDir;
 
