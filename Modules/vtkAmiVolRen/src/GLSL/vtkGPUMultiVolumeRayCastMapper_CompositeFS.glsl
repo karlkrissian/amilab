@@ -119,8 +119,8 @@ void trace(void)
         }
 
       //Texture2 (dataSetTexture2)
-//    if (all(greaterThanEqual(pos2,lowBounds2))
-//         && all(lessThanEqual(pos2,highBounds2)))
+    if (all(greaterThanEqual(pos2,lowBounds2))
+         && all(lessThanEqual(pos2,highBounds2)))
       {
         vec4 value2=texture3D(dataSetTexture2,pos2);
         float scalar2=scalarFromValue(value2);

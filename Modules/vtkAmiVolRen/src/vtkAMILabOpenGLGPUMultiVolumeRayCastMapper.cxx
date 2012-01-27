@@ -6348,7 +6348,8 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
             cout<<"Loading the streamed block FAILED!!!!!"<<endl;
             }
 
-          loadedExtent=this->CurrentScalar->GetLoadedExtent();
+          loadedExtent =this->CurrentScalar ->GetLoadedExtent();
+          loadedExtent2=this->CurrentScalar2->GetLoadedExtent();
           
 //carlos bounds    
 //           vtkIdType *loadedExtent2;
@@ -6360,6 +6361,9 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
 //             if (loadedExtent2[i]>loadedExtent[i]) loadedExtent[i]=loadedExtent2[i];
 //
 
+        #define PRINT_VECTOR(v) \
+          std::cout << #v << "= \t(" << v[0] << ", " << v[1] << ", " << v[2] \
+                    << ")" << std::endl;
           float lowBounds[3];
           float highBounds[3];
           // bound for second volume
@@ -6418,7 +6422,10 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
               }
             }
 
-
+          PRINT_VECTOR(lowBounds)
+          PRINT_VECTOR(lowBounds2)
+          PRINT_VECTOR(highBounds)
+          PRINT_VECTOR(highBounds2)
 
 
           // bounds have to be normalized. There are used in the shader
@@ -6511,7 +6518,8 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
     }
 
     std::cout << "RenderSubVolume scalar fields loaded ok"<< std::endl;
-   loadedExtent=this->CurrentScalar->GetLoadedExtent();
+   loadedExtent =this->CurrentScalar ->GetLoadedExtent();
+   loadedExtent2=this->CurrentScalar2->GetLoadedExtent();
 //carlos bounds    
 //   vtkIdType *loadedExtent2;
 //   loadedExtent2=this->CurrentScalar2->GetLoadedExtent();
@@ -6570,9 +6578,63 @@ int vtkAMILabOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren
   assert("check: high_bounds1_less_than1" && highBounds[1]<=1.0);
   assert("check: high_bounds2_less_than1" && highBounds[2]<=1.0);
 
+  // now check for second input volume
+  float lowBounds2[3];
+  float highBounds2[3];
+  if(!this->CurrentScalar2->GetLoadedCellFlag()) // points
+    {
+    i=0;
+    while(i<3)
+      {
+      double delta=
+        static_cast<double>(loadedExtent2[i*2+1]-loadedExtent2[i*2]+1);
+      lowBounds2[i]=static_cast<float>((realExtent[i*2]+0.5-static_cast<double>(loadedExtent2[i*2]))/delta);
+      highBounds2[i]=static_cast<float>((realExtent[i*2+1]+0.5-static_cast<double>(loadedExtent2[i*2]))/delta);
+      ++i;
+      }
+    }
+  else // cells
+    {
+    i=0;
+    while(i<3)
+      {
+      double delta=
+        static_cast<double>(loadedExtent2[i*2+1]-loadedExtent2[i*2]+1);
+
+      // this->LoadedExtent[i*2]==0, texcoord starts at 0, if realExtent==0
+      // otherwise, texcoord start at 1/2N
+      // this->LoadedExtent[i*2]==wholeTextureExtent[i*2+1], texcoord stops at 1, if realExtent==wholeTextureExtent[i*2+1]+1
+      // otherwise it stop at 1-1/2N
+      // N is the number of texels in the loadedtexture not the number of
+      // texels in the whole texture.
+
+      lowBounds2[i]=static_cast<float>((realExtent[i*2]-static_cast<double>(loadedExtent2[i*2]))/delta);
+      highBounds2[i]=static_cast<float>((realExtent[i*2+1]-static_cast<double>(loadedExtent2[i*2]))/delta);
+      ++i;
+      }
+    }
+
+  assert("check: positive_low_bounds0" && lowBounds2[0]>=0.0);
+  assert("check: positive_low_bounds1" && lowBounds2[1]>=0.0);
+  assert("check: positive_low_bounds2" && lowBounds2[2]>=0.0);
+
+  assert("check: increasing_bounds0" && lowBounds2[0]<=highBounds2[0]);
+  assert("check: increasing_bounds1" && lowBounds2[1]<=highBounds2[1]);
+  assert("check: increasing_bounds2" && lowBounds2[2]<=highBounds2[2]);
+  assert("check: high_bounds0_less_than1" && highBounds2[0]<=1.0);
+  assert("check: high_bounds1_less_than1" && highBounds2[1]<=1.0);
+  assert("check: high_bounds2_less_than1" && highBounds2[2]<=1.0);
+
+  PRINT_VECTOR(lowBounds)
+  PRINT_VECTOR(lowBounds2)
+  PRINT_VECTOR(highBounds)
+  PRINT_VECTOR(highBounds2)
+
   vtkUniformVariables *v=this->Program->GetUniformVariables();
   v->SetUniformf("lowBounds",3,lowBounds);
   v->SetUniformf("highBounds",3,highBounds);
+  v->SetUniformf("lowBounds2",3,lowBounds2);
+  v->SetUniformf("highBounds2",3,highBounds2);
 
   this->PrintError("uniform low/high bounds");
   // other sub-volume rendering code
