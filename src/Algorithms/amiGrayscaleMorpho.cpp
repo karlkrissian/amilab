@@ -40,7 +40,7 @@ void GrayscaleMorpho::TemplateProcess( int threadid)
   int in_zmin = in_extent.GetMin(2);
   int in_zmax = in_extent.GetMax(2);
 
-  double rad2 = radius*radius;
+  double _rad2 = radius*radius;
   
   extenttype extent = extents[threadid];
   int x,y,z;
@@ -76,7 +76,7 @@ void GrayscaleMorpho::TemplateProcess( int threadid)
       dist_y = dy*dy;
       for(dz=-radius;dz<=radius;dz++) {
         dist = dist_x+dist_y+dz*dz;
-        if (dist<rad2+1E-5) {
+        if (dist<_rad2+1E-5) {
           kpt.dx  = dx;
           kpt.dy  = dy;
           kpt.dz  = dz;
@@ -127,7 +127,7 @@ void GrayscaleMorpho::TemplateProcess( int threadid)
           if (morpho_operator==Erode)
             valmin = *in_data1; // std::numeric_limits<T>::max();
         
-        bool pos_ok;
+        //bool pos_ok;
         
         if ((!need_check_x)&&(!need_check_y)&&(!need_check_z))
         {
@@ -135,14 +135,14 @@ void GrayscaleMorpho::TemplateProcess( int threadid)
           if (morpho_operator==Dilate) {
             if (use_intensity_range) {
               //--- Dilation with intensity range
-              for(int n=0; n<kernel_points.size(); n++)  {
+              for(int n=0; n<(int)kernel_points.size(); n++)  {
                 val = *(in_data1 + kernel_points[n].inc);
                 if ((val>=intensity_min)&&(val<=intensity_max))
                   if (val>valmax) valmax=val;
               } // end for kernel_points
             } else {
               //--- Dilation without intensity range
-              for(int n=0; n<kernel_points.size(); n++)  {
+              for(int n=0; n<(int)kernel_points.size(); n++)  {
                 val = *(in_data1 + kernel_points[n].inc);
                 if (val>valmax) valmax=val;
               } // end for kernel_points
@@ -151,14 +151,14 @@ void GrayscaleMorpho::TemplateProcess( int threadid)
           if (morpho_operator==Erode) {
             if (use_intensity_range) {
               //--- Erosion with intensity range
-              for(int n=0; n<kernel_points.size(); n++)  {
+              for(int n=0; n<(int)kernel_points.size(); n++)  {
                 val = *(in_data1 + kernel_points[n].inc);
                 if ((val>=intensity_min)&&(val<=intensity_max))
                   if (val<valmin) valmin=val;
               } // end for kernel_points
             } else {
               //--- Erosion without intensity range
-              for(int n=0; n<kernel_points.size(); n++)  {
+              for(int n=0; n<(int)kernel_points.size(); n++)  {
                 val = *(in_data1 + kernel_points[n].inc);
                   if (val<valmin) valmin=val;
               } // end for kernel_points
@@ -167,7 +167,7 @@ void GrayscaleMorpho::TemplateProcess( int threadid)
         } else 
         // need to check for limits, slower version
         {
-          for(int n=0; n<kernel_points.size(); n++) 
+          for(int n=0; n<(int)kernel_points.size(); n++) 
           {
             kpt = kernel_points[n];
             if (need_check_x) {

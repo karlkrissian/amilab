@@ -65,6 +65,7 @@ namespace ami
         pixelpos[1] = p.pixelpos[1];
         pixelpos[2] = p.pixelpos[2];
         value = p.value;
+        return *this;
     }
 
     friend inline int operator < ( const RG_point<T>& p1, 

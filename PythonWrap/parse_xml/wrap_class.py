@@ -790,7 +790,7 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
           res += ident+'  '+typesubst.ConvertValFrom(method.returntype,'res',substvar)+"\n"
         if (substtype in config.available_classes) and returnpointer:
           res += ident+'  if ({0}==NULL) return nullvar;\n'.format('res')
-          res += ident+'  BasicVariable::ptr res_var = WrapClass_{0}::CreateVar({1});\n'.format(substtype,substvar)
+          res += ident+'  BasicVariable::ptr res_var = AMILabType<{0} >::CreateVar({1});\n'.format(substtype,substvar)
           res += ident+'  return res_var;\n'
         else:
           res += ident+'  return AMILabType<{0} >::CreateVar({1});\n'.format(substtype,substvar)

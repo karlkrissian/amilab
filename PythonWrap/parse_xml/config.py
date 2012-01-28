@@ -15,7 +15,9 @@ files      = dict()
 
 classes_blacklist=[
   'wxHtmlWindowMouseHelper', # pb: no public constructor, destructor: can't be used with boost smart pointers
-  ]
+  'std::_Container_base_aux', # pb: wrapping std::vector with VC++
+  'std::_Container_base_aux_alloc_real<std::allocator<std::string> >', # idem
+ ]
 
 # ignore specific members
 members_blacklist=[

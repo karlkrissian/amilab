@@ -304,7 +304,11 @@ if __name__ == '__main__':
           for nt in ttypes:
             #print "  Searching for '{0}'".format(nt)
             if nt not in ancestors_templates:
-              if nt in classes_dict.values():
+              if nt in classes_dict.values() and \
+                 nt not in config.classes_blacklist and\
+                 (nt not in config.available_types) and \
+                 (nt not in args.val.available_external_classes) and \
+                 (nt not in config.available_builtin_classes):
                 ancestors_templates.append(nt)
                 #print "    added ..."
               #else:
@@ -312,7 +316,7 @@ if __name__ == '__main__':
       print "New ancestors list = ",ancestors_templates
       ancestors = ancestors_templates[:]
       for b in ancestors:
-        #print "b=",b
+        print "b=",b
         # find the class corresponding to typedefs
         #for k in typedef_dict.keys():
           #if typedef_dict[k].replace(' ','')==b.replace(' ',''):
@@ -348,6 +352,7 @@ if __name__ == '__main__':
                 #print classes_dict[anc_id] not in config.classes_blacklist
                 if  classes_dict[anc_id] not in ancestors and  \
                     classes_dict[anc_id] not in config.classes_blacklist and\
+                    (classes_dict[anc_id] not in config.available_types) and \
                     (classes_dict[anc_id] not in args.val.available_external_classes) and \
                     (classes_dict[anc_id] not in config.available_builtin_classes) and\
                     ( (not wrap_class.IsTemplate(classes_dict[anc_id])) \

@@ -273,6 +273,7 @@ SET(WrapITK_HDRS
     ../include/itkBasicNLMeansFilter.txx
     ../include/itkamiConvert.h
     itkAmiCommand.h
+    itk_includes.h
 )
 
 
