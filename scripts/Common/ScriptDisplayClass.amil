@@ -111,14 +111,19 @@ if (!exists(ScriptDisplayClass)) \
 
       # create wxMenuItem
       new_mi_id = 10000*menu_id+100*submenu_id+submenu.GetMenuItemCount()
-      #new_mi = wx.wxMenuItem(&submenu,new_mi_id,::menu_name,::menu_help)
-      new_mi = submenu.Append(new_mi_id,::menu_name)
-      #, wx.wxITEM_CHECK)
-      new_mi.SetHelp(::menu_help)
-      new_mi.SetBitmap(&::bm)
 
-      ## append  
-      #submenu.Append(&new_mi)
+      # version 1: problem to show bitmaps ...
+      #new_mi = submenu.Append(new_mi_id,::menu_name)
+      ##, wx.wxITEM_CHECK)
+      #new_mi.SetHelp(::menu_help)
+      #new_mi.SetBitmap(&::bm)
+
+      ## version 2: pb??? segfault ???
+      # ok fixed by setting new_mi as object member to prevent it 
+      # from beeing deleted
+      ::new_mi = wx.wxMenuItem.wxMenuItem_1(&submenu,new_mi_id,::menu_name,::menu_help)
+      ::new_mi.SetBitmap(&::bm)
+      submenu.Append_2(&::new_mi)
 
       # create event
       ::evh = wx.wxAmiEventHandler(&::CB_Menu)

@@ -4982,7 +4982,7 @@ void AnisoGS::Init(InrImage* in,
       this->ROI_ymin = this->boundary_extension_size;
       this->ROI_xmax = image_entree->DimX()-1-boundary_extension_size;
       this->ROI_ymax = image_entree->DimY()-1-boundary_extension_size;
-      if  ((mode != MODE_2D)&&(image_resultat->DimZ()>1)) {
+      if  ((mode != MODE_2D)&&(image_entree->DimZ()>1)) {
         this->ROI_zmin = this->boundary_extension_size;
         this->ROI_zmax = image_entree->DimZ()-1-boundary_extension_size;
       }

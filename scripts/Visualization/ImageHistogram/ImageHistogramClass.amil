@@ -209,21 +209,33 @@ if (!exists(ImageHistogramClass)) {
           if (::log10) {
             # set a positive minimum to 10
             hmin=1 # 10
-            ::h[n] = ::h[n]*(::h[n]>hmin)+(::h[n]<=hmin)*hmin
+            ::h[n] <<= ::h[n]*(::h[n]>hmin)+(::h[n]<=hmin)*hmin
             ::h[n] <<= ln((DOUBLE)::h[n])/ln(10)
             #::minval=::minval*(::minval>10)+(::minval<=10)*10
             #::maxval=::maxval*(::maxval>10)+(::maxval<=10)*10
             miny = 0
           }
-          ::dw->SetXLimits(::minval,::maxval)
-          ::dw->SetYLimits(miny,max(::h[n])*1.01)
-          ::dw->SetCurve(::h[n],n)
-          ::dw->SetCurveProperties(n,::ColoursVector[n%6])
+          ::dw.SetXLimits(::minval,::maxval)
+          ::dw.SetYLimits(miny,max(::h[n])*1.01)
+          printn "Setting curve %1%" % n
+          ::dw.SetCurve(::h[n],n)
+          ::dw.SetCurveProperties(n,::ColoursVector[n%6])
         }
       }
     }
     Comments(::Update,"Recomputes input image limits and resets the histogram.")
 
+    #-------------------------------------------------------------------
+    proc ::ApplyOnZoom() \
+    {
+      if exists(::input_draw) {
+        input_backup = &::input
+        ::input <<= input_backup[::input_draw]
+        ::Update()
+        del ::input
+        ::input = &input_backup
+      }
+    }
 
     #-------------------------------------------------------------------
     proc ::AddStandarColorMap() {
@@ -400,6 +412,7 @@ if (!exists(ImageHistogramClass)) {
           minpos = (::cm_min-::h1.trx)/::h1.vx
           maxpos = (::cm_max-::h1.trx)/::h1.vx
           subhist = ::h1[minpos:maxpos,0:0]
+          printn "Setting curve 2" 
           ::dw->SetCurve(subhist,2)
           ::dw->SetCurveProperties(2,"#0000FF")
 
@@ -407,6 +420,7 @@ if (!exists(ImageHistogramClass)) {
           ::h1.settranslation(-(::cm_min-::h1.trx)*255.0/cm_range,0,0)
           setvoxelsize(::h1,newpixelsize,1,1)
           ::h1 = ::h1/max(subhist)*255
+          printn "Setting curve 0"
           ::cm->SetCurve(::h1,0)
           ::cm->SetCurveProperties(0,"#0000FF")
           # update image colormap in image viewer
@@ -466,6 +480,7 @@ if (!exists(ImageHistogramClass)) {
           ::cm.SetXLimits(::cm_min-0.02*cm_range,::cm_max+0.02*cm_range)
 
           subhist = ::h1[minpos:maxpos,0:0]
+          printn "Setting curve 2"
           ::dw->SetCurve(subhist,2)
           ::dw->SetCurveProperties(2,"#0077FF")
 
@@ -473,6 +488,7 @@ if (!exists(ImageHistogramClass)) {
           #::dw->SetYLimits(0-0.02*subhmax,subhmax+0.02*subhmax)
           ::h1 = ::h1/max(subhist)*255
 
+          printn "Setting curve 0"
           ::cm->SetCurve(::h1,0)
           ::cm->SetCurveProperties(0,"#0000FF")
           # update image colormap in image viewer
@@ -551,6 +567,7 @@ if (!exists(ImageHistogramClass)) {
               ::win.SetPositionProp(-1,0)
               ::AddBitmapButton(&::win, &::icons._Show,   32, "ShowImage")
               ::win.SetPositionProp(-1,0)
+              ::win.AddButton("Apply on zoom", &::ApplyOnZoom)
             ::win.EndHorizontal()
 
           ::win.AddBoolean(&::cumulative,"Cumulative")

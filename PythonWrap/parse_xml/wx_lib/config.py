@@ -111,7 +111,8 @@ def CreateSmartPointer(classname,pointervarname,resname,indent,bases):
   res = indent+'boost::shared_ptr<{0} > res;\n'.format(classname)
   bases1 = bases
   bases1.append(classname)
-  if ('wxWindow' in bases1) or ('wxMenu' in bases1) or ('wxSizer' in bases1):
+  if ('wxWindow' in bases1) or ('wxMenu' in bases1) or ('wxSizer' in bases1) or\
+     ('wxMenuItem' in bases1):
     print " no deleter"
     res += indent+'  {0} =  '.format(resname)+ \
             'boost::shared_ptr<{0} >({1}, smartpointer_nodeleter<{0} >());\n'.\
