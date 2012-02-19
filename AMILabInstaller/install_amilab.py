@@ -278,8 +278,10 @@ if __name__ == '__main__':
     client.checkout(url, path)
     print "Done. :)"
 
-  amilabpath='amilab_release_3.2.0'
-  svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/branches/Release-3.2.0',amilabpath)
+  #amilabpath='amilab_release_3.2.0'
+  #svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/branches/Release-3.2.0',amilabpath)
+  amilabpath='amilab_trunk'
+  svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/trunk',amilabpath)
 
   import os
   import shutil
