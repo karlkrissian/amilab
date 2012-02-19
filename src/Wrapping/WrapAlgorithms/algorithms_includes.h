@@ -20,6 +20,8 @@
 
 #include "amiImageExtent.h"
 
+#include "amiAnisoGS.h"
+
 #ifdef __GCCXML__
   template class ami::ImageExtent<float>;
 #endif // __GCCXML__

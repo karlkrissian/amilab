@@ -74,10 +74,10 @@ if (!exists(AnisoGSClass)) {
       ::input_roi <<= (FLOAT) ::input
     }
     del ::aniso
-    ::aniso = filters.AnisoGS()
-    ::aniso.Init(::input_roi,::sigma,::threshold,::datacoeff)
+    ::aniso = algorithms.ami_AnisoGS.AnisoGS()
+    ::aniso.Init(&::input_roi,::sigma,::threshold,::datacoeff)
     if (::use_mask) {
-      ::aniso.SetAttachMask(&::mask)
+      ::aniso.Setattach_mask(&::mask)
     }
     ::started=1
     ::res <<= ::aniso.GetOutput()
@@ -181,9 +181,9 @@ if (!exists(anigsc)) {
   if (argc>=2) {
       printn "reading image"
       input_arg = Image($1)
-      anisogs->input_image = "input_arg"
-      anisogs->result_filename = $2
-      anisogs->win.Update(-1)
+      anisogs.input_image = "input_arg"
+      anisogs.result_filename = $2
+      anisogs.win.Update(-1)
   }
 } else {
 InfoDialog "The script seems to be already loaded." 

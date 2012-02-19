@@ -71,7 +71,7 @@ i.save "stenose3D-3.ami.gz"
 Show i
 in = AddGaussNoise(i,0,30)
 i_draw.compare(in);
-inr = AnisoGS(in,1,5,0.1,20)
+inr = algorithms.ami_AnisoGS.Run(in,1,5,0.1,20)
 i_draw.compare(isnr)
 
 print "\n Initial image \n"

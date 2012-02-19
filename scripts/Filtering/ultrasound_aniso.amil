@@ -49,5 +49,5 @@ noise_file.close()
 ir_name = imagename-".gz"-".ami"+sprint("_%2.2f",data_coeff)
 ir.save ir_name+"_"+$4+"_"+$5+".ami.gz"
 
-AnisoGS.end
+#AnisoGS.end
 #quit

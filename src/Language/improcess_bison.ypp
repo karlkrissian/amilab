@@ -114,7 +114,7 @@
 #include "CalculAireSection.hpp"
 #include "CalculRepCercle.hpp"
 #include "ShortestPathClass.h"
-#include "WrapOld_AnisoGS.h"
+//#include "WrapOld_AnisoGS.h"
 //#include "LevelSetsCURVES.h"
 #include "vtkwrap.h"
 
@@ -503,7 +503,8 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_AutoCrop
 %token T_DiscSecDerGrad
 //%token T_EDPdilate T_EDPerode T_EDPopen T_EDPclose
-%token AnisoSmoothGS T_vtkAnisoGS
+//%token AnisoSmoothGS 
+%token T_vtkAnisoGS
 %token T_DiscMeanCurvature
 %token T_vtkMedian3D
 
@@ -519,7 +520,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 //%token T_vtkFastMarching
 //%token T_vtkFastMarchingTarget
 
-%token T_FluxDiffusion
+//%token T_FluxDiffusion
 %token T_AnisoWeickert T_AnisoCW
 // %token T_AnisoSRAD   deprecated
 // %token T_AnisoSRAD2     "
@@ -6298,6 +6299,7 @@ image:
     ADD_VARSTACK_PTR(InrImage,res);
       }
 */
+/* Deprecated
         |
         T_FluxDiffusion
         T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -6333,6 +6335,7 @@ image:
       Func_EndAnisoGS();
       ADD_VARSTACK_PTR(InrImage,res);
     }
+    */
     |
     T_vtkAnisoGS
     T_OP_PAR var_image
@@ -6366,6 +6369,7 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
 
     }
+    /* Deprecated
     |
     AnisoSmoothGS
     T_OP_PAR var_image
@@ -6395,6 +6399,7 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
 
     }
+    */
         |
         T_AnisoWeickert T_point_Init
         T_OP_PAR var_image

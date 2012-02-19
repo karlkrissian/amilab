@@ -18,6 +18,7 @@
 #include "inrimage.hpp"
 #include "DefineClass.hpp"
 #include <exception>
+#include <stdexcept> 
 
 template<class T>
 class ImagePositions : public ImagePositionsBase

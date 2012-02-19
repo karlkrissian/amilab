@@ -1729,16 +1729,21 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         // create text with image information
         DYNAMIC_CAST_VARIABLE(InrImage,var,varim);
         InrImage::ptr im (varim->Pointer());
-        text = (boost::format("%1% (%2%x%3%x%4%)x%5% %|6$+5| Mb")
-                            % im->FormatName()
-                            % im->DimX()
-                            % im->DimY()
-                            % im->DimZ()
-                            % im->GetVDim()
-                            % (im->GetDataSize()/1000000)).str();
-        //cout << text << std::endl;
-        append_id = categories_id[std::string("Images")];
-        total_image_size += im->GetDataSize();
+        if (im.get()) {
+          text = (boost::format("%1% (%2%x%3%x%4%)x%5% %|6$+5| Mb")
+                              % im->FormatName()
+                              % im->DimX()
+                              % im->DimY()
+                              % im->DimZ()
+                              % im->GetVDim()
+                              % (im->GetDataSize()/1000000)).str();
+          //cout << text << std::endl;
+          append_id = categories_id[std::string("Images")];
+          total_image_size += im->GetDataSize();
+        } else {
+          text = "Empty variable";
+          append_id = categories_id[std::string("Images")];
+        }
       } else
       if (var->IsNumeric())
       {

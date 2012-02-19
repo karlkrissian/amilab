@@ -171,7 +171,7 @@ if (!exists(ImageDrawClass)) {
     #---------------------------------------------------------------------------
     proc ::OnLeftUp( OBJECT event) \
     {
-      ::BackupInfo()
+      #::BackupInfo()
       event.Skip()
     }
 
@@ -318,23 +318,35 @@ if (!exists(ImageDrawClass)) {
         max_t = floor((FLOAT)::pencil_thickness/2)
         val = ::draw_value[::paint_option]
         if ::_slice == 0 {
-          for i=-min_t to max_t {
-            for j=-min_t to max_t {
-              ::DrawPoint(x+i,y+j,z,val)
+          min_x = max(0,x-min_t)
+          max_x = min(::input.tx-1,x+max_t)
+          min_y = max(0,y-min_t)
+          max_y = min(::input.ty-1,y+max_t)
+          for i=min_x to max_x {
+            for j=min_y to max_y {
+              ::DrawPoint(i,j,z,val)
             }
           }
         } else {
           if ::_slice == 1 {
-            for i=-min_t to max_t {
-              for j=-min_t to max_t {
-                ::DrawPoint(x+i,y,z+j,val)
+            min_x = max(0,x-min_t)
+            max_x = min(::input.tx-1,x+max_t)
+            min_z = max(0,z-min_t)
+            max_z = min(::input.tz-1,z+max_t)
+            for i=min_x to max_x {
+              for j=min_z to max_z {
+                ::DrawPoint(i,y,j,val)
               }
             }
           } else {
             if ::_slice == 2 {
-              for i=-min_t to max_t {
-                for j=-min_t to max_t {
-                  ::DrawPoint(x,y+i,z+j,val)
+              min_y = max(0,y-min_t)
+              max_y = min(::input.ty-1,y+max_t)
+              min_z = max(0,z-min_t)
+              max_z = min(::input.tz-1,z+max_t)
+              for i=min_y to max_y {
+                for j=min_z to max_z {
+                  ::DrawPoint(x,i,j,val)
                 }
               }
             }

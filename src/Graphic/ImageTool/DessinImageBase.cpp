@@ -636,6 +636,8 @@ void DessinImageBase::CursorToImage(  const int cursor_x,
       y = (int) (pos_y/_size_y) + Param._Zoom._ymin;
       z = Param._pos._z;
       slice = IMAGE_XY;
+      if (x>=_image->DimX()) { x=_image->DimX()-1; std::cout << "x too big" << std::endl; }
+      if (y>=_image->DimY()) { y=_image->DimY()-1; std::cout << "y too big" << std::endl; }
       // std::cout << "(" << x << ", " << y << "," << z << ")" << std::endl; 
     } // endif
   } // endif 
@@ -658,6 +660,8 @@ void DessinImageBase::CursorToImage(  const int cursor_x,
       x = (int) (pos_x/_size_x) + Param._Zoom._xmin;
       y = Param._pos._y;
       z = (int) (pos_y/_size_z) + Param._Zoom._zmin;
+      if (x>=_image->DimX()) { x=_image->DimX()-1; std::cout << "x too big" << std::endl; }
+      if (z>=_image->DimZ()) { z=_image->DimZ()-1; std::cout << "z too big" << std::endl; }
       slice = IMAGE_XZ;
       // std::cout << "(" << x << ", " << y << "," << z << ")" << std::endl; 
     } // endif
@@ -680,6 +684,8 @@ void DessinImageBase::CursorToImage(  const int cursor_x,
       x = Param._pos._x;
       y = (int) (pos_y/_size_y) + Param._Zoom._ymin;
       z = (int) (pos_x/_size_z) + Param._Zoom._zmin;
+      if (y>=_image->DimY()) { y=_image->DimY()-1; std::cout << "y too big" << std::endl; }
+      if (z>=_image->DimZ()) { z=_image->DimZ()-1; std::cout << "z too big" << std::endl; }
       slice = IMAGE_ZY;
       // std::cout << "(" << x << ", " << y << "," << z << ")" << std::endl; 
     } // end if

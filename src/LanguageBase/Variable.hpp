@@ -640,6 +640,8 @@ public:
  
   virtual ~Variable()
   { 
+    ami::format f("Calling Variable<T> destructor ... for variable %1% ");
+    CLASS_MESSAGE( (f % Name().c_str()).GetString());
     this->Delete(); 
   }
 

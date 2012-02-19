@@ -224,30 +224,32 @@ if (!exists(AnisoNRADClass)) {
       }
     
       if (exists(::NRADfilter)) { del ::NRADfilter; }
-      ::NRADfilter = filters.AnisoGS()
+      ::NRADfilter = algorithms.ami_AnisoGS.AnisoGS()
       # sigma = 0.7
       # threshold = 1 // not used
       # data attachment = 0
-      ::NRADfilter.Init(input1,::params.sigma,1,0)
+      ::NRADfilter.Init(&input1,::params.sigma,1,0)
       ::NRADfilter.Setneighborhood(::params.neighborhood)
       ::NRADfilter.Setdt(::params.dt)
       # diffusion coefficient in minimal and maximal curvature directions
-      ::NRADfilter.setcoeff(0.5,0.01)
+      ::NRADfilter.Setmincurv_coeff(0.5)
+      ::NRADfilter.Setmaxcurv_coeff(0.01)
     
+      ::NRADfilter.SetSRAD_ROI(&::roi)
       if (::params.matrix_mode==1) {
         # set Rician Noise Reducing Anisotropic Diffusion and the ROI
         # important here to use reference to the image, 
         # otherwise the temporary copy will be automatically deleted !!!
-        ::NRADfilter.SetRNRADROI(&::roi)
+        ::NRADfilter.Setcontours_mode( algorithms.ami_AnisoGS.CONTOURS_RNRAD)
       }
       if (::params.matrix_mode==2) {
         # set Rician Noise Reducing Anisotropic Diffusion and the ROI
         # same comment as above
-        ::NRADfilter.SetRNRADROI_NEW(&::roi)
+        ::NRADfilter.Setcontours_mode(algorithms.ami_AnisoGS.CONTOURS_RNRAD_NEW)
       }
     
-      ::NRADfilter.SetLocalStruct(::params.local_struct)
-      ::NRADfilter.SetEigenMode(  ::params.eigen_mode)
+      ::NRADfilter.Setlocal_structure_mode(::params.local_struct)
+      ::NRADfilter.Setdiffusion_eigenvalues_mode(::params.eigen_mode)
     
       # process iterations
       ::res0 <<= ::NRADfilter.GetOutput()
@@ -320,8 +322,6 @@ if (!exists(AnisoNRADClass)) {
       SetStatusText( "processing time: "+TimeSpent)
       SetProgress(0)
     
-    //  ::NRADfilter.end
-    //  hide ::res
     }
     
     #---------------------------------------------------------------------------

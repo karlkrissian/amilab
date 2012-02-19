@@ -20,7 +20,9 @@
 #include "ami_object.h"
 #include <wx/html/htmlwin.h>
 
+namespace ami {
 class AnisoGS;
+}
 
 class WrapClass_AnisoGS : public WrapClassBase
 {
@@ -28,7 +30,7 @@ class WrapClass_AnisoGS : public WrapClassBase
 
   // for nested classes
   typedef WrapClass_AnisoGS::ptr _parentclass_ptr;
-  typedef AnisoGS ObjectType;
+  typedef ami::AnisoGS ObjectType;
 //  typedef AnisoGS ObjectType;
 
   public:
@@ -36,7 +38,7 @@ class WrapClass_AnisoGS : public WrapClassBase
     const boost::shared_ptr<ObjectType>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_AnisoGS(boost::shared_ptr<AnisoGS> si): _obj(si)
+    WrapClass_AnisoGS(boost::shared_ptr<ami::AnisoGS> si): _obj(si)
     {}
 
     ADD_CLASS_METHOD(Init,    "Sets parameters for the anisotropic diffusion algorithm using Gauss-Seidel scheme.");
@@ -106,7 +108,7 @@ AMIObject::ptr AddWrap_AnisoGS(  WrapClass_AnisoGS::ptr& objectptr);
  * @param si_ptr input smart pointer to a _AnisoGS
  * @return smart pointer to an AMIObject class
  */
-Variable<AMIObject>::ptr CreateVar_AnisoGS( AnisoGS* si);
+Variable<AMIObject>::ptr CreateVar_AnisoGS( ami::AnisoGS* si);
 
 /** Method that adds wrapping of AnisoGS 
  */

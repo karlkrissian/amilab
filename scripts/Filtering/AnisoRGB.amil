@@ -28,7 +28,7 @@ proc AnisoRGB( IMAGE in, IMAGE res, NUM threshold) {
   AnisoGS.iterate;
   AnisoGS.iterate
   ib_r = AnisoGS.GetOutput
-  AnisoGS.end
+  #AnisoGS.end
 
   print "Updating the RGB result\n"
   ir_r1 = (ir_r>0)*(ir_r<255)*(ir_r)+(ir_r>=255)*255

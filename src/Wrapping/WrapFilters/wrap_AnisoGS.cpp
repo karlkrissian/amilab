@@ -11,7 +11,7 @@
 //
 
 #include "wrap_AnisoGS.h"
-#include "AnisoGS.h"
+#include "amiAnisoGS.h"
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
@@ -36,10 +36,10 @@ AMIObject::ptr AddWrap_AnisoGS(  WrapClass_AnisoGS::ptr& objectptr)
 }
 
 //----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_AnisoGS( AnisoGS* si)
+Variable<AMIObject>::ptr CreateVar_AnisoGS( ami::AnisoGS* si)
 {
   // here AnisoGS can be deleted
-  boost::shared_ptr<AnisoGS> _si_ptr( si );
+  boost::shared_ptr<ami::AnisoGS> _si_ptr( si );
 
   WrapClass_AnisoGS::ptr sip(new WrapClass_AnisoGS(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_AnisoGS(sip));
@@ -58,14 +58,14 @@ void  wrap_AnisoGS::SetParametersComments()
   ADDPARAMCOMMENT("k: diffusion parameter that controls the diffusion depending on the local gradients.");
   ADDPARAMCOMMENT("beta: data attachment coefficient.");
   ADDPARAMCOMMENT("number of iterations");
-  return_comments = "A wrapped AnisoGS object.";
+  return_comments = "Resulting image.";
 }
 //---------------------------------------------------
 BasicVariable::ptr wrap_AnisoGS::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   if (p->GetNumParam()==0) 
-    return CreateVar_AnisoGS(new AnisoGS());
+    return CreateVar_AnisoGS(new ami::AnisoGS());
 
   int n = 0;
   
@@ -82,7 +82,7 @@ BasicVariable::ptr wrap_AnisoGS::CallMember( ParamList* p)
   if (!get_val_param<float>(  beta,    p, n)) ClassHelpAndReturn;
   if (!get_int_param(         nb_iter, p, n)) ClassHelpAndReturn;
 
-  AnisoGS::ptr aniso(new AnisoGS());
+  ami::AnisoGS::ptr aniso(new ami::AnisoGS());
   aniso->Init(input,sigma,k,beta);
 
   if (nb_iter < 1) nb_iter = 1;
@@ -93,7 +93,7 @@ BasicVariable::ptr wrap_AnisoGS::CallMember( ParamList* p)
     aniso->Iterate();
   }
 
-  InrImage* imres = aniso->image_resultat;
+  InrImage* imres = aniso->Getresult_image();
   int bs = aniso->boundary_extension_size;
 
   InrImage::ptr res(
@@ -244,7 +244,7 @@ BasicVariable::ptr WrapClass_AnisoGS::
   if (!get_val_smtptr_param<InrImage>
                            (  roi,   p, n)) ClassHelpAndReturn;
   this->_objectptr->_obj->SetSRAD_ROI(roi);
-  this->_objectptr->_obj->Setcontours_mode( CONTOURS_SRAD);
+  this->_objectptr->_obj->Setcontours_mode( ami::AnisoGS::CONTOURS_SRAD);
   return BasicVariable::ptr();
 }
 
@@ -265,7 +265,7 @@ BasicVariable::ptr WrapClass_AnisoGS::
   if (!get_val_smtptr_param<InrImage>
                            (  roi,   p, n)) ClassHelpAndReturn;
   this->_objectptr->_obj->SetSRAD_ROI(roi);
-  this->_objectptr->_obj->Setcontours_mode( CONTOURS_RNRAD);
+  this->_objectptr->_obj->Setcontours_mode( ami::AnisoGS::CONTOURS_RNRAD);
   return BasicVariable::ptr();
 }
 
@@ -286,7 +286,7 @@ BasicVariable::ptr WrapClass_AnisoGS::
   if (!get_val_smtptr_param<InrImage>
                            (  roi,   p, n)) ClassHelpAndReturn;
   this->_objectptr->_obj->SetSRAD_ROI(roi);
-  this->_objectptr->_obj->Setcontours_mode( CONTOURS_RNRAD_NEW);
+  this->_objectptr->_obj->Setcontours_mode( ami::AnisoGS::CONTOURS_RNRAD_NEW);
   return BasicVariable::ptr();
 }
 
@@ -481,19 +481,6 @@ void WrapClass_AnisoGS::
 BasicVariable::ptr WrapClass_AnisoGS::
       wrap_GetOutput::CallMember( ParamList* p)
 {
-    InrImage* imres = this->_objectptr->_obj->image_resultat;
-    int bs = this->_objectptr->_obj->boundary_extension_size;
-
-    InrImage::ptr res(Func_SubImage( imres,
-                          bs,bs,bs,
-                          imres->DimX()-1-bs,
-                          imres->DimY()-1-bs,
-                          imres->DimZ()-1-bs));
-
-    // Set translation and voxel size ?
-
-    Variable<InrImage>::ptr varres( new Variable<InrImage>(res));
-    return varres;
 }
 
 //---------------------------------------------------
@@ -508,7 +495,7 @@ void WrapClass_AnisoGS::
 BasicVariable::ptr WrapClass_AnisoGS::
       wrap_GetDiffCoeff::CallMember( ParamList* p)
 {
-  InrImage* imc  = this->_objectptr->_obj->image_c;
+  InrImage* imc  = this->_objectptr->_obj->Getimage_c();
   if (imc!=NULL)
   {
     InrImage::ptr res(new InrImage(WT_FLOAT, "imagec_copy.ami.gz", imc));

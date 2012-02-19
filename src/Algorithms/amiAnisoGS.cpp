@@ -10,7 +10,8 @@
 //
 //
 
-#include "AnisoGS.h"
+#include "amiAnisoGS.h"
+
 
 #include "localstats.h"
 #include "func_globalstats.h"
@@ -147,9 +148,55 @@ void Solve3rdOrder(float _a, float _b, float _c, double w[3], int& nb_solutions)
 
 } // Solve3rdOrder()
 
+//------------------------------------------------------------------------------
+InrImage::ptr ami::AnisoGS::GetOutput()
+{
+  InrImage* imres = this->Getresult_image();
+  int bs = this->boundary_extension_size;
 
+  InrImage::ptr res(Func_SubImage( imres,
+                        bs,bs,bs,
+                        imres->DimX()-1-bs,
+                        imres->DimY()-1-bs,
+                        imres->DimZ()-1-bs));
+
+  // Set translation and voxel size ?
+  return res;
+}
+
+//------------------------------------------------------------------------------
+InrImage::ptr ami::AnisoGS::Run(InrImage::ptr input, float sigma, float k, 
+                                float beta, int nb_iter)
+{
+  ami::AnisoGS::ptr aniso(new ami::AnisoGS());
+  aniso->Init(input.get(),sigma,k,beta);
+
+  if (nb_iter < 1) nb_iter = 1;
+
+  //int error = 0;
+  for(int i=1;i<=nb_iter;i++){
+    //error = 
+    aniso->Iterate();
+  }
+
+  InrImage* imres = aniso->result_image;
+  int bs = aniso->boundary_extension_size;
+
+  InrImage::ptr res(
+                    Func_SubImage( imres,
+                        bs,bs,bs,
+                        imres->DimX()-1-bs,
+                        imres->DimY()-1-bs,
+                        imres->DimZ()-1-bs));
+  // Set translation and voxel size ?
+
+  return res;
+}
+
+
+//------------------------------------------------------------------------------
 // Destructor
-AnisoGS::~AnisoGS()
+ami::AnisoGS::~AnisoGS()
 {
 
   DeleteCoefficients();
@@ -205,7 +252,7 @@ AnisoGS::~AnisoGS()
 }
 
 // Extend Boundary Conditions
-void AnisoGS::ExtendBoundariesVonNeumann( InrImage* input)
+void ami::AnisoGS::ExtendBoundariesVonNeumann( InrImage* input)
 {
   int x,y,z;
   int x1,y1,z1;
@@ -239,7 +286,7 @@ void AnisoGS::ExtendBoundariesVonNeumann( InrImage* input)
 }
 
 // Compute image_entree
-void AnisoGS::CreateBoundariesVonNeumann( InrImage* input)
+void ami::AnisoGS::CreateBoundariesVonNeumann( InrImage* input)
 {
   int ext = 2*boundary_extension_size;
   int bs = boundary_extension_size;
@@ -283,7 +330,7 @@ void AnisoGS::CreateBoundariesVonNeumann( InrImage* input)
 
 // Compute the local directional mean and standard deviation,
 // using a Gaussian of standard deviation sd
-void  AnisoGS::ComputeLocalPlanStats(InrImage* im, float x, float y, float z, 
+void  ami::AnisoGS::ComputeLocalPlanStats(InrImage* im, float x, float y, float z, 
     t_3Point d1,t_3Point d2,
     float sd, double& mean, double& var)
 {
@@ -355,7 +402,7 @@ void  AnisoGS::ComputeLocalPlanStats(InrImage* im, float x, float y, float z,
 
 // Compute the local directional mean and standard deviation,
 // using a Gaussian of standard deviation sd
-void  AnisoGS::ComputeLocalDirStats(InrImage* im, float x, float y, float z, t_3Point e,
+void  ami::AnisoGS::ComputeLocalDirStats(InrImage* im, float x, float y, float z, t_3Point e,
     float sd, double& mean, double& var)
 {
 //#define MAX_VALUES 100
@@ -425,7 +472,7 @@ void  AnisoGS::ComputeLocalDirStats(InrImage* im, float x, float y, float z, t_3
       if (index<MAX_VALUES-1)
         index++;
       else {
-        fprintf(stderr,"AnisoGS::ComputeLocalDirStats() \t Too many values \n");
+        fprintf(stderr,"ami::AnisoGS::ComputeLocalDirStats() \t Too many values \n");
         break;
       }
     }
@@ -453,7 +500,7 @@ void  AnisoGS::ComputeLocalDirStats(InrImage* im, float x, float y, float z, t_3
 } // ComputeLocalDirStats
 
 //----------------------------------------------------------------------
-void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
+void ami::AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
 //
 // Computes the noise standard deviation estimate
 // given the current filtered image 'im'
@@ -570,11 +617,11 @@ void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
   // BUG fixed take the square root of the variance!!!
   this->noise_standard_deviation = sqrt(this->variance);
 
-} // AnisoGS::EstimateNoiseStandardDeviation()
+} // ami::AnisoGS::EstimateNoiseStandardDeviation()
 
 
 //----------------------------------------------------------------------
-void AnisoGS::InitCoefficients()
+void ami::AnisoGS::InitCoefficients()
 //
 {
 
@@ -612,11 +659,11 @@ void AnisoGS::InitCoefficients()
 
   } // end if
 
-} // AnisoGS::InitCoefficients()
+} // ami::AnisoGS::InitCoefficients()
 
 
 //----------------------------------------------------------------------
-void AnisoGS::ResetCoefficients()
+void ami::AnisoGS::ResetCoefficients()
 //
 {
 
@@ -639,11 +686,11 @@ void AnisoGS::ResetCoefficients()
     } // endfor
 
   } // end if
-} // AnisoGS::ResetCoefficients()
+} // ami::AnisoGS::ResetCoefficients()
 
 
 //----------------------------------------------------------------------
-void AnisoGS::DeleteCoefficients()
+void ami::AnisoGS::DeleteCoefficients()
 //
 {
 
@@ -667,11 +714,11 @@ void AnisoGS::DeleteCoefficients()
     } // end if
   } // end if
 
-} // AnisoGS::DeleteCoefficients()
+} // ami::AnisoGS::DeleteCoefficients()
 
 
 //----------------------------------------------------------------------
-void AnisoGS::InitNeighborhood(float* I,int x,int y)
+void ami::AnisoGS::InitNeighborhood(float* I,int x,int y)
 //
 {
   //
@@ -702,7 +749,7 @@ void AnisoGS::InitNeighborhood(float* I,int x,int y)
 //----------------------------------------------------------------------
 // gradient vector at (x,y,z)
 //
-void AnisoGS::Grad2D(float* I,float grad[2])
+void ami::AnisoGS::Grad2D(float* I,float grad[2])
 //            ----
 {
   grad[0] = (*Ixp   -  *Ixm )/2.0;
@@ -712,7 +759,7 @@ void AnisoGS::Grad2D(float* I,float grad[2])
 //----------------------------------------------------------------------
 // gradient vector at (x+1/2,y,z)
 //
-void AnisoGS::Grad2DShiftX(float* I,t_3Point& grad)
+void ami::AnisoGS::Grad2DShiftX(float* I,t_3Point& grad)
 //            ----------
 {
   grad.x = *Ixp   -  *I0;
@@ -722,7 +769,7 @@ void AnisoGS::Grad2DShiftX(float* I,t_3Point& grad)
 //----------------------------------------------------------------------
 // gradient vector at (x,y+1/2,z)
 //
-void AnisoGS::Grad2DShiftY(float* I,t_3Point& grad)
+void ami::AnisoGS::Grad2DShiftY(float* I,t_3Point& grad)
 //            ----------
 {
   grad.x = ((*Ixpyp+*Ixp)  - (*Ixmyp+*Ixm))/4.0;
@@ -733,7 +780,7 @@ void AnisoGS::Grad2DShiftY(float* I,t_3Point& grad)
 
 
 //----------------------------------------------------------------------
-double AnisoGS::Compute_q0_subvol( InrImage* im)
+double ami::AnisoGS::Compute_q0_subvol( InrImage* im)
 {
 
   InrImage* subvol;
@@ -745,7 +792,7 @@ double AnisoGS::Compute_q0_subvol( InrImage* im)
 
   if (this->SRAD_ROI==NULL)
     {
-      fprintf(stderr,"AnisoGS::Compute_q0_subvol() \t SRAD_ROI==NULL\n");
+      fprintf(stderr,"ami::AnisoGS::Compute_q0_subvol() \t SRAD_ROI==NULL\n");
       return 0.0;
     }
 
@@ -781,7 +828,7 @@ double AnisoGS::Compute_q0_subvol( InrImage* im)
 
 
 //----------------------------------------------------------------------
-double AnisoGS::function_c_Kuan(double q_2, double q0_2)
+double ami::AnisoGS::function_c_Kuan(double q_2, double q0_2)
 {
   double tmp;
 
@@ -798,7 +845,7 @@ double AnisoGS::function_c_Kuan(double q_2, double q0_2)
 } // function_c_Kuan
 
 //----------------------------------------------------------------------
-double AnisoGS::function_c_Lee(double q_2, double q0_2)
+double ami::AnisoGS::function_c_Lee(double q_2, double q0_2)
 {
   double tmp;
   if (fabsf(q0_2)<1E-4) return 0;
@@ -809,7 +856,7 @@ double AnisoGS::function_c_Lee(double q_2, double q0_2)
 } // function_c_Lee
 
 //----------------------------------------------------------------------
-double AnisoGS::Compute_sigma2_MRI(InrImage* im)
+double ami::AnisoGS::Compute_sigma2_MRI(InrImage* im)
 //
 {
   InrImage::ptr im2 = this->SRAD_ROI;
@@ -820,7 +867,7 @@ double AnisoGS::Compute_sigma2_MRI(InrImage* im)
 
   if (this->SRAD_ROI==NULL)
     {
-      fprintf(stderr,"AnisoGS::Compute_sigma2_MRI() \t SRAD_ROI==NULL\n");
+      fprintf(stderr,"ami::AnisoGS::Compute_sigma2_MRI() \t SRAD_ROI==NULL\n");
       return 0.0;
     }
   xmin = (int) ((im2->TrX()-im->TrX())/im2->VoxSizeX()+0.5);
@@ -846,7 +893,7 @@ double AnisoGS::Compute_sigma2_MRI(InrImage* im)
   var=total;
 
   if ((mean*mean)<var) {
-    printf("AnisoGS::Compute_sigma2_MRI() mean*mean < var ...\n");
+    printf("ami::AnisoGS::Compute_sigma2_MRI() mean*mean < var ...\n");
     return mean/2.0;
   } else {
     return (mean-sqrt(mean*mean-var))/2.0;
@@ -854,7 +901,7 @@ double AnisoGS::Compute_sigma2_MRI(InrImage* im)
 }
 
 //----------------------------------------------------------------------
-double AnisoGS::Compute_sigma2_MRI_mode(InrImage* im)
+double ami::AnisoGS::Compute_sigma2_MRI_mode(InrImage* im)
 //
 {
 
@@ -867,7 +914,7 @@ double AnisoGS::Compute_sigma2_MRI_mode(InrImage* im)
 
   if (this->SRAD_ROI==NULL)
     {
-      fprintf(stderr,"AnisoGS::Compute_sigma2_MRI_mode() \t SRAD_ROI==NULL\n");
+      fprintf(stderr,"ami::AnisoGS::Compute_sigma2_MRI_mode() \t SRAD_ROI==NULL\n");
       return 0.0;
     }
   xmin = (int) (im->SpaceToVoxelX(im2->SpacePosX(0))+0.5);
@@ -961,7 +1008,7 @@ double AnisoGS::Compute_sigma2_MRI_mode(InrImage* im)
 }
 
 //----------------------------------------------------------------------
-double AnisoGS::function_c_MRI(double sigma2, double vg, double meang)
+double ami::AnisoGS::function_c_MRI(double sigma2, double vg, double meang)
 {
 #define var_epsilon 1E-4
   double tmp;
@@ -974,7 +1021,7 @@ double AnisoGS::function_c_MRI(double sigma2, double vg, double meang)
 } // function_c_MRI
 
 //----------------------------------------------------------------------
-void AnisoGS::ComputeImage_c(InrImage* im)
+void ami::AnisoGS::ComputeImage_c(InrImage* im)
 //            --------------
 {
 
@@ -991,7 +1038,7 @@ void AnisoGS::ComputeImage_c(InrImage* im)
 
   int mode = MODE_KUAN;
 
-//  printf("AnisoGS::ComputeImage_c() \t contour mode = %d \n",this->contours_mode);
+//  printf("ami::AnisoGS::ComputeImage_c() \t contour mode = %d \n",this->contours_mode);
   switch (this->contours_mode)
     {
     case CONTOURS_SRAD:
@@ -1138,7 +1185,7 @@ void AnisoGS::ComputeImage_c(InrImage* im)
 }
 
 //----------------------------------------------------------------------------------
-void AnisoGS::Smooth(InrImage* image, float sigma)
+void ami::AnisoGS::Smooth(InrImage* image, float sigma)
 {
     GeneralGaussianFilter* filtre;
 
@@ -1158,7 +1205,7 @@ void AnisoGS::Smooth(InrImage* image, float sigma)
 }
 
 //----------------------------------------------------------------------------------
-void AnisoGS::ComputeStructureTensor(InrImage* im, float sigma1, float sigma2)
+void ami::AnisoGS::ComputeStructureTensor(InrImage* im, float sigma1, float sigma2)
 {
 
 printf("sig1 %f sig2 %f \n",sigma1,sigma2);
@@ -1276,7 +1323,7 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
 
 
 //----------------------------------------------------------------------------------
-void AnisoGS::ComputeEigenVectors()
+void ami::AnisoGS::ComputeEigenVectors()
 {
   int x,y,z;
   t_3Point e0, e1, e2;
@@ -1360,7 +1407,7 @@ eigenvect_zp->Sauve();
 
 
 //----------------------------------------------------------------------
-float AnisoGS::Itere2D ( InrImage* im )
+float ami::AnisoGS::Itere2D ( InrImage* im )
 //
 {
 
@@ -1735,11 +1782,11 @@ if ((x==ROI_xmin+354)&&(y==ROI_ymin+121)) {
 
   return erreur;
 
-} // AnisoGS::Itere2D()
+} // ami::AnisoGS::Itere2D()
 
 
 //----------------------------------------------------------------------
-void AnisoGS::InitFlux( t_3Point& e0,t_3Point& e1,t_3Point& e2)
+void ami::AnisoGS::InitFlux( t_3Point& e0,t_3Point& e1,t_3Point& e2)
 //            --------
 {
       e0.x = 1; e0.y = 0; e0.z = 0;
@@ -1750,7 +1797,7 @@ void AnisoGS::InitFlux( t_3Point& e0,t_3Point& e1,t_3Point& e2)
 
 
 //----------------------------------------------------------------------
-void AnisoGS::InitNeighborhood(float* I,int x,int y, int z)
+void ami::AnisoGS::InitNeighborhood(float* I,int x,int y, int z)
 //
 {
   //
@@ -1803,7 +1850,7 @@ void AnisoGS::InitNeighborhood(float* I,int x,int y, int z)
 //----------------------------------------------------------------------
 // gradient vector at (x,y,z)
 //
-void AnisoGS::Grad(float* I,float grad[3])
+void ami::AnisoGS::Grad(float* I,float grad[3])
 //            ----
 {
   grad[0] = (*Ixp   -  *Ixm )/2.0;
@@ -1814,7 +1861,7 @@ void AnisoGS::Grad(float* I,float grad[3])
 //----------------------------------------------------------------------
 // gradient vector at (x+1/2,y,z)
 //
-void AnisoGS::GradShiftX(float* I,float grad[3])
+void ami::AnisoGS::GradShiftX(float* I,float grad[3])
 //            ----------
 {
   grad[0] = *Ixp   -  *I0;
@@ -1825,7 +1872,7 @@ void AnisoGS::GradShiftX(float* I,float grad[3])
 //----------------------------------------------------------------------
 // gradient vector at (x,y+1/2,z)
 //
-void AnisoGS::GradShiftY(float* I,float grad[3])
+void ami::AnisoGS::GradShiftY(float* I,float grad[3])
 //            ----------
 {
   grad[0] = ((*Ixpyp+*Ixp)  - (*Ixmyp+*Ixm))/4.0;
@@ -1836,7 +1883,7 @@ void AnisoGS::GradShiftY(float* I,float grad[3])
 //----------------------------------------------------------------------
 // gradient vector at (x,y,z+1/2)
 //
-void AnisoGS::GradShiftZ(float* I,float grad[3])
+void ami::AnisoGS::GradShiftZ(float* I,float grad[3])
 //            ----------
 {
   grad[0] = ((*Ixpzp+*Ixp)  - (*Ixmzp+*Ixm))/4.0;
@@ -1847,7 +1894,7 @@ void AnisoGS::GradShiftZ(float* I,float grad[3])
 //----------------------------------------------------------------------
 // Hessian Matrix at (x,y,z)
 //
-void AnisoGS::Hessian(float* I,float** H)
+void ami::AnisoGS::Hessian(float* I,float** H)
 //            -------
 {
   H[0][0] = (*Ixp - 2*(*I0) + *Ixm);
@@ -1862,7 +1909,7 @@ void AnisoGS::Hessian(float* I,float** H)
 //----------------------------------------------------------------------
 // Hessian Matrix at (x+1/2,y,z)
 //
-void AnisoGS::HessianShiftX(float* I,float H[3][3])
+void ami::AnisoGS::HessianShiftX(float* I,float H[3][3])
 //            -------------
 {
   H[0][0] = ((*Ixpxp-*I0)-(*Ixp-*Ixm))/2.0;
@@ -1883,7 +1930,7 @@ void AnisoGS::HessianShiftX(float* I,float H[3][3])
 //----------------------------------------------------------------------
 // Hessian Matrix at (x,y+1/2,z)
 //
-void AnisoGS::HessianShiftY(float* I,float H[3][3])
+void ami::AnisoGS::HessianShiftY(float* I,float H[3][3])
 //            -------------
 {
   H[0][0] = (*Ixp  -2*(*I0) +*Ixm  +
@@ -1903,7 +1950,7 @@ void AnisoGS::HessianShiftY(float* I,float H[3][3])
 //----------------------------------------------------------------------
 // Hessian Matrix at (x,y,z+1/2)
 //
-void AnisoGS::HessianShiftZ(float* I,float H[3][3])
+void ami::AnisoGS::HessianShiftZ(float* I,float H[3][3])
 //            -------------
 {
 
@@ -1926,7 +1973,7 @@ void AnisoGS::HessianShiftZ(float* I,float H[3][3])
 
 
 //----------------------------------------------------------------------
-float AnisoGS::Norm(float v[3])
+float ami::AnisoGS::Norm(float v[3])
 //             ----
 {
   return sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);
@@ -1934,7 +1981,7 @@ float AnisoGS::Norm(float v[3])
 
 
 //----------------------------------------------------------------------
-float AnisoGS::ScalarProduct(const t_Gradient v1, const t_3Point v2)
+float ami::AnisoGS::ScalarProduct(const t_Gradient v1, const t_3Point v2)
 //             -------------
 {
   return v1.x*v2.x+
@@ -1947,7 +1994,7 @@ float AnisoGS::ScalarProduct(const t_Gradient v1, const t_3Point v2)
 // Computes the eigenvectors of the structure tensor at a position
 // x,y,z displaced by 0.5 in the coordinate given by coord
 //
-void AnisoGS::StructTensor_eigenvectors( int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2)
+void ami::AnisoGS::StructTensor_eigenvectors( int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2)
 {
   
     int x1,y1,z1;
@@ -2031,7 +2078,7 @@ void AnisoGS::StructTensor_eigenvectors( int coord, int x, int y, int z, t_3Poin
 }
 
 //----------------------------------------------------------------------
-unsigned char AnisoGS::convert_uchar(double val)
+unsigned char ami::AnisoGS::convert_uchar(double val)
 {
   return (unsigned char) MIN(255,MAX(0,(val+1.0)*127.5));
 }
@@ -2039,13 +2086,13 @@ unsigned char AnisoGS::convert_uchar(double val)
 #define MAX_SHORT 32700.0
 
 //----------------------------------------------------------------------
-short AnisoGS::convert_short(double val)
+short ami::AnisoGS::convert_short(double val)
 {
   return (short) MIN(MAX_SHORT,MAX(-MAX_SHORT,val*MAX_SHORT));
 }
 
 //----------------------------------------------------------------------
-void AnisoGS::GetVectors( int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2)
+void ami::AnisoGS::GetVectors( int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2)
 {
   InrImage* ev=NULL;
   short* ev_buf;
@@ -2075,7 +2122,7 @@ void AnisoGS::GetVectors( int coord, int x, int y, int z, t_3Point& e0, t_3Point
 //----------------------------------------------------------------------
 // Get Principal Curvature Directions
 //
-void AnisoGS::PrincipalCurvatures(float grad[3], float H[3][3], float norm_grad,
+void ami::AnisoGS::PrincipalCurvatures(float grad[3], float H[3][3], float norm_grad,
 //            -------------------
           t_3Point& e0, t_3Point& e1, t_3Point& e2)
 {
@@ -2106,7 +2153,7 @@ void AnisoGS::PrincipalCurvatures(float grad[3], float H[3][3], float norm_grad,
 
 //----------------------------------------------------------------------
 // using only minimal curvature direction
-float AnisoGS::Itere3D( InrImage* im )
+float ami::AnisoGS::Itere3D( InrImage* im )
 //
 {
 
@@ -2532,7 +2579,7 @@ float AnisoGS::Itere3D( InrImage* im )
 
   return erreur;
 
-} // AnisoGS::Itere3D()
+} // ami::AnisoGS::Itere3D()
 
 
 
@@ -2545,7 +2592,7 @@ float AnisoGS::Itere3D( InrImage* im )
 //
 // Use a mask for the processing if the mask image is set.
 //
-float AnisoGS::Itere3D_2_new( InrImage* im )
+float ami::AnisoGS::Itere3D_2_new( InrImage* im )
 //
 {
     int x,y,z; //,n,i;
@@ -3191,7 +3238,7 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
 
   return erreur;
 
-} // AnisoGS::Itere3D_2_new()
+} // ami::AnisoGS::Itere3D_2_new()
 
 
 
@@ -3204,7 +3251,7 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
 //
 // Use a mask for the processing if the mask image is set.
 //
-float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
+float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 //
 {
     int x,y,z; //,n,i;
@@ -3889,7 +3936,7 @@ if (sqrt(val1)>300) {
 
   return erreur;
 
-} // AnisoGS::Itere3D_ST_RNRAD()
+} // ami::AnisoGS::Itere3D_ST_RNRAD()
 
 
 
@@ -3898,7 +3945,7 @@ if (sqrt(val1)>300) {
 //
 // 
 //
-float AnisoGS::Itere3D_distance( InrImage* im )
+float ami::AnisoGS::Itere3D_distance( InrImage* im )
 //
 {
 
@@ -4112,7 +4159,7 @@ val1 = *in + 0.1*(dxx+dyy+dzz-meancurv);
 
   return erreur;
 
-} // AnisoGS::Itere3D_distance()
+} // ami::AnisoGS::Itere3D_distance()
 
 
 //----------------------------------------------------------------------
@@ -4120,7 +4167,7 @@ val1 = *in + 0.1*(dxx+dyy+dzz-meancurv);
 //
 // 
 //
-float AnisoGS::Itere3D_distance_flux( InrImage* im )
+float ami::AnisoGS::Itere3D_distance_flux( InrImage* im )
 //
 {
 
@@ -4363,7 +4410,7 @@ alpha1_z = 0;
 
   return erreur;
 
-} // AnisoGS::Itere3D_distance_flux()
+} // ami::AnisoGS::Itere3D_distance_flux()
 
 
 
@@ -4371,7 +4418,7 @@ alpha1_z = 0;
 //----------------------------------------------------------------------
 // using minimal and maximal curvature directions
 //
-float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
+float ami::AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
 //
 {
 
@@ -4594,7 +4641,7 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
 
   return erreur;
 
-} // AnisoGS::Itere3D_Flux()
+} // ami::AnisoGS::Itere3D_Flux()
 
 
 
@@ -4603,7 +4650,7 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
 //
 // discretization u_x(x+dx/2) = 1/4 (u(x+2*dx)-u(x)+u(x+dx)-u(x-dx))
 //
-float  AnisoGS::Itere3D_3( InrImage* im )
+float  ami::AnisoGS::Itere3D_3( InrImage* im )
 //
 {
 
@@ -4920,12 +4967,12 @@ float  AnisoGS::Itere3D_3( InrImage* im )
 
   return erreur;
 
-} //  AnisoGS::Itere3D_3()
+} //  ami::AnisoGS::Itere3D_3()
 
 
 
 //----------------------------------------------------------------------
-void AnisoGS::Init(InrImage* in, 
+void ami::AnisoGS::Init(InrImage* in, 
       float p_sigma, 
       float p_k,
       float p_beta
@@ -4972,7 +5019,7 @@ void AnisoGS::Init(InrImage* in,
   this->ROI_xmax = input_image->DimX()-1;
   this->ROI_ymax = input_image->DimY()-1;
   this->ROI_zmax = input_image->DimZ()-1;
-//  if  ((mode != MODE_2D)&&(image_resultat->DimZ()>1)&&(!DistanceMap))
+//  if  ((mode != MODE_2D)&&(result_image->DimZ()>1)&&(!DistanceMap))
 //  {
     switch (local_structure_mode) {
     case LOCAL_STRUCT_CURV:
@@ -5018,18 +5065,18 @@ void AnisoGS::Init(InrImage* in,
 
   InitCoefficients();
 
-  //--- image_resultat
+  //--- result_image
     sprintf(resname,"%s.AnisoGS",in->GetName());
-  this->image_resultat = new InrImage( WT_FLOAT, resname, image_entree);
+  this->result_image = new InrImage( WT_FLOAT, resname, image_entree);
 
-  (*this->image_resultat)=(*image_entree);
+  (*this->result_image)=(*image_entree);
 
   // start with a smoothed image for testing
   /*
   filtre->MyFiltre( in, this->image_lissee,           0, -1, -1);
   filtre->MyFiltre( this->image_lissee, this->image_lissee, -1, 0, -1);
   filtre->MyFiltre( this->image_lissee, this->image_lissee, -1, -1, 0);
-  (*this->image_resultat) = (*this->image_lissee);
+  (*this->result_image) = (*this->image_lissee);
   */
 
   iteration = 0;
@@ -5041,14 +5088,14 @@ void AnisoGS::Init(InrImage* in,
 
 
 //----------------------------------------------------------------------
-float AnisoGS::Iterate()
+float ami::AnisoGS::Iterate()
 //   ----------------
 {
 
   float       erreur = 0;
 
-  if ( this->image_resultat==NULL ) {
-    std::cerr << __func__ << " image_resultat==NULL, AnisoGS not initialized " << std::endl;
+  if ( this->result_image==NULL ) {
+    std::cerr << __func__ << " result_image==NULL, AnisoGS not initialized " << std::endl;
     return 0.0;
   } // end if
 
@@ -5063,34 +5110,34 @@ float AnisoGS::Iterate()
   iteration++;
   printf("\n -- Iter. %d, beta = %03.2f \t", iteration,beta);
 
-  if ( ((mode == MODE_2D)||(image_resultat->DimZ()==1)) ) {
-    erreur = Itere2D(    this->image_resultat);
+  if ( ((mode == MODE_2D)||(result_image->DimZ()==1)) ) {
+    erreur = Itere2D(    this->result_image);
   } else {
     if (DistanceMap)
-     erreur = Itere3D_distance(this->image_resultat);
-     //      erreur = Itere3D_distance_flux(this->image_resultat);
+     erreur = Itere3D_distance(this->result_image);
+     //      erreur = Itere3D_distance_flux(this->result_image);
     else
 //    if ( maxcurv_coeff > 1E-5 ) {
       printf("local struct mode %d \n",local_structure_mode);
       switch (local_structure_mode) {
         case LOCAL_STRUCT_TENSOR:
-          erreur = Itere3D_ST_RNRAD( this->image_resultat);
+          erreur = Itere3D_ST_RNRAD( this->result_image);
         break;
         case LOCAL_STRUCT_CURV:
-          erreur = Itere3D_2_new( this->image_resultat);
+          erreur = Itere3D_2_new( this->result_image);
         break;
       }
 //    } else {
-//      erreur = Itere3D(       this->image_resultat);
+//      erreur = Itere3D(       this->result_image);
 //    } // end if
   } // end if
 
   if (!noise_SD_preset)
-    //    EstimateNoiseStandardDeviation(this->image_resultat);
+    //    EstimateNoiseStandardDeviation(this->result_image);
   printf(" Max. Intens. change = %3.2f --  ",erreur);
   
   return erreur;
 
-} // AnisoGS::Iterate()
+} // ami::AnisoGS::Iterate()
 
 

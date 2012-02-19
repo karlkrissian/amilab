@@ -500,10 +500,7 @@ SpacePos          return(token::T_SpacePos); /*{SpacePos,T_SpacePos}*/
 del               return(token::T_del); /*{del,T_del}*/
 delvars           return(token::T_delvars); /*{delvars,T_delvars}*/
 
-
-FluxDiffusion     return(token::T_FluxDiffusion); /*{FluxDiffusion,T_FluxDiffusion}*/
 vtkAnisoGS        return(token::T_vtkAnisoGS); /*{vtkAnisoGS,T_vtkAnisoGS}*/
-AnisoSmoothGS     return(token::AnisoSmoothGS); /*{AnisoSmoothGS,AnisoSmoothGS}*/
 
 AnisoWeickert     return(token::T_AnisoWeickert); /*{AnisoWeickert,T_AnisoWeickert}*/
 AnisoCW           return(token::T_AnisoCW); /*{AnisoCW,T_AnisoCW}*/

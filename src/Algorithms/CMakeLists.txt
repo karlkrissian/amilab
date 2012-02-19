@@ -46,8 +46,8 @@ SET(Algorithms_SRCS
   localstats.cpp
   ShortestPathClass.cpp
 
-  AnisoGS.cpp
-  WrapOld_AnisoGS.cpp
+  amiAnisoGS.cpp
+  #WrapOld_AnisoGS.cpp
   NLmeans.cpp
 
   amiRegionGrowingBase.cpp
@@ -122,8 +122,8 @@ SET(Algorithms_HDRS
   include/localstats.h
   include/ShortestPathClass.h
 
-  include/AnisoGS.h
-  include/WrapOld_AnisoGS.h
+  include/amiAnisoGS.h
+  #include/WrapOld_AnisoGS.h
   include/NLmeans.h
 
 

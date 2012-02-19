@@ -25,3 +25,5 @@ ami::ImageExtent<float>
 
 # Denoising
 ami::SRAD
+
+ami::AnisoGS

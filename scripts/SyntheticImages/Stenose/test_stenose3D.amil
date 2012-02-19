@@ -27,5 +27,5 @@ isn = AddGaussNoise(is,0,20)
 Show isn
  isn = AddGaussNoise(is,0,15)
 i_draw.compare(isn)
-isnr = AnisoGS(is,1,6,0.05,20)
+isnr = algorithms.ami_AnisoGS.Run(is,1,6,0.05,20)
 i_draw.compare(isnr)
