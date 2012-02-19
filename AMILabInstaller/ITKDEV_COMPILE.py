@@ -12,21 +12,23 @@ numthreads=len(cpuinfo.cpu.info)
 initdir=os.getcwd()
 
 
-itksourcefile='InsightToolkit-3.20.1.tar.gz'
-itkurl='http://sourceforge.net/projects/itk/files/itk/3.20/{0}/download'.format(itksourcefile)
+#itksourcefile='InsightToolkit-3.20.1.tar.gz'
+#itkurl='http://sourceforge.net/projects/itk/files/itk/3.20/{0}/download'.format(itksourcefile)
+itksourcefile='InsightToolkit-4.0.0.tar.gz'
+itkurl='http://sourceforge.net/projects/itk/files/itk/4.0/{0}/download'.format(itksourcefile)
 if not(os.access(itksourcefile, os.R_OK)):
   import urllib2, urllib
   urllib.urlretrieve(itkurl, itksourcefile)
 
-if not(os.access("InsightToolkit-3.20.1", os.R_OK)):
+if not(os.access("InsightToolkit-4.0.0", os.R_OK)):
   print " Extracting the tar.gz file"
   import tarfile
-  tar = tarfile.open("InsightToolkit-3.20.1.tar.gz")
+  tar = tarfile.open("InsightToolkit-4.0.0.tar.gz")
   tar.extractall()
   tar.close()
 
 import os
-os.chdir("InsightToolkit-3.20.1")
+os.chdir("InsightToolkit-4.0.0")
 compile_ITK=True
 if os.access("build_release", os.R_OK):
   ans = raw_input("ITK seems to have been already compiled, recompile it? (Y for Yes): ")
