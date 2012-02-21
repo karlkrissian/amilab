@@ -1007,7 +1007,14 @@ double ami::AnisoGS::Compute_sigma2_MRI_mode(InrImage* im)
 */
 }
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
+double ami::AnisoGS::Compute_sigma2_Gaussian_mode(InrImage* im)
+//
+{
+  return Func_Compute_sigma2_Gaussian_mode(im,this->SRAD_ROI);
+}
+
+//------------------------------------------------------------------------------
 double ami::AnisoGS::function_c_MRI(double sigma2, double vg, double meang)
 {
 #define var_epsilon 1E-4
@@ -1029,32 +1036,26 @@ void ami::AnisoGS::ComputeImage_c(InrImage* im)
   double I,Ixm,Iym,Izm,Ixp,Iyp,Izp,mean1,mean2,q0_2=0.0,q2;
   double sigma2=0.0;
 
-
-#define MODE_LEE       0
-#define MODE_KUAN      1
-#define MODE_ADDITIVE  2
-#define MODE_MRI       3
-#define MODE_MRI_NEW   4
-
-  int mode = MODE_KUAN;
+/*
+ *  int mode = MODE_KUAN;
 
 //  printf("ami::AnisoGS::ComputeImage_c() \t contour mode = %d \n",this->contours_mode);
   switch (this->contours_mode)
     {
-    case CONTOURS_SRAD:
+    case CONTOURS_OSRAD:
       mode = MODE_KUAN;
       break;
     case CONTOURS_RNRAD:
       mode = MODE_MRI;
       break;
-    case CONTOURS_RNRAD_NEW:
+    case CONTOURS_NRAD:
       mode = MODE_MRI;
       break;
     }
+*/
 
-  if ((this->contours_mode==CONTOURS_SRAD)||
-      (this->contours_mode==CONTOURS_RNRAD)||
-      (this->contours_mode==CONTOURS_RNRAD_NEW))
+  if ((this->contours_mode==CONTOURS_OSRAD)||
+      (this->contours_mode==CONTOURS_NRAD))
     {
 
       if ( this->image_c == NULL ) 
@@ -1063,15 +1064,15 @@ void ami::AnisoGS::ComputeImage_c(InrImage* im)
       // we limit for the moment to Kuan's function with Yu's neighborhood
 
       // precompute image of coefficients
-      switch (mode)
+      switch (noise_model)
         {
-        case MODE_LEE:
-        case MODE_KUAN:
-        case MODE_ADDITIVE:
+        case NOISE_LEE:
+        case NOISE_KUAN:
+        case NOISE_GAUSSIAN_ADDITIVE:
           q0_2= Compute_q0_subvol(im);
           printf("q0_2 = %f \n",q0_2);
           break;
-        case MODE_MRI:
+        case NOISE_RICIAN:
           /*        sigma2 = Compute_sigma2_MRI(im);
                   printf("sigma = %f \n",sqrt(sigma2));
           */
@@ -1152,17 +1153,22 @@ void ami::AnisoGS::ComputeImage_c(InrImage* im)
                   else q2 = 0;
 
                   image_c->BufferPos(x,y,z);
-                  switch (mode)
+                  switch (noise_model)
                     {
-                    case MODE_LEE:
-                      image_c->FixeValeur( function_c_Lee(     q2,               q0_2));
+                    case NOISE_LEE:
+                      image_c->FixeValeur( function_c_Lee( q2, q0_2));
                       break;
-                    case MODE_KUAN:
-                      image_c->FixeValeur( function_c_Kuan(    q2,               q0_2));
+                    case NOISE_KUAN:
+                      image_c->FixeValeur( function_c_Kuan( q2, q0_2));
                       break;
-                      //    case MODE_ADDITIVE: image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,q0_2)); break;
-                    case MODE_MRI:
-                      image_c->FixeValeur( function_c_MRI( sigma2, mean2-mean1*mean1, mean1));
+                    case NOISE_GAUSSIAN_ADDITIVE: 
+                      image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,
+                                                               q0_2)); 
+                      break;
+                    case NOISE_RICIAN:
+                      image_c->FixeValeur( function_c_MRI( sigma2, 
+                                                           mean2-mean1*mean1, 
+                                                           mean1));
                       break;
                     }
                 }
@@ -1179,12 +1185,13 @@ void ami::AnisoGS::ComputeImage_c(InrImage* im)
 
     } //
   else
-    CLASS_ERROR((boost::format("contours_mode %1% not supported")%contours_mode).str().c_str());
+    CLASS_ERROR((boost::format("contours_mode %1% not supported")%
+                  contours_mode).str().c_str());
 //  image_c->Sauve();
 
 }
 
-//----------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void ami::AnisoGS::Smooth(InrImage* image, float sigma)
 {
     GeneralGaussianFilter* filtre;
@@ -1204,8 +1211,9 @@ void ami::AnisoGS::Smooth(InrImage* image, float sigma)
   delete filtre;
 }
 
-//----------------------------------------------------------------------------------
-void ami::AnisoGS::ComputeStructureTensor(InrImage* im, float sigma1, float sigma2)
+//------------------------------------------------------------------------------
+void ami::AnisoGS::ComputeStructureTensor(InrImage* im, float sigma1, 
+                                          float sigma2)
 {
 
 printf("sig1 %f sig2 %f \n",sigma1,sigma2);
@@ -1229,7 +1237,7 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
 //    char            resname[100];
 
   double tmp;
-  if (contours_mode==CONTOURS_RNRAD_NEW) {
+  if (contours_mode==CONTOURS_NRAD) {
     // compute on the square root of the intensity
     image = new InrImage( WT_FLOAT, "sqrt_im", im);
     image->InitBuffer();
@@ -1322,7 +1330,7 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
 
 
 
-//----------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void ami::AnisoGS::ComputeEigenVectors()
 {
   int x,y,z;
@@ -1406,7 +1414,7 @@ eigenvect_zp->Sauve();
 }
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 float ami::AnisoGS::Itere2D ( InrImage* im )
 //
 {
@@ -1446,8 +1454,8 @@ float ami::AnisoGS::Itere2D ( InrImage* im )
   bool mask_test,attach_mask_val;
 
 
-  if (contours_mode!=CONTOURS_GRAD)
-  ComputeImage_c ( im );
+  if (contours_mode!=CONTOURS_FLUX)
+    ComputeImage_c ( im );
 
   ResetCoefficients();
   if ( this->im_tmp == NULL ) 
@@ -1533,15 +1541,14 @@ float ami::AnisoGS::Itere2D ( InrImage* im )
 
   switch ( contours_mode )
   {
-    case CONTOURS_GRAD:
+    case CONTOURS_FLUX:
       if ( SmoothedParam ) {
       phi0_value = phi0 ( norm );
       } else {
       phi0_value = phi0 ( u_e0 );
       } // end if
       break;
-    case CONTOURS_SRAD:
-    case CONTOURS_RNRAD:
+    case CONTOURS_OSRAD:
       phi0_value = ( ( *image_c ) ( x,y,z ) + ( *image_c ) ( x+1,y,z ) ) /2.0;
   }
 
@@ -1584,15 +1591,14 @@ float ami::AnisoGS::Itere2D ( InrImage* im )
 
   switch ( contours_mode )
   {
-    case CONTOURS_GRAD:
+    case CONTOURS_FLUX:
       if ( SmoothedParam ) {
       phi0_value = phi0 ( norm );
       } else {
       phi0_value = phi0 ( u_e0 );
       } // end if
       break;
-    case CONTOURS_SRAD:
-    case CONTOURS_RNRAD:
+    case CONTOURS_OSRAD:
       phi0_value = ( ( *image_c ) ( x,y,z ) + ( *image_c ) ( x,y+1,z ) ) /2.0;
   }
 
@@ -1639,15 +1645,14 @@ if ((x==ROI_xmin+354)&&(y==ROI_ymin+121)) {
 
       switch ( contours_mode )
       {
-        case CONTOURS_GRAD:
+        case CONTOURS_FLUX:
           if ( fabsf ( val1div ) >1E-4 ) {
           val1 /= val1div;
           } else {
           fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
           } // end if
           break;
-        case CONTOURS_SRAD:
-        case CONTOURS_RNRAD:
+        case CONTOURS_OSRAD:
           /*    if ( fabsf(val1div)>1E-4 ) {
               val1 /= val1div;
             } else {
@@ -1785,7 +1790,7 @@ if ((x==ROI_xmin+354)&&(y==ROI_ymin+121)) {
 } // ami::AnisoGS::Itere2D()
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void ami::AnisoGS::InitFlux( t_3Point& e0,t_3Point& e1,t_3Point& e2)
 //            --------
 {
@@ -1796,7 +1801,7 @@ void ami::AnisoGS::InitFlux( t_3Point& e0,t_3Point& e1,t_3Point& e2)
 } // InitFlux()
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void ami::AnisoGS::InitNeighborhood(float* I,int x,int y, int z)
 //
 {
@@ -1858,7 +1863,7 @@ void ami::AnisoGS::Grad(float* I,float grad[3])
   grad[2] = (*Izp   -  *Izm )/2.0;
 }
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // gradient vector at (x+1/2,y,z)
 //
 void ami::AnisoGS::GradShiftX(float* I,float grad[3])
@@ -1869,7 +1874,7 @@ void ami::AnisoGS::GradShiftX(float* I,float grad[3])
   grad[2] = ((*Ixpzp+*Izp)  - (*Ixpzm+*Izm))/4.0;
 }
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // gradient vector at (x,y+1/2,z)
 //
 void ami::AnisoGS::GradShiftY(float* I,float grad[3])
@@ -1880,7 +1885,7 @@ void ami::AnisoGS::GradShiftY(float* I,float grad[3])
   grad[2] = ((*Iypzp+*Izp)  - (*Iypzm+*Izm))/4.0;
 }
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // gradient vector at (x,y,z+1/2)
 //
 void ami::AnisoGS::GradShiftZ(float* I,float grad[3])
@@ -1891,7 +1896,7 @@ void ami::AnisoGS::GradShiftZ(float* I,float grad[3])
   grad[2] = *Izp   -  *I0;
 }
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Hessian Matrix at (x,y,z)
 //
 void ami::AnisoGS::Hessian(float* I,float** H)
@@ -1906,7 +1911,7 @@ void ami::AnisoGS::Hessian(float* I,float** H)
 }
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Hessian Matrix at (x+1/2,y,z)
 //
 void ami::AnisoGS::HessianShiftX(float* I,float H[3][3])
@@ -1927,7 +1932,7 @@ void ami::AnisoGS::HessianShiftX(float* I,float H[3][3])
 
 }
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Hessian Matrix at (x,y+1/2,z)
 //
 void ami::AnisoGS::HessianShiftY(float* I,float H[3][3])
@@ -1947,7 +1952,7 @@ void ami::AnisoGS::HessianShiftY(float* I,float H[3][3])
 
 }
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Hessian Matrix at (x,y,z+1/2)
 //
 void ami::AnisoGS::HessianShiftZ(float* I,float H[3][3])
@@ -1972,7 +1977,7 @@ void ami::AnisoGS::HessianShiftZ(float* I,float H[3][3])
 }
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 float ami::AnisoGS::Norm(float v[3])
 //             ----
 {
@@ -1980,7 +1985,7 @@ float ami::AnisoGS::Norm(float v[3])
 } // Norm()
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 float ami::AnisoGS::ScalarProduct(const t_Gradient v1, const t_3Point v2)
 //             -------------
 {
@@ -1990,11 +1995,13 @@ float ami::AnisoGS::ScalarProduct(const t_Gradient v1, const t_3Point v2)
 }
 
 
-//----------------------------------------------------------------
+//------------------------------------------------------------------------
 // Computes the eigenvectors of the structure tensor at a position
 // x,y,z displaced by 0.5 in the coordinate given by coord
 //
-void ami::AnisoGS::StructTensor_eigenvectors( int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2)
+void ami::AnisoGS::StructTensor_eigenvectors( int coord, int x, int y, int z, 
+                                              t_3Point& e0, t_3Point& e1, 
+                                              t_3Point& e2)
 {
   
     int x1,y1,z1;
@@ -2077,7 +2084,7 @@ void ami::AnisoGS::StructTensor_eigenvectors( int coord, int x, int y, int z, t_
     }
 }
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 unsigned char ami::AnisoGS::convert_uchar(double val)
 {
   return (unsigned char) MIN(255,MAX(0,(val+1.0)*127.5));
@@ -2085,14 +2092,15 @@ unsigned char ami::AnisoGS::convert_uchar(double val)
 
 #define MAX_SHORT 32700.0
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 short ami::AnisoGS::convert_short(double val)
 {
   return (short) MIN(MAX_SHORT,MAX(-MAX_SHORT,val*MAX_SHORT));
 }
 
-//----------------------------------------------------------------------
-void ami::AnisoGS::GetVectors( int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2)
+//------------------------------------------------------------------------------
+void ami::AnisoGS::GetVectors( int coord, int x, int y, int z, 
+                               t_3Point& e0, t_3Point& e1, t_3Point& e2)
 {
   InrImage* ev=NULL;
   short* ev_buf;
@@ -2119,10 +2127,11 @@ void ami::AnisoGS::GetVectors( int coord, int x, int y, int z, t_3Point& e0, t_3
 }
 
 // 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Get Principal Curvature Directions
 //
-void ami::AnisoGS::PrincipalCurvatures(float grad[3], float H[3][3], float norm_grad,
+void ami::AnisoGS::PrincipalCurvatures(float grad[3], float H[3][3], 
+                                       float norm_grad,
 //            -------------------
           t_3Point& e0, t_3Point& e1, t_3Point& e2)
 {
@@ -2151,7 +2160,7 @@ void ami::AnisoGS::PrincipalCurvatures(float grad[3], float H[3][3], float norm_
   } // end if
 }
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // using only minimal curvature direction
 float ami::AnisoGS::Itere3D( InrImage* im )
 //
@@ -2364,9 +2373,8 @@ float ami::AnisoGS::Itere3D( InrImage* im )
     u_e2 = grad.x*e2.x + grad.y*e2.y + grad.z*e2.z;
 
     switch(contours_mode) {
-      case CONTOURS_GRAD: phi0_value = phi3D_0(u_e0); break;
-      case CONTOURS_SRAD: 
-      case CONTOURS_RNRAD:
+      case CONTOURS_FLUX: phi0_value = phi3D_0(u_e0); break;
+      case CONTOURS_OSRAD: 
        phi0_value = ((*image_c)(x,y,z)+(*image_c)(x+1,y,z))/2.0; break;
     }
 
@@ -2413,10 +2421,12 @@ float ami::AnisoGS::Itere3D( InrImage* im )
     u_e2 = grad.x*e2.x + grad.y*e2.y + grad.z*e2.z;
 
     switch(contours_mode) {
-      case CONTOURS_GRAD: phi0_value = phi3D_0(u_e0); break;
-      case CONTOURS_SRAD: 
-      case CONTOURS_RNRAD:
-       phi0_value = ((*image_c)(x,y,z)+(*image_c)(x,y+1,z))/2.0; break;
+      case CONTOURS_FLUX:
+        phi0_value = phi3D_0(u_e0); 
+        break;
+      case CONTOURS_OSRAD:
+        phi0_value = ((*image_c)(x,y,z)+(*image_c)(x,y+1,z))/2.0; 
+        break;
     }
 
     alpha1_y = phi0_value*e0.y*e0.y + 
@@ -2464,10 +2474,12 @@ float ami::AnisoGS::Itere3D( InrImage* im )
     u_e2 = grad.x*e2.x + grad.y*e2.y + grad.z*e2.z;
 
     switch(contours_mode) {
-      case CONTOURS_GRAD: phi0_value = phi3D_0(u_e0); break;
-      case CONTOURS_SRAD: 
-      case CONTOURS_RNRAD:
-       phi0_value = ((*image_c)(x,y,z)+(*image_c)(x,y,z+1))/2.0; break;
+      case CONTOURS_FLUX:
+        phi0_value = phi3D_0(u_e0); 
+        break;
+      case CONTOURS_OSRAD: 
+       phi0_value = ((*image_c)(x,y,z)+(*image_c)(x,y,z+1))/2.0; 
+       break;
     }
 
     alpha1_z = phi0_value*e0.z*e0.z + 
@@ -2506,15 +2518,14 @@ float ami::AnisoGS::Itere3D( InrImage* im )
     } // end if
 
     switch(contours_mode) {
-      case CONTOURS_GRAD:
+      case CONTOURS_FLUX:
         if ( fabsf(val1div)>1E-4 ) {
         val1 /= val1div;
         } else {
         fprintf(stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n");
         } // end if
     break;
-      case CONTOURS_SRAD:
-      case CONTOURS_RNRAD:
+      case CONTOURS_OSRAD:
         val1 = (*in + dt*val1)/(1+dt*val1div);
         break;
     }
@@ -2583,7 +2594,7 @@ float ami::AnisoGS::Itere3D( InrImage* im )
 
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // using minimal and maximal curvature directions
 //
 // Extension for taking into account the noise characteristics:
@@ -2652,8 +2663,8 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
 
   // printf("Itere3D_2_new \n");
 
-  if (contours_mode!=CONTOURS_RNRAD_NEW) {
-    if (contours_mode!=CONTOURS_GRAD)
+  if (contours_mode!=CONTOURS_NRAD) {
+    if (contours_mode!=CONTOURS_FLUX)
       ComputeImage_c(im);
   } else {
     ComputeImage_c(im);
@@ -2767,18 +2778,17 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
 
     switch ( contours_mode )
     {
-    case CONTOURS_GRAD: 
+    case CONTOURS_FLUX: 
         lambda0 = phi3D_0(u_e0); 
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_SRAD:
-    case CONTOURS_RNRAD:
+    case CONTOURS_OSRAD:
         lambda0 = ( ( *image_c ) ( x,y,z ) + ( *image_c ) ( x+incx,y,z ) ) /2.0; 
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_RNRAD_NEW:
+    case CONTOURS_NRAD:
         double mean,var;
         lambda0 = ( (*image_c)(x,y,z) + (*image_c)(x+incx,y,z) ) /2.0; 
         if (lambda0>2) lambda0=2;
@@ -2858,18 +2868,17 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
 
     switch ( contours_mode )
     {
-    case CONTOURS_GRAD: 
+    case CONTOURS_FLUX: 
         lambda0 = phi3D_0(u_e0); 
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_SRAD:
-    case CONTOURS_RNRAD:
+    case CONTOURS_OSRAD:
         lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_RNRAD_NEW:
+    case CONTOURS_NRAD:
         double mean,var;
         lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
         if (lambda0>2) lambda0=2;
@@ -2934,18 +2943,17 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
 
     switch ( contours_mode )
     {
-    case CONTOURS_GRAD: 
+    case CONTOURS_FLUX: 
         lambda0 = phi3D_0(u_e0); 
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_SRAD:
-    case CONTOURS_RNRAD:
+    case CONTOURS_OSRAD:
         lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_RNRAD_NEW:
+    case CONTOURS_NRAD:
         double mean,var;
         lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
         if (lambda0>2) lambda0=2;
@@ -3041,16 +3049,15 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
     
         switch ( contours_mode )
         {
-            case CONTOURS_GRAD:
+            case CONTOURS_FLUX:
                 if ( fabsf ( val1div ) >1E-4 ) {
                 val1 /= val1div;
                 } else {
                 fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
                 } // end if
                 break;
-            case CONTOURS_SRAD:
-            case CONTOURS_RNRAD:
-            case CONTOURS_RNRAD_NEW:
+            case CONTOURS_OSRAD:
+            case CONTOURS_NRAD:
                 val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
                 break;
         }
@@ -3242,7 +3249,7 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
 
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // using minimal and maximal curvature directions
 //
 // Extension for taking into account the noise characteristics:
@@ -3337,8 +3344,8 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
     loop+=2;
   }
 
-  if (contours_mode!=CONTOURS_RNRAD_NEW) {
-    if (contours_mode!=CONTOURS_GRAD)
+  if (contours_mode!=CONTOURS_NRAD) {
+    if (contours_mode!=CONTOURS_FLUX)
       ComputeImage_c(im);
   } else {
     ComputeImage_c(im);
@@ -3423,9 +3430,9 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
     speedup_skip = 0;
 
 /*
-    if ((contours_mode==CONTOURS_SRAD)     ||
+    if ((contours_mode==CONTOURS_OSRAD)     ||
         (contours_mode==CONTOURS_RNRAD)    ||
-        (contours_mode==CONTOURS_RNRAD_NEW) ) {
+        (contours_mode==CONTOURS_NRAD) ) {
       diff_coeff = ( *image_c ) ( x,y,z );
       // do a scalar diffusion to speed-up the process
       if (diff_coeff>0.5) {
@@ -3454,7 +3461,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
     switch ( contours_mode )
     {
-    case CONTOURS_GRAD: 
+    case CONTOURS_FLUX: 
         u_e0 = this->ScalarProduct(grad,e0);
         u_e1 = this->ScalarProduct(grad,e1);
         u_e2 = this->ScalarProduct(grad,e2);
@@ -3462,15 +3469,14 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_SRAD:
-    case CONTOURS_RNRAD:
+    case CONTOURS_OSRAD:
         u_e1 = this->ScalarProduct(grad,e1);
         u_e2 = this->ScalarProduct(grad,e2);
         lambda0 = ( ( *image_c ) ( x,y,z ) + ( *image_c ) ( x+incx,y,z ) ) /2.0; 
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_RNRAD_NEW:
+    case CONTOURS_NRAD:
         double mean,var;
         lambda0 = ( (*image_c)(x,y,z) + (*image_c)(x+incx,y,z) ) /2.0; 
   //      if (lambda0>2) lambda0=2;
@@ -3526,7 +3532,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
     switch ( contours_mode )
     {
-    case CONTOURS_GRAD: 
+    case CONTOURS_FLUX: 
         // Derivees directionnelles
         u_e0 = this->ScalarProduct(grad,e0);
         u_e1 = this->ScalarProduct(grad,e1);
@@ -3535,8 +3541,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_SRAD:
-    case CONTOURS_RNRAD:
+    case CONTOURS_OSRAD:
       // Derivees directionnelles
       u_e1 = this->ScalarProduct(grad,e1);
       u_e2 = this->ScalarProduct(grad,e2);
@@ -3544,7 +3549,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_RNRAD_NEW:
+    case CONTOURS_NRAD:
         double mean,var;
         lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
 //        if (lambda0>2) lambda0=2;
@@ -3599,7 +3604,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
     switch ( contours_mode )
     {
-    case CONTOURS_GRAD: 
+    case CONTOURS_FLUX: 
         // Derivees directionnelles
         u_e0 = this->ScalarProduct(grad,e0);
         u_e1 = this->ScalarProduct(grad,e1);
@@ -3608,8 +3613,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_SRAD:
-    case CONTOURS_RNRAD:
+    case CONTOURS_OSRAD:
         // Derivees directionnelles
         u_e1 = this->ScalarProduct(grad,e1);
         u_e2 = this->ScalarProduct(grad,e2);
@@ -3617,7 +3621,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
         lambda1 = phi3D_1(u_e1);
         lambda2 = phi3D_2(u_e2);
         break;
-    case CONTOURS_RNRAD_NEW:
+    case CONTOURS_NRAD:
         double mean,var;
         lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
 //        if (lambda0>2) lambda0=2;
@@ -3719,16 +3723,15 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
     
         switch ( contours_mode )
         {
-            case CONTOURS_GRAD:
+            case CONTOURS_FLUX:
                 if ( fabsf ( val1div ) >1E-4 ) {
                 val1 /= val1div;
                 } else {
                 fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
                 } // end if
                 break;
-            case CONTOURS_SRAD:
-            case CONTOURS_RNRAD:
-            case CONTOURS_RNRAD_NEW:
+            case CONTOURS_OSRAD:
+            case CONTOURS_NRAD:
                 double val1prev = val1;
                 val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
 if (val1<0)
@@ -3940,7 +3943,7 @@ if (sqrt(val1)>300) {
 
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Euclidian distance approximation
 //
 // 
@@ -4162,7 +4165,7 @@ val1 = *in + 0.1*(dxx+dyy+dzz-meancurv);
 } // ami::AnisoGS::Itere3D_distance()
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Euclidian distance approximation
 //
 // 
@@ -4415,10 +4418,11 @@ alpha1_z = 0;
 
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // using minimal and maximal curvature directions
 //
-float ami::AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
+float ami::AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, 
+                                  float coeff)
 //
 {
 
@@ -4645,7 +4649,7 @@ float ami::AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coef
 
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // using minimal and maximal curvature directions
 //
 // discretization u_x(x+dx/2) = 1/4 (u(x+2*dx)-u(x)+u(x+dx)-u(x-dx))
@@ -4971,7 +4975,7 @@ float  ami::AnisoGS::Itere3D_3( InrImage* im )
 
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void ami::AnisoGS::Init(InrImage* in, 
       float p_sigma, 
       float p_k,
@@ -5087,7 +5091,7 @@ void ami::AnisoGS::Init(InrImage* in,
 } // Init()
 
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 float ami::AnisoGS::Iterate()
 //   ----------------
 {

@@ -64,8 +64,9 @@ namespace ami {
 
 
   /**
-    This class contains several denoising filters based on Partial Differential Equations, and usually implemented using a Gauss-Seidel scheme.
-  **/
+   * This class contains several denoising filters based on Partial Differential
+   * Equations, and usually implemented using a Gauss-Seidel scheme.
+   */
   class AnisoGS {
 
     DEFINE_CLASS(AnisoGS);
@@ -73,14 +74,20 @@ namespace ami {
   public:
 
     enum ContourMode {
-      CONTOURS_GRAD, /**< Standard gradient contour. */
-      CONTOURS_SRAD, /**< use Yu and Acton term for contours. */
-      CONTOURS_RNRAD, /**< Rician Noise Reducing Anisotropic Diffusion. */
-      CONTOURS_RNRAD_NEW   /**< Rician Noise Reducing Anisotropic Diffusion, 
-                             * new version using directional local statistics 
-                             * for the diffusion matrix. */
+      CONTOURS_FLUX, /**< Matrix diffusion based on Flux-based anisotropic diffusion paper. */
+      CONTOURS_OSRAD, /**< Matrix diffusion based on OSRAD paper */
+      CONTOURS_NRAD, /**< Matrix diffusion based on NRAD paper 
+                        * new version using directional local statistics 
+                        * for the diffusion matrix. */
     };
   
+    enum NoiseEstimationModel {
+      NOISE_LEE,  /**< Multiplicative Gaussian noise with Lee's estimation (Speckle)*/
+      NOISE_KUAN, /**< Multiplicative Gaussian noise with Kuan's estimation (Speckle) */
+      NOISE_GAUSSIAN_ADDITIVE,/**< Additive Gaussian noise */
+      NOISE_RICIAN /**< Rician noise (MRI)*/
+    };
+
   private:
     /**
     * @name Precomputed pointers to neighborhood
@@ -191,11 +198,13 @@ namespace ami {
     void PrincipalCurvatures(float grad[3], float H[3][3],  float norm_grad,
                       t_3Point& e0, t_3Point& e1, t_3Point& e2);
 
-    void StructTensor_eigenvectors( int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2);
+    void StructTensor_eigenvectors( int coord, int x, int y, int z, 
+                                    t_3Point& e0, t_3Point& e1, t_3Point& e2);
 
     unsigned char convert_uchar(double val);
     short         convert_short(double val);
-    void GetVectors(int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2);
+    void GetVectors(int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, 
+                    t_3Point& e2);
 
 
   protected:
@@ -284,13 +293,9 @@ namespace ami {
     /// Computes Euclidian distance maps
     AddSetGetVar(DistanceMap,unsigned char);
 
-    /** Contours mode: 
-        - CONTOURS_GRAD 0
-        - CONTOURS_SRAD 1
-        - CONTOURS_RNRAD 2
-        - CONTOURS_RNRAD_NEW 3
-    **/
-    AddSetGetVar( contours_mode,int);
+    AddSetGetVar( contours_mode, ContourMode);
+
+    AddSetGetVar( noise_model, NoiseEstimationModel);
 
     AddSetGetVar( SRAD_ROI,     InrImage::ptr);
 
@@ -396,13 +401,12 @@ namespace ami {
       SmoothedParam = false;
 
       filtre_rec = NULL;
-      filtre = NULL;
+      filtre     = NULL;
 
       DistanceMap = 0;
 
-      contours_mode  = CONTOURS_GRAD;
-  //    this->SRAD_ROI = NULL;
-
+      contours_mode  = CONTOURS_FLUX;
+      noise_model    = NOISE_RICIAN;
 
       neighborhood = 1;
       dt = 0.05;
@@ -424,7 +428,8 @@ namespace ami {
     double function_c_Lee(double q_2, double q0_2);
 
     double Compute_sigma2_MRI(InrImage* im);
-    double Compute_sigma2_MRI_mode(InrImage* im);
+    double Compute_sigma2_MRI_mode(     InrImage* im);
+    double Compute_sigma2_Gaussian_mode(InrImage* im);
     double function_c_MRI(double sigma2, double vg, double meang);
 
     void Smooth(InrImage* im, float sigma);

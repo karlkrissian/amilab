@@ -279,8 +279,9 @@ InrImage*     Func_localdirectionalSD( InrImage* im, InrImage* directions,
 return NULL;
 }
 
-//----------------------------------------------------------------------
-double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage::ptr im_ROI, int neigh_size)
+//------------------------------------------------------------------------------
+double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage::ptr im_ROI, 
+                                    int neigh_size)
 //
 {
 
@@ -380,4 +381,94 @@ double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage::ptr im_ROI, int neig
 
 } // Func_Compute_sigma2_MRI_mode()
 
+
+//------------------------------------------------------------------------------
+double Func_Compute_sigma2_Gaussian_mode(InrImage* im, InrImage::ptr im_ROI, 
+                                    int neigh_size)
+//
+{
+
+  if (!im_ROI.get())
+    {
+      fprintf(stderr,"Func_Compute_sigma2_MRI_mode() \t im_ROI==NULL\n");
+      return 0.0;
+    }
+
+  InrImage::ptr im2 = im_ROI;
+  int xmin,xmax,ymin,ymax,zmin,zmax;
+
+  xmin = (int) (im->SpaceToVoxelX(im2->SpacePosX(0))+0.5);
+  ymin = (int) (im->SpaceToVoxelY(im2->SpacePosY(0))+0.5);
+  zmin = (int) (im->SpaceToVoxelZ(im2->SpacePosZ(0))+0.5);
+  xmax = (int) (im->SpaceToVoxelX(im2->SpacePosX(im2->DimX()-1))+0.5);
+  ymax = (int) (im->SpaceToVoxelY(im2->SpacePosY(im2->DimY()-1))+0.5);
+  zmax = (int) (im->SpaceToVoxelZ(im2->SpacePosZ(im2->DimZ()-1))+0.5);
+
+  //----------------------------------------------------------
+  InrImage::ptr im1;
+  InrImage::ptr im1_mean;
+  InrImage::ptr im1_var;
+  double mean,std;
+  double tmp,total;
+
+  {
+    InrImage::ptr subvol;
+    subvol = InrImage::ptr(Func_SubImage( im, xmin,ymin,zmin, xmax,ymax,zmax));
+    im1 = InrImage::ptr(new InrImage(WT_FLOAT,"im1.ami.gz",subvol.get()));
+    (*im1) = (*subvol);
+  } // subvol will get deleted here
+
+//  neigh_size=2;
+
+  im1_mean = InrImage::ptr(Func_localmean2(im1.get(),neigh_size));
+  // unbiased version
+  im1_var  = InrImage::ptr(Func_localSD2(im1.get(),im1_mean.get(),neigh_size,1));
+
+  mean   = Func_mean(im1_var.get());
+  im1_var->InitBuffer();
+  total =0;
+  do {
+    tmp = im1_var->ValeurBuffer()-mean;
+    total += tmp*tmp;
+  }
+  while(im1_var->IncBuffer());
+  total = total/im1_var->Size();
+  std=sqrt(total);
+
+  // histogram of values between mean +/- 2*std
+  double hist_min = 0;
+  double hist_max = mean+2*std;
+  int hist_size = (int)((hist_max-hist_min+1.0)*5.0);
+
+  InrImage::ptr im_hist( 
+                  Func_Histogram( im1_var.get(),
+                                  hist_min,
+                                  hist_max,
+                                  hist_size));
+
+
+  int maxpos = 0;
+  int val,valmax = 0;
+  int pos=0;
+
+  im_hist->InitBuffer();
+  do {
+    val= (int) im_hist->ValeurBuffer();
+    if (val>valmax) {
+        valmax = val;
+        maxpos = pos;
+    }
+    pos++;
+  }
+  while(im_hist->IncBuffer());
+
+  float sigma_max = im_hist->SpacePosX(maxpos);
+
+  //delete im1_mean;
+  //delete im1_var;
+  //delete im_hist;
+
+  return sigma_max*sigma_max;
+
+} // Func_Compute_sigma2_Gaussian_mode()
 

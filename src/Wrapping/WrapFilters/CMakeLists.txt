@@ -46,9 +46,8 @@ SET(  WrapFilters_SRCS
   LeastSquares.cpp
   wrap_ImageAddScalar.cpp
   wrap_ImageCos.cpp
-	wrapBasicEdgeDetection.cpp
+  wrapBasicEdgeDetection.cpp
   wrapGenerateRamp.cpp
-  wrap_AnisoGS.cpp
   wrap_ContinuousMorphology.cpp
   wrap_TestClass.cpp
   wrap_TemplateClass_int_.cpp
@@ -58,22 +57,21 @@ SET(  WrapFilters_SRCS
 )
 
 SET(WrapFilters_HDRS
-	../include/LeastSquares.h
-	../include/wrapAlgorithmsBasic.h
-	../include/wrapComputePV.h
-	../include/wrapFilters.h
-	../include/wrap_AddSubImage.h
-	../include/wrap_DirSum.h
-	../include/wrap_ImTranslate.h
-	../include/wrap_MaxSubImage.h
-	../include/Wrap_NewNLMeans.h
-	../include/wrap_NLmeans.h
+  ../include/LeastSquares.h
+  ../include/wrapAlgorithmsBasic.h
+  ../include/wrapComputePV.h
+  ../include/wrapFilters.h
+  ../include/wrap_AddSubImage.h
+  ../include/wrap_DirSum.h
+  ../include/wrap_ImTranslate.h
+  ../include/wrap_MaxSubImage.h
+  ../include/Wrap_NewNLMeans.h
+  ../include/wrap_NLmeans.h
   ../include/wrap_StructureTensor.h
   ../include/wrap_ImageAddScalar.h
   ../include/wrap_ImageCos.h
-	../include/wrapBasicEdgeDetection.h
+  ../include/wrapBasicEdgeDetection.h
   ../include/wrapGenerateRamp.h
-  ../include/wrap_AnisoGS.h
   ../include/wrap_ContinuousMorphology.h
   ../include/wrap_TestClass.h
   ../include/wrap_TemplateClass_int_.h

@@ -70,11 +70,33 @@ InrImage*     Func_localdirectionalmean( InrImage* im, InrImage* directions,
 InrImage*     Func_localdirectionalSD( InrImage* im, InrImage* directions,
 				       InrImage* mean, int size);
 
-//
-//  im     is the squared of the original image
-//  im_ROI defined the region of interest: area without background
-//
-double        Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage::ptr im_ROI, int neigh_size=2);
+
+/**
+ * @brief estimated the variance of the noise based on the mode of the
+ * histogram of the local variance in the case of Rician model.
+ *
+ * @param im squared of the original image
+ * @param im_ROI region of interest: area without background
+ * @param neigh_size neighborhood size to compute the local variance
+ * Vale 2 por omisión.
+ * @return double
+ **/
+double        Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage::ptr im_ROI, 
+                                           int neigh_size=2);
+
+/**
+ * @brief estimated the variance of the noise based on the mode of the
+ * histogram of the local variance in the case of additive Gaussian model.
+ *
+ * @param im squared of the original image
+ * @param im_ROI region of interest: area without background
+ * @param neigh_size neighborhood size to compute the local variance
+ * Vale 2 por omisión.
+ * @return double
+ **/
+double        Func_Compute_sigma2_Gaussian_mode(InrImage* im, 
+                                                InrImage::ptr im_ROI, 
+                                                int neigh_size=2);
 
 #include "localstats.tpp"
 
