@@ -7,6 +7,10 @@ import platform
 import sys
 import os
 import config
+import Tkinter
+from Tkinter import *
+
+
 
 initdir=os.getcwd()
 
@@ -170,11 +174,226 @@ def install_packages(pkgname):
         #exit $?
   #fi
   
+  ##
+
+
+class App:
+  def __init__(self, master):
+    frame = Frame(master)
+    frame.grid()
+    
+    self.branch = IntVar()
+
+    Label(frame, 
+          text="""Choose a branch:""",
+          justify = LEFT,
+          padx = 20).grid(row=0, sticky=W)
+    Radiobutton(frame, 
+                text="3.2.0",
+                padx = 20, 
+                variable=self.branch, 
+                value=1).grid(row=1, sticky=W)
+    Radiobutton(frame, 
+                text="trunk",
+                padx = 20, 
+                variable=self.branch, 
+                value=2).grid(row=2, sticky=W)
+
+    
+    self.button = Button(frame, 
+                         text="QUIT", fg="red",
+                         command=frame.quit)
+    self.button.grid(row=3, sticky=W)
+    self.slogan = Button(frame,
+                         text="Run",
+                         command=self.run_install)
+    self.slogan.grid(row=4, sticky=W)
+
+  def run_install(self):
+    #
+    # selecting fastest mirror on ubuntu, check:
+    # http://www.ubuntugeek.com/how-to-select-fastest-mirror-in-ubuntu.html
+    #
+    install_packages("INSTALLER")
+
+    # Compilation packages
+    install_packages("COMPILATION")
+
+    # get number of threads
+    #numthreads=`awk '/model name/  {ORS=""; count++;  }  END {  print  count "\n" }' /proc/cpuinfo`
+
+    # CMake installation
+    install_packages("CMAKE")
+
+    #print config.INSTALLER_PACKAGES
+
+    # VTK
+    install_packages("VTKDEV")
+
+    # WXWIDGETS
+    install_packages("WXWIDGETSDEV")
+
+    # Boost
+    install_packages("BOOSTDEV")
+
+    # Image IO packages
+    install_packages("IMDEV")
+
+    # Compression packages
+    install_packages("COMPRESSDEV")
+
+    # Other packages
+    install_packages("OTHERDEV")
+
+    # Bison-Flex packages
+    install_packages("BISONFLEX")
+
+    # ITK packages
+    install_packages("ITKDEV")
+
+    # GCCXML package
+    install_packages("GCCXML")
+
+    #---------------------------------------------
+    # installing repository
+    #---------------------------------------------
+    # try to use pysvn here ...
+    # pysvn for fedora python-svn for ubuntu ...
+    install_packages("PYSVN")
+
+    #import sys
+    #import svn.client
+    import pysvn
+
+    def notify( event_dict ):
+        return "notify"
+
+    def svn_co(url, path):
+      #svn.client.checkout(None, None, url, path, -1, 1, None, pool)
+      client = pysvn.Client()
+      client.callback_notify = notify
+      #check out the current version of the pysvn project
+      print "Checking out url:'{0}' to path:'{1}', be patient ...".format(url,path)
+      client.checkout(url, path)
+      print "Done. :)"
+
+  #amilabpath='amilab_release_3.2.0'
+  #svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/branches/Release-3.2.0',amilabpath)
+  amilabpath='amilab_trunk'
+  svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/trunk',amilabpath)
+
+    import os
+    import shutil
+
+    #os.getcwd()
+    installpath=os.environ['HOME']+'/usr/local'
+    os.chdir(amilabpath)
+    maindir=os.getcwd()
+
+    cmake_module_path=''
+    # fix FindBISON pb in spanish
+    if os.access('/usr/share/cmake/Modules',os.R_OK):
+      cmake_module_path='/usr/share/cmake/Modules'
+    else:
+      if os.access('/usr/share/cmake-2.8/Modules',os.R_OK):
+        cmake_module_path='/usr/share/cmake-2.8/Modules'
+
+    if cmake_module_path!='':
+      print "***************"
+      print " Fixing possible problem in FindBISON.cmake"
+      cmd  = "sed 's/GNU Bison/GNU [bB]ison/g' {0}/FindBISON.cmake > /tmp/FindBISON.cmake".format(cmake_module_path)
+      os.system(cmd)
+      cmd = "sudo mv /tmp/FindBISON.cmake {0}".format(cmake_module_path)
+      os.system(cmd)
+      print "**************"
+
+
+    ## Compile and install libAMIFluid
+    print "-------------------------------------"
+    print "  Compiling and installing libAMIFluid"
+    print "-------------------------------------"
+    os.chdir("libAMIFluid/src")
+    if not(os.access("build", os.R_OK)):
+      os.mkdir("build")
+    os.chdir("build")
+    if not(os.access("release", os.R_OK)):
+      os.mkdir("release")
+    os.chdir("release")
+    os.system('cmake ../.. -DCMAKE_INSTALL_PREFIX="{0}"'.format(installpath))
+
+    import cpuinfo
+    numthreads=len(cpuinfo.cpu.info)
+
+    os.system('make -j {0} '.format(numthreads))
+    os.system("make install")
+
+    # Copy libAMIOpticalFlow
+    print "-------------------------------------"
+    print "  Copying libAMIOpticalFlow"
+    print "-------------------------------------"
+    os.chdir(maindir)
+    if not(os.access("{0}/include/OpticalFlow".format(installpath), os.R_OK)):
+      shutil.copytree("libAMIOpticalFlow/include/OpticalFlow","{0}/include/OpticalFlow".format(installpath))
+
+    # Compile amilab
+    print "-------------------------------------"
+    print "  Compiling amilab"
+    print "-------------------------------------"
+    os.chdir("{0}/src".format(maindir))
+    if not(os.access("build", os.R_OK)):
+      os.mkdir("build")
+    os.chdir("build")
+    if not(os.access("release", os.R_OK)):
+      os.mkdir("release")
+    os.chdir("release")
+
+    # check for ITK_DIR
+    print "looking for "+initdir+'/ITK_DIR'
+    if os.access(initdir+'/ITK_DIR', os.R_OK):
+      f = open(initdir+'/ITK_DIR')
+      ITK_DIR=f.readline()
+      f.close()
+      config.AMILAB_CMAKE_FLAGS += ' -DITK_DIR="{0}"'.format(ITK_DIR)
+
+    # check for VTK_DIR
+    print "looking for "+initdir+'/VTK_DIR'
+    if os.access(initdir+'/VTK_DIR', os.R_OK):
+      f = open(initdir+'/VTK_DIR')
+      VTK_DIR=f.readline()
+      f.close()
+      config.AMILAB_CMAKE_FLAGS += ' -DVTK_DIR="{0}"'.format(VTK_DIR)
+
+    cmake_cmd = 'cmake ../.. {0} -DCMAKE_INSTALL_PREFIX="{1}"'.format(config.AMILAB_CMAKE_FLAGS,installpath)
+    print "CMAKE CMD="+cmake_cmd
+    cmake_return = os.system(cmake_cmd)
+    #eval "cmake ${AMILAB_CMAKE_FLAGS} ../.."
+
+    if cmake_return != 0:
+      print ""
+      print "ERROR: --- cmake command failed ---"
+      print ""
+      sys.exit()
+
+    os.system('make -j {0} '.format(numthreads))
+
+    # Compile documentation, but missing improcess_html 
+    #cd ${maindir}/doc
+    #./generate_html.py all
+
+    ## create and install ubuntu package ?
+    #cd ${maindir}/src/build/release
+    #${INSTALLCMD} rpm-build
+    #cpack -G RPM
+    #rpm -ivh AMILab-3.0.0-Linux.`uname -p`.rpm
+    
+    os.chdir(initdir)
+
+
 #----------------------------------------------------------------------
 # main
 #----------------------------------------------------------------------
 if __name__ == '__main__':
-  #
+
   # source different files
   if os.path.isfile(conf_platform+'.py'):
     print "importing {0}".format(conf_platform)
@@ -210,182 +429,7 @@ if __name__ == '__main__':
   #print config.INSTALLER_PACKAGES
   print "config.VTK_VERSION = ", config.VTK_VERSION
 
-
-  #
-  # selecting fastest mirror on ubuntu, check:
-  # http://www.ubuntugeek.com/how-to-select-fastest-mirror-in-ubuntu.html
-  #
-  install_packages("INSTALLER")
-
-  # Compilation packages
-  install_packages("COMPILATION")
-
-  # get number of threads
-  #numthreads=`awk '/model name/  {ORS=""; count++;  }  END {  print  count "\n" }' /proc/cpuinfo`
-
-  # CMake installation
-  install_packages("CMAKE")
-
-  #print config.INSTALLER_PACKAGES
-
-  # VTK
-  install_packages("VTKDEV")
-
-  # WXWIDGETS
-  install_packages("WXWIDGETSDEV")
-
-  # Boost
-  install_packages("BOOSTDEV")
-
-  # Image IO packages
-  install_packages("IMDEV")
-
-  # Compression packages
-  install_packages("COMPRESSDEV")
-
-  # Other packages
-  install_packages("OTHERDEV")
-
-  # Bison-Flex packages
-  install_packages("BISONFLEX")
-
-  # ITK packages
-  install_packages("ITKDEV")
-
-  # GCCXML package
-  install_packages("GCCXML")
-
-  #---------------------------------------------
-  # installing repository
-  #---------------------------------------------
-  # try to use pysvn here ...
-  # pysvn for fedora python-svn for ubuntu ...
-  install_packages("PYSVN")
-
-  #import sys
-  #import svn.client
-  import pysvn
-
-  def notify( event_dict ):
-      return "notify"
-
-  def svn_co(url, path):
-    #svn.client.checkout(None, None, url, path, -1, 1, None, pool)
-    client = pysvn.Client()
-    client.callback_notify = notify
-    #check out the current version of the pysvn project
-    print "Checking out url:'{0}' to path:'{1}', be patient ...".format(url,path)
-    client.checkout(url, path)
-    print "Done. :)"
-
-  #amilabpath='amilab_release_3.2.0'
-  #svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/branches/Release-3.2.0',amilabpath)
-  amilabpath='amilab_trunk'
-  svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/trunk',amilabpath)
-
-  import os
-  import shutil
-
-  #os.getcwd()
-  installpath=os.environ['HOME']+'/usr/local'
-  os.chdir(amilabpath)
-  maindir=os.getcwd()
-
-  cmake_module_path=''
-  # fix FindBISON pb in spanish
-  if os.access('/usr/share/cmake/Modules',os.R_OK):
-    cmake_module_path='/usr/share/cmake/Modules'
-  else:
-    if os.access('/usr/share/cmake-2.8/Modules',os.R_OK):
-      cmake_module_path='/usr/share/cmake-2.8/Modules'
-
-  if cmake_module_path!='':
-    print "***************"
-    print " Fixing possible problem in FindBISON.cmake"
-    cmd  = "sed 's/GNU Bison/GNU [bB]ison/g' {0}/FindBISON.cmake > /tmp/FindBISON.cmake".format(cmake_module_path)
-    os.system(cmd)
-    cmd = "sudo mv /tmp/FindBISON.cmake {0}".format(cmake_module_path)
-    os.system(cmd)
-    print "**************"
-
-
-  ## Compile and install libAMIFluid
-  print "-------------------------------------"
-  print "  Compiling and installing libAMIFluid"
-  print "-------------------------------------"
-  os.chdir("libAMIFluid/src")
-  if not(os.access("build", os.R_OK)):
-    os.mkdir("build")
-  os.chdir("build")
-  if not(os.access("release", os.R_OK)):
-    os.mkdir("release")
-  os.chdir("release")
-  os.system('cmake ../.. -DCMAKE_INSTALL_PREFIX="{0}"'.format(installpath))
-
-  import cpuinfo
-  numthreads=len(cpuinfo.cpu.info)
-
-  os.system('make -j {0} '.format(numthreads))
-  os.system("make install")
-
-  # Copy libAMIOpticalFlow
-  print "-------------------------------------"
-  print "  Copying libAMIOpticalFlow"
-  print "-------------------------------------"
-  os.chdir(maindir)
-  if not(os.access("{0}/include/OpticalFlow".format(installpath), os.R_OK)):
-    shutil.copytree("libAMIOpticalFlow/include/OpticalFlow","{0}/include/OpticalFlow".format(installpath))
-
-  # Compile amilab
-  print "-------------------------------------"
-  print "  Compiling amilab"
-  print "-------------------------------------"
-  os.chdir("{0}/src".format(maindir))
-  if not(os.access("build", os.R_OK)):
-    os.mkdir("build")
-  os.chdir("build")
-  if not(os.access("release", os.R_OK)):
-    os.mkdir("release")
-  os.chdir("release")
-
-  # check for ITK_DIR
-  print "looking for "+initdir+'/ITK_DIR'
-  if os.access(initdir+'/ITK_DIR', os.R_OK):
-    f = open(initdir+'/ITK_DIR')
-    ITK_DIR=f.readline()
-    f.close()
-    config.AMILAB_CMAKE_FLAGS += ' -DITK_DIR="{0}"'.format(ITK_DIR)
-
-  # check for VTK_DIR
-  print "looking for "+initdir+'/VTK_DIR'
-  if os.access(initdir+'/VTK_DIR', os.R_OK):
-    f = open(initdir+'/VTK_DIR')
-    VTK_DIR=f.readline()
-    f.close()
-    config.AMILAB_CMAKE_FLAGS += ' -DVTK_DIR="{0}"'.format(VTK_DIR)
-
-  cmake_cmd = 'cmake ../.. {0} -DCMAKE_INSTALL_PREFIX="{1}"'.format(config.AMILAB_CMAKE_FLAGS,installpath)
-  print "CMAKE CMD="+cmake_cmd
-  cmake_return = os.system(cmake_cmd)
-  #eval "cmake ${AMILAB_CMAKE_FLAGS} ../.."
-
-  if cmake_return != 0:
-    print ""
-    print "ERROR: --- cmake command failed ---"
-    print ""
-    sys.exit()
-
-  os.system('make -j {0} '.format(numthreads))
-
-  # Compile documentation, but missing improcess_html 
-  #cd ${maindir}/doc
-  #./generate_html.py all
-
-  ## create and install ubuntu package ?
-  #cd ${maindir}/src/build/release
-  #${INSTALLCMD} rpm-build
-  #cpack -G RPM
-  #rpm -ivh AMILab-3.0.0-Linux.`uname -p`.rpm
-  
-  os.chdir(initdir)
+  root = Tk()
+  app = App(root)
+  root.mainloop()
 
