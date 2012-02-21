@@ -7,28 +7,33 @@ proc AnisoRGB( IMAGE in, IMAGE res, NUM threshold) {
   ib = in[2]
 
   print "Smoothing Red Component \n"
-  AnisoGS.init(ir,1,threshold,0.05)
-  AnisoGS.setcoeff(0.1,0.5)
-  AnisoGS.iterate
-  AnisoGS.iterate
-  ir_r = AnisoGS.GetOutput
-  AnisoGS.end
+  aniso = algorithms.ami_AnisoGS.AnisoGS()
+  aniso.Init(&ir,1,threshold,0.05)
+  aniso.Setmaxcurv_coeff(0.1)
+  aniso.Setmincurv_coeff(0.5)
+  aniso.Iterate()
+  aniso.Iterate()
+  ir_r = AnisoGS.GetOutput()
+  del aniso
 
   print "Smoothing Green Component \n"
-  AnisoGS.init(ig,1,threshold,0.05)
-  AnisoGS.setcoeff(0.1,0.5)
-  AnisoGS.iterate;
-  AnisoGS.iterate
-  ig_r = AnisoGS.GetOutput
-  AnisoGS.end
+  aniso = algorithms.ami_AnisoGS.AnisoGS()
+  aniso.Init(&ig,1,threshold,0.05)
+  aniso.Setmaxcurv_coeff(0.1)
+  aniso.Setmincurv_coeff(0.5)
+  aniso.Iterate()
+  aniso.Iterate()
+  ig_r = aniso.GetOutput()
+  del aniso
 
   print "Smoothing Blue Component \n"
-  AnisoGS.init(ib,1,threshold,0.05)
-  AnisoGS.setcoeff(0.1,0.5)
-  AnisoGS.iterate;
-  AnisoGS.iterate
-  ib_r = AnisoGS.GetOutput
-  #AnisoGS.end
+  aniso = algorithms.ami_AnisoGS.AnisoGS()
+  aniso.Init(&ib,1,threshold,0.05)
+  aniso.setcoeff(0.1,0.5)
+  aniso.Iterate()
+  aniso.Iterate()
+  ib_r = aniso.GetOutput()
+  del aniso
 
   print "Updating the RGB result\n"
   ir_r1 = (ir_r>0)*(ir_r<255)*(ir_r)+(ir_r>=255)*255

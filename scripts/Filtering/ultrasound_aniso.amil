@@ -15,27 +15,28 @@ i = (i0>1)*i0+(i0<=1)*1
 // mask
 m0 = (i<1)
 
-AnisoGS.init(i,0.8,th,data_coeff)
+aniso = algorithms.ami_AnisoGS.AnisoGS()
+aniso.init(i,0.8,th,data_coeff)
 
-ir=AnisoGS.GetOutput;show ir;
+ir=aniso.GetOutput();show ir;
 ir_draw.compare(i);
 
-AnisoGS.setcoeff(0.1,0.5)
+aniso.setcoeff(0.1,0.5)
 
 // Set Speckle Noise
-AnisoGS.SetNoiseType(noisetype)
-AnisoGS.SetMask(m0)
+aniso.SetNoiseType(noisetype)
+aniso.Setmask(&m0)
 
 #noise_file = open("noise_"+$2+"_"+$4+".dat","w")
 noise_file = File("noise_"+$2+"_"+$4+".dat","w")
 
 for n=1 to numit {
-  AnisoGS.iterate
-  ir=AnisoGS.GetOutput;show ir;
+  aniso.iterate
+  ir=aniso.GetOutput();show ir;
 
   // SNR
-  NoiseSD=AnisoGS.GetNoiseSD;
-  DAcoeff=AnisoGS.GetDAcoeff;
+  NoiseSD=aniso.Getnoise_standard_deviation()
+  DAcoeff=aniso.Get_estimated_DA_coeff()
 
 
   noise_file._print(sprint("it=%02.0f; ",n))
@@ -49,5 +50,5 @@ noise_file.close()
 ir_name = imagename-".gz"-".ami"+sprint("_%2.2f",data_coeff)
 ir.save ir_name+"_"+$4+"_"+$5+".ami.gz"
 
-#AnisoGS.end
+del aniso
 #quit

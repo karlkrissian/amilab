@@ -30,23 +30,26 @@ i = Image(imagename)
 # get rid of negative points ...
 i = i*(i>2)+(i<=2)*2
 
+aniso = algorithms.ami_AnisoGS.AnisoGS()
 if (update_noise) {
-  AnisoGS.init(i,sigma,threshold,0.65)
-  AnisoGS.SetNoiseSD(noise_sd)
+  aniso.Init(&i,sigma,threshold,0.65)
+  aniso.Setnoise_standard_deviation(noise_sd)
 } else {
-  AnisoGS.init(i,sigma,threshold,noise_sd)
+  aniso.Init(&i,sigma,threshold,noise_sd)
 }
 
-ir=AnisoGS.GetOutput;show ir;
+ir=aniso.GetOutput();
+show ir;
 ir_draw.compare(i);
 
 # for 2D
-AnisoGS.setcoeff(0.5)
+aniso.Settang_coeff(0.5)
 # for 3D
-AnisoGS.setcoeff(0.5,0.2)
+aniso.Setmincurv_coeff(0.5)
+aniso.Setmaxcurv_coeff(0.2)
 
 # Set Speckle Noise
-AnisoGS.SetNoiseType(noisetype)
+aniso.SetNoiseType(noisetype)
 
 if (compute_snr) {
   snr_file = File(imagename2+"_snr_"+$2+"_"+$4+".dat","w")
@@ -54,13 +57,13 @@ if (compute_snr) {
 lambda_file = File(imagename2+"_lambda_"+$2+"_"+$4+".dat","w")
 
 for n=1 to numit {
-  AnisoGS.iterate
-  ir=AnisoGS.GetOutput;show ir;
+  aniso.Iterate()
+  ir=aniso.GetOutput;show ir;
   #ir.save imagename2+"_aniso2_"+sprint("%02.0f",n)+".ami.gz"
 
   // SNR
-  NoiseSD=AnisoGS.GetNoiseSD;
-  DAcoeff=AnisoGS.GetDAcoeff;
+  NoiseSD=aniso.Getnoise_standard_deviation()
+  DAcoeff=aniso.Getestimated_DA_coeff();
 
   if (compute_snr) {
     i0.info
@@ -89,6 +92,6 @@ lambda_file.close()
 
 ir.save imagename2+"_aniso2.ami.gz"
 
-#AnisoGS.end
+del aniso
 
 #quit
