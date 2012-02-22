@@ -70,6 +70,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
        ENDFOREACH(def ${ITK_REQUIRED_CXX_FLAGS})       
      ENDIF(ITK_REQUIRED_CXX_FLAGS)
      # Add Cable configuration for gccxml compilation
+     # it is really needed ???
      SET(GCCXML_ITK_DEFS -DCABLE_CONFIGURATION  )
      WRAP_MESSAGE("GCCXML_ITK_DEFS=${GCCXML_ITK_DEFS}")
   ENDIF ( ITK_FOUND)

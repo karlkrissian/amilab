@@ -1161,10 +1161,10 @@ void ami::AnisoGS::ComputeImage_c(InrImage* im)
                     case NOISE_KUAN:
                       image_c->FixeValeur( function_c_Kuan( q2, q0_2));
                       break;
-                    case NOISE_GAUSSIAN_ADDITIVE: 
+/*                    case NOISE_GAUSSIAN_ADDITIVE: 
                       image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,
                                                                q0_2)); 
-                      break;
+                      break;*/
                     case NOISE_RICIAN:
                       image_c->FixeValeur( function_c_MRI( sigma2, 
                                                            mean2-mean1*mean1, 

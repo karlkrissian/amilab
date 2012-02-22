@@ -35,7 +35,6 @@
 #include "wrap_MaxSubImage.h"
 #include "wrap_ImageAddScalar.h"
 #include "wrap_ImageCos.h"
-#include "wrap_AnisoGS.h"
 #include "ami_object.h"
 #include "VarArray.h"
 
@@ -108,9 +107,6 @@ void AddWrapFilters(AMIObject::ptr& obj)
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Gradient", wrapGradient);
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",	wrapLaplace);
   
-
-  // Add AnisoGS
-  AddVar_AnisoGS( amiobject->GetContext());
 
   // Add ContinuousMorphology
   AddVar_ContinuousMorphology( amiobject->GetContext());

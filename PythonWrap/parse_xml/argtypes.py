@@ -183,7 +183,7 @@ class TypedefInfo(ArgTypeBase):
       if config.types[self._reftypeid].GetString()=="__MethodType__":
         return self.GetId()
       else:
-        return config.types[self._reftypeid].GetId()
+        return config.types[self._reftypeid].GetMainTypeId()
     else:
       return self.GetId()
 

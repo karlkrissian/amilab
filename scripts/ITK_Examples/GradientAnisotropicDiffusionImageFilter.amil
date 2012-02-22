@@ -1,0 +1,65 @@
+
+ami.MainFrame.Show(0)
+
+#-------------------------------------------------------------------------------
+# Class to simplify dealing with itk ImageToImageFilter types in amilab
+#-------------------------------------------------------------------------------
+Class ITKImage2ImageFilterClass \
+{
+  #-----------------------------------------------------------------------------
+  proc ::Create( STRING filtername, STRING inputtype, STRING outputtype) \
+  {
+    ::inputtype  = inputtype
+    ::outputtype = outputtype
+    eval "::filter_ptr = itk."+filtername+"ImageFilter_Image_"+inputtype\
+          +"_Image_"+outputtype+".New();" 
+    ::filter = ::filter_ptr.GetPointer()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetInput(IMAGE input) \
+  {
+    # 1. Get Input image
+    eval "::input_itk = itk.amiConvert.ToITK_"+::inputtype+"(&input);"
+    ::filter.SetInput( &::input_itk.GetPointer() )
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::GetOutput() \
+  {
+    ::filter.Update()
+    eval "res_itk = itk.SmartPointer_Image_"+::outputtype+\
+                      ".SmartPointer(&::filter.GetOutput());"
+    eval "res = itk.amiConvert.FromITK_"+::outputtype+"(&res_itk);"
+    return=&res
+  }
+}
+
+
+#-------------------------------------------------------------------------------
+# Main script
+#-------------------------------------------------------------------------------
+input_filename     = $1
+numberOfIterations = atof( $2 )
+timeStep           = atof( $3 )
+conductance        = atof( $4 )
+
+input = (FLOAT) Image(input_filename)
+
+
+ITKImage2ImageFilterClass gad
+gad.Create("GradientAnisotropicDiffusion","float_2u","float_2u")
+
+gad.SetInput                      ( &input )
+gad.filter.SetNumberOfIterations  ( numberOfIterations      )
+gad.filter.SetTimeStep            ( timeStep                )
+gad.filter.SetConductanceParameter( conductance             )
+
+res = gad.GetOutput()
+
+show input
+show res
+input_draw.compare(&res_draw)
+
+#res.save output_filename
+#quit

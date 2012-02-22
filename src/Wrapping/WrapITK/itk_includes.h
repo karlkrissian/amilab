@@ -167,6 +167,18 @@ typedef itk::Image<unsigned char, 3u>  ImageUC3;
 
 #endif // __GCCXML__
 
+#undef CABLE_CONFIGURATION
+#include <itkGradientAnisotropicDiffusionImageFilter.h>
 
+#ifdef __GCCXML__
+  typedef itk::GradientAnisotropicDiffusionImageFilter<ImageF2, ImageF2> 
+    GradientAnisotropicDiffusiondImageFilter_F2_F2;
+  INSTANTIATE( GradientAnisotropicDiffusiondImageFilter_F2_F2, 
+               gradientanisotropicdiffusionfilter_f2_f2)
+  typedef itk::GradientAnisotropicDiffusionImageFilter<ImageF3, ImageF3> 
+    GradientAnisotropicDiffusiondImageFilter_F3_F3;
+  INSTANTIATE( GradientAnisotropicDiffusiondImageFilter_F3_F3, 
+               gradientanisotropicdiffusionfilter_f3_f3)
+#endif // __GCCXML__
 
  

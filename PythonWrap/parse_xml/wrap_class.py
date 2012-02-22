@@ -171,6 +171,7 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
 
 #------------------------------
 def MissingTypes(classname,method,check_includes=False):
+  #print  "Checking types for {0}".format(method.name)
   missing_types=[]
   if method.returntype!=None:
     #typename = config.types[method.returntype].GetDemangled()
@@ -196,7 +197,9 @@ def MissingTypes(classname,method,check_includes=False):
       if (typefullname.endswith("* * *")) or (typefullname.endswith("* const *")):
         missing_types.append(typefullname)
       else:
+        #print "a.typeid = {0}".format(a.typeid)
         typeid=config.types[a.typeid].GetMainTypeId()
+        #print "main typeid = {0}".format(typeid)
         # allow typedefs (using demangled from maintypeid)...
         typename = config.types[typeid].GetDemangled()
         shared_type = config.IsSharedPtr(typename)
