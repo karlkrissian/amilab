@@ -63,28 +63,20 @@
   #undef max
 #endif
 
-template<typename T>
-inline bool ispositivevalue(const T& value)
-{
-  return  (value==0) 
-          ||
-          ( (value >= std::numeric_limits<T>::min()) 
-            && 
-            (value <= std::numeric_limits<T>::max()));
-}
 
-
+/*
 double CubicRoot(double x) {
   if (x==0) return 0;
   if (x>0) return exp(log(x)/3.0);
   if (x<0) return -exp(log(-x)/3.0);
   return 0;
 }
+*/
 
 
 
-
-// Solving a 3rd order polynomial equation
+/*
+ * // Solving a 3rd order polynomial equation
 // of type a.X^3+b.X^2+c=0
 //
 void Solve3rdOrder(float _a, float _b, float _c, double w[3], int& nb_solutions) 
@@ -147,6 +139,7 @@ void Solve3rdOrder(float _a, float _b, float _c, double w[3], int& nb_solutions)
   if (nb_solutions>2) w[2]+=-a2/3.0;
 
 } // Solve3rdOrder()
+*/
 
 //------------------------------------------------------------------------------
 InrImage::ptr ami::AnisoGSBase::GetOutput()
@@ -168,7 +161,7 @@ InrImage::ptr ami::AnisoGSBase::GetOutput()
 InrImage::ptr ami::AnisoGSBase::Run(InrImage::ptr input, float sigma, float k, 
                                 float beta, int nb_iter)
 {
-  ami::AnisoGSBase::ptr aniso(new ami::AnisoGS());
+  ami::AnisoGSBase::ptr aniso(new ami::AnisoGSBase());
   aniso->Init(input.get(),sigma,k,beta);
 
   if (nb_iter < 1) nb_iter = 1;
@@ -196,7 +189,7 @@ InrImage::ptr ami::AnisoGSBase::Run(InrImage::ptr input, float sigma, float k,
 
 //------------------------------------------------------------------------------
 // Destructor
-ami::AnisoGSBase::~AnisoGS()
+ami::AnisoGSBase::~AnisoGSBase()
 {
 
   DeleteCoefficients();
@@ -327,298 +320,7 @@ void ami::AnisoGSBase::CreateBoundariesVonNeumann( InrImage* input)
   ExtendBoundariesVonNeumann(image_entree);
 }
 
-
-// Compute the local directional mean and standard deviation,
-// using a Gaussian of standard deviation sd
-void  ami::AnisoGSBase::ComputeLocalPlanStats(InrImage* im, float x, float y, float z, 
-    t_3Point d1,t_3Point d2,
-    float sd, double& mean, double& var)
-{
-//#define MAX_VALUES 100
-  // 1. store intensity values
-//  double intensities[MAX_VALUES];
-//  double Gaussian[MAX_VALUES];
-
-  float p1,p2;
-
-  double fp1x,fp1y,fp1z;
-  double fp2x,fp2y,fp2z;
-
-  int px,py,pz;
-  int px1,py1,pz1;
-//  int i,index=0;
-//  double sum_gauss = 0.0,twosd2;
-  float p1_step = 1;
-  float p2_step = 1;
-  float size = 2*sd;
-  double mean2,val;
-  int nval=0;
-
-//  twosd2 = 2*sd*sd;
-
-  fp2x = x-size*d2.x-size*d1.x+0.5;
-  fp2y = y-size*d2.y-size*d1.y+0.5;
-  fp2z = z-size*d2.z-size*d1.z+0.5;
-  mean  = 0.0;
-  mean2 = 0.0;
-
-  for(p2=-size;p2<=size;p2+=p2_step,fp2x+=d2.x,fp2y+=d2.y,fp2z+=d2.z) {
-    fp1x = fp2x;
-    fp1y = fp2y;
-    fp1z = fp2z;
-    px1=py1=pz1=-100;
-    for(p1=-size;p1<=size;p1+=p1_step,fp1x+=d1.x,fp1y+=d1.y,fp1z+=d1.z) {
-        px=(int) fp1x;
-        py=(int) fp1y;
-        pz=(int) fp1z;
-        // don't add twice the same point
-        if (((px!=px1)||(py!=py1)||(pz!=pz1))&
-            ((px!=(int)(fp1x-d2.x))||(py!=(int)(fp1y-d2.y))||(pz!=(int)(fp1z-d2.z))))
-        {
-        val = (*im)(px,py,pz);
-        mean  += val;
-        mean2 += val*val;
-        nval++;
-        }
-      px1 = px;
-      py1 = py;
-      pz1 = pz;
-    }
-  }
-
-  if (nval==0) {
-    printf("ComputeLocalPlanStats\n at %0.1f %0.1f %0.1f , no point found within the image domain ...\n",x,y,z);
-    printf(" d1 %f %f %f d2 %f %f %f \n",d1.x,d1.y,d1.z,d2.x,d2.y,d2.z);
-    mean=var=0;
-  } else {
-    mean  /= nval;
-    mean2 /= nval;
-    var = mean2-mean*mean;
-  }
-
-
-} // ComputeLocalPlanStats
-
-
-// Compute the local directional mean and standard deviation,
-// using a Gaussian of standard deviation sd
-void  ami::AnisoGSBase::ComputeLocalDirStats(InrImage* im, float x, float y, float z, t_3Point e,
-    float sd, double& mean, double& var)
-{
-//#define MAX_VALUES 100
-  // 1. store intensity values
-//  double intensities[MAX_VALUES];
-//  double Gaussian[MAX_VALUES];
-
-  float p;
-  double fpx,fpy,fpz;
-  int px,py,pz;
-  int px1,py1,pz1;
-//  int i,index=0;
-//  double sum_gauss = 0.0,twosd2;
-  float p_step = 1;
-  float size = 2*sd;
-  double mean2,val;
-  int nval=0;
-
-  px1=py1=pz1=-100;
-//  twosd2 = 2*sd*sd;
-
-  fpx = x-size*e.x+0.5;
-  fpy = y-size*e.y+0.5;
-  fpz = z-size*e.z+0.5;
-  mean  = 0.0;
-  mean2 = 0.0;
-
-  for(p=-size;p<=size;p+=p_step,fpx+=e.x,fpy+=e.y,fpz+=e.z) {
-    px=(int) fpx;
-    py=(int) fpy;
-    pz=(int) fpz;
-    // don't add twice the same point
-    if ((px!=px1)||(py!=py1)||(pz!=pz1))
-    {
-      val = (*im)(px,py,pz);
-      mean  += val;
-      mean2 += val*val;
-      nval++;
-    }
-    px1 = px;
-    py1 = py;
-    pz1 = pz;
-  }
-
-  if (nval==0) {
-    printf("ComputeLocalDirStats\n e= %f %f %f no point found within the image domain ...\n",e.x,e.y,e.z);
-    mean=var=0;
-  } else {
-    mean  /= nval;
-    mean2 /= nval;
-    var = mean2-mean*mean;
-  }
-
-/*
-  for(p=-3*sd;p<=3*sd;p+=p_step) {
-    px=(int) (0.5+x+p*e.x);
-    py=(int) (0.5+y+p*e.y);
-    pz=(int) (0.5+z+p*e.z);
-    // don't add twice the same point
-    if ((px!=px1)||(py!=py1)||(pz!=pz1))
-    if (im->CoordOK(px,py,pz)) {
-  //    intensities[index] = im->InterpLinIntensite(px,py,pz);
-      intensities[index] = (*im)(px,py,pz);
-      // for now don't check boundaries since the linear interpolation method can deal with them
-      Gaussian[index] = exp(-p*p/(twosd2)); // this could be pre-computed ...
-      sum_gauss += Gaussian[index];
-      if (index<MAX_VALUES-1)
-        index++;
-      else {
-        fprintf(stderr,"ami::AnisoGSBase::ComputeLocalDirStats() \t Too many values \n");
-        break;
-      }
-    }
-  }
-
-  if (sum_gauss==0) {
-    printf("ComputeLocalDirStats\n e= %f %f %f no point found within the image domain ...\n",e.x,e.y,e.z);
-  }
-
-  // mean
-  mean = 0.0;
-  for(i=0;i<index;i++) {
-    mean += intensities[i]*Gaussian[i];
-  }
-  mean /= sum_gauss;
-
-  // variance
-  var = 0.0;
-  for(i=0;i<index;i++) {
-    var += (intensities[i]-mean)*(intensities[i]-mean)*Gaussian[i];
-  }
-  var /= sum_gauss;
-*/ 
-
-} // ComputeLocalDirStats
-
-//----------------------------------------------------------------------
-void ami::AnisoGSBase::EstimateNoiseStandardDeviation( InrImage* im)
-//
-// Computes the noise standard deviation estimate
-// given the current filtered image 'im'
-//
-{
-  InrImage* noise_im;
-  double    mean;
-  double     d;
-  float*    buf;
-  int       i,x,y,z;
-  int       nb_points;
-  int       mask_size;
-
-
-  noise_im=NULL;
-  switch (noise_type) {
-  case GAUSSIAN_NOISE: 
-    noise_im = (*image_entree)-(*im);
-    break;
-  case SPECKLE_NOISE:
-    noise_im = (*image_entree)-(*im);
-
-    // Divide by sqrt(im)
-    im->InitBuffer();
-    noise_im->InitBuffer();
-    Repeter
-      if (im->ValeurBuffer()>1)
-  noise_im->FixeValeur(noise_im->ValeurBuffer()/sqrt(im->ValeurBuffer()));
-      im->IncBuffer();
-    JusquA !(noise_im->IncBuffer())
-    FinRepeter
-    break;
-  }
-
-
-  // remove the border from the computation
-  if (mask==NULL) {
-    buf = (float*) noise_im->Buffer();
-    // Computes the mean
-    mean = 0;
-
-    i = 0;
-    nb_points=0;
-    for(z=0;z<tz;z++)
-    for(y=0;y<ty;y++)
-      for(x=0;x<tx;x++) {
-  if ( x>0 && x<tx-1 && y>0 && y<ty-1 && z>0 && z<tz-1 
-  ) {
-    mean += buf[i];
-      nb_points++;
-        } // end if
-  i++;
-      }
-
-    //for(i=0;i<im->Size();i++) mean += buf[i];
-    //mean /= 1.0*im->Size();
-    mean /= 1.0*nb_points;
-
-    // Computes the standard deviation
-    this->variance = 0;
-
-    i = 0;
-    for(z=0;z<tz;z++)
-    for(y=0;y<ty;y++)
-      for(x=0;x<tx;x++) {
-  if ( x>0 && x<tx-1 && y>0 && y<ty-1 && z>0 && z<tz-1 
-  ) {
-    d  = buf[i]-mean;
-    this->variance += d*d;
-        } // end if
-  i++;
-      }
-    this->variance /= 1.0*nb_points;
-
-  }
-  else {
-    buf = (float*) noise_im->Buffer();
-
-    // Computes the mean
-    mean = 0;
-    mask_size = 0;
-    mask->InitBuffer();
-
-    for(i=0;i<im->Size();i++) {
-      if (mask->ValeurBuffer()>0.5) {
-  mean += buf[i];
-  mask_size++;
-      }
-      mask->IncBuffer();
-    }
-    mean /= 1.0*mask_size;
-
-    // Computes the standard deviation
-    this->variance = 0;
-    mask->InitBuffer();
-
-    for(i=0;i<im->Size();i++) {
-      if (mask->ValeurBuffer()>0.5) {
-  d  = buf[i]-mean;
-  this->variance += d*d;
-      }
-      mask->IncBuffer();
-    }
-
-    this->variance /= 1.0*mask_size;
-
-  }
-
-  delete noise_im;
-
-  fprintf(stderr,"Noise mean=%3.3f; VARIANCE=%3.3f; SD=%3.3f \n",
-    mean,this->variance,sqrt(this->variance));  
-
-  // BUG fixed take the square root of the variance!!!
-  this->noise_standard_deviation = sqrt(this->variance);
-
-} // ami::AnisoGSBase::EstimateNoiseStandardDeviation()
-
+// 
 
 //----------------------------------------------------------------------
 void ami::AnisoGSBase::InitCoefficients()
@@ -1027,169 +729,169 @@ double ami::AnisoGSBase::function_c_MRI(double sigma2, double vg, double meang)
 #undef var_epsilon
 } // function_c_MRI
 
-//----------------------------------------------------------------------
-void ami::AnisoGSBase::ComputeImage_c(InrImage* im)
-//            --------------
-{
-
-  int x,y,z; //,n,i;
-  double I,Ixm,Iym,Izm,Ixp,Iyp,Izp,mean1,mean2,q0_2=0.0,q2;
-  double sigma2=0.0;
-
-/*
- *  int mode = MODE_KUAN;
-
-//  printf("ami::AnisoGSBase::ComputeImage_c() \t contour mode = %d \n",this->contours_mode);
-  switch (this->contours_mode)
-    {
-    case CONTOURS_OSRAD:
-      mode = MODE_KUAN;
-      break;
-    case CONTOURS_RNRAD:
-      mode = MODE_MRI;
-      break;
-    case CONTOURS_NRAD:
-      mode = MODE_MRI;
-      break;
-    }
-*/
-
-  if ((this->contours_mode==CONTOURS_OSRAD)||
-      (this->contours_mode==CONTOURS_NRAD))
-    {
-
-      if ( this->image_c == NULL ) 
-      this->image_c = new InrImage(WT_FLOAT, "image_c.ami.gz", im);
-
-      // we limit for the moment to Kuan's function with Yu's neighborhood
-
-      // precompute image of coefficients
-      switch (noise_model)
-        {
-        case NOISE_LEE:
-        case NOISE_KUAN:
-        case NOISE_GAUSSIAN_ADDITIVE:
-          q0_2= Compute_q0_subvol(im);
-          printf("q0_2 = %f \n",q0_2);
-          break;
-        case NOISE_RICIAN:
-          /*        sigma2 = Compute_sigma2_MRI(im);
-                  printf("sigma = %f \n",sqrt(sigma2));
-          */
-          sigma2 = Compute_sigma2_MRI_mode(im);
-          printf("noise SD = %3.2f \t",sqrt(sigma2));
-          break;
-        }
-
-      // Precompute mean of I and mean of I^2
-      InrImage* image_mean_I  = NULL;
-      InrImage* image_I2      = NULL;
-      InrImage* image_mean_I2 = NULL;
-
-
-      image_mean_I  = Func_localmean2(im,neighborhood);
-      image_I2 = (*im)*(*im);
-      image_mean_I2 = Func_localmean2(image_I2, neighborhood);
-      delete image_I2;
-      image_I2= NULL;
-
-      // 1. Compute c
-      for (z=0;z<tz;z++)
-        {
-          for (y=0;y<ty;y++)
-            {
-              for (x=0;x<tx;x++)
-                {
-                  I = (*im)(x,y,z);
-                  if (fabsf(I)<1) I=1;
-                  if (x>0)     Ixm = (*im)(x-1,y,z);
-                  else Ixm = I;
-                  if (y>0)     Iym = (*im)(x,y-1,z);
-                  else Iym = I;
-                  if (z>0)     Izm = (*im)(x,y,z-1);
-                  else Izm = I;
-
-                  if (x<tx-1)  Ixp = (*im)(x+1,y,z);
-                  else Ixp = I;
-                  if (y<ty-1)  Iyp = (*im)(x,y+1,z);
-                  else Iyp = I;
-                  if (z<tz-1)  Izp = (*im)(x,y,z+1);
-                  else Izp = I;
-
-                  // other (simpler version of q2):
-                  switch (neighborhood)
-                    {
-                    case 0:
-                      mean1 = Ixm+Ixp+Iym+Iyp;
-                      mean2 = Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp;
-                      if (tz==1)
-                        {
-                          mean1/=4.0;
-                          mean2/=4.0;
-                        }
-                      else
-                        {
-                          mean1+=Izm+Izp;
-                          mean2+=Izm*Izm+Izp*Izp;
-                          mean1/=6.0;
-                          mean2/=6.0;
-                        }
-                      break;
-                      /*
-                            //mean1 = (Ixm+Ixp+Iym+Iyp)/4.0;
-                            //mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp)/4.0;
-                            // adding the central point for stability
-                            mean1 = (Ixm+Ixp+Iym+Iyp+I)/5.0;
-                            mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp+I*I)/5.0;
-                      */
-                      break;
-                    default:
-                      mean1 = (*image_mean_I) (x,y,z);
-                      mean2 = (*image_mean_I2)(x,y,z);
-                    }
-
-                  if (fabsf(mean1)>1E-6)
-                    q2    = mean2/(mean1*mean1)-1;
-                  else q2 = 0;
-
-                  image_c->BufferPos(x,y,z);
-                  switch (noise_model)
-                    {
-                    case NOISE_LEE:
-                      image_c->FixeValeur( function_c_Lee( q2, q0_2));
-                      break;
-                    case NOISE_KUAN:
-                      image_c->FixeValeur( function_c_Kuan( q2, q0_2));
-                      break;
-                    case NOISE_GAUSSIAN_ADDITIVE: 
-                      image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,
-                                                               q0_2)); 
-                      break;
-                    case NOISE_RICIAN:
-                      image_c->FixeValeur( function_c_MRI( sigma2, 
-                                                           mean2-mean1*mean1, 
-                                                           mean1));
-                      break;
-                    }
-                }
-            }
-        } // for z
-
-      if (neighborhood>0)
-        {
-          delete image_mean_I;
-          image_mean_I  = NULL;
-          delete image_mean_I2;
-          image_mean_I2 = NULL;
-        }
-
-    } //
-  else
-    CLASS_ERROR((boost::format("contours_mode %1% not supported")%
-                  contours_mode).str().c_str());
-//  image_c->Sauve();
-
-}
+// //----------------------------------------------------------------------
+// void ami::AnisoGSBase::ComputeImage_c(InrImage* im)
+// //            --------------
+// {
+// 
+//   int x,y,z; //,n,i;
+//   double I,Ixm,Iym,Izm,Ixp,Iyp,Izp,mean1,mean2,q0_2=0.0,q2;
+//   double sigma2=0.0;
+// 
+// /*
+//  *  int mode = MODE_KUAN;
+// 
+// //  printf("ami::AnisoGSBase::ComputeImage_c() \t contour mode = %d \n",this->contours_mode);
+//   switch (this->contours_mode)
+//     {
+//     case CONTOURS_OSRAD:
+//       mode = MODE_KUAN;
+//       break;
+//     case CONTOURS_RNRAD:
+//       mode = MODE_MRI;
+//       break;
+//     case CONTOURS_NRAD:
+//       mode = MODE_MRI;
+//       break;
+//     }
+// */
+// 
+//   if ((this->contours_mode==CONTOURS_OSRAD)||
+//       (this->contours_mode==CONTOURS_NRAD))
+//     {
+// 
+//       if ( this->image_c == NULL ) 
+//       this->image_c = new InrImage(WT_FLOAT, "image_c.ami.gz", im);
+// 
+//       // we limit for the moment to Kuan's function with Yu's neighborhood
+// 
+//       // precompute image of coefficients
+//       switch (noise_model)
+//         {
+//         case NOISE_LEE:
+//         case NOISE_KUAN:
+//         case NOISE_GAUSSIAN_ADDITIVE:
+//           q0_2= Compute_q0_subvol(im);
+//           printf("q0_2 = %f \n",q0_2);
+//           break;
+//         case NOISE_RICIAN:
+//           /*        sigma2 = Compute_sigma2_MRI(im);
+//                   printf("sigma = %f \n",sqrt(sigma2));
+//           */
+//           sigma2 = Compute_sigma2_MRI_mode(im);
+//           printf("noise SD = %3.2f \t",sqrt(sigma2));
+//           break;
+//         }
+// 
+//       // Precompute mean of I and mean of I^2
+//       InrImage* image_mean_I  = NULL;
+//       InrImage* image_I2      = NULL;
+//       InrImage* image_mean_I2 = NULL;
+// 
+// 
+//       image_mean_I  = Func_localmean2(im,neighborhood);
+//       image_I2 = (*im)*(*im);
+//       image_mean_I2 = Func_localmean2(image_I2, neighborhood);
+//       delete image_I2;
+//       image_I2= NULL;
+// 
+//       // 1. Compute c
+//       for (z=0;z<tz;z++)
+//         {
+//           for (y=0;y<ty;y++)
+//             {
+//               for (x=0;x<tx;x++)
+//                 {
+//                   I = (*im)(x,y,z);
+//                   if (fabsf(I)<1) I=1;
+//                   if (x>0)     Ixm = (*im)(x-1,y,z);
+//                   else Ixm = I;
+//                   if (y>0)     Iym = (*im)(x,y-1,z);
+//                   else Iym = I;
+//                   if (z>0)     Izm = (*im)(x,y,z-1);
+//                   else Izm = I;
+// 
+//                   if (x<tx-1)  Ixp = (*im)(x+1,y,z);
+//                   else Ixp = I;
+//                   if (y<ty-1)  Iyp = (*im)(x,y+1,z);
+//                   else Iyp = I;
+//                   if (z<tz-1)  Izp = (*im)(x,y,z+1);
+//                   else Izp = I;
+// 
+//                   // other (simpler version of q2):
+//                   switch (neighborhood)
+//                     {
+//                     case 0:
+//                       mean1 = Ixm+Ixp+Iym+Iyp;
+//                       mean2 = Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp;
+//                       if (tz==1)
+//                         {
+//                           mean1/=4.0;
+//                           mean2/=4.0;
+//                         }
+//                       else
+//                         {
+//                           mean1+=Izm+Izp;
+//                           mean2+=Izm*Izm+Izp*Izp;
+//                           mean1/=6.0;
+//                           mean2/=6.0;
+//                         }
+//                       break;
+//                       /*
+//                             //mean1 = (Ixm+Ixp+Iym+Iyp)/4.0;
+//                             //mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp)/4.0;
+//                             // adding the central point for stability
+//                             mean1 = (Ixm+Ixp+Iym+Iyp+I)/5.0;
+//                             mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp+I*I)/5.0;
+//                       */
+//                       break;
+//                     default:
+//                       mean1 = (*image_mean_I) (x,y,z);
+//                       mean2 = (*image_mean_I2)(x,y,z);
+//                     }
+// 
+//                   if (fabsf(mean1)>1E-6)
+//                     q2    = mean2/(mean1*mean1)-1;
+//                   else q2 = 0;
+// 
+//                   image_c->BufferPos(x,y,z);
+//                   switch (noise_model)
+//                     {
+//                     case NOISE_LEE:
+//                       image_c->FixeValeur( function_c_Lee( q2, q0_2));
+//                       break;
+//                     case NOISE_KUAN:
+//                       image_c->FixeValeur( function_c_Kuan( q2, q0_2));
+//                       break;
+// /*                    case NOISE_GAUSSIAN_ADDITIVE: 
+//                       image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,
+//                                                                q0_2)); 
+//                       break;*/
+//                     case NOISE_RICIAN:
+//                       image_c->FixeValeur( function_c_MRI( sigma2, 
+//                                                            mean2-mean1*mean1, 
+//                                                            mean1));
+//                       break;
+//                     }
+//                 }
+//             }
+//         } // for z
+// 
+//       if (neighborhood>0)
+//         {
+//           delete image_mean_I;
+//           image_mean_I  = NULL;
+//           delete image_mean_I2;
+//           image_mean_I2 = NULL;
+//         }
+// 
+//     } //
+//   else
+//     CLASS_ERROR((boost::format("contours_mode %1% not supported")%
+//                   contours_mode).str().c_str());
+// //  image_c->Sauve();
+// 
+// }
 
 //------------------------------------------------------------------------------
 void ami::AnisoGSBase::Smooth(InrImage* image, float sigma)
@@ -1237,7 +939,7 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
 //    char            resname[100];
 
   double tmp;
-  if (contours_mode==CONTOURS_NRAD) {
+  if (InputIsSquared) {
     // compute on the square root of the intensity
     image = new InrImage( WT_FLOAT, "sqrt_im", im);
     image->InitBuffer();

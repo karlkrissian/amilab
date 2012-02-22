@@ -47,6 +47,8 @@ SET(Algorithms_SRCS
   ShortestPathClass.cpp
 
   amiAnisoGS.cpp
+  amiAnisoGSBase.cpp
+  amiAnisoGS_NRAD.cpp
   #WrapOld_AnisoGS.cpp
   NLmeans.cpp
 
@@ -123,6 +125,8 @@ SET(Algorithms_HDRS
   include/ShortestPathClass.h
 
   include/amiAnisoGS.h
+  include/amiAnisoGSBase.h
+  include/amiAnisoGS_NRAD.h
   #include/WrapOld_AnisoGS.h
   include/NLmeans.h
 

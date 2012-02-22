@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuAnisoGS_Flux() \
+{
+  category = "&PDI"
+  script = "PDI/AnisoGS_Flux/AnisoGS_FluxGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&AnisoGS_Flux",script)
+}
+
+AddMenuAnisoGS_Flux()
+del AddMenuAnisoGS_Flux

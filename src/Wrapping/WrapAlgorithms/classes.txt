@@ -27,3 +27,4 @@ ami::ImageExtent<float>
 ami::SRAD
 
 ami::AnisoGS
+ami::AnisoGS_NRAD

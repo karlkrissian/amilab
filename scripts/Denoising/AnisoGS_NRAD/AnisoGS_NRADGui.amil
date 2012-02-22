@@ -1,0 +1,11 @@
+
+func "AnisoGS_NRADClass"
+
+if (!exists(AnisoGS_NRAD_obj)) {
+  AnisoGS_NRADClass AnisoGS_NRAD_obj
+  AnisoGS_NRAD_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

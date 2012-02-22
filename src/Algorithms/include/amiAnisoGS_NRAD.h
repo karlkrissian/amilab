@@ -91,7 +91,9 @@ namespace ami {
 
     float Itere3D_ST_RNRAD( InrImage* im );
 
-    void Init(InrImage* in, float p_sigma, float p_k, float p_beta);
+    void ComputeImage_c(InrImage*);
+    
+//    void Init(InrImage* in, float p_sigma, float p_k, float p_beta);
 
     /**
     * Main iteration method, directs to the appropriate specific method

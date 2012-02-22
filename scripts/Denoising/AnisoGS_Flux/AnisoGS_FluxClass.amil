@@ -1,9 +1,9 @@
 
 func "Common/ScriptGui"
 
-if (!exists(ScriptExampleClass)) {
+if (!exists(AnisoGS_FluxClass)) {
 
-  Class ScriptExampleClass : public ScriptGui \
+  Class AnisoGS_FluxClass : public ScriptGui \
   {
     
     func "Variable/ObjectIO"
@@ -32,7 +32,7 @@ if (!exists(ScriptExampleClass)) {
       # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
 
       ::html_filename = GetScriptsDir+\
-                        "/ScriptExample/Doc/ScriptExample/index.html"
+                        "/AnisoGS_Flux/Doc/AnisoGS_Flux/index.html"
     }
 
 
@@ -66,9 +66,9 @@ if (!exists(ScriptExampleClass)) {
     proc ::Gui() {
     
       if (exists(::parent_panel)) {
-        ::win = ParamPanel("ScriptExample",&::parent_panel)
+        ::win = ParamPanel("AnisoGS_Flux",&::parent_panel)
       } else {
-        ::win = ParamPanel("ScriptExample")
+        ::win = ParamPanel("AnisoGS_Flux")
       }
       
       ::win.BeginBook()

@@ -73,13 +73,13 @@ namespace ami {
 
   public:
 
-    enum ContourMode {
-      CONTOURS_FLUX, /**< Matrix diffusion based on Flux-based anisotropic diffusion paper. */
-      CONTOURS_OSRAD, /**< Matrix diffusion based on OSRAD paper */
-      CONTOURS_NRAD, /**< Matrix diffusion based on NRAD paper 
-                        * new version using directional local statistics 
-                        * for the diffusion matrix. */
-    };
+//    enum ContourMode {
+//      CONTOURS_FLUX, /**< Matrix diffusion based on Flux-based anisotropic diffusion paper. */
+//      CONTOURS_OSRAD, /**< Matrix diffusion based on OSRAD paper */
+//      CONTOURS_NRAD, /**< Matrix diffusion based on NRAD paper 
+//                        * new version using directional local statistics 
+//                        * for the diffusion matrix. */
+//    };
   
     enum NoiseEstimationModel {
       NOISE_LEE,  /**< Multiplicative Gaussian noise with Lee's estimation (Speckle)*/
@@ -88,7 +88,8 @@ namespace ami {
       NOISE_RICIAN /**< Rician noise (MRI)*/
     };
 
-  private:
+    
+  protected:
     /**
     * @name Precomputed pointers to neighborhood
     **/
@@ -268,6 +269,9 @@ namespace ami {
   
     AddSetGetVar( beta, float)
 
+    /// Using squared input for Rician noise
+    AddSetGetVar( InputIsSquared, bool)
+
     /// Coefficient in the tangent direction (direction orthogonal to the gradient, only for 2D images).
     AddSetGetVar(tang_coeff, float)
 
@@ -292,8 +296,6 @@ namespace ami {
 
     /// Computes Euclidian distance maps
     AddSetGetVar(DistanceMap,unsigned char);
-
-    AddSetGetVar( contours_mode, ContourMode);
 
     AddSetGetVar( noise_model, NoiseEstimationModel);
 
@@ -405,23 +407,21 @@ namespace ami {
 
       DistanceMap = 0;
 
-      contours_mode  = CONTOURS_FLUX;
       noise_model    = NOISE_RICIAN;
 
       neighborhood = 1;
       dt = 0.05;
+      
+      InputIsSquared = false;
     }
 
 
     void ExtendBoundariesVonNeumann( InrImage* input);
     void CreateBoundariesVonNeumann( InrImage* input);
 
-    void EstimateNoiseStandardDeviation( InrImage* im);
-
     void InitCoefficients();
     void ResetCoefficients();
     void DeleteCoefficients();
-
 
     double Compute_q0_subvol( InrImage* im);
     double function_c_Kuan(double q_2, double q0_2);
@@ -436,15 +436,13 @@ namespace ami {
     void ComputeStructureTensor(InrImage* im, float sigma1, float sigma2);
     void ComputeEigenVectors();
 
-    void ComputeImage_c(InrImage*);
-
     void Init(InrImage* in, float p_sigma, float p_k, float p_beta);
 
     /**
     * Main iteration method, directs to the appropriate specific method
     * @return 
     */
-    virtual float Iterate();
+    virtual float Iterate() {}
 
     void InitFlux( t_3Point& e0,t_3Point& e1,t_3Point& e2);
 

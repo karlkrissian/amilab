@@ -63,12 +63,159 @@
   #undef max
 #endif
 
+template<typename T>
+inline bool ispositivevalue(const T& value)
+{
+  return  (value==0) 
+          ||
+          ( (value >= std::numeric_limits<T>::min()) 
+            && 
+            (value <= std::numeric_limits<T>::max()));
+}
 
 
 //------------------------------------------------------------------------------
 // Destructor
 ami::AnisoGS_NRAD::~AnisoGS_NRAD()
 {
+
+}
+
+
+//------------------------------------------------------------------------------
+void ami::AnisoGS_NRAD::ComputeImage_c(InrImage* im)
+{
+
+  int x,y,z; //,n,i;
+  double I,Ixm,Iym,Izm,Ixp,Iyp,Izp,mean1,mean2,q0_2=0.0,q2;
+  double sigma2=0.0;
+
+
+  if ( this->image_c == NULL ) 
+    this->image_c = new InrImage(WT_FLOAT, "image_c.ami.gz", im);
+
+  // we limit for the moment to Kuan's function with Yu's neighborhood
+
+  // precompute image of coefficients
+  switch (noise_model)
+    {
+    case NOISE_LEE:
+    case NOISE_KUAN:
+    case NOISE_GAUSSIAN_ADDITIVE:
+      q0_2= Compute_q0_subvol(im);
+      printf("q0_2 = %f \n",q0_2);
+      break;
+    case NOISE_RICIAN:
+      /*        sigma2 = Compute_sigma2_MRI(im);
+              printf("sigma = %f \n",sqrt(sigma2));
+      */
+      sigma2 = Compute_sigma2_MRI_mode(im);
+      printf("noise SD = %3.2f \t",sqrt(sigma2));
+      break;
+    }
+
+  // Precompute mean of I and mean of I^2
+  InrImage* image_mean_I  = NULL;
+  InrImage* image_I2      = NULL;
+  InrImage* image_mean_I2 = NULL;
+
+  image_mean_I  = Func_localmean2(im,neighborhood);
+  image_I2 = (*im)*(*im);
+  image_mean_I2 = Func_localmean2(image_I2, neighborhood);
+  delete image_I2;
+  image_I2= NULL;
+
+  // 1. Compute c
+  for (z=0;z<tz;z++)
+    {
+      for (y=0;y<ty;y++)
+        {
+          for (x=0;x<tx;x++)
+            {
+              I = (*im)(x,y,z);
+              if (fabsf(I)<1) I=1;
+              if (x>0)     Ixm = (*im)(x-1,y,z);
+              else Ixm = I;
+              if (y>0)     Iym = (*im)(x,y-1,z);
+              else Iym = I;
+              if (z>0)     Izm = (*im)(x,y,z-1);
+              else Izm = I;
+
+              if (x<tx-1)  Ixp = (*im)(x+1,y,z);
+              else Ixp = I;
+              if (y<ty-1)  Iyp = (*im)(x,y+1,z);
+              else Iyp = I;
+              if (z<tz-1)  Izp = (*im)(x,y,z+1);
+              else Izp = I;
+
+              // other (simpler version of q2):
+              switch (neighborhood)
+                {
+                case 0:
+                  mean1 = Ixm+Ixp+Iym+Iyp;
+                  mean2 = Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp;
+                  if (tz==1)
+                    {
+                      mean1/=4.0;
+                      mean2/=4.0;
+                    }
+                  else
+                    {
+                      mean1+=Izm+Izp;
+                      mean2+=Izm*Izm+Izp*Izp;
+                      mean1/=6.0;
+                      mean2/=6.0;
+                    }
+                  break;
+                  /*
+                        //mean1 = (Ixm+Ixp+Iym+Iyp)/4.0;
+                        //mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp)/4.0;
+                        // adding the central point for stability
+                        mean1 = (Ixm+Ixp+Iym+Iyp+I)/5.0;
+                        mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp+I*I)/5.0;
+                  */
+                  break;
+                default:
+                  mean1 = (*image_mean_I) (x,y,z);
+                  mean2 = (*image_mean_I2)(x,y,z);
+                }
+
+              if (fabsf(mean1)>1E-6)
+                q2    = mean2/(mean1*mean1)-1;
+              else q2 = 0;
+
+              image_c->BufferPos(x,y,z);
+              switch (noise_model)
+                {
+                case NOISE_LEE:
+                  image_c->FixeValeur( function_c_Lee( q2, q0_2));
+                  break;
+                case NOISE_KUAN:
+                  image_c->FixeValeur( function_c_Kuan( q2, q0_2));
+                  break;
+/*                    case NOISE_GAUSSIAN_ADDITIVE: 
+                  image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,
+                                                            q0_2)); 
+                  break;*/
+                case NOISE_RICIAN:
+                  image_c->FixeValeur( function_c_MRI( sigma2, 
+                                                        mean2-mean1*mean1, 
+                                                        mean1));
+                  break;
+                }
+            }
+        }
+    } // for z
+
+  if (neighborhood>0)
+    {
+      delete image_mean_I;
+      image_mean_I  = NULL;
+      delete image_mean_I2;
+      image_mean_I2 = NULL;
+    }
+
+//  image_c->Sauve();
 
 }
 
@@ -259,7 +406,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 //
 {
     int x,y,z; //,n,i;
-    double   val0,val1;
+    double   val0,val1,val1prev;
     double   val1_implicit=0;
     double   val1div;
     double   u_e0;
@@ -313,6 +460,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     long          speedup_counter = 0;
 
     int      xp,xm,yp,ym,zp,zm,incx,incy,incz;
+    double mean,var;
   // pre-compute information
 
   // printf("Itere3D_2_new \n");
@@ -341,13 +489,8 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     loop+=2;
   }
 
-  if (contours_mode!=CONTOURS_NRAD) {
-    if (contours_mode!=CONTOURS_FLUX)
-      ComputeImage_c(im);
-  } else {
-    ComputeImage_c(im);
-    sigma2 = Compute_sigma2_MRI_mode(im);
-  }
+  ComputeImage_c(im);
+  sigma2 = Compute_sigma2_MRI_mode(im);
 
 
   ResetCoefficients();
@@ -456,58 +599,38 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       // get vectors
       this->GetVectors(0,x,y,z,e0,e1,e2);
 
-    switch ( contours_mode )
-    {
-    case CONTOURS_FLUX: 
-        u_e0 = this->ScalarProduct(grad,e0);
-        u_e1 = this->ScalarProduct(grad,e1);
-        u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = phi3D_0(u_e0); 
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_OSRAD:
-        u_e1 = this->ScalarProduct(grad,e1);
-        u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = ( ( *image_c ) ( x,y,z ) + ( *image_c ) ( x+incx,y,z ) ) /2.0; 
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_NRAD:
-        double mean,var;
-        lambda0 = ( (*image_c)(x,y,z) + (*image_c)(x+incx,y,z) ) /2.0; 
-  //      if (lambda0>2) lambda0=2;
-        if (lambda0<1) {
-          ComputeLocalPlanStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e1,e2, planstats_sigma, mean,var);
-          lambda1 = function_c_MRI( sigma2, var, mean); 
-          lambda1 *= 6./4.; // convert for 2D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda1 = lambda0 + lambda1; 
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda1 = MAX(lambda0,lambda1); 
-              break;
-           }
-        } else lambda1 = lambda0;
-        if (lambda1<1) {
-          ComputeLocalDirStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e2, dirstats_sigma, mean,var);
-          lambda2 = function_c_MRI( sigma2, var, mean);
-          lambda2 *= 6./2.; // convert for 1D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda2 += lambda1;
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda2 = MAX(lambda1,lambda2);
-              break;
-           }
-        } else lambda2 = lambda1;
-        if (lambda1>1) lambda1=1;
-        if (lambda2>1) lambda2=1;
-        break;
-    }
-//    lambda2 = 0;
+      lambda0 = ( (*image_c)(x,y,z) + (*image_c)(x+incx,y,z) ) /2.0; 
+//      if (lambda0>2) lambda0=2;
+      if (lambda0<1) {
+        ComputeLocalPlanStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e1,e2, planstats_sigma, mean,var);
+        lambda1 = function_c_MRI( sigma2, var, mean); 
+        lambda1 *= 6./4.; // convert for 2D normalization
+          switch (diffusion_eigenvalues_mode) {
+          case DIFF_MATRIX_EIGEN_SUM:
+            lambda1 = lambda0 + lambda1; 
+            break;
+          case DIFF_MATRIX_EIGEN_MAX:
+            lambda1 = MAX(lambda0,lambda1); 
+            break;
+          }
+      } else lambda1 = lambda0;
+      if (lambda1<1) {
+        ComputeLocalDirStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e2, dirstats_sigma, mean,var);
+        lambda2 = function_c_MRI( sigma2, var, mean);
+        lambda2 *= 6./2.; // convert for 1D normalization
+          switch (diffusion_eigenvalues_mode) {
+          case DIFF_MATRIX_EIGEN_SUM:
+            lambda2 += lambda1;
+            break;
+          case DIFF_MATRIX_EIGEN_MAX:
+            lambda2 = MAX(lambda1,lambda2);
+            break;
+          }
+      } else lambda2 = lambda1;
+      if (lambda1>1) lambda1=1;
+      if (lambda2>1) lambda2=1;
+
+      //    lambda2 = 0;
 
       alpha1_x = lambda0 *e0.x*e0.x + 
                  lambda1 *e1.x*e1.x +
@@ -527,61 +650,38 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
       this->GetVectors(1,x,y,z,e0,e1,e2);
 
-    switch ( contours_mode )
-    {
-    case CONTOURS_FLUX: 
-        // Derivees directionnelles
-        u_e0 = this->ScalarProduct(grad,e0);
-        u_e1 = this->ScalarProduct(grad,e1);
-        u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = phi3D_0(u_e0); 
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_OSRAD:
-      // Derivees directionnelles
-      u_e1 = this->ScalarProduct(grad,e1);
-      u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_NRAD:
-        double mean,var;
-        lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
-//        if (lambda0>2) lambda0=2;
-        if (lambda0<1) {
-          ComputeLocalPlanStats(im, (float)x, (float) y+((float)incy)/2.0, (float) z,  e1,e2, planstats_sigma, mean,var);
-          lambda1 = function_c_MRI( sigma2, var, mean); 
-          lambda1 *= 6./4.; // convert for 2D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda1 += lambda0; 
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda1 = MAX(lambda0,lambda1); 
-              break;
-           }
-        } else lambda1 = lambda0;
-        if (lambda1<1) {
-          ComputeLocalDirStats(im, (float)x, (float) y+((float)incy)/2.00, (float) z,  e2, dirstats_sigma, mean,var);
-          lambda2 = function_c_MRI( sigma2, var, mean);
-          lambda2 *= 6./2.; // convert for 1D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda2 += lambda1;
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda2 = MAX(lambda1,lambda2);
-              break;
-           }
-        } else lambda2 = lambda1;
-        if (lambda1>1) lambda1=1;
-        if (lambda2>1) lambda2=1;
-        break;
-    }
+      lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
+      // if (lambda0>2) lambda0=2;
+      if (lambda0<1) {
+        ComputeLocalPlanStats(im, (float)x, (float) y+((float)incy)/2.0, (float) z,  e1,e2, planstats_sigma, mean,var);
+        lambda1 = function_c_MRI( sigma2, var, mean); 
+        lambda1 *= 6./4.; // convert for 2D normalization
+          switch (diffusion_eigenvalues_mode) {
+          case DIFF_MATRIX_EIGEN_SUM:
+            lambda1 += lambda0; 
+            break;
+          case DIFF_MATRIX_EIGEN_MAX:
+            lambda1 = MAX(lambda0,lambda1); 
+            break;
+          }
+      } else lambda1 = lambda0;
+      if (lambda1<1) {
+        ComputeLocalDirStats(im, (float)x, (float) y+((float)incy)/2.00, (float) z,  e2, dirstats_sigma, mean,var);
+        lambda2 = function_c_MRI( sigma2, var, mean);
+        lambda2 *= 6./2.; // convert for 1D normalization
+          switch (diffusion_eigenvalues_mode) {
+          case DIFF_MATRIX_EIGEN_SUM:
+            lambda2 += lambda1;
+            break;
+          case DIFF_MATRIX_EIGEN_MAX:
+            lambda2 = MAX(lambda1,lambda2);
+            break;
+          }
+      } else lambda2 = lambda1;
+      if (lambda1>1) lambda1=1;
+      if (lambda2>1) lambda2=1;
 
-//    lambda2 = 0;
+      //    lambda2 = 0;
 
       alpha1_y = lambda0 *e0.y*e0.y + 
                  lambda1 *e1.y*e1.y +
@@ -599,61 +699,38 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
       this->GetVectors(2,x,y,z,e0,e1,e2);
 
-    switch ( contours_mode )
-    {
-    case CONTOURS_FLUX: 
-        // Derivees directionnelles
-        u_e0 = this->ScalarProduct(grad,e0);
-        u_e1 = this->ScalarProduct(grad,e1);
-        u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = phi3D_0(u_e0); 
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_OSRAD:
-        // Derivees directionnelles
-        u_e1 = this->ScalarProduct(grad,e1);
-        u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_NRAD:
-        double mean,var;
-        lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
-//        if (lambda0>2) lambda0=2;
-        if (lambda0<1) {
-          ComputeLocalPlanStats(im, (float)x, (float) y, (float) z+((float)incz)/2.0,  e1,e2, planstats_sigma, mean,var);
-          lambda1 = function_c_MRI( sigma2, var, mean); 
-          lambda1 *= 6./4.; // convert for 2D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda1 += lambda0 ; 
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda1 = MAX(lambda0,lambda1); 
-              break;
-           }
-        } else lambda1 = lambda0;
-        if (lambda1<1) {
-          ComputeLocalDirStats(im, (float)x, (float) y, (float) z+((float)incz)/2.0,  e2, dirstats_sigma, mean,var);
-          lambda2 = function_c_MRI( sigma2, var, mean);
-          lambda2 *= 6./2.; // convert for 1D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda2 += lambda1;
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda2 = MAX(lambda1,lambda2);
-              break;
-           }
-        } else lambda2 = lambda1;
-        if (lambda1>1) lambda1=1;
-        if (lambda2>1) lambda2=1;
-        break;
-    }
+      lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
+      //        if (lambda0>2) lambda0=2;
+      if (lambda0<1) {
+        ComputeLocalPlanStats(im, (float)x, (float) y, (float) z+((float)incz)/2.0,  e1,e2, planstats_sigma, mean,var);
+        lambda1 = function_c_MRI( sigma2, var, mean); 
+        lambda1 *= 6./4.; // convert for 2D normalization
+          switch (diffusion_eigenvalues_mode) {
+          case DIFF_MATRIX_EIGEN_SUM:
+            lambda1 += lambda0 ; 
+            break;
+          case DIFF_MATRIX_EIGEN_MAX:
+            lambda1 = MAX(lambda0,lambda1); 
+            break;
+          }
+      } else lambda1 = lambda0;
+      if (lambda1<1) {
+        ComputeLocalDirStats(im, (float)x, (float) y, (float) z+((float)incz)/2.0,  e2, dirstats_sigma, mean,var);
+        lambda2 = function_c_MRI( sigma2, var, mean);
+        lambda2 *= 6./2.; // convert for 1D normalization
+          switch (diffusion_eigenvalues_mode) {
+          case DIFF_MATRIX_EIGEN_SUM:
+            lambda2 += lambda1;
+            break;
+          case DIFF_MATRIX_EIGEN_MAX:
+            lambda2 = MAX(lambda1,lambda2);
+            break;
+          }
+      } else lambda2 = lambda1;
+      if (lambda1>1) lambda1=1;
+      if (lambda2>1) lambda2=1;
 
-//    lambda2 = 0;
+      // lambda2 = 0;
 
       alpha1_z = lambda0 *e0.z*e0.z + 
                  lambda1 *e1.z*e1.z +
@@ -704,104 +781,93 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
        std::cout << "pb 3" << std::endl;
       }
 
-    switch ( noise_type )
+/*    switch ( noise_type )
     {
-    case GAUSSIAN_NOISE:
+    case GAUSSIAN_NOISE:*/
         if ( mask_test )
         {
-            divF = ( val1 - *in * val1div ) * ( *in- ( *image_entree ) ( x,y,z ) );
-            sum_divF += divF;
-            nb_calculated_points++;
+          divF = ( val1 - *in * val1div ) * ( *in- ( *image_entree ) ( x,y,z ) );
+          sum_divF += divF;
+          nb_calculated_points++;
         }
     
 
         val1    += this->beta* ( *image_entree ) ( x,y,z );
         val1div += this->beta;
     
-        switch ( contours_mode )
-        {
-            case CONTOURS_FLUX:
-                if ( fabsf ( val1div ) >1E-4 ) {
-                val1 /= val1div;
-                } else {
-                fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
-                } // end if
-                break;
-            case CONTOURS_OSRAD:
-            case CONTOURS_NRAD:
-                double val1prev = val1;
-                val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
-if (val1<0)
-if (sqrt(val1)>300) {
- std::cout << "beta = " << this->beta << std::endl;
- std::cout << "image_entree (x,y,z) = " << ( *image_entree ) ( x,y,z ) << std::endl;
- std::cout << boost::format("lambda0,1,2 = %1% %2% %3%") % lambda0 % lambda1 % lambda2 << std::endl;
- std::cout << "val1prev = " << val1prev << std::endl;
- std::cout << boost::format("at %1%,%2%,%3%  --> sqrt(in) = %4% dt = %5% val1prev = %6% sqrt(val1) = %7%") % x % y % z 
-    % sqrt(*in) % dt % val1prev % sqrt(val1) << std::endl;
-}
-                break;
+        val1prev = val1;
+        val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
+        if (val1<0)
+        if (sqrt(val1)>300) {
+          std::cout << "beta = " << this->beta << std::endl;
+          std::cout << "image_entree (x,y,z) = " 
+                    << ( *image_entree ) ( x,y,z ) << std::endl;
+          std::cout << boost::format("lambda0,1,2 = %1% %2% %3%") % lambda0 
+                        % lambda1 % lambda2 << std::endl;
+          std::cout << "val1prev = " << val1prev << std::endl;
+          std::cout << boost::format("at %1%,%2%,%3%  --> sqrt(in) = %4% dt = %5% val1prev = %6% sqrt(val1) = %7%") % x % y % z 
+              % sqrt(*in) % dt % val1prev % sqrt(val1) << std::endl;
         }
     
-        break;
+//         break;
     
-    case SPECKLE_NOISE:
-        u0 = ( *image_entree ) ( x,y,z );
-        u  = *in;
-    
-        if ( mask_test&& ( fabsf ( u+u0 ) >1E-4 ) && ( u>1 ) && ( u0>1 ) )
-        {
-            divF = ( val1 - u * val1div ) * ( u-u0 ) / ( u+u0 ) *u;
-            /*
-            if (divF<-1000) {
-              printf("val1 %03.1f, u %03.1f, val1div %03.1f, u0  %03.1f --> divF  %03.1f\n",
-                 val1,u,val1div,u0,divF);
-            }
-            */
-            sum_divF += divF;
-            nb_calculated_points++;
-        }
-        else
-            divF = 0;
-    
-        if ( ( u>1 ) && ( u0>1 ) )
-        {
-            //
-            // See if we can get a more implicit scheme
-            // by solving a 3rd order equation:
-            //
-    #ifdef IMPLICIT
-            double w[3];
-            int nb_solutions;
-            Solve3rdOrder ( val1div,- ( val1-this->beta ),
-                            -this->beta* ( u0*u0 ),w,nb_solutions );
-            if ( nb_solutions==1 )
-                val1_implicit = w[0];
-            else
-            {
-                /*
-                printf(" 3rd order equation %d solutions %3.2f %3.2f %3.2f \n",
-                   nb_solutions,w[0],w[1],w[2]);
-                */
-                if ( w[0] >=0 ) val1_implicit = w[0];
-                else
-                    if ( w[1] >=0 ) val1_implicit = w[1];
-                    else
-                        if ( w[2] >=0 ) val1_implicit = w[2];
-            }
-            val1=val1_implicit;
-    #else
-            val1  += beta* ( ( u0*u0 ) / ( u*u )-1 );
-            if ( fabsf ( val1div ) >1E-4 ) {
-            val1 /= val1div;
-            } else {
-            fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
-            } // end if
-    #endif
-        }
-    
-        break;
-    } // switch noise type
+//     case SPECKLE_NOISE:
+//         u0 = ( *image_entree ) ( x,y,z );
+//         u  = *in;
+//     
+//         if ( mask_test&& ( fabsf ( u+u0 ) >1E-4 ) && ( u>1 ) && ( u0>1 ) )
+//         {
+//             divF = ( val1 - u * val1div ) * ( u-u0 ) / ( u+u0 ) *u;
+//             /*
+//             if (divF<-1000) {
+//               printf("val1 %03.1f, u %03.1f, val1div %03.1f, u0  %03.1f --> divF  %03.1f\n",
+//                  val1,u,val1div,u0,divF);
+//             }
+//             */
+//             sum_divF += divF;
+//             nb_calculated_points++;
+//         }
+//         else
+//             divF = 0;
+//     
+//         if ( ( u>1 ) && ( u0>1 ) )
+//         {
+//             //
+//             // See if we can get a more implicit scheme
+//             // by solving a 3rd order equation:
+//             //
+//     #ifdef IMPLICIT
+//             double w[3];
+//             int nb_solutions;
+//             Solve3rdOrder ( val1div,- ( val1-this->beta ),
+//                             -this->beta* ( u0*u0 ),w,nb_solutions );
+//             if ( nb_solutions==1 )
+//                 val1_implicit = w[0];
+//             else
+//             {
+//                 /*
+//                 printf(" 3rd order equation %d solutions %3.2f %3.2f %3.2f \n",
+//                    nb_solutions,w[0],w[1],w[2]);
+//                 */
+//                 if ( w[0] >=0 ) val1_implicit = w[0];
+//                 else
+//                     if ( w[1] >=0 ) val1_implicit = w[1];
+//                     else
+//                         if ( w[2] >=0 ) val1_implicit = w[2];
+//             }
+//             val1=val1_implicit;
+//     #else
+//             val1  += beta* ( ( u0*u0 ) / ( u*u )-1 );
+//             if ( fabsf ( val1div ) >1E-4 ) {
+//             val1 /= val1div;
+//             } else {
+//             fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
+//             } // end if
+//     #endif
+//         }
+//     
+//         break;
+//     } // switch noise type
 
       if (fabsf(val1-*in)<0.1) {
         sum_divF2 += divF;

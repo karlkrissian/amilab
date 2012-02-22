@@ -64,8 +64,8 @@ Class ObjectIO {
         if accept { type_id = k; }
         type_ok = type_ok || accept
       }
-      printn "format='%1%'" % ::writeformat[type_id]
       if name_ok && type_ok {
+        printn "format='%1%'" % ::writeformat[type_id]
         res = "# %1%" % comments
         f._printn("  "+res)
         res = "::%1%" % name + " = "+ \

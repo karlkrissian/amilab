@@ -35,3 +35,7 @@ AddSegMenu()
 del AddSegMenu
 
 ami.MainFrame.AddToMenu("&Scripts","&Denoising","&Perona-Malik", "Denoising/PeronaMalik/PeronaMalikGui")
+ ami.MainFrame.AddToMenu("&Scripts","&Denoising","&AnisoGS_Flux",  "Denoising/AnisoGS_Flux/AnisoGS_FluxGui")
+
+ ami.MainFrame.AddToMenu("&Scripts","&Denoising","&AnisoGS_NRAD",  "Denoising/AnisoGS_NRAD/AnisoGS_NRADGui")
+

@@ -1,0 +1,11 @@
+
+func "AnisoGS_FluxClass"
+
+if (!exists(AnisoGS_Flux_obj)) {
+  AnisoGS_FluxClass AnisoGS_Flux_obj
+  AnisoGS_Flux_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

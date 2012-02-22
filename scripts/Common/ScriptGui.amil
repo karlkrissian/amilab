@@ -414,7 +414,7 @@ printn "::SaveParameters end"
         param_file = selection.back()
         del ::params_bak
         ::ParamClass ::params_bak
-        ::params_back = &::params
+        ::params_bak = ::params
         ::params.ReadFile(param_file)
         ::win.Update(-1)
       }
