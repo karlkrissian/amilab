@@ -37,6 +37,16 @@ if (!exists(AnisoGS_NRADClass)) {
         # Scheme, 0: explicit 1: semi-implicit
         ::scheme = INT(1),        "Numerical scheme: explicit or semi-implicit"
         ::run_on_roi = UCHAR(0),  "Run only on the selected region-of-interest"
+
+        ::noise_models = VarVector()
+          ::noise_models.push_back("Rician")
+          ::noise_models.push_back("Additive Gaussian")
+        mess = ""
+        for n=0 to ::noise_models.size()-1 { 
+          mess += "'%1%' " % ::noise_models[n]; 
+        }
+        ::noise_model = INT(0), "Statistical model of the noise (%1%)" % mess
+
         ::remove_bias = UCHAR(1), "Remove bias due to Rician noise model"
 
         #-----------------------------------------------------------------------
@@ -125,7 +135,12 @@ if (!exists(AnisoGS_NRADClass)) {
       }
       numit = ::params.t/::params.dt
       # running on the squared image
-      input1 = ::input*::input
+      squared=(::params.noise_models[::params.noise_model] == "Rician")
+      if squared {
+        input1 = ::input*::input
+      } else {
+        input1 = ::input
+      }
       if (::params.run_on_roi) {
         input1 <<= input1[::roi.GetExtent]
       }
@@ -136,12 +151,12 @@ if (!exists(AnisoGS_NRADClass)) {
       # threshold = 1 // not used
       # data attachment = 0
       ::NRADfilter.Init(&input1,::params.sigma,1,0)
-      ::NRADfilter.SetInputIsSquared(true)
+      ::NRADfilter.SetInputIsSquared(squared)
       ::NRADfilter.Setneighborhood(::params.neighborhood)
       ::NRADfilter.Setdt(::params.dt)
       # diffusion coefficient in minimal and maximal curvature directions
-      ::NRADfilter.Setmincurv_coeff(0.5)
-      ::NRADfilter.Setmaxcurv_coeff(0.01)
+      #::NRADfilter.Setmincurv_coeff(0.5)
+      #::NRADfilter.Setmaxcurv_coeff(0.01)
     
       ::NRADfilter.SetSRAD_ROI(&::roi)
     
@@ -189,8 +204,8 @@ if (!exists(AnisoGS_NRADClass)) {
       for k=1 to numit {
         ::NRADfilter.Iterate()
         ::res0 = ::NRADfilter.GetOutput()
-        ::res0 = ::res0*(::res0>0)
-        if (::params.run_on_roi) {
+        if ::params.noise_models[::params.noise_model] == "Rician" {
+          ::res0 = ::res0*(::res0>0)
           if (::params.remove_bias) {
             ::res0 = ::res0 - 2*noise_variance
             ::res0 = ::res0*(::res0>0)
@@ -198,14 +213,18 @@ if (!exists(AnisoGS_NRADClass)) {
           } else {
             ::res0 = sqrt(::res0)
           }
-          ::res.putimage(::res0)
-        } else {
-          if (::params.remove_bias) {
-            ::res0 = ::res0 - 2*noise_variance
-            ::res0 = ::res0*(::res0>0)
-            ::res = sqrt(::res0)
+          if (::params.run_on_roi) {
+            ::res.putimage(::res0)
           } else {
-            ::res = sqrt(::res0)
+            ::res = ::res0
+          }
+        } else {
+          if ::params.noise_models[::params.noise_model] == "Additive Gaussian" {
+            if (::params.run_on_roi) {
+              ::res.putimage(::res0)
+            } else {
+              ::res = ::res0
+            }
           }
         }
         #if (exists(::groundtruth)) {
@@ -268,6 +287,13 @@ if (!exists(AnisoGS_NRADClass)) {
     Comments( ::Display, "Display results")
     
     #---------------------------------------------------------------------------
+    proc ::OnNoiseModel() {
+      ::win.Enable( ::remove_bias_id,\
+                    ::params.noise_models[::params.noise_model]=="Rician")
+      ::win.Update(::remove_bias_id)
+    }
+
+    #---------------------------------------------------------------------------
     proc ::Save() {
       ::res.save ::result_filename
     }
@@ -294,6 +320,16 @@ if (!exists(AnisoGS_NRADClass)) {
           ::win.AddFloat( &::params.dt,"dt",0.01,1)
           ::win.AddFloat( &::params.t,"T",0,10)
           
+          ::noise_model_id = ::win.AddEnum( &::params.noise_model,\
+                                            "Noise model")
+          for n=0 to ::params.noise_models.size()-1 { 
+            ::win.AddEnumChoice(::noise_model_id,::params.noise_models[n])
+          }
+          ::win.SetCallback( &::OnNoiseModel)
+
+          ::remove_bias_id = ::win.AddBoolean(  &::params.remove_bias,\
+                                                "Remove Bias")
+
           ::win.AddInt( &::params.neighborhood,"Neighborhood",0,4)
       
           ::win.BeginHorizontal()
@@ -327,7 +363,6 @@ if (!exists(AnisoGS_NRADClass)) {
               ::win.SetPositionProp(-1,0)
             ::win.EndHorizontal()
             ::win.AddBoolean( &::params.run_on_roi,"Run on ROI")
-            ::win.AddBoolean( &::params.remove_bias,"Remove Bias")
             ::win.BeginBoxPanel("Result --> disk")
               ::win.BeginHorizontal()
                 ::win.AddString(&::result_filename,"File")

@@ -558,6 +558,19 @@ double ami::AnisoGSBase::function_c_Lee(double q_2, double q0_2)
 } // function_c_Lee
 
 //----------------------------------------------------------------------
+double ami::AnisoGSBase::function_c_additive(double q_2, double q0_2)
+{
+  double tmp;
+  if (fabsf(q0_2)<1E-4) return 0;
+  if (q_2<1E-3*q0_2) {
+    //    printf("function_c(q_2<0,q0_2) ...\n");
+    return 0;
+  }
+  tmp = q0_2/q_2;
+  return tmp;
+} // function_c_additive
+
+//----------------------------------------------------------------------
 double ami::AnisoGSBase::Compute_sigma2_MRI(InrImage* im)
 //
 {
@@ -609,104 +622,6 @@ double ami::AnisoGSBase::Compute_sigma2_MRI_mode(InrImage* im)
 
   return Func_Compute_sigma2_MRI_mode(im,this->SRAD_ROI);
 
-/*
-  InrImage* subvol;
-  InrImage* im2 = this->SRAD_ROI;
-  int xmin,xmax,ymin,ymax,zmin,zmax;
-
-  if (this->SRAD_ROI==NULL)
-    {
-      fprintf(stderr,"ami::AnisoGSBase::Compute_sigma2_MRI_mode() \t SRAD_ROI==NULL\n");
-      return 0.0;
-    }
-  xmin = (int) (im->SpaceToVoxelX(im2->SpacePosX(0))+0.5);
-  ymin = (int) (im->SpaceToVoxelY(im2->SpacePosY(0))+0.5);
-  zmin = (int) (im->SpaceToVoxelZ(im2->SpacePosZ(0))+0.5);
-  xmax = (int) (im->SpaceToVoxelX(im2->SpacePosX(im2->DimX()-1))+0.5);
-  ymax = (int) (im->SpaceToVoxelY(im2->SpacePosY(im2->DimY()-1))+0.5);
-  zmax = (int) (im->SpaceToVoxelZ(im2->SpacePosZ(im2->DimZ()-1))+0.5);
-  subvol = Func_SubImage( im, xmin,ymin,zmin, xmax,ymax,zmax);
-
-//----------------------------------------------------------
-  InrImage* im1;
-  InrImage* im1_mean;
-  InrImage* im1_var;
-  double mean,std;
-  double tmp,total;
-  int neigh_size;
-
-  // compute square root of image
-  im1 = new InrImage(WT_FLOAT,"im1.ami.gz",subvol);
-  im1->InitBuffer();
-  subvol->InitBuffer();
-  do {
-    tmp = subvol->ValeurBuffer();
-    if (tmp<0) tmp = 0.01;
-    im1->FixeValeur(sqrt(tmp));
-    subvol->IncBuffer();
-  }
-  while(im1->IncBuffer());
-
-  delete subvol;
-  
-  neigh_size=2;
-
-  im1_mean = Func_localmean2(im1,neigh_size);
-  // unbiased version
-  im1_var  = Func_localSD2(im1,im1_mean,neigh_size,1);
-
-
-//  mean   = Func_mean(im1);
-//  printf("mean(im1) %f   \n",mean);
-//  mean   = Func_mean(im1_mean);
-//  printf("mean(local mean) %f   \n",mean);
-  mean   = Func_mean(im1_var);
-//  printf("mean(local var) %f   \n",mean);
-
-  im1_var->InitBuffer();
-  total =0;
-  do {
-    tmp = im1_var->ValeurBuffer()-mean;
-    total += tmp*tmp;
-  }
-  while(im1_var->IncBuffer());
-  total = total/im1_var->Size();
-  std=sqrt(total);
-
-//  printf("mean %f std %f  \n",mean,std);
-
-  // histogram of values between mean +/- 2*std
-  double hist_min = 0;
-  double hist_max = mean+2*std;
-  int hist_size = (int)((hist_max-hist_min+1.0)*5.0);
-
-  InrImage* im_hist = Func_Histogram(im1_var,hist_min,hist_max,hist_size);
-
-
-  int maxpos = 0;
-  int val,valmax = 0;
-  int pos=0;
-
-  im_hist->InitBuffer();
-  do {
-    val= (int) im_hist->ValeurBuffer();
-    if (val>valmax) {
-        valmax = val;
-        maxpos = pos;
-    }
-    pos++;
-  }
-  while(im_hist->IncBuffer());
-
-  delete im1;
-  delete im1_mean;
-  delete im1_var;
-  delete im_hist;
-
-//  return (hist_min+maxpos*hist_step);
-  float sigma_max = im_hist->SpacePosX(maxpos);
-  return sigma_max*sigma_max;
-*/
 }
 
 //------------------------------------------------------------------------------

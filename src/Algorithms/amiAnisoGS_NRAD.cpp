@@ -101,10 +101,15 @@ void ami::AnisoGS_NRAD::ComputeImage_c(InrImage* im)
     {
     case NOISE_LEE:
     case NOISE_KUAN:
-    case NOISE_GAUSSIAN_ADDITIVE:
       q0_2= Compute_q0_subvol(im);
       printf("q0_2 = %f \n",q0_2);
       break;
+
+    case NOISE_GAUSSIAN_ADDITIVE:
+      sigma2 = Compute_sigma2_Gaussian_mode(im);
+      printf("noise SD = %3.2f \t",sqrt(sigma2));
+      break;
+
     case NOISE_RICIAN:
       /*        sigma2 = Compute_sigma2_MRI(im);
               printf("sigma = %f \n",sqrt(sigma2));
@@ -193,10 +198,10 @@ void ami::AnisoGS_NRAD::ComputeImage_c(InrImage* im)
                 case NOISE_KUAN:
                   image_c->FixeValeur( function_c_Kuan( q2, q0_2));
                   break;
-/*                    case NOISE_GAUSSIAN_ADDITIVE: 
+                case NOISE_GAUSSIAN_ADDITIVE: 
                   image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,
-                                                            q0_2)); 
-                  break;*/
+                                                            sigma2)); 
+                  break;
                 case NOISE_RICIAN:
                   image_c->FixeValeur( function_c_MRI( sigma2, 
                                                         mean2-mean1*mean1, 
@@ -602,8 +607,16 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       lambda0 = ( (*image_c)(x,y,z) + (*image_c)(x+incx,y,z) ) /2.0; 
 //      if (lambda0>2) lambda0=2;
       if (lambda0<1) {
-        ComputeLocalPlanStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e1,e2, planstats_sigma, mean,var);
-        lambda1 = function_c_MRI( sigma2, var, mean); 
+        ComputeLocalPlanStats(im, 
+                              (float)x+((float)incx)/2.0, (float) y, (float) z,  
+                              e1,e2, planstats_sigma, mean,var);
+        switch (noise_model) 
+        {
+          case NOISE_GAUSSIAN_ADDITIVE:
+            lambda1 = function_c_additive(var, sigma2);   break;
+          case NOISE_RICIAN: 
+            lambda1 = function_c_MRI( sigma2, var, mean); break;
+        }
         lambda1 *= 6./4.; // convert for 2D normalization
           switch (diffusion_eigenvalues_mode) {
           case DIFF_MATRIX_EIGEN_SUM:
@@ -615,8 +628,15 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
           }
       } else lambda1 = lambda0;
       if (lambda1<1) {
-        ComputeLocalDirStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e2, dirstats_sigma, mean,var);
-        lambda2 = function_c_MRI( sigma2, var, mean);
+        ComputeLocalDirStats(im, (float)x+((float)incx)/2.0, (float) y, 
+                             (float) z,  e2, dirstats_sigma, mean,var);
+        switch (noise_model) 
+        {
+          case NOISE_GAUSSIAN_ADDITIVE:
+            lambda2 = function_c_additive(var, sigma2);   break;
+          case NOISE_RICIAN: 
+            lambda2 = function_c_MRI( sigma2, var, mean); break;
+        }
         lambda2 *= 6./2.; // convert for 1D normalization
           switch (diffusion_eigenvalues_mode) {
           case DIFF_MATRIX_EIGEN_SUM:
@@ -653,8 +673,16 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
       // if (lambda0>2) lambda0=2;
       if (lambda0<1) {
-        ComputeLocalPlanStats(im, (float)x, (float) y+((float)incy)/2.0, (float) z,  e1,e2, planstats_sigma, mean,var);
-        lambda1 = function_c_MRI( sigma2, var, mean); 
+        ComputeLocalPlanStats(im, 
+                              (float)x, (float) y+((float)incy)/2.0, (float) z,
+                              e1,e2, planstats_sigma, mean,var);
+        switch (noise_model) 
+        {
+          case NOISE_GAUSSIAN_ADDITIVE:
+            lambda1 = function_c_additive(var, sigma2);   break;
+          case NOISE_RICIAN: 
+            lambda1 = function_c_MRI( sigma2, var, mean); break;
+        }
         lambda1 *= 6./4.; // convert for 2D normalization
           switch (diffusion_eigenvalues_mode) {
           case DIFF_MATRIX_EIGEN_SUM:
@@ -666,8 +694,16 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
           }
       } else lambda1 = lambda0;
       if (lambda1<1) {
-        ComputeLocalDirStats(im, (float)x, (float) y+((float)incy)/2.00, (float) z,  e2, dirstats_sigma, mean,var);
-        lambda2 = function_c_MRI( sigma2, var, mean);
+        ComputeLocalDirStats(im, 
+                             (float)x, (float) y+((float)incy)/2.00,  (float) z,
+                             e2, dirstats_sigma, mean,var);
+        switch (noise_model) 
+        {
+          case NOISE_GAUSSIAN_ADDITIVE:
+            lambda2 = function_c_additive(var, sigma2);   break;
+          case NOISE_RICIAN: 
+            lambda2 = function_c_MRI( sigma2, var, mean); break;
+        }
         lambda2 *= 6./2.; // convert for 1D normalization
           switch (diffusion_eigenvalues_mode) {
           case DIFF_MATRIX_EIGEN_SUM:
@@ -702,8 +738,16 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
       //        if (lambda0>2) lambda0=2;
       if (lambda0<1) {
-        ComputeLocalPlanStats(im, (float)x, (float) y, (float) z+((float)incz)/2.0,  e1,e2, planstats_sigma, mean,var);
-        lambda1 = function_c_MRI( sigma2, var, mean); 
+        ComputeLocalPlanStats(im, 
+                              (float)x, (float) y, (float) z+((float)incz)/2.0,
+                              e1,e2, planstats_sigma, mean,var);
+        switch (noise_model) 
+        {
+          case NOISE_GAUSSIAN_ADDITIVE:
+            lambda1 = function_c_additive(var, sigma2);   break;
+          case NOISE_RICIAN: 
+            lambda1 = function_c_MRI( sigma2, var, mean); break;
+        }
         lambda1 *= 6./4.; // convert for 2D normalization
           switch (diffusion_eigenvalues_mode) {
           case DIFF_MATRIX_EIGEN_SUM:
@@ -715,8 +759,16 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
           }
       } else lambda1 = lambda0;
       if (lambda1<1) {
-        ComputeLocalDirStats(im, (float)x, (float) y, (float) z+((float)incz)/2.0,  e2, dirstats_sigma, mean,var);
-        lambda2 = function_c_MRI( sigma2, var, mean);
+        ComputeLocalDirStats(im,
+                             (float)x, (float) y, (float) z+((float)incz)/2.0,
+                             e2, dirstats_sigma, mean,var);
+        switch (noise_model) 
+        {
+          case NOISE_GAUSSIAN_ADDITIVE:
+            lambda2 = function_c_additive(var, sigma2);   break;
+          case NOISE_RICIAN: 
+            lambda2 = function_c_MRI( sigma2, var, mean); break;
+        }
         lambda2 *= 6./2.; // convert for 1D normalization
           switch (diffusion_eigenvalues_mode) {
           case DIFF_MATRIX_EIGEN_SUM:

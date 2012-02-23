@@ -424,8 +424,9 @@ namespace ami {
     void DeleteCoefficients();
 
     double Compute_q0_subvol( InrImage* im);
-    double function_c_Kuan(double q_2, double q0_2);
-    double function_c_Lee(double q_2, double q0_2);
+    double function_c_Kuan    (double q_2, double q0_2);
+    double function_c_Lee     (double q_2, double q0_2);
+    double function_c_additive(double q_2, double q0_2);
 
     double Compute_sigma2_MRI(InrImage* im);
     double Compute_sigma2_MRI_mode(     InrImage* im);
