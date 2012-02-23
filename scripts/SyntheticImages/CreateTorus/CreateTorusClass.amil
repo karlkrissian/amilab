@@ -79,6 +79,9 @@ if (!exists(CreateTorusClass)) {
     ::dimx = 2*(::R+::r)+::margin
     ::dimy = ::dimx
     ::dimz = 2*::r+::margin
+    ::center_x = ::dimx/2
+    ::center_y = ::dimy/2
+    ::center_z = ::dimz/2
     ::win.Update(-1)
   }
 

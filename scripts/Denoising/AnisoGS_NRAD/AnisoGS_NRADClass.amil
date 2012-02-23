@@ -50,7 +50,8 @@ if (!exists(AnisoGS_NRADClass)) {
         ::remove_bias = UCHAR(1), "Remove bias due to Rician noise model"
 
         #-----------------------------------------------------------------------
-        proc ::__assign__( VAR p) {
+        proc ::__assign__( OBJECT p) {
+printn "__assign__"
           ::t                     = p.t
           ::dt                    = p.dt
           ::neighborhood          = p.neighborhood
@@ -60,6 +61,21 @@ if (!exists(AnisoGS_NRADClass)) {
           ::scheme                = p.scheme
           ::run_on_roi            = p.run_on_roi
           ::remove_bias           = p.remove_bias
+        }
+        #-----------------------------------------------------------------------
+        proc ::__copy__( ) {
+printn "__copy__"
+          ::ParamClass newp
+          newp.t                     = ::t
+          newp.dt                    = ::dt
+          newp.neighborhood          = ::neighborhood
+          newp.sigma                 = ::sigma
+          newp.local_struct          = ::local_struct
+          newp.eigen_mode            = ::eigen_mode
+          newp.scheme                = ::scheme
+          newp.run_on_roi            = ::run_on_roi
+          newp.remove_bias           = ::remove_bias
+          return = &newp
         }
     }
 
@@ -131,7 +147,7 @@ if (!exists(AnisoGS_NRADClass)) {
     proc ::FilterFlux() \
     {
       if (!exists(::input)) {
-        ::load_input
+        ::load_input()
       }
       numit = ::params.t/::params.dt
       # running on the squared image
@@ -151,6 +167,13 @@ if (!exists(AnisoGS_NRADClass)) {
       # threshold = 1 // not used
       # data attachment = 0
       ::NRADfilter.Init(&input1,::params.sigma,1,0)
+      if (::params.noise_models[::params.noise_model] == "Rician") {
+        ::NRADfilter.Setnoise_model(algorithms.ami_AnisoGS_NRAD.NOISE_RICIAN)
+      }
+      if (::params.noise_models[::params.noise_model] == "Additive Gaussian") {
+        ::NRADfilter.Setnoise_model(algorithms.ami_AnisoGSBase.\
+                                      NOISE_GAUSSIAN_ADDITIVE)
+      }
       ::NRADfilter.SetInputIsSquared(squared)
       ::NRADfilter.Setneighborhood(::params.neighborhood)
       ::NRADfilter.Setdt(::params.dt)
@@ -167,14 +190,22 @@ if (!exists(AnisoGS_NRADClass)) {
       ::res0 <<= ::NRADfilter.GetOutput()
       if (::params.run_on_roi) {
         ::res <<= ::input
-        ::res0 = sqrt(::res0)
+        if squared {
+          ::res0 = sqrt(::res0)
+        }
         ::res.putimage(::res0)
       } else {
-        ::res <<= sqrt(::res0)
+        if squared {
+          ::res <<= sqrt(::res0)
+        }
       }
 
       # Output estimated noise standard deviation
-      noise_variance = ::NRADfilter.Compute_sigma2_MRI_mode(&input1)
+      if ::params.noise_models[::params.noise_model] == "Rician" {
+        noise_variance = ::NRADfilter.Compute_sigma2_MRI_mode(&input1)
+      } else {
+        noise_variance = ::NRADfilter.Compute_sigma2_Gaussian_mode(&input1)
+      }
       printn " ------------------------"
       printn " Noise Standard Deviation  = %1% " % sqrt(noise_variance)
       printn " Variance = %1%" % noise_variance

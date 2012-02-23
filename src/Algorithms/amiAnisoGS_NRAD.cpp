@@ -495,7 +495,13 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
   }
 
   ComputeImage_c(im);
-  sigma2 = Compute_sigma2_MRI_mode(im);
+  switch (noise_model) 
+  {
+    case NOISE_GAUSSIAN_ADDITIVE:
+      sigma2 = Compute_sigma2_Gaussian_mode(im); break;
+    case NOISE_RICIAN: 
+      sigma2 = Compute_sigma2_MRI_mode(im); break;
+  }
 
 
   ResetCoefficients();

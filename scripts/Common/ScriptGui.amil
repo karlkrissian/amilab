@@ -490,7 +490,7 @@ printn "::SaveParameters end"
           win.SetPositionProp(1,2)
           win.AddButton("Read",&::ReadParameters)
           win.SetPositionProp(1,2)
-          win.AddButton("Scan",&::ScanParameters)
+          #win.AddButton("Scan",&::ScanParameters)
           win.SetPositionProp(1,2)
         win.EndHorizontal()
 

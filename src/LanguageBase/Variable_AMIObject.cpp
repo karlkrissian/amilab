@@ -57,7 +57,7 @@ LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
   BasicVariable::ptr resvar; \
   if (member.get()) { \
     ParamList::ptr param(new ParamList()); \
-    param->AddParam(varparam); \
+    param->AddParam(varparam->NewReference()); \
     if (member->Type()==type_class_member) { \
       DYNAMIC_CAST_VARIABLE(WrapClassMember,member, var1); \
       resvar = (var1->Pointer())->CallMember(param.get()); \
@@ -117,7 +117,9 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::NewReference() 
   // TODO: find a solution, are there too many variable references ???
   // could this slow down considerably amilab??
   // should we have a boolean saying that the reference needs special treatment?
-  APPLY_MEMBER_PARAM1("__reference__", ref, varres);
+
+  // disabled because of infinite loop and never used ...
+  //APPLY_MEMBER_PARAM1("__reference__", ref, varres);
   return ref;
 }
 
