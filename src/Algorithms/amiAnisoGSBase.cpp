@@ -829,11 +829,11 @@ void ami::AnisoGSBase::Smooth(InrImage* image, float sigma)
 }
 
 //------------------------------------------------------------------------------
-void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma1, 
-                                          float sigma2)
+void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1, 
+                                          float sigma_2)
 {
 
-printf("sig1 %f sig2 %f \n",sigma1,sigma2);
+printf("sig1 %f sig2 %f \n",sigma_1,sigma_2);
   if (im->_tz == 1)
   {
     fprintf(stderr, "structure tensor not yet available in 2D ! \n");
@@ -892,7 +892,7 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
   filtre->InitDerivees();
   filtre->GammaNormalise( true);
   filtre->SetSupportSize(5);
-  filtre->InitFiltre( sigma1, MY_FILTRE_CONV);  
+  filtre->InitFiltre( sigma_1, MY_FILTRE_CONV);  
   filtre->CalculFiltres( );
 
   // Calcul des coefficients du tenseur non liss�
@@ -910,9 +910,9 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
   for(x= 0;x<= image->_tx - 1;x++) {
 
     skip_voxel=false;
-    if ((image_c!=NULL)&&(SpeedUp_c)) {
+/*    if ((image_c!=NULL)&&(SpeedUp_c)) {
       skip_voxel = (*image_c)(x,y,z)>SpeedUp_c_lowerbound;
-    }
+    }*/
     if (!skip_voxel) {
       grad = filtre->Gradient(x,y,z);
       tensor_xx->FixeValeur( grad.x*grad.x);
@@ -938,12 +938,12 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
 
   // Lissage du tenseur
   // Pas optimise...
-  Smooth( tensor_xx, sigma2);
-  Smooth( tensor_xy, sigma2);
-  Smooth( tensor_xz, sigma2);
-  Smooth( tensor_yy, sigma2);
-  Smooth( tensor_yz, sigma2);
-  Smooth( tensor_zz, sigma2);
+  Smooth( tensor_xx, sigma_2);
+  Smooth( tensor_xy, sigma_2);
+  Smooth( tensor_xz, sigma_2);
+  Smooth( tensor_yy, sigma_2);
+  Smooth( tensor_yz, sigma_2);
+  Smooth( tensor_zz, sigma_2);
 
 
   if (image!=im) delete image;
@@ -994,9 +994,9 @@ void ami::AnisoGSBase::ComputeEigenVectors()
     // z = sin(theta)
 
     bool skip_voxel=false;
-    if ((image_c!=NULL)&&(SpeedUp_c)) {
-      skip_voxel = (*image_c)(x,y,z)>SpeedUp_c_lowerbound;
-    }
+//     if ((image_c!=NULL)&&(SpeedUp_c)) {
+//       skip_voxel = (*image_c)(x,y,z)>SpeedUp_c_lowerbound;
+//     }
 
     if (!skip_voxel) {
       // x+0.5dx,y,z
