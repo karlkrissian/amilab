@@ -461,7 +461,8 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 //    double lambda_threshold = 0.6;
 
 //    double        diff_coeff;
-    unsigned char speedup_skip;
+    /// skip heavy code because of speedup
+    bool          speedup_skip;
     long          speedup_counter = 0;
 
     int      xp,xm,yp,ym,zp,zm,incx,incy,incz;
@@ -469,6 +470,16 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
   // pre-compute information
 
   // printf("Itere3D_2_new \n");
+
+  ComputeImage_c(im);
+  // TODO: should not recompute sigma2 already computed in ComputeImage_c ...
+  switch (noise_model) 
+  {
+    case NOISE_GAUSSIAN_ADDITIVE:
+      sigma2 = Compute_sigma2_Gaussian_mode(im); break;
+    case NOISE_RICIAN: 
+      sigma2 = Compute_sigma2_MRI_mode(im); break;
+  }
 
   if ((iteration==1)&&(loop==2)) {
     ComputeStructureTensor(im,0.7,sigma);
@@ -493,16 +504,6 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 //    (*im) = (*image_c);
     loop+=2;
   }
-
-  ComputeImage_c(im);
-  switch (noise_model) 
-  {
-    case NOISE_GAUSSIAN_ADDITIVE:
-      sigma2 = Compute_sigma2_Gaussian_mode(im); break;
-    case NOISE_RICIAN: 
-      sigma2 = Compute_sigma2_MRI_mode(im); break;
-  }
-
 
   ResetCoefficients();
 
@@ -578,25 +579,21 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 //    if (z==tz-1) { zp=0; incz = 0; }
 //    if (z==0)    zm=0;
 
-    speedup_skip = 0;
+    speedup_skip = false;
 
-/*
-    if ((contours_mode==CONTOURS_OSRAD)     ||
-        (contours_mode==CONTOURS_RNRAD)    ||
-        (contours_mode==CONTOURS_NRAD) ) {
-      diff_coeff = ( *image_c ) ( x,y,z );
+    if (SpeedUp_c) {
+      double diff_coeff = ( *image_c ) ( x,y,z );
       // do a scalar diffusion to speed-up the process
-      if (diff_coeff>0.5) {
+      if (diff_coeff>SpeedUp_c_lowerbound) {
         alpha1_x =  ( diff_coeff + (*image_c)(x+incx,y,z) ) /2.0;;
         alpha1_y =  ( diff_coeff + (*image_c)(x,y+incy,z) ) /2.0;;
         alpha1_z =  ( diff_coeff + (*image_c)(x,y,z+incz) ) /2.0;;
 
         gamma1_x = gamma1_y = gamma1_z = 0;
-        speedup_skip = 1;
+        speedup_skip = true;
         speedup_counter++;
       }
     }
-*/
 
     if (!speedup_skip) {
       InitNeighborhood(Iconv,x,y,z);
@@ -933,8 +930,8 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       }
 
       if (divFim!=NULL) {
-    divFim->BufferPos(x,y,z);
-    divFim->FixeValeur(divF);
+        divFim->BufferPos(x,y,z);
+        divFim->FixeValeur(divF);
       }
 
 
@@ -1002,7 +999,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
   // backup previous image in image_c
   ExtendBoundariesVonNeumann(im_tmp);
-  if (image_c!=NULL)  (*image_c) = (*im);
+  //if (image_c!=NULL)  (*image_c) = (*im);
   (*im) = (*this->im_tmp);
 
   printf(" speedup %3.3f %% \n",speedup_counter/(1.0*txy*tz)*100.0);

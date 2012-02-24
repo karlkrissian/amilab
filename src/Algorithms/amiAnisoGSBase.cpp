@@ -903,18 +903,25 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
   tensor_yy->InitBuffer();
   tensor_yz->InitBuffer();
   tensor_zz->InitBuffer();
+  bool skip_voxel;
 
   for(z= 0;z<= image->_tz - 1;z++) {
   for(y= 0;y<= image->_ty - 1;y++) {
   for(x= 0;x<= image->_tx - 1;x++) {
 
-    grad = filtre->Gradient(x,y,z);
-    tensor_xx->FixeValeur( grad.x*grad.x);
-    tensor_xy->FixeValeur( grad.x*grad.y);
-    tensor_xz->FixeValeur( grad.x*grad.z);
-    tensor_yy->FixeValeur( grad.y*grad.y);
-    tensor_yz->FixeValeur( grad.y*grad.z);
-    tensor_zz->FixeValeur( grad.z*grad.z);
+    skip_voxel=false;
+    if ((image_c!=NULL)&&(SpeedUp_c)) {
+      skip_voxel = (*image_c)(x,y,z)>SpeedUp_c_lowerbound;
+    }
+    if (!skip_voxel) {
+      grad = filtre->Gradient(x,y,z);
+      tensor_xx->FixeValeur( grad.x*grad.x);
+      tensor_xy->FixeValeur( grad.x*grad.y);
+      tensor_xz->FixeValeur( grad.x*grad.z);
+      tensor_yy->FixeValeur( grad.y*grad.y);
+      tensor_yz->FixeValeur( grad.y*grad.z);
+      tensor_zz->FixeValeur( grad.z*grad.z);
+    }
 
     tensor_xx->IncBuffer();
     tensor_xy->IncBuffer();
@@ -986,39 +993,46 @@ void ami::AnisoGSBase::ComputeEigenVectors()
     // y = cos(theta)*sin(phi)
     // z = sin(theta)
 
-    // x+0.5dx,y,z
-    this->StructTensor_eigenvectors(0,x,y,z,e0,e1,e2);
+    bool skip_voxel=false;
+    if ((image_c!=NULL)&&(SpeedUp_c)) {
+      skip_voxel = (*image_c)(x,y,z)>SpeedUp_c_lowerbound;
+    }
 
-    // e1
-    eigenvect_xp->BufferPos(x,y,z);
-    eigenvect_xp->VectFixeValeur(0,convert_short(e1.x));
-    eigenvect_xp->VectFixeValeur(1,convert_short(e1.y));
-    eigenvect_xp->VectFixeValeur(2,convert_short(e1.z));
-    eigenvect_xp->VectFixeValeur(3,convert_short(e2.x));
-    eigenvect_xp->VectFixeValeur(4,convert_short(e2.y));
-    eigenvect_xp->VectFixeValeur(5,convert_short(e2.z));
+    if (!skip_voxel) {
+      // x+0.5dx,y,z
+      this->StructTensor_eigenvectors(0,x,y,z,e0,e1,e2);
 
-    // x,y+0.5dy,z
-    this->StructTensor_eigenvectors(1,x,y,z,e0,e1,e2);
+      // e1
+      eigenvect_xp->BufferPos(x,y,z);
+      eigenvect_xp->VectFixeValeur(0,convert_short(e1.x));
+      eigenvect_xp->VectFixeValeur(1,convert_short(e1.y));
+      eigenvect_xp->VectFixeValeur(2,convert_short(e1.z));
+      eigenvect_xp->VectFixeValeur(3,convert_short(e2.x));
+      eigenvect_xp->VectFixeValeur(4,convert_short(e2.y));
+      eigenvect_xp->VectFixeValeur(5,convert_short(e2.z));
 
-    eigenvect_yp->BufferPos(x,y,z);
-    eigenvect_yp->VectFixeValeur(0,convert_short(e1.x));
-    eigenvect_yp->VectFixeValeur(1,convert_short(e1.y));
-    eigenvect_yp->VectFixeValeur(2,convert_short(e1.z));
-    eigenvect_yp->VectFixeValeur(3,convert_short(e2.x));
-    eigenvect_yp->VectFixeValeur(4,convert_short(e2.y));
-    eigenvect_yp->VectFixeValeur(5,convert_short(e2.z));
+      // x,y+0.5dy,z
+      this->StructTensor_eigenvectors(1,x,y,z,e0,e1,e2);
+
+      eigenvect_yp->BufferPos(x,y,z);
+      eigenvect_yp->VectFixeValeur(0,convert_short(e1.x));
+      eigenvect_yp->VectFixeValeur(1,convert_short(e1.y));
+      eigenvect_yp->VectFixeValeur(2,convert_short(e1.z));
+      eigenvect_yp->VectFixeValeur(3,convert_short(e2.x));
+      eigenvect_yp->VectFixeValeur(4,convert_short(e2.y));
+      eigenvect_yp->VectFixeValeur(5,convert_short(e2.z));
 
 
-    this->StructTensor_eigenvectors(2,x,y,z,e0,e1,e2);
+      this->StructTensor_eigenvectors(2,x,y,z,e0,e1,e2);
 
-    eigenvect_zp->BufferPos(x,y,z);
-    eigenvect_zp->VectFixeValeur(0,convert_short(e1.x));
-    eigenvect_zp->VectFixeValeur(1,convert_short(e1.y));
-    eigenvect_zp->VectFixeValeur(2,convert_short(e1.z));
-    eigenvect_zp->VectFixeValeur(3,convert_short(e2.x));
-    eigenvect_zp->VectFixeValeur(4,convert_short(e2.y));
-    eigenvect_zp->VectFixeValeur(5,convert_short(e2.z));
+      eigenvect_zp->BufferPos(x,y,z);
+      eigenvect_zp->VectFixeValeur(0,convert_short(e1.x));
+      eigenvect_zp->VectFixeValeur(1,convert_short(e1.y));
+      eigenvect_zp->VectFixeValeur(2,convert_short(e1.z));
+      eigenvect_zp->VectFixeValeur(3,convert_short(e2.x));
+      eigenvect_zp->VectFixeValeur(4,convert_short(e2.y));
+      eigenvect_zp->VectFixeValeur(5,convert_short(e2.z));
+    }
 
 
   } // for z,y,z

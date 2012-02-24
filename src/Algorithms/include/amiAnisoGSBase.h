@@ -305,6 +305,10 @@ namespace ami {
 
     AddSetGetVar( diffusion_eigenvalues_mode,  int);
 
+    /// Run a scalar diffusion if image_c is higher than the lower bound
+    AddSetGetVar( SpeedUp_c,             bool);
+    AddSetGetVar( SpeedUp_c_lowerbound,  float);
+
     InrImage* Getresult_image() 
     { 
       return this->result_image; 
@@ -393,26 +397,28 @@ namespace ami {
       local_structure_mode       = LOCAL_STRUCT_CURV;
       diffusion_eigenvalues_mode = DIFF_MATRIX_EIGEN_SUM;
 
-      noise_type = GAUSSIAN_NOISE;
-      noise_standard_deviation = -1;
-      noise_SD_preset=0;
-      variance = 0;
+      noise_type                = GAUSSIAN_NOISE;
+      noise_standard_deviation  = -1;
+      noise_SD_preset           = 0;
+      variance                  = 0;
 
-      epsilon     = 1E-2;
+      epsilon                   = 1E-2;
 
-      SmoothedParam = false;
+      SmoothedParam             = false;
 
-      filtre_rec = NULL;
-      filtre     = NULL;
+      filtre_rec                = NULL;
+      filtre                    = NULL;
 
-      DistanceMap = 0;
+      DistanceMap               = 0;
 
-      noise_model    = NOISE_RICIAN;
+      noise_model               = NOISE_RICIAN;
 
-      neighborhood = 1;
-      dt = 0.05;
+      neighborhood              = 1;
+      dt                        = 0.05;
       
-      InputIsSquared = false;
+      InputIsSquared            = false;
+      SpeedUp_c                 = true;
+      SpeedUp_c_lowerbound      = 0.5;
     }
 
 
