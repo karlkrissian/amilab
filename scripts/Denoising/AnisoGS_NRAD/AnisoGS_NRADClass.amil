@@ -49,6 +49,10 @@ if (!exists(AnisoGS_NRADClass)) {
 
         ::remove_bias = UCHAR(1), "Remove bias due to Rician noise model"
 
+        ::speedup            = UCHAR(1), "Allow speedup based on diffusion "+ \
+                                          "coefficients"
+        ::speedup_lowerbound = 0.5, "Lower bound to enable speedup"
+
         #-----------------------------------------------------------------------
         proc ::__assign__( OBJECT p) {
 printn "__assign__"
@@ -61,6 +65,8 @@ printn "__assign__"
           ::scheme                = p.scheme
           ::run_on_roi            = p.run_on_roi
           ::remove_bias           = p.remove_bias
+          ::speedup               = p.speedup
+          ::speedup_lowerbound    = p.speedup_lowerbound
         }
         #-----------------------------------------------------------------------
         proc ::__copy__( ) {
@@ -75,6 +81,8 @@ printn "__copy__"
           newp.scheme                = ::scheme
           newp.run_on_roi            = ::run_on_roi
           newp.remove_bias           = ::remove_bias
+          newp.speedup               = ::speedup
+          newp.speedup_lowerbound    = ::speedup_lowerbound
           return = &newp
         }
     }
@@ -175,6 +183,11 @@ printn "__copy__"
                                       NOISE_GAUSSIAN_ADDITIVE)
       }
       ::NRADfilter.SetInputIsSquared(squared)
+
+      # Setting speedup options
+      ::NRADfilter.SetSpeedUp_c           (::params.speedup)
+      ::NRADfilter.SetSpeedUp_c_lowerbound(::params.speedup_lowerbound)
+
       ::NRADfilter.Setneighborhood(::params.neighborhood)
       ::NRADfilter.Setdt(::params.dt)
       # diffusion coefficient in minimal and maximal curvature directions
@@ -394,6 +407,10 @@ printn "__copy__"
               ::win.SetPositionProp(-1,0)
             ::win.EndHorizontal()
             ::win.AddBoolean( &::params.run_on_roi,"Run on ROI")
+            ::win.BeginBoxPanel("Speedup")
+              ::win.AddBoolean(&::params.speedup,"Enable speedup")
+              ::win.AddFloat(&::params.speedup_lowerbound,"Lower bound",0,1)
+            ::win.EndBoxPanel()
             ::win.BeginBoxPanel("Result --> disk")
               ::win.BeginHorizontal()
                 ::win.AddString(&::result_filename,"File")
