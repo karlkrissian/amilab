@@ -1,4 +1,5 @@
 
+
 del alWxFileList
 
 #===========================================================================
@@ -7,6 +8,8 @@ del alWxFileList
 # 
 Class alWxFileList \
 {
+  func "Common/LoadIcons"
+  LoadIcons ::icons
 
   #-----------------------------------------------------------------------------
   proc ::Init() \
@@ -57,6 +60,52 @@ Class alWxFileList \
   }
 
   #-----------------------------------------------------------------------------
+  proc ::GetFullPath( NUM item) \
+  {
+    list_item = wx.wxListItem()
+    # need to set the mask of information to retreive ... especially for windows
+    list_item.SetMask(wx.wxLIST_MASK_TEXT)
+    list_item.SetId(item)
+    # Get subpath
+    list_item.SetColumn(0)
+    ::listctrl.GetItem(&list_item)
+    subpath = wx.FromWxString(list_item.GetText())
+    # Get Filename
+    #list_item.SetId(item)
+    list_item.SetColumn(1)
+    ::listctrl.GetItem(&list_item)
+    filename = wx.FromWxString(list_item.GetText())
+    #printn "filename=%1%" % filename
+    # Get path ID
+    #list_item.SetId(item)
+    list_item.SetColumn(2)
+    ::listctrl.GetItem(&list_item)
+    path_id = atof(wx.FromWxString(list_item.GetText()))
+
+    #fullname = ::graphviz_dotdir+"/"+subpath+"/"+filename
+    fullname = ::paths[path_id]+"/"+subpath+"/"+filename
+    #printn "fullname = %1%" % fullname
+
+    # cleanup the name
+    fullname = wx.FromWxString(wx.wxFileName(fullname).GetFullPath())
+    return=&fullname
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::GetFilename( NUM item) \
+  {
+    list_item = wx.wxListItem()
+    # need to set the mask of information to retreive ... especially for windows
+    list_item.SetMask(wx.wxLIST_MASK_TEXT)
+    list_item.SetId(item)
+    # Get Filename
+    list_item.SetColumn(1)
+    ::listctrl.GetItem(&list_item)
+    filename = wx.FromWxString(list_item.GetText())
+    return=&filename
+  }
+
+  #-----------------------------------------------------------------------------
   # returns the list of selected files
   # as a VarVector of strings
   #
@@ -68,33 +117,7 @@ Class alWxFileList \
                                   wx.wxLIST_STATE_SELECTED)
     ok = (item!=-1)
     while ok {
-      #printn "item = %1%" % item
-      list_item = wx.wxListItem()
-      # need to set the mask of information to retreive ... especially for windows
-      list_item.SetMask(wx.wxLIST_MASK_TEXT)
-      list_item.SetId(item)
-      # Get subpath
-      list_item.SetColumn(0)
-      ::listctrl.GetItem(&list_item)
-      subpath = wx.FromWxString(list_item.GetText())
-      # Get Filename
-      #list_item.SetId(item)
-      list_item.SetColumn(1)
-      ::listctrl.GetItem(&list_item)
-      filename = wx.FromWxString(list_item.GetText())
-      #printn "filename=%1%" % filename
-      # Get path ID
-      #list_item.SetId(item)
-      list_item.SetColumn(2)
-      ::listctrl.GetItem(&list_item)
-      path_id = atof(wx.FromWxString(list_item.GetText()))
-
-      #fullname = ::graphviz_dotdir+"/"+subpath+"/"+filename
-      fullname = ::paths[path_id]+"/"+subpath+"/"+filename
-      #printn "fullname = %1%" % fullname
-
-      # cleanup the name
-      fullname = wx.FromWxString(wx.wxFileName(fullname).GetFullPath())
+      fullname = ::GetFullPath(&item)
       return.push_back(fullname)
       #printn "fullname = %1%" % fullname
 
@@ -117,6 +140,7 @@ Class alWxFileList \
     if exists(::selection_cmd) {
       ::selection_cmd()
     }
+    #event.Skip()
 
     #selection = ::GetSelected()
 
@@ -124,6 +148,102 @@ Class alWxFileList \
     #::graphviz_file = wx.FromWxString(wx.wxFileName(fullname).GetFullPath())
     #::OutputAuto()
     #::Run()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_MenuRename( OBJECT event ) \
+  {
+    #printn "::CB_MenuRename"
+    currentname     = ::GetFilename(::current_index)
+    currentfullpath = ::GetFullPath(::current_index)
+    newname = wx.wxGetTextFromUser( "new name",\
+                                    "Rename file in list",\
+                                    &currentname)
+    # rename
+    newfilename = wx.wxFileName(currentfullpath)
+    newfilename.SetFullName(newname)
+    if (newfilename.FileExists()) {
+      InfoDialog "File exists already, give another name !"
+    } else {
+      # check if it matches one of the specs
+      match_spec=false
+      for n=0 to ::file_specs.size()-1 \
+      {
+        match_spec =  match_spec || \
+                      wx.wxMatchWild(::file_specs[n], newname , false)
+      }
+      if (!match_spec) {
+        InfoDialog "The new file does not match any filespec ..."
+      } else {
+        ok = wx.wxRenameFile(currentfullpath,newfilename.GetFullPath(),false)
+        if (ok) {
+          ::Scan()
+        }
+      }
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_MenuDelete( OBJECT event ) \
+  {
+    currentname     = ::GetFilename(::current_index)
+    currentfullpath = ::GetFullPath(::current_index)
+    answer = wx.wxMessageBox("Delete file %1%?" % currentfullpath, "Confirm",\
+                              wx.wxYES | wx.wxNO | wx.wxCANCEL);
+    if (answer == wx.wxYES) {
+      # rename
+      newfilename = wx.wxFileName(currentfullpath)
+      newfilename.SetFullName("bak."+wx.FromWxString(currentname))
+      ok = wx.wxRenameFile(currentfullpath,newfilename.GetFullPath(),false)
+      if (ok) {
+        ::Scan()
+      }
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CreatePopupMenu(  ) \
+  {
+    if (!exists(::menu)) {
+      ::menu = wx.wxMenu("Options")
+      ::item1 = wx.wxMenuItem(&::menu,10001,"Rename file",\
+                              "Rename file")
+      ::icons.LoadIconPNG("Rename")
+      ::item1.SetBitmap(&wx.wxBitmap(&::icons._Rename.Rescale(16,16)))
+      ::menu.Append(&::item1 )
+
+      ::item2 = wx.wxMenuItem(&::menu,10002,"Delete file(s)",\
+                              "Delete file(s)")
+      ::icons.LoadIconPNG("Delete")
+      ::item2.SetBitmap(&wx.wxBitmap(&::icons._Delete.Rescale(16,16)))
+      ::menu.Append(&::item2 );
+
+      ::evh_menurename = wx.wxAmiEventHandler(&::CB_MenuRename)
+      ::listctrl.Connect( 10001,wx.wxEVT_COMMAND_MENU_SELECTED,\
+                          &::evh_menurename.GetMenuEventFunction(),\
+                          &NULL, &::evh_menurename)
+
+      ::evh_menudelete = wx.wxAmiEventHandler(&::CB_MenuDelete)
+      ::listctrl.Connect( 10002,wx.wxEVT_COMMAND_MENU_SELECTED,\
+                          &::evh_menudelete.GetMenuEventFunction(),\
+                          &NULL, &::evh_menudelete)
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_PopupMenu( OBJECT event ) \
+  {
+    printn "::CB_PopupMenu"
+    del ::listitem
+    ::listitem = event.GetItem()
+    ::current_index = event.GetIndex()
+    printn "index = %1%" % event.GetIndex()
+    #printn "listitem.GetId() %1%" % ::listitem.GetId()
+    #printn "listitem.GetText() %1%" % wx.FromWxString(::listitem.GetText())
+    pt = event.GetPoint()
+    ::CreatePopupMenu()
+    ::listctrl.PopupMenu(&::menu, &pt);
+    event.Skip()
   }
 
   #-----------------------------------------------------------------------------
@@ -251,6 +371,12 @@ Class alWxFileList \
         ::listctrl.Connect( wx.wxEVT_COMMAND_LIST_ITEM_SELECTED\
                             ,&::evh_selected.GetEventFunction(),\
                             &NULL,&::evh_selected)
+        # popup menu event
+        ::evh_popupmenu = wx.wxAmiEventHandler(&::CB_PopupMenu)
+        ::listctrl.Connect( wx.wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,\
+                            &::evh_popupmenu.GetListEventFunction(),\
+                            &NULL,&::evh_popupmenu)
+
       win.AddPage("Text")
         ::txtctrl = wx.wxRichTextCtrl(&win.CurrentParent())
         win.AddWidget(&::txtctrl,1)

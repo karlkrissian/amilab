@@ -62,7 +62,12 @@
   AMI_DECLARE_TYPE(wxPaintEvent)
 #endif
 
-  void CB_ParamWin( void* cd );
+#ifndef wxMenuEvent_declared
+  #define wxMenuEvent_declared
+  AMI_DECLARE_TYPE(wxMenuEvent)
+#endif
+
+void CB_ParamWin( void* cd );
 void CallAmiFunction(AMIFunction* f, const ParamList::ptr& p);
 
 /* Karl*/
@@ -262,6 +267,36 @@ class wxAmiEventHandler: public wxEvtHandler
         wxLogMessage(wxT("Callback function not available"));
     }
 
+    void OnListEvent(wxListEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxListEvent>::CreateVar(
+          (wxListEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+
+    void OnMenuEvent(wxMenuEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxMenuEvent>::CreateVar(
+          (wxMenuEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+
 //     void OnListEvent(wxListEvent& event)
 //     {
 //       if (callback_function!=NULL)
@@ -346,11 +381,17 @@ class wxAmiEventHandler: public wxEvtHandler
       return eventfunc;
     }
 
-/*    wxObjectEventFunction* GetListEventFunction() {
+    wxObjectEventFunction* GetListEventFunction() {
       // TODO: delete the new allocation
       eventfunc = new wxObjectEventFunction(wxListEventHandler(wxAmiEventHandler::OnListEvent));
       return eventfunc;
-    }*/
+    }
+
+    wxObjectEventFunction* GetMenuEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxMenuEventHandler(wxAmiEventHandler::OnMenuEvent));
+      return eventfunc;
+    }
 };
 /*--*/
 

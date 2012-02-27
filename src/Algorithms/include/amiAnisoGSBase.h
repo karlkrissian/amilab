@@ -22,6 +22,8 @@
 #include "DirPrincipales.hpp"
 #include "FloatMatrix.hpp"
 
+#include "Timing.hpp"
+
 class DeriveesLissees;
 class FiltrageRec;
 #include "GeneralGaussianFilter.h"
@@ -248,6 +250,10 @@ namespace ami {
     InrImage* eigenvect_zp;
     //@}
   
+    Timing structtensor_time;
+    Timing eigendecomp_time;
+    Timing iteration_time;
+    
   public:
 
 
@@ -347,7 +353,9 @@ namespace ami {
     static InrImage::ptr Run(InrImage::ptr input, float sigma, float k, 
                              float beta, int nbit);
     
-    AnisoGSBase()
+    AnisoGSBase() : structtensor_time("Structure Tensor"), 
+                    eigendecomp_time("Eigen decomposition"),
+                    iteration_time("Iterations")
       {
         InitParam();
       }
