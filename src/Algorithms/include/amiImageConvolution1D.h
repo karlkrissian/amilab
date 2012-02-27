@@ -43,10 +43,12 @@ namespace ami {
     
     ImageConvolution1D() 
     {
-      _kernel_coeff   = NULL;
       _kernel_radius  = 0;
+      _kernel_support = 4;
       _dir            = DIR_X;
       _symmetry       = NONE;
+      _sigma          = 1;
+      _order          = 0;
     }
     
     /** @name ConvOrientation
@@ -66,26 +68,53 @@ namespace ami {
       EVEN,
       ODD,
       NONE
-    }
+    };
     
     /// kernel coefficients
-    std::vector<double> _kernel_coeff;  
+    std::vector<double> _kernel_coeff;
     /// size of kernel support will be 2*_kernel_radius+1
     AddSetGetVar( _kernel_radius, int)
 
     /// Kernel symmetry
     AddSetGetVar( _symmetry, Symmetry)
+
+    /// Kernel support (real kernel radius will be _kernel_support*sigma)
+    AddSetGetVar( _kernel_support, int)
     
     /// Convolution orientation
     AddSetGetVar( _dir, ConvOrientation)
+
+    /// Gaussian Standard Deviation
+    AddSetGetVar( _sigma, double)
     
-    ///
-    double GaussianFunction( double x, int orden=0);
+    /// Gaussian derivation order
+    AddSetGetVar( _order, int)
 
     ///
-    void InitGaussianKernel(  float sigma, int support_coeff=4, int orden=0);
+    double GaussianFunction( double x, double sigma,  int orden=0);
+
+    ///
+    void InitGaussianKernel( );
 
     
+    ///
+    template <class T>
+    double ConvolveDirX(  T* input, 
+                          const int& x, const int& tx, 
+                          const T& minval, 
+                          const T& maxval);
+    ///
+    template <class T>
+    double ConvolveDirY(  T* input, 
+                          const int& y, const int& ty, const int& incy,
+                          const T& minval, 
+                          const T& maxval);
+    ///
+    template <class T>
+    double ConvolveDirZ(  T* input, 
+                          const int& z, const int& tz, const int& incz,
+                          const T& minval, 
+                          const T& maxval);
     /**
     * Process part of the image
     * @param threadid 
@@ -98,6 +127,9 @@ namespace ami {
     * @param threadid 
     */
     void Process( int threadid = 0);
+
+    //--------------------------------------------------------------------------
+    void Run();
 
     //--------------------------------------------------------------------------
     void SetOutputImage(InrImage::ptr o)

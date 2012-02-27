@@ -35,6 +35,7 @@ SET(Algorithms_SRCS
   amiImageToImageFilter.cpp
   amiImageAddScalar.cpp
   amiImageCos.cpp
+  amiImageConvolution1D.cpp
   amiGrayscaleMorpho.cpp
   amiSRAD.cpp
   amiThinning.cpp
@@ -111,6 +112,7 @@ SET(Algorithms_HDRS
   include/amiImageToImageFilter.h
   include/amiImageAddScalar.h
   include/amiImageCos.h
+  include/amiImageConvolution1D.h
   include/amiGrayscaleMorpho.h
   include/amiSRAD.h
   include/amiRegionGrowingBase.h

@@ -13,6 +13,7 @@
 #include "amiGrayscaleMorpho.h"
 #include "amiIntensityBasedRegionGrowing.h"
 #include "amiThinning.h"
+#include "amiImageConvolution1D.h"
 
 #include "amiFind.h"
 #include "amivtkFastMarchingFunctions.h"

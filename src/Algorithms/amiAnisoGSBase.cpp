@@ -814,6 +814,7 @@ void ami::AnisoGSBase::Smooth(InrImage* image, float sigma)
     GeneralGaussianFilter* filtre;
 
   filtre = new GeneralGaussianFilter(image, MODE_3D);
+  filtre->Set_use_new_filter(UseNewConvolutionFilter);
 //  filtre->SetScaleUnit(PIXEL_SPACE);
   filtre->Utilise_Image(   true);
   filtre->UtiliseGradient( false);
@@ -833,6 +834,7 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
                                           float sigma_2)
 {
 
+  std::cout << "Begin ami::AnisoGSBase::ComputeStructureTensor()" << std::endl;
 printf("sig1 %f sig2 %f \n",sigma_1,sigma_2);
   if (im->_tz == 1)
   {
@@ -887,6 +889,8 @@ printf("sig1 %f sig2 %f \n",sigma_1,sigma_2);
   // Initialisation des images des d�riv�es 
   filtre = new GeneralGaussianFilter(image, MODE_3D);
 //  filtre->SetScaleUnit(PIXEL_SPACE);
+  
+  filtre->Set_use_new_filter(UseNewConvolutionFilter);
   filtre->Utilise_Image(   false);
   filtre->UtiliseGradient( true);
   filtre->InitDerivees();
@@ -948,6 +952,7 @@ printf("sig1 %f sig2 %f \n",sigma_1,sigma_2);
 
   if (image!=im) delete image;
 
+  std::cout << "End ami::AnisoGSBase::ComputeStructureTensor()" << std::endl;
 
 } // ComputeStructureTensor()
 
@@ -959,6 +964,8 @@ void ami::AnisoGSBase::ComputeEigenVectors()
 {
   int x,y,z;
   t_3Point e0, e1, e2;
+
+  std::cout << "Begin ami::AnisoGSBase::ComputeEigenVectors()" << std::endl;
 
   if (eigenvect_xp==NULL) 
     eigenvect_xp =  new InrImage( image_entree->DimX(),
@@ -994,9 +1001,9 @@ void ami::AnisoGSBase::ComputeEigenVectors()
     // z = sin(theta)
 
     bool skip_voxel=false;
-//     if ((image_c!=NULL)&&(SpeedUp_c)) {
-//       skip_voxel = (*image_c)(x,y,z)>SpeedUp_c_lowerbound;
-//     }
+    if ((image_c!=NULL)&&(SpeedUp_c)) {
+      skip_voxel = (*image_c)(x,y,z)>SpeedUp_c_lowerbound;
+    }
 
     if (!skip_voxel) {
       // x+0.5dx,y,z
@@ -1042,6 +1049,7 @@ eigenvect_xp->Sauve();
 eigenvect_yp->Sauve();
 eigenvect_zp->Sauve();
 */
+  std::cout << "End ami::AnisoGSBase::ComputeEigenVectors()" << std::endl;
 }
 
 
@@ -1258,7 +1266,6 @@ void ami::AnisoGSBase::StructTensor_eigenvectors( int coord, int x, int y, int z
                                               t_3Point& e0, t_3Point& e1, 
                                               t_3Point& e2)
 {
-  
     int x1,y1,z1;
     unsigned char         Diagonale = false;
 
@@ -1508,6 +1515,7 @@ void ami::AnisoGSBase::Init(InrImage* in,
   } else {
     filtre = new GeneralGaussianFilter(image_entree, 
         mode);
+    filtre->Set_use_new_filter(UseNewConvolutionFilter);
     filtre->GammaNormalise(false);
     filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
   } // end if

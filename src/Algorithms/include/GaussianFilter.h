@@ -82,9 +82,11 @@
 #include "inrimage.hpp"
 //#include "inrimage_compressee.hpp"
 #include <math.h>
+#include "amiImageConvolution1D.h"
 #ifndef M_PI
 # define M_PI           3.14159265358979323846  /* pi */
 #endif
+
 
 extern unsigned char debug;
 

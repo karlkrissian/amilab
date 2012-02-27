@@ -47,6 +47,8 @@ extern "C" {
 #include "inrimage.hpp"
 #include "GaussianFilter.h"
 
+#include "amiImageConvolution1D.h"
+
 #include "chaine.hpp"
 #include "DefineClass.hpp"
 
@@ -254,7 +256,10 @@ protected:
   GaussianFilter    _filtre_y;
   GaussianFilter    _filtre_z;
 
-  GaussianFilter    _filtre;
+  GaussianFilter               _filtre;
+  ami::ImageConvolution1D::ptr _new_convolution_filter;
+  
+  bool _use_new_filter;
 
 public:
 
@@ -301,6 +306,16 @@ public:
   ///
   virtual ~GeneralGaussianFilter();
 
+  ///
+  void Set_use_new_filter(bool nf) 
+  {
+    _use_new_filter = nf;
+  }
+  
+  bool Get_use_new_filter()
+  {
+    return _use_new_filter;
+  }
 
   ///
   void DontUseVoxelSize()

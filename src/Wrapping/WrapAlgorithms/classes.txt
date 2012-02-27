@@ -19,6 +19,7 @@ ami::FieldOrientationRegionGrowing
 ami::Thinning
 ami::Find
 ami::vtkFastMarchingFunctions
+ami::ImageConvolution1D
 
 # Image Extent
 ami::ImageExtent<float>

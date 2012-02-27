@@ -38,7 +38,10 @@
 #include "CommonConfigure.h"
 COMMON_VAR_IMPORT unsigned char GB_verbose;
 
+#include "amiImageToImageFilter.h"
+#include "amilab_boost.h"
 
+#include <wx/thread.h>
 
 //======================================================================
 // MEMBRES PRIVES
@@ -220,6 +223,8 @@ _vz = image->VoxSizeZ();
     Pour(i,0,NB_IMAGES-1)
       _utilise_Image_sigma[i] = false;
     FinPour
+
+  _use_new_filter = false;
 
 }
 
@@ -446,11 +451,11 @@ void GeneralGaussianFilter ::  InitFiltre(float sigma, int type)
 
 
 //------------------------------------------------------
-void GeneralGaussianFilter ::  MyFiltre( InrImage* im, 
-//                                --------
-              InrImage* res,
-               int der_x, int der_y, int der_z,
-         InrImage* ImMasque)
+void GeneralGaussianFilter ::  MyFiltre( 
+                                        InrImage* im, 
+                                        InrImage* res,
+                                        int der_x, int der_y, int der_z,
+                                        InrImage* ImMasque)
 {
 
   
@@ -481,8 +486,14 @@ void GeneralGaussianFilter ::  MyFiltre( InrImage* im,
     return;
   FinSi
 
-  _filtre.SetSupportSize( _facteur_support);
-  Si _coeff_int_gauss AlorsFait _filtre.IntegraleCoeffGaussienne();
+  if (_use_new_filter) {
+    _new_convolution_filter = ami::ImageConvolution1D::ptr( 
+      new ami::ImageConvolution1D());
+    _new_convolution_filter->Set_kernel_support( _facteur_support);
+  } else {
+    _filtre.SetSupportSize( _facteur_support);
+    Si _coeff_int_gauss AlorsFait _filtre.IntegraleCoeffGaussienne();
+  }
 
 
   switch ( _type ){
@@ -502,9 +513,27 @@ void GeneralGaussianFilter ::  MyFiltre( InrImage* im,
  
         Si (der_x >= 0)Et(der_x<=2) Alors
 
-          _filtre.SetSupportSize( Support[der_x]);
-          _filtre.Filtre1D( imageIn, imageOut, image_masque, 
-         DIR_X, (double) _sigmax, der_x );
+          if ((_use_new_filter)&&(image_masque==NULL)) {
+            boost::shared_ptr<ami::ImageToImageFilterParam> params( new
+                ami::ImageToImageFilterParam() );
+            InrImage::ptr input_ptr( imageIn, 
+                                     smartpointer_nodeleter<InrImage>());
+            InrImage::ptr output_ptr( imageOut, 
+                                     smartpointer_nodeleter<InrImage>());
+            params->SetInput(input_ptr);
+            params->SetNumberOfThreads(wxThread::GetCPUCount());
+            _new_convolution_filter->Set_kernel_support( Support[der_x]);
+            _new_convolution_filter->SetParameters(*params);
+            _new_convolution_filter->Set_dir(ami::ImageConvolution1D::DIR_X);
+            _new_convolution_filter->Set_sigma(_sigmax);
+            _new_convolution_filter->Set_order(der_x);
+            _new_convolution_filter->SetOutputImage(output_ptr);
+            _new_convolution_filter->Run();
+          } else {
+            _filtre.SetSupportSize( Support[der_x]);
+            _filtre.Filtre1D( imageIn, imageOut, image_masque, 
+                              DIR_X, (double) _sigmax, der_x );
+          }
 
     Si imageOut==res Alors
             imageIn = res;        imageOut = _image_tmp;
@@ -518,9 +547,27 @@ void GeneralGaussianFilter ::  MyFiltre( InrImage* im,
 
           Si _dim >= MODE_2D Alors
 
-            _filtre.SetSupportSize( Support[der_y]);
-            _filtre.Filtre1D( imageIn, imageOut, image_masque, 
-           DIR_Y, (double) _sigmay, der_y );
+            if ((_use_new_filter)&&(image_masque==NULL)) {
+              boost::shared_ptr<ami::ImageToImageFilterParam> params( new
+                  ami::ImageToImageFilterParam() );
+              InrImage::ptr input_ptr( imageIn, 
+                                      smartpointer_nodeleter<InrImage>());
+              InrImage::ptr output_ptr( imageOut, 
+                                      smartpointer_nodeleter<InrImage>());
+              params->SetInput(input_ptr);
+              params->SetNumberOfThreads(wxThread::GetCPUCount());
+              _new_convolution_filter->Set_kernel_support( Support[der_y]);
+              _new_convolution_filter->SetParameters(*params);
+              _new_convolution_filter->Set_dir(ami::ImageConvolution1D::DIR_Y);
+              _new_convolution_filter->Set_sigma(_sigmay);
+              _new_convolution_filter->Set_order(der_y);
+              _new_convolution_filter->SetOutputImage(output_ptr);
+              _new_convolution_filter->Run();
+            } else {
+              _filtre.SetSupportSize( Support[der_y]);
+              _filtre.Filtre1D( imageIn, imageOut, image_masque, 
+                                DIR_Y, (double) _sigmay, der_y );
+            }
 
       Si imageOut==res Alors
               imageIn = res;        imageOut = _image_tmp;
@@ -537,9 +584,27 @@ void GeneralGaussianFilter ::  MyFiltre( InrImage* im,
 
           Si _dim == MODE_3D Alors
 
-            _filtre.SetSupportSize( Support[der_z]);
-            _filtre.Filtre1D( imageIn, imageOut, image_masque, 
-         DIR_Z, (double) _sigmaz, der_z );
+            if ((_use_new_filter)&&(image_masque==NULL)) {
+              boost::shared_ptr<ami::ImageToImageFilterParam> params( new
+                  ami::ImageToImageFilterParam() );
+              InrImage::ptr input_ptr( imageIn, 
+                                      smartpointer_nodeleter<InrImage>());
+              InrImage::ptr output_ptr( imageOut, 
+                                      smartpointer_nodeleter<InrImage>());
+              params->SetInput(input_ptr);
+              params->SetNumberOfThreads(wxThread::GetCPUCount());
+              _new_convolution_filter->Set_kernel_support( Support[der_z]);
+              _new_convolution_filter->SetParameters(*params);
+              _new_convolution_filter->Set_dir(ami::ImageConvolution1D::DIR_Z);
+              _new_convolution_filter->Set_sigma(_sigmaz);
+              _new_convolution_filter->Set_order(der_z);
+              _new_convolution_filter->SetOutputImage(output_ptr);
+              _new_convolution_filter->Run();
+            } else {
+              _filtre.SetSupportSize( Support[der_z]);
+              _filtre.Filtre1D( imageIn, imageOut, image_masque, 
+                                DIR_Z, (double) _sigmaz, der_z );
+            }
 
       Si imageOut==res Alors
               imageIn = res;        imageOut = _image_tmp;

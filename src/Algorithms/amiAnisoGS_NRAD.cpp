@@ -481,28 +481,20 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       sigma2 = Compute_sigma2_MRI_mode(im); break;
   }
 
-  if ((iteration==1)&&(loop==2)) {
+  if (SpeedUp_c) {
+    // in case of speedup, need to compute eigenvectors at each iteration
     ComputeStructureTensor(im,0.7,sigma);
     ComputeEigenVectors();
-  }
-
-
-/*  // first iteration twice, use Tensor from the second
-  if ((iteration==loop)&&(loop<=max_loop)) {
-    ComputeStructureTensor(im,0.7,sigma);
-    ComputeEigenVectors();
-    printf("copy back input image \n");
-    (*im) = (*image_entree);
-    iteration = 1;
-    loop+=2;
-  }
-*/
-  if (iteration==loop) {
-    ComputeStructureTensor(im,0.7,sigma);
-    ComputeEigenVectors();
-//    printf("copy back image \n");
-//    (*im) = (*image_c);
-    loop+=2;
+  } else {
+    if ((iteration==1)&&(loop==2)) {
+      ComputeStructureTensor(im,0.7,sigma);
+      ComputeEigenVectors();
+    }
+    if (iteration==loop) {
+      ComputeStructureTensor(im,0.7,sigma);
+      ComputeEigenVectors();
+      loop+=2;
+    }
   }
 
   ResetCoefficients();
@@ -1002,7 +994,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
   //if (image_c!=NULL)  (*image_c) = (*im);
   (*im) = (*this->im_tmp);
 
-  printf(" speedup %3.3f %% \n",speedup_counter/(1.0*txy*tz)*100.0);
+  printf(" speedup is %3.3f %% of voxels\n",speedup_counter/(1.0*txy*tz)*100.0);
 
 /*
  std::cout << std::endl;

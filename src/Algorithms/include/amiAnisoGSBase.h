@@ -308,6 +308,8 @@ namespace ami {
     /// Run a scalar diffusion if image_c is higher than the lower bound
     AddSetGetVar( SpeedUp_c,             bool);
     AddSetGetVar( SpeedUp_c_lowerbound,  float);
+    
+    AddSetGetVar( UseNewConvolutionFilter, bool);
 
     InrImage* Getresult_image() 
     { 
@@ -419,6 +421,8 @@ namespace ami {
       InputIsSquared            = false;
       SpeedUp_c                 = true;
       SpeedUp_c_lowerbound      = 0.5;
+      
+      UseNewConvolutionFilter   = false;
     }
 
 
