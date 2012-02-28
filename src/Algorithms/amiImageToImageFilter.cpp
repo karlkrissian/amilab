@@ -84,9 +84,10 @@ void* ImageToImageFilter::Process_thread(void* threadarg)
 
   ImageToImageFilter* _this = args->_this;
 
-  //cout  << " thread " << thread_id 
+  //std::cout  << " thread begin" << thread_id << std::endl;
   _this->Process(thread_id);
 
+//  std::cout  << " thread end" << thread_id << std::endl;
   pthread_exit(NULL);
   return(NULL);
 
@@ -150,8 +151,13 @@ void ImageToImageFilter::Run_multithreads()
 //------------------------------------------------------------------
 void ImageToImageFilter::Run()
 {
+  //std::cout << "ImageToImageFilter::Run() Begin" << std::endl;
+  
+  //std::cout << "Init()" << std::endl;
   Init();
+  //std::cout << "Run_multithreads()" << std::endl;
   Run_multithreads();
+  //std::cout << "Close()" << std::endl;
   Close();
 } // ImageToImageFilter::Run()
 

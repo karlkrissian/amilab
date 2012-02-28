@@ -1060,6 +1060,7 @@ float ami::AnisoGS_NRAD::Iterate()
 //   ----------------
 {
 
+  iteration_time.Debut();
   float       erreur = 0;
 
   if ( this->result_image==NULL ) {
@@ -1084,6 +1085,9 @@ float ami::AnisoGS_NRAD::Iterate()
     //    EstimateNoiseStandardDeviation(this->result_image);
   printf(" Max. Intens. change = %3.2f --  ",erreur);
   
+  iteration_time.Fin();
+  iteration_time.AddCumul();
+  std::cout << iteration_time << std::endl;
   return erreur;
 
 } // ami::AnisoGS::Iterate()

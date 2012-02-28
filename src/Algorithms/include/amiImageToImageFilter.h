@@ -16,7 +16,7 @@
 
 #include "inrimage.hpp"
 #include "amiImageExtent.h"
-
+#include "DefineClass.hpp"
 #include <vector>
 
 
@@ -31,6 +31,8 @@ namespace ami {
 //
 class ImageToImageFilterParam {
 
+  DEFINE_CLASS(ImageToImageFilterParam)
+  
   int NumberOfThreads;
   InrImage::ptr input;
   ImageExtent<int> output_extent;
@@ -68,7 +70,7 @@ public:
     return output_extent;
   }
 
-  ImageToImageFilterParam() {}
+  ImageToImageFilterParam() : NumberOfThreads(1) {}
 
 }; // ImageToImageFilterParam;
 
@@ -89,7 +91,7 @@ protected:
 
 public:
 
-  ImageToImageFilter() {}
+  ImageToImageFilter()  {}
   ~ImageToImageFilter() {}
 
   void SetParameters( const ImageToImageFilterParam& p)

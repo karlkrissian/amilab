@@ -47,6 +47,8 @@ SET(Algorithms_SRCS
   localstats.cpp
   ShortestPathClass.cpp
 
+  amiEigenDecomp.cpp
+  amiEigenDecomp_NRAD.cpp
   amiAnisoGS.cpp
   amiAnisoGSBase.cpp
   amiAnisoGS_NRAD.cpp
@@ -126,6 +128,8 @@ SET(Algorithms_HDRS
   include/localstats.h
   include/ShortestPathClass.h
 
+  include/amiEigenDecomp.h
+  include/amiEigenDecomp_NRAD.h
   include/amiAnisoGS.h
   include/amiAnisoGSBase.h
   include/amiAnisoGS_NRAD.h

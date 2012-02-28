@@ -21,6 +21,7 @@
 
 #include "amiImageExtent.h"
 
+#include "amiEigenDecomp.h"
 #include "amiAnisoGS.h"
 #include "amiAnisoGS_NRAD.h"
 

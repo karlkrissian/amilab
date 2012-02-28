@@ -248,6 +248,15 @@ namespace ami {
     InrImage* eigenvect_xp;
     InrImage* eigenvect_yp;
     InrImage* eigenvect_zp;
+
+    /// Eigenvectors computed using amiEigenDecomp_NRAD
+    InrImage::ptr eigenvect2_xp;
+    InrImage::ptr eigenvect3_xp;
+    InrImage::ptr eigenvect2_yp;
+    InrImage::ptr eigenvect3_yp;
+    InrImage::ptr eigenvect2_zp;
+    InrImage::ptr eigenvect3_zp;
+    
     //@}
   
     Timing structtensor_time;
@@ -453,7 +462,9 @@ namespace ami {
 
     void Smooth(InrImage* im, float sigma);
     void ComputeStructureTensor(InrImage* im, float sigma1, float sigma2);
+
     void ComputeEigenVectors();
+    void ComputeEigenVectors_new();
 
     void Init(InrImage* in, float p_sigma, float p_k, float p_beta);
 

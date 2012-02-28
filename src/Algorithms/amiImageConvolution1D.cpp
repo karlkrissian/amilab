@@ -332,7 +332,6 @@ void ImageConvolution1D::TemplateProcess( int threadid)
 //------------------------------------------------------------------------------
 void ImageConvolution1D::Process( int threadid)
 {
-  InitGaussianKernel();
   
   // process using precomputed extent number threadid
   InrImage::ptr in = params.GetInput();
@@ -354,6 +353,7 @@ void ImageConvolution1D::Process( int threadid)
 //------------------------------------------------------------------------------
 void ImageConvolution1D::Run()
 {
+  //std::cout << "ImageConvolution1D::Run() Begin" << std::endl;
   InrImage::ptr in = params.GetInput();
   bool output_ok = false;
   if (output.get()) {
@@ -369,7 +369,10 @@ void ImageConvolution1D::Run()
                                         "convolution_res.ami.gz",
                                         in.get()));
   }
+  
+  InitGaussianKernel();
   ImageToImageFilter::Run();
+  //std::cout << "ImageConvolution1D::Run() End" << std::endl;
 }
 
 } // end namespace ami

@@ -80,7 +80,7 @@ public:
 
   ImageExtent(InrImage* im)
   {
-    printf("ImageExtent(InrImage* im)\n");
+    //printf("ImageExtent(InrImage* im)\n");
     // TODO: fix this constructor
 //    std::cout << "ImageExtent(InrImage* im)" << std::endl;
     extent[0][0] = 0;

@@ -468,9 +468,18 @@ void GeneralGaussianFilter ::  MyFiltre(
 //    int    i;
     int       Support[3] = { 4,5,6};
 
+  boost::shared_ptr<ami::ImageToImageFilterParam> params( new
+      ami::ImageToImageFilterParam() );
+  InrImage::ptr input_ptr;( imageIn, 
+                            smartpointer_nodeleter<InrImage>());
+  InrImage::ptr output_ptr;( imageOut, 
+                            smartpointer_nodeleter<InrImage>());
+  params->SetNumberOfThreads(wxThread::GetCPUCount());
+  
   if (GB_verbose) 
-    printf("MyFiltre(%d %d %d) (%2.2f, %2.2f, %2.2f)\n",der_x,der_y,der_z, 
-          _sigmax,_sigmay,_sigmaz);
+    printf( "MyFiltre(%d %d %d) (%2.2f, %2.2f, %2.2f)\n",
+            der_x,der_y,der_z, 
+            _sigmax,_sigmay,_sigmaz);
 
   Si ImMasque !=  (InrImage*) NULL Alors
     image_masque = ImMasque;
@@ -485,6 +494,8 @@ void GeneralGaussianFilter ::  MyFiltre(
            << " filtre non initialise \n";
     return;
   FinSi
+
+//std::cout << "1" << std::endl;
 
   if (_use_new_filter) {
     _new_convolution_filter = ami::ImageConvolution1D::ptr( 
@@ -513,15 +524,13 @@ void GeneralGaussianFilter ::  MyFiltre(
  
         Si (der_x >= 0)Et(der_x<=2) Alors
 
+//std::cout << "dir_x" << std::endl;
           if ((_use_new_filter)&&(image_masque==NULL)) {
-            boost::shared_ptr<ami::ImageToImageFilterParam> params( new
-                ami::ImageToImageFilterParam() );
-            InrImage::ptr input_ptr( imageIn, 
-                                     smartpointer_nodeleter<InrImage>());
-            InrImage::ptr output_ptr( imageOut, 
-                                     smartpointer_nodeleter<InrImage>());
+            input_ptr = InrImage::ptr( imageIn,
+                                      smartpointer_nodeleter<InrImage>());
+            output_ptr = InrImage::ptr( imageOut, 
+                                        smartpointer_nodeleter<InrImage>());
             params->SetInput(input_ptr);
-            params->SetNumberOfThreads(wxThread::GetCPUCount());
             _new_convolution_filter->Set_kernel_support( Support[der_x]);
             _new_convolution_filter->SetParameters(*params);
             _new_convolution_filter->Set_dir(ami::ImageConvolution1D::DIR_X);
@@ -535,7 +544,7 @@ void GeneralGaussianFilter ::  MyFiltre(
                               DIR_X, (double) _sigmax, der_x );
           }
 
-    Si imageOut==res Alors
+          Si imageOut==res Alors
             imageIn = res;        imageOut = _image_tmp;
           Sinon
             imageIn = _image_tmp; imageOut = res;
@@ -547,15 +556,13 @@ void GeneralGaussianFilter ::  MyFiltre(
 
           Si _dim >= MODE_2D Alors
 
+//std::cout << "dir_y" << std::endl;
             if ((_use_new_filter)&&(image_masque==NULL)) {
-              boost::shared_ptr<ami::ImageToImageFilterParam> params( new
-                  ami::ImageToImageFilterParam() );
-              InrImage::ptr input_ptr( imageIn, 
-                                      smartpointer_nodeleter<InrImage>());
-              InrImage::ptr output_ptr( imageOut, 
-                                      smartpointer_nodeleter<InrImage>());
+              input_ptr = InrImage::ptr( imageIn,
+                                        smartpointer_nodeleter<InrImage>());
+              output_ptr = InrImage::ptr( imageOut, 
+                                          smartpointer_nodeleter<InrImage>());
               params->SetInput(input_ptr);
-              params->SetNumberOfThreads(wxThread::GetCPUCount());
               _new_convolution_filter->Set_kernel_support( Support[der_y]);
               _new_convolution_filter->SetParameters(*params);
               _new_convolution_filter->Set_dir(ami::ImageConvolution1D::DIR_Y);
@@ -584,13 +591,12 @@ void GeneralGaussianFilter ::  MyFiltre(
 
           Si _dim == MODE_3D Alors
 
+//std::cout << "dir_z" << std::endl;
             if ((_use_new_filter)&&(image_masque==NULL)) {
-              boost::shared_ptr<ami::ImageToImageFilterParam> params( new
-                  ami::ImageToImageFilterParam() );
-              InrImage::ptr input_ptr( imageIn, 
-                                      smartpointer_nodeleter<InrImage>());
-              InrImage::ptr output_ptr( imageOut, 
-                                      smartpointer_nodeleter<InrImage>());
+              input_ptr = InrImage::ptr( imageIn,
+                                        smartpointer_nodeleter<InrImage>());
+              output_ptr = InrImage::ptr( imageOut, 
+                                          smartpointer_nodeleter<InrImage>());
               params->SetInput(input_ptr);
               params->SetNumberOfThreads(wxThread::GetCPUCount());
               _new_convolution_filter->Set_kernel_support( Support[der_z]);
@@ -626,6 +632,7 @@ void GeneralGaussianFilter ::  MyFiltre(
         
   // imageIn est le pointeur sur l'image contenant le resultat
         Si imageIn == _image_tmp Alors
+          std::cout << "copy" << std::endl;
           // copie de num_image_res dans res
           _image_tmp->InitBuffer();
           res       ->InitBuffer();
@@ -667,6 +674,7 @@ void GeneralGaussianFilter ::  MyFiltre(
   } // end switch
 
 
+  //std::cout << "MyFiltre end" << std::endl;
 } // MyFiltre()
 
 
@@ -694,7 +702,7 @@ void GeneralGaussianFilter ::  InitDerivees( )
 //                                ------------
 {
 
-  
+  std::cout << "InitDerivees " << std::endl;
     int i;
 
   InitNomDerivees();
@@ -1197,14 +1205,15 @@ void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
 //                                -------------
 {
 
-   
+   std::cout << "CalculFiltres start" << std::endl;
     int    i;
     InrImage* image_depart;
+   std::cout << "1" << std::endl;
 
   // Optimisation particuliere
   Si _utilise_gradient Et _utilise_hessien Et _type==MY_FILTRE_CONV Alors
 
-
+     std::cout << "special optimization" << std::endl;
      Si _OptFiltrage Alors
        image_depart = _InrImage_sigma[IM_sigma];
      Sinon
@@ -1219,24 +1228,28 @@ void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
 
   Sinon
 
+//   std::cout << "2" << std::endl;
   Pour(i,0,NB_IMAGES-1)
+    //std::cout << "i=" << i << ", " << (bool)_utilise_Image_sigma[i] << std::endl;
     Si _utilise_Image_sigma[i] Alors
-     Si GB_verbose  Et Non(_silencieux) Alors
+      std::cout << "using image " << (char*)(_ImageNom[i]) << std::endl;
+      Si GB_verbose  Et Non(_silencieux) Alors
        printf(" %s ",(char*) _ImageNom[i]);
        fflush(stdout);
-     FinSi
-
+      FinSi
+      //std::cout << "3" << std::endl;
 
       switch ( _type ){
   
         case FILTRE_CONV:
         case FILTRE_REC :
         //     -----------
-  fprintf(stderr,"GeneralGaussianFilter::CalculFiltres() options FILTRE_CONV or FILTRE_REC not available anymore ... \n");
+          fprintf(stderr,"GeneralGaussianFilter::CalculFiltres() options FILTRE_CONV or FILTRE_REC not available anymore ... \n");
         break;
 
        case MY_FILTRE_CONV :
        //     --------------
+        //std::cout << "4 MyFiltre" << std::endl;
          MyFiltre( _InrImage_initiale, _InrImage_sigma[i],  
        _derivees[i][DIM_X], 
        _derivees[i][DIM_Y],
@@ -1251,6 +1264,7 @@ void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
   Si GB_verbose  Et Non(_silencieux) AlorsFait printf("\n");
 
   FinSi
+   std::cout << "CalculFiltres end" << std::endl;
 
 } // CalculFiltres()
 

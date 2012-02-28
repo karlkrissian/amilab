@@ -11,6 +11,7 @@ Curvatures
 ShortestPathClass
 
 # new classes within ami namespace
+ami::EigenDecomp
 ami::ImageAddScalar
 ami::ImageToImageFilterParam
 ami::GrayscaleMorpho

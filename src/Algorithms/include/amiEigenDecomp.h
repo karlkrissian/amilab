@@ -18,6 +18,7 @@
 #include "amiImageToImageFilter.h"
 #include <vector>
 #include "DefineClass.hpp"
+#include "FloatMatrix.hpp"
 
 #define AddSetGetVar( name, type) \
     type  name; \
@@ -41,21 +42,11 @@ class EigenDecomp : public ImageToImageFilter
 {
   DEFINE_CLASS(EigenDecomp);
 
-  bool enable_eigenvalue1;
-  bool enable_eigenvalue2;
-  bool enable_eigenvalue3;
+  bool check_eigenvalue_image(InrImage::ptr im);
+  bool check_eigenvector_image(InrImage::ptr im);
 
-  bool enable_eigenvector1;
-  bool enable_eigenvector2;
-  bool enable_eigenvector3;
-  
-  InrImage::ptr eigenvalue1;
-  InrImage::ptr eigenvalue2;
-  InrImage::ptr eigenvalue3;
-
-  InrImage::ptr eigenvector2;
-  InrImage::ptr eigenvector2;
-  InrImage::ptr eigenvector3;
+  // allow storing the eigenvector as SIGNED SHORT
+  short convert_short(double val);
 
 public:
 
@@ -74,13 +65,25 @@ public:
   AddSetGetVar(eigenvector1, InrImage::ptr)
   AddSetGetVar(eigenvector2, InrImage::ptr)
   AddSetGetVar(eigenvector3, InrImage::ptr)
+
+  AddSetGetVar(mask,         InrImage::ptr)
   
   /**
    * Process part of the image
    * @param threadid 
    */
-  template <class T>
+  template <class T, class U>
   void TemplateProcess( int threadid = 0);
+
+  /**
+   * Special feature: allow changing the way the matrix is filled
+   * with this virtual member
+   */
+  template <class T>
+  void FillMatrix( FloatMatrix & matrix, T* in_ptr, int vdim);
+
+  //template <>
+  virtual void FillMatrix(FloatMatrix & matrix, float* in_ptr, int vdim);
 
   /**
    * Process part of the image
