@@ -524,7 +524,7 @@ void GeneralGaussianFilter ::  MyFiltre(
  
         Si (der_x >= 0)Et(der_x<=2) Alors
 
-//std::cout << "dir_x" << std::endl;
+          //std::cout << "dir_x" << std::endl;
           if ((_use_new_filter)&&(image_masque==NULL)) {
             input_ptr = InrImage::ptr( imageIn,
                                       smartpointer_nodeleter<InrImage>());
@@ -632,15 +632,16 @@ void GeneralGaussianFilter ::  MyFiltre(
         
   // imageIn est le pointeur sur l'image contenant le resultat
         Si imageIn == _image_tmp Alors
-          std::cout << "copy" << std::endl;
+          //std::cout << "copy" << std::endl;
           // copie de num_image_res dans res
-          _image_tmp->InitBuffer();
-          res       ->InitBuffer();
-          Repeter
-            res->FixeValeur( _image_tmp->ValeurBuffer());
-            _image_tmp->IncBuffer();
-            continuer = res->IncBuffer();
-          JusquA Non(continuer) FinRepeter
+          (*res)=(*_image_tmp);
+//           _image_tmp->InitBuffer();
+//           res       ->InitBuffer();
+//           Repeter
+//             res->FixeValeur( _image_tmp->ValeurBuffer());
+//             _image_tmp->IncBuffer();
+//             continuer = res->IncBuffer();
+//           JusquA Non(continuer) FinRepeter
 
         FinSi
 
@@ -702,7 +703,7 @@ void GeneralGaussianFilter ::  InitDerivees( )
 //                                ------------
 {
 
-  std::cout << "InitDerivees " << std::endl;
+  //std::cout << "InitDerivees " << std::endl;
     int i;
 
   InitNomDerivees();
@@ -1205,10 +1206,10 @@ void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
 //                                -------------
 {
 
-   std::cout << "CalculFiltres start" << std::endl;
+   //std::cout << "CalculFiltres start" << std::endl;
     int    i;
     InrImage* image_depart;
-   std::cout << "1" << std::endl;
+   //std::cout << "1" << std::endl;
 
   // Optimisation particuliere
   Si _utilise_gradient Et _utilise_hessien Et _type==MY_FILTRE_CONV Alors
@@ -1232,7 +1233,7 @@ void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
   Pour(i,0,NB_IMAGES-1)
     //std::cout << "i=" << i << ", " << (bool)_utilise_Image_sigma[i] << std::endl;
     Si _utilise_Image_sigma[i] Alors
-      std::cout << "using image " << (char*)(_ImageNom[i]) << std::endl;
+      //std::cout << "using image " << (char*)(_ImageNom[i]) << std::endl;
       Si GB_verbose  Et Non(_silencieux) Alors
        printf(" %s ",(char*) _ImageNom[i]);
        fflush(stdout);
@@ -1264,7 +1265,7 @@ void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
   Si GB_verbose  Et Non(_silencieux) AlorsFait printf("\n");
 
   FinSi
-   std::cout << "CalculFiltres end" << std::endl;
+  // std::cout << "CalculFiltres end" << std::endl;
 
 } // CalculFiltres()
 

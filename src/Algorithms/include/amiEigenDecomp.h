@@ -46,9 +46,23 @@ class EigenDecomp : public ImageToImageFilter
   bool check_eigenvector_image(InrImage::ptr im);
 
   // allow storing the eigenvector as SIGNED SHORT
-  short convert_short(double val);
+//  short convert_short(double val);
 
 public:
+  
+  EigenDecomp() : diag_algorithm(JACOBI_INITIAL) {}
+  
+  enum DiagAlgorithm {
+    JACOBI_INITIAL,
+    KOPP_JACOBI,
+    KOPP_QL,
+    KOPP_CUPPEN,
+    KOPP_CARDANO,
+    KOPP_ANALYTICAL,
+    KOPP_HYBRID
+  };
+  
+  AddSetGetVar(diag_algorithm, DiagAlgorithm)
 
   AddSetGetVar(enable_eigenvalue1,bool)
   AddSetGetVar(enable_eigenvalue2,bool)

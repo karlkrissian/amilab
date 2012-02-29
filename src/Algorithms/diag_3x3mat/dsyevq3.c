@@ -18,7 +18,7 @@
 // ----------------------------------------------------------------------------
 #include <stdio.h>
 #include <math.h>
-#include "dsytrd3.h"
+#include "dsytrd3.c"
 #include "dsyevq3.h"
 
 // Macros

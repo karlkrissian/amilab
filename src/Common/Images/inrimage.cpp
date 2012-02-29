@@ -2923,8 +2923,8 @@ InrImage* operator *(  const InrImage& i1,  const InrImage& i2)
 
   } else
   if ( i1.VectorialFormat() && i2.VectorialFormat() ) {
-    printf("dim im1 = %d \n",i1.GetVDim());
-    printf("dim im2 = %d \n",i2.GetVDim());
+    //printf("dim im1 = %d \n",i1.GetVDim());
+    //printf("dim im2 = %d \n",i2.GetVDim());
     if ( i1.GetVDim() != i2.GetVDim() ) {
       fprintf(stderr,"InrImage*InrImage \t Vector dimensions don't match \n");
       return NULL;

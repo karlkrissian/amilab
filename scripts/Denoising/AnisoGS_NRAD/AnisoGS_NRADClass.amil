@@ -54,6 +54,16 @@ if (!exists(AnisoGS_NRADClass)) {
         ::speedup            = UCHAR(1), "Allow speedup based on diffusion "+ \
                                           "coefficients"
         ::speedup_lowerbound = 0.5, "Lower bound to enable speedup"
+        
+        ::eigendecomp_modes = VarVector()
+          ::eigendecomp_modes.push_back("INITIAL")
+          ::eigendecomp_modes.push_back("NEW")
+        mess = ""
+        for n=0 to ::eigendecomp_modes.size()-1 { 
+          mess += "'%1%' " % ::eigendecomp_modes[n]; 
+        }
+        ::eigendecomp_mode = INT(0), "Eigen decomposition mode for the structure"+\
+                                     "tensor (%1%)" % mess
 
         #-----------------------------------------------------------------------
         proc ::__assign__( OBJECT p) {
@@ -70,6 +80,7 @@ printn "__assign__"
           ::use_new_convolution_filter = p.use_new_convolution_filter
           ::speedup               = p.speedup
           ::speedup_lowerbound    = p.speedup_lowerbound
+          ::eigendecomp_mode      = p.eigendecomp_mode
         }
         #-----------------------------------------------------------------------
         proc ::__copy__( ) {
@@ -87,6 +98,7 @@ printn "__copy__"
           newp.use_new_convolution_filter = ::use_new_convolution_filter
           newp.speedup               = ::speedup
           newp.speedup_lowerbound    = ::speedup_lowerbound
+          newp.eigendecomp_mode      = ::eigendecomp_mode
           return = &newp
         }
     }
@@ -173,14 +185,17 @@ printn "__copy__"
         input1 <<= input1[::roi.GetExtent]
       }
     
-      if (exists(::NRADfilter)) { del ::NRADfilter; }
+      del ::NRADfilter
       ::NRADfilter = algorithms.ami_AnisoGS_NRAD.AnisoGS_NRAD()
-      ::NRADfilter.SetUseNewConvolutionFilter(\
-          ::params.use_new_convolution_filter)
       # sigma = 0.7
       # threshold = 1 // not used
       # data attachment = 0
+      # init must be called first since it calls InitParams() that
+      # resets all the parameters
       ::NRADfilter.Init(&input1,::params.sigma,1,0)
+
+      ::NRADfilter.SetUseNewConvolutionFilter(\
+          ::params.use_new_convolution_filter)
       if (::params.noise_models[::params.noise_model] == "Rician") {
         ::NRADfilter.Setnoise_model(algorithms.ami_AnisoGS_NRAD.NOISE_RICIAN)
       }
@@ -193,6 +208,8 @@ printn "__copy__"
       # Setting speedup options
       ::NRADfilter.SetSpeedUp_c           (::params.speedup)
       ::NRADfilter.SetSpeedUp_c_lowerbound(::params.speedup_lowerbound)
+      
+      ::NRADfilter.Seteigendecomp_mode    (::params.eigendecomp_mode)
 
       ::NRADfilter.Setneighborhood(::params.neighborhood)
       ::NRADfilter.Setdt(::params.dt)
@@ -430,6 +447,10 @@ printn "__copy__"
             ::win.BeginBoxPanel("Speedup")
               ::win.AddBoolean(&::params.speedup,"Enable speedup")
               ::win.AddFloat(&::params.speedup_lowerbound,"Lower bound",0,1)
+              ::eigendecomp_id = ::win.AddEnum(&::params.eigendecomp_mode,"Eigen decomp.")
+              for n=0 to ::params.eigendecomp_modes.size()-1 { 
+                ::win.AddEnumChoice(::eigendecomp_id,::params.eigendecomp_modes[n])
+              }
             ::win.EndBoxPanel()
             ::win.BeginBoxPanel("Result --> disk")
               ::win.BeginHorizontal()

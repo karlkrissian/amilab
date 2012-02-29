@@ -90,6 +90,10 @@ namespace ami {
       NOISE_RICIAN /**< Rician noise (MRI)*/
     };
 
+    enum EigenDecompMode {
+      INITIAL,  /**< Initial code for eigen decomposition*/
+      NEW,      /**< new code, for faster processing */
+    };
     
   protected:
     /**
@@ -239,6 +243,9 @@ namespace ami {
     InrImage* tensor_yy;
     InrImage* tensor_yz;
     InrImage* tensor_zz;
+    
+    /// vectorial float image of 6 components
+    InrImage::ptr tensor_im;
     //@}
 
     /**
@@ -313,6 +320,8 @@ namespace ami {
     AddSetGetVar(DistanceMap,unsigned char);
 
     AddSetGetVar( noise_model, NoiseEstimationModel);
+
+    AddSetGetVar( eigendecomp_mode, EigenDecompMode);
 
     AddSetGetVar( SRAD_ROI,     InrImage::ptr);
 
@@ -464,6 +473,7 @@ namespace ami {
     void ComputeStructureTensor(InrImage* im, float sigma1, float sigma2);
 
     void ComputeEigenVectors();
+    void ComputeEigenVectors_initial();
     void ComputeEigenVectors_new();
 
     void Init(InrImage* in, float p_sigma, float p_k, float p_beta);

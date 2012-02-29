@@ -66,6 +66,8 @@
 #include "amiEigenDecomp_NRAD.h"
 #include "amiImageToImageFilter.h"
 
+#include <wx/thread.h>
+
 /*
 double CubicRoot(double x) {
   if (x==0) return 0;
@@ -231,12 +233,14 @@ ami::AnisoGSBase::~AnisoGSBase()
     image_entree=NULL;
   } // end if
       
-  if (tensor_xx!=NULL) { delete tensor_xx;  tensor_xx=NULL; }
-  if (tensor_xy!=NULL) { delete tensor_xy; tensor_xy=NULL; }
-  if (tensor_xz!=NULL) { delete tensor_xz; tensor_xz=NULL; }
-  if (tensor_yy!=NULL) { delete tensor_yy; tensor_yy=NULL; }
-  if (tensor_yz!=NULL) { delete tensor_yz; tensor_yz=NULL; }
-  if (tensor_zz!=NULL) { delete tensor_zz; tensor_zz=NULL; }
+  if (eigendecomp_mode==INITIAL) {
+    if (tensor_xx!=NULL) { delete tensor_xx;  tensor_xx=NULL; }
+    if (tensor_xy!=NULL) { delete tensor_xy; tensor_xy=NULL; }
+    if (tensor_xz!=NULL) { delete tensor_xz; tensor_xz=NULL; }
+    if (tensor_yy!=NULL) { delete tensor_yy; tensor_yy=NULL; }
+    if (tensor_yz!=NULL) { delete tensor_yz; tensor_yz=NULL; }
+    if (tensor_zz!=NULL) { delete tensor_zz; tensor_zz=NULL; }
+  }
 
   if (eigenvect_xp!=NULL) { delete eigenvect_xp; eigenvect_xp=NULL; }
   if (eigenvect_yp!=NULL) { delete eigenvect_yp; eigenvect_yp=NULL; }
@@ -892,12 +896,24 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
 
 //std::cout << "*" << std::endl;
 
-  if (tensor_xx==NULL) tensor_xx =  new InrImage( WT_FLOAT, "Tensor_xx", image);
-  if (tensor_xy==NULL) tensor_xy =  new InrImage( WT_FLOAT, "Tensor_xy", image);
-  if (tensor_xz==NULL) tensor_xz =  new InrImage( WT_FLOAT, "Tensor_xz", image);
-  if (tensor_yy==NULL) tensor_yy =  new InrImage( WT_FLOAT, "Tensor_yy", image);
-  if (tensor_yz==NULL) tensor_yz =  new InrImage( WT_FLOAT, "Tensor_yz", image);
-  if (tensor_zz==NULL) tensor_zz =  new InrImage( WT_FLOAT, "Tensor_zz", image);
+  if (eigendecomp_mode==INITIAL) {
+    if (tensor_xx==NULL) 
+      tensor_xx =  new InrImage( WT_FLOAT,1, "Tensor_xx", image);
+    if (tensor_xy==NULL) 
+      tensor_xy =  new InrImage( WT_FLOAT,1, "Tensor_xy", image);
+    if (tensor_xz==NULL) 
+      tensor_xz =  new InrImage( WT_FLOAT,1, "Tensor_xz", image);
+    if (tensor_yy==NULL) 
+      tensor_yy =  new InrImage( WT_FLOAT,1, "Tensor_yy", image);
+    if (tensor_yz==NULL) 
+      tensor_yz =  new InrImage( WT_FLOAT,1, "Tensor_yz", image);
+    if (tensor_zz==NULL) 
+      tensor_zz =  new InrImage( WT_FLOAT,1, "Tensor_zz", image);
+  } else {
+    if (!tensor_im.get()) {
+      tensor_im = InrImage::ptr(new InrImage(WT_FLOAT,6,"Tensor_im",image));
+    }
+  }
 
 //std::cout << "*" << std::endl;
 
@@ -913,19 +929,30 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
   filtre->GammaNormalise( true);
   filtre->SetSupportSize(5);
   filtre->InitFiltre( sigma_1, MY_FILTRE_CONV);  
-  std::cout << "CalculFiltres()" << std::endl;
+  //std::cout << "CalculFiltres()" << std::endl;
   filtre->CalculFiltres( );
   gradient_timing.Fin();
-  std::cout << "gradient timing " << gradient_timing << std::endl;
+  //std::cout << "gradient timing " << gradient_timing << std::endl;
 
   // Calcul des coefficients du tenseur non liss�
   Tensor_timing.Debut();
-  float* Txx_ptr = (float*)tensor_xx->GetData();
-  float* Txy_ptr = (float*)tensor_xy->GetData();
-  float* Txz_ptr = (float*)tensor_xz->GetData();
-  float* Tyy_ptr = (float*)tensor_yy->GetData();
-  float* Tyz_ptr = (float*)tensor_yz->GetData();
-  float* Tzz_ptr = (float*)tensor_zz->GetData();
+  float* Txx_ptr;
+  float* Txy_ptr;
+  float* Txz_ptr;
+  float* Tyy_ptr;
+  float* Tyz_ptr;
+  float* Tzz_ptr;
+  float* T_ptr;
+  if (eigendecomp_mode==INITIAL) {
+    Txx_ptr = (float*)tensor_xx->GetData();
+    Txy_ptr = (float*)tensor_xy->GetData();
+    Txz_ptr = (float*)tensor_xz->GetData();
+    Tyy_ptr = (float*)tensor_yy->GetData();
+    Tyz_ptr = (float*)tensor_yz->GetData();
+    Tzz_ptr = (float*)tensor_zz->GetData();
+  } else {
+    T_ptr = (float*) tensor_im->GetData();
+  }
   bool skip_voxel;
 
   for(z= 0;z<= image->_tz - 1;z++) {
@@ -938,27 +965,39 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
     }
     if (!skip_voxel) {
       grad = filtre->Gradient(x,y,z);
-      *Txx_ptr =  grad.x*grad.x;
-      *Txy_ptr =  grad.x*grad.y;
-      *Txz_ptr =  grad.x*grad.z;
-      *Tyy_ptr =  grad.y*grad.y;
-      *Tyz_ptr =  grad.y*grad.z;
-      *Tzz_ptr =  grad.z*grad.z;
+      if (eigendecomp_mode==INITIAL) {
+        *Txx_ptr =  grad.x*grad.x;
+        *Txy_ptr =  grad.x*grad.y;
+        *Txz_ptr =  grad.x*grad.z;
+        *Tyy_ptr =  grad.y*grad.y;
+        *Tyz_ptr =  grad.y*grad.z;
+        *Tzz_ptr =  grad.z*grad.z;
+      } else {
+        T_ptr[0] = grad.x*grad.x;
+        T_ptr[1] = grad.x*grad.y;
+        T_ptr[2] = grad.x*grad.z;
+        T_ptr[3] = grad.y*grad.y;
+        T_ptr[4] = grad.y*grad.z;
+        T_ptr[5] = grad.z*grad.z;
+      }
     }
 
-    Txx_ptr++;
-    Txy_ptr++;
-    Txz_ptr++;
-    Tyy_ptr++;
-    Tyz_ptr++;
-    Tzz_ptr++;
+    if (eigendecomp_mode==INITIAL) {
+      Txx_ptr++;
+      Txy_ptr++;
+      Txz_ptr++;
+      Tyy_ptr++;
+      Tyz_ptr++;
+      Tzz_ptr++;
+    } else 
+      T_ptr += 6;
 
   } // endfor
   } // endfor
   } // endfor
 
   Tensor_timing.Fin();
-  std::cout << "Tensor_timing " << Tensor_timing << std::endl;
+  //std::cout << "Tensor_timing " << Tensor_timing << std::endl;
 
   filtre.reset();
 
@@ -966,19 +1005,44 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
   // Lissage du tenseur
   // Pas optimise...
   //std::cout << "smooth xx" << std::endl;
-  Smooth( tensor_xx, sigma_2);
-  //std::cout << "smooth xy" << std::endl;
-  Smooth( tensor_xy, sigma_2);
-  //std::cout << "smooth xz" << std::endl;
-  Smooth( tensor_xz, sigma_2);
-  //std::cout << "smooth yy" << std::endl;
-  Smooth( tensor_yy, sigma_2);
-  //std::cout << "smooth yz" << std::endl;
-  Smooth( tensor_yz, sigma_2);
-  //std::cout << "smooth zz" << std::endl;
-  Smooth( tensor_zz, sigma_2);
+  if (eigendecomp_mode==INITIAL) {
+    Smooth( tensor_xx, sigma_2);
+    Smooth( tensor_xy, sigma_2);
+    Smooth( tensor_xz, sigma_2);
+    Smooth( tensor_yy, sigma_2);
+    Smooth( tensor_yz, sigma_2);
+    Smooth( tensor_zz, sigma_2);
+  } else {
+    // create an image of one tensor component
+    InrImage::ptr comp_image(new InrImage(WT_FLOAT,1,
+                                          "comp_image.ami.gz",image));
+    float* C_ptr;
+    // for each component
+    for(int c=0; c<6; c++) {
+      // fill the component image with the values
+      T_ptr = (float*) tensor_im->GetData();
+      C_ptr = (float*) comp_image->GetData();
+      for(int n=0; n<image->Size();n++) 
+      {
+        *C_ptr = T_ptr[c];
+        C_ptr++;
+        T_ptr+=6;
+      }
+      // Smooth the component
+      Smooth( comp_image.get(), sigma_2);
+      // put back the values in the tensor
+      T_ptr = (float*) tensor_im->GetData();
+      C_ptr = (float*) comp_image->GetData();
+      for(int n=0; n<image->Size();n++) 
+      {
+        T_ptr[c] = *C_ptr;
+        C_ptr++;
+        T_ptr+=6;
+      }
+    }
+  }
   Smoothing_timing.Fin();
-  std::cout << "Smoothing_timing " << Smoothing_timing << std::endl;
+  //std::cout << "Smoothing_timing " << Smoothing_timing << std::endl;
 
   if (image!=im) delete image;
 
@@ -990,12 +1054,23 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
 } // ComputeStructureTensor()
 
 
-
-
 //------------------------------------------------------------------------------
 void ami::AnisoGSBase::ComputeEigenVectors()
 {
-  std::cout << "Begin ami::AnisoGSBase::ComputeEigenVectors()" << std::endl;
+  switch(eigendecomp_mode) {
+    case INITIAL:
+      ComputeEigenVectors_initial();
+      break;
+    case NEW:
+      ComputeEigenVectors_new();
+      break;
+  }
+}
+
+//------------------------------------------------------------------------------
+void ami::AnisoGSBase::ComputeEigenVectors_initial()
+{
+  //std::cout << "Begin ami::AnisoGSBase::ComputeEigenVectors_initial()" << std::endl;
   eigendecomp_time.Debut();
   
   int x,y,z;
@@ -1087,7 +1162,7 @@ eigenvect_zp->Sauve();
   eigendecomp_time.Fin();
   eigendecomp_time.AddCumul();
   
-  std::cout << "End ami::AnisoGSBase::ComputeEigenVectors()" << std::endl;
+  //std::cout << "End ami::AnisoGSBase::ComputeEigenVectors()" << std::endl;
   std::cout << eigendecomp_time << std::endl;
 }
 
@@ -1095,11 +1170,8 @@ eigenvect_zp->Sauve();
 //------------------------------------------------------------------------------
 void ami::AnisoGSBase::ComputeEigenVectors_new()
 {
-  std::cout << "Begin ami::AnisoGSBase::ComputeEigenVectors()" << std::endl;
+  //std::cout << "Begin ami::AnisoGSBase::ComputeEigenVectors_new()" << std::endl;
   eigendecomp_time.Debut();
-  
-  int x,y,z;
-  t_3Point e0, e1, e2;
 
   if (!eigenvect2_xp.get()) 
     eigenvect2_xp =  InrImage::ptr(new InrImage(  WT_FLOAT,3,
@@ -1133,17 +1205,34 @@ void ami::AnisoGSBase::ComputeEigenVectors_new()
                                                ));
 
   // 1. need to create mask image
-
+  InrImage::ptr mask;
+  if ((image_c!=NULL)&&(SpeedUp_c)) {
+    mask = InrImage::ptr(new InrImage(WT_UNSIGNED_CHAR,1,"mask.ami.gz",
+                                      image_entree));
+    unsigned char* mask_ptr = (unsigned char*) mask   ->GetData();
+    float* c_ptr            = (float*)         image_c->GetData();
+    for(int i=0;i<image_entree->Size();i++) {
+      if (*c_ptr>SpeedUp_c_lowerbound)
+        *mask_ptr = 0;
+      else
+        *mask_ptr = 255;
+      c_ptr++;
+      mask_ptr++;
+    }
+  }
     
   ami::ImageToImageFilterParam ed_param;
   // need to have the whole tensor in one image ...
-//  ed_param.SetInput(&sth);
-  ed_param.SetNumberOfThreads(6);
+  ed_param.SetInput(tensor_im);
+  ed_param.SetNumberOfThreads(wxThread::GetCPUCount());
 
   // Eigenvectors at x+1/2
   ami::EigenDecomp_NRAD::ptr ed(new ami::EigenDecomp_NRAD());
   ed->SetParameters(ed_param);
-  //ed->Setmask(&mask)
+  if ((image_c!=NULL)&&(SpeedUp_c)) {
+    //ed->Setmask(mask);
+  }
+  ed->Setdiag_algorithm(ami::EigenDecomp::JACOBI_INITIAL);
   ed->Setenable_eigenvalue1(false);
   ed->Setenable_eigenvalue2(false);
   ed->Setenable_eigenvalue3(false);
@@ -1168,12 +1257,12 @@ void ami::AnisoGSBase::ComputeEigenVectors_new()
   ed->Run();
   ed.reset();
 
-  printf("done \n");
+  //printf("done \n");
 
   eigendecomp_time.Fin();
   eigendecomp_time.AddCumul();
   
-  std::cout << "End ami::AnisoGSBase::ComputeEigenVectors_new()" << std::endl;
+  //std::cout << "End ami::AnisoGSBase::ComputeEigenVectors_new()" << std::endl;
   std::cout << eigendecomp_time << std::endl;
 }
 
@@ -1489,24 +1578,46 @@ short ami::AnisoGSBase::convert_short(double val)
 void ami::AnisoGSBase::GetVectors( int coord, int x, int y, int z, 
                                t_3Point& e0, t_3Point& e1, t_3Point& e2)
 {
-  InrImage* ev=NULL;
-  short* ev_buf;
+  if (eigendecomp_mode==INITIAL)
+  {
+    InrImage* ev=NULL;
+    short* ev_buf;
 
-  switch(coord) {
-    case 0: ev = eigenvect_xp;   break;
-    case 1: ev = eigenvect_yp;   break;
-    case 2: ev = eigenvect_zp;   break;
+    switch(coord) {
+      case 0: ev = eigenvect_xp;   break;
+      case 1: ev = eigenvect_yp;   break;
+      case 2: ev = eigenvect_zp;   break;
+    }
+
+    ev->BufferPos(x,y,z);
+    ev_buf = (short*) ev->BufferPtr();
+    e1.x = MIN(1.0,ev_buf[0]/MAX_SHORT); 
+    e1.y = MIN(1.0,ev_buf[1]/MAX_SHORT);
+    e1.z = MIN(1.0,ev_buf[2]/MAX_SHORT);
+
+    e2.x = MIN(1.0,ev_buf[3]/MAX_SHORT); 
+    e2.y = MIN(1.0,ev_buf[4]/MAX_SHORT);
+    e2.z = MIN(1.0,ev_buf[5]/MAX_SHORT);
+  } else {
+    InrImage::ptr ev2;
+    InrImage::ptr ev3;
+    switch(coord) {
+      case 0: ev2 = eigenvect2_xp;  ev3 = eigenvect3_xp;   break;
+      case 1: ev2 = eigenvect2_yp;  ev3 = eigenvect3_yp;   break;
+      case 2: ev2 = eigenvect2_zp;  ev3 = eigenvect3_zp;   break;
+    }
+    ev2->BufferPos(x,y,z);
+    ev3->BufferPos(x,y,z);
+    float* ev2_buf = (float*) ev2->BufferPtr();
+    float* ev3_buf = (float*) ev3->BufferPtr();
+    e1.x = ev2_buf[0];
+    e1.y = ev2_buf[1];
+    e1.z = ev2_buf[2];
+
+    e2.x = ev3_buf[0];
+    e2.y = ev3_buf[1];
+    e2.z = ev3_buf[2];
   }
-
-  ev->BufferPos(x,y,z);
-  ev_buf = (short*) ev->BufferPtr();
-  e1.x = MIN(1.0,ev_buf[0]/MAX_SHORT); 
-  e1.y = MIN(1.0,ev_buf[1]/MAX_SHORT);
-  e1.z = MIN(1.0,ev_buf[2]/MAX_SHORT);
-
-  e2.x = MIN(1.0,ev_buf[3]/MAX_SHORT); 
-  e2.y = MIN(1.0,ev_buf[4]/MAX_SHORT);
-  e2.z = MIN(1.0,ev_buf[5]/MAX_SHORT);
 
   e0.x = e1.y*e2.z-e1.z*e2.y;
   e0.y = e1.z*e2.x-e1.x*e2.z;

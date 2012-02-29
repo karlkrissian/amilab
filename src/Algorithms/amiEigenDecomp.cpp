@@ -24,6 +24,9 @@
 #include "Eigen.hpp"
 #include "FloatMatrix.hpp"
 #include <boost/scoped_array.hpp>
+#include "dsyevj3.h"
+#include "dsyevq3.h"
+#include "dsyevh3.h"
 
 namespace ami {
 
@@ -90,8 +93,12 @@ void EigenDecomp::TemplateProcess( int threadid)
   int             i,j;
   FloatMatrix     matrix(3,3);
   unsigned char   Diagonal;
+  int             success;
   float           vap[3];
   FloatMatrix     vec_propre(3,3);
+  double          mat_d[3][3];
+  double          vap_d[3];
+  double          vep_d[3][3];
   // temporary vector for jacobi eigen decomposition
   boost::scoped_array<float> tmp_b (new float[4]);
   boost::scoped_array<float> tmp_z (new float[4]);
@@ -171,16 +178,67 @@ void EigenDecomp::TemplateProcess( int threadid)
         if (mask_ok) {
           FillMatrix( matrix, in_ptr, vdim);
 
-          // Calcul des vep et des vap dans les images associees
-          // use vnl here?
-          Diagonal = jacobi2( 
-                              matrix, 
-                              3, 
-                              vap, 
-                              vec_propre, 
-                              &niter,
-                              tmp_b.get(),
-                              tmp_z.get() );
+          switch(diag_algorithm) {
+            case JACOBI_INITIAL:
+              // Calcul des vep et des vap dans les images associees
+              // use vnl here?
+              Diagonal = jacobi2( 
+                                  matrix, 
+                                  3, 
+                                  vap, 
+                                  vec_propre, 
+                                  &niter,
+                                  tmp_b.get(),
+                                  tmp_z.get() );
+              break;
+            case KOPP_JACOBI:
+              for(int i=0;i<3;i++) 
+                for(int j=0;j<3;j++)
+                  mat_d[i][j] = matrix[i][j];
+              success = dsyevj3(  mat_d, 
+                                  vep_d, 
+                                  vap_d);
+              for(int i=0;i<3;i++) {
+                vap[i] = vap_d[i];
+                for(int j=0;j<3;j++)
+                  vec_propre[i][j] = vep_d[i][j];
+              }
+              Diagonal = (success==0);
+              if (!Diagonal) std::cout << "Error" << std::endl;
+              break;
+            case KOPP_QL:
+              for(int i=0;i<3;i++) 
+                for(int j=0;j<3;j++)
+                  mat_d[i][j] = matrix[i][j];
+              success = dsyevq3(  mat_d, 
+                                  vep_d, 
+                                  vap_d);
+              for(int i=0;i<3;i++) {
+                vap[i] = vap_d[i];
+                for(int j=0;j<3;j++)
+                  vec_propre[i][j] = vep_d[i][j];
+              }
+              Diagonal = (success==0);
+              if (!Diagonal) std::cout << "Error" << std::endl;
+              break;
+            case KOPP_HYBRID:
+              for(int i=0;i<3;i++) 
+                for(int j=0;j<3;j++)
+                  mat_d[i][j] = matrix[i][j];
+              success = dsyevh3(  mat_d, 
+                                  vep_d, 
+                                  vap_d);
+              for(int i=0;i<3;i++) {
+                vap[i] = vap_d[i];
+                for(int j=0;j<3;j++)
+                  vec_propre[i][j] = vep_d[i][j];
+              }
+              Diagonal = (success==0);
+              if (!Diagonal) std::cout << "Error" << std::endl;
+              break;
+            default: 
+              std::cout << "diagonalization algo not implemented" << std::endl;
+          }
 
           if (Diagonal) {
             eigsrt(vap,  vec_propre, 3);
@@ -203,7 +261,28 @@ void EigenDecomp::TemplateProcess( int threadid)
               evect3_ptr[1] = vec_propre[1][2];
               evect3_ptr[2] = vec_propre[2][2];
             }
-          } // Diagonal
+          } else // Diagonal
+          {
+            if (eigenvalue1.get()) *eval1_ptr =  1;
+            if (eigenvalue2.get()) *eval2_ptr =  1;
+            if (eigenvalue3.get()) *eval3_ptr =  1;
+            if (eigenvector1.get()) {
+              evect1_ptr[0] = 1;
+              evect1_ptr[1] = 0;
+              evect1_ptr[2] = 0;
+            }
+            if (eigenvector2.get()) {
+              evect2_ptr[0] = 0;
+              evect2_ptr[1] = 1;
+              evect2_ptr[2] = 0;
+            }
+            
+            if (eigenvector3.get()) {
+              evect3_ptr[0] = 0;
+              evect3_ptr[1] = 0;
+              evect3_ptr[2] = 1;
+            }
+          }
         } // mask_ok
         in_ptr += input_incx;
         if (eigenvalue1.get()) eval1_ptr++;
@@ -280,17 +359,17 @@ void EigenDecomp::Run()
     eigenvalue3->InitZero();
   }
 
-  if ((enable_eigenvector1)&&(!check_eigenvalue_image(eigenvector1))) {
+  if ((enable_eigenvector1)&&(!check_eigenvector_image(eigenvector1))) {
     eigenvector1 = InrImage::ptr(new InrImage(WT_FLOAT,3,"eigenvect1.ami.gz",
                                              in.get()));
     eigenvector1->InitZero();
   }
-  if ((enable_eigenvector2)&&(!check_eigenvalue_image(eigenvector2))) {
+  if ((enable_eigenvector2)&&(!check_eigenvector_image(eigenvector2))) {
     eigenvector2 = InrImage::ptr(new InrImage(WT_FLOAT,3,"eigenvect2.ami.gz",
                                              in.get()));
     eigenvector2->InitZero();
   }
-  if ((enable_eigenvector3)&&(!check_eigenvalue_image(eigenvector3))) {
+  if ((enable_eigenvector3)&&(!check_eigenvector_image(eigenvector3))) {
     eigenvector3 = InrImage::ptr(new InrImage(WT_FLOAT,3,"eigenvect3.ami.gz",
                                              in.get()));
     eigenvector3->InitZero();

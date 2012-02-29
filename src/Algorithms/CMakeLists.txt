@@ -8,6 +8,7 @@ add_subdirectory (DerivAndOrient)
 include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
+  ${AMILAB_SOURCE_DIR}/Algorithms/diag_3x3mat
   ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
   ${AMILAB_SOURCE_DIR}/AMILab
@@ -107,8 +108,23 @@ SET(Algorithms_SRCS
   
   # from Graph
   Graph/dijkstra.cpp
+
+  # diagonalization of 3x3 matrix
+  diag_3x3mat/dsyevj3.c
+  diag_3x3mat/dsyevq3.c
+  diag_3x3mat/dsyevh3.c
+  diag_3x3mat/dsyevc3.c
+  diag_3x3mat/dsytrd3.c
 )
 
+# avoid dealing with -std=c99 option
+SET_SOURCE_FILES_PROPERTIES( 
+  diag_3x3mat/dsyevj3.c
+  diag_3x3mat/dsyevq3.c
+  diag_3x3mat/dsyevh3.c
+  diag_3x3mat/dsyevc3.c
+  diag_3x3mat/dsytrd3.c
+  PROPERTIES LANGUAGE CXX )
 
 SET(Algorithms_HDRS
   include/amiImageToImageFilter.h
@@ -192,6 +208,13 @@ SET(Algorithms_HDRS
 
   # from Graph
   include/dijkstra.h
+
+  # diagonalization of 3x3 matrix
+  diag_3x3mat/dsyevj3.h
+  diag_3x3mat/dsyevq3.h
+  diag_3x3mat/dsyevh3.h
+  diag_3x3mat/dsyevc3.h
+  diag_3x3mat/dsytrd3.h
 )
 
 IF(WIN32)

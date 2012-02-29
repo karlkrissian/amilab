@@ -199,9 +199,9 @@ void eigsrt(float d[], float** v, int n)
       d[k] = d[i];
       d[i] = p;
       for(j=0;j<n;j++) {
-	p=v[j][i];
-	v[j][i] = v[j][k];
-	v[j][k] = p;
+        p=v[j][i];
+        v[j][i] = v[j][k];
+        v[j][k] = p;
       }
     }
   }
