@@ -476,6 +476,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     int      xp,xm,yp,ym,zp,zm,incx,incy,incz;
     double mean,var;
     
+    int im_incx,im_incy,im_incz;
+    float im_buf;
+    
+    im->GetBufferIncrements(im_incx,im_incy,im_incz);
+    
   // pre-compute information
 
   // printf("Itere3D_2_new \n");
@@ -533,6 +538,89 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
 //printf("diff eigen mode : %d\n",diffusion_eigenvalues_mode);
 
+  ImageToImageFilter::Run();
+
+  if (outoflimits>0) {
+   std::cout << " Number of pixels out of the intensity range :" 
+             << outoflimits << std::endl;
+  }
+
+  // backup previous image in image_c
+  ExtendBoundariesVonNeumann(im_tmp);
+  //if (image_c!=NULL)  (*image_c) = (*im);
+  (*im) = (*this->im_tmp);
+
+  printf(" speedup is %3.3f %% of voxels\n",speedup_counter/(1.0*txy*tz)*100.0);
+
+/*
+ std::cout << std::endl;
+ std::cout << " Erreur = " << erreur << std::endl;
+ std::cout << "( " << erreur_x << ", " 
+               << erreur_y << ", " 
+               << erreur_z << " )" << std::endl; 
+ std::cout << "nb de points variables " << nb_points_instables << std::endl;
+*/
+  diff /= txy*tz;
+
+ std::cout << "\t diff =" << sqrt(diff) << "\t";
+
+  
+  // This code is somehow messy since it combines different types of filters
+  // TODO: some cleanup here
+  if (noise_standard_deviation <0) {
+/*    fprintf(stderr,"noise SD <0 ?\n");
+    estimated_DA_coeff = sum_divF/(1.0*nb_calculated_points);
+    fprintf(stderr,"lambda estimation for noise/sigma_noise^2 = %f \n", 
+        estimated_DA_coeff);
+*/
+  }
+  else {
+    estimated_DA_coeff =sum_divF/(1.0*nb_calculated_points)/this->variance;
+    fprintf(stderr,"sum_divF=%3.2f, nb_calculated_points = %5d, variance = %3.3f, \n ===  lambda estimation for noise = %f \n", 
+        sum_divF,(int)nb_calculated_points,this->variance, estimated_DA_coeff);
+
+      if ((noise_SD_preset)&&(estimated_DA_coeff>0))
+    this->beta = estimated_DA_coeff;
+      fprintf(stderr, "\n  Setting beta to %2.2f \n\n",beta);
+
+    estimated_DA_coeff =sum_divF2/(1.0*nb_calculated_points2)/this->variance;
+    fprintf(stderr,
+        " ===  lambda2 estimation for noise = %f, %02.2f percent of points \n", 
+        estimated_DA_coeff,
+        (nb_calculated_points2*100.0/nb_calculated_points));
+
+    /*
+    // set to the 2nd estimation
+    if ( (nb_calculated_points2*100.0/nb_calculated_points) > 80 ) {
+      if ((noise_SD_preset)&&(estimated_DA_coeff>0))
+    this->beta = estimated_DA_coeff;
+      fprintf(stderr, "\n  Setting beta to %2.2f \n\n",beta);
+    }
+    */
+  }
+
+  divFname = (boost::format("divF_%03d.ami.gz") % iteration).str();
+//divFim->Sauve(divFname);
+
+
+  return erreur;
+
+} // ami::AnisoGS::Itere3D_ST_RNRAD()
+
+
+//------------------------------------------------------------------------------
+void ami::AnisoGS_NRAD::Process( int threadid)
+{
+//   // process using precomputed extent number threadid
+//   InrImage::ptr in = params.GetInput();
+//   
+//   switch (in->GetFormat()) {
+//     case WT_FLOAT:   TemplateProcess<float,float>   (threadid); break;
+//     case WT_DOUBLE:  TemplateProcess<double,float>  (threadid); break;
+//     default: CLASS_ERROR((boost::format(" format %1% not available")%
+//                                     in->GetFormat()).str().c_str());
+//   }
+
   for(z=ROI_zmin;z<=ROI_zmax;z++) {
     if ( z==ROI_zmin ) {
       printf("z = %3d",z);
@@ -552,8 +640,8 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
   for(y=ROI_ymin;y<=ROI_ymax;y++) {
   // reset X coefficients
   alpha_x = gamma_x = 0;
-  im->BufferPos(ROI_xmin,y,z);
-  in = (float*) im->BufferPtr();
+  //im->BufferPos(ROI_xmin,y,z);
+  in = ((float*) im->GetData())+ROI_xmin*im_incx+y*im_incy+z*im_incz;
 
   for(x=ROI_xmin;x<=ROI_xmax;x++) {
   
@@ -905,9 +993,6 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
        std::cout << "pb 3" << std::endl;
       }
 
-/*    switch ( noise_type )
-    {
-    case GAUSSIAN_NOISE:*/
         if ( mask_test )
         {
           divF = ( val1 - *in * val1div ) * ( *in- ( *image_entree ) ( x,y,z ) );
@@ -938,65 +1023,6 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
               % sqrt(*in) % dt % val1prev % sqrt(val1) << std::endl;
         }
     
-//         break;
-    
-//     case SPECKLE_NOISE:
-//         u0 = ( *image_entree ) ( x,y,z );
-//         u  = *in;
-//     
-//         if ( mask_test&& ( fabsf ( u+u0 ) >1E-4 ) && ( u>1 ) && ( u0>1 ) )
-//         {
-//             divF = ( val1 - u * val1div ) * ( u-u0 ) / ( u+u0 ) *u;
-//             /*
-//             if (divF<-1000) {
-//               printf("val1 %03.1f, u %03.1f, val1div %03.1f, u0  %03.1f --> divF  %03.1f\n",
-//                  val1,u,val1div,u0,divF);
-//             }
-//             */
-//             sum_divF += divF;
-//             nb_calculated_points++;
-//         }
-//         else
-//             divF = 0;
-//     
-//         if ( ( u>1 ) && ( u0>1 ) )
-//         {
-//             //
-//             // See if we can get a more implicit scheme
-//             // by solving a 3rd order equation:
-//             //
-//     #ifdef IMPLICIT
-//             double w[3];
-//             int nb_solutions;
-//             Solve3rdOrder ( val1div,- ( val1-this->beta ),
-//                             -this->beta* ( u0*u0 ),w,nb_solutions );
-//             if ( nb_solutions==1 )
-//                 val1_implicit = w[0];
-//             else
-//             {
-//                 /*
-//                 printf(" 3rd order equation %d solutions %3.2f %3.2f %3.2f \n",
-//                    nb_solutions,w[0],w[1],w[2]);
-//                 */
-//                 if ( w[0] >=0 ) val1_implicit = w[0];
-//                 else
-//                     if ( w[1] >=0 ) val1_implicit = w[1];
-//                     else
-//                         if ( w[2] >=0 ) val1_implicit = w[2];
-//             }
-//             val1=val1_implicit;
-//     #else
-//             val1  += beta* ( ( u0*u0 ) / ( u*u )-1 );
-//             if ( fabsf ( val1div ) >1E-4 ) {
-//             val1 /= val1div;
-//             } else {
-//             fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
-//             } // end if
-//     #endif
-//         }
-//     
-//         break;
-//     } // switch noise type
 
       if (fabsf(val1-*in)<0.1) {
         sum_divF2 += divF;
@@ -1004,8 +1030,9 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       }
 
       if (divFim!=NULL) {
-        divFim->BufferPos(x,y,z);
-        divFim->FixeValeur(divF);
+        float* divFim_ptr = (float*)divFim->GetData() + 
+                            x*im_incx+y*im_incy+z*im_incz;
+        *divFim_ptr = divF;
       }
 
 
@@ -1017,20 +1044,6 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       gamma_y[x]    = gamma1_y;
       gamma_x       = gamma1_x;
 
-/*
-    } else {
-
-      val1 = *in;
-    
-      alpha_z[x][y] = 
-      alpha_y[x]    = 
-      alpha_x       = 
-      gamma_z[x][y] = 
-      gamma_y[x]    = 
-      gamma_x       = 0;
-
-    } // end if
-*/
 
     if ( fabsf(val1-val0) > epsilon ) {
       nb_points_instables++;
@@ -1044,7 +1057,6 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       erreur_z = z;
     } // end if
 
-    this->im_tmp->BufferPos(x,y,z);
 
     if (val1<min_intensity) {
       if (verbose) fprintf(stderr,"I=%3.2f<min, (%3d,%3d,%3d) \n",val1,x,y,z);
@@ -1057,10 +1069,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       outoflimits++;
     }
 
+    float * im_tmp_buf = (float*)this->im_tmp->GetData();
+    (*(im_tmp_buf+x*im_incx+y*im_incy+z*im_incz))=val1;
     if (debug_voxel) {
       std::cout << "val1: " << val1 << std::endl;
     }
-    this->im_tmp->FixeValeur(val1);
 
     in++;
     //Iconv++;
@@ -1070,81 +1083,14 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
   } // endfor
 
 
-  if (outoflimits>0) {
-   std::cout << " Number of pixels out of the intensity range :" << outoflimits << std::endl;
-  }
-
-  // backup previous image in image_c
-  ExtendBoundariesVonNeumann(im_tmp);
-  //if (image_c!=NULL)  (*image_c) = (*im);
-  (*im) = (*this->im_tmp);
-
-  printf(" speedup is %3.3f %% of voxels\n",speedup_counter/(1.0*txy*tz)*100.0);
-
-/*
- std::cout << std::endl;
- std::cout << " Erreur = " << erreur << std::endl;
- std::cout << "( " << erreur_x << ", " 
-               << erreur_y << ", " 
-               << erreur_z << " )" << std::endl; 
- std::cout << "nb de points variables " << nb_points_instables << std::endl;
-*/
-  diff /= txy*tz;
-
- std::cout << "\t diff =" << sqrt(diff) << "\t";
-
-  
-  // This code is somehow messy since it combines different types of filters
-  // TODO: some cleanup here
-  if (noise_standard_deviation <0) {
-/*    fprintf(stderr,"noise SD <0 ?\n");
-    estimated_DA_coeff = sum_divF/(1.0*nb_calculated_points);
-    fprintf(stderr,"lambda estimation for noise/sigma_noise^2 = %f \n", 
-        estimated_DA_coeff);
-*/
-  }
-  else {
-    estimated_DA_coeff =sum_divF/(1.0*nb_calculated_points)/this->variance;
-    fprintf(stderr,"sum_divF=%3.2f, nb_calculated_points = %5d, variance = %3.3f, \n ===  lambda estimation for noise = %f \n", 
-        sum_divF,(int)nb_calculated_points,this->variance, estimated_DA_coeff);
-
-      if ((noise_SD_preset)&&(estimated_DA_coeff>0))
-    this->beta = estimated_DA_coeff;
-      fprintf(stderr, "\n  Setting beta to %2.2f \n\n",beta);
-
-    estimated_DA_coeff =sum_divF2/(1.0*nb_calculated_points2)/this->variance;
-    fprintf(stderr,
-        " ===  lambda2 estimation for noise = %f, %02.2f percent of points \n", 
-        estimated_DA_coeff,
-        (nb_calculated_points2*100.0/nb_calculated_points));
-
-    /*
-    // set to the 2nd estimation
-    if ( (nb_calculated_points2*100.0/nb_calculated_points) > 80 ) {
-      if ((noise_SD_preset)&&(estimated_DA_coeff>0))
-    this->beta = estimated_DA_coeff;
-      fprintf(stderr, "\n  Setting beta to %2.2f \n\n",beta);
-    }
-    */
-  }
-
-  divFname = (boost::format("divF_%03d.ami.gz") % iteration).str();
-//divFim->Sauve(divFname);
-
-
-  return erreur;
-
-} // ami::AnisoGS::Itere3D_ST_RNRAD()
-
-
-
+}
 
 
 //------------------------------------------------------------------------------
-float ami::AnisoGS_NRAD::Iterate()
+float ami::AnisoGS_NRAD::Run()
 //   ----------------
 {
-
+  
   iteration_time.Debut();
   float       erreur = 0;
 
@@ -1174,6 +1120,15 @@ float ami::AnisoGS_NRAD::Iterate()
   iteration_time.AddCumul();
   std::cout << iteration_time << std::endl;
   return erreur;
+
+  
+}
+
+//------------------------------------------------------------------------------
+float ami::AnisoGS_NRAD::Iterate()
+//   ----------------
+{
+  Run();
 
 } // ami::AnisoGS::Iterate()
 

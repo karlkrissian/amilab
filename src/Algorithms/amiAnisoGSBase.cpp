@@ -68,82 +68,6 @@
 
 #include <wx/thread.h>
 
-/*
-double CubicRoot(double x) {
-  if (x==0) return 0;
-  if (x>0) return exp(log(x)/3.0);
-  if (x<0) return -exp(log(-x)/3.0);
-  return 0;
-}
-*/
-
-
-
-/*
- * // Solving a 3rd order polynomial equation
-// of type a.X^3+b.X^2+c=0
-//
-void Solve3rdOrder(float _a, float _b, float _c, double w[3], int& nb_solutions) 
-//   -------------
-{
-  double a0,a1,a2;
-  double b,c,d2,d;
-  //  double w0,w1,w2;
-  double p,q;
-  double tmp1,tmp2;
-
-  nb_solutions=0;
-  
-  // solve the _c==0 issue when beta is zero
-  if (_c==0) {
-    if (fabsf(_a)>1E-5) {
-      w[0] = -_b/_a;
-      nb_solutions=1;
-    }
-    return;
-  }
-
-
-  a2 = _b/_a;
-  a1 = 0;
-  a0 = _c/_a;
-
-  b = a1/3-a2*a2/9;
-  c = a0/2-a1*a2/6+a2*a2*a2/27;
-
-  // the equation become
-  // w^3+3.b.w+2.c=0
-  // with w=X+a2/3
-
-  d2=b*b*b+c*c;
-  if (d2>=0) {
-    d=sqrt(d2);
-    // the mandatory real root is:
-    p =   CubicRoot(c+d);
-    q = - CubicRoot(c-d);
-    w[0] = - (p-q);
-    nb_solutions++;
-    if (d==0) {
-      w[1] = p;
-      nb_solutions++;
-    }
-  }
-  else {
-    tmp1 = 1.0/3.0*acos(c/sqrt(-b*b*b));
-    tmp2 = sqrt(-b);
-    w[0] = -2*tmp2*cos(tmp1);
-    w[1] = tmp2*(cos(tmp1)+sqrt(3.0)*sin(tmp1));
-    w[2] = tmp2*(cos(tmp1)-sqrt(3.0)*sin(tmp1));
-    nb_solutions=3;
-  }
-
-  // update to the solution of the initial equation
-  if (nb_solutions>0) w[0]+=-a2/3.0;
-  if (nb_solutions>1) w[1]+=-a2/3.0;
-  if (nb_solutions>2) w[2]+=-a2/3.0;
-
-} // Solve3rdOrder()
-*/
 
 //------------------------------------------------------------------------------
 InrImage::ptr ami::AnisoGSBase::GetOutput()
@@ -646,169 +570,6 @@ double ami::AnisoGSBase::function_c_MRI(double sigma2, double vg, double meang)
 #undef var_epsilon
 } // function_c_MRI
 
-// //----------------------------------------------------------------------
-// void ami::AnisoGSBase::ComputeImage_c(InrImage* im)
-// //            --------------
-// {
-// 
-//   int x,y,z; //,n,i;
-//   double I,Ixm,Iym,Izm,Ixp,Iyp,Izp,mean1,mean2,q0_2=0.0,q2;
-//   double sigma2=0.0;
-// 
-// /*
-//  *  int mode = MODE_KUAN;
-// 
-// //  printf("ami::AnisoGSBase::ComputeImage_c() \t contour mode = %d \n",this->contours_mode);
-//   switch (this->contours_mode)
-//     {
-//     case CONTOURS_OSRAD:
-//       mode = MODE_KUAN;
-//       break;
-//     case CONTOURS_RNRAD:
-//       mode = MODE_MRI;
-//       break;
-//     case CONTOURS_NRAD:
-//       mode = MODE_MRI;
-//       break;
-//     }
-// */
-// 
-//   if ((this->contours_mode==CONTOURS_OSRAD)||
-//       (this->contours_mode==CONTOURS_NRAD))
-//     {
-// 
-//       if ( this->image_c == NULL ) 
-//       this->image_c = new InrImage(WT_FLOAT, "image_c.ami.gz", im);
-// 
-//       // we limit for the moment to Kuan's function with Yu's neighborhood
-// 
-//       // precompute image of coefficients
-//       switch (noise_model)
-//         {
-//         case NOISE_LEE:
-//         case NOISE_KUAN:
-//         case NOISE_GAUSSIAN_ADDITIVE:
-//           q0_2= Compute_q0_subvol(im);
-//           printf("q0_2 = %f \n",q0_2);
-//           break;
-//         case NOISE_RICIAN:
-//           /*        sigma2 = Compute_sigma2_MRI(im);
-//                   printf("sigma = %f \n",sqrt(sigma2));
-//           */
-//           sigma2 = Compute_sigma2_MRI_mode(im);
-//           printf("noise SD = %3.2f \t",sqrt(sigma2));
-//           break;
-//         }
-// 
-//       // Precompute mean of I and mean of I^2
-//       InrImage* image_mean_I  = NULL;
-//       InrImage* image_I2      = NULL;
-//       InrImage* image_mean_I2 = NULL;
-// 
-// 
-//       image_mean_I  = Func_localmean2(im,neighborhood);
-//       image_I2 = (*im)*(*im);
-//       image_mean_I2 = Func_localmean2(image_I2, neighborhood);
-//       delete image_I2;
-//       image_I2= NULL;
-// 
-//       // 1. Compute c
-//       for (z=0;z<tz;z++)
-//         {
-//           for (y=0;y<ty;y++)
-//             {
-//               for (x=0;x<tx;x++)
-//                 {
-//                   I = (*im)(x,y,z);
-//                   if (fabsf(I)<1) I=1;
-//                   if (x>0)     Ixm = (*im)(x-1,y,z);
-//                   else Ixm = I;
-//                   if (y>0)     Iym = (*im)(x,y-1,z);
-//                   else Iym = I;
-//                   if (z>0)     Izm = (*im)(x,y,z-1);
-//                   else Izm = I;
-// 
-//                   if (x<tx-1)  Ixp = (*im)(x+1,y,z);
-//                   else Ixp = I;
-//                   if (y<ty-1)  Iyp = (*im)(x,y+1,z);
-//                   else Iyp = I;
-//                   if (z<tz-1)  Izp = (*im)(x,y,z+1);
-//                   else Izp = I;
-// 
-//                   // other (simpler version of q2):
-//                   switch (neighborhood)
-//                     {
-//                     case 0:
-//                       mean1 = Ixm+Ixp+Iym+Iyp;
-//                       mean2 = Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp;
-//                       if (tz==1)
-//                         {
-//                           mean1/=4.0;
-//                           mean2/=4.0;
-//                         }
-//                       else
-//                         {
-//                           mean1+=Izm+Izp;
-//                           mean2+=Izm*Izm+Izp*Izp;
-//                           mean1/=6.0;
-//                           mean2/=6.0;
-//                         }
-//                       break;
-//                       /*
-//                             //mean1 = (Ixm+Ixp+Iym+Iyp)/4.0;
-//                             //mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp)/4.0;
-//                             // adding the central point for stability
-//                             mean1 = (Ixm+Ixp+Iym+Iyp+I)/5.0;
-//                             mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp+I*I)/5.0;
-//                       */
-//                       break;
-//                     default:
-//                       mean1 = (*image_mean_I) (x,y,z);
-//                       mean2 = (*image_mean_I2)(x,y,z);
-//                     }
-// 
-//                   if (fabsf(mean1)>1E-6)
-//                     q2    = mean2/(mean1*mean1)-1;
-//                   else q2 = 0;
-// 
-//                   image_c->BufferPos(x,y,z);
-//                   switch (noise_model)
-//                     {
-//                     case NOISE_LEE:
-//                       image_c->FixeValeur( function_c_Lee( q2, q0_2));
-//                       break;
-//                     case NOISE_KUAN:
-//                       image_c->FixeValeur( function_c_Kuan( q2, q0_2));
-//                       break;
-// /*                    case NOISE_GAUSSIAN_ADDITIVE: 
-//                       image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,
-//                                                                q0_2)); 
-//                       break;*/
-//                     case NOISE_RICIAN:
-//                       image_c->FixeValeur( function_c_MRI( sigma2, 
-//                                                            mean2-mean1*mean1, 
-//                                                            mean1));
-//                       break;
-//                     }
-//                 }
-//             }
-//         } // for z
-// 
-//       if (neighborhood>0)
-//         {
-//           delete image_mean_I;
-//           image_mean_I  = NULL;
-//           delete image_mean_I2;
-//           image_mean_I2 = NULL;
-//         }
-// 
-//     } //
-//   else
-//     CLASS_ERROR((boost::format("contours_mode %1% not supported")%
-//                   contours_mode).str().c_str());
-// //  image_c->Sauve();
-// 
-// }
 
 //------------------------------------------------------------------------------
 void ami::AnisoGSBase::Smooth(InrImage* image, float sigma)
@@ -1609,10 +1370,13 @@ void ami::AnisoGSBase::GetVectors( int coord, int x, int y, int z,
       case 1: ev2 = eigenvect2_yp;  ev3 = eigenvect3_yp;   break;
       case 2: ev2 = eigenvect2_zp;  ev3 = eigenvect3_zp;   break;
     }
-    ev2->BufferPos(x,y,z);
-    ev3->BufferPos(x,y,z);
-    float* ev2_buf = (float*) ev2->BufferPtr();
-    float* ev3_buf = (float*) ev3->BufferPtr();
+    int inc_x,inc_y,inc_z;
+    ev2->GetBufferIncrements(inc_x,inc_y,inc_z);
+    long d = x*inc_x+y*inc_y+z*inc_z;
+    //ev2->BufferPos(x,y,z);
+    //ev3->BufferPos(x,y,z);
+    float* ev2_buf = ((float*) ev2->GetData())+d;
+    float* ev3_buf = ((float*) ev3->GetData())+d;
     e1.x = ev2_buf[0];
     e1.y = ev2_buf[1];
     e1.z = ev2_buf[2];

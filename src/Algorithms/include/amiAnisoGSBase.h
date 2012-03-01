@@ -28,6 +28,8 @@ class DeriveesLissees;
 class FiltrageRec;
 #include "GeneralGaussianFilter.h"
 
+#include "amiImageToImageFilter.h"
+
 namespace ami {
 
   #define DER_DISCR 1
@@ -69,7 +71,7 @@ namespace ami {
    * This class contains several denoising filters based on Partial Differential
    * Equations, and usually implemented using a Gauss-Seidel scheme.
    */
-  class AnisoGSBase {
+  class AnisoGSBase : public ImageToImageFilter {
 
     DEFINE_CLASS(AnisoGSBase);
 
@@ -490,6 +492,10 @@ namespace ami {
     * @return 
     */
     virtual float Iterate() {}
+
+
+    virtual void Process( int threadid = 0) = 0;
+    virtual void Run();
 
     void InitFlux( t_3Point& e0,t_3Point& e1,t_3Point& e2);
 

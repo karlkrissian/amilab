@@ -95,12 +95,14 @@ namespace ami {
     
 //    void Init(InrImage* in, float p_sigma, float p_k, float p_beta);
 
+    virtual void Process( int threadid = 0);
+    virtual void Run();
+
     /**
     * Main iteration method, directs to the appropriate specific method
     * @return 
     */
     float Iterate();
-
 
     /**
     * Compute the local  mean and standard deviation within a plan,
