@@ -58,6 +58,9 @@ class EigenDecomp_NRAD : public EigenDecomp
     
     virtual void FillMatrix(FloatMatrix & matrix, float* in_ptr, int vdim);
 
+    virtual void Run();
+
+  
 }; // EigenDecomp_NRAD
 
 } // end namespace ami

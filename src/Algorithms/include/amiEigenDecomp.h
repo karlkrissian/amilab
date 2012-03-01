@@ -105,7 +105,7 @@ public:
    */
   void Process( int threadid = 0);
   
-  void Run();
+  virtual void Run();
 
   
 }; // EigenDecomp

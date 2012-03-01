@@ -33,7 +33,7 @@ void ImageToImageFilter::Init()
   int nt = params.GetNumberOfThreads();
 
   if (in.get()) {
-    extenttype extent(in.get());
+    extenttype extent(params.GetOutputExtent());
 #define SPLIT_Z_FIRST
 #ifdef SPLIT_Z_FIRST
     // Set which dimension to split

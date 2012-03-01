@@ -242,10 +242,6 @@ ami::AnisoGSBase::~AnisoGSBase()
     if (tensor_zz!=NULL) { delete tensor_zz; tensor_zz=NULL; }
   }
 
-  if (eigenvect_xp!=NULL) { delete eigenvect_xp; eigenvect_xp=NULL; }
-  if (eigenvect_yp!=NULL) { delete eigenvect_yp; eigenvect_yp=NULL; }
-  if (eigenvect_zp!=NULL) { delete eigenvect_zp; eigenvect_zp=NULL; }
-
   delete matrice;
   delete vec_propre;
 }
@@ -1077,27 +1073,22 @@ void ami::AnisoGSBase::ComputeEigenVectors_initial()
   t_3Point e0, e1, e2;
 
 
-  if (eigenvect_xp==NULL) 
-    eigenvect_xp =  new InrImage( image_entree->DimX(),
-                                  image_entree->DimY(),
-                                  image_entree->DimZ(),
-                                  6, // for e1 and e2
-                                  WT_SIGNED_SHORT,
-                                  "Eigenvect_xp.ami.gz");
-  if (eigenvect_yp==NULL) 
-    eigenvect_yp =  new InrImage( image_entree->DimX(),
-                                  image_entree->DimY(),
-                                  image_entree->DimZ(),
-                                  6, // for e1 and e2
-                                  WT_SIGNED_SHORT,
-                                  "Eigenvect_yp.ami.gz");
-  if (eigenvect_zp==NULL) 
-    eigenvect_zp =  new InrImage( image_entree->DimX(),
-                                  image_entree->DimY(),
-                                  image_entree->DimZ(),
-                                  6, // for e1 and e2
-                                  WT_SIGNED_SHORT,
-                                  "Eigenvect_zp.ami.gz");
+  if (!eigenvect_xp.get()) 
+    eigenvect_xp =  InrImage::ptr(new InrImage( WT_SIGNED_SHORT,
+                                                6, // for e1 and e2
+                                                "Eigenvect_xp.ami.gz",
+                                                image_entree));
+  if (!eigenvect_yp.get()) 
+    eigenvect_yp =  InrImage::ptr(new InrImage( WT_SIGNED_SHORT,
+                                                6, // for e1 and e2
+                                                "Eigenvect_yp.ami.gz",
+                                                image_entree));
+
+  if (!eigenvect_zp.get()) 
+    eigenvect_zp =  InrImage::ptr(new InrImage( WT_SIGNED_SHORT,
+                                                6, // for e1 and e2
+                                                "Eigenvect_zp.ami.gz",
+                                                image_entree));
 
   printf("Pre-Computing eigenvectors \n");
   for(z=ROI_zmin;z<=ROI_zmax;z++)
@@ -1205,11 +1196,11 @@ void ami::AnisoGSBase::ComputeEigenVectors_new()
                                                ));
 
   // 1. need to create mask image
-  InrImage::ptr mask;
+  InrImage::ptr local_mask;
   if ((image_c!=NULL)&&(SpeedUp_c)) {
-    mask = InrImage::ptr(new InrImage(WT_UNSIGNED_CHAR,1,"mask.ami.gz",
+    local_mask = InrImage::ptr(new InrImage(WT_UNSIGNED_CHAR,1,"mask.ami.gz",
                                       image_entree));
-    unsigned char* mask_ptr = (unsigned char*) mask   ->GetData();
+    unsigned char* mask_ptr = (unsigned char*) local_mask   ->GetData();
     float* c_ptr            = (float*)         image_c->GetData();
     for(int i=0;i<image_entree->Size();i++) {
       if (*c_ptr>SpeedUp_c_lowerbound)
@@ -1225,14 +1216,24 @@ void ami::AnisoGSBase::ComputeEigenVectors_new()
   // need to have the whole tensor in one image ...
   ed_param.SetInput(tensor_im);
   ed_param.SetNumberOfThreads(wxThread::GetCPUCount());
+  ami::ImageExtent<int> extent;
+
+#ifndef macro_min
+  #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
+#endif
+
+  extent.SetMinMax(0,ROI_xmin,macro_min(ROI_xmax,image_entree->DimX()-2));
+  extent.SetMinMax(1,ROI_ymin,macro_min(ROI_ymax,image_entree->DimY()-2));
+  extent.SetMinMax(2,ROI_zmin,macro_min(ROI_zmax,image_entree->DimZ()-2));
+  ed_param.SetOutputExtent(extent);
 
   // Eigenvectors at x+1/2
   ami::EigenDecomp_NRAD::ptr ed(new ami::EigenDecomp_NRAD());
   ed->SetParameters(ed_param);
   if ((image_c!=NULL)&&(SpeedUp_c)) {
-    //ed->Setmask(mask);
+    //ed->Setmask(local_mask);
   }
-  ed->Setdiag_algorithm(ami::EigenDecomp::JACOBI_INITIAL);
+  ed->Setdiag_algorithm(ami::EigenDecomp::KOPP_HYBRID);
   ed->Setenable_eigenvalue1(false);
   ed->Setenable_eigenvalue2(false);
   ed->Setenable_eigenvalue3(false);
@@ -1547,7 +1548,9 @@ void ami::AnisoGSBase::StructTensor_eigenvectors( int coord, int x, int y, int z
         e2.z = (*vec_propre)[2][2];
     }
     else {
-    fprintf(stderr,"Struture Tensor, diagonalization pb ...\n");
+      std::cerr << "Struture Tensor, diagonalization pb ..." 
+                << "at ("<< x << ", " << y << ", " << z << ")"
+                << std::endl;
        e0.x = 1.0;
        e0.y = 0.0;
        e0.z = 0.0;
@@ -1580,7 +1583,7 @@ void ami::AnisoGSBase::GetVectors( int coord, int x, int y, int z,
 {
   if (eigendecomp_mode==INITIAL)
   {
-    InrImage* ev=NULL;
+    InrImage::ptr ev;
     short* ev_buf;
 
     switch(coord) {
@@ -1591,13 +1594,13 @@ void ami::AnisoGSBase::GetVectors( int coord, int x, int y, int z,
 
     ev->BufferPos(x,y,z);
     ev_buf = (short*) ev->BufferPtr();
-    e1.x = MIN(1.0,ev_buf[0]/MAX_SHORT); 
-    e1.y = MIN(1.0,ev_buf[1]/MAX_SHORT);
-    e1.z = MIN(1.0,ev_buf[2]/MAX_SHORT);
+    e1.x = MIN(1.0,(float)ev_buf[0]/MAX_SHORT); 
+    e1.y = MIN(1.0,(float)ev_buf[1]/MAX_SHORT);
+    e1.z = MIN(1.0,(float)ev_buf[2]/MAX_SHORT);
 
-    e2.x = MIN(1.0,ev_buf[3]/MAX_SHORT); 
-    e2.y = MIN(1.0,ev_buf[4]/MAX_SHORT);
-    e2.z = MIN(1.0,ev_buf[5]/MAX_SHORT);
+    e2.x = MIN(1.0,(float)ev_buf[3]/MAX_SHORT); 
+    e2.y = MIN(1.0,(float)ev_buf[4]/MAX_SHORT);
+    e2.z = MIN(1.0,(float)ev_buf[5]/MAX_SHORT);
   } else {
     InrImage::ptr ev2;
     InrImage::ptr ev3;

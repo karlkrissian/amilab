@@ -48,13 +48,13 @@ void EigenDecomp_NRAD::FillMatrix(FloatMatrix & matrix, float* in_ptr, int vdim)
       if (i<=j) {
         matrix[i][j] = in_ptr[n];
         if (half_displ==HALF_DISPL_X)
-          matrix[i][j] = in_ptr[inc_x+n]; 
+          matrix[i][j] += in_ptr[inc_x+n]; 
         else
         if (half_displ==HALF_DISPL_Y)
-          matrix[i][j] = in_ptr[inc_y+n];
+          matrix[i][j] += in_ptr[inc_y+n];
         else
         if (half_displ==HALF_DISPL_Z)
-          matrix[i][j] = in_ptr[inc_z+n];
+          matrix[i][j] += in_ptr[inc_z+n];
         n++;
       } else {
         matrix[i][j] = matrix[j][i];
@@ -73,6 +73,15 @@ void EigenDecomp_NRAD::FillMatrix(FloatMatrix & matrix, float* in_ptr, int vdim)
       n++;
     }
   }
+}
+
+
+//------------------------------------------------------------------------------
+void EigenDecomp_NRAD::Run() 
+{
+  // need to initialize the increments !!!
+  InitIncrements();
+  EigenDecomp::Run();
 }
 
 

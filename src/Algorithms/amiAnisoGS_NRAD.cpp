@@ -245,17 +245,20 @@ void  ami::AnisoGS_NRAD::ComputeLocalPlanStats(InrImage* im, float x, float y, f
   int px1,py1,pz1;
 //  int i,index=0;
 //  double sum_gauss = 0.0,twosd2;
-  float p1_step = 1;
-  float p2_step = 1;
-  float size = 2*sd;
+  double p1_step = 1;
+  double p2_step = 1;
+  double size = 2*sd;
   double mean2,val;
   int nval=0;
 
 //  twosd2 = 2*sd*sd;
 
-  fp2x = x-size*d2.x-size*d1.x+0.5;
-  fp2y = y-size*d2.y-size*d1.y+0.5;
-  fp2z = z-size*d2.z-size*d1.z+0.5;
+  // adding 1E-4 to avoid to get a exact integer and 
+  // obtain different results between methods because of the numerical
+  // precision
+  fp2x = x-size*d2.x-size*d1.x+0.5+1E-4;
+  fp2y = y-size*d2.y-size*d1.y+0.5+1E-4;
+  fp2z = z-size*d2.z-size*d1.z+0.5+1E-4;
   mean  = 0.0;
   mean2 = 0.0;
 
@@ -272,10 +275,14 @@ void  ami::AnisoGS_NRAD::ComputeLocalPlanStats(InrImage* im, float x, float y, f
         if (((px!=px1)||(py!=py1)||(pz!=pz1))&
             ((px!=(int)(fp1x-d2.x))||(py!=(int)(fp1y-d2.y))||(pz!=(int)(fp1z-d2.z))))
         {
-        val = (*im)(px,py,pz);
-        mean  += val;
-        mean2 += val*val;
-        nval++;
+          val = (*im)(px,py,pz);
+          if (debug_voxel) {
+            std::cout << "adding point " << px << ", " << py << ", " << pz 
+                      << " with value " << val << std::endl;
+          }
+          mean  += val;
+          mean2 += val*val;
+          nval++;
         }
       px1 = px;
       py1 = py;
@@ -313,17 +320,17 @@ void  ami::AnisoGS_NRAD::ComputeLocalDirStats(InrImage* im, float x, float y, fl
   int px1,py1,pz1;
 //  int i,index=0;
 //  double sum_gauss = 0.0,twosd2;
-  float p_step = 1;
-  float size = 2*sd;
+  double p_step = 1;
+  double size = 2*sd;
   double mean2,val;
   int nval=0;
 
   px1=py1=pz1=-100;
 //  twosd2 = 2*sd*sd;
 
-  fpx = x-size*e.x+0.5;
-  fpy = y-size*e.y+0.5;
-  fpz = z-size*e.z+0.5;
+  fpx = x-size*e.x+0.5+1E-4;
+  fpy = y-size*e.y+0.5+1E-4;
+  fpz = z-size*e.z+0.5+1E-4;
   mean  = 0.0;
   mean2 = 0.0;
 
@@ -421,7 +428,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     double   alpha1_y, gamma1_y;
     double   alpha1_z, gamma1_z;
     float*  in;
-    register float    *Iconv=NULL; 
+    //register float    *Iconv=NULL; 
 //    float gradient[3];
 //    float hessien[3][3];
     unsigned long outoflimits=0;
@@ -455,9 +462,10 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     double    sigma2=0.0; // variance of the noise
  
 /*
-    double   planstats_sigma = 1.0;
+ *    double   planstats_sigma = 1.0;
     double   dirstats_sigma  = 1.5;
-*/
+    */
+
 //    double lambda_threshold = 0.6;
 
 //    double        diff_coeff;
@@ -467,6 +475,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
     int      xp,xm,yp,ym,zp,zm,incx,incy,incz;
     double mean,var;
+    
   // pre-compute information
 
   // printf("Itere3D_2_new \n");
@@ -548,6 +557,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
   for(x=ROI_xmin;x<=ROI_xmax;x++) {
   
+    
+    debug_voxel = (x-ROI_xmin==16)&&
+                  (y-ROI_ymin==9)&&
+                  (z-ROI_zmin==9);
+
     val1 = val0 = *in;
     mask_test = (!mask.get())||
                 ((mask.get())&&((*mask)(x-ROI_xmin,y-ROI_ymin,z-ROI_zmin)>0.5));
@@ -588,9 +602,10 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     }
 
     if (!speedup_skip) {
-      InitNeighborhood(Iconv,x,y,z);
+      //InitNeighborhood(Iconv,x,y,z);
 
       // Gradient en (x+1/2,y,z)
+      if (debug_voxel) std::cout << "(x+1/2,y,z)" << std::endl;
       //----- Calcul de alpha1_x, gamma1_x
       grad.x = *(in+xp) - *(in);
       grad.y = ( *(in+yp) - *(in+ym) + *(in+yp+xp) -*(in+ym+xp) )/ 4.0;
@@ -598,6 +613,16 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
       // get vectors
       this->GetVectors(0,x,y,z,e0,e1,e2);
+#define PRINT_VECTOR( v) std::cout << #v << "( " << v.x << ", " \
+      << v.y << ", " \
+      << v.z << ")" << std::endl;
+      
+      if (debug_voxel) {
+        PRINT_VECTOR(e0)
+        PRINT_VECTOR(e1)
+        PRINT_VECTOR(e2)
+      }
+      
 
       lambda0 = ( (*image_c)(x,y,z) + (*image_c)(x+incx,y,z) ) /2.0; 
 //      if (lambda0>2) lambda0=2;
@@ -605,6 +630,14 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
         ComputeLocalPlanStats(im, 
                               (float)x+((float)incx)/2.0, (float) y, (float) z,  
                               e1,e2, planstats_sigma, mean,var);
+        if (debug_voxel) {
+          std::cout << "( " << (float)x+((float)incx)/2.0 << ", "
+                    << (float) y << ", "
+                    << (float) z << "), "
+                    << planstats_sigma << ", "
+                    << mean << ", "
+                    << var << std::endl;
+        }
         switch (noise_model) 
         {
           case NOISE_GAUSSIAN_ADDITIVE:
@@ -645,6 +678,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       if (lambda1>1) lambda1=1;
       if (lambda2>1) lambda2=1;
 
+      if (debug_voxel) {
+        std::cout << "lambda0: " << lambda0
+                  << "lambda1: " << lambda1
+                  << "lambda2: " << lambda2 << std::endl;
+      }
       //    lambda2 = 0;
 
       alpha1_x = lambda0 *e0.x*e0.x + 
@@ -659,11 +697,19 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       //----- Calcul de alpha1_y, gamma1_y 
    
       // Gradient en (x,y+1/2)
+      if (debug_voxel) std::cout << "(x,y+1/2,z)" << std::endl;
+
       grad.x = (*(in+xp)-*(in+xm)+*(in+xp+yp)-*(in+xm+yp))/4.0;
       grad.y =  *(in+yp) - *(in);
       grad.z = (*(in+zp)-*(in+zm)+*(in+zp+yp)-*(in+zm+yp))/4.0;
 
       this->GetVectors(1,x,y,z,e0,e1,e2);
+
+      if (debug_voxel) {
+        PRINT_VECTOR(e0)
+        PRINT_VECTOR(e1)
+        PRINT_VECTOR(e2)
+      }
 
       lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
       // if (lambda0>2) lambda0=2;
@@ -712,6 +758,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       if (lambda1>1) lambda1=1;
       if (lambda2>1) lambda2=1;
 
+      if (debug_voxel) {
+        std::cout << "lambda0: " << lambda0
+                  << "lambda1: " << lambda1
+                  << "lambda2: " << lambda2 << std::endl;
+      }
       //    lambda2 = 0;
 
       alpha1_y = lambda0 *e0.y*e0.y + 
@@ -724,11 +775,17 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
 
       //----- Calcul de alpha1_z, gamma1_z 
+      if (debug_voxel) std::cout << "(x,y,z+1/2)" << std::endl;
       grad.x = (*(in+xp) - *(in+xm) + *(in+xp+zp) - *(in+xm+zp))/4.0;
       grad.y = (*(in+yp) - *(in+ym) + *(in+yp+zp) - *(in+ym+zp))/4.0; 
       grad.z = *(in+zp)-*in;
 
       this->GetVectors(2,x,y,z,e0,e1,e2);
+      if (debug_voxel) {
+        PRINT_VECTOR(e0)
+        PRINT_VECTOR(e1)
+        PRINT_VECTOR(e2)
+      }
 
       lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
       //        if (lambda0>2) lambda0=2;
@@ -776,6 +833,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       } else lambda2 = lambda1;
       if (lambda1>1) lambda1=1;
       if (lambda2>1) lambda2=1;
+      if (debug_voxel) {
+        std::cout << "lambda0: " << lambda0
+                  << "lambda1: " << lambda1
+                  << "lambda2: " << lambda2 << std::endl;
+      }
 
       // lambda2 = 0;
 
@@ -800,6 +862,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
       val1div += alpha1_x + alpha_x;
 
+      if (debug_voxel) {
+        std::cout << "val1: " << val1 << std::endl;
+        std::cout << "val1div: " << val1div << std::endl;
+      }
+
       if (!ispositivevalue(fabs(val1)))  {
        std::cout << "pb 1: " << val1 << std::endl;
        std::cout << boost::format("at %1%,%2%,%3% ") % x % y % z  << std::endl;
@@ -813,6 +880,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
       val1div += alpha1_y + alpha_y[x];
 
+      if (debug_voxel) {
+        std::cout << "val1: " << val1 << std::endl;
+        std::cout << "val1div: " << val1div << std::endl;
+      }
+
 
       if (!ispositivevalue(fabs(val1)))  {
        std::cout << "pb 2" << std::endl;
@@ -823,6 +895,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
                  gamma1_z  - gamma_z[x][y];
 
       val1div += alpha1_z + alpha_z[x][y];
+
+      if (debug_voxel) {
+        std::cout << "val1: " << val1 << std::endl;
+        std::cout << "val1div: " << val1div << std::endl;
+      }
 
       if (!ispositivevalue(fabs(val1)))  {
        std::cout << "pb 3" << std::endl;
@@ -842,6 +919,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
         val1    += this->beta* ( *image_entree ) ( x,y,z );
         val1div += this->beta;
     
+      if (debug_voxel) {
+        std::cout << "val1: " << val1 << std::endl;
+        std::cout << "val1div: " << val1div << std::endl;
+      }
+
         val1prev = val1;
         val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
         if (val1<0)
@@ -975,10 +1057,13 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       outoflimits++;
     }
 
+    if (debug_voxel) {
+      std::cout << "val1: " << val1 << std::endl;
+    }
     this->im_tmp->FixeValeur(val1);
 
     in++;
-    Iconv++;
+    //Iconv++;
 
   } // endfor
   } // endfor

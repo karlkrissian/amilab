@@ -75,8 +75,8 @@ namespace ami {
 
     DEFINE_CLASS(AnisoGS_NRAD);
 
-  public:
-
+  private:
+    bool debug_voxel;
   
   public:
 

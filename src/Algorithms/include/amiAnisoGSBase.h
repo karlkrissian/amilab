@@ -252,9 +252,9 @@ namespace ami {
     * @name Eigenvectors
     **/
     //@{ 
-    InrImage* eigenvect_xp;
-    InrImage* eigenvect_yp;
-    InrImage* eigenvect_zp;
+    InrImage::ptr eigenvect_xp;
+    InrImage::ptr eigenvect_yp;
+    InrImage::ptr eigenvect_zp;
 
     /// Eigenvectors computed using amiEigenDecomp_NRAD
     InrImage::ptr eigenvect2_xp;
@@ -272,6 +272,16 @@ namespace ami {
     
   public:
 
+    InrImage::ptr Get_eigenvect_xp() { return eigenvect_xp; }
+    InrImage::ptr Get_eigenvect_yp() { return eigenvect_yp; }
+    InrImage::ptr Get_eigenvect_zp() { return eigenvect_zp; }
+    
+    InrImage::ptr Get_eigenvect2_xp() { return eigenvect2_xp; }
+    InrImage::ptr Get_eigenvect3_xp() { return eigenvect3_xp; }
+    InrImage::ptr Get_eigenvect2_yp() { return eigenvect2_yp; }
+    InrImage::ptr Get_eigenvect3_yp() { return eigenvect3_yp; }
+    InrImage::ptr Get_eigenvect2_zp() { return eigenvect2_zp; }
+    InrImage::ptr Get_eigenvect3_zp() { return eigenvect3_zp; }
 
     /// PDE time-step
     AddSetGetVar(dt,float);
@@ -397,9 +407,6 @@ namespace ami {
       this->tensor_yy     = NULL;
       this->tensor_yz     = NULL;
       this->tensor_zz     = NULL;
-      this->eigenvect_xp  = NULL;
-      this->eigenvect_yp  = NULL;
-      this->eigenvect_zp  = NULL;
   //    mask          = NULL;
 
       mode          = MODE_2D;
