@@ -85,6 +85,7 @@ InrImage::ptr ami::AnisoGSBase::GetOutput()
   return res;
 }
 
+/*
 //------------------------------------------------------------------------------
 InrImage::ptr ami::AnisoGSBase::Run(InrImage::ptr input, float sigma, float k, 
                                 float beta, int nb_iter)
@@ -113,15 +114,13 @@ InrImage::ptr ami::AnisoGSBase::Run(InrImage::ptr input, float sigma, float k,
 
   return res;
 }
-
+*/
 
 //------------------------------------------------------------------------------
 // Destructor
 ami::AnisoGSBase::~AnisoGSBase()
 {
 
-  DeleteCoefficients();
-  
   if ( filtre     != NULL ) {
     delete filtre;
     filtre = NULL;
@@ -239,133 +238,6 @@ void ami::AnisoGSBase::CreateBoundariesVonNeumann( InrImage* input)
                   boundary_extension_size);
 
   ExtendBoundariesVonNeumann(image_entree);
-}
-
-// 
-
-//----------------------------------------------------------------------
-void ami::AnisoGSBase::InitCoefficients()
-//
-{
-
-  
-    int x;
-
-  tx = image_entree->_tx;
-  ty = image_entree->_ty;
-  tz = image_entree->_tz;
-  txy = tx*image_entree->_ty;
-
-  alpha_y = new float[tx];
-  gamma_y = new float[tx];
-
-  alpha_x = gamma_x = 0;
-  for(x=0;x<=tx-1;x++) {
-    alpha_y[x] = gamma_y[x] = 0;
-  } // endfor
-
-  if ( mode == MODE_3D ) {
-    int y;
-
-    alpha_z = new float*[tx];
-    gamma_z = new float*[tx];
-    for(x=0;x<=tx-1;x++) {
-      alpha_z[x] = new float[image_entree->_ty];
-      gamma_z[x] = new float[image_entree->_ty];
-
-
-      for(y=0;y<=ty-1;y++) {
-  alpha_z[x][y] = gamma_z[x][y] = 0;
-      } // endfor
-
-    } // endfor
-
-  } // end if
-
-} // ami::AnisoGSBase::InitCoefficients()
-
-
-//----------------------------------------------------------------------
-void ami::AnisoGSBase::ResetCoefficients()
-//
-{
-
-  
-    int x;
-
-  alpha_x = gamma_x = 0;
-
-  for(x=0;x<=tx-1;x++) {
-    alpha_y[x] = gamma_y[x] = 0;
-  } // endfor
-
-  if ( mode == MODE_3D ) {
-    int y;
-
-    for(x=0;x<=tx-1;x++) {
-      for(y=0;y<=ty-1;y++) {
-  alpha_z[x][y] = gamma_z[x][y] = 0;
-      } // endfor
-    } // endfor
-
-  } // end if
-} // ami::AnisoGSBase::ResetCoefficients()
-
-
-//----------------------------------------------------------------------
-void ami::AnisoGSBase::DeleteCoefficients()
-//
-{
-
-  if ( alpha_y != NULL ) {
-
-    delete [] alpha_y;
-    alpha_y = NULL;
-    delete [] gamma_y;
-    gamma_y = NULL;
-
-    if ( mode == MODE_3D ) {
-      int i;
-
-      for(i=0;i<=tx-1;i++) {
-        delete [] alpha_z[i];
-        delete [] gamma_z[i];
-      } // endfor
-      delete [] alpha_z;
-      delete [] gamma_z;
-
-    } // end if
-  } // end if
-
-} // ami::AnisoGSBase::DeleteCoefficients()
-
-
-//----------------------------------------------------------------------
-void ami::AnisoGSBase::InitNeighborhood(float* I,int x,int y)
-//
-{
-  //
-  // check image limits to avoid problems...
-  //
-
-  //printf ("%d %d %d\n",x,y,z );
-
-
-  this->I0  = I;
-  this->Ixp = IncX(I);  
-  this->Ixm = DecX(I);
-
-  this->Iyp = IncY(I);
-  this->Iym = DecY(I);
-
-  this->Ixpxp = Inc2X(Ixp);
-  this->Iypyp = Inc2Y(Iyp);
-
-  this->Ixpyp = IncY(Ixp);
-  this->Ixpym = DecY(Ixp);
-  this->Ixmyp = IncY(Ixm);
-  this->Ixmym = DecY(Ixm);
-
 }
 
 
@@ -1035,57 +907,6 @@ void ami::AnisoGSBase::InitFlux( t_3Point& e0,t_3Point& e1,t_3Point& e2)
 } // InitFlux()
 
 
-//------------------------------------------------------------------------------
-void ami::AnisoGSBase::InitNeighborhood(float* I,int x,int y, int z)
-//
-{
-  //
-  // check image limits to avoid problems...
-  //
-
-  //printf ("%d %d %d\n",x,y,z );
-
-
-  I0  = I;
-  Ixp = IncX(I);  
-  Ixm = DecX(I);
-
-  Iyp = IncY(I);
-  Iym = DecY(I);
-
-  Izp = IncZ(I);
-  Izm = DecZ(I);
-
-  Ixpxp = Inc2X(Ixp);
-  Iypyp = Inc2Y(Iyp);
-  Izpzp = Inc2Z(Izp);
-
-  Ixpyp = IncY(Ixp);
-  Ixpym = DecY(Ixp);
-  Ixmyp = IncY(Ixm);
-  Ixmym = DecY(Ixm);
-  Ixpzp = IncZ(Ixp);
-  Ixpzm = DecZ(Ixp);
-  Ixmzp = IncZ(Ixm);
-  Ixmzm = DecZ(Ixm);
-
-  Iypzp = IncZ(Iyp);
-  Iypzm = DecZ(Iyp);
-  Iymzp = IncZ(Iym);
-  Iymzm = DecZ(Iym);
-
-  Ixpypzm = DecZ(Ixpyp);
-  Ixpypzp = IncZ(Ixpyp);
-  Ixpymzm = DecZ(Ixpym);
-  Ixpymzp = IncZ(Ixpym);
-  Ixmypzm = DecZ(Ixmyp);
-  Ixmypzp = IncZ(Ixmyp);
-  Ixmymzm = DecZ(Ixmym);
-  Ixmymzp = IncZ(Ixmym);
-}
-
-
-
 //----------------------------------------------------------------------
 // gradient vector at (x,y,z)
 //
@@ -1130,85 +951,6 @@ void ami::AnisoGSBase::GradShiftZ(float* I,float grad[3])
   grad[2] = *Izp   -  *I0;
 }
 
-//------------------------------------------------------------------------------
-// Hessian Matrix at (x,y,z)
-//
-void ami::AnisoGSBase::Hessian(float* I,float** H)
-//            -------
-{
-  H[0][0] = (*Ixp - 2*(*I0) + *Ixm);
-  H[1][1] = (*Iyp - 2*(*I0) + *Iym);
-  H[2][2] = (*Izp - 2*(*I0) + *Izm);
-  H[1][0] = H[0][1] = ((*Ixpyp - *Ixmyp) - (*Ixpym - *Ixmym))/4.0;
-  H[2][0] = H[0][2] = ((*Ixpzp - *Ixmzp) - (*Ixpzm - *Ixmzm))/4.0;
-  H[2][1] = H[1][2] = ((*Iypzp - *Iymzp) - (*Iypzm - *Iymzm))/4.0;
-}
-
-
-//------------------------------------------------------------------------------
-// Hessian Matrix at (x+1/2,y,z)
-//
-void ami::AnisoGSBase::HessianShiftX(float* I,float H[3][3])
-//            -------------
-{
-  H[0][0] = ((*Ixpxp-*I0)-(*Ixp-*Ixm))/2.0;
-  H[1][0] = H[0][1] = ((*Ixpyp-*Iyp)-(*Ixpym-*Iym))/2.0;
-  H[2][0] = H[0][2] = ((*Ixpzp-*Izp)-(*Ixpzm-*Izm))/2.0;
-  H[1][1] = ((*Iyp  -2*(*I0) +*Iym  ) +
-       (*Ixpyp-2*(*Ixp)+*Ixpym) )/2.0;
-  H[2][1] = 
-  H[1][2] = ( (*Iypzp-*Iymzp)-
-        (*Iypzm-*Iymzm)+
-        (*Ixpypzp-*Ixpymzp)-
-        (*Ixpypzm-*Ixpymzm))/8.0;
-  H[2][2] = ( *Izp  -2*(*I0) + *Izm  +
-        *Ixpzp-2*(*Ixp)+ *Ixpzm)/2.0;
-
-}
-
-//------------------------------------------------------------------------------
-// Hessian Matrix at (x,y+1/2,z)
-//
-void ami::AnisoGSBase::HessianShiftY(float* I,float H[3][3])
-//            -------------
-{
-  H[0][0] = (*Ixp  -2*(*I0) +*Ixm  +
-             *Ixpyp-2*(*Iyp)+*Ixmyp)/2.0;
-  H[1][0] = H[0][1] = ((*Ixpyp-*Ixmyp)-(*Ixp-*Ixm))/2.0;
-  H[2][0] = H[0][2] = ((*Ixpzp  -*Ixmzp  )-
-                       (*Ixpzm  -*Ixmzm  )+
-           (*Ixpypzp-*Ixmypzp)-
-                       (*Ixpypzm-*Ixmypzm))/8.0;
-  H[1][1] = ((*Iypyp-*I0)-(*Iyp-*Iym))/2.0;
-  H[2][1] = H[1][2] = ((*Iypzp-*Izp)-(*Iypzm-*Izm))/2.0;
-  H[2][2] = ( *Izp  -2*(*I0) +*Izm +
-              *Iypzp-2*(*Iyp)+*Iypzm)/2.0;
-
-}
-
-//------------------------------------------------------------------------------
-// Hessian Matrix at (x,y,z+1/2)
-//
-void ami::AnisoGSBase::HessianShiftZ(float* I,float H[3][3])
-//            -------------
-{
-
-  H[0][0] = (*Ixp  -2*(*I0) +*Ixm +
-       *Ixpzp-2*(*Izp)+*Ixmzp)/2.0;
-  H[1][0] = H[0][1] = ( (*Ixpyp-*Ixmyp) -
-            (*Ixpym-*Ixmym) +
-            (*Ixpypzp-*Ixmypzp)-
-            (*Ixpymzp-*Ixmymzp) )/8.0;
-
-  H[2][0] = H[0][2] = ((*Ixpzp-*Ixmzp)-
-                       (*Ixp  -*Ixm  ))/2.0;
-  H[1][1] = ( *Iyp  -2*(*I0) +*Iym +
-        *Iypzp-2*(*Izp)+*Iymzp )/2.0;
-
-  H[2][1] = H[1][2] = ((*Iypzp-*Iymzp)-(*Iyp-*Iym))/2.0;
-  H[2][2] = ((*Izpzp-*I0)-(*Izp-*Izm))/2.0;
-
-}
 
 
 //------------------------------------------------------------------------------
@@ -1428,8 +1170,7 @@ void ami::AnisoGSBase::PrincipalCurvatures(float grad[3], float H[3][3],
 //------------------------------------------------------------------------------
 void ami::AnisoGSBase::Init(InrImage::ptr in, 
       float p_sigma, 
-      float p_k,
-      float p_beta
+      int nb_threads
       )
 {
   
@@ -1438,8 +1179,6 @@ void ami::AnisoGSBase::Init(InrImage::ptr in,
   InitParam();
 
   sigma       = p_sigma;
-  beta        = p_beta;
-  k           = p_k;
 
   tx = in->_tx;
   ty = in->_ty;
@@ -1478,7 +1217,7 @@ void ami::AnisoGSBase::Init(InrImage::ptr in,
   switch (local_structure_mode) {
     case LOCAL_STRUCT_CURV:
     case LOCAL_STRUCT_TENSOR:
-      this->CreateBoundariesVonNeumann(in);
+      this->CreateBoundariesVonNeumann(in.get());
       this->ROI_xmin = this->boundary_extension_size;
       this->ROI_ymin = this->boundary_extension_size;
       this->ROI_xmax = image_entree->DimX()-1-boundary_extension_size;
@@ -1496,7 +1235,10 @@ void ami::AnisoGSBase::Init(InrImage::ptr in,
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
 
-  InitCoefficients();
+  tx = image_entree->_tx;
+  ty = image_entree->_ty;
+  tz = image_entree->_tz;
+  txy = tx*image_entree->_ty;
 
   //--- result_image
     sprintf(resname,"%s.AnisoGS",in->GetName());
@@ -1512,7 +1254,10 @@ void ami::AnisoGSBase::Init(InrImage::ptr in,
   ami::ImageToImageFilterParam filter_param;
   // need to have the whole tensor in one image ...
   filter_param.SetInput(in);
-  filter_param.SetNumberOfThreads(wxThread::GetCPUCount());
+  if (nb_threads<=0)
+    filter_param.SetNumberOfThreads(wxThread::GetCPUCount());
+  else
+    filter_param.SetNumberOfThreads(nb_threads);
   ami::ImageExtent<int> extent;
   extent.SetMinMax(0,ROI_xmin,ROI_xmax);
   extent.SetMinMax(1,ROI_ymin,ROI_ymax);

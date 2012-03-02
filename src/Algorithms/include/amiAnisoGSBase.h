@@ -97,6 +97,55 @@ namespace ami {
       NEW,      /**< new code, for faster processing */
     };
     
+    
+    class EquationCoefficients {
+      public:
+        float       alpha_x, gamma_x;
+        float*      alpha_y;
+        float*      gamma_y;
+        float**     alpha_z;
+        float**     gamma_z;
+        int         sx,sy,sz;
+        
+        EquationCoefficients(int sizex, int sizey, int sizez) 
+        {
+          sx=sizex;
+          sy=sizey;
+          sz=sizez;
+          int x;
+          int y;
+          alpha_y = new float[sx];
+          gamma_y = new float[sx];
+
+          alpha_x = gamma_x = 0;
+          for(x=0;x<sx;x++) {
+            alpha_y[x] = gamma_y[x] = 0;
+          } // endfor
+
+          alpha_z = new float*[sx];
+          gamma_z = new float*[sx];
+          for(x=0;x<sx;x++) {
+            alpha_z[x] = new float[sy];
+            gamma_z[x] = new float[sy];
+            for(y=0;y<sy;y++) {
+              alpha_z[x][y] = gamma_z[x][y] = 0;
+            } // endfor
+          } // endfor
+        }
+
+        ~EquationCoefficients()
+        {
+          int i;
+          delete [] alpha_y;
+          delete [] gamma_y;
+          for(i=0;i<sx;i++) {
+            delete [] alpha_z[i];
+            delete [] gamma_z[i];
+          } // endfor
+          delete [] alpha_z;
+          delete [] gamma_z;
+        }
+    };
   protected:
     /**
     * @name Precomputed pointers to neighborhood
@@ -136,11 +185,6 @@ namespace ami {
     //@}
 
 
-    float      alpha_x, gamma_x;
-    float*     alpha_y;
-    float*     gamma_y;
-    float**    alpha_z;
-    float**    gamma_z;
     
     
     /// Gaussian smoothing filter
@@ -185,21 +229,15 @@ namespace ami {
     //  InrImage* SRAD_ROI;
 
     // for 2D
-    void InitNeighborhood(float* I,int x,int y);
     void Grad2D(float* I,float grad[2]);
     void Grad2DShiftX(float* I, t_3Point& grad);
     void Grad2DShiftY(float* I, t_3Point& grad);
 
     // for 3D
-    void InitNeighborhood(float* I,int x,int y, int z);
     void Grad(float* I,float grad[3]);
     void GradShiftX(float* I,float grad[3]);
     void GradShiftY(float* I,float grad[3]);
     void GradShiftZ(float* I,float grad[3]);
-    void Hessian(float* I,float** H);
-    void HessianShiftX(float* I,float H[3][3]);
-    void HessianShiftY(float* I,float H[3][3]);
-    void HessianShiftZ(float* I,float H[3][3]);
 
     float Norm(float v[3]);
     float ScalarProduct(const t_Gradient v1, const t_3Point v2);
@@ -300,8 +338,6 @@ namespace ami {
     /// value > 0.5
     AddSetGetVar( attach_mask, InrImage::ptr)
   
-    AddSetGetVar( beta, float)
-
     /// Using squared input for Rician noise
     AddSetGetVar( InputIsSquared, bool)
 
@@ -379,8 +415,8 @@ namespace ami {
     * @param nbit  number of iterations.
     * @return InrImage:ptr resulting image
     **/
-    static InrImage::ptr Run(InrImage::ptr input, float sigma, float k, 
-                             float beta, int nbit);
+/*    static InrImage::ptr Run(InrImage::ptr input, float sigma, float k, 
+                             float beta, int nbit);*/
     
     AnisoGSBase() : structtensor_time("Structure Tensor"), 
                     eigendecomp_time("Eigen decomposition"),
@@ -462,10 +498,6 @@ namespace ami {
     void ExtendBoundariesVonNeumann( InrImage* input);
     void CreateBoundariesVonNeumann( InrImage* input);
 
-    void InitCoefficients();
-    void ResetCoefficients();
-    void DeleteCoefficients();
-
     double Compute_q0_subvol( InrImage* im);
     double function_c_Kuan    (double q_2, double q0_2);
     double function_c_Lee     (double q_2, double q0_2);
@@ -483,7 +515,7 @@ namespace ami {
     void ComputeEigenVectors_initial();
     void ComputeEigenVectors_new();
 
-    void Init(InrImage::ptr in, float p_sigma, float p_k, float p_beta);
+    void Init(InrImage::ptr in, float p_sigma, int nb_threads=-1);
 
     /**
     * Main iteration method, directs to the appropriate specific method
@@ -492,8 +524,8 @@ namespace ami {
     virtual float Iterate() {}
 
 
-    virtual void Process( int threadid = 0) = 0;
-    virtual void Run();
+    virtual void Process( int threadid = 0) {}
+    virtual void Run() {}
 
     void InitFlux( t_3Point& e0,t_3Point& e1,t_3Point& e2);
 

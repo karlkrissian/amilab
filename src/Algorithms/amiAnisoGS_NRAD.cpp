@@ -32,6 +32,9 @@
 #define Inc2Z(I) ((z<tz-2)?(I+txy):I)
 #define DecZ(I)  ((z>0)?(I-txy):I)
 
+#define PRINT_VECTOR( v) std::cout << #v << "( " << v.x << ", " \
+  << v.y << ", " \
+  << v.z << ")" << std::endl;
 
 //#define phi0(x)         exp(-((x)*(x)/k/k))
 #define phi0(x)         exp(-0.5*((x)*(x)/k/k))
@@ -83,12 +86,11 @@ ami::AnisoGS_NRAD::~AnisoGS_NRAD()
 
 
 //------------------------------------------------------------------------------
-void ami::AnisoGS_NRAD::ComputeImage_c(InrImage* im)
+void ami::AnisoGS_NRAD::ComputeImage_c(InrImage* im, double sigma2)
 {
 
   int x,y,z; //,n,i;
   double I,Ixm,Iym,Izm,Ixp,Iyp,Izp,mean1,mean2,q0_2=0.0,q2;
-  double sigma2=0.0;
 
 
   if ( this->image_c == NULL ) 
@@ -106,16 +108,8 @@ void ami::AnisoGS_NRAD::ComputeImage_c(InrImage* im)
       break;
 
     case NOISE_GAUSSIAN_ADDITIVE:
-      sigma2 = Compute_sigma2_Gaussian_mode(im);
-      printf("noise SD = %3.2f \t",sqrt(sigma2));
-      break;
-
     case NOISE_RICIAN:
-      /*        sigma2 = Compute_sigma2_MRI(im);
-              printf("sigma = %f \n",sqrt(sigma2));
-      */
-      sigma2 = Compute_sigma2_MRI_mode(im);
-      printf("noise SD = %3.2f \t",sqrt(sigma2));
+      // we have sigma2 parameter ...
       break;
     }
 
@@ -225,11 +219,14 @@ void ami::AnisoGS_NRAD::ComputeImage_c(InrImage* im)
 }
 
 
+//------------------------------------------------------------------------------
 // Compute the local directional mean and standard deviation,
 // using a Gaussian of standard deviation sd
-void  ami::AnisoGS_NRAD::ComputeLocalPlanStats(InrImage* im, float x, float y, float z, 
-    t_3Point d1,t_3Point d2,
-    float sd, double& mean, double& var)
+void  ami::AnisoGS_NRAD::ComputeLocalPlanStats(InrImage* im, 
+                                               float x, float y, float z, 
+                                               t_3Point d1,t_3Point d2,
+                                               float sd, double& mean, 
+                                               double& var)
 {
 //#define MAX_VALUES 100
   // 1. store intensity values
@@ -304,10 +301,13 @@ void  ami::AnisoGS_NRAD::ComputeLocalPlanStats(InrImage* im, float x, float y, f
 } // ComputeLocalPlanStats
 
 
+//------------------------------------------------------------------------------
 // Compute the local directional mean and standard deviation,
 // using a Gaussian of standard deviation sd
-void  ami::AnisoGS_NRAD::ComputeLocalDirStats(InrImage* im, float x, float y, float z, t_3Point e,
-    float sd, double& mean, double& var)
+void  ami::AnisoGS_NRAD::ComputeLocalDirStats(InrImage* im, float x, float y, 
+                                              float z, t_3Point e,
+                                              float sd, 
+                                              double& mean, double& var)
 {
 //#define MAX_VALUES 100
   // 1. store intensity values
@@ -417,28 +417,13 @@ void  ami::AnisoGS_NRAD::ComputeLocalDirStats(InrImage* im, float x, float y, fl
 float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 //
 {
-    float*  in;
-    //register float    *Iconv=NULL; 
-//    float gradient[3];
-//    float hessien[3][3];
-    unsigned long outoflimits=0;
+    float*        in;
 
-    float   erreur = 0; //,norm_grad;
-    double diff;
-    int nb_points_instables;
-    int erreur_x=0,erreur_y=0,erreur_z=0;
+    float         erreur = 0; //,norm_grad;
 
-    // Sum over all the points
-    float     sum_divF;
-    long int  nb_calculated_points;
-
-    // Sum over the points that don't evolve too much
-    float     sum_divF2;
-    long int  nb_calculated_points2;
-
-    float     u,u0;
-    float     divF=0;
-    std::string    divFname;
+    float         u,u0;
+    float         divF=0;
+    std::string   divFname;
 
     unsigned char mask_test;
  
@@ -446,20 +431,14 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     bool          speedup_skip;
     long          speedup_counter = 0;
 
-    int      xp,xm,yp,ym,zp,zm,incx,incy,incz;
-    double mean,var;
+    int           xp,xm,yp,ym,zp,zm,incx,incy,incz;
+    double        mean,var;
     
-    int im_incx,im_incy,im_incz;
-    float im_buf;
+    int           im_incx,im_incy,im_incz;
+    float         im_buf;
     
-    im->GetBufferIncrements(im_incx,im_incy,im_incz);
-    
+  result_image->GetBufferIncrements(im_incx,im_incy,im_incz);
   // pre-compute information
-
-  // printf("Itere3D_2_new \n");
-
-  ComputeImage_c(im);
-  // TODO: should not recompute sigma2 already computed in ComputeImage_c ...
   switch (noise_model) 
   {
     case NOISE_GAUSSIAN_ADDITIVE:
@@ -467,6 +446,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     case NOISE_RICIAN: 
       sigma2 = Compute_sigma2_MRI_mode(im); break;
   }
+  ComputeImage_c(im,sigma2);
 
   if (SpeedUp_c) {
     // in case of speedup, need to compute eigenvectors at each iteration
@@ -484,8 +464,6 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     }
   }
 
-  ResetCoefficients();
-
 
   // pb: the coefficients are not good for multi-threading ???
 
@@ -498,24 +476,25 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
   divFim->InitImage(0);
   im->InitBuffer();
   erreur = 0;
-  nb_points_instables = 0;
   in = (float*) im->Buffer();
 
-  diff = 0;
+  iteration_info.diff = 0;
+  iteration_info.nb_points_instables  = 0;
 
-  nb_calculated_points = 0;
-  sum_divF = 0;
+  iteration_info.outoflimits          = 0;
+  iteration_info.nb_calculated_points = 0;
+  iteration_info.sum_divF             = 0;
 
-  nb_calculated_points2 = 0;
-  sum_divF2 = 0;
+  iteration_info.nb_calculated_points2  = 0;
+  iteration_info.sum_divF2              = 0;
 
 //printf("diff eigen mode : %d\n",diffusion_eigenvalues_mode);
 
   ImageToImageFilter::Run();
 
-  if (outoflimits>0) {
+  if (iteration_info.outoflimits>0) {
    std::cout << " Number of pixels out of the intensity range :" 
-             << outoflimits << std::endl;
+             << iteration_info.outoflimits << std::endl;
   }
 
   // backup previous image in image_c
@@ -533,11 +512,9 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
                << erreur_z << " )" << std::endl; 
  std::cout << "nb de points variables " << nb_points_instables << std::endl;
 */
-  diff /= txy*tz;
+  iteration_info.diff /= txy*tz;
+  std::cout << "\t diff =" << sqrt(iteration_info.diff) << "\t";
 
- std::cout << "\t diff =" << sqrt(diff) << "\t";
-
-  
   // This code is somehow messy since it combines different types of filters
   // TODO: some cleanup here
   if (noise_standard_deviation <0) {
@@ -548,19 +525,25 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 */
   }
   else {
-    estimated_DA_coeff =sum_divF/(1.0*nb_calculated_points)/this->variance;
-    fprintf(stderr,"sum_divF=%3.2f, nb_calculated_points = %5d, variance = %3.3f, \n ===  lambda estimation for noise = %f \n", 
-        sum_divF,(int)nb_calculated_points,this->variance, estimated_DA_coeff);
+    estimated_DA_coeff =iteration_info.sum_divF/
+                          (1.0*iteration_info.nb_calculated_points)/
+                          this->variance;
+    fprintf(stderr,
+            "sum_divF=%3.2f, nb_calculated_points = %5d, variance = %3.3f, \n ===  lambda estimation for noise = %f \n", 
+            iteration_info.sum_divF,
+            (int)iteration_info.nb_calculated_points,
+            this->variance, estimated_DA_coeff);
 
       if ((noise_SD_preset)&&(estimated_DA_coeff>0))
-    this->beta = estimated_DA_coeff;
-      fprintf(stderr, "\n  Setting beta to %2.2f \n\n",beta);
 
-    estimated_DA_coeff =sum_divF2/(1.0*nb_calculated_points2)/this->variance;
+    estimated_DA_coeff = iteration_info.sum_divF2/
+                          (1.0*iteration_info.nb_calculated_points2)
+                          /this->variance;
     fprintf(stderr,
         " ===  lambda2 estimation for noise = %f, %02.2f percent of points \n", 
         estimated_DA_coeff,
-        (nb_calculated_points2*100.0/nb_calculated_points));
+        (iteration_info.nb_calculated_points2*100.0/
+          iteration_info.nb_calculated_points));
 
     /*
     // set to the 2nd estimation
@@ -578,556 +561,425 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
   return erreur;
 
-} // ami::AnisoGS::Itere3D_ST_RNRAD()
+} // ami::AnisoGS_NRAD::Itere3D_ST_RNRAD()
+
+
+//------------------------------------------------------------------------------
+void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
+                                                    int x, int y, int z,
+                                                    int xp, int yp, int zp,
+                                                    direction dir,
+                                                    double& alpha,
+                                                    double& gamma)
+{
+  t_3Point    e0;
+  t_3Point    e1;
+  t_3Point    e2;
+  t_Gradient  grad;
+  double      lambda0=0;
+  double      lambda1=0;
+  double      lambda2=0;
+  float       pos_x = x;
+  float       pos_y = y;
+  float       pos_z = z;
+  double      mean,var;
+
+  switch(dir) 
+  {
+    case DIR_X:
+      // Gradient en (x+1/2,y,z)
+      if (debug_voxel) std::cout << "(x+1/2,y,z)" << std::endl;
+      //----- Calcul de alpha1_x, gamma1_x
+      grad.x = *(in+xp) - *(in);
+      grad.y = ( *(in+yp) - *(in-yp) + *(in+yp+xp) -*(in-yp+xp) )/ 4.0;
+      grad.z = ( *(in+zp) - *(in-zp) + *(in+zp+xp)- *(in-zp+xp) )/ 4.0;
+      // get vectors
+      this->GetVectors(0,x,y,z,e0,e1,e2);
+      // compute lambda_0
+      lambda0 = ( (*image_c)(x,y,z) + (*image_c)(x+1,y,z) ) /2.0; 
+      pos_x += 0.5;
+      break;
+    case DIR_Y:
+      // Gradient en (x,y+1/2)
+      if (debug_voxel) std::cout << "(x,y+1/2,z)" << std::endl;
+      grad.x = (*(in+xp)-*(in-xp)+*(in+xp+yp)-*(in-xp+yp))/4.0;
+      grad.y =  *(in+yp) - *(in);
+      grad.z = (*(in+zp)-*(in-zp)+*(in+zp+yp)-*(in-zp+yp))/4.0;
+      // get vectors
+      this->GetVectors(1,x,y,z,e0,e1,e2);
+      // compute lambda_0
+      lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+1,z))/2.0;
+      pos_y += 0.5;
+      break;
+    case DIR_Z:;
+      if (debug_voxel) std::cout << "(x,y,z+1/2)" << std::endl;
+      grad.x = (*(in+xp) - *(in-xp) + *(in+xp+zp) - *(in-xp+zp))/4.0;
+      grad.y = (*(in+yp) - *(in-yp) + *(in+yp+zp) - *(in-yp+zp))/4.0; 
+      grad.z = *(in+zp)-*in;
+      // get vectors
+      this->GetVectors(2,x,y,z,e0,e1,e2);
+      // compute lambda_0
+      lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+1))/2.0;
+      pos_z += 0.5;
+      break;
+  }
+
+  
+  if (debug_voxel) {
+    PRINT_VECTOR(e0)
+    PRINT_VECTOR(e1)
+    PRINT_VECTOR(e2)
+  }
+  
+  if (lambda0<1) {
+    ComputeLocalPlanStats(result_image, 
+                          pos_x,pos_y,pos_z,  
+                          e1,e2, planstats_sigma, mean,var);
+    if (debug_voxel) {
+      std::cout << "( " << pos_x << ", "
+                << pos_y << ", "
+                << pos_z << "), "
+                << planstats_sigma << ", "
+                << mean << ", "
+                << var << std::endl;
+    }
+    switch (noise_model) 
+    {
+      case NOISE_GAUSSIAN_ADDITIVE:
+        lambda1 = function_c_additive(var, sigma2);   break;
+      case NOISE_RICIAN: 
+        lambda1 = function_c_MRI( sigma2, var, mean); break;
+    }
+    lambda1 *= 6./4.; // convert for 2D normalization
+      switch (diffusion_eigenvalues_mode) {
+      case DIFF_MATRIX_EIGEN_SUM:
+        lambda1 += lambda0; 
+        break;
+      case DIFF_MATRIX_EIGEN_MAX:
+        lambda1 = MAX(lambda0,lambda1); 
+        break;
+      }
+  } else lambda1 = lambda0;
+  if (lambda1<1) {
+    ComputeLocalDirStats(result_image, 
+                         pos_x,pos_y,pos_z,
+                         e2, dirstats_sigma, mean,var);
+    switch (noise_model) 
+    {
+      case NOISE_GAUSSIAN_ADDITIVE:
+        lambda2 = function_c_additive(var, sigma2);   break;
+      case NOISE_RICIAN: 
+        lambda2 = function_c_MRI( sigma2, var, mean); break;
+    }
+    lambda2 *= 6./2.; // convert for 1D normalization
+      switch (diffusion_eigenvalues_mode) {
+      case DIFF_MATRIX_EIGEN_SUM:
+        lambda2 += lambda1;
+        break;
+      case DIFF_MATRIX_EIGEN_MAX:
+        lambda2 = MAX(lambda1,lambda2);
+        break;
+      }
+  } else lambda2 = lambda1;
+  if (lambda1>1) lambda1=1;
+  if (lambda2>1) lambda2=1;
+
+  if (debug_voxel) {
+    std::cout << "lambda0: " << lambda0
+              << "lambda1: " << lambda1
+              << "lambda2: " << lambda2 << std::endl;
+  }
+
+  switch(dir) 
+  {
+    case DIR_X:
+      alpha = lambda0 *e0.x*e0.x + 
+              lambda1 *e1.x*e1.x +
+              lambda2 *e2.x*e2.x;
+
+      gamma = (grad.y*e0.y + grad.z*e0.z)* lambda0 *e0.x + 
+              (grad.y*e1.y + grad.z*e1.z)* lambda1 *e1.x +
+              (grad.y*e2.y + grad.z*e2.z)* lambda2 *e2.x;
+      break;
+
+    case DIR_Y:
+      alpha = lambda0 *e0.y*e0.y + 
+              lambda1 *e1.y*e1.y +
+              lambda2 *e2.y*e2.y;
+
+      gamma = (grad.x*e0.x + grad.z*e0.z)* lambda0 *e0.y + 
+              (grad.x*e1.x + grad.z*e1.z)* lambda1 *e1.y +
+              (grad.x*e2.x + grad.z*e2.z)* lambda2 *e2.y;
+      break;
+
+    case DIR_Z:
+      alpha = lambda0 *e0.z*e0.z + 
+              lambda1 *e1.z*e1.z +
+              lambda2 *e2.z*e2.z;
+
+      gamma = (grad.x*e0.x + grad.y*e0.y) * lambda0 *e0.z + 
+              (grad.x*e1.x + grad.y*e1.y) * lambda1 *e1.z +
+              (grad.x*e2.x + grad.y*e2.y) * lambda2 *e2.z;
+      break;
+  }
+}
 
 
 //------------------------------------------------------------------------------
 void ami::AnisoGS_NRAD::Process( int threadid)
 {
-
-    int x,y,z; //,n,i;
-    double   val0,val1,val1prev;
-    double   val1_implicit=0;
-    double   val1div;
-    double   u_e0;
-    double   u_e1;
-    double   u_e2;
-    double   alpha1_x, gamma1_x;
-    double   alpha1_y, gamma1_y;
-    double   alpha1_z, gamma1_z;
-    float*  in;
-    //register float    *Iconv=NULL; 
-//    float gradient[3];
-//    float hessien[3][3];
-    unsigned long outoflimits=0;
-
-    t_3Point e0;
-    t_3Point e1;
-    t_3Point e2;
-
-    t_Gradient grad;
-
-    float   erreur = 0; //,norm_grad;
-    double diff;
-    int nb_points_instables;
-    int erreur_x=0,erreur_y=0,erreur_z=0;
-
-    // Sum over all the points
-    float     sum_divF;
-    long int  nb_calculated_points;
+    int             x,y,z; //,n,i;
+    int             x0,y0; 
+    double          val0,val1,val1prev;
+    double          val1_implicit=0;
+    double          val1div;
+    double          alpha1_x, gamma1_x;
+    double          alpha1_y, gamma1_y;
+    double          alpha1_z, gamma1_z;
+    float*          in;
+    float           erreur = 0; //,norm_grad;
 
     // Sum over the points that don't evolve too much
-    float     sum_divF2;
-    long int  nb_calculated_points2;
-
-    float     u,u0;
-    float     divF=0;
-    std::string    divFname;
-
-    unsigned char mask_test;
-//    double    phi0_value=0;
-    double    lambda0=0,lambda1=0,lambda2=0;
-    double    sigma2=0.0; // variance of the noise
+    float           u,u0;
+    float           divF=0;
+    std::string     divFname;
+    unsigned char   mask_test;
  
-/*
- *    double   planstats_sigma = 1.0;
-    double   dirstats_sigma  = 1.5;
-    */
-
-//    double lambda_threshold = 0.6;
-
-//    double        diff_coeff;
     /// skip heavy code because of speedup
-    bool          speedup_skip;
-    long          speedup_counter = 0;
+    bool            speedup_skip;
+    long            speedup_counter = 0;
+    int             xp,yp,zp,incx,incy,incz;
+    int             im_incx,im_incy,im_incz;
+    float           im_buf;
+    extenttype      extent = extents[threadid];
 
-    int      xp,xm,yp,ym,zp,zm,incx,incy,incz;
-    double mean,var;
-    
-    int im_incx,im_incy,im_incz;
-    float im_buf;
-  
-  extenttype      extent = extents[threadid];
+    EquationCoefficients equ_coeff(
+                                    extent.GetSize(0),
+                                    extent.GetSize(1),
+                                    extent.GetSize(2)
+                                  );
 
-  //   // process using precomputed extent number threadid
-  //   InrImage::ptr in = params.GetInput();
-  //   
-  //   switch (in->GetFormat()) {
-  //     case WT_FLOAT:   TemplateProcess<float,float>   (threadid); break;
-  //     case WT_DOUBLE:  TemplateProcess<double,float>  (threadid); break;
-  //     default: CLASS_ERROR((boost::format(" format %1% not available")%
-  //                                     in->GetFormat()).str().c_str());
-  //   }
+  result_image->GetBufferIncrements(im_incx,im_incy,im_incz);
 
-  for(z=extent.GetMin(2);z<=extent.GetMax(2);z++) {
+  for(z=extent.GetMin(2);z<=extent.GetMax(2);z++) 
+  {
 
-  //     if ( z==ROI_zmin ) {
-  //       printf("z = %3d",z);
-  //       fflush(stdout);
-  //     } else 
-  //     if ( (z-ROI_zmin)%5 == 0 ) {
-  //       printf("\b\b\b");
-  //       printf("%3d",z);
-  //       fflush(stdout);
-  //     } // end if
+    //     if ( z==ROI_zmin ) {
+    //       printf("z = %3d",z);
+    //       fflush(stdout);
+    //     } else 
+    //     if ( (z-ROI_zmin)%5 == 0 ) {
+    //       printf("\b\b\b");
+    //       printf("%3d",z);
+    //       fflush(stdout);
+    //     } // end if
 
-  // reset Y coefficients
-  for(x=extent.GetMin(0);x<=extent.GetMax(0);x++) {
-    alpha_y[x] = gamma_y[x] = 0;
-  } // endfor
+    // reset Y coefficients
+    for(x0=0;x<extent.GetSize(0);x++) {
+      equ_coeff.alpha_y[x] = equ_coeff.gamma_y[x] = 0;
+    } // endfor
 
-  for(y=extent.GetMin(1);y<=extent.GetMax(1);y++) {
-  // reset X coefficients
-  alpha_x = gamma_x = 0;
-  //im->BufferPos(ROI_xmin,y,z);
-  in = ((float*) im->GetData())+extent.GetMin(0)*im_incx+y*im_incy+z*im_incz;
+    for(y=extent.GetMin(1);y<=extent.GetMax(1);y++) 
+    {
+      // reset X coefficients
+      equ_coeff.alpha_x = equ_coeff.gamma_x = 0;
+      //im->BufferPos(ROI_xmin,y,z);
+      in = ((float*) result_image->GetData())+\
+                      extent.GetMin(0)*im_incx+y*im_incy+z*im_incz;
 
-  for(x=extent.GetMin(0);x<=extent.GetMax(0);x++) {
-  
-    
-    debug_voxel = (x-ROI_xmin==16)&&
-                  (y-ROI_ymin==9)&&
-                  (z-ROI_zmin==9);
-
-    val1 = val0 = *in;
-    mask_test = (!mask.get())||
-                ((mask.get())&&((*mask)(x-ROI_xmin,y-ROI_ymin,z-ROI_zmin)>0.5));
-    xp=1;
-    xm=-1;
-    incx=1;
-
-// not necessary since boundary is taken care of
-//    if (x==tx-1) { xp=0; incx=0; }
-//    if (x==0)    xm=0;
-
-    yp=tx;
-    ym=-tx;
-    incy=1;
-//    if (y==ty-1) { yp=0; incy = 0; }
-//    if (y==0)    ym=0;
-
-    zp=txy;
-    zm=-txy;
-    incz=1;
-//    if (z==tz-1) { zp=0; incz = 0; }
-//    if (z==0)    zm=0;
-
-    speedup_skip = false;
-
-    if (SpeedUp_c) {
-      double diff_coeff = ( *image_c ) ( x,y,z );
-      // do a scalar diffusion to speed-up the process
-      if (diff_coeff>SpeedUp_c_lowerbound) {
-        alpha1_x =  ( diff_coeff + (*image_c)(x+incx,y,z) ) /2.0;;
-        alpha1_y =  ( diff_coeff + (*image_c)(x,y+incy,z) ) /2.0;;
-        alpha1_z =  ( diff_coeff + (*image_c)(x,y,z+incz) ) /2.0;;
-
-        gamma1_x = gamma1_y = gamma1_z = 0;
-        speedup_skip = true;
-        speedup_counter++;
-      }
-    }
-
-    if (!speedup_skip) {
-      //InitNeighborhood(Iconv,x,y,z);
-
-      // Gradient en (x+1/2,y,z)
-      if (debug_voxel) std::cout << "(x+1/2,y,z)" << std::endl;
-      //----- Calcul de alpha1_x, gamma1_x
-      grad.x = *(in+xp) - *(in);
-      grad.y = ( *(in+yp) - *(in+ym) + *(in+yp+xp) -*(in+ym+xp) )/ 4.0;
-      grad.z = ( *(in+zp) - *(in+zm) + *(in+zp+xp)- *(in+zm+xp) )/ 4.0;
-
-      // get vectors
-      this->GetVectors(0,x,y,z,e0,e1,e2);
-#define PRINT_VECTOR( v) std::cout << #v << "( " << v.x << ", " \
-      << v.y << ", " \
-      << v.z << ")" << std::endl;
+      for(x=extent.GetMin(0);x<=extent.GetMax(0);x++) {
       
-      if (debug_voxel) {
-        PRINT_VECTOR(e0)
-        PRINT_VECTOR(e1)
-        PRINT_VECTOR(e2)
-      }
-      
+        
+    //     debug_voxel = (x-ROI_xmin==16)&&
+    //                   (y-ROI_ymin==9)&&
+    //                   (z-ROI_zmin==9);
+        debug_voxel=false;
 
-      lambda0 = ( (*image_c)(x,y,z) + (*image_c)(x+incx,y,z) ) /2.0; 
-//      if (lambda0>2) lambda0=2;
-      if (lambda0<1) {
-        ComputeLocalPlanStats(im, 
-                              (float)x+((float)incx)/2.0, (float) y, (float) z,  
-                              e1,e2, planstats_sigma, mean,var);
+        val1 = val0 = *in;
+        mask_test = (!mask.get())||
+                    ((mask.get())&&((*mask)(x-ROI_xmin,y-ROI_ymin,z-ROI_zmin)>0.5));
+        xp=1;
+        yp=tx;
+        zp=txy;
+
+        speedup_skip = false;
+
+        if (SpeedUp_c) {
+          double diff_coeff = ( *image_c ) ( x,y,z );
+          // do a scalar diffusion to speed-up the process
+          if (diff_coeff>SpeedUp_c_lowerbound) {
+            alpha1_x =  ( diff_coeff + (*image_c)(x+incx,y,z) ) /2.0;;
+            alpha1_y =  ( diff_coeff + (*image_c)(x,y+incy,z) ) /2.0;;
+            alpha1_z =  ( diff_coeff + (*image_c)(x,y,z+incz) ) /2.0;;
+
+            gamma1_x = gamma1_y = gamma1_z = 0;
+            speedup_skip = true;
+            speedup_counter++;
+          }
+        }
+        if (!speedup_skip) {
+          //----- Calcul de alpha1_x, gamma1_x 
+          this->ComputeEquationCoefficient(in,x,y,z,xp,yp,zp,DIR_X,
+                                          alpha1_x,gamma1_x);
+          //----- Calcul de alpha1_y, gamma1_y 
+          this->ComputeEquationCoefficient(in,x,y,z,xp,yp,zp,DIR_Y,
+                                          alpha1_y,gamma1_y);
+          //----- Calcul de alpha1_z, gamma1_z 
+          this->ComputeEquationCoefficient(in,x,y,z,xp,yp,zp,DIR_Z,
+                                          alpha1_z,gamma1_z);
+        } // speedup_skip
+          //----- Mise a jour de l'image
+
+          val1    =  0;
+          val1div =  0;
+
+
+          val1    += alpha1_x         * (*(in+xp  )) +
+                    equ_coeff.alpha_x * (*(in-xp  )) +
+                    gamma1_x  - equ_coeff.gamma_x;
+
+          val1div += alpha1_x + equ_coeff.alpha_x;
+
+          if (debug_voxel) {
+            std::cout << "val1: " << val1 << std::endl;
+            std::cout << "val1div: " << val1div << std::endl;
+          }
+
+          if (!ispositivevalue(fabs(val1)))  {
+          std::cout << "pb 1: " << val1 << std::endl;
+          std::cout << boost::format("at %1%,%2%,%3% ") % x % y % z  
+                    << std::endl;
+
+          std::cout << boost::format(" alpha1_x = %1%, *(in+xp) = %2%, alpha_x = %3%, *(in+xm) = %4%, gamma1_x = %5%, gamma_x = %6%") 
+              % alpha1_x % *(in+xp) 
+              % equ_coeff.alpha_x % *(in-xp  ) 
+              % gamma1_x % equ_coeff.gamma_x << std::endl;
+          }
+
+          x0 = x-extent.GetMin(0);
+          y0 = y-extent.GetMin(1);
+          val1    += alpha1_y               * (*(in+yp )) +
+                    equ_coeff.alpha_y[x0]   * (*(in-yp )) +
+                    gamma1_y  - equ_coeff.gamma_y[x0];
+
+          val1div += alpha1_y + equ_coeff.alpha_y[x0];
+
+          if (debug_voxel) {
+            std::cout << "val1: " << val1 << std::endl;
+            std::cout << "val1div: " << val1div << std::endl;
+          }
+
+
+          if (!ispositivevalue(fabs(val1)))  {
+          std::cout << "pb 2" << std::endl;
+          }
+
+          val1    += alpha1_z                 * (*(in+zp  )) +
+                    equ_coeff.alpha_z[x0][y0] * (*(in-zp  )) +
+                    gamma1_z  - equ_coeff.gamma_z[x0][y0];
+
+          val1div += alpha1_z + equ_coeff.alpha_z[x0][y0];
+
+          if (debug_voxel) {
+            std::cout << "val1: " << val1 << std::endl;
+            std::cout << "val1div: " << val1div << std::endl;
+          }
+
+          if (!ispositivevalue(fabs(val1)))  {
+          std::cout << "pb 3" << std::endl;
+          }
+
+            if ( mask_test )
+            {
+              divF = ( val1 - *in * val1div ) * ( *in- ( *image_entree ) ( x,y,z ) );
+              iteration_info.sum_divF += divF;
+              iteration_info.nb_calculated_points++;
+            }
+        
+
+    /*        val1    += this->beta* ( *image_entree ) ( x,y,z );
+            val1div += this->beta;*/
+        
+          if (debug_voxel) {
+            std::cout << "val1: " << val1 << std::endl;
+            std::cout << "val1div: " << val1div << std::endl;
+          }
+
+            val1prev = val1;
+            val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
+            if (val1<0)
+            if (sqrt(val1)>300) {
+    //          std::cout << "beta = " << this->beta << std::endl;
+              std::cout << "image_entree (x,y,z) = " 
+                        << ( *image_entree ) ( x,y,z ) << std::endl;
+              std::cout << "val1prev = " << val1prev << std::endl;
+              std::cout << boost::format("at %1%,%2%,%3%  --> sqrt(in) = %4% dt = %5% val1prev = %6% sqrt(val1) = %7%") % x % y % z 
+                  % sqrt(*in) % dt % val1prev % sqrt(val1) << std::endl;
+            }
+        
+
+          if (fabsf(val1-*in)<0.1) {
+            iteration_info.sum_divF2 += divF;
+            iteration_info.nb_calculated_points2++;
+          }
+
+          if (divFim!=NULL) {
+            float* divFim_ptr = (float*)divFim->GetData() + 
+                                x*im_incx+y*im_incy+z*im_incz;
+            *divFim_ptr = divF;
+          }
+
+
+          equ_coeff.alpha_z[x0][y0] = alpha1_z;
+          equ_coeff.alpha_y[x0]     = alpha1_y;
+          equ_coeff.alpha_x         = alpha1_x;
+
+          equ_coeff.gamma_z[x0][y0] = gamma1_z;
+          equ_coeff.gamma_y[x0]     = gamma1_y;
+          equ_coeff.gamma_x         = gamma1_x;
+
+
+        if ( fabsf(val1-val0) > epsilon ) {
+          iteration_info.nb_points_instables++;
+        } // end if
+
+        iteration_info.diff += (val1-val0)*(val1-val0);
+        if ( fabsf(val1-val0) > erreur ) {
+          erreur = fabsf(val1-val0);
+        } // end if
+
+
+        if (val1<min_intensity) {
+          if (verbose) fprintf(stderr,"I=%3.2f<min, (%3d,%3d,%3d) \n",val1,x,y,z);
+          val1=min_intensity;
+          iteration_info.outoflimits++;
+        }
+        if (val1>max_intensity) {
+          if (verbose) fprintf(stderr,"I=%3.2f>max, (%3d,%3d,%3d) \n",val1,x,y,z);
+          val1=max_intensity;
+          iteration_info.outoflimits++;
+        }
+
+        float * im_tmp_buf = (float*)this->im_tmp->GetData();
+        (*(im_tmp_buf+x*im_incx+y*im_incy+z*im_incz))=val1;
         if (debug_voxel) {
-          std::cout << "( " << (float)x+((float)incx)/2.0 << ", "
-                    << (float) y << ", "
-                    << (float) z << "), "
-                    << planstats_sigma << ", "
-                    << mean << ", "
-                    << var << std::endl;
+          std::cout << "val1: " << val1 << std::endl;
         }
-        switch (noise_model) 
-        {
-          case NOISE_GAUSSIAN_ADDITIVE:
-            lambda1 = function_c_additive(var, sigma2);   break;
-          case NOISE_RICIAN: 
-            lambda1 = function_c_MRI( sigma2, var, mean); break;
-        }
-        lambda1 *= 6./4.; // convert for 2D normalization
-          switch (diffusion_eigenvalues_mode) {
-          case DIFF_MATRIX_EIGEN_SUM:
-            lambda1 = lambda0 + lambda1; 
-            break;
-          case DIFF_MATRIX_EIGEN_MAX:
-            lambda1 = MAX(lambda0,lambda1); 
-            break;
-          }
-      } else lambda1 = lambda0;
-      if (lambda1<1) {
-        ComputeLocalDirStats(im, (float)x+((float)incx)/2.0, (float) y, 
-                             (float) z,  e2, dirstats_sigma, mean,var);
-        switch (noise_model) 
-        {
-          case NOISE_GAUSSIAN_ADDITIVE:
-            lambda2 = function_c_additive(var, sigma2);   break;
-          case NOISE_RICIAN: 
-            lambda2 = function_c_MRI( sigma2, var, mean); break;
-        }
-        lambda2 *= 6./2.; // convert for 1D normalization
-          switch (diffusion_eigenvalues_mode) {
-          case DIFF_MATRIX_EIGEN_SUM:
-            lambda2 += lambda1;
-            break;
-          case DIFF_MATRIX_EIGEN_MAX:
-            lambda2 = MAX(lambda1,lambda2);
-            break;
-          }
-      } else lambda2 = lambda1;
-      if (lambda1>1) lambda1=1;
-      if (lambda2>1) lambda2=1;
 
-      if (debug_voxel) {
-        std::cout << "lambda0: " << lambda0
-                  << "lambda1: " << lambda1
-                  << "lambda2: " << lambda2 << std::endl;
-      }
-      //    lambda2 = 0;
+        in++;
+        //Iconv++;
 
-      alpha1_x = lambda0 *e0.x*e0.x + 
-                 lambda1 *e1.x*e1.x +
-                 lambda2 *e2.x*e2.x;
-
-      gamma1_x = (grad.y*e0.y + grad.z*e0.z)* lambda0 *e0.x + 
-                 (grad.y*e1.y + grad.z*e1.z)* lambda1 *e1.x +
-                 (grad.y*e2.y + grad.z*e2.z)* lambda2 *e2.x;
-
-
-      //----- Calcul de alpha1_y, gamma1_y 
-   
-      // Gradient en (x,y+1/2)
-      if (debug_voxel) std::cout << "(x,y+1/2,z)" << std::endl;
-
-      grad.x = (*(in+xp)-*(in+xm)+*(in+xp+yp)-*(in+xm+yp))/4.0;
-      grad.y =  *(in+yp) - *(in);
-      grad.z = (*(in+zp)-*(in+zm)+*(in+zp+yp)-*(in+zm+yp))/4.0;
-
-      this->GetVectors(1,x,y,z,e0,e1,e2);
-
-      if (debug_voxel) {
-        PRINT_VECTOR(e0)
-        PRINT_VECTOR(e1)
-        PRINT_VECTOR(e2)
-      }
-
-      lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
-      // if (lambda0>2) lambda0=2;
-      if (lambda0<1) {
-        ComputeLocalPlanStats(im, 
-                              (float)x, (float) y+((float)incy)/2.0, (float) z,
-                              e1,e2, planstats_sigma, mean,var);
-        switch (noise_model) 
-        {
-          case NOISE_GAUSSIAN_ADDITIVE:
-            lambda1 = function_c_additive(var, sigma2);   break;
-          case NOISE_RICIAN: 
-            lambda1 = function_c_MRI( sigma2, var, mean); break;
-        }
-        lambda1 *= 6./4.; // convert for 2D normalization
-          switch (diffusion_eigenvalues_mode) {
-          case DIFF_MATRIX_EIGEN_SUM:
-            lambda1 += lambda0; 
-            break;
-          case DIFF_MATRIX_EIGEN_MAX:
-            lambda1 = MAX(lambda0,lambda1); 
-            break;
-          }
-      } else lambda1 = lambda0;
-      if (lambda1<1) {
-        ComputeLocalDirStats(im, 
-                             (float)x, (float) y+((float)incy)/2.00,  (float) z,
-                             e2, dirstats_sigma, mean,var);
-        switch (noise_model) 
-        {
-          case NOISE_GAUSSIAN_ADDITIVE:
-            lambda2 = function_c_additive(var, sigma2);   break;
-          case NOISE_RICIAN: 
-            lambda2 = function_c_MRI( sigma2, var, mean); break;
-        }
-        lambda2 *= 6./2.; // convert for 1D normalization
-          switch (diffusion_eigenvalues_mode) {
-          case DIFF_MATRIX_EIGEN_SUM:
-            lambda2 += lambda1;
-            break;
-          case DIFF_MATRIX_EIGEN_MAX:
-            lambda2 = MAX(lambda1,lambda2);
-            break;
-          }
-      } else lambda2 = lambda1;
-      if (lambda1>1) lambda1=1;
-      if (lambda2>1) lambda2=1;
-
-      if (debug_voxel) {
-        std::cout << "lambda0: " << lambda0
-                  << "lambda1: " << lambda1
-                  << "lambda2: " << lambda2 << std::endl;
-      }
-      //    lambda2 = 0;
-
-      alpha1_y = lambda0 *e0.y*e0.y + 
-                 lambda1 *e1.y*e1.y +
-                 lambda2 *e2.y*e2.y;
-
-      gamma1_y = (grad.x*e0.x + grad.z*e0.z)* lambda0 *e0.y + 
-                 (grad.x*e1.x + grad.z*e1.z)* lambda1 *e1.y +
-                 (grad.x*e2.x + grad.z*e2.z)* lambda2 *e2.y;
-
-
-      //----- Calcul de alpha1_z, gamma1_z 
-      if (debug_voxel) std::cout << "(x,y,z+1/2)" << std::endl;
-      grad.x = (*(in+xp) - *(in+xm) + *(in+xp+zp) - *(in+xm+zp))/4.0;
-      grad.y = (*(in+yp) - *(in+ym) + *(in+yp+zp) - *(in+ym+zp))/4.0; 
-      grad.z = *(in+zp)-*in;
-
-      this->GetVectors(2,x,y,z,e0,e1,e2);
-      if (debug_voxel) {
-        PRINT_VECTOR(e0)
-        PRINT_VECTOR(e1)
-        PRINT_VECTOR(e2)
-      }
-
-      lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
-      //        if (lambda0>2) lambda0=2;
-      if (lambda0<1) {
-        ComputeLocalPlanStats(im, 
-                              (float)x, (float) y, (float) z+((float)incz)/2.0,
-                              e1,e2, planstats_sigma, mean,var);
-        switch (noise_model) 
-        {
-          case NOISE_GAUSSIAN_ADDITIVE:
-            lambda1 = function_c_additive(var, sigma2);   break;
-          case NOISE_RICIAN: 
-            lambda1 = function_c_MRI( sigma2, var, mean); break;
-        }
-        lambda1 *= 6./4.; // convert for 2D normalization
-          switch (diffusion_eigenvalues_mode) {
-          case DIFF_MATRIX_EIGEN_SUM:
-            lambda1 += lambda0 ; 
-            break;
-          case DIFF_MATRIX_EIGEN_MAX:
-            lambda1 = MAX(lambda0,lambda1); 
-            break;
-          }
-      } else lambda1 = lambda0;
-      if (lambda1<1) {
-        ComputeLocalDirStats(im,
-                             (float)x, (float) y, (float) z+((float)incz)/2.0,
-                             e2, dirstats_sigma, mean,var);
-        switch (noise_model) 
-        {
-          case NOISE_GAUSSIAN_ADDITIVE:
-            lambda2 = function_c_additive(var, sigma2);   break;
-          case NOISE_RICIAN: 
-            lambda2 = function_c_MRI( sigma2, var, mean); break;
-        }
-        lambda2 *= 6./2.; // convert for 1D normalization
-          switch (diffusion_eigenvalues_mode) {
-          case DIFF_MATRIX_EIGEN_SUM:
-            lambda2 += lambda1;
-            break;
-          case DIFF_MATRIX_EIGEN_MAX:
-            lambda2 = MAX(lambda1,lambda2);
-            break;
-          }
-      } else lambda2 = lambda1;
-      if (lambda1>1) lambda1=1;
-      if (lambda2>1) lambda2=1;
-      if (debug_voxel) {
-        std::cout << "lambda0: " << lambda0
-                  << "lambda1: " << lambda1
-                  << "lambda2: " << lambda2 << std::endl;
-      }
-
-      // lambda2 = 0;
-
-      alpha1_z = lambda0 *e0.z*e0.z + 
-                 lambda1 *e1.z*e1.z +
-                 lambda2 *e2.z*e2.z;
-
-      gamma1_z = (grad.x*e0.x + grad.y*e0.y) * lambda0 *e0.z + 
-                 (grad.x*e1.x + grad.y*e1.y) * lambda1 *e1.z +
-                 (grad.x*e2.x + grad.y*e2.y) * lambda2 *e2.z;
-
-     } // speedup_skip
-      //----- Mise a jour de l'image
-
-      val1    =  0;
-      val1div =  0;
-
-
-      val1    += alpha1_x    * (*(in+xp  )) +
-                 alpha_x     * (*(in+xm  )) +
-                 gamma1_x  - gamma_x;
-
-      val1div += alpha1_x + alpha_x;
-
-      if (debug_voxel) {
-        std::cout << "val1: " << val1 << std::endl;
-        std::cout << "val1div: " << val1div << std::endl;
-      }
-
-      if (!ispositivevalue(fabs(val1)))  {
-       std::cout << "pb 1: " << val1 << std::endl;
-       std::cout << boost::format("at %1%,%2%,%3% ") % x % y % z  << std::endl;
-
-       std::cout << boost::format(" alpha1_x = %1%, *(in+xp) = %2%, alpha_x = %3%, *(in+xm) = %4%, gamma1_x = %5%, gamma_x = %6%") % alpha1_x % *(in+xp) % alpha_x % *(in+xm  ) % gamma1_x % gamma_x << std::endl;
-      }
-
-      val1    += alpha1_y     * (*(in+yp )) +
-                 alpha_y[x]   * (*(in+ym )) +
-                 gamma1_y  - gamma_y[x];
-
-      val1div += alpha1_y + alpha_y[x];
-
-      if (debug_voxel) {
-        std::cout << "val1: " << val1 << std::endl;
-        std::cout << "val1div: " << val1div << std::endl;
-      }
-
-
-      if (!ispositivevalue(fabs(val1)))  {
-       std::cout << "pb 2" << std::endl;
-      }
-
-      val1    += alpha1_z      * (*(in+zp  )) +
-                 alpha_z[x][y] * (*(in+zm  )) +
-                 gamma1_z  - gamma_z[x][y];
-
-      val1div += alpha1_z + alpha_z[x][y];
-
-      if (debug_voxel) {
-        std::cout << "val1: " << val1 << std::endl;
-        std::cout << "val1div: " << val1div << std::endl;
-      }
-
-      if (!ispositivevalue(fabs(val1)))  {
-       std::cout << "pb 3" << std::endl;
-      }
-
-        if ( mask_test )
-        {
-          divF = ( val1 - *in * val1div ) * ( *in- ( *image_entree ) ( x,y,z ) );
-          sum_divF += divF;
-          nb_calculated_points++;
-        }
-    
-
-        val1    += this->beta* ( *image_entree ) ( x,y,z );
-        val1div += this->beta;
-    
-      if (debug_voxel) {
-        std::cout << "val1: " << val1 << std::endl;
-        std::cout << "val1div: " << val1div << std::endl;
-      }
-
-        val1prev = val1;
-        val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
-        if (val1<0)
-        if (sqrt(val1)>300) {
-          std::cout << "beta = " << this->beta << std::endl;
-          std::cout << "image_entree (x,y,z) = " 
-                    << ( *image_entree ) ( x,y,z ) << std::endl;
-          std::cout << boost::format("lambda0,1,2 = %1% %2% %3%") % lambda0 
-                        % lambda1 % lambda2 << std::endl;
-          std::cout << "val1prev = " << val1prev << std::endl;
-          std::cout << boost::format("at %1%,%2%,%3%  --> sqrt(in) = %4% dt = %5% val1prev = %6% sqrt(val1) = %7%") % x % y % z 
-              % sqrt(*in) % dt % val1prev % sqrt(val1) << std::endl;
-        }
-    
-
-      if (fabsf(val1-*in)<0.1) {
-        sum_divF2 += divF;
-        nb_calculated_points2++;
-      }
-
-      if (divFim!=NULL) {
-        float* divFim_ptr = (float*)divFim->GetData() + 
-                            x*im_incx+y*im_incy+z*im_incz;
-        *divFim_ptr = divF;
-      }
-
-
-      alpha_z[x][y] = alpha1_z;
-      alpha_y[x]    = alpha1_y;
-      alpha_x       = alpha1_x;
-
-      gamma_z[x][y] = gamma1_z;
-      gamma_y[x]    = gamma1_y;
-      gamma_x       = gamma1_x;
-
-
-    if ( fabsf(val1-val0) > epsilon ) {
-      nb_points_instables++;
-    } // end if
-
-    diff += (val1-val0)*(val1-val0);
-    if ( fabsf(val1-val0) > erreur ) {
-      erreur = fabsf(val1-val0);
-      erreur_x = x;
-      erreur_y = y;
-      erreur_z = z;
-    } // end if
-
-
-    if (val1<min_intensity) {
-      if (verbose) fprintf(stderr,"I=%3.2f<min, (%3d,%3d,%3d) \n",val1,x,y,z);
-      val1=min_intensity;
-      outoflimits++;
-    }
-    if (val1>max_intensity) {
-      if (verbose) fprintf(stderr,"I=%3.2f>max, (%3d,%3d,%3d) \n",val1,x,y,z);
-      val1=max_intensity;
-      outoflimits++;
-    }
-
-    float * im_tmp_buf = (float*)this->im_tmp->GetData();
-    (*(im_tmp_buf+x*im_incx+y*im_incy+z*im_incz))=val1;
-    if (debug_voxel) {
-      std::cout << "val1: " << val1 << std::endl;
-    }
-
-    in++;
-    //Iconv++;
-
-  } // endfor
-  } // endfor
-  } // endfor
+      } // endfor x
+    } // endfor y
+  } // endfor z
 
 
 }
 
 
 //------------------------------------------------------------------------------
-float ami::AnisoGS_NRAD::Run()
-//   ----------------
+void ami::AnisoGS_NRAD::Run()
+//         ----------------
 {
   
   iteration_time.Debut();
@@ -1135,7 +987,7 @@ float ami::AnisoGS_NRAD::Run()
 
   if ( this->result_image==NULL ) {
     std::cerr << __func__ << " result_image==NULL, AnisoGS not initialized " << std::endl;
-    return 0.0;
+    return;
   } // end if
 
   // check if the standard deviation of the noise has been set
@@ -1147,7 +999,7 @@ float ami::AnisoGS_NRAD::Run()
   } 
 
   iteration++;
-  printf("\n -- Iter. %d, beta = %03.2f \t", iteration,beta);
+//  printf("\n -- Iter. %d, beta = %03.2f \t", iteration,beta);
 
   erreur = Itere3D_ST_RNRAD( this->result_image);
 
@@ -1158,7 +1010,7 @@ float ami::AnisoGS_NRAD::Run()
   iteration_time.Fin();
   iteration_time.AddCumul();
   std::cout << iteration_time << std::endl;
-  return erreur;
+  //return erreur;
 
   
 }

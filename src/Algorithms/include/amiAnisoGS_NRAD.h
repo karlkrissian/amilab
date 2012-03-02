@@ -77,9 +77,33 @@ namespace ami {
 
   private:
     bool debug_voxel;
+    
+    // estimated noise variance
+    double sigma2;
   
+    
+    struct IterationInfo {
+      unsigned long   outoflimits;
+      // Sum over all the points
+      float           sum_divF;
+      long int        nb_calculated_points;
+      float           sum_divF2;
+      long int        nb_calculated_points2;
+      //
+      int             nb_points_instables;
+      //
+      double          diff;
+    };
+    
+    IterationInfo iteration_info;
+    
   public:
 
+    enum direction {
+      DIR_X,
+      DIR_Y,
+      DIR_Z
+    };
 
     AnisoGS_NRAD()
       {
@@ -91,12 +115,35 @@ namespace ami {
 
     float Itere3D_ST_RNRAD( InrImage* im );
 
-    void ComputeImage_c(InrImage*);
+    void ComputeImage_c(InrImage*, double sigma2);
     
 //    void Init(InrImage* in, float p_sigma, float p_k, float p_beta);
 
-    virtual void Process( int threadid = 0);
-    virtual void Run();
+    /**
+     * @brief Computes alpha and gamma coefficient at the current voxel
+     * displaced by half in the given direction
+     *
+     * @param in pointer to the current voxel position
+     * @param x current x position
+     * @param y current y position
+     * @param z current z position
+     * @param xp increment in x
+     * @param yp increment in y
+     * @param zp increment in z
+     * @param dir displacement direction
+     * @param alpha resulting alpha coefficient
+     * @param gamma resulting gamma coefficient
+     * @return void
+     **/
+    void ComputeEquationCoefficient(  float* in, 
+                                      int x, int y, int z,
+                                      int xp, int yp, int zp,
+                                      direction dir,
+                                      double& alpha,
+                                      double& gamma);
+
+    virtual void  Process( int threadid = 0);
+    virtual void  Run();
 
     /**
     * Main iteration method, directs to the appropriate specific method

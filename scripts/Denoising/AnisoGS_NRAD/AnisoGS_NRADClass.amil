@@ -65,6 +65,8 @@ if (!exists(AnisoGS_NRADClass)) {
         ::eigendecomp_mode = INT(0), "Eigen decomposition mode for the structure"+\
                                      "tensor (%1%)" % mess
 
+        ::nb_threads = INT(1), "Nb of threads"
+
         #-----------------------------------------------------------------------
         proc ::__assign__( OBJECT p) {
 printn "__assign__"
@@ -81,6 +83,7 @@ printn "__assign__"
           ::speedup               = p.speedup
           ::speedup_lowerbound    = p.speedup_lowerbound
           ::eigendecomp_mode      = p.eigendecomp_mode
+          ::nb_threads            = p.nb_threads
         }
         #-----------------------------------------------------------------------
         proc ::__copy__( ) {
@@ -99,6 +102,7 @@ printn "__copy__"
           newp.speedup               = ::speedup
           newp.speedup_lowerbound    = ::speedup_lowerbound
           newp.eigendecomp_mode      = ::eigendecomp_mode
+          newp.nb_threads            = ::nb_threads
           return = &newp
         }
     }
@@ -192,7 +196,7 @@ printn "__copy__"
       # data attachment = 0
       # init must be called first since it calls InitParams() that
       # resets all the parameters
-      ::NRADfilter.Init(&input1,::params.sigma,1,0)
+      ::NRADfilter.Init(&input1,::params.sigma,::params.nb_threads)
 
       ::NRADfilter.SetUseNewConvolutionFilter(\
           ::params.use_new_convolution_filter)
@@ -452,6 +456,8 @@ printn "__copy__"
                 ::win.AddEnumChoice(::eigendecomp_id,::params.eigendecomp_modes[n])
               }
             ::win.EndBoxPanel()
+            ::win.AddInt(&::params.nb_threads,"threads",1,20)
+
             ::win.BeginBoxPanel("Result --> disk")
               ::win.BeginHorizontal()
                 ::win.AddString(&::result_filename,"File")
