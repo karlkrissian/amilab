@@ -132,11 +132,6 @@ ami::AnisoGSBase::~AnisoGSBase()
     filtre_rec = NULL;
   } // end if
   
-  if ( this->image_lissee != NULL ) {
-    delete this->image_lissee;
-    this->image_lissee=NULL;
-  } // end if
-  
   if ( this->im_tmp != NULL ) {
     delete this->im_tmp;
     this->im_tmp = NULL;
@@ -1431,7 +1426,7 @@ void ami::AnisoGSBase::PrincipalCurvatures(float grad[3], float H[3][3],
 
 
 //------------------------------------------------------------------------------
-void ami::AnisoGSBase::Init(InrImage* in, 
+void ami::AnisoGSBase::Init(InrImage::ptr in, 
       float p_sigma, 
       float p_k,
       float p_beta
@@ -1478,9 +1473,9 @@ void ami::AnisoGSBase::Init(InrImage* in,
   this->ROI_xmax = input_image->DimX()-1;
   this->ROI_ymax = input_image->DimY()-1;
   this->ROI_zmax = input_image->DimZ()-1;
-//  if  ((mode != MODE_2D)&&(result_image->DimZ()>1)&&(!DistanceMap))
-//  {
-    switch (local_structure_mode) {
+
+
+  switch (local_structure_mode) {
     case LOCAL_STRUCT_CURV:
     case LOCAL_STRUCT_TENSOR:
       this->CreateBoundariesVonNeumann(in);
@@ -1493,35 +1488,13 @@ void ami::AnisoGSBase::Init(InrImage* in,
         this->ROI_zmax = image_entree->DimZ()-1-boundary_extension_size;
       }
     break;
-  /*
-    case LOCAL_STRUCT_CURV:
-      printf("LOCAL_STRUCT_CURV \n");
-      image_entree = new InrImage( WT_FLOAT, "image_reel.inr.gz", in);
-      image_entree_allouee=true;
-      (*image_entree) = (*in);
-      this->boundary_extension_size=0;
-      this->ROI_xmin = this->boundary_extension_size;
-      this->ROI_ymin = this->boundary_extension_size;
-      this->ROI_zmin = this->boundary_extension_size;
-      this->ROI_xmax = image_entree->DimX()-1-boundary_extension_size;
-      this->ROI_ymax = image_entree->DimY()-1-boundary_extension_size;
-      this->ROI_zmax = image_entree->DimZ()-1-boundary_extension_size;
-    break;
-  */
-    }
-//  }
+  }
   
-  this->image_lissee = new InrImage( WT_FLOAT, "image_lissee.inr.gz", image_entree);
-
-  if ( use_filtre_rec ) {
-    filtre_rec = new FiltrageRec(this->image_lissee);
-  } else {
-    filtre = new GeneralGaussianFilter(image_entree, 
-        mode);
-    filtre->Set_use_new_filter(UseNewConvolutionFilter);
-    filtre->GammaNormalise(false);
-    filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
-  } // end if
+  filtre = new GeneralGaussianFilter(image_entree, 
+      mode);
+  filtre->Set_use_new_filter(UseNewConvolutionFilter);
+  filtre->GammaNormalise(false);
+  filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
 
   InitCoefficients();
 
@@ -1531,19 +1504,22 @@ void ami::AnisoGSBase::Init(InrImage* in,
 
   (*this->result_image)=(*image_entree);
 
-  // start with a smoothed image for testing
-  /*
-  filtre->MyFiltre( in, this->image_lissee,           0, -1, -1);
-  filtre->MyFiltre( this->image_lissee, this->image_lissee, -1, 0, -1);
-  filtre->MyFiltre( this->image_lissee, this->image_lissee, -1, -1, 0);
-  (*this->result_image) = (*this->image_lissee);
-  */
-
   iteration = 0;
   loop = 2; // loop at 2nd iteration
   max_loop = 6;
 
-
+  // Initialize parameters of the ImageToImageFilter
+  ami::ImageToImageFilterParam filter_param;
+  // need to have the whole tensor in one image ...
+  filter_param.SetInput(in);
+  filter_param.SetNumberOfThreads(wxThread::GetCPUCount());
+  ami::ImageExtent<int> extent;
+  extent.SetMinMax(0,ROI_xmin,ROI_xmax);
+  extent.SetMinMax(1,ROI_ymin,ROI_ymax);
+  extent.SetMinMax(2,ROI_zmin,ROI_zmax);
+  filter_param.SetOutputExtent(extent);
+  SetParameters(filter_param);
+// 
 } // Init()
 
 

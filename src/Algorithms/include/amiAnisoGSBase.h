@@ -219,7 +219,7 @@ namespace ami {
   protected:
     //-------  Images
     /// original input image
-    InrImage* input_image; 
+    InrImage::ptr input_image; 
     /// copy for processing
     InrImage* image_entree  ;
 
@@ -227,7 +227,6 @@ namespace ami {
     InrImage* result_image;
 
     /// smoothed version
-    InrImage* image_lissee  ;
     InrImage* im_tmp        ;
 
     /// image of the coefficients for SRAD type filtering
@@ -400,7 +399,6 @@ namespace ami {
       verbose = false;
       image_entree  = NULL;
       this->result_image= NULL;
-      this->image_lissee  = NULL;
       this->im_tmp        = NULL;
       this->image_c       = NULL;
       this->tensor_xx     = NULL;
@@ -485,7 +483,7 @@ namespace ami {
     void ComputeEigenVectors_initial();
     void ComputeEigenVectors_new();
 
-    void Init(InrImage* in, float p_sigma, float p_k, float p_beta);
+    void Init(InrImage::ptr in, float p_sigma, float p_k, float p_beta);
 
     /**
     * Main iteration method, directs to the appropriate specific method

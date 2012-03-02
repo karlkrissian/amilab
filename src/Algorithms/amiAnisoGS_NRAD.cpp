@@ -417,27 +417,11 @@ void  ami::AnisoGS_NRAD::ComputeLocalDirStats(InrImage* im, float x, float y, fl
 float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 //
 {
-    int x,y,z; //,n,i;
-    double   val0,val1,val1prev;
-    double   val1_implicit=0;
-    double   val1div;
-    double   u_e0;
-    double   u_e1;
-    double   u_e2;
-    double   alpha1_x, gamma1_x;
-    double   alpha1_y, gamma1_y;
-    double   alpha1_z, gamma1_z;
     float*  in;
     //register float    *Iconv=NULL; 
 //    float gradient[3];
 //    float hessien[3][3];
     unsigned long outoflimits=0;
-
-    t_3Point e0;
-    t_3Point e1;
-    t_3Point e2;
-
-    t_Gradient grad;
 
     float   erreur = 0; //,norm_grad;
     double diff;
@@ -457,18 +441,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     std::string    divFname;
 
     unsigned char mask_test;
-//    double    phi0_value=0;
-    double    lambda0=0,lambda1=0,lambda2=0;
-    double    sigma2=0.0; // variance of the noise
  
-/*
- *    double   planstats_sigma = 1.0;
-    double   dirstats_sigma  = 1.5;
-    */
-
-//    double lambda_threshold = 0.6;
-
-//    double        diff_coeff;
     /// skip heavy code because of speedup
     bool          speedup_skip;
     long          speedup_counter = 0;
@@ -611,39 +584,105 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 //------------------------------------------------------------------------------
 void ami::AnisoGS_NRAD::Process( int threadid)
 {
-//   // process using precomputed extent number threadid
-//   InrImage::ptr in = params.GetInput();
-//   
-//   switch (in->GetFormat()) {
-//     case WT_FLOAT:   TemplateProcess<float,float>   (threadid); break;
-//     case WT_DOUBLE:  TemplateProcess<double,float>  (threadid); break;
-//     default: CLASS_ERROR((boost::format(" format %1% not available")%
-//                                     in->GetFormat()).str().c_str());
-//   }
 
-  for(z=ROI_zmin;z<=ROI_zmax;z++) {
-    if ( z==ROI_zmin ) {
-      printf("z = %3d",z);
-      fflush(stdout);
-    } else 
-    if ( (z-ROI_zmin)%5 == 0 ) {
-      printf("\b\b\b");
-      printf("%3d",z);
-      fflush(stdout);
-    } // end if
+    int x,y,z; //,n,i;
+    double   val0,val1,val1prev;
+    double   val1_implicit=0;
+    double   val1div;
+    double   u_e0;
+    double   u_e1;
+    double   u_e2;
+    double   alpha1_x, gamma1_x;
+    double   alpha1_y, gamma1_y;
+    double   alpha1_z, gamma1_z;
+    float*  in;
+    //register float    *Iconv=NULL; 
+//    float gradient[3];
+//    float hessien[3][3];
+    unsigned long outoflimits=0;
+
+    t_3Point e0;
+    t_3Point e1;
+    t_3Point e2;
+
+    t_Gradient grad;
+
+    float   erreur = 0; //,norm_grad;
+    double diff;
+    int nb_points_instables;
+    int erreur_x=0,erreur_y=0,erreur_z=0;
+
+    // Sum over all the points
+    float     sum_divF;
+    long int  nb_calculated_points;
+
+    // Sum over the points that don't evolve too much
+    float     sum_divF2;
+    long int  nb_calculated_points2;
+
+    float     u,u0;
+    float     divF=0;
+    std::string    divFname;
+
+    unsigned char mask_test;
+//    double    phi0_value=0;
+    double    lambda0=0,lambda1=0,lambda2=0;
+    double    sigma2=0.0; // variance of the noise
+ 
+/*
+ *    double   planstats_sigma = 1.0;
+    double   dirstats_sigma  = 1.5;
+    */
+
+//    double lambda_threshold = 0.6;
+
+//    double        diff_coeff;
+    /// skip heavy code because of speedup
+    bool          speedup_skip;
+    long          speedup_counter = 0;
+
+    int      xp,xm,yp,ym,zp,zm,incx,incy,incz;
+    double mean,var;
+    
+    int im_incx,im_incy,im_incz;
+    float im_buf;
+  
+  extenttype      extent = extents[threadid];
+
+  //   // process using precomputed extent number threadid
+  //   InrImage::ptr in = params.GetInput();
+  //   
+  //   switch (in->GetFormat()) {
+  //     case WT_FLOAT:   TemplateProcess<float,float>   (threadid); break;
+  //     case WT_DOUBLE:  TemplateProcess<double,float>  (threadid); break;
+  //     default: CLASS_ERROR((boost::format(" format %1% not available")%
+  //                                     in->GetFormat()).str().c_str());
+  //   }
+
+  for(z=extent.GetMin(2);z<=extent.GetMax(2);z++) {
+
+  //     if ( z==ROI_zmin ) {
+  //       printf("z = %3d",z);
+  //       fflush(stdout);
+  //     } else 
+  //     if ( (z-ROI_zmin)%5 == 0 ) {
+  //       printf("\b\b\b");
+  //       printf("%3d",z);
+  //       fflush(stdout);
+  //     } // end if
 
   // reset Y coefficients
-  for(x=0;x<=tx-1;x++) {
+  for(x=extent.GetMin(0);x<=extent.GetMax(0);x++) {
     alpha_y[x] = gamma_y[x] = 0;
   } // endfor
 
-  for(y=ROI_ymin;y<=ROI_ymax;y++) {
+  for(y=extent.GetMin(1);y<=extent.GetMax(1);y++) {
   // reset X coefficients
   alpha_x = gamma_x = 0;
   //im->BufferPos(ROI_xmin,y,z);
-  in = ((float*) im->GetData())+ROI_xmin*im_incx+y*im_incy+z*im_incz;
+  in = ((float*) im->GetData())+extent.GetMin(0)*im_incx+y*im_incy+z*im_incz;
 
-  for(x=ROI_xmin;x<=ROI_xmax;x++) {
+  for(x=extent.GetMin(0);x<=extent.GetMax(0);x++) {
   
     
     debug_voxel = (x-ROI_xmin==16)&&
