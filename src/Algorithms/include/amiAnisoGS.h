@@ -89,6 +89,9 @@ namespace ami {
     };
 
   private:
+    
+    bool debug_voxel;
+    
     /**
     * @name Precomputed pointers to neighborhood
     **/

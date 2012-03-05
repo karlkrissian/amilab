@@ -167,7 +167,7 @@ InrImage*     Func_localSD( InrImage* im, InrImage* mean, int size)
 
 
 //--------------------------------------------------
-InrImage*     Func_localSD2( InrImage* im, InrImage* mean, int size, bool unbiased)
+InrImage* Func_localSD2( InrImage* im, InrImage* mean, int size, bool unbiased)
 {
   double tmp;
   InrImage* res;
@@ -217,6 +217,53 @@ InrImage*     Func_localSD2( InrImage* im, InrImage* mean, int size, bool unbias
   return res2;
 }
 
+//--------------------------------------------------
+InrImage* Func_localVAR2( InrImage* im, InrImage* mean, int size, bool unbiased)
+{
+  double tmp;
+  InrImage* res;
+  InrImage* res2;
+  float nb_values,correction=0.0;
+
+  res = new InrImage( WT_FLOAT,"im_2.ami.gz",im);
+  res->InitImage(0.0);
+
+  res ->InitBuffer();
+  im  ->InitBuffer();
+
+  do {
+    tmp = im->ValeurBuffer();
+    res->FixeValeur(tmp*tmp);
+    im->IncBuffer();
+  }
+  while (res->IncBuffer());
+
+  res2 = Func_localmean2(res,size);
+  res2->InitBuffer();
+  mean->InitBuffer();
+#define M_MAX(a,b) ((a)>(b)?(a):(b))
+  if (unbiased) {
+    nb_values = M_MAX(im->DimX(),(2*size+1))*
+                M_MAX(im->DimY(),(2*size+1))*
+                M_MAX(im->DimZ(),(2*size+1));
+    correction = nb_values/(nb_values-1.0);
+  }
+#undef M_MAX
+  int i=0;
+  do {
+    tmp = res2->ValeurBuffer()-
+          mean->ValeurBuffer()*mean->ValeurBuffer();
+    if (unbiased) tmp=tmp*correction;
+    if (tmp<0.00001) tmp=0.00001;
+    res2->FixeValeur(tmp);
+    i++;
+    mean->IncBuffer();
+  }
+  while (res2->IncBuffer());
+  
+  delete res;
+  return res2;
+}
 
 //--------------------------------------------------
 InrImage*     Func_localdirectionalmean( InrImage* im, InrImage* directions,

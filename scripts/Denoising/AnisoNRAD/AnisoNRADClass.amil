@@ -240,12 +240,14 @@ if (!exists(AnisoNRADClass)) {
         # set Rician Noise Reducing Anisotropic Diffusion and the ROI
         # important here to use reference to the image, 
         # otherwise the temporary copy will be automatically deleted !!!
-        ::NRADfilter.Setcontours_mode( algorithms.ami_AnisoGS.CONTOURS_RNRAD)
+        ::NRADfilter.Setcontours_mode( algorithms.ami_AnisoGS.CONTOURS_OSRAD)
+        ::NRADfilter.Setnoise_model( algorithms.ami_AnisoGS.NOISE_RICIAN)
       }
       if (::params.matrix_mode==2) {
         # set Rician Noise Reducing Anisotropic Diffusion and the ROI
         # same comment as above
-        ::NRADfilter.Setcontours_mode(algorithms.ami_AnisoGS.CONTOURS_RNRAD_NEW)
+        ::NRADfilter.Setcontours_mode(algorithms.ami_AnisoGS.CONTOURS_NRAD)
+        ::NRADfilter.Setnoise_model( algorithms.ami_AnisoGS.NOISE_RICIAN)
       }
     
       ::NRADfilter.Setlocal_structure_mode(::params.local_struct)

@@ -63,7 +63,12 @@ InrImage*     Func_localmean2( InrImage* im, int size);
 
 
 InrImage*     Func_localSD( InrImage* im, InrImage* mean, int size);
-InrImage*     Func_localSD2( InrImage* im, InrImage* mean, int size, bool unbiased=false);
+InrImage*     Func_localSD2( InrImage* im, InrImage* mean, int size, 
+                             bool unbiased=false);
+
+InrImage*     Func_localVAR2( InrImage* im, InrImage* mean, int size, 
+                              bool unbiased);
+
 
 InrImage*     Func_localdirectionalmean( InrImage* im, InrImage* directions,
 			      int size);

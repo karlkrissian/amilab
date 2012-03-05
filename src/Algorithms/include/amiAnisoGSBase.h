@@ -98,13 +98,14 @@ namespace ami {
     };
     
     
+    template <class T>
     class EquationCoefficients {
       public:
-        float       alpha_x, gamma_x;
-        float*      alpha_y;
-        float*      gamma_y;
-        float**     alpha_z;
-        float**     gamma_z;
+        T       alpha_x, gamma_x;
+        T*      alpha_y;
+        T*      gamma_y;
+        T**     alpha_z;
+        T**     gamma_z;
         int         sx,sy,sz;
         
         EquationCoefficients(int sizex, int sizey, int sizez) 
@@ -114,19 +115,19 @@ namespace ami {
           sz=sizez;
           int x;
           int y;
-          alpha_y = new float[sx];
-          gamma_y = new float[sx];
+          alpha_y = new T[sx];
+          gamma_y = new T[sx];
 
           alpha_x = gamma_x = 0;
           for(x=0;x<sx;x++) {
             alpha_y[x] = gamma_y[x] = 0;
           } // endfor
 
-          alpha_z = new float*[sx];
-          gamma_z = new float*[sx];
+          alpha_z = new T*[sx];
+          gamma_z = new T*[sx];
           for(x=0;x<sx;x++) {
-            alpha_z[x] = new float[sy];
-            gamma_z[x] = new float[sy];
+            alpha_z[x] = new T[sy];
+            gamma_z[x] = new T[sy];
             for(y=0;y<sy;y++) {
               alpha_z[x][y] = gamma_z[x][y] = 0;
             } // endfor

@@ -252,38 +252,38 @@ double     Func_med( InrImage* im, float percent, InrImage* mask)
 
 InrImage*    Func_Histogram( InrImage* im, float vmin, float vmax, int nint)
 {
-    InrImage* res;
-    int* numpts;
-    int  n;
-    float v;
+  InrImage* res;
+  int* numpts;
+  int  n;
+  float v;
 
-      res = new InrImage(nint,1,1,WT_SIGNED_INT);
-          // set translation and voxel size of reflect real image intensity values
-      res->SetTranslation(vmin,0,0);
-      res->SetVoxelSize((vmax-vmin)/(1.0*nint),1,1);
+  res = new InrImage(nint,1,1,WT_SIGNED_INT);
+      // set translation and voxel size of reflect real image intensity values
+  res->SetTranslation(vmin,0,0);
+  res->SetVoxelSize((vmax-vmin)/(1.0*nint),1,1);
 
-      numpts = new int[nint];
-      for(n=0;n<=nint-1;n++) { 
-        numpts[n]=0;
-      } // endfor
+  numpts = new int[nint];
+  for(n=0;n<=nint-1;n++) { 
+    numpts[n]=0;
+  } // endfor
 
-      im->InitBuffer();
-      do {
-        v = im->ValeurBuffer();
-        if ( v>=vmin && v<vmax ) {
-          n = (int) ((v-vmin)/(vmax-vmin)*nint);
-          if ( n==nint )  n=nint-1;
-          numpts[n]++;
-        } // end if
-      } while (im->IncBuffer());
+  im->InitBuffer();
+  do {
+    v = im->ValeurBuffer();
+    if ( v>=vmin && v<vmax ) {
+      n = (int) ((v-vmin)/(vmax-vmin)*nint);
+      if ( n==nint )  n=nint-1;
+      numpts[n]++;
+    } // end if
+  } while (im->IncBuffer());
 
-      res->InitBuffer();
-      for(n=0;n<=nint-1;n++) { 
-        res->FixeValeur(numpts[n]);
-        res->IncBuffer();
-      } // endfor
+  res->InitBuffer();
+  for(n=0;n<=nint-1;n++) { 
+    res->FixeValeur(numpts[n]);
+    res->IncBuffer();
+  } // endfor
 
-      delete [] numpts;
-    return res;
+  delete [] numpts;
+  return res;
 } // Func_Histogram()
 

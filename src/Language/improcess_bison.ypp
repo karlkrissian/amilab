@@ -226,6 +226,15 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
   boost::shared_ptr<type> newvar( \
     driver.var_stack.GetLastVar<type>()->Pointer());
 
+#define GET_VARSTACK_VALUE2(type,newvar) \
+  boost::shared_ptr<type> newvar;\
+  { \
+    boost::shared_ptr<Variable<type> > v = driver.var_stack.GetLastVar<type>();\
+    if (v.get()) \
+     newvar = boost::shared_ptr<type>(v->Pointer()); \
+    else \
+      std::cerr << "failed to get variable from stack " << std::endl; \
+  }
 
 /*! \def GET_VARSTACK_OBJECT
     \brief Gets the smart pointer to the wrapped object  (of type WrapClass_type) included in an AMIObject variable, taken from the stack of variables.
@@ -9627,12 +9636,12 @@ image_extent:
         Description: creates an image extent based on the limits in voxel coordinates in X,Y and Z
         Parameters: xmin, xmax, ymin, ymax, zmin, zmax
       **/
-      GET_VARSTACK_VALUE(float,zmax)
-      GET_VARSTACK_VALUE(float,zmin)
-      GET_VARSTACK_VALUE(float,ymax)
-      GET_VARSTACK_VALUE(float,ymin)
-      GET_VARSTACK_VALUE(float,xmax)
-      GET_VARSTACK_VALUE(float,xmin)
+      GET_VARSTACK_VALUE2(float,zmax)
+      GET_VARSTACK_VALUE2(float,zmin)
+      GET_VARSTACK_VALUE2(float,ymax)
+      GET_VARSTACK_VALUE2(float,ymin)
+      GET_VARSTACK_VALUE2(float,xmax)
+      GET_VARSTACK_VALUE2(float,xmin)
       ami::ImageExtent<float>* extent=new ami::ImageExtent<float>(  *xmin, *xmax, 
                                                           *ymin, *ymax, 
                                                           *zmin, *zmax);

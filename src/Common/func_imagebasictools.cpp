@@ -153,7 +153,6 @@ InrImage* Func_SubImage( InrImage* im,
       if (im->ScalarFormat())
           subim->FixeValeur(im->ValeurBuffer());
 
-
       if (im->VectorialFormat())
         for(int i=0;i<im->GetVDim();i++)
            subim->VectFixeValeur(i,im->VectValeurBuffer(i));

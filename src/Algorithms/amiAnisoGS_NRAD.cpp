@@ -431,13 +431,17 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     bool          speedup_skip;
     long          speedup_counter = 0;
 
-    int           xp,xm,yp,ym,zp,zm,incx,incy,incz;
+    int           xp,yp,zp;
     double        mean,var;
     
     int           im_incx,im_incy,im_incz;
     float         im_buf;
+    Timing        main_time("main time");
+    Timing        precompute("Precompute");
+    Timing        imagec("ImageC");
     
   result_image->GetBufferIncrements(im_incx,im_incy,im_incz);
+  precompute.Debut();
   // pre-compute information
   switch (noise_model) 
   {
@@ -446,7 +450,10 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     case NOISE_RICIAN: 
       sigma2 = Compute_sigma2_MRI_mode(im); break;
   }
+  imagec.Debut();
   ComputeImage_c(im,sigma2);
+  imagec.Fin();
+  std::cout << imagec << std::endl;
 
   if (SpeedUp_c) {
     // in case of speedup, need to compute eigenvectors at each iteration
@@ -464,6 +471,8 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     }
   }
 
+  precompute.Fin();
+  std::cout << precompute << std::endl;
 
   // pb: the coefficients are not good for multi-threading ???
 
@@ -474,9 +483,8 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
   } // end if
 
   divFim->InitImage(0);
-  im->InitBuffer();
   erreur = 0;
-  in = (float*) im->Buffer();
+  in = (float*) im->GetData();
 
   iteration_info.diff = 0;
   iteration_info.nb_points_instables  = 0;
@@ -488,9 +496,11 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
   iteration_info.nb_calculated_points2  = 0;
   iteration_info.sum_divF2              = 0;
 
-//printf("diff eigen mode : %d\n",diffusion_eigenvalues_mode);
 
+  main_time.Debut();
   ImageToImageFilter::Run();
+  main_time.Fin();
+  std::cout << main_time << std::endl;
 
   if (iteration_info.outoflimits>0) {
    std::cout << " Number of pixels out of the intensity range :" 
@@ -636,10 +646,7 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
                           pos_x,pos_y,pos_z,  
                           e1,e2, planstats_sigma, mean,var);
     if (debug_voxel) {
-      std::cout << "( " << pos_x << ", "
-                << pos_y << ", "
-                << pos_z << "), "
-                << planstats_sigma << ", "
+      std::cout << planstats_sigma << ", "
                 << mean << ", "
                 << var << std::endl;
     }
@@ -664,6 +671,11 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
     ComputeLocalDirStats(result_image, 
                          pos_x,pos_y,pos_z,
                          e2, dirstats_sigma, mean,var);
+    if (debug_voxel) {
+      std::cout << dirstats_sigma << ", "
+                << mean << ", "
+                << var << std::endl;
+    }
     switch (noise_model) 
     {
       case NOISE_GAUSSIAN_ADDITIVE:
@@ -748,12 +760,12 @@ void ami::AnisoGS_NRAD::Process( int threadid)
     /// skip heavy code because of speedup
     bool            speedup_skip;
     long            speedup_counter = 0;
-    int             xp,yp,zp,incx,incy,incz;
+    int             xp,yp,zp;
     int             im_incx,im_incy,im_incz;
     float           im_buf;
     extenttype      extent = extents[threadid];
 
-    EquationCoefficients equ_coeff(
+    EquationCoefficients<double> equ_coeff(
                                     extent.GetSize(0),
                                     extent.GetSize(1),
                                     extent.GetSize(2)
@@ -775,8 +787,8 @@ void ami::AnisoGS_NRAD::Process( int threadid)
     //     } // end if
 
     // reset Y coefficients
-    for(x0=0;x<extent.GetSize(0);x++) {
-      equ_coeff.alpha_y[x] = equ_coeff.gamma_y[x] = 0;
+    for(x0=0;x0<extent.GetSize(0);x0++) {
+      equ_coeff.alpha_y[x0] = equ_coeff.gamma_y[x0] = 0;
     } // endfor
 
     for(y=extent.GetMin(1);y<=extent.GetMax(1);y++) 
@@ -790,9 +802,12 @@ void ami::AnisoGS_NRAD::Process( int threadid)
       for(x=extent.GetMin(0);x<=extent.GetMax(0);x++) {
       
         
-    //     debug_voxel = (x-ROI_xmin==16)&&
-    //                   (y-ROI_ymin==9)&&
-    //                   (z-ROI_zmin==9);
+        x0 = x-extent.GetMin(0);
+        y0 = y-extent.GetMin(1);
+
+        //debug_voxel = (x-ROI_xmin==68)&&
+        //              (y-ROI_ymin==39)&&
+        //              (z-ROI_zmin==46);
         debug_voxel=false;
 
         val1 = val0 = *in;
@@ -808,9 +823,9 @@ void ami::AnisoGS_NRAD::Process( int threadid)
           double diff_coeff = ( *image_c ) ( x,y,z );
           // do a scalar diffusion to speed-up the process
           if (diff_coeff>SpeedUp_c_lowerbound) {
-            alpha1_x =  ( diff_coeff + (*image_c)(x+incx,y,z) ) /2.0;;
-            alpha1_y =  ( diff_coeff + (*image_c)(x,y+incy,z) ) /2.0;;
-            alpha1_z =  ( diff_coeff + (*image_c)(x,y,z+incz) ) /2.0;;
+            alpha1_x =  ( diff_coeff + (*image_c)(x+1,y,z) ) /2.0;;
+            alpha1_y =  ( diff_coeff + (*image_c)(x,y+1,z) ) /2.0;;
+            alpha1_z =  ( diff_coeff + (*image_c)(x,y,z+1) ) /2.0;;
 
             gamma1_x = gamma1_y = gamma1_z = 0;
             speedup_skip = true;
@@ -818,6 +833,27 @@ void ami::AnisoGS_NRAD::Process( int threadid)
           }
         }
         if (!speedup_skip) {
+          // deal with extent limits
+          if ((x==extent.GetMin(0))&&(x>params.GetOutputExtent().GetMin(0))) {
+            //----- Compute alpha_x, gamma_x at x-1 
+            this->ComputeEquationCoefficient(in-im_incx,x-1,y,z,xp,yp,zp,DIR_X,
+                                             equ_coeff.alpha_x,
+                                             equ_coeff.gamma_x);
+          }
+
+          if ((y==extent.GetMin(1))&&(y>params.GetOutputExtent().GetMin(1))) {
+            //----- Compute alpha_y, gamma_y at y-1 
+            this->ComputeEquationCoefficient(in-im_incy,x,y-1,z,xp,yp,zp,DIR_Y,
+                                             equ_coeff.alpha_y[x0],
+                                             equ_coeff.gamma_y[x0]);
+          }
+
+          if ((z==extent.GetMin(2))&&(z>params.GetOutputExtent().GetMin(2))) {
+            //----- Compute alpha_z, gamma_z at z-1 
+            this->ComputeEquationCoefficient(in-im_incz,x,y,z-1,xp,yp,zp,DIR_Z,
+                                             equ_coeff.alpha_z[x0][y0],
+                                             equ_coeff.gamma_z[x0][y0]);
+          }
           //----- Calcul de alpha1_x, gamma1_x 
           this->ComputeEquationCoefficient(in,x,y,z,xp,yp,zp,DIR_X,
                                           alpha1_x,gamma1_x);
@@ -828,116 +864,113 @@ void ami::AnisoGS_NRAD::Process( int threadid)
           this->ComputeEquationCoefficient(in,x,y,z,xp,yp,zp,DIR_Z,
                                           alpha1_z,gamma1_z);
         } // speedup_skip
-          //----- Mise a jour de l'image
 
-          val1    =  0;
-          val1div =  0;
-
-
-          val1    += alpha1_x         * (*(in+xp  )) +
-                    equ_coeff.alpha_x * (*(in-xp  )) +
-                    gamma1_x  - equ_coeff.gamma_x;
-
-          val1div += alpha1_x + equ_coeff.alpha_x;
-
-          if (debug_voxel) {
-            std::cout << "val1: " << val1 << std::endl;
-            std::cout << "val1div: " << val1div << std::endl;
-          }
-
-          if (!ispositivevalue(fabs(val1)))  {
-          std::cout << "pb 1: " << val1 << std::endl;
-          std::cout << boost::format("at %1%,%2%,%3% ") % x % y % z  
-                    << std::endl;
-
-          std::cout << boost::format(" alpha1_x = %1%, *(in+xp) = %2%, alpha_x = %3%, *(in+xm) = %4%, gamma1_x = %5%, gamma_x = %6%") 
-              % alpha1_x % *(in+xp) 
-              % equ_coeff.alpha_x % *(in-xp  ) 
-              % gamma1_x % equ_coeff.gamma_x << std::endl;
-          }
-
-          x0 = x-extent.GetMin(0);
-          y0 = y-extent.GetMin(1);
-          val1    += alpha1_y               * (*(in+yp )) +
-                    equ_coeff.alpha_y[x0]   * (*(in-yp )) +
-                    gamma1_y  - equ_coeff.gamma_y[x0];
-
-          val1div += alpha1_y + equ_coeff.alpha_y[x0];
-
-          if (debug_voxel) {
-            std::cout << "val1: " << val1 << std::endl;
-            std::cout << "val1div: " << val1div << std::endl;
-          }
+        //----- Mise a jour de l'image
+        val1    =  0;
+        val1div =  0;
 
 
-          if (!ispositivevalue(fabs(val1)))  {
-          std::cout << "pb 2" << std::endl;
-          }
+        val1    += alpha1_x         * (*(in+xp  )) +
+                  equ_coeff.alpha_x * (*(in-xp  )) +
+                  gamma1_x  - equ_coeff.gamma_x;
 
-          val1    += alpha1_z                 * (*(in+zp  )) +
-                    equ_coeff.alpha_z[x0][y0] * (*(in-zp  )) +
-                    gamma1_z  - equ_coeff.gamma_z[x0][y0];
+        val1div += alpha1_x + equ_coeff.alpha_x;
 
-          val1div += alpha1_z + equ_coeff.alpha_z[x0][y0];
+        if (debug_voxel) {
+          std::cout << "val1: " << val1 << std::endl;
+          std::cout << "val1div: " << val1div << std::endl;
+        }
 
-          if (debug_voxel) {
-            std::cout << "val1: " << val1 << std::endl;
-            std::cout << "val1div: " << val1div << std::endl;
-          }
+        if (!ispositivevalue(fabs(val1)))  {
+        std::cout << "pb 1: " << val1 << std::endl;
+        std::cout << boost::format("at %1%,%2%,%3% ") % x % y % z  
+                  << std::endl;
 
-          if (!ispositivevalue(fabs(val1)))  {
+        std::cout << boost::format(" alpha1_x = %1%, *(in+xp) = %2%, alpha_x = %3%, *(in+xm) = %4%, gamma1_x = %5%, gamma_x = %6%") 
+            % alpha1_x % *(in+xp) 
+            % equ_coeff.alpha_x % *(in-xp  ) 
+            % gamma1_x % equ_coeff.gamma_x << std::endl;
+        }
+
+        val1    += alpha1_y               * (*(in+yp )) +
+                  equ_coeff.alpha_y[x0]   * (*(in-yp )) +
+                  gamma1_y  - equ_coeff.gamma_y[x0];
+
+        val1div += alpha1_y + equ_coeff.alpha_y[x0];
+
+        if (debug_voxel) {
+          std::cout << "val1: " << val1 << std::endl;
+          std::cout << "val1div: " << val1div << std::endl;
+        }
+
+
+        if (!ispositivevalue(fabs(val1)))  {
+        std::cout << "pb 2" << std::endl;
+        }
+
+        val1    += alpha1_z                 * (*(in+zp  )) +
+                  equ_coeff.alpha_z[x0][y0] * (*(in-zp  )) +
+                  gamma1_z  - equ_coeff.gamma_z[x0][y0];
+
+        val1div += alpha1_z + equ_coeff.alpha_z[x0][y0];
+
+        if (debug_voxel) {
+          std::cout << "val1: " << val1 << std::endl;
+          std::cout << "val1div: " << val1div << std::endl;
+        }
+
+        if (!ispositivevalue(fabs(val1)))  {
           std::cout << "pb 3" << std::endl;
-          }
+        }
 
-            if ( mask_test )
-            {
-              divF = ( val1 - *in * val1div ) * ( *in- ( *image_entree ) ( x,y,z ) );
-              iteration_info.sum_divF += divF;
-              iteration_info.nb_calculated_points++;
-            }
-        
+        if ( mask_test )
+        {
+          divF = ( val1 - *in * val1div ) * ( *in- ( *image_entree ) ( x,y,z ) );
+          iteration_info.sum_divF += divF;
+          iteration_info.nb_calculated_points++;
+        }
+      
 
-    /*        val1    += this->beta* ( *image_entree ) ( x,y,z );
-            val1div += this->beta;*/
-        
-          if (debug_voxel) {
-            std::cout << "val1: " << val1 << std::endl;
-            std::cout << "val1div: " << val1div << std::endl;
-          }
+  /*        val1    += this->beta* ( *image_entree ) ( x,y,z );
+          val1div += this->beta;*/
+      
+        if (debug_voxel) {
+          std::cout << "val1: " << val1 << std::endl;
+          std::cout << "val1div: " << val1div << std::endl;
+        }
 
-            val1prev = val1;
-            val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
-            if (val1<0)
-            if (sqrt(val1)>300) {
-    //          std::cout << "beta = " << this->beta << std::endl;
-              std::cout << "image_entree (x,y,z) = " 
-                        << ( *image_entree ) ( x,y,z ) << std::endl;
-              std::cout << "val1prev = " << val1prev << std::endl;
-              std::cout << boost::format("at %1%,%2%,%3%  --> sqrt(in) = %4% dt = %5% val1prev = %6% sqrt(val1) = %7%") % x % y % z 
-                  % sqrt(*in) % dt % val1prev % sqrt(val1) << std::endl;
-            }
-        
+        val1prev = val1;
+        val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
+        if (val1<0)
+        if (sqrt(val1)>300) {
+//          std::cout << "beta = " << this->beta << std::endl;
+          std::cout << "image_entree (x,y,z) = " 
+                    << ( *image_entree ) ( x,y,z ) << std::endl;
+          std::cout << "val1prev = " << val1prev << std::endl;
+          std::cout << boost::format("at %1%,%2%,%3%  --> sqrt(in) = %4% dt = %5% val1prev = %6% sqrt(val1) = %7%") % x % y % z 
+              % sqrt(*in) % dt % val1prev % sqrt(val1) << std::endl;
+        }
+      
 
-          if (fabsf(val1-*in)<0.1) {
-            iteration_info.sum_divF2 += divF;
-            iteration_info.nb_calculated_points2++;
-          }
+        if (fabsf(val1-*in)<0.1) {
+          iteration_info.sum_divF2 += divF;
+          iteration_info.nb_calculated_points2++;
+        }
 
-          if (divFim!=NULL) {
-            float* divFim_ptr = (float*)divFim->GetData() + 
-                                x*im_incx+y*im_incy+z*im_incz;
-            *divFim_ptr = divF;
-          }
+        if (divFim!=NULL) {
+          float* divFim_ptr = (float*)divFim->GetData() + 
+                              x*im_incx+y*im_incy+z*im_incz;
+          *divFim_ptr = divF;
+        }
 
 
-          equ_coeff.alpha_z[x0][y0] = alpha1_z;
-          equ_coeff.alpha_y[x0]     = alpha1_y;
-          equ_coeff.alpha_x         = alpha1_x;
+        equ_coeff.alpha_z[x0][y0] = alpha1_z;
+        equ_coeff.alpha_y[x0]     = alpha1_y;
+        equ_coeff.alpha_x         = alpha1_x;
 
-          equ_coeff.gamma_z[x0][y0] = gamma1_z;
-          equ_coeff.gamma_y[x0]     = gamma1_y;
-          equ_coeff.gamma_x         = gamma1_x;
-
+        equ_coeff.gamma_z[x0][y0] = gamma1_z;
+        equ_coeff.gamma_y[x0]     = gamma1_y;
+        equ_coeff.gamma_x         = gamma1_x;
 
         if ( fabsf(val1-val0) > epsilon ) {
           iteration_info.nb_points_instables++;

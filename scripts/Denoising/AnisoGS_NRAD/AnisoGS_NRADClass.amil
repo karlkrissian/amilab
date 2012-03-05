@@ -201,7 +201,7 @@ printn "__copy__"
       ::NRADfilter.SetUseNewConvolutionFilter(\
           ::params.use_new_convolution_filter)
       if (::params.noise_models[::params.noise_model] == "Rician") {
-        ::NRADfilter.Setnoise_model(algorithms.ami_AnisoGS_NRAD.NOISE_RICIAN)
+        ::NRADfilter.Setnoise_model(algorithms.ami_AnisoGSBase.NOISE_RICIAN)
       }
       if (::params.noise_models[::params.noise_model] == "Additive Gaussian") {
         ::NRADfilter.Setnoise_model(algorithms.ami_AnisoGSBase.\

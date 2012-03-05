@@ -63,6 +63,11 @@
   #undef max
 #endif
 
+#define PRINT_VECTOR( v) std::cout << #v << "( " << v.x << ", " \
+  << v.y << ", " \
+  << v.z << ")" << std::endl;
+
+
 template<typename T>
 inline bool ispositivevalue(const T& value)
 {
@@ -356,9 +361,9 @@ void  ami::AnisoGS::ComputeLocalPlanStats(InrImage* im, float x, float y, float 
 
 //  twosd2 = 2*sd*sd;
 
-  fp2x = x-size*d2.x-size*d1.x+0.5;
-  fp2y = y-size*d2.y-size*d1.y+0.5;
-  fp2z = z-size*d2.z-size*d1.z+0.5;
+  fp2x = x-size*d2.x-size*d1.x+0.5+1E-4;;
+  fp2y = y-size*d2.y-size*d1.y+0.5+1E-4;;
+  fp2z = z-size*d2.z-size*d1.z+0.5+1E-4;;
   mean  = 0.0;
   mean2 = 0.0;
 
@@ -376,6 +381,10 @@ void  ami::AnisoGS::ComputeLocalPlanStats(InrImage* im, float x, float y, float 
             ((px!=(int)(fp1x-d2.x))||(py!=(int)(fp1y-d2.y))||(pz!=(int)(fp1z-d2.z))))
         {
         val = (*im)(px,py,pz);
+        if (debug_voxel) {
+          std::cout << "adding point " << px << ", " << py << ", " << pz 
+                    << " with value " << val << std::endl;
+        }
         mean  += val;
         mean2 += val*val;
         nval++;
@@ -424,9 +433,9 @@ void  ami::AnisoGS::ComputeLocalDirStats(InrImage* im, float x, float y, float z
   px1=py1=pz1=-100;
 //  twosd2 = 2*sd*sd;
 
-  fpx = x-size*e.x+0.5;
-  fpy = y-size*e.y+0.5;
-  fpz = z-size*e.z+0.5;
+  fpx = x-size*e.x+0.5+1E-4;;
+  fpy = y-size*e.y+0.5+1E-4;;
+  fpz = z-size*e.z+0.5+1E-4;;
   mean  = 0.0;
   mean2 = 0.0;
 
@@ -2730,6 +2739,8 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
 
   for(x=ROI_xmin;x<=ROI_xmax;x++) {
   
+    debug_voxel=false;
+    
     val1 = val0 = *in;
     
     mask_test = (!mask.get())||((mask.get())&&((*mask)(x-ROI_xmin,y-ROI_ymin,z-ROI_zmin)>0.5));
@@ -2794,6 +2805,11 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
         if (lambda0>2) lambda0=2;
         if (lambda0<1) {
           ComputeLocalPlanStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e1,e2, planstats_sigma, mean,var);
+          if (debug_voxel) {
+            std::cout << planstats_sigma << ", "
+                      << mean << ", "
+                      << var << std::endl;
+          }
            switch (diffusion_eigenvalues_mode) {
            case DIFF_MATRIX_EIGEN_SUM:
               lambda1 = lambda0 + function_c_MRI( sigma2, var, mean); 
@@ -2805,6 +2821,11 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
         } else lambda1 = lambda0;
         if (lambda1<1) {
           ComputeLocalDirStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e2, dirstats_sigma, mean,var);
+          if (debug_voxel) {
+            std::cout << dirstats_sigma << ", "
+                      << mean << ", "
+                      << var << std::endl;
+          }
            switch (diffusion_eigenvalues_mode) {
            case DIFF_MATRIX_EIGEN_SUM:
               lambda2 = lambda1 + function_c_MRI( sigma2, var, mean);
@@ -2884,6 +2905,11 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
         if (lambda0>2) lambda0=2;
         if (lambda0<1) {
           ComputeLocalPlanStats(im, (float)x, (float) y+((float)incy)/2.0, (float) z,  e1,e2, planstats_sigma, mean,var);
+          if (debug_voxel) {
+            std::cout << planstats_sigma << ", "
+                      << mean << ", "
+                      << var << std::endl;
+          }
            switch (diffusion_eigenvalues_mode) {
            case DIFF_MATRIX_EIGEN_SUM:
               lambda1 = lambda0 + function_c_MRI( sigma2, var, mean); 
@@ -2895,6 +2921,11 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
         } else lambda1 = lambda0;
         if (lambda1<1) {
           ComputeLocalDirStats(im, (float)x, (float) y+((float)incy)/2.00, (float) z,  e2, dirstats_sigma, mean,var);
+          if (debug_voxel) {
+            std::cout << dirstats_sigma << ", "
+                      << mean << ", "
+                      << var << std::endl;
+          }
            switch (diffusion_eigenvalues_mode) {
            case DIFF_MATRIX_EIGEN_SUM:
               lambda2 = lambda1 + function_c_MRI( sigma2, var, mean);
@@ -2959,6 +2990,11 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
         if (lambda0>2) lambda0=2;
         if (lambda0<1) {
           ComputeLocalPlanStats(im, (float)x, (float) y, (float) z+((float)incz)/2.0,  e1,e2, planstats_sigma, mean,var);
+          if (debug_voxel) {
+            std::cout << planstats_sigma << ", "
+                      << mean << ", "
+                      << var << std::endl;
+          }
            switch (diffusion_eigenvalues_mode) {
            case DIFF_MATRIX_EIGEN_SUM:
               lambda1 = lambda0 + function_c_MRI( sigma2, var, mean); 
@@ -2970,6 +3006,11 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
         } else lambda1 = lambda0;
         if (lambda1<1) {
           ComputeLocalDirStats(im, (float)x, (float) y, (float) z+((float)incz)/2.0,  e2, dirstats_sigma, mean,var);
+          if (debug_voxel) {
+            std::cout << dirstats_sigma << ", "
+                      << mean << ", "
+                      << var << std::endl;
+          }
            switch (diffusion_eigenvalues_mode) {
            case DIFF_MATRIX_EIGEN_SUM:
               lambda2 = lambda1 + function_c_MRI( sigma2, var, mean);
@@ -3404,6 +3445,10 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
   for(x=ROI_xmin;x<=ROI_xmax;x++) {
   
+    debug_voxel = (x-ROI_xmin==68)&&
+                  (y-ROI_ymin==39)&&
+                  (z-ROI_zmin==46);
+
     val1 = val0 = *in;
     mask_test = (!mask.get())||
                 ((mask.get())&&((*mask)(x-ROI_xmin,y-ROI_ymin,z-ROI_zmin)>0.5));
@@ -3450,6 +3495,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
     if (!speedup_skip) {
       InitNeighborhood(Iconv,x,y,z);
 
+      if (debug_voxel) std::cout << "(x+1/2,y,z)" << std::endl;
       // Gradient en (x+1/2,y,z)
       //----- Calcul de alpha1_x, gamma1_x
       grad.x = *(in+xp) - *(in);
@@ -3459,58 +3505,75 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
       // get vectors
       this->GetVectors(0,x,y,z,e0,e1,e2);
 
-    switch ( contours_mode )
-    {
-    case CONTOURS_FLUX: 
-        u_e0 = this->ScalarProduct(grad,e0);
-        u_e1 = this->ScalarProduct(grad,e1);
-        u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = phi3D_0(u_e0); 
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_OSRAD:
-        u_e1 = this->ScalarProduct(grad,e1);
-        u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = ( ( *image_c ) ( x,y,z ) + ( *image_c ) ( x+incx,y,z ) ) /2.0; 
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_NRAD:
-        double mean,var;
-        lambda0 = ( (*image_c)(x,y,z) + (*image_c)(x+incx,y,z) ) /2.0; 
-  //      if (lambda0>2) lambda0=2;
-        if (lambda0<1) {
-          ComputeLocalPlanStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e1,e2, planstats_sigma, mean,var);
-          lambda1 = function_c_MRI( sigma2, var, mean); 
-          lambda1 *= 6./4.; // convert for 2D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda1 = lambda0 + lambda1; 
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda1 = MAX(lambda0,lambda1); 
-              break;
-           }
-        } else lambda1 = lambda0;
-        if (lambda1<1) {
-          ComputeLocalDirStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e2, dirstats_sigma, mean,var);
-          lambda2 = function_c_MRI( sigma2, var, mean);
-          lambda2 *= 6./2.; // convert for 1D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda2 += lambda1;
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda2 = MAX(lambda1,lambda2);
-              break;
-           }
-        } else lambda2 = lambda1;
-        if (lambda1>1) lambda1=1;
-        if (lambda2>1) lambda2=1;
-        break;
-    }
-//    lambda2 = 0;
+      if (debug_voxel) {
+        PRINT_VECTOR(e0)
+        PRINT_VECTOR(e1)
+        PRINT_VECTOR(e2)
+      }
+
+      switch ( contours_mode )
+      {
+      case CONTOURS_FLUX: 
+          u_e0 = this->ScalarProduct(grad,e0);
+          u_e1 = this->ScalarProduct(grad,e1);
+          u_e2 = this->ScalarProduct(grad,e2);
+          lambda0 = phi3D_0(u_e0); 
+          lambda1 = phi3D_1(u_e1);
+          lambda2 = phi3D_2(u_e2);
+          break;
+      case CONTOURS_OSRAD:
+          u_e1 = this->ScalarProduct(grad,e1);
+          u_e2 = this->ScalarProduct(grad,e2);
+          lambda0 = ( ( *image_c ) ( x,y,z ) + ( *image_c ) ( x+incx,y,z ) ) /2.0; 
+          lambda1 = phi3D_1(u_e1);
+          lambda2 = phi3D_2(u_e2);
+          break;
+      case CONTOURS_NRAD:
+          double mean,var;
+          lambda0 = ( (*image_c)(x,y,z) + (*image_c)(x+incx,y,z) ) /2.0; 
+    //      if (lambda0>2) lambda0=2;
+          if (lambda0<1) {
+            ComputeLocalPlanStats(im, (float)x+((float)incx)/2.0, (float) y, (float) z,  e1,e2, planstats_sigma, mean,var);
+            if (debug_voxel) {
+              std::cout << planstats_sigma << ", "
+                        << mean << ", "
+                        << var << std::endl;
+            }
+            lambda1 = function_c_MRI( sigma2, var, mean); 
+            lambda1 *= 6./4.; // convert for 2D normalization
+            switch (diffusion_eigenvalues_mode) {
+            case DIFF_MATRIX_EIGEN_SUM:
+                lambda1 = lambda0 + lambda1; 
+                break;
+            case DIFF_MATRIX_EIGEN_MAX:
+                lambda1 = MAX(lambda0,lambda1); 
+                break;
+            }
+          } else lambda1 = lambda0;
+          if (lambda1<1) {
+            ComputeLocalDirStats(im, (float)x+((float)incx)/2.0, (float) y, 
+                                 (float) z,  e2, dirstats_sigma, mean,var);
+            if (debug_voxel) {
+              std::cout << dirstats_sigma << ", "
+                        << mean << ", "
+                        << var << std::endl;
+            }
+            lambda2 = function_c_MRI( sigma2, var, mean);
+            lambda2 *= 6./2.; // convert for 1D normalization
+            switch (diffusion_eigenvalues_mode) {
+            case DIFF_MATRIX_EIGEN_SUM:
+                lambda2 += lambda1;
+                break;
+            case DIFF_MATRIX_EIGEN_MAX:
+                lambda2 = MAX(lambda1,lambda2);
+                break;
+            }
+          } else lambda2 = lambda1;
+          if (lambda1>1) lambda1=1;
+          if (lambda2>1) lambda2=1;
+          break;
+      }
+      //    lambda2 = 0;
 
       alpha1_x = lambda0 *e0.x*e0.x + 
                  lambda1 *e1.x*e1.x +
@@ -3523,6 +3586,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
       //----- Calcul de alpha1_y, gamma1_y 
    
+      if (debug_voxel) std::cout << "(x,y+1/2,z)" << std::endl;
       // Gradient en (x,y+1/2)
       grad.x = (*(in+xp)-*(in+xm)+*(in+xp+yp)-*(in+xm+yp))/4.0;
       grad.y =  *(in+yp) - *(in);
@@ -3530,61 +3594,78 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
       this->GetVectors(1,x,y,z,e0,e1,e2);
 
-    switch ( contours_mode )
-    {
-    case CONTOURS_FLUX: 
+      if (debug_voxel) {
+        PRINT_VECTOR(e0)
+        PRINT_VECTOR(e1)
+        PRINT_VECTOR(e2)
+      }
+
+      switch ( contours_mode )
+      {
+      case CONTOURS_FLUX: 
+          // Derivees directionnelles
+          u_e0 = this->ScalarProduct(grad,e0);
+          u_e1 = this->ScalarProduct(grad,e1);
+          u_e2 = this->ScalarProduct(grad,e2);
+          lambda0 = phi3D_0(u_e0); 
+          lambda1 = phi3D_1(u_e1);
+          lambda2 = phi3D_2(u_e2);
+          break;
+      case CONTOURS_OSRAD:
         // Derivees directionnelles
-        u_e0 = this->ScalarProduct(grad,e0);
         u_e1 = this->ScalarProduct(grad,e1);
         u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = phi3D_0(u_e0); 
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_OSRAD:
-      // Derivees directionnelles
-      u_e1 = this->ScalarProduct(grad,e1);
-      u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_NRAD:
-        double mean,var;
-        lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
-//        if (lambda0>2) lambda0=2;
-        if (lambda0<1) {
-          ComputeLocalPlanStats(im, (float)x, (float) y+((float)incy)/2.0, (float) z,  e1,e2, planstats_sigma, mean,var);
-          lambda1 = function_c_MRI( sigma2, var, mean); 
-          lambda1 *= 6./4.; // convert for 2D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda1 += lambda0; 
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda1 = MAX(lambda0,lambda1); 
-              break;
-           }
-        } else lambda1 = lambda0;
-        if (lambda1<1) {
-          ComputeLocalDirStats(im, (float)x, (float) y+((float)incy)/2.00, (float) z,  e2, dirstats_sigma, mean,var);
-          lambda2 = function_c_MRI( sigma2, var, mean);
-          lambda2 *= 6./2.; // convert for 1D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda2 += lambda1;
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda2 = MAX(lambda1,lambda2);
-              break;
-           }
-        } else lambda2 = lambda1;
-        if (lambda1>1) lambda1=1;
-        if (lambda2>1) lambda2=1;
-        break;
-    }
+          lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
+          lambda1 = phi3D_1(u_e1);
+          lambda2 = phi3D_2(u_e2);
+          break;
+      case CONTOURS_NRAD:
+          double mean,var;
+          lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y+incy,z))/2.0;
+  //        if (lambda0>2) lambda0=2;
+          if (lambda0<1) {
+            ComputeLocalPlanStats(im, (float)x, (float) y+((float)incy)/2.0, 
+                                  (float) z,  e1,e2, planstats_sigma, mean,var);
+            if (debug_voxel) {
+              std::cout << planstats_sigma << ", "
+                        << mean << ", "
+                        << var << std::endl;
+            }
+            lambda1 = function_c_MRI( sigma2, var, mean); 
+            lambda1 *= 6./4.; // convert for 2D normalization
+            switch (diffusion_eigenvalues_mode) {
+            case DIFF_MATRIX_EIGEN_SUM:
+                lambda1 += lambda0; 
+                break;
+            case DIFF_MATRIX_EIGEN_MAX:
+                lambda1 = MAX(lambda0,lambda1); 
+                break;
+            }
+          } else lambda1 = lambda0;
+          if (lambda1<1) {
+            ComputeLocalDirStats(im, (float)x, (float) y+((float)incy)/2.00, (float) z,  e2, dirstats_sigma, mean,var);
+            if (debug_voxel) {
+              std::cout << dirstats_sigma << ", "
+                        << mean << ", "
+                        << var << std::endl;
+            }
+            lambda2 = function_c_MRI( sigma2, var, mean);
+            lambda2 *= 6./2.; // convert for 1D normalization
+            switch (diffusion_eigenvalues_mode) {
+            case DIFF_MATRIX_EIGEN_SUM:
+                lambda2 += lambda1;
+                break;
+            case DIFF_MATRIX_EIGEN_MAX:
+                lambda2 = MAX(lambda1,lambda2);
+                break;
+            }
+          } else lambda2 = lambda1;
+          if (lambda1>1) lambda1=1;
+          if (lambda2>1) lambda2=1;
+          break;
+      }
 
-//    lambda2 = 0;
+      //    lambda2 = 0;
 
       alpha1_y = lambda0 *e0.y*e0.y + 
                  lambda1 *e1.y*e1.y +
@@ -3595,6 +3676,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
                  (grad.x*e2.x + grad.z*e2.z)* lambda2 *e2.y;
 
 
+      if (debug_voxel) std::cout << "(x,y,z+1/2)" << std::endl;
       //----- Calcul de alpha1_z, gamma1_z 
       grad.x = (*(in+xp) - *(in+xm) + *(in+xp+zp) - *(in+xm+zp))/4.0;
       grad.y = (*(in+yp) - *(in+ym) + *(in+yp+zp) - *(in+ym+zp))/4.0; 
@@ -3602,61 +3684,81 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
       this->GetVectors(2,x,y,z,e0,e1,e2);
 
-    switch ( contours_mode )
-    {
-    case CONTOURS_FLUX: 
-        // Derivees directionnelles
-        u_e0 = this->ScalarProduct(grad,e0);
-        u_e1 = this->ScalarProduct(grad,e1);
-        u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = phi3D_0(u_e0); 
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_OSRAD:
-        // Derivees directionnelles
-        u_e1 = this->ScalarProduct(grad,e1);
-        u_e2 = this->ScalarProduct(grad,e2);
-        lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
-        lambda1 = phi3D_1(u_e1);
-        lambda2 = phi3D_2(u_e2);
-        break;
-    case CONTOURS_NRAD:
-        double mean,var;
-        lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
-//        if (lambda0>2) lambda0=2;
-        if (lambda0<1) {
-          ComputeLocalPlanStats(im, (float)x, (float) y, (float) z+((float)incz)/2.0,  e1,e2, planstats_sigma, mean,var);
-          lambda1 = function_c_MRI( sigma2, var, mean); 
-          lambda1 *= 6./4.; // convert for 2D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda1 += lambda0 ; 
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda1 = MAX(lambda0,lambda1); 
-              break;
-           }
-        } else lambda1 = lambda0;
-        if (lambda1<1) {
-          ComputeLocalDirStats(im, (float)x, (float) y, (float) z+((float)incz)/2.0,  e2, dirstats_sigma, mean,var);
-          lambda2 = function_c_MRI( sigma2, var, mean);
-          lambda2 *= 6./2.; // convert for 1D normalization
-           switch (diffusion_eigenvalues_mode) {
-           case DIFF_MATRIX_EIGEN_SUM:
-              lambda2 += lambda1;
-              break;
-           case DIFF_MATRIX_EIGEN_MAX:
-              lambda2 = MAX(lambda1,lambda2);
-              break;
-           }
-        } else lambda2 = lambda1;
-        if (lambda1>1) lambda1=1;
-        if (lambda2>1) lambda2=1;
-        break;
-    }
+      if (debug_voxel) {
+        PRINT_VECTOR(e0)
+        PRINT_VECTOR(e1)
+        PRINT_VECTOR(e2)
+      }
 
-//    lambda2 = 0;
+      switch ( contours_mode )
+      {
+      case CONTOURS_FLUX: 
+          // Derivees directionnelles
+          u_e0 = this->ScalarProduct(grad,e0);
+          u_e1 = this->ScalarProduct(grad,e1);
+          u_e2 = this->ScalarProduct(grad,e2);
+          lambda0 = phi3D_0(u_e0); 
+          lambda1 = phi3D_1(u_e1);
+          lambda2 = phi3D_2(u_e2);
+          break;
+      case CONTOURS_OSRAD:
+          // Derivees directionnelles
+          u_e1 = this->ScalarProduct(grad,e1);
+          u_e2 = this->ScalarProduct(grad,e2);
+          lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
+          lambda1 = phi3D_1(u_e1);
+          lambda2 = phi3D_2(u_e2);
+          break;
+      case CONTOURS_NRAD:
+          double mean,var;
+          lambda0 = ((*image_c)(x,y,z)+(*image_c)(x,y,z+incz))/2.0;
+  //        if (lambda0>2) lambda0=2;
+          if (lambda0<1) {
+            ComputeLocalPlanStats(im, (float)x, (float) y, 
+                                  (float) z+((float)incz)/2.0,  e1,e2, 
+                                  planstats_sigma, mean,var);
+            if (debug_voxel) {
+              std::cout << planstats_sigma << ", "
+                        << mean << ", "
+                        << var << std::endl;
+            }
+            lambda1 = function_c_MRI( sigma2, var, mean); 
+            lambda1 *= 6./4.; // convert for 2D normalization
+            switch (diffusion_eigenvalues_mode) {
+            case DIFF_MATRIX_EIGEN_SUM:
+                lambda1 += lambda0 ; 
+                break;
+            case DIFF_MATRIX_EIGEN_MAX:
+                lambda1 = MAX(lambda0,lambda1); 
+                break;
+            }
+          } else lambda1 = lambda0;
+          if (lambda1<1) {
+            ComputeLocalDirStats(im, (float)x, (float) y, 
+                                 (float) z+((float)incz)/2.0,  e2, 
+                                 dirstats_sigma, mean,var);
+            if (debug_voxel) {
+              std::cout << dirstats_sigma << ", "
+                        << mean << ", "
+                        << var << std::endl;
+            }
+            lambda2 = function_c_MRI( sigma2, var, mean);
+            lambda2 *= 6./2.; // convert for 1D normalization
+            switch (diffusion_eigenvalues_mode) {
+            case DIFF_MATRIX_EIGEN_SUM:
+                lambda2 += lambda1;
+                break;
+            case DIFF_MATRIX_EIGEN_MAX:
+                lambda2 = MAX(lambda1,lambda2);
+                break;
+            }
+          } else lambda2 = lambda1;
+          if (lambda1>1) lambda1=1;
+          if (lambda2>1) lambda2=1;
+          break;
+      }
+
+      //    lambda2 = 0;
 
       alpha1_z = lambda0 *e0.z*e0.z + 
                  lambda1 *e1.z*e1.z +
