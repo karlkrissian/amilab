@@ -418,10 +418,11 @@ double ami::AnisoGSBase::Compute_sigma2_MRI_mode(InrImage* im)
 }
 
 //------------------------------------------------------------------------------
-double ami::AnisoGSBase::Compute_sigma2_Gaussian_mode(InrImage* im)
+double ami::AnisoGSBase::Compute_sigma2_Gaussian_mode(InrImage* im, 
+                                                      int neighborhood)
 //
 {
-  return Func_Compute_sigma2_Gaussian_mode(im,this->SRAD_ROI);
+  return Func_Compute_sigma2_Gaussian_mode(im,this->SRAD_ROI, neighborhood);
 }
 
 //------------------------------------------------------------------------------

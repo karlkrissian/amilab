@@ -20,6 +20,11 @@ if (!exists(AnisoGS_NRADClass)) {
                                   "statistics, the window size is (2n+1)^3, "+\
                                   "where n is the parameter"
   
+        ::noise_estim_neigh = INT(3),  "Size of the neighborhood for the "+\
+                                  "estimation of the noise STD, "+\
+                                  "the window size is (2n+1)^3, "+\
+                                  "where n is the parameter"
+  
         ::sigma = 0.7,  "Gaussian convolution standard deviation for "+\
                         "computing the local structure"
 
@@ -84,6 +89,7 @@ printn "__assign__"
           ::speedup_lowerbound    = p.speedup_lowerbound
           ::eigendecomp_mode      = p.eigendecomp_mode
           ::nb_threads            = p.nb_threads
+          ::noise_estim_neigh     = p.noise_estim_neigh
         }
         #-----------------------------------------------------------------------
         proc ::__copy__( ) {
@@ -103,6 +109,7 @@ printn "__copy__"
           newp.speedup_lowerbound    = ::speedup_lowerbound
           newp.eigendecomp_mode      = ::eigendecomp_mode
           newp.nb_threads            = ::nb_threads
+          newp.noise_estim_neigh     = ::noise_estim_neigh
           return = &newp
         }
     }
@@ -207,6 +214,7 @@ printn "__copy__"
         ::NRADfilter.Setnoise_model(algorithms.ami_AnisoGSBase.\
                                       NOISE_GAUSSIAN_ADDITIVE)
       }
+      ::NRADfilter.Setnoise_estimation_neighborhood(::params.noise_estim_neigh)
       ::NRADfilter.SetInputIsSquared(squared)
 
       # Setting speedup options
@@ -244,7 +252,8 @@ printn "__copy__"
       if ::params.noise_models[::params.noise_model] == "Rician" {
         noise_variance = ::NRADfilter.Compute_sigma2_MRI_mode(&input1)
       } else {
-        noise_variance = ::NRADfilter.Compute_sigma2_Gaussian_mode(&input1)
+        noise_variance = ::NRADfilter.Compute_sigma2_Gaussian_mode(&input1,\
+                          ::params.noise_estim_neigh)
       }
       printn " ------------------------"
       printn " Noise Standard Deviation  = %1% " % sqrt(noise_variance)
@@ -406,6 +415,7 @@ printn "__copy__"
             ::win.AddEnumChoice(::noise_model_id,::params.noise_models[n])
           }
           ::win.SetCallback( &::OnNoiseModel)
+          ::win.AddInt(&::params.noise_estim_neigh,"neigh size",1,10)
 
           ::remove_bias_id = ::win.AddBoolean(  &::params.remove_bias,\
                                                 "Remove Bias")

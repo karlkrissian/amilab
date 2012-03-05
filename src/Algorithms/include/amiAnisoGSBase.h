@@ -353,6 +353,9 @@ namespace ami {
     /// noise Gaussian or Speckle, by default Gaussian
     AddSetGetVar(noise_type, int)
     AddSetGetVar(noise_standard_deviation, float)
+    
+    /// noise estimation neighborhood size
+    AddSetGetVar(noise_estimation_neighborhood, int)
 
     /// estimated data attachment coeff
     AddSetGetVar(estimated_DA_coeff,float);
@@ -506,7 +509,7 @@ namespace ami {
 
     double Compute_sigma2_MRI(InrImage* im);
     double Compute_sigma2_MRI_mode(     InrImage* im);
-    double Compute_sigma2_Gaussian_mode(InrImage* im);
+    double Compute_sigma2_Gaussian_mode(InrImage* im, int neighborhood=2);
     double function_c_MRI(double sigma2, double vg, double meang);
 
     void Smooth(InrImage* im, float sigma);

@@ -166,7 +166,7 @@ if (!exists(ImageHistogramClass)) {
     proc ::UpdateLimits( NUM minval, NUM maxval) {
       ::minval = minval
       ::maxval = maxval
-      ::step = 1
+      #::step = 1
       if (exists(::minval_id)) {
         ::win.FloatConstraints(::minval_id,minval,maxval,minval)
         ::win.FloatConstraints(::maxval_id,minval,maxval,maxval)

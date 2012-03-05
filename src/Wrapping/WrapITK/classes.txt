@@ -72,6 +72,11 @@ itk::SmartPointer<itk::ResampleImageFilter<itk::Image<unsigned char, 2u>, itk::I
 itk::SmartPointer<itk::GradientAnisotropicDiffusionImageFilter<itk::Image<float, 2u>, itk::Image<float, 2u> > >
 itk::SmartPointer<itk::GradientAnisotropicDiffusionImageFilter<itk::Image<float, 3u>, itk::Image<float, 3u> > >
 
+#-------------------------------------------------------------------------------
+# Canny Edge Detection
+# float 2D and 3D
+itk::SmartPointer<itk::CannyEdgeDetectionImageFilter<itk::Image<float, 2u>, itk::Image<float, 2u> > >
+itk::SmartPointer<itk::CannyEdgeDetectionImageFilter<itk::Image<float, 3u>, itk::Image<float, 3u> > >
 
 #
 #----------------

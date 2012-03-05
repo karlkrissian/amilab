@@ -7,20 +7,25 @@ func "ITKImage2ImageFilterClass"
 # Main script
 #-------------------------------------------------------------------------------
 input_filename     = $1
-numberOfIterations = atof( $2 )
-timeStep           = atof( $3 )
-conductance        = atof( $4 )
+var                = atof( $2 )
+lowerthreshold     = atof( $3 )
+upperthreshold     = atof( $4 )
 
 input = (FLOAT) Image(input_filename)
 
 
 ITKImage2ImageFilterClass gad
-gad.Create("GradientAnisotropicDiffusion","float_2u","float_2u")
+if (input.tz>=1) {
+  imtype = "float_3u"
+} else {
+  imtype = "float_2u"
+}
+gad.Create("CannyEdgeDetection",imtype,imtype)
 
 gad.SetInput                      ( &input )
-gad.filter.SetNumberOfIterations  ( numberOfIterations      )
-gad.filter.SetTimeStep            ( timeStep                )
-gad.filter.SetConductanceParameter( conductance             )
+gad.filter.SetVariance            ( var      )
+gad.filter.SetLowerThreshold      ( lowerthreshold  )
+gad.filter.SetUpperThreshold      ( upperthreshold  )
 
 res = gad.GetOutput()
 

@@ -181,4 +181,16 @@ typedef itk::Image<unsigned char, 3u>  ImageUC3;
                gradientanisotropicdiffusionfilter_f3_f3)
 #endif // __GCCXML__
 
- 
+#include <itkCannyEdgeDetectionImageFilter.h>
+  
+#ifdef __GCCXML__
+  typedef itk::CannyEdgeDetectionImageFilter<ImageF2, ImageF2> 
+    CannyEdgeDetectionImageFilter_F2_F2;
+  INSTANTIATE( CannyEdgeDetectionImageFilter_F2_F2, 
+               cannyedgedetectionfilter_f2_f2)
+  typedef itk::CannyEdgeDetectionImageFilter<ImageF3, ImageF3> 
+    CannyEdgeDetectionImageFilter_F3_F3;
+  INSTANTIATE( CannyEdgeDetectionImageFilter_F3_F3, 
+               cannyedgedetectionfilter_f3_f3)
+#endif // __GCCXML__
+  

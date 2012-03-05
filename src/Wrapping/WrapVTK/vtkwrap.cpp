@@ -397,7 +397,6 @@ InrImage* Func_vtkPropDaniel2( InrImage* im,
 
 //  vtk_prop->UnregisterAllOutputs();
   vtk_prop->Delete();
-  vtk_image->Delete();
 
   return res;
 

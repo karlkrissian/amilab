@@ -1,0 +1,171 @@
+
+func "Common/ScriptGui"
+
+if (!exists(EdgeQualityClass)) {
+
+  Class EdgeQualityClass : public ScriptGui \
+  {
+    
+    func "Variable/ObjectIO"
+    #===========================================================================
+    # Set parameters here
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+        ::var           = 0.1, "Gaussian variance for Canny edge detection"
+        ::low_threshold = 0.2, "Lower threshold Canny edge detection"
+        ::up_threshold  = 0.5, "Upper threshold Canny edge detection"
+
+        #-----------------------------------------------------------------------
+        # copy parameters
+        proc ::__assign__( VAR p) {
+            ::var           = p.var
+            ::low_threshold = p.low_threshold
+            ::up_threshold  = p.up_threshold
+        }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      
+      ::input1_name   = "","Name of the input1 (ground truth) image variable"
+      ::input2_name   = "","Name of the input2 image variable"
+
+      ::ParamClass ::params
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+\
+                        "/EdgeQuality/Doc/EdgeQuality/index.html"
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::load_input1() {
+      eval "::input1 <<= (FLOAT)"+::input1_name+";"
+      if (::input1_name=="BrowseImage") {
+        ::input1_name = "::input1"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input1, "Copies the input image in a local image "+\
+                            "member named 'input'")
+
+
+    #---------------------------------------------------------------------------
+    proc ::load_input2() {
+      eval "::input2 <<= (FLOAT)"+::input2_name+";"
+      if (::input1_name=="BrowseImage") {
+        ::input1_name = "::input2"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input2, "Copies the input image in a local image "+\
+                            "member named 'input'")
+
+
+    #---------------------------------------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input1)) || (!exists(::input2)) {
+        InfoDialog "First load the input images !"
+      } else {
+        func "ITK_Examples/ITKImage2ImageFilterClass"
+
+        ITKImage2ImageFilterClass gad
+        if (::input1.tz>=1) {
+          imtype = "float_3u"
+        } else {
+          imtype = "float_2u"
+        }
+        gad.Create("CannyEdgeDetection",imtype,imtype)
+        gad.SetInput                      ( &::input1 )
+        gad.filter.SetVariance            ( ::params.var      )
+        gad.filter.SetLowerThreshold      ( ::params.low_threshold  )
+        gad.filter.SetUpperThreshold      ( ::params.up_threshold  )
+        ::i1c = gad.GetOutput()
+
+        gad.SetInput                      ( &::input2 )
+        ::i2c = gad.GetOutput()
+        show ::i1c
+        show ::i2c
+        func "QualityMeasures/PrattFOM"
+        res = PrattFOM(&::i1c, &::i2c)
+        print "\n"
+        print sprint("%3.3f\n",res)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("EdgeQuality",&::parent_panel)
+      } else {
+        ::win = ParamPanel("EdgeQuality")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.BeginBoxPanel("Ground truth Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input1_name, "")
+              ::win.AddButton("Load",::load_input1)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input2_name, "")
+              ::win.AddButton("Load",::load_input2)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Run")
+          ::win.AddFloat(&::params.low_threshold,"low thres",0.1,100)
+          ::win.AddFloat(&::params.up_threshold,"up thres",0.1,100)
+          ::win.AddButton("Run Filter",::Run)
+
+        # add page for saving/loading parameters
+        ::AddParamPage(&::win)
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

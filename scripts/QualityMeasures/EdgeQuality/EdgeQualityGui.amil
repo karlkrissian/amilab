@@ -1,0 +1,11 @@
+
+func "EdgeQualityClass"
+
+if (!exists(EdgeQuality_obj)) {
+  EdgeQualityClass EdgeQuality_obj
+  EdgeQuality_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

@@ -193,11 +193,14 @@ InrImage* Func_localSD2( InrImage* im, InrImage* mean, int size, bool unbiased)
   res2 = Func_localmean2(res,size);
   res2->InitBuffer();
   mean->InitBuffer();
-#define M_MAX(a,b) ((a)>(b)?(a):(b))
+#define M_MIN(a,b) ((a)>(b)?(a):(b))
   if (unbiased) {
-    nb_values = M_MAX(im->DimX(),(2*size+1))*
+/*    nb_values = M_MAX(im->DimX(),(2*size+1))*
                 M_MAX(im->DimY(),(2*size+1))*
                 M_MAX(im->DimZ(),(2*size+1));
+                */
+    nb_values = (2*size+1)*(2*size+1);
+    if (im->DimZ()>1) nb_values *= 2*size+1;
     correction = nb_values/(nb_values-1.0);
   }
 #undef M_MAX
@@ -430,8 +433,8 @@ double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage::ptr im_ROI,
 
 
 //------------------------------------------------------------------------------
-double Func_Compute_sigma2_Gaussian_mode(InrImage* im, InrImage::ptr im_ROI, 
-                                    int neigh_size)
+double Func_Compute_sigma2_Gaussian_mode( InrImage* im, InrImage::ptr im_ROI, 
+                                          int neigh_size)
 //
 {
 
@@ -469,7 +472,8 @@ double Func_Compute_sigma2_Gaussian_mode(InrImage* im, InrImage::ptr im_ROI,
 
   im1_mean = InrImage::ptr(Func_localmean2(im1.get(),neigh_size));
   // unbiased version
-  im1_var  = InrImage::ptr(Func_localSD2(im1.get(),im1_mean.get(),neigh_size,1));
+  im1_var  = InrImage::ptr(Func_localSD2(im1.get(),im1_mean.get(),
+                                         neigh_size,true));
 
   mean   = Func_mean(im1_var.get());
   im1_var->InitBuffer();
@@ -509,7 +513,8 @@ double Func_Compute_sigma2_Gaussian_mode(InrImage* im, InrImage::ptr im_ROI,
   }
   while(im_hist->IncBuffer());
 
-  float sigma_max = im_hist->SpacePosX(maxpos);
+  // center the value within the pixel by adding 0.5
+  float sigma_max = im_hist->SpacePosX(maxpos+0.5);
 
   //delete im1_mean;
   //delete im1_var;

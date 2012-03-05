@@ -446,7 +446,9 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
   switch (noise_model) 
   {
     case NOISE_GAUSSIAN_ADDITIVE:
-      sigma2 = Compute_sigma2_Gaussian_mode(im); break;
+      sigma2 = Compute_sigma2_Gaussian_mode(im, 
+                                            noise_estimation_neighborhood);
+      break;
     case NOISE_RICIAN: 
       sigma2 = Compute_sigma2_MRI_mode(im); break;
   }
@@ -805,10 +807,10 @@ void ami::AnisoGS_NRAD::Process( int threadid)
         x0 = x-extent.GetMin(0);
         y0 = y-extent.GetMin(1);
 
-        //debug_voxel = (x-ROI_xmin==68)&&
-        //              (y-ROI_ymin==39)&&
-        //              (z-ROI_zmin==46);
-        debug_voxel=false;
+        debug_voxel = (x-ROI_xmin==68)&&
+                      (y-ROI_ymin==39)&&
+                      (z-ROI_zmin==46);
+        //debug_voxel=false;
 
         val1 = val0 = *in;
         mask_test = (!mask.get())||

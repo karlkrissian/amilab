@@ -22,3 +22,5 @@ proc AddSegMenu() {
 
 AddSegMenu()
 del AddSegMenu
+ ami.MainFrame.AddToMenu("&Scripts","&QualityMeasures","&EdgeQuality",  "QualityMeasures/EdgeQuality/EdgeQualityGui")
+
