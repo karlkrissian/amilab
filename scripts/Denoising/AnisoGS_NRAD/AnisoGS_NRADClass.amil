@@ -38,9 +38,11 @@ if (!exists(AnisoGS_NRADClass)) {
                                 "the diffusions along each line, plane and "+\
                                 "local volume: either the sum, or the maximum "+\
                                 "(default is sum)"
+
+        ::use_linearinterp = UCHAR(0), "Use linear interpolation"
   
-        # Scheme, 0: explicit 1: semi-implicit
-        ::scheme = INT(1),        "Numerical scheme: explicit or semi-implicit"
+        # Scheme, 0: semi-implicit 1: explicit 
+        ::scheme = INT(0),        "Numerical scheme: explicit or semi-implicit"
         ::run_on_roi = UCHAR(0),  "Run only on the selected region-of-interest"
 
         ::noise_models = VarVector()
@@ -90,6 +92,7 @@ printn "__assign__"
           ::eigendecomp_mode      = p.eigendecomp_mode
           ::nb_threads            = p.nb_threads
           ::noise_estim_neigh     = p.noise_estim_neigh
+          ::use_linearinterp      = p.use_linearinterp
         }
         #-----------------------------------------------------------------------
         proc ::__copy__( ) {
@@ -110,6 +113,7 @@ printn "__copy__"
           newp.eigendecomp_mode      = ::eigendecomp_mode
           newp.nb_threads            = ::nb_threads
           newp.noise_estim_neigh     = ::noise_estim_neigh
+          newp.use_linearinterp      = ::use_linearinterp
           return = &newp
         }
     }
@@ -126,6 +130,11 @@ printn "__copy__"
                         "Disk filename for the resulting image."
 
       ::ParamClass ::params
+      
+      ::trace_voxel = UCHAR(0)
+      ::trace_voxel_x = INT(0)
+      ::trace_voxel_y = INT(0)
+      ::trace_voxel_z = INT(0)
 
       #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
       # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
@@ -198,6 +207,17 @@ printn "__copy__"
     
       del ::NRADfilter
       ::NRADfilter = algorithms.ami_AnisoGS_NRAD.AnisoGS_NRAD()
+      
+      ::NRADfilter.Settrace_voxel(::trace_voxel)
+      ::NRADfilter.Settrace_voxel_x(::trace_voxel_x)
+      ::NRADfilter.Settrace_voxel_y(::trace_voxel_y)
+      ::NRADfilter.Settrace_voxel_z(::trace_voxel_z)
+
+      if (::params.scheme==0) {
+        ::NRADfilter.Setnum_scheme(algorithms.ami_AnisoGSBase.SEMIIMPLICIT)
+      } else {
+        ::NRADfilter.Setnum_scheme(algorithms.ami_AnisoGSBase.EXPLICIT)
+      }
       # sigma = 0.7
       # threshold = 1 // not used
       # data attachment = 0
@@ -216,6 +236,8 @@ printn "__copy__"
       }
       ::NRADfilter.Setnoise_estimation_neighborhood(::params.noise_estim_neigh)
       ::NRADfilter.SetInputIsSquared(squared)
+
+      ::NRADfilter.SetUseLinearInterpolation(::params.use_linearinterp)
 
       # Setting speedup options
       ::NRADfilter.SetSpeedUp_c           (::params.speedup)
@@ -284,6 +306,7 @@ printn "__copy__"
       cancel = false
       for k=1 to numit {
         if (!cancel) {
+          #if (k>1) { ::NRADfilter.SetEstimateNoiseSTD(false); }
           ::NRADfilter.Iterate()
           ::res0 = ::NRADfilter.GetOutput()
           if ::params.noise_models[::params.noise_model] == "Rician" {
@@ -424,8 +447,8 @@ printn "__copy__"
       
           ::win.BeginHorizontal()
             ::scheme_id       = ::win.AddEnum( &::params.scheme,"Sch.")
-              ::win.AddEnumChoice(::scheme_id,"Expl.")
               ::win.AddEnumChoice(::scheme_id,"Semi-impl.")
+              ::win.AddEnumChoice(::scheme_id,"Expl.")
           ::win.EndHorizontal()
 
           ::mat_boxid = ::win.BeginBoxPanel("Matrix diffusion parameters")
@@ -441,6 +464,13 @@ printn "__copy__"
               ::win.AddEnumChoice(::eigenmode_id,"Max")
           ::win.EndBoxPanel()
           
+          ::win.AddBoolean(&::params.use_linearinterp, "Linear Interp")
+
+          ::win.AddPage("Trace")
+            ::win.AddBoolean(&::trace_voxel,"trace")
+            ::win.AddInt(&::trace_voxel_x,"X",0,512)
+            ::win.AddInt(&::trace_voxel_y,"Y",0,512)
+            ::win.AddInt(&::trace_voxel_z,"Z",0,512)
           ::win.AddPage("Controls")
             ::win.BeginHorizontal()
               ::AddBitmapButton(&::win, &::icons._Refresh,   32, "ReloadInput")

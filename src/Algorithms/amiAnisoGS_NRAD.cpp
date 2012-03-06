@@ -265,6 +265,8 @@ void  ami::AnisoGS_NRAD::ComputeLocalPlanStats(InrImage* im,
     fp1z = fp2z;
     px1=py1=pz1=-100;
     for(p1=-size;p1<=size;p1+=p1_step,fp1x+=d1.x,fp1y+=d1.y,fp1z+=d1.z) {
+      if (!UseLinearInterpolation)
+      {
         px=(int) fp1x;
         py=(int) fp1y;
         pz=(int) fp1z;
@@ -281,9 +283,15 @@ void  ami::AnisoGS_NRAD::ComputeLocalPlanStats(InrImage* im,
           mean2 += val*val;
           nval++;
         }
-      px1 = px;
-      py1 = py;
-      pz1 = pz;
+        px1 = px;
+        py1 = py;
+        pz1 = pz;
+      } else {
+        val = im->InterpLinIntensite(fp1x,fp1y,fp1z);
+        mean  += val;
+        mean2 += val*val;
+        nval++;
+      }
     }
   }
 
@@ -335,20 +343,28 @@ void  ami::AnisoGS_NRAD::ComputeLocalDirStats(InrImage* im, float x, float y,
   mean2 = 0.0;
 
   for(p=-size;p<=size;p+=p_step,fpx+=e.x,fpy+=e.y,fpz+=e.z) {
-    px=(int) fpx;
-    py=(int) fpy;
-    pz=(int) fpz;
-    // don't add twice the same point
-    if ((px!=px1)||(py!=py1)||(pz!=pz1))
+    if (!UseLinearInterpolation)
     {
-      val = (*im)(px,py,pz);
+      px=(int) fpx;
+      py=(int) fpy;
+      pz=(int) fpz;
+      // don't add twice the same point
+      if ((px!=px1)||(py!=py1)||(pz!=pz1))
+      {
+        val = (*im)(px,py,pz);
+        mean  += val;
+        mean2 += val*val;
+        nval++;
+      }
+      px1 = px;
+      py1 = py;
+      pz1 = pz;
+    } else {
+      val = im->InterpLinIntensite(fpx,fpy,fpz);
       mean  += val;
       mean2 += val*val;
       nval++;
     }
-    px1 = px;
-    py1 = py;
-    pz1 = pz;
   }
 
   if (nval==0) {
@@ -442,16 +458,17 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     
   result_image->GetBufferIncrements(im_incx,im_incy,im_incz);
   precompute.Debut();
-  // pre-compute information
-  switch (noise_model) 
-  {
-    case NOISE_GAUSSIAN_ADDITIVE:
-      sigma2 = Compute_sigma2_Gaussian_mode(im, 
-                                            noise_estimation_neighborhood);
-      break;
-    case NOISE_RICIAN: 
-      sigma2 = Compute_sigma2_MRI_mode(im); break;
-  }
+  if (EstimateNoiseSTD) 
+    // pre-compute information
+    switch (noise_model) 
+    {
+      case NOISE_GAUSSIAN_ADDITIVE:
+        sigma2 = Compute_sigma2_Gaussian_mode(im, 
+                                              noise_estimation_neighborhood);
+        break;
+      case NOISE_RICIAN: 
+        sigma2 = Compute_sigma2_MRI_mode(im); break;
+    }
   imagec.Debut();
   ComputeImage_c(im,sigma2);
   imagec.Fin();
@@ -697,6 +714,10 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
   } else lambda2 = lambda1;
   if (lambda1>1) lambda1=1;
   if (lambda2>1) lambda2=1;
+  
+  //if (lambda0<lambda1/2) lambda0=0.01;
+  //if (lambda1<lambda2/2) lambda1=0.01;
+  
 
   if (debug_voxel) {
     std::cout << "lambda0: " << lambda0
@@ -745,7 +766,6 @@ void ami::AnisoGS_NRAD::Process( int threadid)
     int             x,y,z; //,n,i;
     int             x0,y0; 
     double          val0,val1,val1prev;
-    double          val1_implicit=0;
     double          val1div;
     double          alpha1_x, gamma1_x;
     double          alpha1_y, gamma1_y;
@@ -807,9 +827,10 @@ void ami::AnisoGS_NRAD::Process( int threadid)
         x0 = x-extent.GetMin(0);
         y0 = y-extent.GetMin(1);
 
-        debug_voxel = (x-ROI_xmin==68)&&
-                      (y-ROI_ymin==39)&&
-                      (z-ROI_zmin==46);
+        debug_voxel = (trace_voxel) &&
+                      (x-ROI_xmin==trace_voxel_x)&&
+                      (y-ROI_ymin==trace_voxel_y)&&
+                      (z-ROI_zmin==trace_voxel_z);
         //debug_voxel=false;
 
         val1 = val0 = *in;
@@ -942,7 +963,14 @@ void ami::AnisoGS_NRAD::Process( int threadid)
         }
 
         val1prev = val1;
-        val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
+        switch(num_scheme) {
+          case SEMIIMPLICIT:
+            val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
+            break;
+          case EXPLICIT:
+            val1 =  *in + dt*(val1 - val1div*(*in) );
+            break;
+        }
         if (val1<0)
         if (sqrt(val1)>300) {
 //          std::cout << "beta = " << this->beta << std::endl;
@@ -1034,7 +1062,8 @@ void ami::AnisoGS_NRAD::Run()
   } 
 
   iteration++;
-//  printf("\n -- Iter. %d, beta = %03.2f \t", iteration,beta);
+  std::cout << "\n -- Iter. "<< iteration << std::endl;
+//%d, beta = %03.2f \t", iteration,beta);
 
   erreur = Itere3D_ST_RNRAD( this->result_image);
 

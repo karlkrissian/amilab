@@ -42,6 +42,7 @@ SET(${KIT}_INCLUDE_PATHS
     ${AMILab_SOURCE_DIR}/LanguageBase
     ${AMILab_SOURCE_DIR}/Language
     ${AMILab_SOURCE_DIR}/Common/include
+    ${AMILab_SOURCE_DIR}/Algorithms/include
     ${AMILab_SOURCE_DIR}/CommonBase
     ${AMILab_SOURCE_DIR}/Wrapping/include
     ${AMILab_SOURCE_DIR}
@@ -86,12 +87,13 @@ SET(${KIT}_HDRS
   AnalyticSphere.h
   AnalyticStraightVessel2D.h
   AnalyticTorus.h
+  AnalyticHelix.h
   SubPixel2D.h
   SubVoxel3D.h
   Wrapping/wrap_AnalyticCircle.h
   Wrapping/wrap_AnalyticCube.h
   Wrapping/wrap_AnalyticCylinder.h
-  Wrapping/wrap_AnalyticFunctionBase.h
+  #Wrapping/wrap_AnalyticFunctionBase.h
   Wrapping/wrap_AnalyticLine.h
   Wrapping/wrap_AnalyticPlane.h
   Wrapping/wrap_AnalyticRing2D.h
@@ -116,12 +118,13 @@ SET(${KIT}_SRCS
   AnalyticSphere.cpp
   AnalyticStraightVessel2D.cpp
   AnalyticTorus.cpp
+  AnalyticHelix.cpp
   SubPixel2D.cpp
   SubVoxel3D.cpp
   Wrapping/wrap_AnalyticCircle.cpp
   Wrapping/wrap_AnalyticCube.cpp
   Wrapping/wrap_AnalyticCylinder.cpp
-  Wrapping/wrap_AnalyticFunctionBase.cpp
+  #Wrapping/wrap_AnalyticFunctionBase.cpp
   Wrapping/wrap_AnalyticLine.cpp
   Wrapping/wrap_AnalyticPlane.cpp
   Wrapping/wrap_AnalyticRing2D.cpp

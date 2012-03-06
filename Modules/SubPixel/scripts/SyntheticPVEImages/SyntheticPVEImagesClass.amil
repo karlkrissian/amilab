@@ -29,6 +29,7 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::reloadCylinder = UCHAR(0), "Reload the analytic cylinder"
     ::reloadSphere   = UCHAR(0), "Reload the analytic sphere"
     ::reloadTorus    = UCHAR(0), "Reload the analytic torus"
+    ::reloadHelix    = UCHAR(0), "Reload the analytic helix"
     
     #Input image parameters
     ::dimx = INT(100), "Input image X size"
@@ -83,6 +84,15 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::tr = 2.0,  "Minimum radius of the torus"
     ::tR = 10.0, "Maximum radius of the torus"
     
+    #Helix parameters
+    ::helix_cx = 50.0, "X component of the center of the torus"
+    ::helix_cy = 50.0, "Y component of the center of the torus"
+    ::helix_cz = 50.0, "Z component of the center of the torus"
+    ::helix_r  = 10.0,     "radius"
+    ::helix_t  = 2.0,      "thickness"
+    ::helix_coeff = Pi/10, "rotation coefficient"
+
+
     #Help
     ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
     ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/SyntheticPVEImages/index.html"
@@ -119,8 +129,9 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::page_vec3D.push_back(::page_cylinder)
     ::page_vec3D.push_back(::page_sphere)
     ::page_vec3D.push_back(::page_torus)
+    ::page_vec3D.push_back(::page_helix)
     
-    for n=0 to 3 {
+    for n=0 to 4 {
       ::win.EnablePanel(::page_vec3D[n], ::type3D==n)
     }
     ::win.SelectPage(::book3D,::type3D)
@@ -170,30 +181,30 @@ if (!exists(SyntheticPVEImagesClass)) {
       #Analytic function recursive for a surface
       if(::ImageDim == 0) {
         if(::input.tz == 1) {
-            ::pv->setInputImage(&::input)
-            ::pv->setSubdiv(::subdiv2D)
+            ::pv.setInputImage(&::input)
+            ::pv.setSubdiv(::subdiv2D)
             if(::type2D == 0){
               ::GenerateLine()
-              ::pv->setAnalyticFunction(&::line)
+              ::pv.setAnalyticFunction(&::line)
               ::output_name = "line"
             }
             if(::type2D == 1) {
               ::GenerateCircle()
-              ::pv->setAnalyticFunction(&::circle)
+              ::pv.setAnalyticFunction(&::circle)
               ::output_name = "circle"
             }
             if(::type2D == 2) {
               ::GenerateVessel2D()
-              ::pv->setAnalyticFunction(&::vessel2D)
+              ::pv.setAnalyticFunction(&::vessel2D)
               ::output_name = "vessel2D"
             }
             if(::type2D == 3) {
               ::GenerateRing2D()
-              ::pv->setAnalyticFunction(&::ring2D)
+              ::pv.setAnalyticFunction(&::ring2D)
               ::output_name = "ring2D"
             }
             InitTime
-            ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
+            ::res <<= ::pv.ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
             printn "Tiempo = " + TimeSpent
             EndTime
             RestartTime
@@ -226,6 +237,11 @@ if (!exists(SyntheticPVEImagesClass)) {
               ::GenerateTorus()
               ::pv->setAnalyticFunction(&::torus)
               ::output_name = "torus"
+            }
+            if(::type3D == 4) {
+              ::GenerateHelix()
+              ::pv->setAnalyticFunction(&::helix)
+              ::output_name = "helix"
             }
             InitTime
             ::res <<= ::pv->RunAnalyticSubdiv(::A,::B)
@@ -431,6 +447,31 @@ if (!exists(SyntheticPVEImagesClass)) {
   }
   Comments(::ResetTorus, "Reset analytic torus parameters")
 
+  # HELIX
+  #--------------------------------------------------------------
+  proc ::GenerateHelix() {
+    ::helix = AnalyticHelix()
+    ::helix.setCenter(::helix_cx,::helix_cy,::helix_cz)
+    ::helix.Setradius(::helix_r)
+    ::helix.Setthickness(::helix_t)
+    ::helix.Setrotation_coeff(::helix_coeff)
+  }
+  Comments(::GenerateHelix, "Generate analytic helix")
+  #--------------------------------------------------------------
+  proc ::ResetHelix() {
+    ::helix_cx = 50.0
+    ::helix_cy = 50.0
+    ::helix_cz = 50.0
+    ::helix_r = 10.0
+    ::helix_t = 2.0
+    ::helix_coeff = 0.1
+    ::win.Update(-1)
+    if(::reloadHelix == 1){
+      ::RecomputeHelix()
+    }
+  }
+  Comments(::ResetHelix, "Reset analytic helix parameters")
+
   #--------------------------------------------------------------
   proc ::RecomputeLine() {
     if(::reloadLine == 1) {
@@ -550,6 +591,22 @@ if (!exists(SyntheticPVEImagesClass)) {
       }
     }
   }
+
+  #--------------------------------------------------------------
+  proc ::RecomputeHelix() {
+    if(exists(::helix)) {
+      ::helix.setCenter(::helix_cx,::helix_cy,::helix_cz)
+      ::helix.Setradius(::helix_r)
+      ::helix.Setthickness(::helix_t)
+      ::helix.Setrotation_coeff(::helix_coeff)
+      if(exists(::pv)) {
+        ::pv->setAnalyticFunction(&::helix)
+        ::Compute()
+        ::Display()
+      }
+    }
+  }
+
   #--------------------------------------------------------------
   proc ::Save() {
     if(exists(::res)) {
@@ -698,6 +755,7 @@ if (!exists(SyntheticPVEImagesClass)) {
               ::win.AddEnumChoice(::type_id3D, "Cylinder")
               ::win.AddEnumChoice(::type_id3D, "Sphere")
               ::win.AddEnumChoice(::type_id3D, "Torus")
+              ::win.AddEnumChoice(::type_id3D, "Helix")
             ::win.SetCallback(&::NewType3D)
             
             #Functions3D notebook
@@ -786,6 +844,29 @@ if (!exists(SyntheticPVEImagesClass)) {
                   ::win.AddBoolean(&::reloadTorus, "Reload")
                 ::win.EndHorizontal()
                 
+              ::page_helix  = ::win.AddPage("Helix")
+                ::win.BeginBoxPanel("Helix parameters")
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::helix_cx, "x", 0, 100)
+                    ::win.SetCallback(&::RecomputeHelix)
+                    ::win.AddFloat(&::helix_cy, "y", 0, 100)
+                    ::win.SetCallback(&::RecomputeHelix)
+                    ::win.AddFloat(&::helix_cz, "z", 0, 100)
+                    ::win.SetCallback(&::RecomputeHelix)
+                  ::win.EndBoxPanel()
+                    ::win.AddFloat(&::helix_r, "rad", 1, 100)
+                    ::win.SetCallback(&::RecomputeHelix)
+                    ::win.AddFloat(&::helix_t, "thick", 1, 100)
+                    ::win.SetCallback(&::RecomputeHelix)
+                    ::win.AddFloat(&::helix_coeff, "coeff", 1, 10)
+                    ::win.SetCallback(&::RecomputeHelix)
+                ::win.EndBoxPanel()
+                ::win.BeginHorizontal()
+                  ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateHelix")
+                  ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetHelix")
+                  #::win.AddBoolean(&::reloadHelix, "Reload")
+                ::win.EndHorizontal()
+
               ::win.EndBook()
         ::win.EndBoxPanel()
         

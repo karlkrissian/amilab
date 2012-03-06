@@ -284,7 +284,6 @@ LineNumber      return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
 
 BasicType        return(token::T_BasicType); /*{BasicType,T_BasicType}*/
 
-itkCannyEdgeDetector  return(token::T_itkCannyEdgeDetector); /*{itk,T_itk}*/
 
 GetObjectName  return(token::T_GetObjectName); /*{GetObjectName,T_GetObjectName}*/
 

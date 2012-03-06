@@ -230,7 +230,6 @@ WRAP_MESSAGE("Wrapping ITK...")
 
 
 SET(  WrapITK_SRCS
-    itkCannyEdgeDetector.cpp
     wrapITK.cpp
     LeastSquares.cpp
     wrapitkRecursiveGaussianImageFilter.cpp
@@ -256,7 +255,6 @@ SET(  WrapITK_SRCS
 )
 
 SET(WrapITK_HDRS
-    ../include/itkCannyEdgeDetector.h
     #../include/wrapConversion.h
     ../include/wrapITK.h
     ../include/wrapitkFastMarchingImageFilter.h

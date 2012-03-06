@@ -79,7 +79,7 @@
 //#include "wrap_wxfunctions.h"
 //#include "wrap_MainFrame.h"
 //#include "wrap_imagedraw.h"
-#include "itkCannyEdgeDetector.h"
+//#include "itkCannyEdgeDetector.h"
 #include "wrapWII.h"
 #include "wrapFilters.h"
 #include "wrapSystem.h"
@@ -222,18 +222,18 @@ InrImage* ReadImage( const char* name);
 void CB_update_imagelist( void* imagelist_gui);
 void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 
-#define GET_VARSTACK_VALUE(type,newvar) \
+/*#define GET_VARSTACK_VALUE(type,newvar) \
   boost::shared_ptr<type> newvar( \
     driver.var_stack.GetLastVar<type>()->Pointer());
+*/
 
-#define GET_VARSTACK_VALUE2(type,newvar) \
+#define GET_VARSTACK_VALUE(type,newvar) \
   boost::shared_ptr<type> newvar;\
-  { \
-    boost::shared_ptr<Variable<type> > v = driver.var_stack.GetLastVar<type>();\
-    if (v.get()) \
-     newvar = boost::shared_ptr<type>(v->Pointer()); \
-    else \
-      std::cerr << "failed to get variable from stack " << std::endl; \
+  {\
+    BasicVariable::ptr __v = driver.var_stack.GetLastBasicVar();\
+    newvar = AMILabType<type>::GetValue(__v); \
+    if (!newvar.get()) \
+        std::cerr << "failed to get variable from stack " << std::endl; \
   }
 
 /*! \def GET_VARSTACK_OBJECT
@@ -739,7 +739,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 
 //%token T_itk
 //%token T_CannyEdgeDetector
-%token T_itkCannyEdgeDetector
+//%token T_itkCannyEdgeDetector
 
 
 %token T_CreateFlatMesh
@@ -5629,6 +5629,7 @@ image:
         FinSi
         ADD_VARSTACK_PTR(InrImage,res);
       }
+      /* deprecated
       | T_itkCannyEdgeDetector T_OP_PAR var_image T_COMMA expr T_COMMA expr  T_CL_PAR
       {
         float var           = $5;
@@ -5641,6 +5642,7 @@ image:
         FinSi
         ADD_VARSTACK_PTR(InrImage,res);
       }
+      */
       |
       T_vtkDist T_OP_PAR var_image T_CL_PAR
       {
@@ -9636,19 +9638,25 @@ image_extent:
         Description: creates an image extent based on the limits in voxel coordinates in X,Y and Z
         Parameters: xmin, xmax, ymin, ymax, zmin, zmax
       **/
-      GET_VARSTACK_VALUE2(float,zmax)
-      GET_VARSTACK_VALUE2(float,zmin)
-      GET_VARSTACK_VALUE2(float,ymax)
-      GET_VARSTACK_VALUE2(float,ymin)
-      GET_VARSTACK_VALUE2(float,xmax)
-      GET_VARSTACK_VALUE2(float,xmin)
-      ami::ImageExtent<float>* extent=new ami::ImageExtent<float>(  *xmin, *xmax, 
-                                                          *ymin, *ymax, 
-                                                          *zmin, *zmax);
-      extent->SetMode(ami::ImageExtent<float>::Relative); // relative
-      BasicVariable::ptr res;
-      res = AMILabType<ami::ImageExtent<float> >::CreateVar(extent);
-      driver.var_stack.AddVar(res);
+      GET_VARSTACK_VALUE(float,zmax)
+      GET_VARSTACK_VALUE(float,zmin)
+      GET_VARSTACK_VALUE(float,ymax)
+      GET_VARSTACK_VALUE(float,ymin)
+      GET_VARSTACK_VALUE(float,xmax)
+      GET_VARSTACK_VALUE(float,xmin)
+      if (xmin.get() && xmax.get() && 
+          ymin.get() && ymax.get() && 
+          zmin.get() && zmax.get())
+      {
+        ami::ImageExtent<float>* extent=
+            new ami::ImageExtent<float>(  *xmin, *xmax, 
+                                          *ymin, *ymax, 
+                                          *zmin, *zmax);
+        extent->SetMode(ami::ImageExtent<float>::Relative); // relative
+        BasicVariable::ptr res;
+        res = AMILabType<ami::ImageExtent<float> >::CreateVar(extent);
+        driver.var_stack.AddVar(res);
+      }
     }
     |
     primary_var T_COLON primary_var T_COMMA  primary_var T_COLON primary_var
@@ -9661,12 +9669,16 @@ image_extent:
       GET_VARSTACK_VALUE(float,ymin)
       GET_VARSTACK_VALUE(float,xmax)
       GET_VARSTACK_VALUE(float,xmin)
-
-      ami::ImageExtent<float>* extent=new ami::ImageExtent<float>( *xmin, *xmax, *ymin, *ymax);
-      extent->SetMode(ami::ImageExtent<float>::Relative); // relative
-      BasicVariable::ptr res;
-      res = AMILabType<ami::ImageExtent<float> >::CreateVar(extent);
-      driver.var_stack.AddVar(res);
+      if (xmin.get() && xmax.get() && 
+          ymin.get() && ymax.get() )
+      {
+        ami::ImageExtent<float>* extent=
+          new ami::ImageExtent<float>( *xmin, *xmax, *ymin, *ymax);
+        extent->SetMode(ami::ImageExtent<float>::Relative); // relative
+        BasicVariable::ptr res;
+        res = AMILabType<ami::ImageExtent<float> >::CreateVar(extent);
+        driver.var_stack.AddVar(res);
+      }
     }
     |
     T_COLON  T_COMMA T_COLON  T_COMMA primary_var T_COLON primary_var

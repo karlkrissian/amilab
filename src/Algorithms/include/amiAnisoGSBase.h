@@ -97,6 +97,10 @@ namespace ami {
       NEW,      /**< new code, for faster processing */
     };
     
+    enum NumScheme {
+      SEMIIMPLICIT,  /**< Gauss-Seidel / Jacobi scheme*/
+      EXPLICIT,      /**< explicit scheme */
+    };
     
     template <class T>
     class EquationCoefficients {
@@ -373,6 +377,8 @@ namespace ami {
     AddSetGetVar( noise_model, NoiseEstimationModel);
 
     AddSetGetVar( eigendecomp_mode, EigenDecompMode);
+    
+    AddSetGetVar( num_scheme, NumScheme);
 
     AddSetGetVar( SRAD_ROI,     InrImage::ptr);
 
@@ -385,6 +391,8 @@ namespace ami {
     AddSetGetVar( SpeedUp_c_lowerbound,  float);
     
     AddSetGetVar( UseNewConvolutionFilter, bool);
+
+    AddSetGetVar( EstimateNoiseSTD,        bool);
 
     InrImage* Getresult_image() 
     { 
@@ -496,6 +504,7 @@ namespace ami {
       SpeedUp_c_lowerbound      = 0.5;
       
       UseNewConvolutionFilter   = false;
+      EstimateNoiseSTD          = true;
     }
 
 

@@ -28,6 +28,7 @@ LanguageBase_VAR_IMPORT VarContexts Vars;
 #include "wrap_AnalyticCylinder.h"
 #include "wrap_AnalyticSphere.h"
 #include "wrap_AnalyticTorus.h"
+#include "wrap_AnalyticHelix.h"
 #include "wrap_ComputePartialVolume.h"
 #include "wrap_SubPixel2D.h"
 #include "wrap_SubVoxel3D.h"
@@ -77,6 +78,8 @@ bool SubPixelPlugin::Execute(void)
     WrapClass_AnalyticSphere          ::AddVar_AnalyticSphere(
       amiobject->GetContext());
     WrapClass_AnalyticTorus           ::AddVar_AnalyticTorus(
+      amiobject->GetContext());
+    WrapClass_AnalyticHelix           ::AddVar_AnalyticHelix(
       amiobject->GetContext());
     WrapClass_ComputePartialVolume    :: AddVar_ComputePartialVolume(
       amiobject->GetContext());

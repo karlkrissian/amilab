@@ -22,13 +22,14 @@ if (!exists(MSEClass)) {
     #----------------------------
     proc ::Init() \
     {
-        ::input_name =  "", "input image"
-        ::groundtruth_name =  "", "ground truth image" 
-        ::MSE_string = "", "Mean Square Error value"
-        ::MAE_string = "", "Mean Absolute Error value"
-        ::PSNR_string = "", "Pick Signal To Noise Ratio value"
+        ::input_name          =  "", "input image"
+        ::groundtruth_name    =  "", "ground truth image" 
+        ::regions_name        = "", "image regions"
+        ::MSE_string          = "", "Mean Square Error value"
+        ::MAE_string          = "", "Mean Absolute Error value"
+        ::PSNR_string         = "", "Pick Signal To Noise Ratio value"
         ::display_error_image = UCHAR(0), "Display the image of errors"
-        ::border = INT(0), "Remove border"
+        ::border              = INT(0), "Remove border"
         ::CreateWindow()
     }
     
@@ -52,6 +53,19 @@ if (!exists(MSEClass)) {
       eval "::gt <<="+::groundtruth_name+";"
       if (::groundtruth_name=="Image") {
         ::groundtruth_name = "::gt"
+        ::win.Update(-1)
+      }
+      ::win.Update(-1)
+      ::CheckInputs()
+    }
+
+    #----------------------------
+    proc ::LoadRegions() \
+    {
+      printn "evaluation of --> ::regions <<="+::regions_name+";"
+      eval "::regions <<="+::regions_name+";"
+      if (::regions_name=="Image") {
+        ::regions_name = "::regions"
         ::win.Update(-1)
       }
       ::win.Update(-1)
@@ -92,26 +106,31 @@ if (!exists(MSEClass)) {
     {
       # test for ROI and for noise type ??
       if (exists(::input) &&exists(::gt)) {
-        _xmin = (FLOAT)::border
-        _xmax = (FLOAT)::input.tx-1-::border
-        _ymin = (FLOAT)::border
-        _ymax = (FLOAT)::input.ty-1-::border
-        #printn _xmin
-        #printn _xmax
-        #printn _ymin
-        #printn _ymax
-        ::roi <<= ::input[_xmin:_xmax,_ymin:_ymax,0:0]
+        _xmin = min(::border,::input.tx-1)
+        _xmax = max(::input.tx-1-::border,0)
+        _ymin = min(::border,::input.ty-1)
+        _ymax = max(::input.ty-1-::border,0)
+        _zmin = min(::border,::input.tz-1)
+        _zmax = max(::input.tz-1-::border,0)
+        ::roi <<= ::input[_xmin:_xmax,_ymin:_ymax,_zmin:_zmax]
         # MSE
-        if (exists(::roi)) {
           mask = ::input*0
           smask = ::roi*0+1
           mask.putimage(smask)
           ::MSE = mean[mask]((::input-::gt)*(::input-::gt))
           ::MAE = mean[mask](abs(::input-::gt))
-        } else {
-          ::MSE = mean((::input-::gt)*(::input-::gt))
-          ::MAE = mean(abs(::input-::gt))
-        }
+          if exists(::regions) {
+            n = floor(max(::regions))
+            for i=0 to n {
+              mask1 = mask*(::regions==i)
+              if count(mask)>0 {
+                printn "Region %1%" %i
+                MSE = mean[mask1]((::input-::gt)*(::input-::gt))
+                MAE = mean[mask1](abs(::input-::gt))
+                printn "MSE = %1% " % MSE + "  MAE = %1% " % MAE 
+              } // end if
+            } // end for
+          }
         ::MSE_string = "%1%" %::MSE
         ::MAE_string = "%1%" %::MAE
         # PSNR
@@ -141,6 +160,15 @@ if (!exists(MSEClass)) {
     }
 
     #----------------------------
+    proc ::DisplayDiff() \
+    {
+      show ::input
+      ::diff <<= ::input-::gt
+      show ::diff
+      ::input_draw.compare(&::diff_draw)
+    }
+
+    #----------------------------
     proc ::CreateWindow() {
     
       # parameters window
@@ -152,18 +180,26 @@ if (!exists(MSEClass)) {
 
           # set the input image
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal()
+            #::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
-            ::win.EndHorizontal()
+            #::win.EndHorizontal()
           ::win.EndBoxPanel()
 
           # set the input image
           ::win.BeginBoxPanel("Ground truth")
-            ::win.BeginHorizontal()
+            #::win.BeginHorizontal()
               ::win.AddImageChoice( &::groundtruth_name, "")
               ::win.AddButton("Load",::LoadGroundTruth)
-            ::win.EndHorizontal()
+            #::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          # set the regions image
+          ::win.BeginBoxPanel("Image Regions")
+            #::win.BeginHorizontal()
+              ::win.AddImageChoice( &::regions_name, "")
+              ::win.AddButton("Load",::LoadRegions)
+            #::win.EndHorizontal()
           ::win.EndBoxPanel()
 
         ::win.AddPage("Param")
@@ -180,6 +216,7 @@ if (!exists(MSEClass)) {
             ::win.AddButton("Display images",::Display)
             ::win.AddBoolean( &::display_error_image, "Error Image")
             ::win.SetCallback( &::DisplayErrorImage)
+            ::win.AddButton("Difference image",&::DisplayDiff)
           ::win.EndBoxPanel()
 
       ::win.EndBook()
