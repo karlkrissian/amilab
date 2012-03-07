@@ -30,11 +30,10 @@ double AnalyticCylinder::operator () (const double& x, const double& y,
   float yaxis = Ydir/mod;
   float zaxis = Zdir/mod;
   int dim     = (radius>10) ? (int) (4*radius) : 40;
-  int center  = dim/2;
   
-  float pqx = x - center;
-  float pqy = y - center;
-  float pqz = z - center; 
+  float pqx = x - center_x;
+  float pqy = y - center_y;
+  float pqz = z - center_z; 
 
   float vx = pqy*zaxis - pqz*yaxis;
   float vy = pqz*xaxis - pqx*zaxis;

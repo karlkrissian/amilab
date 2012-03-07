@@ -70,6 +70,9 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::cylinder_xdir =  0.0, "Cylinder X direction"
     ::cylinder_ydir =  0.0, "Cylinder Y direction"
     ::cylinder_zdir =  9.0, "Cylinder Z direction"
+    ::cylinder_cx   = 50.0, "Cylinder center x"
+    ::cylinder_cy   = 50.0, "Cylinder center y"
+    ::cylinder_cz   = 50.0, "Cylinder center z"
     
     #Sphere parameters
     ::sx = 50.0, "X component of the center of the sphere"
@@ -384,10 +387,13 @@ if (!exists(SyntheticPVEImagesClass)) {
   #--------------------------------------------------------------
   proc ::GenerateCylinder() {
     ::cylinder = AnalyticCylinder()
-    ::cylinder->setRadius(::cylinder_r)
-    ::cylinder->setXdir(::cylinder_xdir)
-    ::cylinder->setYdir(::cylinder_ydir)
-    ::cylinder->setZdir(::cylinder_zdir)
+    ::cylinder.setRadius(::cylinder_r)
+    ::cylinder.setXdir(::cylinder_xdir)
+    ::cylinder.setYdir(::cylinder_ydir)
+    ::cylinder.setZdir(::cylinder_zdir)
+    ::cylinder.Setcenter_x(::cylinder_cx)
+    ::cylinder.Setcenter_y(::cylinder_cy)
+    ::cylinder.Setcenter_z(::cylinder_cz)
   }
   Comments(::GenerateCylinder, "Generate analytic cylinder")
   #--------------------------------------------------------------
@@ -396,6 +402,9 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::cylinder_xdir = 0.0
     ::cylinder_ydir = 0.0
     ::cylinder_zdir = 9.0
+    ::cylinder_cx   = 50.0
+    ::cylinder_cy   = 50.0
+    ::cylinder_cz   = 50.0
     ::win.Update(-1)
     if (::reloadCylinder == 1) {
       ::RecomputeCylinder()
@@ -550,12 +559,15 @@ if (!exists(SyntheticPVEImagesClass)) {
   proc ::RecomputeCylinder() {
     if(::reloadCylinder == 1) {
       if(exists(::cylinder)) {
-        ::cylinder->setRadius(::cylinder_r)
-        ::cylinder->setXdir(::cylinder_xdir)
-        ::cylinder->setYdir(::cylinder_ydir)
-        ::cylinder->setZdir(::cylinder_zdir)
+        ::cylinder.setRadius(::cylinder_r)
+        ::cylinder.setXdir(::cylinder_xdir)
+        ::cylinder.setYdir(::cylinder_ydir)
+        ::cylinder.setZdir(::cylinder_zdir)
+        ::cylinder.Setcenter_x(::cylinder_cx)
+        ::cylinder.Setcenter_y(::cylinder_cy)
+        ::cylinder.Setcenter_z(::cylinder_cz)
         if(exists(::pv)) {
-          ::pv->setAnalyticFunction(&::cylinder)
+          ::pv.setAnalyticFunction(&::cylinder)
           ::Compute()
           ::Display()
         }
@@ -795,6 +807,14 @@ if (!exists(SyntheticPVEImagesClass)) {
                   ::win.SetCallback(&::RecomputeCylinder)
                   ::win.AddFloat(&::cylinder_zdir, "Zdir", 0, 9)
                   ::win.SetCallback(&::RecomputeCylinder)
+                  ::win.BeginBoxPanel("Center")
+                    ::win.AddFloat(&::cylinder_cx, "X", 0, 100)
+                    ::win.SetCallback(&::RecomputeCylinder)
+                    ::win.AddFloat(&::cylinder_cy, "Y", 0, 100)
+                    ::win.SetCallback(&::RecomputeCylinder)
+                    ::win.AddFloat(&::cylinder_cz, "Z", 0, 100)
+                    ::win.SetCallback(&::RecomputeCylinder)
+                  ::win.EndBoxPanel()
                 ::win.EndBoxPanel()
                 ::win.BeginHorizontal()
                   ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateCylinder")

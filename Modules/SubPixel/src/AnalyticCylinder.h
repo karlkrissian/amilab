@@ -9,6 +9,18 @@
 #include "DefineClass.hpp"
 #include "AnalyticFunctionBase.h"
 
+#define AddSetGetVar( name, type) \
+  type  name; \
+  void Set##name( type _arg) \
+  { \
+    this->name = _arg; \
+  };  \
+  type Get##name() \
+  { \
+    return this->name; \
+  };
+
+
 /**
  *  AnalyticCylinder class.
  *  @author Karl Krissian (krissian@dis.ulpgc.es)
@@ -28,6 +40,7 @@ private:
   float Ydir;
   //Cylinder Z direction
   float Zdir;
+  
   
 public:
   /**
@@ -99,6 +112,13 @@ public:
    *  @return float The z direction value.
    */
   float getZdir();
+
+  /// X coordinate of the center 
+  AddSetGetVar(center_x,float)
+  /// Y coordinate of the center 
+  AddSetGetVar(center_y,float)
+  /// Z coordinate of the center 
+  AddSetGetVar(center_z,float)
   
 };
 

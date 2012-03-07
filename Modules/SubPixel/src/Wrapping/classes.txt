@@ -3,4 +3,5 @@
 SuperGradienteCurvo_res
 #
 SubPixel2D
+AnalyticCylinder
 AnalyticHelix

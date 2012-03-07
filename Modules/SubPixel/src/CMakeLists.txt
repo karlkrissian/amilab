@@ -92,7 +92,7 @@ SET(${KIT}_HDRS
   SubVoxel3D.h
   Wrapping/wrap_AnalyticCircle.h
   Wrapping/wrap_AnalyticCube.h
-  Wrapping/wrap_AnalyticCylinder.h
+  #Wrapping/wrap_AnalyticCylinder.h
   #Wrapping/wrap_AnalyticFunctionBase.h
   Wrapping/wrap_AnalyticLine.h
   Wrapping/wrap_AnalyticPlane.h
@@ -123,7 +123,7 @@ SET(${KIT}_SRCS
   SubVoxel3D.cpp
   Wrapping/wrap_AnalyticCircle.cpp
   Wrapping/wrap_AnalyticCube.cpp
-  Wrapping/wrap_AnalyticCylinder.cpp
+  #Wrapping/wrap_AnalyticCylinder.cpp
   #Wrapping/wrap_AnalyticFunctionBase.cpp
   Wrapping/wrap_AnalyticLine.cpp
   Wrapping/wrap_AnalyticPlane.cpp
