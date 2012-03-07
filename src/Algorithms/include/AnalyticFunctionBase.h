@@ -10,6 +10,8 @@
 
 #include "AlgorithmsConfigure.h"
 
+
+
 /**
  *  AnalyticFunctionBase class.
  *  @author Karl Krissian (krissian@dis.ulpgc.es)

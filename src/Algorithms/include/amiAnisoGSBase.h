@@ -193,15 +193,15 @@ namespace ami {
     
     
     /// Gaussian smoothing filter
-    GeneralGaussianFilter*  filtre;
-    FiltrageRec*            filtre_rec;
-    DeriveesLissees*        DerLiss;
+    //GeneralGaussianFilter*  filtre;
+    //FiltrageRec*            filtre_rec;
+    //DeriveesLissees*        DerLiss;
     
     //-------- Parameters
     int             mode; // MODE_2D or MODE_3D
     unsigned char   use_filtre_rec;
     unsigned char   opt_mem;
-    float           sigma;
+
 
 
     int     iteration;
@@ -327,6 +327,12 @@ namespace ami {
     InrImage::ptr Get_eigenvect2_zp() { return eigenvect2_zp; }
     InrImage::ptr Get_eigenvect3_zp() { return eigenvect3_zp; }
 
+    /// Structure Tensor parameters
+    AddSetGetVar(ST_sigma1,float)
+    AddSetGetVar(ST_sigma2,float)
+    //float           ST_sigma1;
+    //float           ST_sigma2;
+
     /// PDE time-step
     AddSetGetVar(dt,float);
 
@@ -444,6 +450,9 @@ namespace ami {
     */
     void InitParam() 
     {
+      ST_sigma1 = 0.7;
+      ST_sigma2 = 1;
+      
       verbose = false;
       image_entree  = NULL;
       this->result_image= NULL;
@@ -460,7 +469,7 @@ namespace ami {
       mode          = MODE_2D;
 
       this->planstats_sigma = 1.0;
-      this->dirstats_sigma  = 1.5;
+      this->dirstats_sigma  = 1.0;
 
       divFim        = NULL;
 
@@ -489,8 +498,8 @@ namespace ami {
 
       SmoothedParam             = false;
 
-      filtre_rec                = NULL;
-      filtre                    = NULL;
+//      filtre_rec                = NULL;
+//      filtre                    = NULL;
 
       DistanceMap               = 0;
 
@@ -528,7 +537,7 @@ namespace ami {
     void ComputeEigenVectors_initial();
     void ComputeEigenVectors_new();
 
-    void Init(InrImage::ptr in, float p_sigma, int nb_threads=-1);
+    void Init(InrImage::ptr in, int nb_threads=-1);
 
     /**
     * Main iteration method, directs to the appropriate specific method

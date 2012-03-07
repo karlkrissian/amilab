@@ -97,11 +97,14 @@ double        Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage::ptr im_ROI,
  * @param im_ROI region of interest: area without background
  * @param neigh_size neighborhood size to compute the local variance
  * Vale 2 por omisión.
+ * @param resolution histogram resolution in intensity unit
  * @return double
  **/
 double        Func_Compute_sigma2_Gaussian_mode(InrImage* im, 
                                                 InrImage::ptr im_ROI, 
-                                                int neigh_size=2);
+                                                int neigh_size=2,
+                                                double resolution=0.05
+                                               );
 
 #include "localstats.tpp"
 

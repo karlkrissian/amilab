@@ -121,7 +121,8 @@ InrImage::ptr ami::AnisoGSBase::Run(InrImage::ptr input, float sigma, float k,
 ami::AnisoGSBase::~AnisoGSBase()
 {
 
-  if ( filtre     != NULL ) {
+/*
+ *  if ( filtre     != NULL ) {
     delete filtre;
     filtre = NULL;
   } // end if
@@ -130,7 +131,8 @@ ami::AnisoGSBase::~AnisoGSBase()
     delete filtre_rec;
     filtre_rec = NULL;
   } // end if
-  
+  */
+
   if ( this->im_tmp != NULL ) {
     delete this->im_tmp;
     this->im_tmp = NULL;
@@ -1170,7 +1172,6 @@ void ami::AnisoGSBase::PrincipalCurvatures(float grad[3], float H[3][3],
 
 //------------------------------------------------------------------------------
 void ami::AnisoGSBase::Init(InrImage::ptr in, 
-      float p_sigma, 
       int nb_threads
       )
 {
@@ -1178,8 +1179,6 @@ void ami::AnisoGSBase::Init(InrImage::ptr in,
     char resname[100];
 
   InitParam();
-
-  sigma       = p_sigma;
 
   tx = in->_tx;
   ty = in->_ty;
@@ -1230,11 +1229,13 @@ void ami::AnisoGSBase::Init(InrImage::ptr in,
     break;
   }
   
-  filtre = new GeneralGaussianFilter(image_entree, 
+/*
+ *  filtre = new GeneralGaussianFilter(image_entree, 
       mode);
   filtre->Set_use_new_filter(UseNewConvolutionFilter);
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
+*/
 
   tx = image_entree->_tx;
   ty = image_entree->_ty;

@@ -434,7 +434,7 @@ double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage::ptr im_ROI,
 
 //------------------------------------------------------------------------------
 double Func_Compute_sigma2_Gaussian_mode( InrImage* im, InrImage::ptr im_ROI, 
-                                          int neigh_size)
+                                          int neigh_size, double resolution)
 //
 {
 
@@ -489,7 +489,7 @@ double Func_Compute_sigma2_Gaussian_mode( InrImage* im, InrImage::ptr im_ROI,
   // histogram of values between mean +/- 2*std
   double hist_min = 0;
   double hist_max = mean+2*std;
-  int hist_size = (int)((hist_max-hist_min+1.0)*5.0);
+  int hist_size = (int)((hist_max-hist_min+1.0)/resolution);
 
   InrImage::ptr im_hist( 
                   Func_Histogram( im1_var.get(),

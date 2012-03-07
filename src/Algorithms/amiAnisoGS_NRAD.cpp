@@ -253,9 +253,9 @@ void  ami::AnisoGS_NRAD::ComputeLocalPlanStats(InrImage* im,
   // adding 1E-4 to avoid to get a exact integer and 
   // obtain different results between methods because of the numerical
   // precision
-  fp2x = x-size*d2.x-size*d1.x+0.5+1E-4;
-  fp2y = y-size*d2.y-size*d1.y+0.5+1E-4;
-  fp2z = z-size*d2.z-size*d1.z+0.5+1E-4;
+  fp2x = x-size*d2.x-size*d1.x+0.5-1E-4;
+  fp2y = y-size*d2.y-size*d1.y+0.5-1E-4;
+  fp2z = z-size*d2.z-size*d1.z+0.5-1E-4;
   mean  = 0.0;
   mean2 = 0.0;
 
@@ -336,9 +336,9 @@ void  ami::AnisoGS_NRAD::ComputeLocalDirStats(InrImage* im, float x, float y,
   px1=py1=pz1=-100;
 //  twosd2 = 2*sd*sd;
 
-  fpx = x-size*e.x+0.5+1E-4;
-  fpy = y-size*e.y+0.5+1E-4;
-  fpz = z-size*e.z+0.5+1E-4;
+  fpx = x-size*e.x+0.5-1E-4;
+  fpy = y-size*e.y+0.5-1E-4;
+  fpz = z-size*e.z+0.5-1E-4;
   mean  = 0.0;
   mean2 = 0.0;
 
@@ -476,15 +476,15 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
   if (SpeedUp_c) {
     // in case of speedup, need to compute eigenvectors at each iteration
-    ComputeStructureTensor(im,0.7,sigma);
+    ComputeStructureTensor(im,ST_sigma1,ST_sigma2);
     ComputeEigenVectors();
   } else {
     if ((iteration==1)&&(loop==2)) {
-      ComputeStructureTensor(im,0.7,sigma);
+      ComputeStructureTensor(im,ST_sigma1,ST_sigma2);
       ComputeEigenVectors();
     }
     if (iteration==loop) {
-      ComputeStructureTensor(im,0.7,sigma);
+      ComputeStructureTensor(im,ST_sigma1,ST_sigma2);
       ComputeEigenVectors();
       loop+=2;
     }
@@ -660,7 +660,9 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
     PRINT_VECTOR(e2)
   }
   
-  if (lambda0<1) {
+  float threshold=0.5;
+  
+  if (lambda0<threshold) {
     ComputeLocalPlanStats(result_image, 
                           pos_x,pos_y,pos_z,  
                           e1,e2, planstats_sigma, mean,var);
@@ -686,7 +688,7 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
         break;
       }
   } else lambda1 = lambda0;
-  if (lambda1<1) {
+  if (lambda1<threshold) {
     ComputeLocalDirStats(result_image, 
                          pos_x,pos_y,pos_z,
                          e2, dirstats_sigma, mean,var);
@@ -712,12 +714,13 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
         break;
       }
   } else lambda2 = lambda1;
-  if (lambda1>1) lambda1=1;
-  if (lambda2>1) lambda2=1;
+
+  if (lambda1>6./4) lambda1=6./4;
+  if (lambda2>3) lambda2=3;
   
   //if (lambda0<lambda1/2) lambda0=0.01;
   //if (lambda1<lambda2/2) lambda1=0.01;
-  
+  //if (lambda2<0.025) lambda2=0.025;
 
   if (debug_voxel) {
     std::cout << "lambda0: " << lambda0
