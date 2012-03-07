@@ -74,7 +74,6 @@
 #include <iosfwd>
 //#include "style.hpp"
 #include "math1.hpp"
-#include "chaine.hpp"
 #include "inrimage.hpp"
 #include "Voxel.hpp"
 #include "Coordonnees.hpp"
@@ -97,6 +96,7 @@
 #define EffaceTabReel(  im) if ( im!= (float*)    NULL) { delete[] im; im = (float*)NULL;}
 #define EffaceTabEntier(im) if ( im!= (int*)  NULL) { delete[] im; im = (int*)NULL;}
 
+#include <string>
 
 class ConnectedComponentInfo {
 
@@ -162,7 +162,7 @@ private:
    int    _num_ligne;
    int    _nbpts_ligne;
 
-   Chaine    _nom_image_resultat;
+   std::string    _nom_image_resultat;
    float      _pas_abscisse;
    int    _contour_choisi;
 
@@ -374,7 +374,7 @@ public:
   void SetContourChoisi(int c) { _contour_choisi =c; }
   int GetContourChoisi() { return _contour_choisi; }
 
-void SetNomImageResultat(const Chaine& res) { _nom_image_resultat = res; }
+  void SetNomImageResultat(const std::string& res) { _nom_image_resultat = res; }
  
   void SetGradImage(InrImage* gradim)  {    _image_gradient=gradim;  }
 

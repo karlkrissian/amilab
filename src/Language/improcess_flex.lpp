@@ -566,7 +566,6 @@ CircleMinIntSdExc    return(token::T_CircleMinIntSdExc); /*{CircleMinIntSdExc,T_
 LocalExtrema      return(token::T_LocalExtrema); /*{LocalExtrema,T_LocalExtrema}*/
 
 
-gnuplot           return(token::T_gnuplot); /*{gnuplot,T_gnuplot}*/
 histo             return(token::T_histo); /*{histo,T_histo}*/
 cumhisto          return(token::T_cumhisto); /*{cumhisto,T_cumhisto}*/
 DisplayHisto      return(token::T_DisplayHisto); /*{DisplayHisto,T_DisplayHisto}*/

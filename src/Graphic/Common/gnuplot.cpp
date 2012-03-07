@@ -48,14 +48,16 @@
 
 #include "gnuplot.hpp"
 #include <iostream>
+#include <boost/format.hpp>
+#include<stdio.h>
 
-GnuPlot::ErreurLecture::ErreurLecture( Chaine message)
+ami::GnuPlot::ErreurLecture::ErreurLecture( std::string message)
 {
   std::cerr << "GnuPlot Erreur de Lecture " << message << std::endl;
 }
 
 //----------------------------------------------------------------------
-GnuPlot ::  GnuPlot( )
+ami::GnuPlot ::  GnuPlot( )
 //
 {
 
@@ -63,9 +65,6 @@ GnuPlot ::  GnuPlot( )
 //    int i;
 
   _nb_courbes_max = 10;
-
-  _nom_donnees = new Chaine[_nb_courbes_max];
-  _titles      = new Chaine[_nb_courbes_max];
 
   _nb_points   = new int[_nb_courbes_max];
 
@@ -87,7 +86,7 @@ GnuPlot ::  GnuPlot( )
 
 
 //----------------------------------------------------------------------
-GnuPlot :: ~GnuPlot()
+ami::GnuPlot :: ~GnuPlot()
 //
 {
 
@@ -102,9 +101,6 @@ GnuPlot :: ~GnuPlot()
   delete [] _tabx;
   delete [] _taby;
 
-  delete [] _nom_donnees;
-  delete [] _titles;
-
   delete [] _nb_points;
 
 
@@ -113,7 +109,8 @@ GnuPlot :: ~GnuPlot()
 
 //----------------------------------------------------------------------
 ///
-int GnuPlot :: AddCourbe( int nb_points, float* tabx, float* taby, Chaine nom, Chaine title)
+int ami::GnuPlot :: AddCurve( int nb_points, float* tabx, float* taby, 
+                               std::string nom, std::string title)
 //
 {
 
@@ -122,18 +119,19 @@ int GnuPlot :: AddCourbe( int nb_points, float* tabx, float* taby, Chaine nom, C
 
   _nb_courbes++;
   Si _nb_courbes>_nb_courbes_max Alors
-    std::cerr << "GnuPlot::AddCourbe() \t Trop de courbes \n";
+    std::cerr << "ami::GnuPlot::AddCurve() \t Trop de courbes \n";
     return 0;
   FinSi
 
   n = _nb_courbes - 1;
   
-  _nom_donnees[n] = nom;
+  _data_names.push_back(nom);
+  _data_filenames.push_back(nom+".dat");
 
   if (title != "")
-    _titles[n] = title;
-else
-_titles[n] = _nom_donnees[n];
+    _titles.push_back(title);
+  else
+    _titles.push_back(_data_names[n]);
 
   _nb_points[n] = nb_points;
 
@@ -148,36 +146,61 @@ _titles[n] = _nom_donnees[n];
 
   return n;
 
-} // AddCourbe()
+} // AddCurve()
 
+//------------------------------------------------------------------------------
+int ami::GnuPlot::AddCurve( InrImage::ptr im, 
+                            std::string name, std::string title)
+{
+    float* tabx;
+    float* taby;
+    int x;
+    std::string fname;
+
+    tabx = new float[im->DimX()];
+    taby = new float[im->DimX()];
+
+    for (int y=0; y<im->DimY(); y++) {
+      for(x=0;x<im->DimX();x++) {
+        tabx[x] = im->SpacePosX(x);
+        taby[x] = (*im)(x,y,0);
+      }
+      //num_courbe = 
+      this->AddCurve( im->DimX(), tabx, taby, name);
+    }
+
+    fname =  (boost::format("%s.gnuplot")%name.c_str()).str();
+
+    delete [] tabx;
+    delete [] taby;
+}
 
 //----------------------------------------------------------------------
 ///
-int GnuPlot :: ReadData( Chaine nom_donnees, Chaine title) throw ( ErreurLecture)
+int ami::GnuPlot :: ReadData( std::string nom_donnees, std::string title) throw ( ErreurLecture)
 //                          --------
 {
-
-  
     FILE*  fic_donnees;    
     int i,n, nb_pts;
     float   x,y;
 
   _nb_courbes++;
   Si _nb_courbes>_nb_courbes_max Alors
-    std::cerr << "GnuPlot::AddCourbe() \t Trop de courbes \n";
+    std::cerr << "ami::GnuPlot::AddCurve() \t Trop de courbes \n";
     return 0;
   FinSi
 
   n = _nb_courbes - 1;
   
-  _nom_donnees[n] = nom_donnees;
-if (title!="")
-  _titles[n]      = title;
-else
-_titles[n] = nom_donnees;
+  _data_names.push_back(nom_donnees);
+  _data_filenames.push_back(nom_donnees+".dat");
+  if (title!="")
+    _titles.push_back(title);
+  else
+    _titles.push_back(nom_donnees);
 
   // Premiere lecture pour connaitre le nombre de points
-  fic_donnees = fopen( (char*) _nom_donnees[n], "r");
+  fic_donnees = fopen(  _data_names[n].c_str(), "r");
 
   Si fic_donnees == NULL Alors
      throw ErreurLecture( nom_donnees);
@@ -213,24 +236,22 @@ _titles[n] = nom_donnees;
 
 //----------------------------------------------------------------------
 ///
-void GnuPlot :: SaveData( int num_courbe, int type)
+void ami::GnuPlot :: SaveData( int num_courbe, int type)
 //                        --------
 {
 
-  
-    Chaine nom_donnees;
     FILE*  fic_donnees;    
     int i;
 
   Si (num_courbe < 0) Ou (num_courbe>_nb_courbes-1) Alors
-    std::cerr << "GnuPlot::SaveData()\t Erreur numero de courbe non valide ...\n";
+    std::cerr << "ami::GnuPlot::SaveData()\t Erreur numero de courbe non valide ...\n";
     return;
   FinSi
 
   switch ( type ){  
-    case TYPE_GNUPLOT: nom_donnees = _nom_donnees[num_courbe] + ".dat";
+    case TYPE_GNUPLOT: _data_filenames[num_courbe] = _data_names[num_courbe] + ".dat";
     break;
-    case TYPE_SECTION: nom_donnees = _nom_donnees[num_courbe] + ".sec";
+    case TYPE_SECTION: _data_filenames[num_courbe] = _data_names[num_courbe] + ".sec";
     break;
   } // end switch
 
@@ -239,7 +260,7 @@ void GnuPlot :: SaveData( int num_courbe, int type)
     _ymin = _taby[0][0];
   FinSi
 
-  Si (fic_donnees = fopen( (char*) nom_donnees, "w")) != NULL Alors
+  Si (fic_donnees = fopen(  _data_filenames[num_courbe].c_str(), "w")) != NULL Alors
     Pour(i,0,_nb_points[num_courbe]-1)
 
       Si _auto_sup Et _tabx[num_courbe][i]>_xmax AlorsFait _xmax = _tabx[num_courbe][i];
@@ -261,7 +282,7 @@ void GnuPlot :: SaveData( int num_courbe, int type)
     fclose( fic_donnees);
 
   Sinon
-    std::cerr << " GnuPlot::XPlot() \t Erreur dans l'ouverture du fichier de donnees\n";
+    std::cerr << " ami::GnuPlot::XPlot() \t Erreur dans l'ouverture du fichier de donnees\n";
     return;
 
   FinSi
@@ -270,13 +291,88 @@ void GnuPlot :: SaveData( int num_courbe, int type)
 
 
 //----------------------------------------------------------------------
-void GnuPlot :: XPlot( Chaine nom, int pause)
+void ami::GnuPlot::FillCommands( )
+{
+  std::string cmd;
+  _cmdlist.clear();
+  
+  if (_xtics > 0) {
+    cmd = (boost::format("set xtics 0,%f") % _xtics).str();
+    _cmdlist.push_back(cmd);
+  }
+  if (_ytics > 0) {
+    cmd = (boost::format("set ytics 0,%f") % _ytics).str();
+    _cmdlist.push_back(cmd);
+  }
+  if (_grid > 0) {
+    cmd = (boost::format("set grid")).str();
+    _cmdlist.push_back(cmd);
+  }
+
+  cmd = (boost::format("plot [%f:%f] [%f:%f] ")
+            % _xmin 
+            % _xmax 
+            % _ymin 
+            % _ymax  //*1.2
+            ).str();
+  for(int i=0; i<_nb_courbes;i++)
+  {
+    if ((i<_data_filenames.size())&&(i<_titles.size())) {
+      if (i>0) cmd += ",";
+      cmd += (boost::format(" \"%s\" title \"%s\"  with lines")
+                % _data_filenames[i].c_str() % _titles[i].c_str()).str();
+    }
+  }
+  _cmdlist.push_back(cmd);
+  
+}
+
+//------------------------------------------------------------------------------
+void ami::GnuPlot::OpenSession( )
+{
+  FILE* f = popen("gnuplot -persist","w");
+  if (f) {
+    _session = boost::shared_ptr<FILE>(f,pfile_deleter());
+  } else {
+    std::cerr << "failed to open gnuplot with popen" << std::endl;
+  }
+}
+
+//------------------------------------------------------------------------------
+void ami::GnuPlot::SessionFillCommands( )
+{
+  if (_session.get()) {
+    for(int i=0; i<_nb_courbes; i++)
+      SaveData(i);
+
+    FillCommands();
+    for(int n=0; n<_cmdlist.size();n++) 
+      fprintf( _session.get(), "%s\n", _cmdlist[n].c_str());
+  }
+  fflush(_session.get());
+}
+
+//------------------------------------------------------------------------------
+void ami::GnuPlot::SessionRun( std::string cmd)
+{
+  if (_session.get()) {
+    fprintf( _session.get(), "%s\n", cmd.c_str());
+  }
+  fflush(_session.get());
+}
+
+//------------------------------------------------------------------------------
+void ami::GnuPlot::CloseSession( )
+{
+  _session.reset();
+}
+
+//----------------------------------------------------------------------
+void ami::GnuPlot :: XPlot( std::string nom, int pause)
 //
 {
-
-  
     int i;
-    Chaine commande;
+    std::string commande;
 
 
   Pour(i,0,_nb_courbes-1)
@@ -286,22 +382,15 @@ void GnuPlot :: XPlot( Chaine nom, int pause)
   nom_script = nom;
   nom_script += ".gnuplot";
 
-  Si (fic_script = fopen( (char*) nom_script, "w")) != NULL Alors
-    fprintf( fic_script, "plot [%f:%f] [%f:%f] ",
-	     _xmin, _xmax, _ymin, _ymax*1.2);
-
-    Pour(i,0,_nb_courbes-1)
-      Si i>0 AlorsFait fprintf( fic_script, ",");
-      fprintf( fic_script, " \"%s\" title \"%s\"  with lines", 
-	        (char*) (_nom_donnees[i]+".dat"), (char*) _titles[i]);
-    FinPour
-    
-    fprintf( fic_script, "\n");
+  Si (fic_script = fopen( nom_script.c_str(), "w")) != NULL Alors
+    FillCommands();
+    for(int n=0; n<_cmdlist.size();n++) 
+      fprintf( fic_script, "%s\n", _cmdlist[n].c_str());
 
     fprintf( fic_script, "pause %d\n",pause);
     fclose( fic_script);
   Sinon
-    std::cerr << " GnuPlot::XPlot() \t ";
+    std::cerr << " ami::GnuPlot::XPlot() \t ";
     std::cerr << " Erreur dans l'ouverture du fichier gnuplot\n";
     return;
   FinSi
@@ -310,20 +399,17 @@ void GnuPlot :: XPlot( Chaine nom, int pause)
   commande  = "gnuplot  -geometry 700x200+50+600 ";
   commande += nom_script;
   commande += "&";
-  system( commande);
+  system( commande.c_str());
 
 } // Xplot()
 
 
 //----------------------------------------------------------------------
-void GnuPlot :: PSPlot( Chaine nom)
+void ami::GnuPlot :: PSPlot( std::string nom)
 //
 {
-
-  
-    int i;
-    Chaine commande;
-
+  int i;
+  std::string commande;
 
   Pour(i,0,_nb_courbes-1)
     SaveData(i);
@@ -332,34 +418,22 @@ void GnuPlot :: PSPlot( Chaine nom)
   nom_script = nom;
   nom_script += "-ps.gnuplot";
 
-  Si (fic_script = fopen( (char*) nom_script, "w")) != NULL Alors
+  Si (fic_script = fopen( nom_script.c_str(), "w")) != NULL Alors
 
     fprintf( fic_script, "set terminal postscript portrait\n");
-    fprintf( fic_script, "set size %s \n", (char*) this->size);
-    fprintf( fic_script, "set output \"%s\" \n", (char*)(nom+".ps"));
+    fprintf( fic_script, "set size %s \n", this->size.c_str());
+    fprintf( fic_script, "set output \"%s\" \n", (nom+".ps").c_str());
 
-    Si _xtics > 0 AlorsFait
-      fprintf( fic_script, "set xtics 0,%f\n", _xtics);
-    Si _ytics > 0 AlorsFait
-      fprintf( fic_script, "set ytics 0,%f\n", _ytics);
-    Si _grid AlorsFait
-      fprintf( fic_script, "set grid\n");
-
-    fprintf( fic_script, "plot [%f:%f] [%f:%f] ",
-	     _xmin, _xmax, _ymin, _ymax);
-
-    Pour(i,0,_nb_courbes-1)
-      Si i>0 AlorsFait fprintf( fic_script, ",");
-      fprintf( fic_script, " \"%s\" title \"%s\"  with lines", 
-	        (char*) _nom_donnees[i], (char*) _titles[i]);
-    FinPour
+    FillCommands();
+    for(int n=0; n<_cmdlist.size();n++) 
+      fprintf( fic_script, _cmdlist[n].c_str());
     
     fprintf( fic_script, "\n");
 
     fprintf( fic_script, "pause 2\n");
     fclose( fic_script);
   Sinon
-    std::cerr << " GnuPlot::PSPlot() \t ";
+    std::cerr << " ami::GnuPlot::PSPlot() \t ";
     std::cerr << " Erreur dans l'ouverture du fichier gnuplot " << nom_script << "\n";
     return;
   FinSi
@@ -367,6 +441,6 @@ void GnuPlot :: PSPlot( Chaine nom)
  std::cout << "nom_script = " << nom_script << std::endl;
   commande  = "gnuplot " + nom_script;
 //  commande += "&";
-  system( commande);
+  system( commande.c_str());
 
 } // PSplot()

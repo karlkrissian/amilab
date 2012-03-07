@@ -37,7 +37,6 @@ extern "C" {
 #include <stdlib.h>
 }
 
-//#include "chaine.hpp"
 #include "inrimage.hpp"
 #include "Coordonnees.hpp"
 #include "Voxel.hpp"

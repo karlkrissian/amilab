@@ -170,24 +170,24 @@ void IsoContour :: InitImagesSurf( int tx, int ty, int tz)
 {
 
 
-    Chaine nom;
+  std::string nom;
 
   nom = nom_image_resultat;
   nom += "-sections.inr.gz";
-  _image_sections = new InrImage( tx, ty, tz, WT_FLOAT, nom);
+  _image_sections = new InrImage( tx, ty, tz, WT_FLOAT, nom.c_str());
   _image_sections->InitImage(0.0);
   _image_sections->SetVoxelSize( resolution, resolution, pas_abscisse);
 
 
   nom = nom_image_resultat;
   nom += "-surfinf.inr.gz";
-  _image_surfinf = new InrImage( WT_UNSIGNED_CHAR, nom, _image_sections);
+  _image_surfinf = new InrImage( WT_UNSIGNED_CHAR, nom.c_str(), _image_sections);
   _image_surfinf->InitImage(0);
 
 
   nom = nom_image_resultat;
   nom += "-surfsup.inr.gz";
-  _image_surfsup = new InrImage( WT_UNSIGNED_CHAR, nom, _image_sections);
+  _image_surfsup = new InrImage( WT_UNSIGNED_CHAR, nom.c_str(), _image_sections);
   _image_surfsup->InitImage(0);
 
 } // InitImagesSurf()
@@ -764,10 +764,10 @@ void IsoContour :: CalculAire( float taille_voxels )
       float*          sigma0;
       float           rayon;
       float           rayon2D;
-      GnuPlot*       gnuplot;
-      Chaine         nom_plot;
+      ami::GnuPlot*       gnuplot;
+      std::string         nom_plot;
       Crest*         wireframe;
-      Chaine         nom_wireframe;
+      std::string         nom_wireframe;
       LigneCrest     ligne;
       int         num_pt;
       int         num_surfinterp;
@@ -888,31 +888,31 @@ catch (CalculAireSection::LimitesAtteintes)
     wireframe->AjouteLigne( ligne);
     nom_wireframe = nom_image_resultat;
     nom_wireframe += "-lignecentrale.crest";
-    wireframe->Sauve( nom_wireframe);
+    wireframe->Sauve( nom_wireframe.c_str());
 
     delete wireframe;
 
     // Plot des courbes
-    gnuplot = new GnuPlot( );
+    gnuplot = new ami::GnuPlot( );
 
-    gnuplot->AddCourbe(nb_points, abscisses, surf_inf,
+    gnuplot->AddCurve(nb_points, abscisses, surf_inf,
 		       nom_image_resultat + "-surface_inf" );
 
-    gnuplot->AddCourbe(nb_points, abscisses, surf_sup,
+    gnuplot->AddCurve(nb_points, abscisses, surf_sup,
 		       nom_image_resultat + "-surface_sup");
 
     Si corrige Alors
-      gnuplot->AddCourbe(nb_points, abscisses, diam_3D,
+      gnuplot->AddCurve(nb_points, abscisses, diam_3D,
 	  	       nom_image_resultat + "-diam_3D");
 
-      gnuplot->AddCourbe(nb_points, abscisses, diam_2D,
+      gnuplot->AddCurve(nb_points, abscisses, diam_2D,
 		       nom_image_resultat + "-diam_2D");
 
-      gnuplot->AddCourbe(nb_points, abscisses, sigma0,
+      gnuplot->AddCurve(nb_points, abscisses, sigma0,
 		       nom_image_resultat + "-sigma0");
     FinSi
 
-    num_surfinterp = gnuplot->AddCourbe(nb_points, abscisses, surf_interp,
+    num_surfinterp = gnuplot->AddCurve(nb_points, abscisses, surf_interp,
 					 nom_image_resultat + "-surface_interp");
 
     gnuplot->XPlot( nom_image_resultat);
@@ -947,18 +947,20 @@ catch (CalculAireSection::LimitesAtteintes)
 void IsoContour :: CreeImagesCorrection()
 //
 {
-
+  std::string tmp;
 // Creation des images
+  tmp = nom_image_resultat + "2D-sec.inr.gz";
   _section = new InrImage( _image_sections->_tx,
-			  _image_sections->_ty,
-			  1,
-			  WT_FLOAT,
-			  nom_image_resultat + "2D-sec.inr.gz");
+                            _image_sections->_ty,
+                            1,
+                            WT_FLOAT,
+                            tmp.c_str());
   _section->SetVoxelSize( resolution, resolution, 1);
 
+  tmp = nom_image_resultat + "2D-ref.inr.gz";
   _contour_ref = new InrImage( WT_UNSIGNED_CHAR,
-			      nom_image_resultat + "2D-ref.inr.gz",
-			      _section);
+                                tmp.c_str(),
+                                _section);
 
 //
   _isocontour2D = (IsoContour2D*) NULL;
@@ -1021,9 +1023,10 @@ float IsoContour :: AppliqueCorrection( int z, float rayon_3D, float& sigma0)
 // Calcul du rayon corrige:
 
   Si _isocontour2D == (IsoContour2D*) NULL Alors
+    std::string tmp = nom_image_resultat + "2D";
     _isocontour2D = new IsoContour2D( _section,
-				      nom_image_resultat + "2D",
-				      false);
+                                      tmp.c_str(),
+                                      false);
     _isocontour2D->FixeSilencieux(     true);
     _isocontour2D->FixePrecisionSigma( precision_sigma);
   Sinon

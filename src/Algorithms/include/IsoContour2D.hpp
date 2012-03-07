@@ -55,7 +55,7 @@
 #include "style.hpp"
 #include <iosfwd>
 #include "math1.hpp"
-#include "chaine.hpp"
+#include <string>
 #include "GeneralGaussianFilter.h"
 //#include "inrimage.hpp"
 #include "Voxel.hpp"
@@ -124,7 +124,7 @@ private:
   int    _contour_choisi;
 
   ///
-  Chaine    _nom_image_resultat;
+  std::string  _nom_image_resultat;
 
   ///
   float      _precision_sigma;

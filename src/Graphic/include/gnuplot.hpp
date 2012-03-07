@@ -58,162 +58,198 @@ extern "C" {
 #include <stdlib.h>
 }
 #include <stdio.h>
-#include "chaine.hpp"
+#include <string>
+#include "inrimage.hpp"
+#include <vector>
 
-#define TYPE_GNUPLOT 0
-#define TYPE_SECTION 1
+namespace ami {
 
+  ///----------------------------------------------------------------------
+  class GnuPlot
+  //
+  { 
 
-///----------------------------------------------------------------------
-class GnuPlot
-//
-{ 
-
-public:
-
-  /// Exceptions
-  class ErreurLecture
-  {
   public:
-    ErreurLecture( Chaine message);
-/*      {
-        std::cerr << "GnuPlot Erreur de Lecture " << message << std::endl;
-      }*/
-  };
 
-private:
+    #define TYPE_GNUPLOT 0
+    #define TYPE_SECTION 1
 
-  ///
-  int*  _nb_points;
+    /// Exceptions
+    class ErreurLecture
+    {
+    public:
+      ErreurLecture( std::string message);
+  /*      {
+          std::cerr << "GnuPlot Erreur de Lecture " << message << std::endl;
+        }*/
+    };
 
-  ///
-  float    _xmin;
-  ///
-  float    _xmax;
-  ///
-  float    _ymin;
-  ///
-  float    _ymax;
+  private:
 
-  ///
-  float    _xtics;
-  ///
-  float    _ytics;
+    ///
+    int*  _nb_points;
 
-  ///
-  unsigned char _grid;
+    ///
+    float    _xmin;
+    ///
+    float    _xmax;
+    ///
+    float    _ymin;
+    ///
+    float    _ymax;
 
-  ///
-  unsigned char _auto_sup;
+    ///
+    float    _xtics;
+    ///
+    float    _ytics;
 
-  ///
-  unsigned char _auto_inf;
+    ///
+    unsigned char _grid;
 
-  ///
-  float**   _tabx;
-  ///
-  float**   _taby;
+    ///
+    unsigned char _auto_sup;
 
-  ///
-  int   _nb_courbes;
-  ///
-  int   _nb_courbes_max;
+    ///
+    unsigned char _auto_inf;
 
-  /// nom du fichier pour la sauvegarde des donnees
-  Chaine*          _nom_donnees;
+    ///
+    float**   _tabx;
+    ///
+    float**   _taby;
 
-  Chaine*          _titles;
+    ///
+    int   _nb_courbes;
+    ///
+    int   _nb_courbes_max;
 
-  ///
-  FILE*            fic_script;
-  ///
-  Chaine           nom_script;
+    /// nom du fichier pour la sauvegarde des donnees
+    std::vector<std::string>  _data_names;
+    std::vector<std::string>  _data_filenames;
+    std::vector<std::string>  _titles;
 
-  ///
-  Chaine           size;
+    ///
+    FILE*            fic_script;
+    ///
+    std::string           nom_script;
 
-public:
+    FILE_ptr _session;
+    
+    ///
+    std::string           size;
 
-  ///
-   GnuPlot( );
-  //
+    /// list of gnuplot commands to run
+    std::vector<std::string> _cmdlist;
+    
+  public:
 
-  ///
-  ~GnuPlot();
-  //
-   
-  ///
-  int AddCourbe( int nb_points, float* tabx, float* taby, Chaine nom, Chaine title="");
-  //
+    ///
+    GnuPlot( );
+    //
 
-  ///
-  int ReadData( Chaine nom_donnees, Chaine title="") throw ( ErreurLecture);
-  //
+    ///
+    ~GnuPlot();
+    //
+    
+    ///
+    int AddCurve( int nb_points, float* tabx, float* taby, 
+                  std::string nom, std::string title="");
+    //
 
-  void SetSize(Chaine s) { size = s; }
+    /**
+     * @brief Adds M new curves based on NxM image.
+     *
+     * @param im ...
+     * @param name ...
+     * @param title ...
+     * @return int
+     **/
+    int AddCurve( InrImage::ptr im, 
+                  std::string name, std::string title="");
 
+    ///
+    int ReadData( std::string nom_donnees, std::string title="") throw ( ErreurLecture);
+    //
 
-  ///
-  void SaveData( int num_courbe, int type=TYPE_GNUPLOT);
-  //
- 
-  ///
-  void LimitesInf( float xmin, float ymin)
-  //
-  {
-
-  //  printf("gnuplot::LimitesInf() \n");
-
-    _xmin = xmin;
-    _ymin = ymin;
-
-    _auto_inf = false;
-
-  } // LimitesInf()
-
-
-  ///
-  void LimitesSup( float xmax, float ymax)
-  //
-  {
-
-    _xmax = xmax;
-    _ymax = ymax;
-
-    _auto_sup = false;
-
-  } // LimitesInf()
+    void SetSize(std::string s) { size = s; }
 
 
-  ///
-  void SetTics( float xtics, float ytics)
-  ///
-  {
+    ///
+    void SaveData( int num_courbe, int type=TYPE_GNUPLOT);
+    //
+  
+    ///
+    void LimitesInf( float xmin, float ymin)
+    //
+    {
 
-    _xtics = xtics;
-    _ytics = ytics;
+    //  printf("gnuplot::LimitesInf() \n");
 
-  } // SetTics()
+      _xmin = xmin;
+      _ymin = ymin;
 
-  ///
-  void SetGrid( unsigned char grid)
-  //
-  {
+      _auto_inf = false;
 
-    _grid = grid;
-
-  } // SetGrid()
+    } // LimitesInf()
 
 
-  ///
-  void XPlot( Chaine nom, int pause=2);
-  //
+    ///
+    void LimitesSup( float xmax, float ymax)
+    //
+    {
 
-  ///
-  void PSPlot( Chaine nom);
-  //
+      _xmax = xmax;
+      _ymax = ymax;
 
-}; // GnuPlot
+      _auto_sup = false;
+
+    } // LimitesInf()
+
+
+    ///
+    void SetTics( float xtics, float ytics)
+    ///
+    {
+
+      _xtics = xtics;
+      _ytics = ytics;
+
+    } // SetTics()
+
+    ///
+    void SetGrid( unsigned char grid)
+    //
+    {
+
+      _grid = grid;
+
+    } // SetGrid()
+
+
+    /// Fills the gnuplot commands in the variable _cmdlist
+    void FillCommands();
+
+    ///
+    void OpenSession( );
+
+    ///
+    void SessionFillCommands( );
+
+    ///
+    void SessionRun( std::string cmd);
+
+    ///
+    void CloseSession();
+
+    ///
+    void XPlot( std::string nom, int pause=2);
+    //
+
+    ///
+    void PSPlot( std::string nom);
+    //
+
+  }; // GnuPlot
+} // end namespace ami
 
 
 #endif // _GNUPLOT_HPP

@@ -206,24 +206,24 @@ void IsoContour2 :: InitImagesSurf( int tx, int ty, int tz)
 {
 
   
-    Chaine nom;
+    std::string nom;
 
   nom = _nom_image_resultat;
   nom += "-sections.inr.gz";
-  _image_sections = new InrImage( tx, ty, tz, WT_FLOAT, nom);
+  _image_sections = new InrImage( tx, ty, tz, WT_FLOAT, nom.c_str());
   _image_sections->InitImage(0.0);
   _image_sections->SetVoxelSize( _resolution, _resolution, _pas_abscisse);
 
 
   nom = _nom_image_resultat;
   nom += "-surfinf.inr.gz";
-  _image_surfinf = new InrImage( WT_UNSIGNED_CHAR, nom, _image_sections);
+  _image_surfinf = new InrImage( WT_UNSIGNED_CHAR, nom.c_str(), _image_sections);
   _image_surfinf->InitImage(0);
 
 
   nom = _nom_image_resultat;
   nom += "-surfsup.inr.gz";
-  _image_surfsup = new InrImage( WT_UNSIGNED_CHAR, nom, _image_sections);
+  _image_surfsup = new InrImage( WT_UNSIGNED_CHAR, nom.c_str(), _image_sections);
   _image_surfsup->InitImage(0);
 
 } // InitImagesSurf()
@@ -1090,10 +1090,10 @@ void IsoContour2 :: CalculAire( )
       float*          surf_inf;
       float*          surf_sup;
       float*          surf_interp;
-      GnuPlot*       gnuplot;
-      Chaine         nom_plot;
+      ami::GnuPlot*       gnuplot;
+      std::string         nom_plot;
       Crest*         wireframe;
-      Chaine         nom_wireframe;
+      std::string         nom_wireframe;
       LigneCrest     ligne;
       int         num_pt;
       int         num_surfinterp;
@@ -1187,20 +1187,20 @@ if (_image_un_contour==NULL)
     wireframe->AjouteLigne( ligne);
     nom_wireframe = _nom_image_resultat;
     nom_wireframe += "-lignecentrale.crest";
-    wireframe->Sauve( nom_wireframe);
+    wireframe->Sauve( nom_wireframe.c_str());
 
     delete wireframe;
 
     // Plot des courbes
-    gnuplot = new GnuPlot( );
+    gnuplot = new ami::GnuPlot( );
 
-    gnuplot->AddCourbe(nb_points, abscisses, surf_inf, 
+    gnuplot->AddCurve(nb_points, abscisses, surf_inf, 
 		       _nom_image_resultat + "-surface_inf" );
  
-    gnuplot->AddCourbe(nb_points, abscisses, surf_sup, 
+    gnuplot->AddCurve(nb_points, abscisses, surf_sup, 
 		       _nom_image_resultat + "-surface_sup");
 
-    num_surfinterp = gnuplot->AddCourbe(nb_points, abscisses, surf_interp, 
+    num_surfinterp = gnuplot->AddCurve(nb_points, abscisses, surf_interp, 
 					 _nom_image_resultat + "-surface_interp");
 
     gnuplot->XPlot( _nom_image_resultat);

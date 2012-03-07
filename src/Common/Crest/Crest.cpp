@@ -497,7 +497,7 @@ void Crest::SupprimeBarbules( int taille)
 
 
 //--------------------------------------------------------------------------
-unsigned char Crest::ReadJulio( char* nom )
+unsigned char Crest::ReadJulio( const char* nom )
 //                   ----------
 {
 
@@ -610,7 +610,7 @@ unsigned char Crest::ReadJulio( char* nom )
 
 
 //--------------------------------------------------------------------------
-unsigned char Crest ::  SaveJulio( char* nom, unsigned char lissage )
+unsigned char Crest ::  SaveJulio( const char* nom, unsigned char lissage )
 //                          ---------
 {
 
@@ -655,7 +655,7 @@ unsigned char Crest ::  SaveJulio( char* nom, unsigned char lissage )
 
 
 //--------------------------------------------------------------------------
-unsigned char Crest ::  SauveLissage( char* nom )
+unsigned char Crest ::  SauveLissage( const char* nom )
 //                          ------------
 {
 
@@ -727,7 +727,7 @@ unsigned char Crest ::  SauveSousImage( int x_min, int x_max, int y_min, int y_m
 
 
 //--------------------------------------------------------------------------
-unsigned char Crest ::  Sauve( char* nom, unsigned char lissage)
+unsigned char Crest ::  Sauve( const char* nom, unsigned char lissage)
 //                          -----
 {
 
@@ -838,7 +838,7 @@ unsigned char Crest ::  SauveWireFrame( int ligne, float voxel_size,
 
 
 //--------------------------------------------------------------------------
-unsigned char Crest ::  ReadVRML( char* name)
+unsigned char Crest ::  ReadVRML( const char* name)
 //                          --------
                     
 {
@@ -956,7 +956,7 @@ unsigned char Crest ::  ReadVRML( char* name)
 
 
 //--------------------------------------------------------------------------
-unsigned char Crest ::  SaveVRML( char* name, unsigned char lissage)
+unsigned char Crest ::  SaveVRML( const char* name, unsigned char lissage)
 //                          --------
                     
 {
@@ -1076,7 +1076,7 @@ unsigned char Crest ::  ImportVTK( vtkPolyData* poly)
 
 
 //--------------------------------------------------------------------------
-unsigned char Crest ::  ReadVTK( char* name)
+unsigned char Crest ::  ReadVTK( const char* name)
 //                          -------
                     
 {
@@ -1270,7 +1270,7 @@ fprintf(stderr,"Nb Points %d \n",_CREST_tab_points.NbElts());
 
 
 //--------------------------------------------------------------------------
-unsigned char Crest ::  SaveVTK( char* name, unsigned char lissage)
+unsigned char Crest ::  SaveVTK( const char* name, unsigned char lissage)
 //                          -------
                     
 {

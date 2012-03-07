@@ -506,7 +506,8 @@ printn "::SaveParameters end"
         # if there is a description field in the parameters
         if exists(::params->description) \
         {
-          win.AddString(&::params.description,"description")
+          ::param_description_id = \
+            win.AddString(&::params.description,"description")
         }
 
         ::PARAMfilelistgui.AddGui(&win)

@@ -118,7 +118,7 @@
 //#include "LevelSetsCURVES.h"
 #include "vtkwrap.h"
 
-#include "gnuplot.hpp"
+//#include "gnuplot.hpp"
 
 #include "xmtext.hpp"
 #include "StringUtils.hpp"
@@ -682,7 +682,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 
 %token T_atof
 
-%token T_gnuplot
+//%token T_gnuplot
 %token T_histo
 %token T_cumhisto
 %token T_DisplayHisto
@@ -3694,6 +3694,7 @@ command:
       } // end while
 
     }
+    /* deprecated
     | T_gnuplot T_OP_PAR expr_image T_COMMA expr_string T_COMMA expr T_CL_PAR
         {
         /**
@@ -3704,11 +3705,11 @@ command:
             (7) NUM: delay
         Description:
             Plots a 1D image using gnuplot.
-        **/
+        ** /
       GET_VARSTACK_VALUE(InrImage, image);
       float* tabx;
       float* taby;
-      GnuPlot   gnuplot;
+      ami::GnuPlot   gnuplot;
       int x;
       std::string name;
 
@@ -3723,7 +3724,7 @@ command:
         FinPour
         name =  (boost::format("%s_%02d")%$5%y).str();
         //num_courbe = 
-        gnuplot.AddCourbe( image->_tx, tabx, taby, name.c_str());
+        gnuplot.AddCurve( image->_tx, tabx, taby, name.c_str());
       }
 
       name =  (boost::format("%s.gnuplot")%$5).str();
@@ -3733,6 +3734,7 @@ command:
       delete [] taby;
       delete [] $5;
     }
+    */
     | T_DisplayHisto T_OP_PAR var_image  T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);

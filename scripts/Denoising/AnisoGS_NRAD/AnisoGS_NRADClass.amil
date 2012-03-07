@@ -356,15 +356,24 @@ printn "__copy__"
       SetProgress(0)
 
       if (::evaluate) {
+        del ::gp
+        ::gp = algorithms.ami_GnuPlot.GnuPlot()
         ::dw.SetYLimits(0,50)
         ::dw.SetXLimits(-2,::RMSE_evol.size()+2)
         colors = VarVector()
+        cnames = VarVector()
         colors.push_back("#000000")
+        cnames.push_back("global RMSE")
         colors.push_back("#FF0000")
+        cnames.push_back("backgound")
         colors.push_back("#DDDD00")
+        cnames.push_back("lumen")
         colors.push_back("#00FF00")
+        cnames.push_back("backgound-lumen")
         colors.push_back("#00DDDD")
+        cnames.push_back("lumen-dissection")
         colors.push_back("#0000FF")
+        cnames.push_back("dissection")
         for i=0 to ::RMSE_evol.size()-1 {
           im = Image(FLOAT,::RMSE_evol[i].size(),1,1)
           im.setvoxelsize(::params.dt,1,1)
@@ -373,10 +382,13 @@ printn "__copy__"
             im.set(::RMSE_evol[i][n])
           }
           ::dw.SetCurve(&im,i)
+          ::gp.AddCurve(&im,cnames[i])
           if (i<colors.size()) {
             ::dw.SetCurveProperties(i,colors[i])
           }
         }
+        ::gp.OpenSession()
+        ::gp.SessionFillCommands()
       }
     }
 

@@ -48,6 +48,18 @@ class file_deleter
     }
 };
 
+// for files opened with popen
+class pfile_deleter
+{
+  public:
+    void operator()(FILE * p)
+    {
+      if (p!=NULL)
+        if (p!=stdout)
+          pclose(p);
+    }
+};
+
 /// Specialization for FILE
 template<>
 class CreateSmartPointer<FILE>

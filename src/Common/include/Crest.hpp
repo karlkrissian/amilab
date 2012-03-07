@@ -387,11 +387,11 @@ public:
   //   ----------------
 
   //
-  unsigned char ReadJulio( char* nom);
+  unsigned char ReadJulio( const char* nom);
   //            ---------
 
   //
-  unsigned char SaveJulio( char* nom, unsigned char lissage=false);
+  unsigned char SaveJulio( const char* nom, unsigned char lissage=false);
   //            ---------
 
 #ifndef _WITHOUT_VTK_
@@ -400,7 +400,7 @@ public:
   //      ---------
 
   //
-  unsigned char ReadVTK( char* nom);
+  unsigned char ReadVTK( const char* nom);
   //      -------
 
   // cast to vtkPolyData
@@ -411,12 +411,12 @@ public:
 		   vtkCellArray** lines);
 
   //
-  unsigned char SaveVTK( char* nom, unsigned char lissage=false);
+  unsigned char SaveVTK( const char* nom, unsigned char lissage=false);
   //      -------
 #endif // _WITHOUT_VTK_
 
   //
-  unsigned char SauveLissage( char* nom);
+  unsigned char SauveLissage( const char* nom);
   //      ------------
  
   ///
@@ -426,7 +426,7 @@ public:
 			  int z_min, int z_max, char* nom);
 
   ///
-  unsigned char Sauve( char* nom, unsigned char lissage=false);
+  unsigned char Sauve( const char* nom, unsigned char lissage=false);
   //      -----
 
   ///
@@ -435,11 +435,11 @@ public:
 
 
   ///
-  unsigned char SaveVRML( char* name, unsigned char lissage=false);
+  unsigned char SaveVRML( const char* name, unsigned char lissage=false);
   //      --------
 
   ///
-  unsigned char ReadVRML( char* name);
+  unsigned char ReadVRML( const char* name);
   //      --------
 
   /**  

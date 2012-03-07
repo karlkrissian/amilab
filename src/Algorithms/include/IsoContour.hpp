@@ -51,7 +51,6 @@
 #include "style.hpp"
 #include <iosfwd>
 #include "math1.hpp"
-#include "chaine.hpp"
 
 #include "IsoContour2D.hpp"
 #include "Voxel.hpp"
@@ -64,6 +63,7 @@
 
 #include "PointContour.hpp"
 
+#include <string>
 
 #define EffaceImage(    im) if ( im!= (InrImage*)NULL) { delete im; im = (InrImage*)NULL;}
 #define EffaceTabReel(  im) if ( im!= (float*)    NULL) { delete[] im; im = (float*)NULL;}
@@ -84,7 +84,7 @@ extern int    nbpts_ligne;
 extern unsigned char   Sauve;
 extern unsigned char   corrige;
 extern float      precision_sigma;
-extern Chaine    nom_image_resultat;
+extern std::string    nom_image_resultat;
 extern float      pas_abscisse;
 extern int    contour_choisi;
 

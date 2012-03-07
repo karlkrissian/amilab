@@ -96,23 +96,23 @@ void IsoContour2D :: InitImagesSurf( int tx, int ty, int tz,
 {
 
 
-    Chaine nom;
+    std::string nom;
 
   nom = _nom_image_resultat;
   nom += "-sections.inr.gz";
-  _image_sections = new InrImage( tx, ty, tz, WT_FLOAT, nom);
+  _image_sections = new InrImage( tx, ty, tz, WT_FLOAT, nom.c_str());
   _image_sections->InitImage(0.0);
   _image_sections->SetVoxelSize( resolution, resolution, 1);
 
   nom = _nom_image_resultat;
   nom += "-surfinf.inr.gz";
-  _image_surfinf = new InrImage( WT_UNSIGNED_CHAR, nom, _image_sections);
+  _image_surfinf = new InrImage( WT_UNSIGNED_CHAR, nom.c_str(), _image_sections);
   _image_surfinf->InitImage(0);
 
 
   nom = _nom_image_resultat;
   nom += "-surfsup.inr.gz";
-  _image_surfsup = new InrImage( WT_UNSIGNED_CHAR, nom, _image_sections);
+  _image_surfsup = new InrImage( WT_UNSIGNED_CHAR, nom.c_str(), _image_sections);
   _image_surfsup->InitImage(0);
 
 
@@ -188,20 +188,24 @@ IsoContour2D ::  IsoContour2D( InrImage* image_initiale,
     _image_initiale     = image_initiale;
     _nom_image_resultat = nom_res;
     _sauve              = sauve;
+    std::string tmp;
 
+    tmp = _nom_image_resultat + "-num_contour.inr.gz";
     _image_num_contour = new InrImage( WT_FLOAT,
-				       _nom_image_resultat + "-num_contour.inr.gz",
-				       _image_initiale);
+                                      tmp.c_str(),
+                                      _image_initiale);
     _image_num_contour->InitImage(0.0);
 
+    tmp = _nom_image_resultat + "-contour.inr.gz";
     _image_contour = new InrImage( WT_FLOAT,
-				   _nom_image_resultat + "-contour.inr.gz",
-				   _image_initiale);
+                                    tmp.c_str(),
+                                    _image_initiale);
     _image_contour->InitImage(0.0);
 
+    tmp = _nom_image_resultat + "-contours.inr.gz";
     _image_contours = new InrImage( WT_FLOAT,
-				    _nom_image_resultat + "-contours.inr.gz",
-				    _image_initiale);
+                                    tmp.c_str(),
+                                    _image_initiale);
     _image_contours->InitImage(0.0);
 
     _coord_sommet[0].x = 0;

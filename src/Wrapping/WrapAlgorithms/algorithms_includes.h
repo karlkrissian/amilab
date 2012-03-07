@@ -31,6 +31,7 @@
 
 #include "amiSRAD.h"
 
+#include "gnuplot.hpp"
 
 // why do I need this include ??
 //#include "vcl_config_compiler.h"

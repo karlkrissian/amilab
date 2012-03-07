@@ -30,3 +30,6 @@ ami::SRAD
 
 ami::AnisoGS
 ami::AnisoGS_NRAD
+
+# ami::GnuPlot
+ami::GnuPlot
