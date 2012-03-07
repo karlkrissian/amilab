@@ -1,0 +1,11 @@
+
+func "ImageDifferencesClass"
+
+if (!exists(ImageDifferences_obj)) {
+  ImageDifferencesClass ImageDifferences_obj
+  ImageDifferences_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

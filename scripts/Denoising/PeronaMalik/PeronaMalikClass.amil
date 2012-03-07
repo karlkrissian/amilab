@@ -180,11 +180,10 @@ if (!exists(PeronaMalikClass)) {
     //---------------------------------------------------
     proc ::Gui() {
     
-      import = &global::ami_import;
       if (exists(::parent_panel)) {
-        ::win = import->ParamPanel("PeronaMalik",&::parent_panel)
+        ::win = ParamPanel("PeronaMalik",&::parent_panel)
       } else {
-        ::win = import->ParamPanel("PeronaMalik")
+        ::win = ParamPanel("PeronaMalik")
       }
       
       ::win.BeginBook()
@@ -215,7 +214,7 @@ if (!exists(PeronaMalikClass)) {
           ::win.AddButton("Run Filter on second image",::RunOnInput2)
           ::win.AddButton("Display",::Display)
 
-        if wx.wxFileName(::html_filename)._FileExists() {
+        if wx.wxFileName(::html_filename).FileExists() {
           ::AddHelpPage(&::win)
         }
     

@@ -5,6 +5,9 @@ if (!exists(AnisoGS_NRADClass)) {
 
   Class AnisoGS_NRADClass : public ScriptGui \
   {
+    # load the Level Sets Gui script
+    func "QualityMeasures/ImageDifferences/ImageDifferencesClass.amil"
+    ImageDifferencesClass            ::im_diff
     
     func "Variable/ObjectIO"
     #===========================================================================
@@ -25,6 +28,13 @@ if (!exists(AnisoGS_NRADClass)) {
                                   "the window size is (2n+1)^3, "+\
                                   "where n is the parameter"
   
+        ::ST_sigma1 = 0.7, "Gaussian convolution standard deviation for "+\
+                        "computing the local structure (inner convolution)"
+
+        ::ST_sigma2 = 1, "Gaussian convolution standard deviation for "+\
+                        "computing the local structure (outer convolution)"
+
+        # should be equal to ::ST_sigma2, kept for compatibility
         ::sigma = 0.7,  "Gaussian convolution standard deviation for "+\
                         "computing the local structure"
 
@@ -80,6 +90,8 @@ printn "__assign__"
           ::t                     = p.t
           ::dt                    = p.dt
           ::neighborhood          = p.neighborhood
+          ::ST_sigma1             = p.ST_sigma1
+          ::ST_sigma2             = p.ST_sigma2
           ::sigma                 = p.sigma
           ::local_struct          = p.local_struct
           ::eigen_mode            = p.eigen_mode
@@ -101,6 +113,8 @@ printn "__copy__"
           newp.t                     = ::t
           newp.dt                    = ::dt
           newp.neighborhood          = ::neighborhood
+          newp.ST_sigma1             = ::ST_sigma1
+          newp.ST_sigma2             = ::ST_sigma2
           newp.sigma                 = ::sigma
           newp.local_struct          = ::local_struct
           newp.eigen_mode            = ::eigen_mode
@@ -130,11 +144,12 @@ printn "__copy__"
                         "Disk filename for the resulting image."
 
       ::ParamClass ::params
-      
       ::trace_voxel = UCHAR(0)
       ::trace_voxel_x = INT(0)
       ::trace_voxel_y = INT(0)
       ::trace_voxel_z = INT(0)
+
+      ::evaluate = UCHAR(false), "Evaluate result at each iteration"
 
       #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
       # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
@@ -188,30 +203,55 @@ printn "__copy__"
     Comments( ::GetRoi, "Select the Region of Interest (ROI) for noise estimation.")
 
     #---------------------------------------------------------------------------
-    proc ::FilterFlux() \
+    proc ::FilterNRAD_Init() \
     {
       if (!exists(::input)) {
         ::load_input()
       }
-      numit = ::params.t/::params.dt
       # running on the squared image
-      squared=(::params.noise_models[::params.noise_model] == "Rician")
-      if squared {
-        input1 = ::input*::input
+      ::squared=(::params.noise_models[::params.noise_model] == "Rician")
+      if ::squared {
+        ::input1 = ::input*::input
       } else {
-        input1 = ::input
+        ::input1 = ::input
       }
       if (::params.run_on_roi) {
-        input1 <<= input1[::roi.GetExtent]
+        ::input1 <<= ::input1[::roi.GetExtent]
       }
-    
       del ::NRADfilter
       ::NRADfilter = algorithms.ami_AnisoGS_NRAD.AnisoGS_NRAD()
-      
+      ::NRADfilter.Init(&::input1,::params.nb_threads)
+      ::NRADfilter.SetInputIsSquared(::squared)
+
+      if (::evaluate) {
+        ::im_diff.SetInput(&::input1)
+        ::im_diff.quiet = true
+        ok = ::im_diff.Run()
+        if (ok) {
+          del ::RMSE_evol
+          ::RMSE_evol = VarVector()
+          for i=0 to ::im_diff.regions_info.size()-1 {
+            printn "region %1%" % i
+            printn "*** RMSE %1%" % ::im_diff.regions_info[i].RMSE
+            del rmse
+            rmse = vector_float()
+            rmse.push_back(::im_diff.regions_info[i].RMSE)
+            ::RMSE_evol.push_back(&rmse)
+          }
+        }
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::FilterNRAD_Params() \
+    {
       ::NRADfilter.Settrace_voxel(::trace_voxel)
       ::NRADfilter.Settrace_voxel_x(::trace_voxel_x)
       ::NRADfilter.Settrace_voxel_y(::trace_voxel_y)
       ::NRADfilter.Settrace_voxel_z(::trace_voxel_z)
+
+      ::NRADfilter.SetST_sigma1(::params.ST_sigma1)
+      ::NRADfilter.SetST_sigma2(::params.ST_sigma2)
 
       if (::params.scheme==0) {
         ::NRADfilter.Setnum_scheme(algorithms.ami_AnisoGSBase.SEMIIMPLICIT)
@@ -223,8 +263,6 @@ printn "__copy__"
       # data attachment = 0
       # init must be called first since it calls InitParams() that
       # resets all the parameters
-      ::NRADfilter.Init(&input1,::params.sigma,::params.nb_threads)
-
       ::NRADfilter.SetUseNewConvolutionFilter(\
           ::params.use_new_convolution_filter)
       if (::params.noise_models[::params.noise_model] == "Rician") {
@@ -235,7 +273,6 @@ printn "__copy__"
                                       NOISE_GAUSSIAN_ADDITIVE)
       }
       ::NRADfilter.Setnoise_estimation_neighborhood(::params.noise_estim_neigh)
-      ::NRADfilter.SetInputIsSquared(squared)
 
       ::NRADfilter.SetUseLinearInterpolation(::params.use_linearinterp)
 
@@ -255,55 +292,17 @@ printn "__copy__"
     
       ::NRADfilter.Setlocal_structure_mode(::params.local_struct)
       ::NRADfilter.Setdiffusion_eigenvalues_mode(::params.eigen_mode)
-    
-      # process iterations
-      ::res0 <<= ::NRADfilter.GetOutput()
-      if (::params.run_on_roi) {
-        ::res <<= ::input
-        if squared {
-          ::res0 = sqrt(::res0)
-        }
-        ::res.putimage(::res0)
-      } else {
-        if squared {
-          ::res <<= sqrt(::res0)
-        }
-      }
+    }
 
-      # Output estimated noise standard deviation
-      if ::params.noise_models[::params.noise_model] == "Rician" {
-        noise_variance = ::NRADfilter.Compute_sigma2_MRI_mode(&input1)
-      } else {
-        noise_variance = ::NRADfilter.Compute_sigma2_Gaussian_mode(&input1,\
-                          ::params.noise_estim_neigh)
-      }
-      printn " ------------------------"
-      printn " Noise Standard Deviation  = %1% " % sqrt(noise_variance)
-      printn " Variance = %1%" % noise_variance
-      printn " ------------------------"
-
-      fn = wx.wxFileName(::result_filename+"_noise.txt")
-      if !(fn.IsDirWritable()) {
-        fn.Assign(wx.wxFileName.GetTempDir(),fn.GetFullName())
-      printn "Set File as %1%" % fn.GetFullPath().c_str()
-      }
-      if fn.IsDirWritable() {
-        noisefile = File(fn.GetFullPath().c_str(),"w")
-        noisefile._print( "noise SD = %1% \n" % sqrt(noise_variance))
-      
-        if (exists(::exact_noise_sd)) {
-          noise_variance = ::exact_noise_sd*::exact_noise_sd
-          printn " Using Given Variance = %1%" % noise_variance
-          noisefile._print( "exact noise SD = %1% \n" % sqrt(noise_variance))
-        }
-        del noisefile
-      }
-
+    #---------------------------------------------------------------------------
+    proc ::FilterNRAD_Iterations() \
+    {
       #  show ::res
       #  ::input_draw.compare(::res)
       SetProgress(0)
       RestartTime; InitTime
       cancel = false
+      numit = ::params.t/::params.dt
       for k=1 to numit {
         if (!cancel) {
           #if (k>1) { ::NRADfilter.SetEstimateNoiseSTD(false); }
@@ -339,14 +338,110 @@ printn "__copy__"
           SetProgress((FLOAT)k/numit*100)
           show ::res
           ProcessXEvents(50)
+
+          if (::evaluate) {
+            ::im_diff.SetInput(&::res)
+            ::im_diff.quiet = true
+            ::im_diff.Run()
+            for i=0 to ::im_diff.regions_info.size()-1 {
+              printn "region %1%" % i
+              printn "*** RMSE %1%" % ::im_diff.regions_info[i].RMSE
+              ::RMSE_evol[i].push_back(::im_diff.regions_info[i].RMSE)
+            }
+          }
         }
       }
       EndTime
       SetStatusText( "processing time: "+TimeSpent)
       SetProgress(0)
+
+      if (::evaluate) {
+        ::dw.SetYLimits(0,50)
+        ::dw.SetXLimits(-2,::RMSE_evol.size()+2)
+        colors = VarVector()
+        colors.push_back("#000000")
+        colors.push_back("#FF0000")
+        colors.push_back("#DDDD00")
+        colors.push_back("#00FF00")
+        colors.push_back("#00DDDD")
+        colors.push_back("#0000FF")
+        for i=0 to ::RMSE_evol.size()-1 {
+          im = Image(FLOAT,::RMSE_evol[i].size(),1,1)
+          im.setvoxelsize(::params.dt,1,1)
+          for n=0 to ::RMSE_evol[i].size()-1 {
+            im.setpos(n,0,0)
+            im.set(::RMSE_evol[i][n])
+          }
+          ::dw.SetCurve(&im,i)
+          if (i<colors.size()) {
+            ::dw.SetCurveProperties(i,colors[i])
+          }
+        }
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::FilterNRAD() \
+    {
+      ::FilterNRAD_Init()
+    
+      ::FilterNRAD_Params()
+    
+      # process iterations
+      ::res0 <<= ::NRADfilter.GetOutput()
+      if (::params.run_on_roi) {
+        ::res <<= ::input
+        if ::squared {
+          ::res0 = sqrt(::res0)
+        }
+        ::res.putimage(::res0)
+      } else {
+        if ::squared {
+          ::res <<= sqrt(::res0)
+        }
+      }
+
+      # Output estimated noise standard deviation
+      if ::params.noise_models[::params.noise_model] == "Rician" {
+        noise_variance = ::NRADfilter.Compute_sigma2_MRI_mode(&input1)
+      } else {
+        noise_variance = ::NRADfilter.Compute_sigma2_Gaussian_mode(&::input1,\
+                          ::params.noise_estim_neigh)
+      }
+      printn " ------------------------"
+      printn " Noise Standard Deviation  = %1% " % sqrt(noise_variance)
+      printn " Variance = %1%" % noise_variance
+      printn " ------------------------"
+
+      fn = wx.wxFileName(::result_filename+"_noise.txt")
+      if !(fn.IsDirWritable()) {
+        fn.Assign(wx.wxFileName.GetTempDir(),fn.GetFullName())
+      printn "Set File as %1%" % fn.GetFullPath().c_str()
+      }
+      if fn.IsDirWritable() {
+        noisefile = File(fn.GetFullPath().c_str(),"w")
+        noisefile._print( "noise SD = %1% \n" % sqrt(noise_variance))
+      
+        if (exists(::exact_noise_sd)) {
+          noise_variance = ::exact_noise_sd*::exact_noise_sd
+          printn " Using Given Variance = %1%" % noise_variance
+          noisefile._print( "exact noise SD = %1% \n" % sqrt(noise_variance))
+        }
+        del noisefile
+      }
+
+      ::FilterNRAD_Iterations()
     
     }
     
+    #---------------------------------------------------------------------------
+    proc ::FilterNRAD_Continue() \
+    {
+      if (exists(::NRADfilter)) {
+        ::FilterNRAD_Iterations()
+      }
+    }
+
     #---------------------------------------------------------------------------
     proc ::Filter() {
       inittime = wx.wxDateTime.UNow()
@@ -359,7 +454,7 @@ printn "__copy__"
         ::roi = ::input
       }
   
-      ::FilterFlux()
+      ::FilterNRAD()
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = diff.Format("%M min %S s %l ms").c_str()
       SetStatusText("Denoising \tDone (%1%)" % time_elapsed)
@@ -453,6 +548,9 @@ printn "__copy__"
 
           ::mat_boxid = ::win.BeginBoxPanel("Matrix diffusion parameters")
             ::sigma_id = ::win.AddFloat( &::params.sigma,"sigma",0.01,10)
+            ::win.Enable(::sigma_id,false)
+            ::win.AddFloat( &::params.ST_sigma1,"sigma1",0.01,10)
+            ::win.AddFloat( &::params.ST_sigma2,"sigma2",0.01,10)
 
             ::localstruct_id = ::win.AddEnum( &::params.local_struct,\
                                               "Local Struct.")
@@ -485,6 +583,8 @@ printn "__copy__"
               ::AddBitmapButton(&::win, &::icons._Stop,      32, "Cancel")
               ::win.SetPositionProp(-1,0)
             ::win.EndHorizontal()
+            ::win.AddButton("Continue",&::FilterNRAD_Continue)
+            ::win.AddBoolean( &::evaluate,"Evaluate result")
             ::win.AddBoolean( &::params.run_on_roi,"Run on ROI")
             ::win.AddBoolean( &::params.use_new_convolution_filter,\
                               "New Convolution")
@@ -523,8 +623,22 @@ printn "__copy__"
           ::AddHelpPage(&::win)
         }
     
-      ::win.EndBook()
     
+      ::win.AddPage("Eval")
+        ::win.BeginBook()
+          ::im_diff.SetParentPanel(&::win)
+          ::im_diff.Gui()
+          ::win.AddPage("ImDiff",&::im_diff.win)
+
+          ::win.AddPage("Curves")
+            ::dw = wxDrawingWindow(&::win.CurrentParent())
+            ::dw.SetMinSize(&wx.wxSize(50,300))
+            ::dw.SetBackgroundColour(\
+                &wx.wxColour(255,255,255))
+            ::win.AddWidget(&::dw,0)
+        ::win.EndBook()
+      ::win.EndBook()
+
       ::AddStandardButtons(&::win)
 
       if (exists(::parent_panel)) {

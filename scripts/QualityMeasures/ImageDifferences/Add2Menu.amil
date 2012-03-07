@@ -1,0 +1,17 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddMenuImageDifferences() \
+{
+  category = "&PDI"
+  script = "PDI/ImageDifferences/ImageDifferencesGui.amil"
+
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"&ImageDifferences",script)
+}
+
+AddMenuImageDifferences()
+del AddMenuImageDifferences

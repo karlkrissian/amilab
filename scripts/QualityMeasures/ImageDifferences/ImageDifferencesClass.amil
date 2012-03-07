@@ -1,40 +1,57 @@
-#!/usr/bin/amilab
 
-#
-# Non Local Means GUI
-#
-# Based on the work of Buades et al.
-#
-
-# call 
-# NLM_init( IMAGE)
-#
-# result in NLM_res
-#
-
-# NLM_resultname = $2
 func "Common/ScriptGui"
 
-if (!exists(MSEClass)) {
+if (!exists(ImageDifferencesClass)) {
 
-  Class MSEClass : public ScriptGui {
-
-    #----------------------------
-    proc ::Init() \
-    {
-        ::input_name          =  "", "input image"
-        ::groundtruth_name    =  "", "ground truth image" 
-        ::regions_name        = "", "image regions"
-        ::RMSE_string         = "", "Root Mean Square Error value"
-        ::MSE_string          = "", "Mean Square Error value"
-        ::MAE_string          = "", "Mean Absolute Error value"
-        ::PSNR_string         = "", "Pick Signal To Noise Ratio value"
-        ::display_error_image = UCHAR(0), "Display the image of errors"
-        ::border              = INT(0), "Remove border"
-        ::CreateWindow()
-    }
+  Class ImageDifferencesClass : public ScriptGui \
+  {
     
-    #----------------------------
+    func "Variable/ObjectIO"
+    #===========================================================================
+    # Set parameters here
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+
+        #-----------------------------------------------------------------------
+        # copy parameters
+        proc ::__assign__( VAR p) {
+        }
+    }
+
+    Class ::RegionInfo {
+      ::RMSE = 0
+      ::MSE  = 0
+      ::MAE  = 0
+      ::size = 0
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      
+      ::input_name   = "","Name of the input image variable"
+
+      #::ParamClass ::params
+      ::groundtruth_name    =  "", "ground truth image" 
+      ::regions_name        = "", "image regions"
+      ::RMSE_string         = "", "Root Mean Square Error value"
+      ::MSE_string          = "", "Mean Square Error value"
+      ::MAE_string          = "", "Mean Absolute Error value"
+      ::PSNR_string         = "", "Pick Signal To Noise Ratio value"
+      ::display_error_image = UCHAR(0), "Display the image of errors"
+      ::border              = INT(0), "Remove border"
+      ::quiet               = false
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+\
+                        "/ImageDifferences/Doc/ImageDifferences/index.html"
+    }
+
+    #---------------------------------------------------------------------------
     proc ::LoadInput() \
     {
       printn "evaluation of --> ::input <<="+::input_name+";"
@@ -47,7 +64,16 @@ if (!exists(MSEClass)) {
       ::CheckInputs()
     }
     
-    #----------------------------
+    #---------------------------------------------------------------------------
+    proc ::SetInput(IMAGE _in) \
+    {
+      del ::input
+      ::input =&_in
+      ::win.Update(-1)
+      ::CheckInputs()
+    }
+
+    #---------------------------------------------------------------------------
     proc ::LoadGroundTruth() \
     {
       printn "evaluation of --> ::gt <<="+::groundtruth_name+";"
@@ -60,7 +86,7 @@ if (!exists(MSEClass)) {
       ::CheckInputs()
     }
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::LoadRegions() \
     {
       printn "evaluation of --> ::regions <<="+::regions_name+";"
@@ -73,7 +99,7 @@ if (!exists(MSEClass)) {
       ::CheckInputs()
     }
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::Display() \
     {
       if (exists(::input_draw)) { del ::input_draw; }
@@ -84,7 +110,7 @@ if (!exists(MSEClass)) {
     }
     
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::CheckInputs() \
     {
       input_ok =  (exists(::input)&&exists(::gt))
@@ -102,7 +128,7 @@ if (!exists(MSEClass)) {
       ::win.EnablePanel(::display_panel,(input_ok&&size_ok))
     }
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::Run() \
     {
       # test for ROI and for noise type ??
@@ -122,17 +148,30 @@ if (!exists(MSEClass)) {
           ::RMSE = sqrt(::MSE)
           ::MAE = mean[mask](abs(::input-::gt))
           if exists(::regions) {
+            del ::regions_info
+            ::regions_info = VarVector()
+            del ri
+            ::RegionInfo ri
+            ri.MSE  =::MSE
+            ri.RMSE =::RMSE
+            ri.MAE  =::MAE
+            ::regions_info.push_back(&ri)
             n = floor(max(::regions))
             for i=0 to n {
               mask1 = mask*(::regions==i)
               if count(mask)>0 {
-                printn "Region %1%" %i
-                MSE = mean[mask1]((::input-::gt)*(::input-::gt))
-                RMSE = sqrt(MSE)
-                MAE = mean[mask1](abs(::input-::gt))
-                printn "MSE  = %1%, " % MSE + \
-                       "RMSE = %1%, " % RMSE + \
-                       "MAE  = %1%, " % MAE 
+                del ri
+                ::RegionInfo ri
+                ri.MSE = mean[mask1]((::input-::gt)*(::input-::gt))
+                ri.RMSE = sqrt(ri.MSE)
+                ri.MAE = mean[mask1](abs(::input-::gt))
+                ::regions_info.push_back(&ri)
+                if (!::quiet) {
+                  printn "Region %1%" %i
+                  printn "MSE  = %1%, " % ri.MSE + \
+                        "RMSE = %1%, " % ri.RMSE + \
+                        "MAE  = %1%, " % ri.MAE 
+                }
               } // end if
             } // end for
           }
@@ -144,13 +183,19 @@ if (!exists(MSEClass)) {
         ::PSNR_string = "%1%" %::PSNR
 
         ::win.Update(-1)
+        return=true
       } else {
-        InfoDialog "You need to load the input and ground truth first"
+        if (!::quiet) {
+          InfoDialog "You need to load the input and ground truth first"
+        } else {
+          printn "You need to load the input and ground truth first"
+        }
+        return=false
       }
     }
     
     
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::DisplayErrorImage() \
     {
       if (::display_error_image) {
@@ -165,7 +210,7 @@ if (!exists(MSEClass)) {
       }
     }
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::DisplayDiff() \
     {
       show ::input
@@ -174,11 +219,14 @@ if (!exists(MSEClass)) {
       ::input_draw.compare(&::diff_draw)
     }
 
-    #----------------------------
-    proc ::CreateWindow() {
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
     
-      # parameters window
-      ::win = ParamPanel("ImDiff")
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("ImageDifferences",&::parent_panel)
+      } else {
+        ::win = ParamPanel("ImageDifferences")
+      }
       
       ::win.BeginBook()
     
@@ -229,35 +277,21 @@ if (!exists(MSEClass)) {
       ::win.EndBook()
 
       ::AddStandardButtons(&::win)
-      
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
       ::win.Update(-1)
-      ::win.Display()
       ::CheckInputs()
+
+
     }
-
     ::Init()
-  } 
-  # Class MSEClass
-} 
-# end if (!exists(MSEClass))
-  
-  
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(mse)) {
-
-  MSEClass mse
-  
-  if (argc>=1) {
-    printn "reading image"
-    input = Image($1)
-    mse->image_name = "input"
-    mse->win.Update(-1)
+    
   }
-
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
-
+  # End of class
+  
+} 
+# End of If

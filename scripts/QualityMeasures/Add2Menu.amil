@@ -7,9 +7,6 @@
 
 
 proc AddSegMenu() {
-
-  ami.MainFrame.AddToMenu("&Scripts","&QualityMeasures","Image &Differences", "QualityMeasures/MSE.amil" )
-
   for dir in  "ROC" \
   {
     if wx.wxFileName(GetScriptsDir+"/QualityMeasures/"+dir+"/Add2Menu.amil").FileExists() {
@@ -22,5 +19,10 @@ proc AddSegMenu() {
 
 AddSegMenu()
 del AddSegMenu
- ami.MainFrame.AddToMenu("&Scripts","&QualityMeasures","&EdgeQuality",  "QualityMeasures/EdgeQuality/EdgeQualityGui")
+
+#ami.MainFrame.AddToMenu("&Scripts","&QualityMeasures","Image &Differences", "QualityMeasures/MSE.amil" )
+
+ami.MainFrame.AddToMenu("&Scripts","&QualityMeasures","&EdgeQuality",  "QualityMeasures/EdgeQuality/EdgeQualityGui")
+
+ami.MainFrame.AddToMenu("&Scripts","&QualityMeasures","&ImageDifferences",  "QualityMeasures/ImageDifferences/ImageDifferencesGui")
 

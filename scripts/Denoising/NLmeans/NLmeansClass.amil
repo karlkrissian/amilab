@@ -373,6 +373,7 @@ if (!exists(NLmeansClass)) {
     #----------------------------
     proc ::Run() \
     {
+      RestartTime; InitTime
       if (!exists(::input)) { ::LoadInput(); }
       ::stop = 0
       if (!exists(::res)) {
@@ -393,6 +394,9 @@ if (!exists(NLmeansClass)) {
         ::ComputeMSE(::res)
       } 
       # end for k
+
+      EndTime
+      SetStatusText( "processing time: "+TimeSpent)
 
       eval "global::"+::result_image_name+"<<="+"::res;"
     }
