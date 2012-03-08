@@ -309,12 +309,17 @@ void ami::GnuPlot::FillCommands( )
     _cmdlist.push_back(cmd);
   }
 
-  cmd = (boost::format("plot [%f:%f] [%f:%f] ")
+  cmd = (boost::format("set xrange [%f:%f] ")
             % _xmin 
-            % _xmax 
+            % _xmax ).str();
+  _cmdlist.push_back(cmd);
+
+  cmd = (boost::format("set yrange [%f:%f] ")
             % _ymin 
-            % _ymax  //*1.2
-            ).str();
+            % _ymax ).str();
+  _cmdlist.push_back(cmd);
+        
+  cmd = "plot ";
   for(int i=0; i<_nb_courbes;i++)
   {
     if ((i<_data_filenames.size())&&(i<_titles.size())) {

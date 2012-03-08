@@ -400,6 +400,9 @@ namespace ami {
 
     AddSetGetVar( EstimateNoiseSTD,        bool);
 
+    AddSetGetVar( planstats_sigma,          double);
+    AddSetGetVar( dirstats_sigma,           double);
+
     InrImage* Getresult_image() 
     { 
       return this->result_image; 
@@ -414,8 +417,6 @@ namespace ami {
     
     InrImage* divFim        ;
 
-    double   planstats_sigma;
-    double   dirstats_sigma;
 
     unsigned char   image_entree_allouee;
     int       boundary_extension_size;
