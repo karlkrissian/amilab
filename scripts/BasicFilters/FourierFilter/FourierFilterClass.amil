@@ -91,7 +91,7 @@ if (!exists(FourierFilterClass)) {
     proc ::UpdateFilterCurve() \
     {
       if (!exists(::input)) {
-        Infodialog "First load the input image !"
+        InfoDialog "First load the input image !"
       } else {
         maxdist = sqrt(::input.tx*::input.tx+::input.ty*::input.ty)/2
         ::dist_curv <<= Image(FLOAT,maxdist+1,1,1)

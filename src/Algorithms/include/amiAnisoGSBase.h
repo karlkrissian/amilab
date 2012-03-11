@@ -335,6 +335,9 @@ namespace ami {
 
     /// PDE time-step
     AddSetGetVar(dt,float);
+    
+    /// Total diffusion time
+    double T;
 
     /// Size of the neighborhood
     AddSetGetVar(neighborhood,int);

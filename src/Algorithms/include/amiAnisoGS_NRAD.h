@@ -80,6 +80,7 @@ namespace ami {
     bool debug_voxel;
     // estimated noise variance
     double sigma2;
+    double sigma2_initial;
   
     
     struct IterationInfo {

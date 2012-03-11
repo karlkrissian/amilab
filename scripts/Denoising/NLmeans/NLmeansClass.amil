@@ -20,6 +20,60 @@ if (!exists(NLmeansClass)) {
     
   Class NLmeansClass : public ScriptGui{
   
+    func "Variable/ObjectIO"
+    #===========================================================================
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+        #
+        # Filter type
+        #
+        ::filter_mode = INT(0), "Filter mode: 0 for standard, 1 for MRI, " + \
+                                "2 for feature-based, 3 for fast"
+
+        ::noisetype = INT(1), "noise type: 0 additive Gaussian, 1: Rician"
+        ::threads   = INT(2)
+
+        ::f =INT (2),     "Patch window size"
+        ::t = INT(4),     "Match window area"
+
+        #  
+        ::h = 10, "Threshold for distance"
+        # 
+        ::sigma = 1, "Sigma: standard deviation of the Gaussian smoothing " +\
+                      "for fast version"
+        # 
+        ::usegrad = UCHAR(0), "use the norm of the gradient as a feature"
+    
+        # 
+        ::filter_type = INT(0), "0: standard 1: probability variant"
+        #  
+        ::presmooth_SD = 0, "standard deviation of Gaussian pre-smoothing"
+    
+        ::pattern_weight_param = 0.5, "Size of the Gaussian weighting " + \
+                "function for the pattern similarity, the standard deviation "+\
+                "of the Gaussian is pattern_weight_param*f"
+
+        ::minweight = 15, "sets the minimal weight threshold is exp(-minweight)"
+        # 
+        ::iterations = INT(1), "Number of iterations"
+
+        #-----------------------------------------------------------------------
+        proc ::__assign__( OBJECT p) {
+          printn "__assign__"
+          ::filter_mode           = p.filter_mode
+        }
+        #-----------------------------------------------------------------------
+        proc ::__copy__( ) {
+          printn "__copy__"
+          ::ParamClass newp
+          newp.filter_mode           = ::filter_mode
+          return = &newp
+        }
+    }
+
     #----------------------------
     proc ::Init() \
     {
@@ -28,39 +82,16 @@ if (!exists(NLmeansClass)) {
 
       ::result_filename = "NLM_result.ami.gz", "filename for saving the resulting image to disk"
 
-      #
-      # Filter type
-      #
-      ::filter_mode = INT(0), "Filter mode: 0 for standard, 1 for MRI, 2 for feature-based, 3 for fast"
+      ::ParamClass ::params
 
-      ::noisetype = INT(1), "noise type: 0 additive Gaussian, 1: Rician"
-      ::threads   = INT(2)
-
-      ::f =INT (2),     "Patch window size"
-      ::t = INT(4),     "Match window area"
-
-      #  
-      ::h = 10, "Threshold for distance"
-      # 
-      ::sigma = 1, "Sigma: standard deviation of the Gaussian smoothing for fast version"
-      # 
-      ::usegrad = UCHAR(0), "use the norm of the gradient as a feature"
-  
-      # 
-      ::filter_type = INT(0), "0: standard 1: probability variant"
-      #  
-      ::presmooth_SD = 0, "standard deviation of Gaussian pre-smoothing"
-  
-      ::pattern_weight_param = 0.5, "Size of the Gaussian weighting function for the pattern similarity, the standard deviation of the Gaussian is pattern_weight_param*f"
-
-      ::minweight = 15, "sets the minimal weight threshold is exp(-minweight)"
-      # 
-      ::iterations = INT(1), "Number of iterations"
       ::stop =0
       ::show_images = UCHAR(1)
       ::mse = 0
       ::surf_scaling = 0.1
       #::Gui()
+
+      ::html_filename = op_system.GetCurrentScriptDir()+\
+                        "/Doc/AnisoGS_NRAD/index.html"
     }
     
     #----------------------------
@@ -88,7 +119,7 @@ if (!exists(NLmeansClass)) {
     proc ::ComputeMSE( IMAGE res) \
     {
       if exists(::groundtruth) {
-        if (::noisetype==1) {
+        if (::params.noisetype==1) {
           res1=res*res-2*::noisesigma*::noisesigma
           res1 = sqrt(res1*(res1>0))
           mask = res1*0
@@ -148,12 +179,12 @@ if (!exists(NLmeansClass)) {
         if (::res0.vdim == 1) {
           InitTime
           ::res_roi = filters.NLmeans((FLOAT)::res0,\
-                                ::t,::f,::h,\
-                                ::noisetype,\
-                                ::threads,\
-                                ::filter_type,\
-                                ::presmooth_SD,\
-                                ::pattern_weight_param)
+                                ::params.t,::params.f,::params.h,\
+                                ::params.noisetype,\
+                                ::params.threads,\
+                                ::params.filter_type,\
+                                ::params.presmooth_SD,\
+                                ::params.pattern_weight_param)
           EndTime
           printn "processing time: "+TimeSpent
         } else {
@@ -163,12 +194,12 @@ if (!exists(NLmeansClass)) {
           for n=0 to ::res0.vdim-1 {
             printn "** n=%1%" % n
             ::res_roi.SetComponent( n, filters.NLmeans( (FLOAT)::res0[n],\
-                                      ::t,::f,::h,\
-                                      ::noisetype,\
-                                      ::threads,\
-                                      ::filter_type,\
-                                      ::presmooth_SD,\
-                                      ::pattern_weight_param))
+                                      ::params.t,::params.f,::params.h,\
+                                      ::params.noisetype,\
+                                      ::params.threads,\
+                                      ::params.filter_type,\
+                                      ::params.presmooth_SD,\
+                                      ::params.pattern_weight_param))
           }
         }
   
@@ -185,27 +216,30 @@ if (!exists(NLmeansClass)) {
         if (::res0.vdim == 1) {
 
           printn "running NLmeans() with"
-          printn "t = %1%" % ::t
-          printn "f = %1%" % ::f
-          printn "h = %1%" % ::h
-          printn "noisetype = %1%" % ::noisetype
-          printn "threads = %1%" % ::threads
-          printn "filter_type = %1%" % ::filter_type
-          printn "presmooth_SD = %1%" % ::presmooth_SD
-          printn "pattern_weight_param = %1%" % ::pattern_weight_param
+          printn "t = %1%" % ::params.t
+          printn "f = %1%" % ::params.f
+          printn "h = %1%" % ::params.h
+          printn "noisetype = %1%" % ::params.noisetype
+          printn "threads = %1%" % ::params.threads
+          printn "filter_type = %1%" % ::params.filter_type
+          printn "presmooth_SD = %1%" % ::params.presmooth_SD
+          printn "pattern_weight_param = %1%" % ::params.pattern_weight_param
 
           ::res = filters.NLmeans(::res0,\
-                          ::t,::f,::h,\
-                          ::noisetype,::threads,\
-                          ::filter_type,\
-                          ::presmooth_SD,\
-                          ::pattern_weight_param)
+                          ::params.t,::params.f,::params.h,\
+                          ::params.noisetype,::params.threads,\
+                          ::params.filter_type,\
+                          ::params.presmooth_SD,\
+                          ::params.pattern_weight_param)
         } else {
           for n=0 to ::res0.vdim-1 {
-            ::res.SetComponent( 0, filters.NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
-                                  ::filter_type,\
-                                  ::presmooth_SD,\
-                                  ::pattern_weight_param))
+            ::res.SetComponent( 0, \
+                filters.NLmeans((FLOAT)::res0[0],\
+                                ::params.t,::params.f,::params.h,\
+                                ::params.noisetype,::params.threads,\
+                                ::params.filter_type,\
+                                ::params.presmooth_SD,\
+                                ::params.pattern_weight_param))
           }
         }
   
@@ -231,15 +265,17 @@ if (!exists(NLmeansClass)) {
       # Precomputes matching field
       if (::res.vdim == 1) {
         num_features = 1
-        if (::usegrad) { num_features++; }
+        if (::params.usegrad) { num_features++; }
         ::matchfield <<= Image( FLOAT,\
                                   num_features,\
                                   ::res);
         current_feature = 0
-        ::matchfield.SetComponent( current_feature, filter((FLOAT)::res,::sigma,0,0,0))
-        if (::usegrad) {
+        ::matchfield.SetComponent( current_feature, filter((FLOAT)::res,\
+                                    ::params.sigma,0,0,0))
+        if (::params.usegrad) {
           current_feature++
-          ::matchfield.SetComponent( current_feature, normgrad((FLOAT)::res,::sigma)*::sigma)
+          ::matchfield.SetComponent( current_feature, normgrad((FLOAT)::res,\
+                                      ::params.sigma)*::params.sigma)
         }
         #::matchfield[1] = secdergrad((FLOAT)::res,::sigma) 
         #normgrad((FLOAT)::res,::sigma)
@@ -247,8 +283,8 @@ if (!exists(NLmeansClass)) {
         ::matchfield <<=  Image(FLOAT,2*::res.vdim,::res)
         for n = 0 to ::res.vdim-1 {
           tmp <<= (FLOAT)::res[n]
-          ::matchfield.SetComponent( 2*n, filter(  tmp,::sigma,0,0,0))
-          ::matchfield.SetComponent( 2*n+1, normgrad(tmp,::sigma))
+          ::matchfield.SetComponent( 2*n, filter(  tmp,::params.sigma,0,0,0))
+          ::matchfield.SetComponent( 2*n+1, normgrad(tmp,::params.sigma))
         }
       }
     
@@ -268,13 +304,19 @@ if (!exists(NLmeansClass)) {
           ::roi.info
           if (::res0.vdim == 1) {
             InitTime
-            ::res_roi = filters.NLmeans_fast((FLOAT)::res0,::mf0,::t,::h,::noisetype,::threads)
+            ::res_roi = filters.NLmeans_fast( (FLOAT)::res0,::mf0,\
+                                              ::params.t,::params.h,\
+                                              ::params.noisetype,\
+                                              ::params.threads)
             EndTime
             printn "processing time: "+TimeSpent
           } else {
             ::res_roi = ::res0
             for n=0 to ::res0.vdim-1 {
-              ::res_roi.SetComponent( n, filters.NLmeans_fast((FLOAT) ::res0[n],::mf0,::t,::h,::noisetype,::threads))
+              ::res_roi.SetComponent( n, \
+                                      filters.NLmeans_fast((FLOAT) ::res0[n],\
+                                      ::mf0,::params.t,::params.h,\
+                                      ::params.noisetype,::params.threads))
             }
           }
           ::res0.info
@@ -287,10 +329,10 @@ if (!exists(NLmeansClass)) {
           ::res0 <<= (FLOAT) ::res
           printn "starting !"
           if (::res0.vdim == 1) {
-            printn  sprint(" t=%f ",::t)+\
-                    sprint(" h=%f ",::h)+\
-                    sprint(" noisetype=%f ",::noisetype)+\
-                    sprint(" threads=%f ",::threads)
+            printn  sprint(" t=%f ",::params.t)+\
+                    sprint(" h=%f ",::params.h)+\
+                    sprint(" noisetype=%f ",::params.noisetype)+\
+                    sprint(" threads=%f ",::params.threads)
             ::res0.info
             printn  sprint(" min=%f ",min(::res0))+\
                     sprint(" max=%f ",max(::res0))
@@ -300,14 +342,14 @@ if (!exists(NLmeansClass)) {
     
             ::res = filters.NLmeans_fast( ::res0,\
                                     ::matchfield,\
-                                    ::t,\
-                                    ::h,\
-                                    ::noisetype,\
-                                    ::threads)
+                                    ::params.t,\
+                                    ::params.h,\
+                                    ::params.noisetype,\
+                                    ::params.threads)
           } else {
             ::res = ::res0
             for n=0 to ::res0.vdim-1 {
-              ::res.SetComponent( n, filters.NLmeans_fast((FLOAT)::res0[n],::matchfield,::t,::h,::noisetype,::threads))
+              ::res.SetComponent( n, filters.NLmeans_fast((FLOAT)::res0[n],::matchfield,::params.t,::params.h,::params.noisetype,::params.threads))
             }
           }
     
@@ -336,11 +378,11 @@ if (!exists(NLmeansClass)) {
     { 
       InitTime
       if (::res.vdim==1) {
-      ::res <<= filters.NewNLmeans(&::res,::t,::f,::h,::threads,::minweight)
+      ::res <<= filters.NewNLmeans(&::res,::params.t,::params.f,::params.h,::params.threads,::params.minweight)
       } else {
         for k = 0 to ::res.vdim-1 {
           c = ::res[k]
-          ::res.SetComponent( k, filters.NewNLmeans(&c,::t,::f,::h,::threads,::minweight))
+          ::res.SetComponent( k, filters.NewNLmeans(&c,::params.t,::params.f,::params.h,::params.threads,::params.minweight))
         }
       }
       EndTime
@@ -355,8 +397,8 @@ if (!exists(NLmeansClass)) {
       if (exists(::noise_roi)) {
     
           ::res = filters.NLmeans_MRI(::res,::noise_roi,\
-                        ::t,::h,::sigma,\
-                        ::iterations,::threads)
+                        ::params.t,::params.h,::params.sigma,\
+                        ::params.iterations,::params.threads)
     
         printn "--- OK --- "
       } else {
@@ -379,13 +421,13 @@ if (!exists(NLmeansClass)) {
       if (!exists(::res)) {
         ::res <<=  ::input
       }
-      for local::k=1 to ::iterations {
+      for local::k=1 to ::params.iterations {
         if (!::stop) {
           print sprint("Iteration %0.0f \n",k)
-          if (::filter_mode==0) { ::Filter(); }
-          if (::filter_mode==1) { ::MRIFilter(); }
-          if (::filter_mode==2) { ::FeatureFilter(); }
-          if (::filter_mode==3) { ::FastFilter(); }
+          if (::params.filter_mode==0) { ::Filter(); }
+          if (::params.filter_mode==1) { ::MRIFilter(); }
+          if (::params.filter_mode==2) { ::FeatureFilter(); }
+          if (::params.filter_mode==3) { ::FastFilter(); }
         }
         if (::show_images) {
           ::Display
@@ -500,11 +542,11 @@ if (!exists(NLmeansClass)) {
     #--------------------------------
     proc ::FilterModeEvent() \
     {
-      ::win.EnablePanel(::standard_param_panel , ::filter_mode==0)
-      ::win.EnablePanel(::mri_param_panel ,      ::filter_mode==1)
-      ::win.EnablePanel(::feature_param_panel ,  ::filter_mode==2)
-      ::win.EnablePanel(::fast_param_panel ,     ::filter_mode==3)
-      ::win.SelectPage(::param_book,::filter_mode)
+      ::win.EnablePanel(::standard_param_panel , ::params.filter_mode==0)
+      ::win.EnablePanel(::mri_param_panel ,      ::params.filter_mode==1)
+      ::win.EnablePanel(::feature_param_panel ,  ::params.filter_mode==2)
+      ::win.EnablePanel(::fast_param_panel ,     ::params.filter_mode==3)
+      ::win.SelectPage(::param_book,::params.filter_mode)
     }
 
     
@@ -533,7 +575,7 @@ if (!exists(NLmeansClass)) {
           ::win.AddString( &::result_image_name,"Result image")
 
         ::win.AddPage("Param")
-          filtermode_id = ::win.AddEnum( &::filter_mode,"Method")
+          filtermode_id = ::win.AddEnum( &::params.filter_mode,"Method")
             ::win.AddEnumChoice(filtermode_id,"Standard")
             ::win.AddEnumChoice(filtermode_id,"MRI")
             ::win.AddEnumChoice(filtermode_id,"Feature")
@@ -541,39 +583,39 @@ if (!exists(NLmeansClass)) {
           ::win.SetCallback( &::FilterModeEvent)
 
           ::win.BeginBoxPanel("Common Parameters")
-            ::win.AddFloat( &::h,      "h",      0.01,200)
-            ::win.AddInt( &::threads,"Threads",1,   10 )
-            ::win.AddInt( &::t,      "t",      1,   30 )
+            ::win.AddFloat( &::params.h,      "h",      0.01,200)
+            ::win.AddInt( &::params.threads,"Threads",1,   10 )
+            ::win.AddInt( &::params.t,      "t",      1,   30 )
           ::win.EndBoxPanel()
     
           ::param_book = ::win.BeginBook()
             ::standard_param_panel = ::win.AddPage("Stand")
-              ::presmooth_id     = ::win.AddFloat( &::presmooth_SD,"pre-smooth",0,3)
-              ::win.AddInt( &::f,"f", 1,10)
-              ::noisetype_id = ::win.AddEnum( &::noisetype,"Type")
+              ::presmooth_id     = ::win.AddFloat( &::params.presmooth_SD,"pre-smooth",0,3)
+              ::win.AddInt( &::params.f,"f", 1,10)
+              ::noisetype_id = ::win.AddEnum( &::params.noisetype,"Type")
                 ::win.AddEnumChoice(::noisetype_id,"Add. Gaussian")
                 ::win.AddEnumChoice(::noisetype_id,"Rician (MRI)")
-              ::filtertype_id = ::win.AddEnum( &::filter_type)
+              ::filtertype_id = ::win.AddEnum( &::params.filter_type)
                 ::win.AddEnumChoice(::filtertype_id,"Stand.")
                 ::win.AddEnumChoice(::filtertype_id,"Prob.")
                 ::win.AddEnumChoice(::filtertype_id,"Prob. + Smooth.")
-              ::win.AddFloat( &::pattern_weight_param,"Weights size",0.1,10)
+              ::win.AddFloat( &::params.pattern_weight_param,"Weights size",0.1,10)
 
             ::mri_param_panel = ::win.AddPage("MRI")
-              ::win.AddInt( &::f,"f", 1,10)
-              ::win.AddFloat( &::sigma,"Sigma",0.5,10)
+              ::win.AddInt( &::params.f,"f", 1,10)
+              ::win.AddFloat( &::params.sigma,"Sigma",0.5,10)
               ::win.AddButton("Select noise ROI", ::GetNoiseROI)
 
             ::feature_param_panel = ::win.AddPage("Feature")
-              ::win.AddFloat( &::sigma,"Sigma",0.5,10)
-              ::usegrad_id = ::win.AddBoolean( &::usegrad,"Use_Grad")
-              ::noisetype2_id = ::win.AddEnum( &::noisetype,"Type")
+              ::win.AddFloat( &::params.sigma,"Sigma",0.5,10)
+              ::usegrad_id = ::win.AddBoolean( &::params.usegrad,"Use_Grad")
+              ::noisetype2_id = ::win.AddEnum( &::params.noisetype,"Type")
                 ::win.AddEnumChoice(::noisetype2_id,"Add. Gaussian")
                 ::win.AddEnumChoice(::noisetype2_id,"Rician (MRI)")
 
             ::fast_param_panel = ::win.AddPage("Fast")
-              ::win.AddInt( &::f,"f", 1,10)
-              ::win.AddFloat( &::minweight,"Min. weight",1,100)
+              ::win.AddInt( &::params.f,"f", 1,10)
+              ::win.AddFloat( &::params.minweight,"Min. weight",1,100)
           ::win.EndBook()
 
     
@@ -586,7 +628,7 @@ if (!exists(NLmeansClass)) {
                 ::win.AddButton("Run",     ::Run)
                 ::win.AddButton("ReRun",   ::ReRun)
               ::win.EndHorizontal()
-              ::win.AddInt( &::iterations,"Iter",1,50)
+              ::win.AddInt( &::params.iterations,"Iter",1,50)
           ::win.EndBoxPanel()
   
           ::win.BeginBoxPanel("Result")
@@ -601,6 +643,15 @@ if (!exists(NLmeansClass)) {
               ::win.AddFloat( &::surf_scaling,"surf scale",0.01,10)
               display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
           ::win.EndBoxPanel()
+
+        # add page for saving/loading parameters
+        ::AddParamPage(&::win)
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+
       ::win.EndBook()
 
       ::AddStandardButtons(&::win)

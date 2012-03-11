@@ -86,7 +86,7 @@ if (!exists(AnisoGS_NRADClass)) {
 
         #-----------------------------------------------------------------------
         proc ::__assign__( OBJECT p) {
-printn "__assign__"
+          printn "__assign__"
           ::t                     = p.t
           ::dt                    = p.dt
           ::neighborhood          = p.neighborhood
@@ -108,7 +108,7 @@ printn "__assign__"
         }
         #-----------------------------------------------------------------------
         proc ::__copy__( ) {
-printn "__copy__"
+          printn "__copy__"
           ::ParamClass newp
           newp.t                     = ::t
           newp.dt                    = ::dt
@@ -154,8 +154,8 @@ printn "__copy__"
       #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
       # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
 
-      ::html_filename = GetScriptsDir+\
-                        "/AnisoGS_NRAD/Doc/AnisoGS_NRAD/index.html"
+      ::html_filename = op_system.GetCurrentScriptDir()+\
+                        "/Doc/AnisoGS_NRAD/index.html"
     }
 
 

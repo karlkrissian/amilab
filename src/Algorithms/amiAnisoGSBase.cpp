@@ -470,6 +470,7 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
   Timing gradient_timing;
   Timing Tensor_timing;
   Timing Smoothing_timing;
+  Timing Smoothing_timing2;
   
   std::cout << "Begin ami::AnisoGSBase::ComputeStructureTensor()" << std::endl;
 //std::cout << "*" << std::endl;
@@ -559,7 +560,7 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
   //std::cout << "CalculFiltres()" << std::endl;
   filtre->CalculFiltres( );
   gradient_timing.Fin();
-  //std::cout << "gradient timing " << gradient_timing << std::endl;
+  std::cout << "gradient timing " << gradient_timing << std::endl;
 
   // Calcul des coefficients du tenseur non liss�
   Tensor_timing.Debut();
@@ -624,7 +625,7 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
   } // endfor
 
   Tensor_timing.Fin();
-  //std::cout << "Tensor_timing " << Tensor_timing << std::endl;
+  std::cout << "Tensor_timing " << Tensor_timing << std::endl;
 
   filtre.reset();
 
@@ -656,7 +657,10 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
         T_ptr+=6;
       }
       // Smooth the component
+      Smoothing_timing2.Debut();
       Smooth( comp_image.get(), sigma_2);
+      Smoothing_timing2.Fin();
+      Smoothing_timing2.AddCumul();
       // put back the values in the tensor
       T_ptr = (float*) tensor_im->GetData();
       C_ptr = (float*) comp_image->GetData();
@@ -669,7 +673,9 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
     }
   }
   Smoothing_timing.Fin();
-  //std::cout << "Smoothing_timing " << Smoothing_timing << std::endl;
+  std::cout << "Smoothing_timing " << Smoothing_timing << std::endl;
+  std::cout << "Smoothing_timing2 " << std::endl;
+  Smoothing_timing2.AfficheCumul(std::cout);
 
   if (image!=im) delete image;
 
@@ -1178,6 +1184,8 @@ void ami::AnisoGSBase::Init(InrImage::ptr in,
   
     char resname[100];
 
+    
+  T = 0;
   InitParam();
 
   tx = in->_tx;

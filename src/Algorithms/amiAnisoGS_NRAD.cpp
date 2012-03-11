@@ -469,6 +469,31 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       case NOISE_RICIAN: 
         sigma2 = Compute_sigma2_MRI_mode(im); break;
     }
+  
+  double adapted_sigma2;
+  std::cout << "Iteration " << iteration << " sigma2 = " << sigma2 << std::endl;
+  if (T<1E-6) {
+    // limit at 0 is ln(4)/ln(6)
+    adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
+                              log(4.0)/log(6.0);
+  } else {
+    adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
+                              (1.0-pow(1.0/4.0,T))/(1.0-pow(1.0/6.0,T));
+  }
+  std::cout << " sigma2 for planes " << adapted_sigma2 << std::endl;
+  if (T<1E-6) {
+    // limit at 0 is ln(4)/ln(6)
+    adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
+                              log(2.0)/log(6.0);
+  } else {
+    adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
+                              (1.0-pow(1.0/2.0,T))/(1.0-pow(1.0/6.0,T));
+  }
+  std::cout << " sigma2 for lines "  << adapted_sigma2 << std::endl;
+  if (iteration==1) {
+    sigma2_initial = sigma2;
+  }
+
   imagec.Debut();
   ComputeImage_c(im,sigma2);
   imagec.Fin();
@@ -489,6 +514,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
       loop+=2;
     }
   }
+
 
   precompute.Fin();
   std::cout << precompute << std::endl;
@@ -612,6 +638,7 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
   float       pos_y = y;
   float       pos_z = z;
   double      mean,var;
+  double adapted_sigma2;
 
   switch(dir) 
   {
@@ -671,14 +698,22 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
                 << mean << ", "
                 << var << std::endl;
     }
+    if (T<1E-6) {
+      // limit at 0 is ln(4)/ln(6)
+      adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
+                                log(4.0)/log(6.0);
+    } else {
+      adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
+                                (1.0-pow(1.0/4.0,T))/(1.0-pow(1.0/6.0,T));
+    }
     switch (noise_model) 
     {
       case NOISE_GAUSSIAN_ADDITIVE:
-        lambda1 = function_c_additive(var, sigma2);   break;
+        lambda1 = function_c_additive(var, adapted_sigma2);   break;
       case NOISE_RICIAN: 
-        lambda1 = function_c_MRI( sigma2, var, mean); break;
+        lambda1 = function_c_MRI( adapted_sigma2, var, mean); break;
     }
-    lambda1 *= 6./4.; // convert for 2D normalization
+    //lambda1 *= 6./4.; // convert for 2D normalization
       switch (diffusion_eigenvalues_mode) {
       case DIFF_MATRIX_EIGEN_SUM:
         lambda1 += lambda0; 
@@ -697,14 +732,22 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
                 << mean << ", "
                 << var << std::endl;
     }
+    if (T<1E-6) {
+      // limit at 0 is ln(4)/ln(6)
+      adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
+                                log(2.0)/log(6.0);
+    } else {
+      adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
+                                (1-pow(1.0/2.0,T))/(1-pow(1.0/6.0,T));
+    }
     switch (noise_model) 
     {
       case NOISE_GAUSSIAN_ADDITIVE:
-        lambda2 = function_c_additive(var, sigma2);   break;
+        lambda2 = function_c_additive(var, adapted_sigma2);   break;
       case NOISE_RICIAN: 
-        lambda2 = function_c_MRI( sigma2, var, mean); break;
+        lambda2 = function_c_MRI( adapted_sigma2, var, mean); break;
     }
-    lambda2 *= 6./2.; // convert for 1D normalization
+    //lambda2 *= 6./2.; // convert for 1D normalization
       switch (diffusion_eigenvalues_mode) {
       case DIFF_MATRIX_EIGEN_SUM:
         lambda2 += lambda1;
@@ -715,8 +758,10 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
       }
   } else lambda2 = lambda1;
 
-  if (lambda1>6./4) lambda1=6./4;
-  if (lambda2>3) lambda2=3;
+  if (lambda1>1) lambda1=1;
+  if (lambda2>1) lambda2=1;
+  //if (lambda1>6./4) lambda1=6./4;
+  //if (lambda2>3) lambda2=3;
   
   //if (lambda0<lambda1/2) lambda0=0.01;
   //if (lambda1<lambda2/2) lambda1=0.01;
@@ -1065,10 +1110,11 @@ void ami::AnisoGS_NRAD::Run()
   } 
 
   iteration++;
-  std::cout << "\n -- Iter. "<< iteration << std::endl;
+  std::cout << "\n -- Iter. "<< iteration <<  "  T=" << T << std::endl;
 //%d, beta = %03.2f \t", iteration,beta);
 
   erreur = Itere3D_ST_RNRAD( this->result_image);
+  T += dt;
 
   if (!noise_SD_preset)
     //    EstimateNoiseStandardDeviation(this->result_image);
