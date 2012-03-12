@@ -102,36 +102,37 @@ namespace ami {
       EXPLICIT,      /**< explicit scheme */
     };
     
-    template <class T>
+    // problem is using T and gccxml, conflict with variable T
+    template <class T1>
     class EquationCoefficients {
       public:
-        T       alpha_x, gamma_x;
-        T*      alpha_y;
-        T*      gamma_y;
-        T**     alpha_z;
-        T**     gamma_z;
+        T1       alpha_x, gamma_x;
+        T1*      alpha_y;
+        T1*      gamma_y;
+        T1**     alpha_z;
+        T1**     gamma_z;
         int         sx,sy,sz;
         
-        EquationCoefficients(int sizex, int sizey, int sizez) 
+        EquationCoefficients(int sizex, int sizey, int sizez)
         {
           sx=sizex;
           sy=sizey;
           sz=sizez;
           int x;
           int y;
-          alpha_y = new T[sx];
-          gamma_y = new T[sx];
+          alpha_y = new T1[sx];
+          gamma_y = new T1[sx];
 
           alpha_x = gamma_x = 0;
           for(x=0;x<sx;x++) {
             alpha_y[x] = gamma_y[x] = 0;
           } // endfor
 
-          alpha_z = new T*[sx];
-          gamma_z = new T*[sx];
+          alpha_z = new T1*[sx];
+          gamma_z = new T1*[sx];
           for(x=0;x<sx;x++) {
-            alpha_z[x] = new T[sy];
-            gamma_z[x] = new T[sy];
+            alpha_z[x] = new T1[sy];
+            gamma_z[x] = new T1[sy];
             for(y=0;y<sy;y++) {
               alpha_z[x][y] = gamma_z[x][y] = 0;
             } // endfor
@@ -151,6 +152,8 @@ namespace ami {
           delete [] gamma_z;
         }
     };
+
+  
   protected:
     /**
     * @name Precomputed pointers to neighborhood
@@ -406,6 +409,18 @@ namespace ami {
     AddSetGetVar( planstats_sigma,          double);
     AddSetGetVar( dirstats_sigma,           double);
 
+    /// don't precompute the eigenvectors but compute them
+    /// on the fly, during the iteration
+    /// Only available is eigendecomp_mode is not INITIAL
+    AddSetGetVar(Eigenvectors_onfly,    bool)
+
+
+    AddSetGetVar(trace_voxel,           bool)
+    AddSetGetVar(trace_voxel_x,         int)
+    AddSetGetVar(trace_voxel_y,         int)
+    AddSetGetVar(trace_voxel_z,         int)
+    bool debug_voxel;
+    
     InrImage* Getresult_image() 
     { 
       return this->result_image; 
@@ -454,6 +469,11 @@ namespace ami {
     */
     void InitParam() 
     {
+      trace_voxel=false;
+      trace_voxel_x = -1;
+      trace_voxel_y = -1;
+      trace_voxel_z = -1;
+
       ST_sigma1 = 0.7;
       ST_sigma2 = 1;
       
@@ -518,6 +538,9 @@ namespace ami {
       
       UseNewConvolutionFilter   = false;
       EstimateNoiseSTD          = true;
+      
+      Eigenvectors_onfly        = false;
+
     }
 
 

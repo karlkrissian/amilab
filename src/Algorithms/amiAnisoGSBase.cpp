@@ -68,6 +68,10 @@
 
 #include <wx/thread.h>
 
+#include "dsyevj3.h"
+#include "dsyevq3.h"
+#include "dsyevh3.h"
+
 
 //------------------------------------------------------------------------------
 InrImage::ptr ami::AnisoGSBase::GetOutput()
@@ -1088,53 +1092,112 @@ short ami::AnisoGSBase::convert_short(double val)
 void ami::AnisoGSBase::GetVectors( int coord, int x, int y, int z, 
                                t_3Point& e0, t_3Point& e1, t_3Point& e2)
 {
-  if (eigendecomp_mode==INITIAL)
-  {
-    InrImage::ptr ev;
-    short* ev_buf;
+  
+  if ((!Eigenvectors_onfly)||(eigendecomp_mode==INITIAL)) {
+    if (eigendecomp_mode==INITIAL)
+    {
+      InrImage::ptr ev;
+      short* ev_buf;
 
-    switch(coord) {
-      case 0: ev = eigenvect_xp;   break;
-      case 1: ev = eigenvect_yp;   break;
-      case 2: ev = eigenvect_zp;   break;
+      switch(coord) {
+        case 0: ev = eigenvect_xp;   break;
+        case 1: ev = eigenvect_yp;   break;
+        case 2: ev = eigenvect_zp;   break;
+      }
+
+      ev->BufferPos(x,y,z);
+      ev_buf = (short*) ev->BufferPtr();
+      e1.x = MIN(1.0,(float)ev_buf[0]/MAX_SHORT); 
+      e1.y = MIN(1.0,(float)ev_buf[1]/MAX_SHORT);
+      e1.z = MIN(1.0,(float)ev_buf[2]/MAX_SHORT);
+
+      e2.x = MIN(1.0,(float)ev_buf[3]/MAX_SHORT); 
+      e2.y = MIN(1.0,(float)ev_buf[4]/MAX_SHORT);
+      e2.z = MIN(1.0,(float)ev_buf[5]/MAX_SHORT);
+    } else {
+      InrImage::ptr ev2;
+      InrImage::ptr ev3;
+      switch(coord) {
+        case 0: ev2 = eigenvect2_xp;  ev3 = eigenvect3_xp;   break;
+        case 1: ev2 = eigenvect2_yp;  ev3 = eigenvect3_yp;   break;
+        case 2: ev2 = eigenvect2_zp;  ev3 = eigenvect3_zp;   break;
+      }
+      int inc_x,inc_y,inc_z;
+      ev2->GetBufferIncrements(inc_x,inc_y,inc_z);
+      long d = x*inc_x+y*inc_y+z*inc_z;
+      //ev2->BufferPos(x,y,z);
+      //ev3->BufferPos(x,y,z);
+      float* ev2_buf = ((float*) ev2->GetData())+d;
+      float* ev3_buf = ((float*) ev3->GetData())+d;
+      e1.x = ev2_buf[0];
+      e1.y = ev2_buf[1];
+      e1.z = ev2_buf[2];
+
+      e2.x = ev3_buf[0];
+      e2.y = ev3_buf[1];
+      e2.z = ev3_buf[2];
     }
 
-    ev->BufferPos(x,y,z);
-    ev_buf = (short*) ev->BufferPtr();
-    e1.x = MIN(1.0,(float)ev_buf[0]/MAX_SHORT); 
-    e1.y = MIN(1.0,(float)ev_buf[1]/MAX_SHORT);
-    e1.z = MIN(1.0,(float)ev_buf[2]/MAX_SHORT);
-
-    e2.x = MIN(1.0,(float)ev_buf[3]/MAX_SHORT); 
-    e2.y = MIN(1.0,(float)ev_buf[4]/MAX_SHORT);
-    e2.z = MIN(1.0,(float)ev_buf[5]/MAX_SHORT);
+    e0.x = e1.y*e2.z-e1.z*e2.y;
+    e0.y = e1.z*e2.x-e1.x*e2.z;
+    e0.z = e1.x*e2.y-e1.y*e2.x;
   } else {
-    InrImage::ptr ev2;
-    InrImage::ptr ev3;
-    switch(coord) {
-      case 0: ev2 = eigenvect2_xp;  ev3 = eigenvect3_xp;   break;
-      case 1: ev2 = eigenvect2_yp;  ev3 = eigenvect3_yp;   break;
-      case 2: ev2 = eigenvect2_zp;  ev3 = eigenvect3_zp;   break;
+    double          mat_d[3][3];
+    double          vap_d[3];
+    double          vep_d[3][3];
+    int             success;
+    int             inc[3];
+    
+    tensor_im->GetBufferIncrements(inc[0],inc[1],inc[2]);
+    float* T_ptr = (float*) tensor_im->GetData();
+    T_ptr       += x*inc[0]+y*inc[1]+z*inc[2];
+
+    /// fill the matrix
+    {
+      int i,j;
+      int n=0;
+      for(i=0;i<3;i++)
+      for(j=0;j<3;j++) {
+        if (i<=j) {
+          mat_d[i][j]  = T_ptr[n];
+          mat_d[i][j] += T_ptr[n+inc[coord]]; 
+          n++;
+        } else {
+          mat_d[i][j] = mat_d[j][i];
+        }
+      }
     }
-    int inc_x,inc_y,inc_z;
-    ev2->GetBufferIncrements(inc_x,inc_y,inc_z);
-    long d = x*inc_x+y*inc_y+z*inc_z;
-    //ev2->BufferPos(x,y,z);
-    //ev3->BufferPos(x,y,z);
-    float* ev2_buf = ((float*) ev2->GetData())+d;
-    float* ev3_buf = ((float*) ev3->GetData())+d;
-    e1.x = ev2_buf[0];
-    e1.y = ev2_buf[1];
-    e1.z = ev2_buf[2];
+    
+    // Using hybrid method
+    success = dsyevh3(  mat_d, 
+                        vep_d, 
+                        vap_d);
+    if (success!=0) std::cout << "Error in diagonalization" << std::endl;
 
-    e2.x = ev3_buf[0];
-    e2.y = ev3_buf[1];
-    e2.z = ev3_buf[2];
+    // sort in descending order
+    int i0 = 0, i1 = 1, i2 = 2, tmp;
+    #define macro_swap(a,b) \
+      { tmp = a; a = b; b = tmp; }
+
+    if (vap_d[i0]<vap_d[i1]) macro_swap(i0,i1)
+    if (vap_d[i1]<vap_d[i2]) {
+      macro_swap(i1,i2)
+      if (vap_d[i0]<vap_d[i1]) macro_swap(i0,i1)
+    }
+    
+    // return the vectors
+    e0.x = vep_d[0][i0];
+    e0.y = vep_d[1][i0];
+    e0.z = vep_d[2][i0];
+
+    e1.x = vep_d[0][i1];
+    e1.y = vep_d[1][i1];
+    e1.z = vep_d[2][i1];
+
+    e2.x = vep_d[0][i2];
+    e2.y = vep_d[1][i2];
+    e2.z = vep_d[2][i2];
   }
-
-  e0.x = e1.y*e2.z-e1.z*e2.y;
-  e0.y = e1.z*e2.x-e1.x*e2.z;
-  e0.z = e1.x*e2.y-e1.y*e2.x;
 }
 
 // 
@@ -1181,10 +1244,8 @@ void ami::AnisoGSBase::Init(InrImage::ptr in,
       int nb_threads
       )
 {
-  
-    char resname[100];
+  char resname[100];
 
-    
   T = 0;
   InitParam();
 

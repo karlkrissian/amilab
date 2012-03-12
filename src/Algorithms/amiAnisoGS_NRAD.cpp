@@ -77,6 +77,8 @@ inline bool ispositivevalue(const T& value)
 }
 
 
+
+
 //------------------------------------------------------------------------------
 // Destructor
 ami::AnisoGS_NRAD::~AnisoGS_NRAD()
@@ -470,7 +472,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
         sigma2 = Compute_sigma2_MRI_mode(im); break;
     }
   
-  double adapted_sigma2;
+/*  double adapted_sigma2;
   std::cout << "Iteration " << iteration << " sigma2 = " << sigma2 << std::endl;
   if (T<1E-6) {
     // limit at 0 is ln(4)/ln(6)
@@ -489,7 +491,7 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
     adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
                               (1.0-pow(1.0/2.0,T))/(1.0-pow(1.0/6.0,T));
   }
-  std::cout << " sigma2 for lines "  << adapted_sigma2 << std::endl;
+  std::cout << " sigma2 for lines "  << adapted_sigma2 << std::endl;*/
   if (iteration==1) {
     sigma2_initial = sigma2;
   }
@@ -502,15 +504,18 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
   if (SpeedUp_c) {
     // in case of speedup, need to compute eigenvectors at each iteration
     ComputeStructureTensor(im,ST_sigma1,ST_sigma2);
-    ComputeEigenVectors();
+    if ((!Eigenvectors_onfly)||(eigendecomp_mode==INITIAL)) 
+      ComputeEigenVectors();
   } else {
     if ((iteration==1)&&(loop==2)) {
       ComputeStructureTensor(im,ST_sigma1,ST_sigma2);
-      ComputeEigenVectors();
+      if ((!Eigenvectors_onfly)||(eigendecomp_mode==INITIAL)) 
+        ComputeEigenVectors();
     }
     if (iteration==loop) {
       ComputeStructureTensor(im,ST_sigma1,ST_sigma2);
-      ComputeEigenVectors();
+      if ((!Eigenvectors_onfly)||(eigendecomp_mode==INITIAL)) 
+        ComputeEigenVectors();
       loop+=2;
     }
   }
@@ -698,14 +703,15 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
                 << mean << ", "
                 << var << std::endl;
     }
-    if (T<1E-6) {
+/*    if (T<1E-6) {
       // limit at 0 is ln(4)/ln(6)
       adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
                                 log(4.0)/log(6.0);
     } else {
       adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
                                 (1.0-pow(1.0/4.0,T))/(1.0-pow(1.0/6.0,T));
-    }
+    }*/
+    adapted_sigma2 = sigma2;
     switch (noise_model) 
     {
       case NOISE_GAUSSIAN_ADDITIVE:
@@ -732,14 +738,15 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
                 << mean << ", "
                 << var << std::endl;
     }
-    if (T<1E-6) {
+/*    if (T<1E-6) {
       // limit at 0 is ln(4)/ln(6)
       adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
                                 log(2.0)/log(6.0);
     } else {
       adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
                                 (1-pow(1.0/2.0,T))/(1-pow(1.0/6.0,T));
-    }
+    }*/
+    adapted_sigma2 = sigma2;
     switch (noise_model) 
     {
       case NOISE_GAUSSIAN_ADDITIVE:
@@ -758,10 +765,10 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
       }
   } else lambda2 = lambda1;
 
-  if (lambda1>1) lambda1=1;
-  if (lambda2>1) lambda2=1;
-  //if (lambda1>6./4) lambda1=6./4;
-  //if (lambda2>3) lambda2=3;
+/*  if (lambda1>1) lambda1=1;
+  if (lambda2>1) lambda2=1;*/
+  if (lambda1>6./4) lambda1=6./4;
+  if (lambda2>3) lambda2=3;
   
   //if (lambda0<lambda1/2) lambda0=0.01;
   //if (lambda1<lambda2/2) lambda1=0.01;

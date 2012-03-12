@@ -77,7 +77,6 @@ namespace ami {
 
   private:
 
-    bool debug_voxel;
     // estimated noise variance
     double sigma2;
     double sigma2_initial;
@@ -102,10 +101,7 @@ namespace ami {
 
     AddSetGetVar(UseLinearInterpolation,bool)
 
-    AddSetGetVar(trace_voxel,           bool)
-    AddSetGetVar(trace_voxel_x,         int)
-    AddSetGetVar(trace_voxel_y,         int)
-    AddSetGetVar(trace_voxel_z,         int)
+    
     
     enum direction {
       DIR_X,
@@ -117,10 +113,6 @@ namespace ami {
       {
         InitParam();
         UseLinearInterpolation = false;
-        trace_voxel=false;
-        trace_voxel_x = -1;
-        trace_voxel_y = -1;
-        trace_voxel_z = -1;
       }
 
     ~AnisoGS_NRAD();

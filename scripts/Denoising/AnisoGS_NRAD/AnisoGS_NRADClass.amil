@@ -81,6 +81,7 @@ if (!exists(AnisoGS_NRADClass)) {
         }
         ::eigendecomp_mode = INT(0), "Eigen decomposition mode for the structure"+\
                                      "tensor (%1%)" % mess
+        ::eigen_onfly = UCHAR(0), "Compute eigenvalues on the fly"
 
         ::nb_threads = INT(1), "Nb of threads"
 
@@ -102,6 +103,7 @@ if (!exists(AnisoGS_NRADClass)) {
           ::speedup               = p.speedup
           ::speedup_lowerbound    = p.speedup_lowerbound
           ::eigendecomp_mode      = p.eigendecomp_mode
+          ::eigen_onfly           = p.eigen_onfly
           ::nb_threads            = p.nb_threads
           ::noise_estim_neigh     = p.noise_estim_neigh
           ::use_linearinterp      = p.use_linearinterp
@@ -125,6 +127,7 @@ if (!exists(AnisoGS_NRADClass)) {
           newp.speedup               = ::speedup
           newp.speedup_lowerbound    = ::speedup_lowerbound
           newp.eigendecomp_mode      = ::eigendecomp_mode
+          newp.eigen_onfly           = ::eigen_onfly
           newp.nb_threads            = ::nb_threads
           newp.noise_estim_neigh     = ::noise_estim_neigh
           newp.use_linearinterp      = ::use_linearinterp
@@ -281,6 +284,7 @@ if (!exists(AnisoGS_NRADClass)) {
       ::NRADfilter.SetSpeedUp_c_lowerbound(::params.speedup_lowerbound)
       
       ::NRADfilter.Seteigendecomp_mode    (::params.eigendecomp_mode)
+      ::NRADfilter.SetEigenvectors_onfly  (::params.eigen_onfly)
 
       ::NRADfilter.Setneighborhood(::params.neighborhood)
       ::NRADfilter.Setdt(::params.dt)
@@ -306,6 +310,17 @@ if (!exists(AnisoGS_NRADClass)) {
       for k=1 to numit {
         if (!cancel) {
           #if (k>1) { ::NRADfilter.SetEstimateNoiseSTD(false); }
+
+          # decrease the sigma(s)
+          _t = ::params.dt*(k-1)
+          new_s1 = max(0.8*0.8,::params.ST_sigma1*::params.ST_sigma1-_t*_t)
+          new_s2 = max(1.2*1.2,::params.ST_sigma2*::params.ST_sigma2-_t*_t)
+          new_s1 = sqrt(new_s1)
+          new_s2 = sqrt(new_s2)
+          printn "new_s1 = %1%, " % new_s1 + "new_s2 = %1% " % new_s2
+          ::NRADfilter.SetST_sigma1(new_s1)
+          ::NRADfilter.SetST_sigma2(new_s2)
+
           ::NRADfilter.Iterate()
           ::res0 = ::NRADfilter.GetOutput()
           if ::params.noise_models[::params.noise_model] == "Rician" {
@@ -572,6 +587,8 @@ if (!exists(AnisoGS_NRADClass)) {
             ::eigenmode_id = ::win.AddEnum( &::params.eigen_mode,"Eigen mode")
               ::win.AddEnumChoice(::eigenmode_id,"Sum")
               ::win.AddEnumChoice(::eigenmode_id,"Max")
+            ::eigen_onfly_id = ::win.AddBoolean(&::params.eigen_onfly,\
+                                        "Compute Eigenvalues on the fly.")
           ::win.EndBoxPanel()
           
           ::win.AddBoolean(&::params.use_linearinterp, "Linear Interp")
