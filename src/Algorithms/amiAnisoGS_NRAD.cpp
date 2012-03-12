@@ -703,14 +703,7 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
                 << mean << ", "
                 << var << std::endl;
     }
-/*    if (T<1E-6) {
-      // limit at 0 is ln(4)/ln(6)
-      adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
-                                log(4.0)/log(6.0);
-    } else {
-      adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
-                                (1.0-pow(1.0/4.0,T))/(1.0-pow(1.0/6.0,T));
-    }*/
+    //adapted_sigma2 = sigma2_initial*pow(sigma2/sigma2_initial,2.0/3.0);
     adapted_sigma2 = sigma2;
     switch (noise_model) 
     {
@@ -746,6 +739,8 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
       adapted_sigma2 = sigma2_initial-(sigma2_initial-sigma2)*
                                 (1-pow(1.0/2.0,T))/(1-pow(1.0/6.0,T));
     }*/
+    //adapted_sigma2 = sigma2_initial*pow(sigma2/sigma2_initial,1.0/3.0);
+    //adapted_sigma2 = sigma2_initial*pow(sigma2/sigma2_initial,1.0/3.0);
     adapted_sigma2 = sigma2;
     switch (noise_model) 
     {
@@ -765,10 +760,10 @@ void ami::AnisoGS_NRAD::ComputeEquationCoefficient( float* in,
       }
   } else lambda2 = lambda1;
 
-/*  if (lambda1>1) lambda1=1;
-  if (lambda2>1) lambda2=1;*/
-  if (lambda1>6./4) lambda1=6./4;
-  if (lambda2>3) lambda2=3;
+  if (lambda1>1) lambda1=1;
+  if (lambda2>1) lambda2=1;
+  //if (lambda1>6./4) lambda1=6./4;
+  //if (lambda2>3) lambda2=3;
   
   //if (lambda0<lambda1/2) lambda0=0.01;
   //if (lambda1<lambda2/2) lambda1=0.01;

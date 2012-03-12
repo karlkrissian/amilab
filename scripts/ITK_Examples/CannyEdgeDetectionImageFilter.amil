@@ -15,7 +15,7 @@ input = (FLOAT) Image(input_filename)
 
 
 ITKImage2ImageFilterClass gad
-if (input.tz>=1) {
+if (input.tz>1) {
   imtype = "float_3u"
 } else {
   imtype = "float_2u"

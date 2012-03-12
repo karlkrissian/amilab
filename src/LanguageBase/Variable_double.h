@@ -110,6 +110,7 @@ VAR_DECL_FUNC(double,log)
 VAR_DECL_FUNC(double,ln)
 VAR_DECL_FUNC(double,norm)
 VAR_DECL_FUNC(double,sqrt)
+//VAR_DECL_FUNC(double,pow)
 
 
 /// Cast to a type based on its name as a string

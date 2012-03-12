@@ -79,15 +79,15 @@ if (!exists(GreyMorphoClass)) {
       #::txtctrl_cmd += "morph.SetLimits(%1%,"%::Imin+"%1%)\n"%::Imax
 
       op = ::operation_types[::operation]
-      if (op!="White top-hat")&&(op=="Black top-hat") \
+      if (op!="White top-hat")&&(op!="Black top-hat") \
       {
         eval "input = morph.%1%(input,::size,::step);" % op
       }
-      if (op!="White top-hat") {
+      if (op=="White top-hat") {
         input = input - morph.Open(input,::size,::step)
         op="{not avail}"
       }
-      if (op!="Back top-hat") {
+      if (op=="Back top-hat") {
         input = morph.Close(input,::size,::step) - input
         op="{not avail}"
       }

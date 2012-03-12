@@ -110,6 +110,7 @@ VAR_DECL_FUNC(float,log)
 VAR_DECL_FUNC(float,ln)
 VAR_DECL_FUNC(float,norm)
 VAR_DECL_FUNC(float,sqrt)
+//VAR_DECL_FUNC(float,pow)
 
 /// Cast to a type based on its name as a string
 template<>

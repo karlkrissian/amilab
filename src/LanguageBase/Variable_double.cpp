@@ -327,10 +327,12 @@ VAR_IMPL_FUNC(double,  fabs, fabs)
 VAR_IMPL_FUNC(double,  round,round)
 VAR_IMPL_FUNC(double,  floor,floor)
 VAR_IMPL_FUNC(double,  exp,  exp)
-VAR_IMPL_FUNC(double,  log,  1.0/log(10.0)*log)
+//VAR_IMPL_FUNC(double,  log,  1.0/log(10.0)*log)
+VAR_IMPL_FUNC(double,  log,  log10)
 VAR_IMPL_FUNC(double,  ln,   log)
 VAR_IMPL_FUNC(double,  norm, fabs)
 VAR_IMPL_FUNC(double,  sqrt, sqrt)
+//VAR_IMPL_FUNC(double,  pow,  pow)
 
 
 //---------------------------------------------------

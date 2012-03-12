@@ -359,6 +359,7 @@ VAR_IMPL_FUNC(int,  ln,   log)
 */
 VAR_IMPL_FUNC(int,  norm, fabs)
 VAR_IMPL_FUNC(int,  sqrt, sqrt)
+//VAR_IMPL_FUNC(int,  pow,  pow)
 
 
 //---------------------------------------------------

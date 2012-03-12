@@ -121,6 +121,7 @@ VAR_DECL_FUNC(int,ln)
 */
 VAR_DECL_FUNC(int,norm)
 VAR_DECL_FUNC(int,sqrt)
+//VAR_DECL_FUNC(int,pow)
 
 
 /// Cast to a type based on its name as a string

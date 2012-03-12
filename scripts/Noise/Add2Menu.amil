@@ -5,3 +5,5 @@
 #
 
 ami.MainFrame.AddToMenu("&Scripts","&Noise","Create &Noise","Noise/AddNoise_gui.amil")
+ ami.MainFrame.AddToMenu("&Scripts","&Noise","&LocalMeanEvol",  "Noise/LocalMeanEvol/LocalMeanEvolGui")
+

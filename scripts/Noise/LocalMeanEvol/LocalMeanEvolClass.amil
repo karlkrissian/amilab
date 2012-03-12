@@ -1,0 +1,147 @@
+
+func "Common/ScriptGui"
+
+if (!exists(LocalMeanEvolClass)) {
+
+  Class LocalMeanEvolClass : public ScriptGui \
+  {
+    
+    func "Variable/ObjectIO"
+    #===========================================================================
+    # Set parameters here
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+
+        #-----------------------------------------------------------------------
+        # copy parameters
+        proc ::__assign__( VAR p) {
+        }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      
+      ::input_name   = "","Name of the input image variable"
+
+      ::ParamClass ::params
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+\
+                        "/LocalMeanEvol/Doc/LocalMeanEvol/index.html"
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ImSTD( IMAGE im) \
+    {
+      l = mean(im)
+      return = sqrt(mean(im*im)-l*l)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Run() \
+    {
+      ::dt = 0.05
+      ::T  = 2
+      # Create a noisy image
+      ::noisy <<= Image(FLOAT,100,100,1)
+      ::noisy = 0
+      # add noise
+      ::noisy <<= AddGaussNoise(::noisy,0,35)
+
+      ::psf_2D <<= Image(FLOAT,100,100,1)
+      ::psf_2D = 0 
+      ::psf_2D.setpos(::psf_2D.tx/2,::psf_2D.ty/2,0)
+      ::psf_2D.set(1)
+
+      # Save evolution of image variance
+      ::nb_iterations = ::T/::dt
+      
+      ::res_im   = Image(FLOAT,::nb_iterations+1,1,1)
+      ::res_im   = 0
+      ::res_im.setvoxelsize(::dt,1,1)
+      ::ideal_im = Image(FLOAT,::nb_iterations+1,1,1)
+      ::ideal_im = 0
+      ::ideal_im.setvoxelsize(::dt,1,1)
+      u = ::noisy
+      ::res_im.setpos(0,0,0)
+      ::res_im.set(::ImSTD(&u))
+
+      ::ideal_im.setpos(0,0,0)
+      s = sum(sum(::psf_2D*::psf_2D,0),1)
+      ::ideal_im.set( 35*sqrt(s(0,0)))
+      ::dw.SetXLimits(-::dt,::T+::dt)
+      ::dw.SetYLimits(0, 37)
+      for n=1 to ::nb_iterations {
+        u += ::dt*(localmean(u,1)-u)*4.5
+        ::res_im.setpos(n,0,0)
+        ::res_im.set(::ImSTD(&u))
+        ::dw.SetCurve(&::res_im)
+        ::dw.SetCurveProperties(0,"#0000FF")
+
+        #::psf_2D += ::dt*(localmean(::psf_2D,1)-::psf_2D)*4.5
+        ::psf_2D = (::psf_2D + ::dt*(localmean(::psf_2D,1)*4.5-::psf_2D/2))/(1+::dt*4)
+        ::ideal_im.setpos(n,0,0)
+        s = sum(sum(::psf_2D*::psf_2D,0),1)
+        ::ideal_im.set( 35*sqrt(s(0,0)))
+        ::dw.SetCurve(&::ideal_im,1)
+        ::dw.SetCurveProperties(1,"#FF0000")
+
+      }
+
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("LocalMeanEvol",&::parent_panel)
+      } else {
+        ::win = ParamPanel("LocalMeanEvol")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Run")
+          ::win.AddButton("Run Filter",::Run)
+
+          # add a Curve Drawing Window
+          ::dw = wxDrawingWindow(&::win.CurrentParent())
+          ::dw.SetMinSize(&wx.wxSize(50,100))
+          ::dw.SetBackgroundColour(\
+              &wx.wxColour(255,255,255))
+          ::win.AddWidget(&::dw,0)
+
+        # add page for saving/loading parameters
+        ::AddParamPage(&::win)
+
+ 
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

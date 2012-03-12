@@ -1014,6 +1014,7 @@ public:
     VAR_FUNC(ln)
     VAR_FUNC(norm)
     VAR_FUNC(sqrt)
+//    VAR_FUNC(pow)
   //@}
 
 

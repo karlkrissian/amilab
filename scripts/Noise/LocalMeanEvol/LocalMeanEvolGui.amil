@@ -1,0 +1,11 @@
+
+func "LocalMeanEvolClass"
+
+if (!exists(LocalMeanEvol_obj)) {
+  LocalMeanEvolClass LocalMeanEvol_obj
+  LocalMeanEvol_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

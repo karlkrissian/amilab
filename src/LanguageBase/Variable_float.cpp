@@ -329,6 +329,7 @@ VAR_IMPL_FUNC(float,  log,  1.0/log(10.0)*log)
 VAR_IMPL_FUNC(float,  ln,   log)
 VAR_IMPL_FUNC(float,  norm, fabs)
 VAR_IMPL_FUNC(float,  sqrt, sqrt)
+//VAR_IMPL_FUNC(float,  pow,  pow)
 
 
 

@@ -130,6 +130,7 @@ VAR_DECL_FUNC(InrImage,log)
 VAR_DECL_FUNC(InrImage,ln)
 VAR_DECL_FUNC(InrImage,norm)
 VAR_DECL_FUNC(InrImage,sqrt)
+//VAR_DECL_FUNC(InrImage,pow)
 
 
 /**
