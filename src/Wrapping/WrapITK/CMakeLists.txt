@@ -109,112 +109,127 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
     CreateDirectory( ${HTML_DIR} )
   ENDIF(GENERATE_HTML_HELP)
 
-  # Generate the classes list
+  #------------------------------------------------------------
+  # Generating the classes, functions, etc...  lists
+  #------------------------------------------------------------
 
   # Read list of classes to wrap
-  FILE(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt" classes_list REGEX "^[^#].*$")
-  WRAP_MESSAGE("classes_list = ${classes_list}")
-#   FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt" classes_txt)
-#   STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+  READ_CLASSES(
+    "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"
+  ) 
 
-  # Read itk ancestors list
-  SET( ITK_OUTDIR ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK/${AMI_ITK_VERSION}/Generated)
+  #------------------------------------------------------------
+  # Generating and reading ancestors
+  #------------------------------------------------------------
 
-  SET(ANCESTORS_FILE "${ITK_OUTDIR}/ancestors.txt")
-  SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
+  CREATE_ANCESTORS()
 
-  IF(GENERATE_HTML_HELP)
-    WRAP_MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q")
-    EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q
-      OUTPUT_VARIABLE ancestors_result
-      ERROR_VARIABLE ancestors_error
-    )
-  ELSE(GENERATE_HTML_HELP)
-    WRAP_MESSAGE("COMMAND IS: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" --ancestors-file ${ANCESTORS_FILE} -q")
-    EXECUTE_PROCESS(
-      COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list}  --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" --ancestors-file ${ANCESTORS_FILE} -q
-      OUTPUT_VARIABLE ancestors_result
-      ERROR_VARIABLE ancestors_error
-    )
-  ENDIF(GENERATE_HTML_HELP)
-
-  #WRAP_MESSAGE(" ancestors_result = ${ancestors_result} ")
-  MESSAGE(" ancestors_result = ${ancestors_result} ")
-  WRAP_MESSAGE(" ancestors_error = ${ancestors_error} ")
-
-
-  FILE(READ "${ITK_OUTDIR}/ancestors.txt" ancestors_txt)
+  FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
 
-  # Wrap all classes at once since it is now fast
-  FOREACH( class ${ancestors_list})
-    ClassUsedName( class m_class )
-    #WRAP_MESSAGE("m_class=${m_class}")
-    IF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.cpp) OR
-        (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.h))
-      SET(OUTPUT_LIST ${GENERATED_DIR}/wrap_${m_class}.cpp ${OUTPUT_LIST})
-      SET(OUTPUT_LIST ${GENERATED_DIR}/wrap_${m_class}.h ${OUTPUT_LIST})
-      SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
-    ENDIF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.cpp) OR
-        (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.h))
-  ENDFOREACH( class ${ancestors_list}) 
+  #------------------------------------------------------------
+  # Generating and reading ancestors
+  #------------------------------------------------------------
 
+  # Read itk ancestors list
+#   SET( ITK_OUTDIR ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK/${AMI_ITK_VERSION}/Generated)
+# 
+#   SET(ANCESTORS_FILE "${ITK_OUTDIR}/ancestors.txt")
+#   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
+# 
+#   IF(GENERATE_HTML_HELP)
+#     WRAP_MESSAGE("COMMAND: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q")
+#     EXECUTE_PROCESS(
+#       COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --ancestors-file ${ANCESTORS_FILE} --generate-html --url ${CLASSES_URL_LIST} --outputhtmldir ${HTML_DIR} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" -q
+#       OUTPUT_VARIABLE ancestors_result
+#       ERROR_VARIABLE ancestors_error
+#     )
+#   ELSE(GENERATE_HTML_HELP)
+#     WRAP_MESSAGE("COMMAND IS: ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list} --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" --ancestors-file ${ANCESTORS_FILE} -q")
+#     EXECUTE_PROCESS(
+#       COMMAND  ${PYTHON_EXECUTABLE}  ${AMI_WRAPPER} ${XML_OUTPUT} --ancestors ${classes_list}  --templates --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/" --ancestors-file ${ANCESTORS_FILE} -q
+#       OUTPUT_VARIABLE ancestors_result
+#       ERROR_VARIABLE ancestors_error
+#     )
+#   ENDIF(GENERATE_HTML_HELP)
+# 
+#   #WRAP_MESSAGE(" ancestors_result = ${ancestors_result} ")
+#   MESSAGE(" ancestors_result = ${ancestors_result} ")
+#   WRAP_MESSAGE(" ancestors_error = ${ancestors_error} ")
+# 
+# 
+#   FILE(READ "${ITK_OUTDIR}/ancestors.txt" ancestors_txt)
+#   STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
 
-  LIST(LENGTH MISSING_CLASSES NB_MISSING_CLASSES)
+  #------------------------------------------------------------
+  # Checking for existing and missing files
+  #------------------------------------------------------------
 
-  WRAP_MESSAGE("OUTPUT_LIST=${OUTPUT_LIST}")
+  # Wrap all missing classes at once since it is now fast
+  CHECK_WRAPPED_FILES( "${ancestors_list}"       "MISSING_CLASSES")
+
+  WRAP_MESSAGE("MISSING_CLASSES   = ${MISSING_CLASSES}")
   WRAP_MESSAGE("NB_MISSING_CLASSES=${NB_MISSING_CLASSES}")
 
-  #MESSAGE("Processing classes ${ancestors_list} and addwrap")
-  IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
-      (NOT EXISTS ${GENERATED_DIR}/addwrap_itk.h) OR
-      (NOT EXISTS ${GENERATED_DIR}/addwrap_itk.cpp))
-    # Go for python wrapping
-    IF(GENERATE_HTML_HELP)
-      ADD_CUSTOM_COMMAND(
-        OUTPUT  ${OUTPUT_LIST} ${GENERATED_DIR}/addwrap_itk.h ${GENERATED_DIR}/addwrap_itk.cpp
-        COMMAND
-            ${PYTHON_EXECUTABLE}
-              ${AMI_WRAPPER} ${XML_OUTPUT}
-              --libname itk
-              --classes ${MISSING_CLASSES}
-              --available_classes ${ancestors_list}
-              --outputdir "${GENERATED_DIR}"
-              --templates
-              --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-              --addwrap
-              --profile
-              --generate-html             #flag to generate html help
-              --url ${CLASSES_URL_LIST}   #base URL html help
-              --outputhtmldir ${HTML_DIR} #HTML directory
-              -q
-          #DEPENDS
-          #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
-          VERBATIM
-      )
-    ELSE(GENERATE_HTML_HELP)
-      ADD_CUSTOM_COMMAND(
-        OUTPUT  ${OUTPUT_LIST} ${GENERATED_DIR}/addwrap_itk.h ${GENERATED_DIR}/addwrap_itk.cpp
-        COMMAND
-          ${PYTHON_EXECUTABLE}
-            ${AMI_WRAPPER} ${XML_OUTPUT}
-            --libname itk
-            --classes ${MISSING_CLASSES}
-            --available_classes ${ancestors_list}
-            --outputdir "${GENERATED_DIR}"
-            --templates
-            --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-            --addwrap
-            --profile
-            -q
-  #         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
-        VERBATIM
-      )
-    ENDIF(GENERATE_HTML_HELP)
-  ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
-      (NOT EXISTS ${GENERATED_DIR}/addwrap_itk.h) OR
-      (NOT EXISTS ${GENERATED_DIR}/addwrap_itk.cpp))
+  LIST(LENGTH MISSING_CLASSES   NB_MISSING_CLASSES)
+
+  #------------------------------------------------------------
+  # Create the rule that wraps the code
+  #------------------------------------------------------------
+
+  WRAP_CODE()
+
+#   WRAP_MESSAGE("OUTPUT_LIST=${OUTPUT_LIST}")
+# 
+#   #MESSAGE("Processing classes ${ancestors_list} and addwrap")
+#   IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
+#       (NOT EXISTS ${GENERATED_DIR}/addwrap_itk.h) OR
+#       (NOT EXISTS ${GENERATED_DIR}/addwrap_itk.cpp))
+#     # Go for python wrapping
+#     IF(GENERATE_HTML_HELP)
+#       ADD_CUSTOM_COMMAND(
+#         OUTPUT  ${OUTPUT_LIST} ${GENERATED_DIR}/addwrap_itk.h ${GENERATED_DIR}/addwrap_itk.cpp
+#         COMMAND
+#             ${PYTHON_EXECUTABLE}
+#               ${AMI_WRAPPER} ${XML_OUTPUT}
+#               --libname itk
+#               --classes ${MISSING_CLASSES}
+#               --available_classes ${ancestors_list}
+#               --outputdir "${GENERATED_DIR}"
+#               --templates
+#               --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+#               --addwrap
+#               --profile
+#               --generate-html             #flag to generate html help
+#               --url ${CLASSES_URL_LIST}   #base URL html help
+#               --outputhtmldir ${HTML_DIR} #HTML directory
+#               -q
+#           #DEPENDS
+#           #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
+#           VERBATIM
+#       )
+#     ELSE(GENERATE_HTML_HELP)
+#       ADD_CUSTOM_COMMAND(
+#         OUTPUT  ${OUTPUT_LIST} ${GENERATED_DIR}/addwrap_itk.h ${GENERATED_DIR}/addwrap_itk.cpp
+#         COMMAND
+#           ${PYTHON_EXECUTABLE}
+#             ${AMI_WRAPPER} ${XML_OUTPUT}
+#             --libname itk
+#             --classes ${MISSING_CLASSES}
+#             --available_classes ${ancestors_list}
+#             --outputdir "${GENERATED_DIR}"
+#             --templates
+#             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
+#             --addwrap
+#             --profile
+#             -q
+#   #         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+#         VERBATIM
+#       )
+#     ENDIF(GENERATE_HTML_HELP)
+#   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
+#       (NOT EXISTS ${GENERATED_DIR}/addwrap_itk.h) OR
+#       (NOT EXISTS ${GENERATED_DIR}/addwrap_itk.cpp))
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
 

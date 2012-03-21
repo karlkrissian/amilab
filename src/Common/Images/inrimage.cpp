@@ -491,6 +491,9 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
       if (_amimage-> GetVY() < 1E-5) _amimage->SetVY(1.0);
       if (_amimage-> GetVZ() < 1E-5) _amimage->SetVZ(1.0);
       
+      InitPositions();
+      _Iterator = CreateIterator();
+
       CLASS_MESSAGE("2");
       
 //  memcpy(_inrimage->data, in->GetScalarPointer() , in->);
@@ -695,6 +698,15 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
 //      double val[_vdim];
       int pos[3];
       int inPtId;
+
+      _size_x = _amimage->GetVX();
+      _size_y = _amimage->GetVY();
+      _size_z = _amimage->GetVZ();
+      _translation_x = _amimage->GetTX();
+      _translation_y = _amimage->GetTY();
+      _translation_z = _amimage->GetTZ();
+      InitPositions();
+      _Iterator = CreateIterator();
 
       InitBuffer();
       for(z=0;z<=_tz-1;z++) {

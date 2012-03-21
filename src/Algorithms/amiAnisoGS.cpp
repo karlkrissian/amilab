@@ -1026,9 +1026,9 @@ double ami::AnisoGS::Compute_sigma2_Gaussian_mode(InrImage* im)
 //------------------------------------------------------------------------------
 double ami::AnisoGS::function_c_MRI(double sigma2, double vg, double meang)
 {
-#define var_epsilon 1E-4
+#define var_epsilon 1E-3
   double tmp;
-  if (fabsf(vg)<var_epsilon) return 0.0;
+  if (vg<var_epsilon) return 0.0;
   if (meang<=sigma2) return 0.0;
   tmp =4.0*sigma2*(meang-sigma2)/vg;
 
@@ -1515,6 +1515,10 @@ float ami::AnisoGS::Itere2D ( InrImage* im )
   else 
     mask_test=1;
 
+  bool trace_pixel =  ((x-ROI_xmin)==164)&&((y-ROI_ymin)==198);
+  if (trace_pixel) {
+    std::cout << "tracing pixel " << std::endl;
+  }
   if (x>0 && x<tx-1 && y>0 && y<ty-1) {
 
   InitNeighborhood ( Iconv,x,y,z );
@@ -1560,6 +1564,8 @@ float ami::AnisoGS::Itere2D ( InrImage* im )
     case CONTOURS_OSRAD:
       phi0_value = ( ( *image_c ) ( x,y,z ) + ( *image_c ) ( x+1,y,z ) ) /2.0;
   }
+  // limit phi0
+  phi0_value = macro_min(phi0_value,2);
 
   if ( ( x== ( int ) ( im->_tx/2 ) ) && ( y== ( int ) ( im->_ty/2 ) ) )
   {
@@ -1610,6 +1616,8 @@ float ami::AnisoGS::Itere2D ( InrImage* im )
     case CONTOURS_OSRAD:
       phi0_value = ( ( *image_c ) ( x,y,z ) + ( *image_c ) ( x,y+1,z ) ) /2.0;
   }
+  // limit phi0
+  phi0_value = macro_min(phi0_value,2);
 
   alpha1_y = phi0_value*e0.y*e0.y +
              phi1 ( u_e1 ) *e1.y*e1.y;
@@ -1742,6 +1750,17 @@ if ((x==ROI_xmin+354)&&(y==ROI_ymin+121)) {
   erreur_y = y;
   erreur_z = z;
   } // end if
+
+  if (val1<min_intensity) {
+    if (verbose)  fprintf(stderr,"I=%3.2f<min, (%3d,%3d) \n",val1,x,y);
+    val1=min_intensity;
+    //outoflimits++;
+  }
+  if (val1>max_intensity) {
+    if (verbose)  fprintf(stderr,"I=%3.2f<max, (%3d,%3d) \n",val1,x,y);
+    val1=max_intensity;
+    //outoflimits++;
+  }
 
   this->im_tmp->BufferPos ( x,y,z );
   this->im_tmp->FixeValeur ( val1 );

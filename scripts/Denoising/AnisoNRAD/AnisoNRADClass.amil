@@ -234,6 +234,8 @@ if (!exists(AnisoNRADClass)) {
       # diffusion coefficient in minimal and maximal curvature directions
       ::NRADfilter.Setmincurv_coeff(0.5)
       ::NRADfilter.Setmaxcurv_coeff(0.01)
+
+      ::NRADfilter.Settang_coeff(0.25)
     
       ::NRADfilter.SetSRAD_ROI(&::roi)
       if (::params.matrix_mode==1) {
