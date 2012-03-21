@@ -15,10 +15,14 @@
 #include "AnalyticCircle.h"
 #include "wrap_AnalyticFunctionBase.h"
 
+#ifndef AnalyticCircle_declared
+  #define AnalyticCircle_declared
+    AMI_DECLARE_TYPE(AnalyticCircle);
+#endif
+
+
 //---------------------------------------------------
 //AnalyticCircle Wrapping
-
-AMI_DECLARE_TYPE(AnalyticCircle);
 
 class WrapClass_AnalyticCircle : public WrapClass<AnalyticCircle>, 
                                  public WrapClass_AnalyticFunctionBase {
@@ -48,13 +52,7 @@ public:
   ADD_CLASS_METHOD(setRadius, "Set the circle's radius.");
   ADD_CLASS_METHOD(getRadius, "Get the circle's radius.");
   
-  void AddMethods(WrapClass<AnalyticCircle>::ptr this_ptr)
-  {
-    AddVar_setCenter(this_ptr);
-    AddVar_getCenter(this_ptr);
-    AddVar_setRadius(this_ptr);
-    AddVar_getRadius(this_ptr);
-  }
+  void AddMethods(WrapClass<AnalyticCircle>::ptr this_ptr);
 };
 
 #endif

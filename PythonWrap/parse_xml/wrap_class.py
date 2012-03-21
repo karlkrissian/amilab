@@ -1323,6 +1323,7 @@ def WrapClass(classname,include_file,inputfile):
     # step 1:
     pos = 0
     for m in fm.Methods:
+      #print "wrapping of method {0}".format(m.usedname)
       missingtypes = MissingTypes(classname,m)
       m.iswrapped=(missingtypes=="")
       if missingtypes!="":
@@ -1339,6 +1340,7 @@ def WrapClass(classname,include_file,inputfile):
     #print "\nBegin: {0}\n".format(classname)
     #generate_html.GenerateHTMLStandardMethods(classname)
     #print "\nEnd: {0}\n".format(classname)
+    #print "Done"
         
     if len(fm.OperatorMethods)>0:
       class_decl+=indent+"// Operators:\n"
@@ -1489,6 +1491,7 @@ def WrapClass(classname,include_file,inputfile):
       add_public_typedefs += "amiobject->GetContext()->AddVar(type_{0}->Name(),type_{0},context);\n".format(n)
       n=n+1
 
+    #print "add public enumerations"
     # Add public Enumerations
     add_public_enums = '\n'
     # TODO: ideally should check for a typedef here
@@ -1537,6 +1540,7 @@ def WrapClass(classname,include_file,inputfile):
         add_constructor+='\n'
 
     # Adding static methods to the user given context:
+    #print "Adding static methods"
     add_static_methods='// Static methods \n'
     indent = "  "
     pos=0
@@ -1551,6 +1555,7 @@ def WrapClass(classname,include_file,inputfile):
     #add_static_methods+='\n'
 
     # Generate HTML file
+    #print "Generate HTML file"
     generate_html.obj.GenerateHTMLClassFile( classname)
 
     # in place replace TEMPLATE by classname
@@ -1590,6 +1595,7 @@ def WrapClass(classname,include_file,inputfile):
           
 
     # Implement CreateVar
+    #print "Implement CreateVar"
     implement_createvar=''
     if dh.abstract=='1':
       implement_createvar += "  // No variable creation for an abstract class ...\n"
@@ -1614,6 +1620,7 @@ def WrapClass(classname,include_file,inputfile):
           implement_createvar += "  return BasicVariable::ptr();\n"
 
     # Create Implementation File
+    #print "Create Implementation File"
     impl_filename=args.val.outputdir+"/wrap_{0}.cpp.new".format(config.ClassUsedName(classname))
     if IsTemplate(classname) or IsWithinContext(classname):
       shutil.copyfile(args.val.templatefile_dir+"/wrap_templateclass.cpp.in",impl_filename)
@@ -1657,6 +1664,7 @@ def WrapClass(classname,include_file,inputfile):
 
     # Methods
     for m in fm.Methods:
+      #print "implementing method "+m.usedname
       missingtypes = MissingTypes(classname,m,True)
       if missingtypes!="":
         impl += "/* The following types are missing: "+missingtypes+"\n"

@@ -18,7 +18,7 @@
 // ----------------------------------------------------------------------------
 #include <stdio.h>
 #include <math.h>
-#include <complex.h>
+#include <complex>
 #include <float.h>
 #include "dsyevc3.h"
 #include "dsyevq3.h"

@@ -7,7 +7,8 @@
 #define _AnalyticStraightVessel2D_h_
 
 #include "DefineClass.hpp"
-#include "AnalyticFunctionBase.h"
+
+#include "wrap_AnalyticFunctionBase.h"
 
 /**
  *  AnalyticStraightVessel2D class.

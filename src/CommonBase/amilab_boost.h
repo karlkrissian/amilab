@@ -56,7 +56,11 @@ class pfile_deleter
     {
       if (p!=NULL)
         if (p!=stdout)
-          pclose(p);
+          #ifdef _MSC_VER
+            _pclose(p);
+          #else
+            pclose(p);
+          #endif
     }
 };
 

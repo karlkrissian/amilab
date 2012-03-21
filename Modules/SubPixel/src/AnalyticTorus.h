@@ -7,7 +7,8 @@
 #define _AnalyticTorus_h_
 
 #include "DefineClass.hpp"
-#include "AnalyticFunctionBase.h"
+
+#include "wrap_AnalyticFunctionBase.h"
 
 /**
  *  AnalyticTorus class.

@@ -2674,7 +2674,7 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
     std::string  divFname;
 
     unsigned char mask_test;
-    bool attach_mask;
+//    bool attach_mask;
     
 //    double    phi0_value=0;
     double    lambda0=0,lambda1=0,lambda2=0;

@@ -12,6 +12,19 @@
 #include "ami_function.h"
 #include "AnalyticCube.h"
 
+
+void WrapClass_AnalyticCube::AddMethods(WrapClass<AnalyticCube>::ptr this_ptr)
+{
+  AddVar_setDimX(  this_ptr);
+  AddVar_getDimX(  this_ptr);
+  AddVar_setDimY(  this_ptr);
+  AddVar_getDimY(  this_ptr);
+  AddVar_setDimZ(  this_ptr);
+  AddVar_getDimZ(  this_ptr);
+  AddVar_setCenter(this_ptr);
+  AddVar_getCenter(this_ptr);
+}
+
 //---------------------------------------------------
 //AnalyticCube Wrapping
 //---------------------------------------------------

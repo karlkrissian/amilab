@@ -570,7 +570,7 @@ namespace ami {
     * Main iteration method, directs to the appropriate specific method
     * @return 
     */
-    virtual float Iterate() {}
+    virtual float Iterate() { return 0.0; }
 
 
     virtual void Process( int threadid = 0) {}

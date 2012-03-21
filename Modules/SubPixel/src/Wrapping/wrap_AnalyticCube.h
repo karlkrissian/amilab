@@ -51,17 +51,7 @@ public:
   ADD_CLASS_METHOD(setCenter, "Set the center of the cube");
   ADD_CLASS_METHOD(getCenter, "Get the center of the cube");
   
-  void AddMethods(WrapClass<AnalyticCube>::ptr this_ptr)
-  {
-    AddVar_setDimX(  this_ptr);
-    AddVar_getDimX(  this_ptr);
-    AddVar_setDimY(  this_ptr);
-    AddVar_getDimY(  this_ptr);
-    AddVar_setDimZ(  this_ptr);
-    AddVar_getDimZ(  this_ptr);
-    AddVar_setCenter(this_ptr);
-    AddVar_getCenter(this_ptr);
-  }
+  void AddMethods(WrapClass<AnalyticCube>::ptr this_ptr);
 };
 
 #endif

@@ -10,7 +10,21 @@
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
-#include "AnalyticCircle.h"
+
+#ifndef AnalyticCircle_declared
+  #define AnalyticCircle_declared
+  AMI_DECLARE_TYPE(AnalyticCircle)
+#endif
+
+//----------------------------------------------------------------------
+void WrapClass_AnalyticCircle::AddMethods(
+  WrapClass<AnalyticCircle>::ptr this_ptr )
+{
+  AddVar_setCenter(this_ptr);
+  AddVar_getCenter(this_ptr);
+  AddVar_setRadius(this_ptr);
+  AddVar_getRadius(this_ptr);
+}
 
 //---------------------------------------------------
 //AnalyticCircle Wrapping

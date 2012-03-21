@@ -439,21 +439,21 @@ float ami::AnisoGS_NRAD::Itere3D_ST_RNRAD( InrImage* im )
 
     float         erreur = 0; //,norm_grad;
 
-    float         u,u0;
+//    float         u,u0;
     float         divF=0;
     std::string   divFname;
 
-    unsigned char mask_test;
+  //  unsigned char mask_test;
  
     /// skip heavy code because of speedup
-    bool          speedup_skip;
+//    bool          speedup_skip;
     long          speedup_counter = 0;
 
-    int           xp,yp,zp;
-    double        mean,var;
+//    int           xp,yp,zp;
+//    double        mean,var;
     
     int           im_incx,im_incy,im_incz;
-    float         im_buf;
+//    float         im_buf;
     Timing        main_time("main time");
     Timing        precompute("Precompute");
     Timing        imagec("ImageC");
@@ -824,7 +824,7 @@ void ami::AnisoGS_NRAD::Process( int threadid)
     float           erreur = 0; //,norm_grad;
 
     // Sum over the points that don't evolve too much
-    float           u,u0;
+    //float           u,u0;
     float           divF=0;
     std::string     divFname;
     unsigned char   mask_test;
@@ -834,7 +834,7 @@ void ami::AnisoGS_NRAD::Process( int threadid)
     long            speedup_counter = 0;
     int             xp,yp,zp;
     int             im_incx,im_incy,im_incz;
-    float           im_buf;
+//    float           im_buf;
     extenttype      extent = extents[threadid];
 
     EquationCoefficients<double> equ_coeff(
@@ -1135,7 +1135,7 @@ float ami::AnisoGS_NRAD::Iterate()
 //   ----------------
 {
   Run();
-
+  return 0;
 } // ami::AnisoGS::Iterate()
 
 

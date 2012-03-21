@@ -460,7 +460,7 @@ void GeneralGaussianFilter ::  MyFiltre(
 
   
 //    GaussianFilter  filtre;
-    unsigned char   continuer;
+//    unsigned char   continuer;
     InrImage* imageIn;
     InrImage* imageOut;
     InrImage* image_masque;

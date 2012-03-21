@@ -7,7 +7,8 @@
 #define _AnalyticCylinder_h_
 
 #include "DefineClass.hpp"
-#include "AnalyticFunctionBase.h"
+
+#include "wrap_AnalyticFunctionBase.h"
 
 #define AddSetGetVar( name, type) \
   type  name; \

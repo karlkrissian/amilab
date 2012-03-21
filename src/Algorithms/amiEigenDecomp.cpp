@@ -88,9 +88,9 @@ void EigenDecomp::TemplateProcess( int threadid)
   // Get input extent
   InrImage::ptr   in = params.GetInput();
   extenttype      extent = extents[threadid];
-  int             niter,n;
+  int             niter; //,n;
   bool            mask_ok;
-  int             i,j;
+//  int             i,j;
   FloatMatrix     matrix(3,3);
   unsigned char   Diagonal;
   int             success;

@@ -37,7 +37,7 @@ def GetShortName(typename):
   if typename in type_shortname.keys():
     return type_shortname[typename]
   else:
-    return typename.replace(":","_")
+    return config.ClassShortName(typename)
 
 #
 # Operators
@@ -299,7 +299,8 @@ def ConvertPtrFrom(typeid,typevar,substvar):
     return res
 
 def ConvertValTo(typeid,substvar,typevar):
-  typename=config.types[typeid].GetString()
+  maintypeid = config.types[typeid].GetMainTypeId()
+  typename=config.types[maintypeid].GetString()
   shorttypename=GetShortName(typename)
   try:
     return eval("ConvertValTo_{0}(substvar,typevar)".format(shorttypename))

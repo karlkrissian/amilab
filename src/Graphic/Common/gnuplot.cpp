@@ -156,6 +156,7 @@ int ami::GnuPlot::AddCurve( InrImage::ptr im,
     float* taby;
     int x;
     std::string fname;
+    int num_curve;
 
     tabx = new float[im->DimX()];
     taby = new float[im->DimX()];
@@ -165,14 +166,14 @@ int ami::GnuPlot::AddCurve( InrImage::ptr im,
         tabx[x] = im->SpacePosX(x);
         taby[x] = (*im)(x,y,0);
       }
-      //num_courbe = 
-      this->AddCurve( im->DimX(), tabx, taby, name);
+      num_curve =  this->AddCurve( im->DimX(), tabx, taby, name);
     }
 
     fname =  (boost::format("%s.gnuplot")%name.c_str()).str();
 
     delete [] tabx;
     delete [] taby;
+    return num_curve;
 }
 
 //----------------------------------------------------------------------
@@ -322,7 +323,7 @@ void ami::GnuPlot::FillCommands( )
   cmd = "plot ";
   for(int i=0; i<_nb_courbes;i++)
   {
-    if ((i<_data_filenames.size())&&(i<_titles.size())) {
+    if ((i<(int)_data_filenames.size())&&(i<(int)_titles.size())) {
       if (i>0) cmd += ",";
       cmd += (boost::format(" \"%s\" title \"%s\"  with lines")
                 % _data_filenames[i].c_str() % _titles[i].c_str()).str();
@@ -335,7 +336,11 @@ void ami::GnuPlot::FillCommands( )
 //------------------------------------------------------------------------------
 void ami::GnuPlot::OpenSession( )
 {
+#ifdef _MSC_VER
+  FILE* f = _popen("gnuplot -persist","w");
+#else
   FILE* f = popen("gnuplot -persist","w");
+#endif
   if (f) {
     _session = boost::shared_ptr<FILE>(f,pfile_deleter());
   } else {
@@ -351,7 +356,7 @@ void ami::GnuPlot::SessionFillCommands( )
       SaveData(i);
 
     FillCommands();
-    for(int n=0; n<_cmdlist.size();n++) 
+    for(int n=0; n<(int)_cmdlist.size();n++) 
       fprintf( _session.get(), "%s\n", _cmdlist[n].c_str());
   }
   fflush(_session.get());
@@ -389,7 +394,7 @@ void ami::GnuPlot :: XPlot( std::string nom, int pause)
 
   Si (fic_script = fopen( nom_script.c_str(), "w")) != NULL Alors
     FillCommands();
-    for(int n=0; n<_cmdlist.size();n++) 
+    for(int n=0; n<(int)_cmdlist.size();n++) 
       fprintf( fic_script, "%s\n", _cmdlist[n].c_str());
 
     fprintf( fic_script, "pause %d\n",pause);
@@ -430,7 +435,7 @@ void ami::GnuPlot :: PSPlot( std::string nom)
     fprintf( fic_script, "set output \"%s\" \n", (nom+".ps").c_str());
 
     FillCommands();
-    for(int n=0; n<_cmdlist.size();n++) 
+    for(int n=0; n<(int)_cmdlist.size();n++) 
       fprintf( fic_script, _cmdlist[n].c_str());
     
     fprintf( fic_script, "\n");
