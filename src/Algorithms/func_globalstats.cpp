@@ -259,8 +259,9 @@ InrImage*    Func_Histogram( InrImage* im, float vmin, float vmax, int nint)
 
   res = new InrImage(nint,1,1,WT_SIGNED_INT);
       // set translation and voxel size of reflect real image intensity values
-  res->SetTranslation(vmin,0,0);
-  res->SetVoxelSize((vmax-vmin)/(1.0*nint),1,1);
+  double step=(vmax-vmin)/(1.0*nint);
+  res->SetTranslation(vmin+step/2.0,0,0);
+  res->SetVoxelSize(step,1,1);
 
   numpts = new int[nint];
   for(n=0;n<=nint-1;n++) { 
