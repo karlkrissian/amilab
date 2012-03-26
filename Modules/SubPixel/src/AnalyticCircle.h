@@ -7,7 +7,7 @@
 #define _AnalyticCircle_h_
 
 #include "DefineClass.hpp"
-#include "wrap_AnalyticFunctionBase.h"
+#include "AnalyticFunctionBase.h"
 
 
 /**

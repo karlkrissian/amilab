@@ -8,7 +8,7 @@
 
 #include "DefineClass.hpp"
 
-#include "wrap_AnalyticFunctionBase.h"
+#include "AnalyticFunctionBase.h"
 
 /**
  *  AnalyticRing2D class.
