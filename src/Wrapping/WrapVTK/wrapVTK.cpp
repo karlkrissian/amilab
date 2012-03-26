@@ -96,20 +96,31 @@ void AddWrapVTK(AMIObject::ptr& obj) {
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-    ADDOBJECTVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  vtkAnisoGS);
-    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
-    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "vtkSphere",            Wrap_vtkSphere);
-    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "vtkGPURayCasting",     wrap_vtkGPURayCasting);
-    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "wxVTKMedical3",        wrap_wxVTKMedical3);
-    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "wxVTKFrame",           wrap_wxVTKFrame);
+    ADDOBJECTVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  
+                       vtkAnisoGS);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    
+                       Wrap_vtkSkeleton2Lines);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "vtkSphere",            
+                       Wrap_vtkSphere);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "vtkGPURayCasting",     
+                       wrap_vtkGPURayCasting);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "wxVTKMedical3",        
+                       wrap_wxVTKMedical3);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "wxVTKFrame",           
+                       wrap_wxVTKFrame);
 
-    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "ToVtkImageData",   wrap_ToVtkImageData);
-    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "FromVtkImageData", wrap_FromVtkImageData);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "ToVtkImageData",   
+                       wrap_ToVtkImageData);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "FromVtkImageData", 
+                       wrap_FromVtkImageData);
 
-    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "ToVtkPolyData",   wrap_ToVtkPolyData);
-    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "FromVtkPolyData", wrap_FromVtkPolyData);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "ToVtkPolyData",   
+                       wrap_ToVtkPolyData);
+    ADDOBJECTVAR_NAME( C_wrap_varfunction,   "FromVtkPolyData", 
+                       wrap_FromVtkPolyData);
 
-    WrapClass_wxVTKRenderWindowInteractor::AddVar_wxVTKRenderWindowInteractor(amiobject->GetContext());
+    WrapClass_wxVTKRenderWindowInteractor::
+      AddVar_wxVTKRenderWindowInteractor(amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -230,10 +241,12 @@ BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
 
     vtk_skel2lines = vtk_new<vtkSkeleton2Lines>()();
     vtk_skel2lines->SetInput( vtk_image.get());
+    vtk_skel2lines->Update();
     vtk_skel2lines->GetOutput();
 
 
-    return WrapClass_SurfacePoly::CreateVar(new SurfacePoly(vtk_skel2lines->GetOutput()));
+    return WrapClass_SurfacePoly::CreateVar(
+      new SurfacePoly(vtk_skel2lines->GetOutput()));
 
     /*
     SurfacePoly::ptr surf_result( new SurfacePoly(vtk_skel2lines->GetOutput()));

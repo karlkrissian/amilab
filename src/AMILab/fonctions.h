@@ -176,13 +176,16 @@ InrImage*    Func_DirConnectivity( InrImage* im, InrImage* mask = NULL);
 
 amilab::SurfacePoly* Func_Skeleton2lines( InrImage* im);
 
-amilab::SurfacePoly* Func_SmoothLines( amilab::SurfacePoly* s, float alpha, float beta, int n );
+amilab::SurfacePoly* Func_SmoothLines( amilab::SurfacePoly* s, float alpha, 
+                                       float beta, int n );
 
-amilab::SurfacePoly* Func_SmoothLinesToSplines(amilab::SurfacePoly* s, float samplingStep );
+amilab::SurfacePoly* Func_SmoothLinesToSplines(amilab::SurfacePoly* s, 
+                                               float samplingStep );
 
 amilab::SurfacePoly* Func_ResampleLines( amilab::SurfacePoly* s, float dist );
 
-amilab::SurfacePoly* Func_ConnectLines( amilab::SurfacePoly* s, float maxdist, float maxangle );
+amilab::SurfacePoly* Func_ConnectLines( amilab::SurfacePoly* s, 
+                                        float maxdist, float maxangle );
 
 InrImage*    Func_ThresholdCrossing( InrImage* im, float th);
 

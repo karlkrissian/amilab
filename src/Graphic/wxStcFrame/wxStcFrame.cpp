@@ -280,7 +280,18 @@ wxStcFrame::wxStcFrame (wxWindow* parent,const wxString &title)
     //m_edit = new wxEditor (this, wxID_ANY);
     //m_edit->SetFocus();
     //Create notebook
-    notebook = new wxAuiNotebook(this, wxID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
+    notebook = new wxAuiNotebook(this, 
+                                 wxID_NOTEBOOK, 
+                                 wxDefaultPosition, 
+                                 wxDefaultSize, 
+                                  wxAUI_NB_TOP          
+                                  #ifndef __WXGTK__ 
+                                    |wxAUI_NB_TAB_SPLIT    
+                                  #endif
+                                  |wxAUI_NB_TAB_MOVE     
+                                  |wxAUI_NB_WINDOWLIST_BUTTON
+                                  |wxAUI_NB_SCROLL_BUTTONS);
+                                 //wxAUI_NB_DEFAULT_STYLE);
     pageCount = 1;
 }
 

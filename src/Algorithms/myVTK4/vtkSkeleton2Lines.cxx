@@ -104,7 +104,7 @@ void vtkSkeleton2Lines::Init()
   InputImage->SetScalarType(VTK_UNSIGNED_SHORT);
   InputImage->SetNumberOfScalarComponents(1);
   InputImage->AllocateScalars();
-  InputImage->DeepCopy(this->GetInput());
+  InputImage->CopyAndCastFrom(this->GetInput(),this->GetInput()->GetExtent());
     
   tx = InputImage->GetDimensions()[0];
   ty = InputImage->GetDimensions()[1];
@@ -238,9 +238,11 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
       
       //don't care about spacing and origin, because it screws up the result...
       //simply insert x y z
-      //We should care though to comply with a polydata filter that gives point in physical space.
+      //We should care though to comply with a polydata filter that gives point 
+      // in physical space.
       //So far let us keep like that.
-      //surfPoints->InsertPoint(iPoint,(x*spacing[0])-origin[0],(y*spacing[1])-origin[1],(z*spacing[2])-origin[2]);
+      //surfPoints->InsertPoint(iPoint,(x*spacing[0])-origin[0],
+      //                  (y*spacing[1])-origin[1],(z*spacing[2])-origin[2]);
       surfPoints->InsertPoint(iPoint,x,y,z);
 
       pointidPtr=(unsigned short*)pointid->GetScalarPointer(x,y,z);
@@ -254,13 +256,16 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
         y1 = y+neighbors_place[l][1];
         z1 = z+neighbors_place[l][2];
 
-        if (CoordOK(InputImage,x1,y1,z1) && *(unsigned short*)InputImage->GetScalarPointer(x1,y1,z1)>0) {
-      n++;
+        if (CoordOK(InputImage,x1,y1,z1) && 
+            *(unsigned short*)InputImage->GetScalarPointer(x1,y1,z1)>0) {
+          n++;
         }
       }
     }
 
     if (n==1 || n>2) {
+      std::cout << "adding extremity at " 
+                << x << "," << y << "," << z << std::endl;
       tab_ext += extremity(x,y,z);
     }
 
@@ -288,8 +293,11 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
     inputPtr = (unsigned short*)InputImage->GetScalarPointer(0,y,z);
   for(x=0;x<=tx-2;x++) {
     
-        n = ((*inputPtr) > 0) + (*(inputPtr+inc[0]) > 0) + (*(inputPtr+inc[1]) > 0) + (*(inputPtr+inc[0]+inc[1]) > 0) + 
-        (*(inputPtr+inc[2]) > 0) + (*(inputPtr+inc[0]+inc[2]) > 0) + (*(inputPtr+inc[1]+inc[2]) > 0) + (*(inputPtr+inc[0]+inc[1]+inc[2]) > 0);
+        n = ((*inputPtr) > 0) + (*(inputPtr+inc[0]) > 0) + 
+             (*(inputPtr+inc[1]) > 0) + (*(inputPtr+inc[0]+inc[1]) > 0) + 
+             (*(inputPtr+inc[2]) > 0) + (*(inputPtr+inc[0]+inc[2]) > 0) + 
+             (*(inputPtr+inc[1]+inc[2]) > 0) + 
+             (*(inputPtr+inc[0]+inc[1]+inc[2]) > 0);
     
     if (n>2) {
     
@@ -330,11 +338,16 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
     x0 = tab_ext[e].x;
     y0 = tab_ext[e].y;
     z0 = tab_ext[e].z;
+    std::cout << "Processing extremity " 
+              << x0 << ", " << y0 << ", " << z0 << std::endl;
 
     l0 = 0;
 
     while (*(unsigned short*)neighbors->GetScalarPointer(x0,y0,z0) > 0) {
 
+      std::cout << "nb of neighbors = " 
+                << *(unsigned short*)neighbors->GetScalarPointer(x0,y0,z0)
+                << std::endl;
       //surfCell->InsertNextCell(1000);
       //surfCell->InsertCellPoint(*(unsigned short*)pointid->GetScalarPointer(x0,y0,z0));
       pointIds->InsertNextId(*(unsigned short*)pointid->GetScalarPointer(x0,y0,z0));
@@ -347,13 +360,15 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
       // beginning at the position of the last found positive neighbor
       found = FALSE;
 
+      std::cout << "  looking for neighbor starting at "<< l0 << std::endl;
       for(l=l0;l<=26;l++) {
 
         if (l==13) continue;
         x1 = x0+neighbors_place[l][0];
         y1 = y0+neighbors_place[l][1];
         z1 = z0+neighbors_place[l][2];
-        if (CoordOK(InputImage,x1,y1,z1) && *(unsigned short*)neighbors->GetScalarPointer(x1,y1,z1)>0) {
+        if (CoordOK(InputImage,x1,y1,z1) && 
+            *(unsigned short*)neighbors->GetScalarPointer(x1,y1,z1)>0) {
           found = TRUE;
           // position on the next neighbor 
           l0 = l+1;
@@ -371,6 +386,9 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
         surfCell->Delete();
         surfPoints->Delete();
         return;
+      } else {
+        std::cout << "Found neighbor at " 
+                  << x1 << ", " << y1 << ", " << z1 << std::endl;
       }
 
       // Decide if the line must be created
@@ -382,17 +400,19 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
         continue;
       } else {
         // Insert new line
-    pointIds->Reset();
-       if (pointid0 > -1) {
+        pointIds->Reset();
+        if (pointid0 > -1) {
          pointIds->InsertNextId(pointid0);
-       }
-       pointIds->InsertNextId(*(unsigned short*)pointid->GetScalarPointer(x0,y0,z0));
-        
-       }    
+        }
+        pointIds->InsertNextId(
+          *(unsigned short*)pointid->GetScalarPointer(x0,y0,z0));
+      }
     
-    
+      std::cout << "Following the line "<< std::endl; 
       // 1. follow the line
-      while (found && *(unsigned short*)neighbors->GetScalarPointer(x1,y1,z1)==2 && !(*(unsigned char*)endpoints->GetScalarPointer(x1,y1,z1))) {
+      while (found && 
+             *(unsigned short*)neighbors->GetScalarPointer(x1,y1,z1)==2 && 
+             !(*(unsigned char*)endpoints->GetScalarPointer(x1,y1,z1))) {
         // search for the next point
         found = FALSE;
 
@@ -405,15 +425,19 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
 
           if (!((x2==x0)&&(y2==y0)&&(z2==z0)) &&
                 CoordOK(InputImage,x2,y2,z2) &&
-             *(unsigned short*)neighbors->GetScalarPointer(x2,y2,z2)>0) {
-             neighborsPtr=(unsigned short*)neighbors->GetScalarPointer(x1,y1,z1);
-             *neighborsPtr=0;
-             x0 = x1;
-             y0 = y1;
-             z0 = z1;
-             // Add the point to the line
-             //surfCell->InsertCellPoint(*(unsigned short*)pointid->GetScalarPointer(x0,y0,z0));
-             pointIds->InsertNextId(*(unsigned short*)pointid->GetScalarPointer(x0,y0,z0));
+             *(unsigned short*)neighbors->GetScalarPointer(x2,y2,z2)>0) 
+          {
+            neighborsPtr=(unsigned short*)neighbors->GetScalarPointer(x1,y1,z1);
+            *neighborsPtr=0;
+            x0 = x1;
+            y0 = y1;
+            z0 = z1;
+            // Add the point to the line
+            //surfCell->InsertCellPoint(*(unsigned short*)pointid->GetScalarPointer(x0,y0,z0));
+            pointIds->InsertNextId(
+              *(unsigned short*)pointid->GetScalarPointer(x0,y0,z0));
+            std::cout << "adding point " 
+                      << x0 << ", " << y0 << ", " << z0 << std::endl;
             //fprintf(stderr,"(%2d %2d %2d) ",x0,y0,z0);
             x1 = x2;
             y1 = y2;
@@ -425,13 +449,14 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
         }
 
         if (!found) {
-        fprintf(stderr,"Next point not found (%d %d %d) \n",x1,y1,z1);
+          fprintf(stderr,"Next point not found (%d %d %d) \n",x1,y1,z1);
         }
             
       }
 
       //surfCell->InsertCellPoint(*(unsigned short*)pointid->GetScalarPointer(x1,y1,z1));
-      pointIds->InsertNextId(*(unsigned short*)pointid->GetScalarPointer(x1,y1,z1));
+      pointIds->InsertNextId(
+        *(unsigned short*)pointid->GetScalarPointer(x1,y1,z1));
       
       if ((*(short*)loopid->GetScalarPointer(x1,y1,z1)) > -1 ) {
         pointIds->InsertNextId(*(short*)loopid->GetScalarPointer(x1,y1,z1));

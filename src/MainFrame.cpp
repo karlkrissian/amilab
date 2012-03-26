@@ -849,11 +849,13 @@ void MainFrame::CreateVarBook ( wxWindow* parent)
                                     wxPoint(client_size.x, client_size.y),
                                                 //wxDefaultPosition,
                                     wxDefaultSize,
-                                    wxAUI_NB_TOP          |
-                                    wxAUI_NB_TAB_SPLIT    |
-                                    wxAUI_NB_TAB_MOVE     |
-                                    wxAUI_NB_SCROLL_BUTTONS
-                                  );
+                                    wxAUI_NB_TOP          
+                                    #ifndef __WXGTK__ 
+                                      |wxAUI_NB_TAB_SPLIT    
+                                    #endif
+                                    |wxAUI_NB_TAB_MOVE     
+                                    |wxAUI_NB_WINDOWLIST_BUTTON
+                                    |wxAUI_NB_SCROLL_BUTTONS);
   _var_book->Fit();
 
 } // CreateVarBook()

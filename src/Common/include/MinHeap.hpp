@@ -42,10 +42,12 @@
 #include <iosfwd>
 #include <stdio.h>
 #include <ostream>
+#include <string.h>
 
 // Template ??
 //
 
+// MinHeap uses an array with indexes starting at 1
 //----------------------------------------------------------------------
 template < class T > class MinHeap
 //                         -------
@@ -67,6 +69,23 @@ protected:
   void* move_data;
 
 public:
+  
+  // copy constructor
+  MinHeap( const MinHeap<T>& mh) 
+  {
+    num_elts = mh.num_elts;
+    array_size = mh.array_size;
+    array = NULL;
+    Resize(array_size);
+    memcpy(array,mh.array,sizeof(T)*(num_elts+1));
+  }
+
+  MinHeap<T>& operator =(const MinHeap<T>& mh)
+  {
+    Resize(array_size);
+    memcpy(array,mh.array,sizeof(T)*(num_elts+1));
+    num_elts = mh.num_elts;
+  }
 
   MinHeap( int arraysize = 2)
   {
@@ -139,9 +158,12 @@ template<class T> void MinHeap<T>::Resize( int size)
   new_nbelts = size;
   new_array = new T [new_nbelts+1];
 
-  for(i=0;i<=num_elts;i++)  new_array[i] = array[i];
-
-  delete [] array;
+  if (array!=NULL) {
+    //for(i=0;i<=num_elts;i++)  new_array[i] = array[i];
+    memcpy(new_array,array,sizeof(T)*(num_elts+1));
+  
+    delete [] array;
+  }
 
   array = new_array;
   array_size = new_nbelts;
