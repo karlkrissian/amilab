@@ -148,6 +148,13 @@ if (!exists(MultiLinesClass)) {
       ::mask_name = "::mask"
     }
     
+    #-----------------------------------------------
+    proc ::set_gradient_mask( IMAGE gmask) \
+    {
+      del ::grad_mask
+      ::grad_mask = &gmask
+    }
+
     #--------------------------------------------------
     proc ::set_input(IMAGE im)  \
     {
@@ -307,6 +314,9 @@ if (!exists(MultiLinesClass)) {
       grad_algo = algorithms.Gradient(&::input,sigma,::normalize_gradient)
       grad_algo.SetPSF(::PSF_stddev,::PSF_stddev,::PSF_stddev)
       grad = grad_algo.Execute()
+      if (exists(::grad_mask)) {
+        grad = grad*(::grad_mask>0)
+      }
 
       SetProgress(::current_progress+::current_step*0.75)
     
