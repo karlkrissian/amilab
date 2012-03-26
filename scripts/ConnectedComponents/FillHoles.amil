@@ -1,10 +1,10 @@
 #!/home/karl/projects/bin/OS/improcess
 
+#-------------------------------------------------------------------------------
 #
 # fill the holes within the main connected component
 # of positive values by setting their intensities to 0.1
 #
-
 proc FillHoles( IMAGE input, IMAGE res) {
   print "Entering FillHoles \n"
   _icc = CC(input)
@@ -14,7 +14,8 @@ proc FillHoles( IMAGE input, IMAGE res) {
 }
 
 
-// Fill the holes of the component number _comp after reordering by size
+#-------------------------------------------------------------------------------
+# Fill the holes of the component number _comp after reordering by size
 proc FillHolesComp( IMAGE input, IMAGE res, NUM _comp) {
   print "Entering FillHoles \n"
   _icc = CC(input)
@@ -23,8 +24,9 @@ proc FillHolesComp( IMAGE input, IMAGE res, NUM _comp) {
   print "Leaving FillHoles \n"
 }
 
-// Fill the holes for all components with number lower or equal to _comp
-// after reordering by size
+#-------------------------------------------------------------------------------
+# Fill the holes for all components with number lower or equal to _comp
+# after reordering by size
 proc FillHolesLComp( IMAGE input, IMAGE res, NUM _comp) {
   print "Entering FillHoles \n"
   _icc = CC(input)
@@ -34,7 +36,8 @@ proc FillHolesLComp( IMAGE input, IMAGE res, NUM _comp) {
 }
 
 
-// Fill the holes for all components with positive sign
+#-------------------------------------------------------------------------------
+# Fill the holes for all components with positive sign
 proc FillHolesPositive( IMAGE input, IMAGE res) {
   print "Entering FillHolesPositive \n"
   # to improve robustness for points too close to 0,
