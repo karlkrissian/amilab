@@ -10,26 +10,38 @@ if (!exists(SkeletonClass)) {
     func "SyntheticImages/AddSphere"
     
     
-    #-----------------------------------------------------------
-
-    
-    //---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Init() {
       
       ::input_name   = "","Name of the input image variable"
-      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki"+
+      # "/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset+
+      # "level_set_segmentation"
 
-      ::html_filename = GetScriptsDir+"/Centerlines/Skeleton/Doc/Skeleton/index.html"
+      ::html_filename = GetScriptsDir+\
+                          "/Centerlines/Skeleton/Doc/Skeleton/index.html"
 
-      ::UseZoom      = UCHAR(1), "Apply the skeleton only to the current zoom of the input image viewer"
+      ::UseZoom      = UCHAR(1),  "Apply the skeleton only to the current "+\
+                                  "zoom of the input image viewer"
     
-      ::Threshold    = 0, "Intensity threshold of the input image to select voxels of higher intensity for the skeleton"
-      ::FillHoles    = UCHAR(0), "Fill the holes in the binary image before skeletonization"
+      ::Threshold_Upper  = 0,   "Intensity threshold of the input image "+\
+                                "to select voxels of higher intensity for "+\
+                                "the skeleton, "+\
+                                "upper bound for hysteris thesholding"
+      ::Threshold_Lower  = 0,   "Intensity threshold of the input image "+\
+                                "to select voxels of higher intensity for "+\
+                                "the skeleton, "+\
+                                "lower bound for hysteris thesholding"
+
+      ::FillHoles    = UCHAR(0),  "Fill the holes in the binary image before "+\
+                                  "skeletonization"
   
     
       # choose the Euclidean distance transform algorithm:
       #
-      ::InputIntensity = UCHAR(0), "Use input intensity for ordering the skeletonization, instead of Euclidean distance to the object borders"
+      ::InputIntensity = UCHAR(0),  "Use input intensity for ordering the "+\
+                                    "skeletonization, instead of Euclidean "+\
+                                    "distance to the object borders"
 
       # Ordering distance Transform
       # 0: vtkPropDaniel2: can produce seg fault ??
@@ -66,7 +78,7 @@ if (!exists(SkeletonClass)) {
   
     }
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::load_input() {
       eval "::input <<= (FLOAT)"+::input_name+";"
       if (::input_name=="BrowseImage") {
@@ -76,11 +88,13 @@ if (!exists(SkeletonClass)) {
       if (exists(::win)) {
         ::inputmin          = min(::input)
         ::inputmax          = max(::input)
-        ::Threshold         = (::inputmin+::inputmax)/2
+        ::Threshold_Upper   = (::inputmin+::inputmax)/2
+        ::Threshold_Lower   = (::inputmin+::inputmax)/2
         ::GuiUpdateIntensityLimits(::inputmin,::inputmax)
       }
     }
-    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+    Comments( ::load_input, "Copies the input image in a local image member "+\
+                            "named 'input'")
 
     #---------------------------------------------------------------------------
     proc ::set_input( IMAGE input) \
@@ -93,19 +107,20 @@ if (!exists(SkeletonClass)) {
       }
     }
 
-    //---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::GuiUpdateIntensityLimits( NUM _min, NUM _max) {
-      ::win.FloatConstraints(::Threshold_id,_min,_max,(_max-_min)/2)
+      ::win.FloatConstraints(::Threshold_Upper_id,_min,_max,(_max-_min)/2)
+      ::win.FloatConstraints(::Threshold_Lower_id,_min,_max,(_max-_min)/2)
       ::win.Update(-1)
     }
 
-    #--------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::SetMaxRep(STRING imname) {
       ::maxrep = Image(imname)
       printn "**** MAXREP loaded ******"
     }
     
-    #--------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Execute() {
 
       if (!exists(::input)) {
@@ -119,11 +134,17 @@ if (!exists(SkeletonClass)) {
       } else {
         _i = ::input
       }
-      _i   = _i-::Threshold
-    
-    
+
+      if (::Threshold_Upper==::Threshold_Lower) {
+        _i   = _i-::Threshold_Upper
+      } else {
+        func "Utils/alHysteresisThresholding.amil"
+        _i <<= alHysteresis.Run( &_i, ::Threshold_Upper,::Threshold_Lower)
+      }
+
       if (::FillHoles) {
         _res = _i
+        func "ConnectedComponents/FillHoles.amil"
         FillHolesPositive(_i,&_res)
         _i = _res
         del _res
@@ -174,7 +195,7 @@ if (!exists(SkeletonClass)) {
     Comments(::Execute,"Run the skeletonization algorithm")
 
 
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Lines() \
     {
       if (exists(::lines))       { del ::lines; }
@@ -184,7 +205,7 @@ if (!exists(SkeletonClass)) {
       if (::linemethod==0) {
         ::lines = Skeleton2lines(::output)
       } else {
-        ::lines = vtktools.vtkSkeleton2Lines(::output)
+        ::lines = vtktools.vtkSkeleton2Lines(&::output)
       }
     
       ::res = ::lines
@@ -195,7 +216,7 @@ if (!exists(SkeletonClass)) {
       #}
     }
     
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Smooth_Lines() {
       if (exists(::res)) {
         if (exists(::slines)) { 
@@ -216,7 +237,7 @@ if (!exists(SkeletonClass)) {
       }
     }
         
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::SelectPrune() {
       func "Centerlines/Prune"
       if (exists(::res)) {
@@ -226,7 +247,8 @@ if (!exists(SkeletonClass)) {
         }
       }
     }
-    #---------------------------------------------------
+
+    #---------------------------------------------------------------------------
     proc ::RemovePrune() {
       if (exists(::res)) {
         ::res.RemoveSelection()
@@ -236,7 +258,7 @@ if (!exists(SkeletonClass)) {
       }
     }
     
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::ConnectLines() {
       ::res = ::res.ConnectLines(::connect_dist,::connect_dir)
       if (exists(::res_draw)) {
@@ -245,7 +267,7 @@ if (!exists(SkeletonClass)) {
       }
    }
     
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Display() {
         show ::input
         if (exists(::output)) {
@@ -264,7 +286,7 @@ if (!exists(SkeletonClass)) {
     Comments(::Display,"Displays the result")
 
 
-    //---------------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::Gui() {
     
       if (exists(::parent_panel)) {
@@ -293,7 +315,10 @@ if (!exists(SkeletonClass)) {
         ::win.AddBoolean( &::UseZoom,"Use Zoom")
         
         # TODO: set the limits after reading the input image
-        ::Threshold_id = ::win.AddFloat( &::Threshold,  "Threshold",  -1000,1000)
+        ::Threshold_Upper_id = ::win.AddFloat( &::Threshold_Upper,  \
+                    "Threshold Upper", -1000,1000)
+        ::Threshold_Lower_id = ::win.AddFloat( &::Threshold_Lower,  \
+                    "Threshold Lower", -1000,1000)
         ::win.AddBoolean( &::FillHoles, "Fill Holes")
     
         ept_id = ::win.AddEnum( &::endpoint_type, "Endpoint type")
