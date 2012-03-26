@@ -192,7 +192,6 @@ IF(AMI_ENABLE_WRAPPING)
   #------------------------------------------------------------
 
   WRAP_CODE()
-
 ENDIF(AMI_ENABLE_WRAPPING)
 
 
@@ -203,14 +202,6 @@ FOREACH( class ${ancestors_list}) #${compilation_list}  )
 ENDFOREACH( class ${ancestors_list}  ) 
 SET( WrapAlgorithms_HDRS ${GENERATED_DIR}/addwrap_algorithms.h   ${WrapAlgorithms_HDRS})
 SET( WrapAlgorithms_SRCS ${GENERATED_DIR}/addwrap_algorithms.cpp ${WrapAlgorithms_SRCS})
-
-# file(GLOB algorithms_HDRS  "*.h"  )
-# file(GLOB algorithms_SRCS  "*.cpp")
-
-MESSAGE("-----------------------")
-MESSAGE("Wrapping Algorithms ...")
-MESSAGE("-----------------------")
-
 
 SET(WrapAlgorithms_SRCS
      ${WrapAlgorithms_SRCS}

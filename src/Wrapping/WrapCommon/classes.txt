@@ -1,0 +1,4 @@
+
+# Image Extent
+ami::ImageExtent<float>
+

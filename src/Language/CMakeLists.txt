@@ -12,7 +12,8 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
   ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
-  ${AMILab_BINARY_DIR}/Wrapping/WrapAlgorithms/Generated
+  #${AMILab_BINARY_DIR}/Wrapping/WrapAlgorithms/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapCommon/Generated
   ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
   ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Language
@@ -149,5 +150,5 @@ target_link_libraries(Language
 
 add_dependencies ( Language 
   WrapWxWidgets 
-  WrapAlgorithms # dependency because of wrap_ImageExtent ...
+  WrapCommon 
 )

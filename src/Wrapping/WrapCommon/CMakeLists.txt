@@ -13,26 +13,109 @@ CONFIGURE_FILE(
 include_directories (
   ${AMILAB_SOURCE_DIR}/CommonBase
   ${AMILAB_SOURCE_DIR}/Common/include
-#  ${AMILAB_SOURCE_DIR}/Graphic/include
-#  ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${Boost_INCLUDE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/Generated
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})
-#INCLUDE( ${VTK_USE_FILE} )
-#INCLUDE( ${USE_ITK_FILE} )
+
+
+IF(AMI_ENABLE_WRAPPING)
+  #-----------------------------------------------------------------------------
+  # Initialization
+  #-----------------------------------------------------------------------------
+  INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
+  SET(GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/Generated)
+  CreateDirectory( ${GENERATED_DIR})
+  SET(LIBNAME "common")
+  WRAP_INIT(" Common")
+
+  #-----------------------------------------------------------------------------
+  # Creating XML file
+  #-----------------------------------------------------------------------------
+  SET(GCCXML_FLAGS "")
+  IF(WIN32)
+    SET(GCCXML_FLAGS ${GCCXML_FLAGS} -D_WIN32 -DWIN32 -D_MSC_VER)
+  ENDIF(WIN32)
+  
+  # Add Frameworks information
+  IF(APPLE)
+    SET(GCCXML_FLAGS ${GCCXML_FLAGS} -F /System/Library/Frameworks )
+  ENDIF(APPLE)
+  MESSAGE("GCCXML_FLAGS='${GCCXML_FLAGS}'")
+
+  SET(XML_OUTPUT "${GENERATED_DIR}/common_includes.xml")
+  SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/common_includes.h")
+
+  # Adding needed includes for wrapping ???
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Wrapping/include")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Common/include")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/CommonBase")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/LanguageBase")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Language")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${CMAKE_BINARY_DIR}")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${PROJECT_SOURCE_DIR}")
+  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${Boost_INCLUDE_DIR}")
+
+  RUN_GCCXML( ${XML_INPUT} ${XML_OUTPUT})
+
+  #-----------------------------------------------------------------------------
+  # Setting up the Documentation information
+  #-----------------------------------------------------------------------------
+  IF(GENERATE_HTML_HELP)
+    SET(CLASSES_URL_LIST "http://www.ctm.ulpgc.es/amilab_doxygen/3.2.0/html/")
+    SET(HTML_DIR "${GENERATED_DIR}/html")
+    CreateDirectory( ${HTML_DIR} )
+  ENDIF(GENERATE_HTML_HELP)
+
+  #-----------------------------------------------------------------------------
+  # Generating the classes, functions, etc...  lists
+  #-----------------------------------------------------------------------------
+  READ_CLASSES(  "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"  ) 
+
+  #-----------------------------------------------------------------------------
+  # Generating and reading ancestors
+  #-----------------------------------------------------------------------------
+  CREATE_ANCESTORS()
+  FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )
+
+  #-----------------------------------------------------------------------------
+  # Checking for existing and missing files
+  #-----------------------------------------------------------------------------
+  # Wrap all missing classes at once since it is now fast
+  CHECK_WRAPPED_FILES( "${ancestors_list}"       "MISSING_CLASSES")
+  LIST(LENGTH MISSING_CLASSES   NB_MISSING_CLASSES)
+  WRAP_MESSAGE("MISSING_CLASSES   = ${MISSING_CLASSES}")
+
+  #-----------------------------------------------------------------------------
+  # Create the rule that wraps the code
+  #-----------------------------------------------------------------------------
+  WRAP_CODE()
+
+ENDIF(AMI_ENABLE_WRAPPING)
+
+FOREACH( class ${ancestors_list}) 
+  ClassUsedName( class m_class )
+  SET( WrapCommon_HDRS ${GENERATED_DIR}/wrap_${m_class}.h ${WrapCommon_HDRS})
+  SET( WrapCommon_SRCS ${GENERATED_DIR}/wrap_${m_class}.cpp ${WrapCommon_SRCS})
+ENDFOREACH( class ${ancestors_list}  ) 
+SET( WrapCommon_HDRS ${GENERATED_DIR}/addwrap_common.h   ${WrapCommon_HDRS})
+SET( WrapCommon_SRCS ${GENERATED_DIR}/addwrap_common.cpp ${WrapCommon_SRCS})
 
 SET(  WrapCommon_SRCS
+  ${WrapCommon_SRCS}
   wrapfunctions.cpp
-#  wrapfunctions_draw.cpp
+  #  wrapfunctions_draw.cpp
   wrapfunction_class.cpp
   wrap_ImageViewerBase.cpp  
 )
 
 SET(WrapCommon_HDRS
-#	wrapfunctions_draw.h
+  ${WrapCommon_SRCS}
+  #	wrapfunctions_draw.h
   ${CMAKE_BINARY_DIR}/${CURRENT_LIB}Configure.h
   ../include/wrapfunctions.hpp
   ../include/wrapfunctions.tpp

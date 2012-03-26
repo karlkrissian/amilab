@@ -23,7 +23,7 @@ ami::vtkFastMarchingFunctions
 ami::ImageConvolution1D
 
 # Image Extent
-ami::ImageExtent<float>
+# ami::ImageExtent<float> moved to WrapCommon
 
 # Denoising
 ami::SRAD

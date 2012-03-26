@@ -19,7 +19,7 @@
 #include "amivtkFastMarchingFunctions.h"
 #include "amiFieldOrientationRegionGrowing.h"
 
-#include "amiImageExtent.h"
+//#include "amiImageExtent.h"
 
 #include "amiEigenDecomp.h"
 #include "amiAnisoGS.h"
