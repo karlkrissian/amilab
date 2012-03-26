@@ -10,7 +10,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/LanguageBase
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   # can this dependency be a problem for the dynamic library and the modules???
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapAlgorithms/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapAlgorithms/Generated
 )
 
 # Difficult to avoid wxwidgets: used in Variables.cpp

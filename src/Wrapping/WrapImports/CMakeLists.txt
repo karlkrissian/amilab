@@ -16,11 +16,11 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapAlgorithms/Generated
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapLanguage/Generated
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapExamples/Generated
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapLanguage/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapAlgorithms/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapLanguage/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapExamples/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapLanguage/Generated
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -31,7 +31,7 @@ IF(AMI_WRAP_MICRONTRACKER)
   include_directories(
     ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/src
     ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/include
-    ${AMILAB_SOURCE_DIR}/Wrapping/WrapMicronTracker/Generated
+    ${AMILab_BINARY_DIR}/Wrapping/WrapMicronTracker/Generated
   )
 ENDIF(AMI_WRAP_MICRONTRACKER)
 
@@ -40,7 +40,7 @@ IF(AMI_WRAP_ULTRASOUND)
   include_directories(
     ${AMILAB_SOURCE_DIR}/Wrapping/WrapUltrasound/src
     ${AMILAB_SOURCE_DIR}/Wrapping/WrapUltrasound/include
-    ${AMILAB_SOURCE_DIR}/Wrapping/WrapUltrasound/Generated
+    ${AMILab_BINARY_DIR}/Wrapping/WrapUltrasound/Generated
     ${AMILAB_SOURCE_DIR}/Wrapping/WrapUltrasound
     ${ULTRASOUND_DIR}
   )

@@ -13,11 +13,11 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxVTK
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}
-  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated
+  ${CMAKE_CURRENT_BINARY_DIR}/${AMI_VTK_VERSION}/Generated
 )
 
 INCLUDE( ${VTK_USE_FILE} )
@@ -31,7 +31,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   #------------------------------------------------------------
 
   INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
-  SET(GENERATED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated)
+  SET(GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/${AMI_VTK_VERSION}/Generated)
   CreateDirectory( ${GENERATED_DIR})
   SET(LIBNAME "vtk")
   WRAP_INIT(" VTK ${AMI_VTK_VERSION}")
@@ -41,7 +41,6 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   #------------------------------------------------------------
 
   INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapVTK.cmake)
-
   GCCXML_USE_VTK()
   SET(XML_OUTPUT "${GENERATED_DIR}/vtk_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/vtk_includes.h")

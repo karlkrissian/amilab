@@ -14,6 +14,7 @@ SET(KIT SubPixel)
 SET(CMAKE_MODULE_PATH  ${PROJECT_SOURCE_DIR}/../../../CMAKE  ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
 SET(${KIT}_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+SET(${KIT}_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
@@ -52,7 +53,7 @@ SET(${KIT}_INCLUDE_PATHS
 )
 
 INCLUDE_DIRECTORIES(
-    ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping/Generated
+    ${CMAKE_CURRENT_BINARY_DIR}/Wrapping/Generated
     ${${KIT}_INCLUDE_PATHS}
     ${AMILab_SOURCE_DIR}/Algorithms/include
     ${AMILab_SOURCE_DIR}/Graphic/include
@@ -65,7 +66,7 @@ IF(${KIT}_ENABLE_WRAPPING)
   #
   IF(${KIT}_NEED_VTK_WRAPPING)
     # allow use of vtk classes  wrapped within AMILab
-    FILE(READ "${AMILab_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated/ancestors.txt" vtk_ancestors_txt)
+    FILE(READ "${AMILab_BINARY_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated/ancestors.txt" vtk_ancestors_txt)
     STRING(REGEX REPLACE "[\r\n]" ";" vtk_ancestors_list ${vtk_ancestors_txt} )
     SET(AVAILABLE_EXTERNAL_CLASSES ${vtk_ancestors_list})
     MESSAGE("AVAILABLE_EXTERNAL_CLASSES=${AVAILABLE_EXTERNAL_CLASSES}")

@@ -18,7 +18,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/../CMAKE/config.cmake)
 INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}
-                    ${PROJECT_SOURCE_DIR}/Wrapping/Generated
+                    ${PROJECT_BINARY_DIR}/Wrapping/Generated
                     ${AMILab_PATHS} )
 
 OPTION(Boost_USE_STATIC_LIBS "Use Boost static libraries" ON)

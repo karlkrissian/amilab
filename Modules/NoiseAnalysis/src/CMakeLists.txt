@@ -46,7 +46,7 @@ INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}
                     ${PROJECT_SOURCE_DIR}/Wrapping
-                    ${PROJECT_SOURCE_DIR}/Wrapping/Generated
+                    ${PROJECT_BINARY_DIR}/Wrapping/Generated
                     ${AMILab_PATHS}
                     ${AMILAB_SOURCE_DIR}/Algorithms/include
  )
@@ -66,7 +66,7 @@ IF(ENABLE_WRAPPING)
   ENDIF(VTK_FOUND)
 
   # allow use of vtk classes  wrapped within AMILab
-  FILE(READ "${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated/ancestors.txt" vtk_ancestors_txt)
+  FILE(READ "${AMILAB_BINARY_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated/ancestors.txt" vtk_ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" vtk_ancestors_list ${vtk_ancestors_txt} )
   SET(AVAILABLE_EXTERNAL_CLASSES ${vtk_ancestors_list})
   MESSAGE("AVAILABLE_EXTERNAL_CLASSES=${AVAILABLE_EXTERNAL_CLASSES}")

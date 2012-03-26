@@ -18,12 +18,12 @@ include_directories (
   ${AMILAB_SOURCE_DIR}
   ${ULTRASOUND_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/Generated
+  ${CMAKE_CURRENT_BINARY_DIR}/Generated
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
  
   
 )
@@ -43,7 +43,7 @@ IF(AMI_ENABLE_WRAPPING)
   # TODO: run gccxml_vcconfig.bat to allow visual studio 9
   #
   
-  SET(WRAPULTRASOUND_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/Generated)
+  SET(WRAPULTRASOUND_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/Generated)
   CreateDirectory( ${WRAPULTRASOUND_OUTDIR})
 
   IF   (wxWidgets_FOUND)
@@ -75,7 +75,7 @@ IF(AMI_ENABLE_WRAPPING)
   ENDIF (wxWidgets_FOUND)
 
   # Read vtk ancestors list
-  SET( WX_OUTDIR ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated)
+  SET( WX_OUTDIR ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated)
 
   FILE(READ "${WX_OUTDIR}/ancestors.txt" wx_ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" wx_ancestors_list ${wx_ancestors_txt} )

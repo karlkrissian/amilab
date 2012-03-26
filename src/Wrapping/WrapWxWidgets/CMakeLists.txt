@@ -10,7 +10,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/AMILab
   ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}
-  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated
+  ${CMAKE_CURRENT_BINARY_DIR}/${AMI_WXWIDGETS_VERSION}/Generated
 )
 
 # if automatic wrapping, generate source files
@@ -20,7 +20,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   #------------------------------------------------------------
 
   INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
-  SET(GENERATED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/Generated")
+  SET(GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/${AMI_WXWIDGETS_VERSION}/Generated")
   CreateDirectory( ${GENERATED_DIR})
   SET(LIBNAME "wx")
   WRAP_INIT(" WxWidgets ${AMI_WXWIDGETS_VERSION}")

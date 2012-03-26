@@ -12,7 +12,7 @@ include_directories (
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_ITK_VERSION}
-  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_ITK_VERSION}/Generated
+  ${CMAKE_CURRENT_BINARY_DIR}/${AMI_ITK_VERSION}/Generated
   )
 
 INCLUDE( ${USE_ITK_FILE} )
@@ -30,8 +30,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
   #------------------------------------------------------------
 
   INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
-  CreateDirectory( ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_ITK_VERSION})
-  SET(GENERATED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_ITK_VERSION}/Generated)
+  CreateDirectory( ${CMAKE_CURRENT_BINARY_DIR}/${AMI_ITK_VERSION})
+  SET(GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/${AMI_ITK_VERSION}/Generated)
   CreateDirectory( ${GENERATED_DIR})
   SET(LIBNAME "itk")
   WRAP_INIT(" InsigthToolKit ${AMI_ITK_VERSION}")

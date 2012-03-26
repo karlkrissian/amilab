@@ -143,6 +143,7 @@ SubPixel2D::SubPixel2D(InrImage* inp_image, float thres, int lc)
   threshold    = (double)thres;
   linear_case  = lc;
   denoised     = new InrImage(WT_DOUBLE,"denoised.inr.gz",input);
+  cout << "Hola" << endl;
 }
 
 //Destructor

@@ -22,10 +22,10 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Plugins/wxMediaCtrl
-  ${AMILAB_SOURCE_DIR}/Plugins/wxMediaCtrl/Generated
+  ${AMILab_BINARY_DIR}/Plugins/wxMediaCtrl/Generated
 )
 
-SET(WrapWxWidgetsDir ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated/)
+SET(WrapWxWidgetsDir ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated/)
 
 MESSAGE("BEGIN PLUG-IN: wxMediaCtrl")
 IF(wxWidgets_FOUND)
@@ -58,7 +58,7 @@ IF(wxWidgets_FOUND)
 
   MESSAGE("Try to generate file xml...")
 
-  SET(WRAPWX_OUTDIR "${AMILAB_SOURCE_DIR}/Plugins/wxMediaCtrl/Generated")
+  SET(WRAPWX_OUTDIR "${AMILab_BINARY_DIR}/Plugins/wxMediaCtrl/Generated")
   CreateDirectory( ${WRAPWX_OUTDIR})
 
   SET(XML_OUTPUT "${WRAPWX_OUTDIR}/wx_includes.xml")
@@ -89,7 +89,7 @@ IF(wxWidgets_FOUND)
     FILE(READ "${AMILAB_SOURCE_DIR}/Plugins/wxMediaCtrl/classes.txt" classes_txt)
     STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
 
-    SET(ANCESTORS_FILE "${AMILAB_SOURCE_DIR}/Plugins/wxMediaCtrl/Generated/ancestors.txt")
+    SET(ANCESTORS_FILE "${AMILab_BINARY_DIR}/Plugins/wxMediaCtrl/Generated/ancestors.txt")
     SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
     SET(MYCOMMAND_2 ${PYTHON_EXECUTABLE})                          #Command

@@ -19,7 +19,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Wrapping/include
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapExamples
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapExamples/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapExamples/Generated
 )
 
 SET(WrapExamplessDir "${AMILAB_SOURCE_DIR}/Wrapping/WrapExamples")

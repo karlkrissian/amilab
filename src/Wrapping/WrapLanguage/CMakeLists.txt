@@ -6,7 +6,7 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/Generated
+  ${CMAKE_CURRENT_BINARY_DIR}/Generated
 )
 
 
@@ -58,7 +58,7 @@ IF(AMI_ENABLE_WRAPPING)
   #
   # TODO: run gccxml_vcconfig.bat to allow visual studio 9
   #
-  SET(WrapLanguage_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/Generated)
+  SET(WrapLanguage_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/Generated)
   CreateDirectory( ${WrapLanguage_OUTDIR})
   IF(GENERATE_HTML_HELP)
     SET(CLASSES_URL_LIST "http://www.ctm.ulpgc.es/amilab_doxygen/${AMILAB_VERSION}/html/")
@@ -90,13 +90,13 @@ IF(AMI_ENABLE_WRAPPING)
   STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
 
   # Read wx ancestors list
-  SET( WX_OUTDIR ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated)
+  SET( WX_OUTDIR ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated)
 
   FILE(READ "${WX_OUTDIR}/ancestors.txt" wx_ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" wx_ancestors_list ${wx_ancestors_txt} )
 
 
-  SET(ANCESTORS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/Generated/ancestors.txt")
+  SET(ANCESTORS_FILE "${CMAKE_CURRENT_BINARY_DIR}/Generated/ancestors.txt")
   SET(AMI_WRAPPER "${AMILAB_SOURCE_DIR}/../PythonWrap/parse_xml/parse_xml2.py")
 
   IF(GENERATE_HTML_HELP)

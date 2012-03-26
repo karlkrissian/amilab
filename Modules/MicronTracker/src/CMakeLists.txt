@@ -43,9 +43,9 @@ SET(${KIT}_AMILab_PATHS
     ${AMILab_SOURCE_DIR}
     ${AMILab_BINARY_DIR}
     ${AMILab_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
-    ${AMILab_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
+    ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
     ${AMILab_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}
-    ${AMILab_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
+    ${AMILab_BINARY_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
 )
 
 SET(${KIT}_INCLUDE_PATHS
@@ -55,7 +55,7 @@ SET(${KIT}_INCLUDE_PATHS
 
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping
-    ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping/Generated
+    ${CMAKE_CURRENT_BINARY_DIR}/Wrapping/Generated
     ${${KIT}_AMILab_PATHS}
     ${${KIT}_INCLUDE_PATHS}
     ${Boost_INCLUDE_DIR}
@@ -67,7 +67,7 @@ IF(${KIT}_ENABLE_WRAPPING)
   #
   IF(${KIT}_NEED_VTK_WRAPPING)
     # allow use of vtk classes  wrapped within AMILab
-    FILE(READ "${AMILab_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated/ancestors.txt" vtk_ancestors_txt)
+    FILE(READ "${AMILab_BINARY_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated/ancestors.txt" vtk_ancestors_txt)
     STRING(REGEX REPLACE "[\r\n]" ";" vtk_ancestors_list ${vtk_ancestors_txt} )
     SET(AVAILABLE_EXTERNAL_CLASSES ${vtk_ancestors_list})
     MESSAGE("AVAILABLE_EXTERNAL_CLASSES=${AVAILABLE_EXTERNAL_CLASSES}")
@@ -75,7 +75,7 @@ IF(${KIT}_ENABLE_WRAPPING)
 
   IF(${KIT}_NEED_WX_WRAPPING)
     # allow use of vtk classes  wrapped within AMILab
-    FILE(READ "${AMILab_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated/ancestors.txt" wx_ancestors_txt)
+    FILE(READ "${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated/ancestors.txt" wx_ancestors_txt)
     STRING(REGEX REPLACE "[\r\n]" ";" wx_ancestors_list ${wx_ancestors_txt} )
     SET(AVAILABLE_EXTERNAL_CLASSES ${AVAILABLE_EXTERNAL_CLASSES} ${wx_ancestors_list})
     MESSAGE("AVAILABLE_EXTERNAL_CLASSES=${AVAILABLE_EXTERNAL_CLASSES}")
