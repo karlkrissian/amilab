@@ -1,5 +1,5 @@
 //
-// C++ Interface: wrapAMIFluid
+// C++ Interface: wrapVTK
 //
 // Description: 
 //
@@ -16,24 +16,10 @@
 #include "paramlist.h"
 #include "WrapVTKConfigure.h"
 
-/** function that add the wrapping of fluid function
+/** function that add the wrapping of vtk library
  *  to the AMI language
  */
 WrapVTK_EXPORT void AddWrapVTK(AMIObject::ptr & obj); 
-
-// Wrapping functions:
-
-
-WrapVTK_EXPORT InrImage* vtkAnisoGS                       (ParamList*);
-WrapVTK_EXPORT BasicVariable::ptr Wrap_vtkSkeleton2Lines  (ParamList* p);
-WrapVTK_EXPORT BasicVariable::ptr Wrap_vtkSphere          (ParamList* p);
-WrapVTK_EXPORT BasicVariable::ptr wrap_vtkGPURayCasting   (ParamList* p);
-WrapVTK_EXPORT BasicVariable::ptr wrap_wxVTKMedical3      (ParamList* p);
-WrapVTK_EXPORT BasicVariable::ptr wrap_wxVTKFrame         (ParamList* p);
-WrapVTK_EXPORT BasicVariable::ptr wrap_ToVtkImageData     (ParamList* p);
-WrapVTK_EXPORT BasicVariable::ptr wrap_FromVtkImageData   (ParamList* p);
-WrapVTK_EXPORT BasicVariable::ptr wrap_ToVtkPolyData     (ParamList* p);
-WrapVTK_EXPORT BasicVariable::ptr wrap_FromVtkPolyData   (ParamList* p);
 
 
 #endif // _WRAPVTK_H_

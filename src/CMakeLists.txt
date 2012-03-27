@@ -722,6 +722,7 @@ SET(amilab_ownlibs
   LanguageBase
   Language
   WrapVTK
+  WrapVTKTools
   WrapWxVTK
   WrapWII
   WrapITK

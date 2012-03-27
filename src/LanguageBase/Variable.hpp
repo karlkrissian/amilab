@@ -203,6 +203,33 @@ class AMILabType {
                     bool quiet=false);\
   };
 
+// forward declaration of the specialization
+#define AMI_DECLARE_TYPE_DLL(dll_import_export,type) \
+  template<> class dll_import_export AMILabType<type> \
+  { \
+    public: \
+      static std::string name_as_string();\
+      static boost::shared_ptr<type> GetValue(BasicVariable::ptr var, bool noconstr=false, bool quiet=false);\
+      static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
+      static BasicVariable::ptr CreateVar(type* val, bool nodeleter=false);\
+      static BasicVariable::ptr CreateVar(const type& val);\
+      static BasicVariable::ptr CreateVar(type** val);\
+      static bool get_val_param( \
+                    type& arg,\
+                    ParamList*p,\
+                    int& num,\
+                    bool required=false,\
+                    bool noconstr=false,\
+                    bool quiet=false);\
+      \
+      static bool get_val_smtptr_param(\
+                    boost::shared_ptr<type>& arg,\
+                    ParamList*p, int& num,\
+                    bool required=true,\
+                    bool noconstr=false,\
+                    bool quiet=false);\
+  };
+
 #define AMI_DEFINE_GETVALPARAM(type) \
     \
     bool AMILabType<type>::get_val_param( \
