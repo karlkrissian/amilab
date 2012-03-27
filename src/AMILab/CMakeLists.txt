@@ -18,6 +18,8 @@ include_directories (
   ${wxParams_INCLUDE_DIRS}
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow/src
+  ${AMILAB_SOURCE_DIR}/../Pixmaps
+  ${AMILAB_SOURCE_DIR}/Wrapping/include
 )
 
 
@@ -62,6 +64,7 @@ SET(AMILab_SRCS
 #    wrapWII.cpp
 #    wrap_StructureTensor.cpp
     xmtext.cpp
+    MainFrame.cpp
 )
 
 SET (AMILab_HDRS
@@ -86,6 +89,7 @@ SET (AMILab_HDRS
     func_isoline.hpp
     Resize.hpp
     xmtext.hpp
+    MainFrame.h
 )
 
 IF(WIN32)

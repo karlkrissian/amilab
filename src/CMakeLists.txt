@@ -658,7 +658,7 @@ SET(amilab_bin_SRCS
   myDataViewCtrl.cpp
   amilab.cpp
   myTreeCtrl.cpp
-  MainFrame.cpp
+#  MainFrame.cpp
 )
 
 SET(amilab_bin_HDRS
@@ -666,7 +666,7 @@ SET(amilab_bin_HDRS
   myDataViewModels.h
   myDataViewCtrl.h
   guicon.h
-  MainFrame.h
+#  MainFrame.h
   myTreeCtrl.h
 )
 
