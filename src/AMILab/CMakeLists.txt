@@ -65,6 +65,9 @@ SET(AMILab_SRCS
 #    wrap_StructureTensor.cpp
     xmtext.cpp
     MainFrame.cpp
+    myDataViewModels.cpp
+    myDataViewCtrl.cpp
+    myTreeCtrl.cpp
 )
 
 SET (AMILab_HDRS
@@ -90,6 +93,10 @@ SET (AMILab_HDRS
     Resize.hpp
     xmtext.hpp
     MainFrame.h
+    myDataViewNodes.h
+    myDataViewModels.h
+    myDataViewCtrl.h
+    myTreeCtrl.h
 )
 
 IF(WIN32)
