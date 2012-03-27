@@ -207,6 +207,13 @@ ENDIF(AMI_USE_PRECOMP_HEADERS)
 OPTION(WrapVTK_SHARED     "Compile WrapVTK library as shared" OFF)
 
 
+ 
+IF(WrapVTK_SHARED)
+  set_source_files_properties(${WrapVTK_SRCS} 
+    PROPERTIES COMPILE_FLAGS "-DWrapVTK_EXPORTS")
+ENDIF(WrapVTK_SHARED)
+
+
 IF(WrapVTK_SHARED)
   my_add_shared_library ( WrapVTK)
 ELSE(WrapVTK_SHARED)
