@@ -77,13 +77,21 @@ arg_parser.add_argument('--profile',action='store_true',  \
 arg_parser.add_argument('--templatefile_dir', default=".",  \
   help='Directory containing the template files (wrap_class.h.in, etc ...)')
 
-arg_parser.add_argument('-q',       action='store_true',    help='Quiet mode')
+arg_parser.add_argument('-q',       
+                        action='store_true',    
+                        help='Quiet mode')
 
-arg_parser.add_argument('--filter', default=r'.*',          help='Recursively wrap needed classes')
+arg_parser.add_argument('--filter', default=r'.*',          
+                        help='Recursively wrap needed classes')
 
-arg_parser.add_argument('--constructor', default='',        help='Specify the method (static) used for the constructor if it is not the standard one.')
+arg_parser.add_argument('--constructor', default='',        
+                        help='Specify the method (static) used for the constructor if it is not the standard one.')
 
-arg_parser.add_argument('--libname',                        help='name of the library to wrap (without spaces or special characters)')
+arg_parser.add_argument('--libname',                        
+                        help='name of the library to wrap (without spaces or special characters)')
+
+arg_parser.add_argument('--dllname', default='', 
+                        help='name of the dll library, to include configuration file and use import/export macros')
 
 arg_parser.add_argument('--addwrap',  action='store_true',  help='Generates the addwrap_*.{h,cpp} files that include all the wrapped elements in a common context')
 

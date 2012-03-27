@@ -1139,8 +1139,12 @@ def WrapClass(classname,include_file,inputfile):
       declare_type='  AMI_DECLARE_WRAPPED_LIMITED_TYPE({0});'.format(\
         config.ClassTypeDef(classname))
     else:
-      declare_type='  AMI_DECLARE_TYPE({0});'.format(\
-        config.ClassTypeDef(classname))
+      if args.val.dllname!='':
+        declare_type='  AMI_DECLARE_TYPE_DLL({}_EXPORT,{0});'.format(\
+          args.val.dllname, config.ClassTypeDef(classname))
+      else:
+        declare_type='  AMI_DECLARE_TYPE({0});'.format(\
+          config.ClassTypeDef(classname))
     
     implement_type="\n"
     specialized=''
