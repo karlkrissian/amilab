@@ -21,10 +21,12 @@ INCLUDE( ${wxWidgets_USE_FILE})
 
 SET(  WrapVTKTools_SRCS
   wrapVTKTools.cpp
+  vtkwrap.cpp
 )
 
 SET(WrapVTKTools_HDRS
-	../include/wrapVTKTools.h
+  ../include/vtkwrap.h
+  ../include/wrapVTKTools.h
 )
 
 SET(WrapVTKTools_SRCS

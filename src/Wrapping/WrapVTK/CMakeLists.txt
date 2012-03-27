@@ -173,13 +173,11 @@ ELSE(NUMBER_SOURCES_TO_PACKAGE EQUAL 1)
 ENDIF(NUMBER_SOURCES_TO_PACKAGE EQUAL 1) 
 
 SET(  WrapVTK_SRCS
-  vtkwrap.cpp
   wrapVTK.cpp
   vtkAmiCommand.cpp
 )
 
 SET(WrapVTK_HDRS
-	../include/vtkwrap.h
 	../include/wrapVTK.h
   vtkAmiCommand.h
 )
