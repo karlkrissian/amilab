@@ -153,7 +153,6 @@ class AMILabType {
                     bool quiet=false);\
   };
 
-
 #define AMI_DECLARE_WRAPPED_LIMITED_TYPE(type) \
   template<> boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr, bool quiet);\
   template<> BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\

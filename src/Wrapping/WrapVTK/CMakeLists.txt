@@ -21,6 +21,11 @@ include_directories (
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE( ${wxWidgets_USE_FILE})
 
+
+# Give the option to compile as shared, but need to write dependencies for 
+# Windows and MacOS ...
+OPTION(WrapVTK_SHARED     "Compile WrapVTK library as shared" OFF)
+
 # if automatic wrapping, generate source files
 IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
@@ -94,6 +99,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
   SET(LIBFILTER       "vtk*")
   SET(LIBCONSTRUCTOR  "New")
+
+  IF(WrapVTK_SHARED)
+    SET(DLLNAME "WrapVTK")
+  ENDIF(WrapVTK_SHARED)
+
   WRAP_CODE()
 
 #   #MESSAGE("Processing classes ${ancestors_list} and addwrap")
@@ -199,11 +209,6 @@ IF (AMI_USE_PRECOMP_HEADERS)
     #ADD_PCH_RULE(${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/wx_includes.h WrapWxWidgets_SRCS)
   ENDIF(CMAKE_COMPILER_IS_GNUCXX )
 ENDIF(AMI_USE_PRECOMP_HEADERS)
-
-# Give the option to compile as shared, but need to write dependencies for 
-# Windows and MacOS ...
-OPTION(WrapVTK_SHARED     "Compile WrapVTK library as shared" OFF)
-
 
  
 IF(WrapVTK_SHARED)

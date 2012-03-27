@@ -1140,7 +1140,7 @@ def WrapClass(classname,include_file,inputfile):
         config.ClassTypeDef(classname))
     else:
       if args.val.dllname!='':
-        declare_type='  AMI_DECLARE_TYPE_DLL({}_EXPORT,{0});'.format(\
+        declare_type='  AMI_DECLARE_TYPE_DLL({0}_EXPORT,{1});'.format(\
           args.val.dllname, config.ClassTypeDef(classname))
       else:
         declare_type='  AMI_DECLARE_TYPE({0});'.format(\
@@ -1582,6 +1582,9 @@ def WrapClass(classname,include_file,inputfile):
           #local_include_file += '\n#include "{0}"'.format(filetoadd)
           local_include_file += '\n{0}'.format(filetoadd)
     print "from {0}".format(local_include_file)
+    if args.val.dllname != '':
+      local_include_file += '\n#include "{0}Configure.h"'.format(
+        args.val.dllname)
         
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)
