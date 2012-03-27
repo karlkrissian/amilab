@@ -179,12 +179,6 @@ void CB_ParamWin(void* cd)
 } // CB_ParamWin( void* cd )
 
 
-//-------------------------------------------
-void CallAmiFunction(AMIFunction* f, const ParamList::ptr& p)
-{
-  //cout << "CB_ParamWin pointer is " << func_ptr << std::endl;
-  GB_driver.yyip_call_function(f,p);
-} // CallAmiFunction( void* cd )
 
 
 
