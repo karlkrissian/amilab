@@ -1297,7 +1297,7 @@ if (!exists(CreateUltrasoundClass)) {
         
         
 //panel visualización 3D   planos de ecografía 
-        ::renwin_interact_planes = vtktools.wxVTKRenderWindowInteractor(&::panel2,-1)
+        ::renwin_interact_planes = wxvtk.wxVTKRenderWindowInteractor(&::panel2,-1)
         ::renwin_interact_planes.Enable(true)
         ::renwin_interact_planes.UseCaptureMouseOn()
         ::renwin_interact_planes.SetBackgroundColour(wx.wxColour(0,0,0))
@@ -1312,7 +1312,7 @@ if (!exists(CreateUltrasoundClass)) {
         ::textActor.GetTextProperty().SetColor ( 1.0,0.0,0.0 )
        
 //panel Renderizado volumétrico
-        ::renwin_interact_vol = vtktools.wxVTKRenderWindowInteractor(&::splitter,-1)
+        ::renwin_interact_vol = wxvtk.wxVTKRenderWindowInteractor(&::splitter,-1)
         ::renwin_interact_vol.Enable(true)
         ::renwin_interact_vol.UseCaptureMouseOn()
         ::renwin_interact_vol.SetBackgroundColour(wx.wxColour(0,0,0))

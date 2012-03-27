@@ -59,7 +59,7 @@ Class vtktest_SphereSourceClass : public ScriptGui \
     ::panel.SetSizer(&::sbox_sizer)
     # create widget here
 
-    ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+    ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
       #::renwin_interact = wxVTKFrame(&panel,-1)
 
     ::renwin_interact.UseCaptureMouseOn()

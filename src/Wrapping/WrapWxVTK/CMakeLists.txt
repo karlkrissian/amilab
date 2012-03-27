@@ -7,6 +7,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Graphic/wxVTK/
+  ${AMILAB_SOURCE_DIR}/Graphic/wxVTKSamples/
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${AMILab_BINARY_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
@@ -18,10 +19,12 @@ INCLUDE( ${wxWidgets_USE_FILE})
 
 SET(  WrapWxVTK_SRCS
   wrap_wxVTKRenderWindowInteractor.cpp
+  wrapWxVTK.cpp
 )
 
 SET(WrapWxVTK_HDRS
   wrap_wxVTKRenderWindowInteractor.h
+  wrapWxVTK.h
 )
 
 SET(WrapWxVTK_SRCS

@@ -297,7 +297,7 @@ if (!exists(Subvoxel3DClass)){
 
       sbox_sizer.Add( &::flex_sizer, 1, wx.wxALL | wx.wxEXPAND,2)
       # create widget here
-      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,-1)
+      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel,-1)
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.Enable(true)
       # Still drawing problem (missed exposed events???)

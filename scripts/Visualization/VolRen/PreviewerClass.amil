@@ -453,7 +453,7 @@ Class PreviewerClass \
 
     for n=0 to ::cols*::files-1 {
       del wxvtkI
-      wxvtkI =  vtktools.wxVTKRenderWindowInteractor(&::panel,::wxvtk_id+n)
+      wxvtkI =  wxvtk.wxVTKRenderWindowInteractor(&::panel,::wxvtk_id+n)
       wxvtkI.SetMinSize(&wx.wxSize(100,100))
       #event copy view
       wxvtkI.Connect( wx.wxEVT_LEFT_UP,\

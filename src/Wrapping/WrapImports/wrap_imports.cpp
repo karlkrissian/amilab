@@ -103,6 +103,7 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 #endif
 
 #include "wrapVTK.h"
+#include "wrapWxVTK.h"
 #include "wrap_wxApp.h"
 #include "wrap_wxConfigBase.h"
 //#include "wrap_TestTemplateClass__LT__int__GT__.h"
@@ -218,6 +219,7 @@ void AddWrapImports()
     AddWrapWXSamples( amiobject);
 
     AddWrapVTK(       amiobject);
+    AddWrapWxVTK(     amiobject);
     AddWrapITK(       amiobject);
     AddWrapFluid(     amiobject);
 

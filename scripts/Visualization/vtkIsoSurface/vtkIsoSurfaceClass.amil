@@ -187,7 +187,7 @@ if (!exists(vtkIsoSurfaceClass)) {
       } else {
         #if (exists(::renwin_interact)) { del ::renwin_interact; }
         if (!exists(::renwin_interact)) {
-          ::renwin_interact = vtktools.wxVTKFrame()
+          ::renwin_interact = wxvtk.wxVTKFrame()
         }
         ::renwin   = ::renwin_interact.GetRenderWindow()
         ::renderer = vtk.vtkRenderer.New()
@@ -325,8 +325,8 @@ if (!exists(vtkIsoSurfaceClass)) {
       ::panel.SetSizer(&::sbox_sizer)
       # create widget here
 
-      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,-1)
-      #::renwin_interact = vtktools.wxVTKFrame(&panel,-1)
+      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel,-1)
+      #::renwin_interact = wxvtk.wxVTKFrame(&panel,-1)
 
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
@@ -531,7 +531,7 @@ if (!exists(vtkIsoSurfaceClass)) {
   
         #::win.AddPage("Viewer")
           #d = ::win.CurrentParent()
-          #::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&d)
+          #::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&d)
           #::renwin_interact.SetMinSize(&wx.wxSize(100,400));
           #::sizer_item = ::win.AddWidget(&::renwin_interact,0)
 
@@ -546,7 +546,7 @@ if (!exists(vtkIsoSurfaceClass)) {
         ::win.Display()
       }
       ::win.Update(-1)
-      #    ::renwin_interact = vtktools.wxVTKFrame()
+      #    ::renwin_interact = wxvtk.wxVTKFrame()
       ::MainBook_AddvtkIsoSurfaceTab()
    }
 

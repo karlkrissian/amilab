@@ -144,7 +144,7 @@ if (!exists(vtkXYPlotClass)) {
       
         # add Drawing Window
         d = ::win.CurrentParent()
-        ::renwin_interact1 = vtktools.wxVTKRenderWindowInteractor(&d,-1)
+        ::renwin_interact1 = wxvtk.wxVTKRenderWindowInteractor(&d,-1)
         ::renwin_interact1.SetMinSize(&wx.wxSize(100,200))
         ::win.AddWidget(&::renwin_interact1,0)
         ::view = vtk.vtkContextView.New()
@@ -153,7 +153,7 @@ if (!exists(vtkXYPlotClass)) {
         ::renwin_interact1.UseCaptureMouseOn()
         ::renwin_interact1.Enable(true)
 
-        #::renwin_interact2 = vtktools.wxVTKRenderWindowInteractor(&d,-1)
+        #::renwin_interact2 = wxvtk.wxVTKRenderWindowInteractor(&d,-1)
         #interact = vtk.vtkXYPlotWidget.New()
         #::renwin_interact2.SetInteractorStyle(&interact)
         #::renwin_interact2.SetMinSize(&wx.wxSize(100,200))

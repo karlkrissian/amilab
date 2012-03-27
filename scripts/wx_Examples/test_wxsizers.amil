@@ -37,7 +37,7 @@ ex2_boxsizer.Add(&ex2_flexsizer, &wx.wxSizerFlags(1).Center().\
 
 ex2_b1 = ex2_AddButton(1, & ex2_boxsizer , 0)
 
-ex2_wxvtk = vtktools.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+ex2_wxvtk = wxvtk.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
 ex2_flexsizer.Add(&ex2_wxvtk,&wx.wxSizerFlags(1).Center().\
                                 Border(wx.wxALL, 2).Expand())
 
@@ -83,7 +83,7 @@ ex2_fr.Layout()
 
     #::AddButton(1, & ::boxsizer , 0)
 
-    #::wxvtk = vtktools.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+    #::wxvtk = wxvtk.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
     #::flexsizer.Add(&::wxvtk,&wx.wxSizerFlags(1).Center().Border(wx.wxALL, 2).Expand())
 
     ##::AddButton(2, & ::flexsizer, 1)

@@ -74,15 +74,17 @@
 //#include "dist_squared.hpp"
 #include "improcess_bison.tab.hpp"
 #include "wrapAMIFluid.h"
-#include "wrapVTK.h"
-#include "wrapITK.h"
+
+//#include "wrapVTK.h"
+//#include "wrapITK.h"
 //#include "wrap_wxfunctions.h"
 //#include "wrap_MainFrame.h"
 //#include "wrap_imagedraw.h"
 //#include "itkCannyEdgeDetector.h"
+
 #include "wrapWII.h"
-#include "wrapFilters.h"
-#include "wrapSystem.h"
+//#include "wrapFilters.h"
+//#include "wrapSystem.h"
 
 //#include "myscan.h"
 #include "ImageDraw.hpp"
@@ -91,7 +93,15 @@
 //#include "PruneLines.h"
 
 #include "wrapfunction_class.h"
-#include "wrap_ami_ImageExtent_L_float_G_.h"
+
+//#include "wrap_ami_ImageExtent_L_float_G_.h"
+// Redefinition of the template class
+typedef ami::ImageExtent<float> ami_ImageExtent_float;
+#ifndef ami_ImageExtent_L_float_G__declared
+  #define ami_ImageExtent_L_float_G__declared
+  AMI_DECLARE_TYPE(ami_ImageExtent_float);
+#endif
+
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
 #include "wrap_Viewer3D.h"
@@ -109,7 +119,7 @@
  // #include "Graphique.hpp"
 #include "Viewer3D.hpp"
 #include "DessinImage.hpp"
-#include "CompareImage.hpp"
+//#include "CompareImage.hpp"
 #include "bruit.hpp"
 #include "CalculAireSection.hpp"
 #include "CalculRepCercle.hpp"

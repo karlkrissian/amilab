@@ -15,6 +15,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Algorithms/include
   ${AMILAB_SOURCE_DIR}/Wrapping/include
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxVTK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
   ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${AMILab_BINARY_DIR}/Wrapping/WrapAlgorithms/Generated

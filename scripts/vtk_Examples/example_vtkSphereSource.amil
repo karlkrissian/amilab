@@ -11,7 +11,7 @@ Class wxVTK_Example1 \
   ::frame = wx.wxFrame( &ami.MainFrame,wx.wxID_ANY,"wxVTK example")
   ::frame.Show(); ::frame.Update()
   ::frame.SetSizer(&wx.wxBoxSizer(wx.wxVERTICAL))
-  ::renwinint = vtktools.wxVTKRenderWindowInteractor(&::frame,wx.wxID_ANY)
+  ::renwinint = wxvtk.wxVTKRenderWindowInteractor(&::frame,wx.wxID_ANY)
   ::renwinint.UseCaptureMouseOn()  
   ::renwinint.SetInteractorStyle(&vtk.vtkInteractorStyleTrackballCamera.New())
   ::frame.GetSizer().Add(&::renwinint, wx.wxSizerFlags().Expand().Proportion(1))

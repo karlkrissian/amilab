@@ -61,7 +61,7 @@ if (!exists(vtkImageViewerClass)) {
       ::panel.SetSizer(&::sbox_sizer)
       # create widget here
 
-      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel,-1)
+      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel,-1)
 
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.SetMinSize(&wx.wxSize(50,50))

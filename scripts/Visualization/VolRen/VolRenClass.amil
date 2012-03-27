@@ -641,7 +641,7 @@ if (!exists(VolRenClass)) {
       #::panel1.SetBackgroundColour(wx.wxColour(0,0,50))
       ::panel1_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel1.SetSizer(&::panel1_sizer)   
-      ::renwin_interact = vtktools.wxVTKRenderWindowInteractor(&::panel1,wx.wxID_ANY)
+      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel1,wx.wxID_ANY)
       ::panel1_sizer.Add(&::renwin_interact,1,wx.wxEXPAND )
       #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
       ::renwin_interact.UseCaptureMouseOn()

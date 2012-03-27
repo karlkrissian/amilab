@@ -9,12 +9,10 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Graphic/wxVTK/
-  ${AMILAB_SOURCE_DIR}/Graphic/wxVTKSamples/
-  ${AMILAB_SOURCE_DIR}/wxParams
+#  ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/Algorithms/include
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
-  ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxVTK
+#  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
+#  ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}
   ${CMAKE_CURRENT_BINARY_DIR}/${AMI_VTK_VERSION}/Generated
@@ -216,4 +214,4 @@ ELSE(WrapVTK_SHARED)
 ENDIF(WrapVTK_SHARED)
 
 
-add_dependencies ( WrapVTK WrapWxWidgets )
+#add_dependencies ( WrapVTK  )
