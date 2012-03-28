@@ -117,7 +117,12 @@ def WrapMethodTypePointer(typedefname,include_file):
   # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
   # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
   includefiles = '#include "{0}"'.format(include_file)
+  if args.val.dllname!='':
+    export_macro = '{0}_EXPORT'.format(args.val.dllname)
+  else:
+    export_macro = ''
   for line in fileinput.FileInput(header_filename,inplace=1):
+    line = line.replace("${EXPORT_MACRO}",     export_macro)
     line = line.replace("${INCLUDE_BASES}",     "")
     line = line.replace("${DECLARE_TYPE}",      declare_type)
     line = line.replace("${INHERIT_BASES}",     "")

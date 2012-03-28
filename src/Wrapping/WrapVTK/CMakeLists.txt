@@ -5,24 +5,17 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${wxParams_INCLUDE_DIRS}
-  ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
-  ${AMILAB_SOURCE_DIR}/Graphic/include
-  ${AMILAB_SOURCE_DIR}/Graphic/wxVTK/
-#  ${AMILAB_SOURCE_DIR}/wxParams
-  ${AMILAB_SOURCE_DIR}/Algorithms/include
-#  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
-#  ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}
   ${CMAKE_CURRENT_BINARY_DIR}/${AMI_VTK_VERSION}/Generated
   ${AMILab_BINARY_DIR}
 )
 
-INCLUDE( ${ITK_USE_FILE} )
-INCLUDE( ${VTK_USE_FILE} )
-INCLUDE( ${wxWidgets_USE_FILE})
+INCLUDE( ${USE_VTK_FILE} )
+INCLUDE( ${USE_ITK_FILE} )
+#INCLUDE( ${VTK_USE_FILE} )
+#INCLUDE( ${wxWidgets_USE_FILE})
 
 
 # Give the option to compile as shared, but need to write dependencies for 
@@ -234,17 +227,13 @@ ENDIF(WrapVTK_SHARED)
 
 SET(amilab_ownlibs
   LanguageBase
-  Common
   CommonBase
   WrapCommon
-  #Algorithms
-  #Graphic
-  #Language # because of CallAmiFunction() and Driver ...
 )
   SET(LINK_VTK
     vtkGraphics
     vtkImaging
-    vtkIO
+    #vtkIO
     vtkFiltering
     vtkCommon
     # additional libraries for volume rendering
@@ -260,6 +249,12 @@ target_link_libraries( WrapVTK
   ${LINK_VTK}
   ${Boost_LIBRARIES}
 )
+
+IF(MSVC)
+  # SET INCREMENTAL LINKING: much faster ...
+  set_target_properties( WrapVTK 
+    PROPERTIES LINK_FLAGS_RELEASE "/INCREMENTAL:YES")
+ENDIF(MSVC)
 
 add_dependencies ( WrapVTK 
     ${amilab_ownlibs}

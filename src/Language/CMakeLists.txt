@@ -95,6 +95,13 @@ IF(AMI_USE_FLEXBISON)
     ${Language_HDRS}
   )
 
+  IF(MSVC)
+    # too slow compilation in release mode ...
+    SET_SOURCE_FILES_PROPERTIES (
+        ${BISON_improcessbison_OUTPUTS} PROPERTIES CMAKE_CXX_FLAGS_RELEASE
+            "/MD /Od /Ob2 /D NDEBUG")
+  ENDIF(MSVC)
+
   IF(AMI_BISON_DEBUG)
     SET_SOURCE_FILES_PROPERTIES( ${Language_SRCS}
     PROPERTIES COMPILE_FLAGS -DYYDEBUG=1)

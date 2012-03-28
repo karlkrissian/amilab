@@ -183,6 +183,7 @@ ENDIF(AMI_USE_PRECOMP_HEADERS)
 OPTION(WrapWxWidgets_SHARED     "Compile WrapWxWidgets library as shared" OFF)
 
 
+
 IF(WrapWxWidgets_SHARED)
   my_add_shared_library ( WrapWxWidgets)
 ELSE(WrapWxWidgets_SHARED)
