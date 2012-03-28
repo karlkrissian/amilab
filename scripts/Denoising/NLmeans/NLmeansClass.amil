@@ -33,8 +33,9 @@ if (!exists(NLmeansClass)) {
         ::filter_mode = INT(0), "Filter mode: 0 for standard, 1 for MRI, " + \
                                 "2 for feature-based, 3 for fast"
 
-        ::noisetype = INT(1), "noise type: 0 additive Gaussian, 1: Rician"
-        ::threads   = INT(2)
+        ::noisetype = INT(0), "noise type: 0 additive Gaussian, 1: Rician"
+        ::threads   = INT(wx.wxThread.GetCPUCount()), \
+                            "Number of threads for processing"
 
         ::f =INT (2),     "Patch window size"
         ::t = INT(4),     "Match window area"
@@ -233,8 +234,8 @@ if (!exists(NLmeansClass)) {
                           ::params.pattern_weight_param)
         } else {
           for n=0 to ::res0.vdim-1 {
-            ::res.SetComponent( 0, \
-                filters.NLmeans((FLOAT)::res0[0],\
+            ::res.SetComponent( n, \
+                filters.NLmeans((FLOAT)::res0[n],\
                                 ::params.t,::params.f,::params.h,\
                                 ::params.noisetype,::params.threads,\
                                 ::params.filter_type,\
