@@ -93,7 +93,7 @@ protected:
   *
   * @return int
   **/
-  int GetAcceptedSize() { return text.Len(); }
+  size_t GetAcceptedSize() const { return text.Len(); }
 
   void UpdateText(bool setendinsertion=true);
 

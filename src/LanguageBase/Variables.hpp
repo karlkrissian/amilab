@@ -47,7 +47,7 @@ class LanguageBase_EXPORT Variables{
 
   BasicVariable::ptr operator [](int i)
   {
-    if ((i>=0)&&(i<GetSize()))
+    if ((i>=0)&&(i<(int)GetSize()))
       return _vars[i];
     return BasicVariable::ptr();
   }
@@ -81,7 +81,7 @@ class LanguageBase_EXPORT Variables{
   void RemoveDefault( BasicVariable::ptr& defvarcontext );
 
   //--------------------------------------------
-  int GetSize()
+  size_t GetSize()
   {
     return _vars.size();
   }

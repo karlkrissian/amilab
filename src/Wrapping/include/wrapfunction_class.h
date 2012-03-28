@@ -439,7 +439,7 @@ class WrapCommon_DECLARE WrapClassMember {
     // for access in scripting language
     std::string get_return_comments() { return return_comments; }
     std::string get_return_type() { return return_type;}
-    int get_parameters_comments_size() { return parameters_comments.size(); }
+    size_t get_parameters_comments_size() const { return parameters_comments.size(); }
     std::string get_parameters_comments( int n) { return parameters_comments[n]; }
     std::string get_paramtypes( int n) { return paramtypes[n]; }
     //void ParamError(int n);

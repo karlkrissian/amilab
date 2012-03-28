@@ -37,6 +37,7 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   #------------------------------------------------------------
 
   INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
+  #SET(GENERATED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/Generated)
   SET(GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/${AMI_VTK_VERSION}/Generated)
   CreateDirectory( ${GENERATED_DIR})
   SET(LIBNAME "vtk")

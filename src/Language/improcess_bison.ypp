@@ -161,7 +161,7 @@ AMILAB_VAR_IMPORT wxString  GB_help_dir;
 #include "amilab_global_import.h"
 
 namespace AMIFluid {
-extern char* FLUID_NAVIGATION_FILE;
+extern char FLUID_NAVIGATION_FILE[];
 }
 
 

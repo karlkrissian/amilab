@@ -598,11 +598,12 @@ ENDIF(AMI_USE_PLUGINS)
 
 #add_subdirectory (libamiFluid)
 
+add_subdirectory (LanguageBase)
+add_subdirectory (Language)
+
 #add_subdirectory (WrapITK)
 add_subdirectory (Wrapping)
 
-add_subdirectory (LanguageBase)
-add_subdirectory (Language)
 
 #IF(AMI_USE_FASTNLMEANS)
 add_subdirectory (Algorithms)

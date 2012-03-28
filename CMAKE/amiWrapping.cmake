@@ -64,6 +64,13 @@ MACRO( RUN_GCCXML XML_INPUT XML_OUTPUT)
     SET(GCCXML_CMD ${GCCXML_CMD} "${GCCXML_DEFS}")
   ENDIF(GCCXML_DEFS)
   SET(GCCXML_CMD ${GCCXML_CMD} ${XML_INPUT})
+  
+  IF(WIN32)
+    IF(AMILAB_SYSTEM_PROCESSOR STREQUAL "x86_64")
+      # this requires to comment line 81 in gccxml-0.9\Vc9\PlatformSDK\WinNT.h
+      SET(GCCXML_CMD ${GCCXML_CMD} -D_WIN64)
+    ENDIF(AMILAB_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  ENDIF(WIN32)
 
   # Write the command to the standard output for information
   FOREACH( C ${GCCXML_CMD})

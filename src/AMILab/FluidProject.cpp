@@ -18,7 +18,7 @@ using namespace amilab;
 namespace AMIFluid {
 
 // global variable
-char FLUID_NAVIGATION_FILE[256]= "nav_MSG_02_05_2003c0_63.dat";
+char FLUID_NAVIGATION_FILE[]= "nav_MSG_02_05_2003c0_63.dat";
 
 // type 0: Atlantic
 // type 1: Africa

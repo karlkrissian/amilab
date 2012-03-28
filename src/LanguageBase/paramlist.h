@@ -70,7 +70,7 @@ private:
    * 
    * @return the number of parameters
    */
-  int GetNumParam() { return params.size(); }
+  size_t GetNumParam() { return params.size(); }
 
   /**
    * 
@@ -82,9 +82,9 @@ private:
       fprintf(stderr,"ParamList:: GetType() negative param number \n");
       i=0; 
     }
-    if (i>=GetNumParam()) {
+    if (i>=(int)GetNumParam()) {
       fprintf(stderr,"ParamList:: GetType()  param number too high \n");
-      i = GetNumParam()-1; 
+      i = (int)GetNumParam()-1; 
     }
 
     return params[i]->Type();
@@ -116,7 +116,7 @@ class ParamListDecl {
     {
     }
 
-  int GetNumParam() { return num_param; }
+  size_t GetNumParam() { return num_param; }
 
   vartype GetType( int i) { 
     if (i<0) {
@@ -184,7 +184,7 @@ class ParamListDecl {
     }
 
     // Can't be that strict since there can be automatic conversion ...
-    for ( i=0;i<GetNumParam();i++ )
+    for ( i=0;i<(int)GetNumParam();i++ )
     {
       //  pl->GetParam( i, p, t);
       //  printf("%d: %d %d \n",i,t,type[i]);

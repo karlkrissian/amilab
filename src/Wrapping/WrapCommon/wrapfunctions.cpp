@@ -30,7 +30,7 @@ using namespace std;
  * Function returns the number of parameters of the parameters list
  * if the pointer is NULL, returns -1 to allow display the documentation
  */
-int get_num_param(ParamList* p)
+size_t get_num_param(ParamList* p)
 {
   if (!p) return -1;
   return p->GetNumParam();

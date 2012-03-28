@@ -122,6 +122,8 @@ ELSE(LanguageBase_SHARED)
   my_add_library ( LanguageBase)
 ENDIF(LanguageBase_SHARED)
 
+
+MESSAGE("LanguageBase Boost_LIBRARIES=${Boost_LIBRARIES}")
 target_link_libraries(LanguageBase 
   CommonBase
   Common

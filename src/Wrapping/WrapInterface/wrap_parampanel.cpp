@@ -1122,7 +1122,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_SetCallback::CallMember( ParamList
 
   if (!get_var_param<AMIFunction>(var, p, n))     ClassHelpAndReturn;
 
-  int nbp = this->_objectptr->GetObj()->NbParameters();
+  int nbp = (int) this->_objectptr->GetObj()->NbParameters();
 
   this->_objectptr->GetObj()->ChangedValueCallback(nbp-1,
               (void*) CB_ParamWin,
@@ -1151,7 +1151,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_SetDragCallback::CallMember( Param
   if (!get_int_param(paramid, p, n))     ClassHelpAndReturn;
   if (!get_int_param(activate, p, n))    ClassHelpAndReturn;
 
-  int nbp = this->_objectptr->GetObj()->NbParameters();
+  int nbp = (int) this->_objectptr->GetObj()->NbParameters();
 
   if ((paramid>=0)&&(paramid<nbp))
     this->_objectptr->GetObj()->SetDragCallback(paramid,activate);
@@ -1275,7 +1275,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_Enable::CallMember( ParamList* p)
   if (!get_int_param(id,     p, n)) ClassHelpAndReturn;
   if (!get_int_param(enable, p, n)) ClassHelpAndReturn;
 
-  int nb = this->_objectptr->GetObj()->NbParameters();
+  int nb = (int) this->_objectptr->GetObj()->NbParameters();
 
   if ((id>=0)&&(id<nb))
     this->_objectptr->GetObj()->Enable(id,enable);

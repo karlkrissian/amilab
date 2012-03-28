@@ -64,7 +64,7 @@ private:
   void Inherit(const std::vector<AMIClass::ptr>& parents) { _parent_classes = parents; }
   
   std::vector<AMIClass::ptr> GetParentClasses() { return _parent_classes; }
-  int           GetNumberOfParentClasses() { return _parent_classes.size(); }
+  size_t           GetNumberOfParentClasses() { return _parent_classes.size(); }
   AMIClass::ptr GetParentClass(int i) { return _parent_classes[i]; }
 
 

@@ -158,7 +158,7 @@ public:
   void SetLinearColormapCallback( CallBackBase::ptr callback) {
     this->_linearcolormap_callback = callback;
   }
-  int GetNumberOfCtrlPoints() const
+  size_t GetNumberOfCtrlPoints() const
   {
     return _controlpoints->size();
   }
@@ -270,7 +270,7 @@ public:
    * 
    * @return the current number of curves
    */
-  int GetNumberOfCurves() 
+  size_t GetNumberOfCurves() const
   {
     return _curves->size();
   }

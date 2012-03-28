@@ -310,7 +310,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
  * if the pointer is NULL, returns -1 to allow display the documentation
  */
 WrapCommon_DECLARE
-int get_num_param(ParamList* p);
+size_t get_num_param(ParamList* p);
 
 
 /**

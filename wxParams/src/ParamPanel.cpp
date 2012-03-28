@@ -177,7 +177,7 @@ int ParamPanel::BeginBook()
   _current_sizer.top()->Add(GetBookCtrl(), 1, wxEXPAND, 0);
 
   _tab_books.push_back(nb);
-  return _tab_books.size()-1;
+  return (int)_tab_books.size()-1;
 
 } // ParamPanel::BeginBook()
 
@@ -235,7 +235,7 @@ int ParamPanel::AddPage(wxScrolledWindow* panel, const std::string& panel_name)
   }
   _current_sizer.push(panelsizer);
 
-  return _tab_panels.size()-1;
+  return (int)_tab_panels.size()-1;
 }
 
 //---------------------------------------------------------
@@ -279,7 +279,7 @@ int ParamPanel::AddPage(const std::string& panel_name)
   LastPanel()->SetSizer(panelsizer);
   _current_sizer.push(panelsizer);
 
-  return _tab_panels.size()-1;
+  return (int)_tab_panels.size()-1;
 } // AddPage()
 
 
@@ -311,7 +311,7 @@ int ParamPanel::BeginPanel(const std::string& panel_name)
   _current_sizer.top()->Add(LastPanel(), 0, wxEXPAND, 0);
   _current_sizer.push(panelsizer);
 
-  return _tab_panels.size()-1;
+  return (int)_tab_panels.size()-1;
 } // BeginPanel()
 
 
@@ -410,7 +410,7 @@ unsigned char ParamPanel::AddBoolean(
                  AddWidget(wxbp));
 
   _tab_param.push_back(pi);
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
 
   return( true);
 } // AddBoolean()
@@ -459,7 +459,7 @@ int ParamPanel::AddInteger( int* param,
                 wxi,
                 AddWidget(wxi));
   _tab_param.push_back(pi);
-  return _tab_param.size()-1;
+  return (int)_tab_param.size()-1;
 } // AddInteger()
 
 
@@ -524,7 +524,7 @@ int  ParamPanel::AddFloat(
                 wxi,
                 AddWidget(wxi));
   _tab_param.push_back(pi);
-  return _tab_param.size()-1;
+  return (int)_tab_param.size()-1;
 } // AddFloat()
 
 
@@ -594,7 +594,7 @@ unsigned char ParamPanel::AddEnumeration( int* id, int taille,
                 AddWidget(wxe));
   _tab_param.push_back(pi);
 
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 } // AddEnumeration()
 
@@ -614,7 +614,7 @@ unsigned char ParamPanel::AddEnumeration( int* id,
                 AddWidget(wxe));
   _tab_param.push_back(pi);
 
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 } // AddEnumeration()
 
@@ -711,7 +711,7 @@ bool ParamPanel::AddListChoice( int* id,
                 AddWidget(wxe));
   _tab_param.push_back(pi);
 
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 }
 
@@ -732,7 +732,7 @@ unsigned char ParamPanel::AddButton( int* id,  const char* libelle,
                 wxbp,
                 AddWidget(wxbp));
   _tab_param.push_back(pi);
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 } // AddButton()
 
@@ -755,7 +755,7 @@ unsigned char ParamPanel::AddPixmapButton( int* id,  const char* libelle,
                 wxbp,
                 AddWidget(wxbp));
   _tab_param.push_back(pi);
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 } // AddPixmapButton()
 
@@ -776,7 +776,7 @@ unsigned char ParamPanel::AddBitmapButton( int* id,  const char* libelle,
                 wxbp,
                 AddWidget(wxbp));
   _tab_param.push_back(pi);
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 } // AddPixmapButton()
 
@@ -795,7 +795,7 @@ unsigned char ParamPanel::AddColor( int* id,
                 wxcp,
                 AddWidget(wxcp));
   _tab_param.push_back(pi);
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 } // AddColor()
 
@@ -814,7 +814,7 @@ unsigned char ParamPanel::AddLabel( int* id, const char* libelle,
                 wxl,
                 AddWidget(wxl));
   _tab_param.push_back(pi);
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 } // AddLabel()
 
@@ -880,7 +880,7 @@ void ParamPanel::SetLastPositionProperties(
       )
 {
   SetPositionProperties( 
-    NbParameters()-1, proportion,border,flags);
+    (int)NbParameters()-1, proportion,border,flags);
 } // SetLastPositionProperties()
 
 //------------------------------------------------------------------------------
@@ -910,7 +910,7 @@ unsigned char ParamPanel::AjouteChaine( int* id, string_ptr param,
                 AddWidget(wsp));
   if (tt!="") wsp->SetToolTip(GetwxStr(tt.c_str()));
   _tab_param.push_back(pi);
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 } // AjouteChaine()
 
@@ -944,7 +944,7 @@ unsigned char ParamPanel::AddFilename( int* id, string_ptr& param,
   if (tt!="") wxi->SetToolTip(GetwxStr(tt.c_str()));
 
   _tab_param.push_back(pi);
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 } // AddFilename()
 
@@ -990,7 +990,7 @@ bool ParamPanel::AddDirname(
   if (tt!="") wxi->SetToolTip(GetwxStr(tt.c_str()));
 
   _tab_param.push_back(pi);
-  *id = _tab_param.size()-1;
+  *id = (int)_tab_param.size()-1;
   return( true);
 }
 
@@ -1274,7 +1274,7 @@ int ParamPanel::BeginBox( const char* boxname)
   _current_sizer.top()->Add(sizer, 0,wxEXPAND | wxALL, BoxBorder);
   _current_sizer.push(sizer);
 
-  return _tab_boxes.size()-1;
+  return (int)_tab_boxes.size()-1;
 } // BeginBox
 
 
