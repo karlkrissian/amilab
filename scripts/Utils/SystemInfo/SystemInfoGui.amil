@@ -1,0 +1,11 @@
+
+func "SystemInfoClass"
+
+if (!exists(SystemInfo_obj)) {
+  SystemInfoClass SystemInfo_obj
+  SystemInfo_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

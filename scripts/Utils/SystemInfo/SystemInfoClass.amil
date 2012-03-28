@@ -1,0 +1,150 @@
+
+func "Common/ScriptGui"
+
+if (!exists(SystemInfoClass)) {
+
+  Class SystemInfoClass : public ScriptGui \
+  {
+    
+    //---------------------------------------------------
+    proc ::Init() \
+    {
+      
+      ::html_filename = GetScriptsDir+"/SystemInfo/Doc/SystemInfo/index.html"
+    
+      ::hostname =  "", "Host name"
+      ::cwd = "", "Current working directory"
+    
+      # Available memory
+      ::free_memory = 0, "Free memory"
+
+      ::disk_total = 0, "Total disk space"
+      ::disk_free  = 0, "Free disk space"
+
+      ::interval = 1, "timer interval in seconds"
+      ::evh = wx.wxAmiEventHandler(&::Update)
+      ::timer = wx.wxTimer(&::evh)
+      ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
+
+    }
+
+    proc ::StartTimer() {
+      ::timer.Start(::interval*1000)
+    }
+
+    #------------------------------------
+    proc ::StopTimer() {
+      ::timer.Stop()
+    }
+
+
+    #-----------------------------------------------
+    proc ::HumanReadableSize( NUM val ) {
+      if val>1E12 {
+        return = "%1% Tb" % (val/1E12)
+      } else {
+        if val>1E9 {
+          return = "%1% Gb" % (val/1E9)
+        } else {
+          if val>1E6 {
+            return = "%1% Mb" % (val/1E6)
+          } else {
+            if val>1E3 {
+              return = "%1% Kb" % (val/1E3)
+            } else {
+              return = "%1% b" % val
+            }
+          }
+        }
+      }
+    }
+    
+    #-----------------------------------------------
+    proc ::Update() \
+    {
+      ::hostname = wx.FromWxString(wx.wxGetHostName())
+      ::win.SetLabelValue(::hostname_id,::hostname)
+
+      ::cwd = wx.FromWxString(wx.wxGetCwd())
+      ::win.SetLabelValue(::cwd_id,::cwd)
+    
+      total = wx.wxLongLongNative()
+      free = wx.wxLongLongNative()
+      if (wx.wxGetDiskSpace(wx.wxGetUserHome().data(),&total,&free)) {
+        ::win.SetLabelValue(::totaldisk_id, \
+                            ::HumanReadableSize(total.ToDouble()))
+        ::win.SetLabelValue(::freedisk_id,  \
+                            ::HumanReadableSize(free.ToDouble()) \
+                            +"  (%1% %%)" % \
+                            (free.ToDouble()/total.ToDouble()*100))
+      
+      }
+
+      ::free_memory = wx.wxGetFreeMemory().ToDouble()
+      ::win.SetLabelValue(::freemem_id, ::HumanReadableSize(::free_memory))
+    }
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("SystemInfo",&::parent_panel)
+      } else {
+        ::win = ParamPanel("SystemInfo")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Info")
+
+          ::hostname_id = ::win.AddLabel("Host name: ","")
+          ::win.AddLabel("Current working dir: ","")
+          ::cwd_id      = ::win.AddLabel("","")
+
+          ::win.BeginBoxPanel("Disk space")
+            ::totaldisk_id = ::win.AddLabel("Total: ","")
+            ::freedisk_id = ::win.AddLabel("Free: ","")
+          ::win.EndBoxPanel()
+
+          ::freemem_id = ::win.AddLabel("Free Memory: ","")
+          ::win.AddButton("Update",&::Update)
+
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+
+      ::win.BeginBoxPanel("Update Timer")
+        ::win.AddFloat(&::interval,"Interval",0.01,100)
+        ::win.BeginHorizontal()
+
+          ::icons.LoadIconPNG("Play")
+          ::AddBitmapButton(&::win, &::icons._Play, 16, "StartTimer")
+          ::win.SetPositionProp(-1,0)
+
+          ::icons.LoadIconPNG2("Stop playing","Stop_playing")
+          ::AddBitmapButton(&::win, &::icons._Stop_playing, 16, "StopTimer")
+          ::win.SetPositionProp(-1,0)
+        ::win.EndHorizontal()
+      ::win.EndBoxPanel()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If
