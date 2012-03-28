@@ -15,11 +15,12 @@
 
 #include "paramlist.h"
 #include "WrapVTKConfigure.h"
+#include "ami_object.h"
 
 /** function that add the wrapping of vtk library
  *  to the AMI language
  */
-WrapVTK_EXPORT void AddWrapVTK(AMIObject::ptr & obj); 
+WrapVTK_EXPORT void __cdecl AddWrapVTK(AMIObject::ptr & ); 
 
 
 #endif // _WRAPVTK_H_

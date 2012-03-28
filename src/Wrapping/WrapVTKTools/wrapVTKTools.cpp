@@ -48,8 +48,9 @@ LanguageBase_VAR_IMPORT VarContexts  Vars;
 #include "wrap_vtkImageData.h"
 #include "wrap_vtkPolyData.h"
 #include "wrap_SurfacePoly.h"
+#include "wrap_vtkRenderWindowInteractor.h"
 
-#include "addwrap_vtk.h"
+//#include "addwrap_vtk.h"
 
 
 #endif // _WITHOUT_VTK_

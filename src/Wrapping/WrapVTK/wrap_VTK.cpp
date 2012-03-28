@@ -24,8 +24,8 @@
 
 
 //---------------------------------------------------------
-void AddWrapVTK(AMIObject::ptr& obj) {
-
+//__declspec(dllexport) void __cdecl AddWrapVTK(AMIObject::ptr& obj) {
+ WrapVTK_EXPORT void  AddWrapVTK(AMIObject::ptr& obj) {
   // Create vtk context
   AMIObject::ptr amiobject2(new AMIObject);
   amiobject2->SetName("vtk");

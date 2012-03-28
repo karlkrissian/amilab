@@ -29,6 +29,9 @@ arg_parser.add_argument('--members_blacklist',  default='',  \
 arg_parser.add_argument('--available_external_classes', nargs='*',  default=[],  \
   help='Lists available classes from other libraries' )
 
+arg_parser.add_argument('--external_dllname',  default='',  \
+  help='dllname for external classes' )
+
 arg_parser.add_argument('--functions', nargs='*', default=[],  \
   help='name of the function(s) to wrap' )
 

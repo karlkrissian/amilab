@@ -85,6 +85,7 @@ public:
     Resize(array_size);
     memcpy(array,mh.array,sizeof(T)*(num_elts+1));
     num_elts = mh.num_elts;
+    return *this;
   }
 
   MinHeap( int arraysize = 2)

@@ -9,7 +9,9 @@
   #pragma warning (disable : 4251)
 #endif
 
-#define WrapVTK_SHARED
+//#define WrapVTK_SHARED 0
+#cmakedefine WrapVTK_SHARED
+
 #if defined(WIN32) && defined(WrapVTK_SHARED)
   //#pragma warning ( disable : 4275 )
   #if defined(WrapVTK_EXPORTS)

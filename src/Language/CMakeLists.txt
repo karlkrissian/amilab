@@ -142,7 +142,7 @@ target_link_libraries(Language
   vtkImaging
   wxStcFrame
   myVTK4
-  WrapVTK
+  #WrapVTK
   ${wxWidgets_LIBRARIES}
   ${Boost_LIBRARIES}
 )

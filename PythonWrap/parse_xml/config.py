@@ -3,6 +3,7 @@ import wrap_class
 import re
 import sys
 import string
+import args
 
 # global dictionary of argument types
 types      = dict()
@@ -247,22 +248,42 @@ def AddDeclare(f):
 #------------------------------------------------------------------
 def CreateIncludes():
   res='';
+  external_dll_included = False
   for f in include_list:
     #res += '#include "{0}"\n'.format(f)
     res += '{0}\n'.format(f)
   
   for f in declare_list:
+    declare_dll=False
+    #print "{0} in declare list".format(f)
+    if  f in args.val.available_external_classes and \
+        args.val.external_dllname!='':
+      declare_dll=True
+      if not(external_dll_included):
+        res += '#include "{}Configure.h"\n'.format(args.val.external_dllname)
+      external_dll_included = True
+    
     # avoid inclusion, just declare the type ...
     res += '#ifndef {0}_declared\n'.format(ClassUsedName(f))
     res += '  #define {0}_declared\n'.format(ClassUsedName(f))
     if f.count(",")>0:
       res += '  typedef {0} {1};\n'.format(f,ClassTypeDef(f))
-      res += '  AMI_DECLARE_TYPE({0})\n'.format(ClassTypeDef(f))
+      if declare_dll:
+        res += '  AMI_DECLARE_TYPE_DLL({0}_EXPORT,{1})\n'.format(
+          args.val.external_dllname,
+          ClassTypeDef(f))
+      else:
+        res += '  AMI_DECLARE_TYPE({0})\n'.format(ClassTypeDef(f))
     else:
       if f in builtin_classes:
         res += '  AMI_DECLARE_WRAPPED_LIMITED_TYPE({0})\n'.format(f)
       else:
-        res += '  AMI_DECLARE_TYPE({0})\n'.format(f)
+        if declare_dll:
+          res += '  AMI_DECLARE_TYPE_DLL({0}_EXPORT,{1})\n'.format(
+            args.val.external_dllname,
+            f)
+        else:
+          res += '  AMI_DECLARE_TYPE({0})\n'.format(f)
     res += '#endif\n'
   return res
 

@@ -72,7 +72,19 @@ SET(WrapImports_SRCS
 )
 
 my_add_library ( WrapImports)
-add_dependencies ( WrapImports WrapWxWidgets WrapAlgorithms WrapLanguage)
+
+target_link_libraries(
+ WrapImports
+ WrapVTK
+)
+
+add_dependencies ( WrapImports 
+    WrapWxWidgets 
+    WrapAlgorithms 
+    WrapLanguage
+    WrapVTK
+    WrapVTKTools
+    )
 
 IF(AMI_WRAP_MICRONTRACKER)
   add_dependencies( WrapImports WrapMicronTracker )

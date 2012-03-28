@@ -97,6 +97,9 @@ IF(AMI_ENABLE_WRAPPING)
   ENDIF(APPLE)
   MESSAGE("GCCXML_FLAGS='${GCCXML_FLAGS}'")
 
+  SET( GCCXML_DEFS     ${GCCXML_DEFS}      "${OPENGL_FLAGS}"    )
+  SET( GCCXML_DEFS     ${GCCXML_DEFS}      "${GCCXML_FLAGS}"    )
+
   SET(XML_OUTPUT "${GENERATED_DIR}/algorithms_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/algorithms_includes.h")
 
@@ -109,7 +112,6 @@ IF(AMI_ENABLE_WRAPPING)
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Language")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Algorithms/include")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Graphic/include")
-  SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "${OPENGL_FLAGS}")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${wxParams_INCLUDE_DIRS}")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${CMAKE_BINARY_DIR}")
@@ -148,6 +150,7 @@ IF(AMI_ENABLE_WRAPPING)
   FILE(READ "${VTK_OUTDIR}/ancestors.txt" vtk_ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" vtk_ancestors_list ${vtk_ancestors_txt} )
   SET(AVAILABLE_EXTERNAL_CLASSES ${vtk_ancestors_list})
+  SET(EXTERNAL_DLLNAME WrapVTK)
 
   CREATE_ANCESTORS()
 
@@ -211,4 +214,11 @@ SET(WrapAlgorithms_SRCS
 #MESSAGE("WrapAlgorithms_SRCS =  ${WrapAlgorithms_SRCS}")
 
 my_add_library ( WrapAlgorithms)
+
+target_link_libraries(
+  WrapAlgorithms
+  WrapVTK
+)
+
+
 add_dependencies ( WrapAlgorithms WrapWxWidgets WrapVTK)

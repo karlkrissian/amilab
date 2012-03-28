@@ -20,7 +20,20 @@
   AMI_DECLARE_TYPE(vtkObject)
 #endif
 
-void CallAmiFunction(AMIFunction* f, const ParamList::ptr& p);
+#include "DriverBase.h"
+LanguageBase_VAR_IMPORT DriverBase::ptr GB_DriverBase;
+void vtkCallAmiFunction(AMIFunction* f, const ParamList::ptr& p)
+{
+  //cout << "CB_ParamWin pointer is " << func_ptr << std::endl;
+  GB_DriverBase->yyip_call_function(f,p);
+} // CallAmiFunction( void* cd )
+
+
+// TODO: fix this
+//#if defined(WIN32) 
+// __declspec( dllimport )  
+//#endif
+//void CallAmiFunction(AMIFunction* f, const ParamList::ptr& p);
 
 
 vtkAmiCommand *  vtkAmiCommand::New()
@@ -38,7 +51,7 @@ void vtkAmiCommand::Execute(vtkObject *caller, unsigned long eventid, void*)
     p->AddParam(c);
     BasicVariable::ptr id = AMILabType<long>::CreateVar((long)eventid);
     p->AddParam(id);
-    CallAmiFunction(callback_function,p);
+    vtkCallAmiFunction(callback_function,p);
   }
 }
 

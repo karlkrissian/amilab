@@ -7,6 +7,7 @@
 include_directories (
   ${wxParams_INCLUDE_DIRS}
   ${AMILAB_SOURCE_DIR}/AMILab
+  ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Graphic/include
   ${AMILAB_SOURCE_DIR}/Graphic/wxVTK/
 #  ${AMILAB_SOURCE_DIR}/wxParams
@@ -16,8 +17,10 @@ include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}
   ${CMAKE_CURRENT_BINARY_DIR}/${AMI_VTK_VERSION}/Generated
+  ${AMILab_BINARY_DIR}
 )
 
+INCLUDE( ${ITK_USE_FILE} )
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE( ${wxWidgets_USE_FILE})
 
@@ -183,7 +186,7 @@ ELSE(NUMBER_SOURCES_TO_PACKAGE EQUAL 1)
 ENDIF(NUMBER_SOURCES_TO_PACKAGE EQUAL 1) 
 
 SET(  WrapVTK_SRCS
-  wrapVTK.cpp
+  wrap_VTK.cpp
   vtkAmiCommand.cpp
 )
 
@@ -210,6 +213,11 @@ IF (AMI_USE_PRECOMP_HEADERS)
   ENDIF(CMAKE_COMPILER_IS_GNUCXX )
 ENDIF(AMI_USE_PRECOMP_HEADERS)
 
+
+CONFIGURE_FILE(
+    ${AMILab_SOURCE_DIR}/Wrapping/include/WrapVTKConfigure.h.in
+    ${AMILab_BINARY_DIR}/WrapVTKConfigure.h)
+
  
 IF(WrapVTK_SHARED)
   set_source_files_properties(${WrapVTK_SRCS} 
@@ -223,5 +231,35 @@ ELSE(WrapVTK_SHARED)
   my_add_library ( WrapVTK)
 ENDIF(WrapVTK_SHARED)
 
+SET(amilab_ownlibs
+  LanguageBase
+  Common
+  CommonBase
+  WrapCommon
+  #Algorithms
+  #Graphic
+  #Language # because of CallAmiFunction() and Driver ...
+)
+  SET(LINK_VTK
+    vtkGraphics
+    vtkImaging
+    vtkIO
+    vtkFiltering
+    vtkCommon
+    # additional libraries for volume rendering
+    vtkRendering 
+    vtkVolumeRendering 
+    vtkWidgets
+    vtkViews
+    vtkCharts
+  )
 
-#add_dependencies ( WrapVTK  )
+target_link_libraries( WrapVTK
+  ${amilab_ownlibs}
+  ${LINK_VTK}
+  ${Boost_LIBRARIES}
+)
+
+add_dependencies ( WrapVTK 
+    ${amilab_ownlibs}
+	)

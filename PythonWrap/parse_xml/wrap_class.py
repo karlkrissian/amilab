@@ -1585,9 +1585,14 @@ def WrapClass(classname,include_file,inputfile):
     if args.val.dllname != '':
       local_include_file += '\n#include "{0}Configure.h"'.format(
         args.val.dllname)
+    if args.val.dllname!='':
+      export_macro = '{0}_EXPORT'.format(args.val.dllname)
+    else:
+      export_macro = ''
         
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)
+      line = line.replace("${EXPORT_MACRO}",      export_macro)
       line = line.replace("${DECLARE_TYPE}",      declare_type)
       line = line.replace("${INCLUDE_TYPEDEF}",   include_typedef)
       line = line.replace("${INHERIT_BASES}",     inherit_bases)

@@ -36,7 +36,7 @@ ${INCLUDE_TYPEDEF}
 #endif
 
 // TODO: check for inheritence ...
-class WrapClass_${TEMPLATENAME} : public WrapClass<${TEMPLATE} >
+class ${EXPORT_MACRO} WrapClass_${TEMPLATENAME} : public WrapClass<${TEMPLATE} >
     ${INHERIT_BASES}
 {
   DEFINE_CLASS(WrapClass_${TEMPLATENAME});
