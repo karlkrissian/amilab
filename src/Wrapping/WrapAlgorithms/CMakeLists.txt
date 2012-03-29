@@ -151,6 +151,13 @@ IF(AMI_ENABLE_WRAPPING)
   STRING(REGEX REPLACE "[\r\n]" ";" vtk_ancestors_list ${vtk_ancestors_txt} )
   SET(AVAILABLE_EXTERNAL_CLASSES ${vtk_ancestors_list})
   SET(EXTERNAL_DLLNAME WrapVTK)
+  
+  # Read WrapCommon ancestors list
+  SET( WRAPCOMMON_OUTDIR ${AMILab_BINARY_DIR}/Wrapping/WrapCommon/Generated)
+  FILE(READ "${WRAPCOMMON_OUTDIR}/ancestors.txt" wrapcommon_ancestors_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" wrapcommon_ancestors_list ${wrapcommon_ancestors_txt} )
+  SET(AVAILABLE_EXTERNAL_CLASSES2 ${wrapcommon_ancestors_list})
+  #SET(EXTERNAL_DLLNAME2 WrapCommon)
 
   CREATE_ANCESTORS()
 
@@ -209,16 +216,22 @@ SET( WrapAlgorithms_SRCS ${GENERATED_DIR}/addwrap_algorithms.cpp ${WrapAlgorithm
 SET(WrapAlgorithms_SRCS
      ${WrapAlgorithms_SRCS}
      ${WrapAlgorithms_HDRS}
+     classes.txt
+     algorithms_includes.h
 )
 
 #MESSAGE("WrapAlgorithms_SRCS =  ${WrapAlgorithms_SRCS}")
 
 my_add_library ( WrapAlgorithms)
 
-target_link_libraries(
-  WrapAlgorithms
+target_link_libraries( WrapAlgorithms
   WrapVTK
+  WrapCommon
 )
 
 
-add_dependencies ( WrapAlgorithms WrapWxWidgets WrapVTK)
+add_dependencies ( WrapAlgorithms 
+  WrapWxWidgets 
+  WrapVTK
+  WrapCommon
+)

@@ -70,7 +70,7 @@ private:
    * 
    * @return the number of parameters
    */
-  size_t GetNumParam() { return params.size(); }
+  int GetNumParam() { return (int)params.size(); }
 
   /**
    * 
@@ -116,7 +116,7 @@ class ParamListDecl {
     {
     }
 
-  size_t GetNumParam() { return num_param; }
+  int GetNumParam() { return num_param; }
 
   vartype GetType( int i) { 
     if (i<0) {

@@ -126,6 +126,8 @@ SET(WrapCommon_HDRS
 SET(WrapCommon_SRCS
      ${WrapCommon_SRCS}
      ${WrapCommon_HDRS}
+     common_includes.h
+     classes.txt
 )
 
 ADD_LIBRARY(${CURRENT_LIB} ${${CURRENT_LIB}_TYPE}  ${${CURRENT_LIB}_SRCS})

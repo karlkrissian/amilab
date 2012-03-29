@@ -3974,20 +3974,21 @@ void DessinImage::Boutton_Relache()
 {
 
 
-    if (GB_debug)
-      printf("DessinImage::Boutton_Relache() \n");
+  if (GB_debug)
+    printf("DessinImage::Boutton_Relache() \n");
 
-    int    x1,x2,y1,y2,z1,z2, etat;
+  int    x1,x2,y1,y2,z1,z2, etat;
 
 
-  Si _shift_deplace Alors
-      _shift_deplace = false;
-      return;
-  FinSi
+  if (_shift_deplace) {
+    _shift_deplace = false;
+    return;
+  }
 
-  Si (Param._fonction_zoom == FUNC_ZOOM_ACTIVE) Et (_zoom_coupe >= 0) Alors
-
-      Si (_zoom_x1 != _zoom_x2) Et (_zoom_y1 != _zoom_y2) Alors
+  if( (Param._fonction_zoom == FUNC_ZOOM_ACTIVE) Et (_zoom_coupe >= 0)) 
+  {
+    if ( (_zoom_x1 != _zoom_x2) Et (_zoom_y1 != _zoom_y2))
+    {
 
       wxClientDC dc(_drawing_window);
       if (dc.IsOk()) {
@@ -4001,49 +4002,54 @@ void DessinImage::Boutton_Relache()
       } else
         std::cerr << "DC not OK" << std::endl;
 
-        _souris_x = _zoom_x1;
-        _souris_y = _zoom_y1;
-        CursorToImage(_souris_x,_souris_y,x1, y1, z1, etat);
-        _souris_x = _zoom_x2;
-        _souris_y = _zoom_y2;
-
-        CursorToImage(_souris_x, _souris_y,  x2, y2, z2, etat);
-        switch ( etat ){
-          case IMAGE_XY:
-            Param._Zoom._xmin = macro_min(x1,x2);   Param._Zoom._xmax = macro_max(x1,x2);
-            Param._Zoom._ymin = macro_min(y1,y2);   Param._Zoom._ymax = macro_max(y1,y2);
-          break;
-          case IMAGE_XZ:
-            Param._Zoom._xmin = macro_min(x1,x2);   Param._Zoom._xmax = macro_max(x1,x2);
-            Param._Zoom._zmin = macro_min(z1,z2);   Param._Zoom._zmax = macro_max(z1,z2);
-          break;
-          case IMAGE_ZY:
-            Param._Zoom._zmin = macro_min(z1,z2);   Param._Zoom._zmax = macro_max(z1,z2);
-            Param._Zoom._ymin = macro_min(y1,y2);   Param._Zoom._ymax = macro_max(y1,y2);
-          break;
-        } // end switch
-     FinSi
+      _souris_x = _zoom_x1;
+      _souris_y = _zoom_y1;
+      CursorToImage(_souris_x,_souris_y,x1, y1, z1, etat);
+      _souris_x = _zoom_x2;
+      _souris_y = _zoom_y2;
+      CursorToImage(_souris_x, _souris_y,  x2, y2, z2, etat);
+      switch ( etat ){
+        case IMAGE_XY:
+          Param._Zoom._xmin = macro_min(x1,x2);
+          Param._Zoom._xmax = macro_max(x1+1,x2);
+          Param._Zoom._ymin = macro_min(y1,y2);
+          Param._Zoom._ymax = macro_max(y1+1,y2);
+        break;
+        case IMAGE_XZ:
+          Param._Zoom._xmin = macro_min(x1,x2);
+          Param._Zoom._xmax = macro_max(x1+1,x2);
+          Param._Zoom._zmin = macro_min(z1,z2);
+          Param._Zoom._zmax = macro_max(z1+1,z2);
+        break;
+        case IMAGE_ZY:
+          Param._Zoom._zmin = macro_min(z1,z2);
+          Param._Zoom._zmax = macro_max(z1+1,z2);
+          Param._Zoom._ymin = macro_min(y1,y2);
+          Param._Zoom._ymax = macro_max(y1+1,y2);
+        break;
+      } // end switch
+    }
 
     
-     Param._pos._x = macro_max( Param._pos._x, Param._Zoom._xmin);
-     Param._pos._x = macro_min( Param._pos._x, Param._Zoom._xmax);
-     Param._pos._y = macro_max( Param._pos._y, Param._Zoom._ymin);
-     Param._pos._y = macro_min( Param._pos._y, Param._Zoom._ymax);
-     Param._pos._z = macro_max( Param._pos._z, Param._Zoom._zmin);
-     Param._pos._z = macro_min( Param._pos._z, Param._Zoom._zmax);
+   Param._pos._x = macro_max( Param._pos._x, Param._Zoom._xmin);
+   Param._pos._x = macro_min( Param._pos._x, Param._Zoom._xmax);
+   Param._pos._y = macro_max( Param._pos._y, Param._Zoom._ymin);
+   Param._pos._y = macro_min( Param._pos._y, Param._Zoom._ymax);
+   Param._pos._z = macro_max( Param._pos._z, Param._Zoom._zmin);
+   Param._pos._z = macro_min( Param._pos._z, Param._Zoom._zmax);
 
-     Param._Zoom.ComputeSize();
+   Param._Zoom.ComputeSize();
 
-     Param._MAJ.MAJCoupes();
-     EffaceTousLesEcrans( false);
-     Paint();
+   Param._MAJ.MAJCoupes();
+   EffaceTousLesEcrans( false);
+   Paint();
 
-  Sinon
+  } else {
 
     Si Non(Param._curseur._visible) Et Param._curseur._ON
         AlorsFait DessineCurseurs( _curseur_x, _curseur_y, _curseur_z);
 
-  FinSi
+  } // end if
 
 } // Boutton_Relache()
 

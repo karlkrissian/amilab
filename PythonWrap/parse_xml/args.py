@@ -27,10 +27,16 @@ arg_parser.add_argument('--members_blacklist',  default='',  \
   help='Manually discard a set of class function members' )
 
 arg_parser.add_argument('--available_external_classes', nargs='*',  default=[],  \
-  help='Lists available classes from other libraries' )
+  help='Lists available classes from another library' )
 
 arg_parser.add_argument('--external_dllname',  default='',  \
   help='dllname for external classes' )
+
+arg_parser.add_argument('--available_external_classes2', nargs='*',  default=[],  \
+  help='Lists available classes from a second other library' )
+
+arg_parser.add_argument('--external_dllname2',  default='',  \
+  help='dllname for classes of second external lib' )
 
 arg_parser.add_argument('--functions', nargs='*', default=[],  \
   help='name of the function(s) to wrap' )

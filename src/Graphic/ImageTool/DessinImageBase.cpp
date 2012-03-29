@@ -2152,6 +2152,10 @@ void DessinImageBase::DrawSlice( int slice_id )
     return;
   }
 
+  if (!_current_slice->IsOk()) {
+    CLASS_ERROR(" _current_slice not OK !");
+    //return;
+  }
   register rgb_color* image_data  = (rgb_color*)
                                     _current_slice->GetData();
   register int        image_width = _current_slice->GetWidth();

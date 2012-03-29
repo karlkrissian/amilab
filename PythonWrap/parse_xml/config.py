@@ -249,6 +249,7 @@ def AddDeclare(f):
 def CreateIncludes():
   res='';
   external_dll_included = False
+  external_dll2_included = False
   for f in include_list:
     #res += '#include "{0}"\n'.format(f)
     res += '{0}\n'.format(f)
@@ -262,6 +263,14 @@ def CreateIncludes():
       if not(external_dll_included):
         res += '#include "{}Configure.h"\n'.format(args.val.external_dllname)
       external_dll_included = True
+    # second external library
+    declare_dll2=False
+    if  f in args.val.available_external_classes2 and \
+        args.val.external_dllname2!='':
+      declare_dll2=True
+      if not(external_dll2_included):
+        res += '#include "{}Configure.h"\n'.format(args.val.external_dllname2)
+      external_dll2_included = True
     
     # avoid inclusion, just declare the type ...
     res += '#ifndef {0}_declared\n'.format(ClassUsedName(f))

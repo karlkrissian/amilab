@@ -204,6 +204,8 @@ if __name__ == '__main__':
       
     for cl in args.val.available_external_classes:
       config.available_classes.append(cl)
+    for cl in args.val.available_external_classes2:
+      config.available_classes.append(cl)
     for cl in config.available_builtin_classes:
       config.available_classes.append(cl)
     FindAvailableClasses()
@@ -313,6 +315,7 @@ if __name__ == '__main__':
                  nt not in config.classes_blacklist and\
                  (nt not in config.available_types) and \
                  (nt not in args.val.available_external_classes) and \
+                 (nt not in args.val.available_external_classes2) and \
                  (nt not in config.available_builtin_classes):
                 ancestors_templates.append(nt)
                 #print "    added ..."
@@ -359,6 +362,7 @@ if __name__ == '__main__':
                     classes_dict[anc_id] not in config.classes_blacklist and\
                     (classes_dict[anc_id] not in config.available_types) and \
                     (classes_dict[anc_id] not in args.val.available_external_classes) and \
+                    (classes_dict[anc_id] not in args.val.available_external_classes2) and \
                     (classes_dict[anc_id] not in config.available_builtin_classes) and\
                     ( (not wrap_class.IsTemplate(classes_dict[anc_id])) \
                       or args.val.templates ):
@@ -428,6 +432,7 @@ if __name__ == '__main__':
     #if the needed class is already available, don't wrap it
     for cl in args.val.classes:
       if  (cl not in args.val.available_external_classes) and \
+          (cl not in args.val.available_external_classes2) and \
           (cl not in config.available_builtin_classes):
         config.needed_classes.append(cl)
         #print "Adding class {0}".format(cl)
@@ -549,7 +554,9 @@ if __name__ == '__main__':
       # -- list the library classes (based on the filter)
       lib_classes = []
       for cl in config.available_classes:
-        if  (cl not in args.val.available_external_classes) and (cl not in config.available_builtin_classes):
+        if  (cl not in args.val.available_external_classes) and \
+            (cl not in args.val.available_external_classes2) and \
+            (cl not in config.available_builtin_classes):
           m = re.match(args.val.filter, cl)
           if m != None:
             lib_classes.append(cl)

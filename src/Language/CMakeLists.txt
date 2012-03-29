@@ -99,7 +99,7 @@ IF(AMI_USE_FLEXBISON)
     # too slow compilation in release mode ...
     SET_SOURCE_FILES_PROPERTIES (
         ${BISON_improcessbison_OUTPUTS} PROPERTIES CMAKE_CXX_FLAGS_RELEASE
-            "/MD /Od /Ob2 /D NDEBUG")
+            "/MD /O1 /Ob1 /D NDEBUG")
   ENDIF(MSVC)
 
   IF(AMI_BISON_DEBUG)

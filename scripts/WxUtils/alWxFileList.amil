@@ -357,9 +357,10 @@ Class alWxFileList \
   {
     win.BeginBook()
       win.AddPage("List")
-        ::listctrl = wx.wxListCtrl(&win.CurrentParent())
+        ::listctrl = wx.wxListCtrl(&win.CurrentParent(),wx.wxID_ANY,\
+            wx.wxPoint(-1,-1),wx.wxSize(-1,-1),wx.wxLC_REPORT)
         win.AddWidget(&::listctrl,1)
-        ::listctrl.SetWindowStyle(wx.wxLC_REPORT)
+        #::listctrl.SetWindowStyle(wx.wxLC_REPORT)
         ::listctrl.InsertColumn_2(0,"Sub-path")
         ::listctrl.InsertColumn_2(1,"File")
         ::listctrl.InsertColumn_2(2,"Path ID")
