@@ -210,7 +210,7 @@ if (!exists(DICOMClass)) {
         ::win.Update(-1)
         sub_path = wx.FromWxString(list_item.GetText())
         full_path = ::dicom_folder+sub_path
-        cmd =  "::%1% <<= itk.DICOMRead(" % im_name + "%1%);" % full_path)
+        cmd =  "::%1% <<= itk.DICOMRead(" % im_name + "\"%1%\");" % full_path
         printn "running '%1%'" % cmd
         eval cmd
 
