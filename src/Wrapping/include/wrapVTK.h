@@ -20,7 +20,7 @@
 /** function that add the wrapping of vtk library
  *  to the AMI language
  */
-WrapVTK_EXPORT void __cdecl AddWrapVTK(AMIObject::ptr & ); 
+WrapVTK_EXPORT void  AddWrapVTK(AMIObject::ptr & ); 
 
 
 #endif // _WRAPVTK_H_

@@ -5,7 +5,7 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
-  ${AMILAB_SOURCE_DIR}/Language
+  #${AMILAB_SOURCE_DIR}/Language
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}
   ${CMAKE_CURRENT_BINARY_DIR}/${AMI_VTK_VERSION}/Generated
@@ -224,6 +224,11 @@ IF(WrapVTK_SHARED)
 ELSE(WrapVTK_SHARED)
   my_add_library ( WrapVTK)
 ENDIF(WrapVTK_SHARED)
+
+
+IF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)
+  SET_TARGET_PROPERTIES(WrapVTK PROPERTIES COMPILE_FLAGS -fPIC)
+ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)
 
 SET(amilab_ownlibs
   LanguageBase

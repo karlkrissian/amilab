@@ -264,7 +264,7 @@ public:
   void RecupereDimensions( int* , int* );
   //
 
-  size_t NbParameters() { return _tab_param.size(); } 
+  int NbParameters() { return (int)_tab_param.size(); } 
   //
 
   ParamInfo GetLastParamInfo() 
@@ -275,9 +275,9 @@ public:
       return ParamInfo();
   }
 
-  size_t NbBoxes() const { return _tab_boxes.size(); } 
+  int NbBoxes() const { return (int)_tab_boxes.size(); } 
   //
-  size_t NbPanels() const { return _tab_panels.size(); } 
+  int NbPanels() const { return (int)_tab_panels.size(); } 
   //
  
   //

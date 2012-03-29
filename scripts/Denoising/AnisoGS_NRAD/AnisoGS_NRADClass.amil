@@ -410,54 +410,59 @@ if (!exists(AnisoGS_NRADClass)) {
     #---------------------------------------------------------------------------
     proc ::FilterNRAD() \
     {
+
       ::FilterNRAD_Init()
-    
-      ::FilterNRAD_Params()
-    
-      # process iterations
-      ::res0 <<= ::NRADfilter.GetOutput()
-      if (::params.run_on_roi) {
-        ::res <<= ::input
-        if ::squared {
-          ::res0 = sqrt(::res0)
-        }
-        ::res.putimage(::res0)
+      if (::input.tz==1) {
+        InfoDialog "Filter only available for 3D images at the moment"
       } else {
-        if ::squared {
-          ::res <<= sqrt(::res0)
-        }
-      }
-
-      # Output estimated noise standard deviation
-      if ::params.noise_models[::params.noise_model] == "Rician" {
-        noise_variance = ::NRADfilter.Compute_sigma2_MRI_mode(&input1)
-      } else {
-        noise_variance = ::NRADfilter.Compute_sigma2_Gaussian_mode(&::input1,\
-                          ::params.noise_estim_neigh)
-      }
-      printn " ------------------------"
-      printn " Noise Standard Deviation  = %1% " % sqrt(noise_variance)
-      printn " Variance = %1%" % noise_variance
-      printn " ------------------------"
-
-      fn = wx.wxFileName(::result_filename+"_noise.txt")
-      if !(fn.IsDirWritable()) {
-        fn.Assign(wx.wxFileName.GetTempDir(),fn.GetFullName())
-      printn "Set File as %1%" % fn.GetFullPath().c_str()
-      }
-      if fn.IsDirWritable() {
-        noisefile = File(fn.GetFullPath().c_str(),"w")
-        noisefile._print( "noise SD = %1% \n" % sqrt(noise_variance))
+    
+        ::FilterNRAD_Params()
       
-        if (exists(::exact_noise_sd)) {
-          noise_variance = ::exact_noise_sd*::exact_noise_sd
-          printn " Using Given Variance = %1%" % noise_variance
-          noisefile._print( "exact noise SD = %1% \n" % sqrt(noise_variance))
+        # process iterations
+        ::res0 <<= ::NRADfilter.GetOutput()
+        if (::params.run_on_roi) {
+          ::res <<= ::input
+          if ::squared {
+            ::res0 = sqrt(::res0)
+          }
+          ::res.putimage(::res0)
+        } else {
+          if ::squared {
+            ::res <<= sqrt(::res0)
+          }
         }
-        del noisefile
-      }
 
-      ::FilterNRAD_Iterations()
+        # Output estimated noise standard deviation
+        if ::params.noise_models[::params.noise_model] == "Rician" {
+          noise_variance = ::NRADfilter.Compute_sigma2_MRI_mode(&input1)
+        } else {
+          noise_variance = ::NRADfilter.Compute_sigma2_Gaussian_mode(&::input1,\
+                            ::params.noise_estim_neigh)
+        }
+        printn " ------------------------"
+        printn " Noise Standard Deviation  = %1% " % sqrt(noise_variance)
+        printn " Variance = %1%" % noise_variance
+        printn " ------------------------"
+
+        fn = wx.wxFileName(::result_filename+"_noise.txt")
+        if !(fn.IsDirWritable()) {
+          fn.Assign(wx.wxFileName.GetTempDir(),fn.GetFullName())
+        printn "Set File as %1%" % fn.GetFullPath().c_str()
+        }
+        if fn.IsDirWritable() {
+          noisefile = File(fn.GetFullPath().c_str(),"w")
+          noisefile._print( "noise SD = %1% \n" % sqrt(noise_variance))
+        
+          if (exists(::exact_noise_sd)) {
+            noise_variance = ::exact_noise_sd*::exact_noise_sd
+            printn " Using Given Variance = %1%" % noise_variance
+            noisefile._print( "exact noise SD = %1% \n" % sqrt(noise_variance))
+          }
+          del noisefile
+        }
+
+        ::FilterNRAD_Iterations()
+      }
     
     }
     
