@@ -1,0 +1,224 @@
+  Alias Name: AMNESIX
+Modality: CT 16/64
+File Size: 157 MB
+Description: CTA abdomen and lower extremities runoff of a patient with an illiac aneurysme pre and post stent placement recorded on a 16 detector CT (pre) and a 64 detector CT (post)   
+  Alias Name: FIVIX
+Modality: PET-CT 64
+File Size: 100 MB
+Description: A true 5D study ! Cardiac gated PET and CT.
+  Alias Name: ENTERIX
+Modality: PET-CT 64
+File Size: 183 MB
+Description: Intestinal Enteric Lymphoma.   
+  Alias Name: LUNGIX
+Modality: PET/CT
+File Size: 58 MB
+Description: PET-CT Study with all required fields to compute SUV values.
+  Alias Name: WRIX
+Modality: MRI
+File Size: 5 MB
+Description: Scaphoid fracture. T1 / STIR fusion.   
+  Alias Name: CETAUTOMATIX
+Modality: MRI
+File Size: 41 MB
+Description: Normal cardiac MRI and MRA study. Mild Aortic and tricuspid valves regurgitation
+  Alias Name: BREBIX
+Modality: CT 64
+File Size: 60 MB
+Description: Hypernephroma, arterial and venous acquisitions.   
+  Alias Name: PHENIX
+Modality: CT
+File Size: 120 MB
+Description: Surgical repair of facial deformity
+  Alias Name: INCISIX
+Modality: CT 64
+File Size: 61 MB
+Description: Dental Scan.   
+  Alias Name: TOUTATIX
+Modality: CT
+File Size: 195 MB
+Description: SCoronary artery anomaly (emerging from pulmonary artery)
+  Alias Name: MAGIX
+Modality: CT 64
+File Size: 69 MB
+Description: 4D Cardiac CT.   
+  Alias Name: ARTIFIX
+Modality: CT
+File Size: 167 MB
+Description: Dilated aorta
+  Alias Name: MELANIX
+Modality: PET-CT 64
+File Size: 278 MB
+Description: PET-CT whole body. Melanoma.   
+  Alias Name: COMUNIX
+Modality: PET/CT
+File Size: 7.6 MB
+Description: PET-CT of cervical tumor
+  Alias Name: OSIRIX
+Modality: CT 64
+File Size: 83 MB
+Description: Study on 64 detector CT. Renal graft.  
+  Alias Name: FEROVIX
+Modality: CT
+File Size: 41 MB
+Description: Pulmonary stent
+  Alias Name: MECANIX
+Modality: CT 64
+File Size: 120 MB
+Description: Study on 64 detector CT , normal arteries.   
+  Alias Name: ORDALFABETIX
+Modality: MR
+File Size: 18 MB
+Description: Abdominal MRA
+  Alias Name: MATRIX
+Modality: MRI
+File Size: 45 MB
+Description: Lower Limbs Angio MRI.   
+  Alias Name: FELIX
+Modality: MR
+File Size: 27 MB
+Description: Cerebral aneurysm
+  Alias Name: MACOESSIX
+Modality: CT 64
+File Size: 74 MB
+Description: Lower Limbs Angio CT.  
+  Alias Name: ANONYMIZE
+Modality: MRI
+File Size: 9 MB
+Description: Cat - Cerebellar aplasia.
+  Alias Name: VIX
+Modality: CT 64
+File Size: 50 MB
+Description: Foot.  
+  Alias Name: KNIX
+Modality: MRI
+File Size: 31 MB
+Description: Standard knee MRI.
+  Alias Name: CENOVIX
+Modality: CT 64
+File Size: 33 MB
+Description: Renal Angio CT with left kidney obstruction.   
+  Alias Name: MANIX
+Modality: CT
+File Size: 40 MB
+Description: Head CTA with contrast
+  Alias Name: AGECANONIX
+Modality: CT 16
+File Size: 107 MB
+Description: Cardiac and coronary study on 16 detector CT , normal coronary arteries with mild calcifications. Also includes a 10 phases dynamic 4D series of images.   
+  Alias Name: CALIX
+Modality: CT
+File Size: 102 MB
+Description: Normal abdominal CTA in arterial and veinous phases
+  Alias Name: OBELIX
+Modality: CT 16
+File Size: 219 MB
+Description: Whole body contrast CTA acquired on a 16 detector CT scanner. Normal study.  
+  Alias Name: TRAGICOMIX
+Modality: CT 64
+File Size: 225 MB
+Description: Thoracic CT angiogram acquire on a 64 detector scanner. Patient with a spiral aortic dissection status post surgical repair of the ascending aorta
+  Alias Name: ASSURANCETOURIX
+Modality: PET/CT
+File Size: 27 MB
+Description: Co-registered PET-CT study acquired on a dual modality scanner. PAtient with multiple metastatic lesions in the liver an dthe lung with cental netrotic areas.   
+  Alias Name: PNEUMATIX
+Modality: MRI
+File Size: 11 MB
+Description: MRI and MRA images of a patient with a history of aortic coarctation status post repair. Residual severe aortic valve stenosis
+  Alias Name: GRUSELAMBIX
+Modality: XA angiogram
+File Size: 72 MB
+Description: Coronary angiogram. Pre and post balloon angioplasty of a stenosis or the right coronary artery  
+  Alias Name: KESKONRIX
+Modality: CT 64
+File Size: 106 MB
+Description: Lower extremities runoff CT angiogram recorded on a 64 detector scanner. Mild atherosclerotic disease of the right superficial femoral artery.
+  Alias Name: BEAUFIX
+Modality: MRA
+File Size: 18 MB
+Description: Contrast-enhanced renal MRA acquired on a 3T scanner. Normal study   
+  Alias Name: PANORAMIX
+Modality: CT 16
+File Size: 28 MB
+Description: Abdominal CT angiogram acquired on a 16 detector scanner in a patient with abdominal aortic aneurysm (AAA)
+  Alias Name: GOUDURIX
+Modality: CT 16
+File Size: 21 MB
+Description: Normal CT coronary angiogram acquired on a 16 detectors CT scanner   
+  Alias Name: QUATREDEUXSIX
+Modality: MRI
+File Size: 7 MB
+Description: Contrast-enhanced MRA of pulmonary arteries. Normal study
+  Alias Name: IDEFIX
+Modality: XA angiogram
+File Size: 15 MB
+Description: Dynamic images of a cerebral angiogram after coil embolization of cerebral AVM   
+  Alias Name: RATIB3
+Modality: CT 64
+File Size: 144 MB
+Description: Dynamic 4D cardiac study acquired on a 64 detector CT scanner (1320 images). Normal study.
+  Alias Name: RATIB1
+Modality: CT 64
+File Size: 70 MB
+Description: Coronary angiogram recorded on a 64 detector CT scanner  
+  Alias Name: MRIX
+Modality: MRI
+File Size: 15 MB
+Description: Standard Thoracic & Lumbar MRI.
+  Alias Name: ANONYMIZE2
+Modality: CT
+File Size: 61 MB
+Description: Dog CT - Osteosarcoma of the rib.  
+  Alias Name: ANEURIX
+Modality: CT
+File Size: 89 MB
+Description: Lower Limb Angio CT.
+  Alias Name: CARCINOMIX
+Modality: CT
+File Size: 42 MB
+Description: Lung carcinoma.  
+  Alias Name: MERGE
+Modality: CR
+File Size: 14 MB
+Description: Spine
+  Alias Name: PELVIX
+Modality: CT
+File Size: 57 MB
+Description: Pelvic fracture.   
+  Alias Name: BRAINIX
+Modality: MR
+File Size: 24 MB
+Description: Brain tumor.
+  Alias Name: CARDIX
+Modality: CT
+File Size: 43 MB
+Description: Cardiac ecg-gated CT.  
+  Alias Name: COLONIX
+Modality: CT
+File Size: 87 MB
+Description: Colonic CT.
+  Alias Name: KNEE
+Modality: MR
+File Size: 26 MB
+Description: Knee MR.   
+  Alias Name: LOMBIX
+Modality: MR
+File Size: 12 MB
+Description: Lombar MR.
+  Alias Name: VOLUMEMERGE
+Modality: MR
+File Size: 21 MB
+Description: Spine MR.  
+  Alias Name: CEREBRIX
+Modality: MR, PET, CT
+File Size: 53 MB
+Description: Brain Tumor.
+  Alias Name: PETCETIX
+Modality: PET-CT
+File Size: 98 MB
+Description: Whole body FDG PET-CT study in a patient with abdominal lymphoma.
+ Alias Name: PROSTATIX
+Modality: PET-CT
+File Size: 107 MB
+Description: PET-CT study with F18-fluorocholine in patient with prostate cancer.
