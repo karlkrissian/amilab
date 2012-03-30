@@ -1,0 +1,409 @@
+#!/usr/bin/amilab
+
+#
+# Noise Reducing Anisotropic Diffusion
+#
+# Based on the paper of Yu and Acton: Speckle Reducing Anisotropic Diffusion TIP 2002
+# and
+# Krissian and Aja-Fernandez TIP 2009
+#
+
+# call 
+# ::CreateParams( IMAGE)
+# and
+# ::CreateWindow()
+#
+# result in ::res
+#
+# Style Conventions:
+#   all variables and functions will start with ::
+#   function variables will start with an uppercase character after
+#   other variables will start with a lowercase character
+#
+# ::resultname = $2
+
+func "Common/ScriptGui"
+
+if (!exists(AnisoScalarClass)) {
+
+
+  Class AnisoScalarClass : public ScriptGui {
+
+    func "Variable/ObjectIO"
+    # 
+    #===========================================================================
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+        ::dt   = 1.0/6.0, "Time step for the Partial Differential Equation"
+        ::t    = 2.0,     "Total diffusion time of the equation"
+        # 0: Lee, 1: Kuan, 2: Additive, 3: MRI
+        ::scalar_modes = VarVector()
+          ::scalar_modes.push_back("Lee")
+          ::scalar_modes.push_back("Kuan")
+          ::scalar_modes.push_back("Additive")
+          ::scalar_modes.push_back("MRI")
+        mess = ""
+        for n=0 to ::scalar_modes.size()-1 { mess += "'%1%' " % ::scalar_modes[n]; }
+        ::scalar_mode = INT(3), "Scalar mode (%1%)" % mess
+        ::estimate_noise_from_histogram = UCHAR(0), "EStimate the noise from "+\
+          "the mode of the histogram (only for scalar additive equation)"
+
+        ::neighborhood = INT(1),  "Size of the neighborhood for local "+\
+                                  "statistics, the window size is (2n+1)^3, "+\
+                                  "where n is the parameter"
+        # Scheme, 0: explicit 1: semi-implicit
+        ::scheme = INT(1),        "Numerical scheme: explicit or semi-implicit"
+        ::run_on_roi = UCHAR(0),  "Run only on the selected region-of-interest"
+
+        #-----------------------------------------------------------------------
+        proc ::__assign__( VAR p) {
+          ::t                     = p.t
+          ::dt                    = p.dt
+          ::scalar_mode           = p.scalar_mode
+          ::neighborhood          = p.neighborhood
+          ::scheme                = p.scheme
+          ::run_on_roi            = p.run_on_roi
+        }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() \
+    {
+        ::class_name ="global::AnisoScalarClass"
+        ::input_name = ""
+        # suggested 1/6 in 3D and 1/4 in 2D
+  
+        ::result_imagename = "global::AnisoScalar_result", \
+                              "Name of the resulting global variable."
+        ::result_filename = "AnisoScalar_result.ami.gz", \
+                              "Disk filename for the resulting image."
+  
+        ::ParamClass ::params
+
+        ::wiki_help = ::AmilabWiki("tutorial-nrad") 
+  
+        ::html_filename = GetScriptsDir+\
+                          "/Denoising/AnisoScalar/Doc/AnisoScalar_gui/index.html"
+#       ::html_filename = GetScriptsDir+"/Denoising/AnisoScalar/Doc/AnisoScalar_gui.html"
+  
+        #::CreateWindow()
+        # ::ROI 
+    }
+    
+    #---------------------------------------------------------------------------
+    proc ::load_input() {
+      if (::input_name=="BrowseImage") {
+        # read image using browser
+        ::input <<= BrowseImage
+        ::input_name = "::input"
+        ::win.Update(-1)
+      } else {
+        del ::input
+        eval "::input =&"+::input_name+";"
+      }
+    }
+  
+    #--------------------------------------------------
+    proc ::set_input(IMAGE im)  \
+    {
+      del ::input
+      ::input = &im
+      ::input_name = "::input"
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SetNoiseStandardDeviation(NUM nsd) {
+      ::exact_noise_sd = nsd
+    }
+
+    
+
+    #---------------------------------------------------------------------------
+    proc ::SetGroundTruth( IMAGE gt, NUM sigma) {
+      
+    
+      ::groundtruth = gt
+      ::noisesigma  = sigma
+    }
+    
+    #---------------------------------------------------------------------------
+    proc ::ComputeMSE( IMAGE res) {
+      res1=res*res-2*::noisesigma*::noisesigma
+      res1 = sqrt(res1*(res1>0))
+      printn sprint("MSE %3.2f \n",mean((res1-::groundtruth)*(res1-::groundtruth)))
+    
+      res1=res*res-2*::noisesigma*::noisesigma
+      res1 = sqrt(res1*(res1>0))
+      printn sprint("MSE %3.2f (I>0) \n",mean[::groundtruth>0]((res1-::groundtruth)*(res1-::groundtruth)))
+    }
+    
+    #---------------------------------------------------------------------------
+    proc ::ReloadInput() \
+    {
+      if (exists(::input)) {
+        delvars "::*_draw"
+        if (exists(::roi)) { del ::roi; }
+        if (exists(::imbox)) { del ::imbox; }
+      }
+      ::load_input()
+      ::Display()
+    }
+    Comments( ::ReloadInput, "Reload input image.")
+    
+    #---------------------------------------------------------------------------
+    proc ::SetRoiImage( IMAGE _roi) \
+    {
+      ::roi <<= _roi
+    }
+  
+    #---------------------------------------------------------------------------
+    proc ::GetRoi() \
+    {
+      if (!exists(::input)) {
+        ::load_input
+        ::Display()
+      }
+      if (exists(::input_draw)) {
+        ::roi <<= ::input[::input_draw]
+      }
+      ::Display()
+    }
+    Comments( ::GetRoi, "Select the Region of Interest (ROI) for noise estimation.")
+    
+    
+    #---------------------------------------------------------------------------
+    proc ::Filter() \
+    {
+      inittime = wx.wxDateTime.UNow()
+      if (!exists(::input)) {
+        ::load_input
+      }
+      if (!exists(::roi)) {
+        InfoDialog  "Region of Interest not selected taking the full "+\
+                    "image by default"
+        ::roi = ::input
+      }
+  
+      numit = ::params.t/::params.dt
+      if (::params.scalar_modes[::params.scalar_mode]=="MRI") {
+          printn "running on squared image"
+          local::input1 = ::input*::input
+          ::res <<= \
+            algorithms.ami_SRAD.AnisoNRAD(&input1,\
+                                          ::params.scalar_mode,\
+                                          ::params.dt,\
+                                          numit,\
+                                          ::params.neighborhood,\
+                                          ::roi.GetExtent)
+          ::res <<= sqrt(::res)
+      } else {
+        if ::params.scalar_modes[::params.scalar_mode]=="Additive" \
+        {
+          noiseestim_mode_bak = algorithms.ami_SRAD.GetNoiseEstimationMode()
+          algorithms.ami_SRAD.SetNoiseEstimationMode(\
+            ::params.estimate_noise_from_histogram)
+        }
+        if (::input.vdim ==1) {
+          ::res <<= \
+            algorithms.ami_SRAD.AnisoNRAD(&::input,::params.scalar_mode,\
+                                          ::params.dt,numit,\
+                                          ::params.neighborhood,\
+                                          ::roi.GetExtent)
+        } else {
+          ::res <<= ::input
+          for n=0 to ::input.vdim-1 {
+            if exists(tmp) { del tmp; }
+            tmp = &::input[n]
+            res = \
+              algorithms.ami_SRAD.AnisoNRAD(&tmp,::params.scalar_mode,\
+                                            ::params.dt,numit,\
+                                            ::params.neighborhood,\
+                                            ::roi.GetExtent)
+            ::res.SetComponent(n, res)
+          }
+        }
+        if ::params.scalar_modes[::params.scalar_mode]=="Additive" \
+        {
+          algorithms.ami_SRAD.SetNoiseEstimationMode( noiseestim_mode_bak)
+        }
+      }
+      diff=wx.wxDateTime.UNow()-inittime
+      time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      SetStatusText("Denoising \tDone (%1%)" % time_elapsed)
+    }
+    Comments( ::Filter, "Run the denoising algorithm, using the following "   +\
+                        "criteria:       - if equation_type is 0 (scalar): "  +\
+                        "- if scalar_mode is 3 (MRI) runs AnisoRNAD on the "  +\
+                        "image squared,          - otherwise, runs AnisoRNAD "+\
+                        "on the initial image ")
+    
+    #---------------------------------------------------------------------------
+    proc ::Display() {
+      
+      if (!exists(::input)) {
+        ::load_input
+      }
+      if (!exists(::input_draw)) {
+        show ::input
+      }
+      // draw limits of ROI
+      if exists(::roi) {
+        roibox = ::roi[0]*0+1
+        ::imbox  <<= ::input[0]*0
+        ::imbox.putimage(roibox)
+        del roibox
+        ::input_draw.SetIsoContour(0,&::imbox,0.5)
+        ::input_draw.DrawIsoContour(0,1)
+        show ::input
+      }
+      if exists(::res) {
+        show ::res
+        ::res_draw.update()
+        ::input_draw.compare(&::res_draw)
+      }
+    }
+    Comments( ::Display, "Display results")
+    
+    proc ::CompareSurfaces(IMAGE i1, IMAGE i2) {
+      
+        delvars "::*_surf_draw"
+        delvars "::*_surf"
+        ::input_surf = CreateFlatMesh(i1,0)
+        ::res_surf   = CreateFlatMesh(i2,0)
+        ::input_surf.ElevateMesh(i1/10)
+        ::res_surf.ElevateMesh(i2/10)
+        ::input_surf.Normals()
+        ::res_surf.Normals()
+        show ::input_surf
+        show ::res_surf
+        ::input_surf_draw.compare(&::res_surf_draw)
+    }
+  
+    proc ::DisplaySurfaces() {
+      if (::input.tz==1) {
+        ::CompareSurfaces(&::input,&::res)
+      } else {
+        if (exists(::input_draw)) {
+          InfoDialog "Taking the current slice from input image viewer"
+          zpos = ::input_draw.GetZPos()
+        } else {
+          InfoDialog "Taking the middle slice of the image"
+          zpos = ::input.tz/2 
+        }
+        inslice = ::input[:,:,zpos:zpos]
+        resslice = ::res[:,:,zpos:zpos]
+        ::CompareSurfaces(&inslice,&resslice)
+      }
+    }
+    
+    proc ::Save() {
+      ::res.save ::result_filename
+    }
+    Comments( ::Save, "Save image to disk.")
+  
+    proc ::SaveToImage() {
+      eval ::result_imagename+" <<= ::res;"
+    }
+    Comments( ::SaveToImage, "Save to global image variable.")
+    
+    #---------------------------------------------------------------------------
+    proc ::new_eq_type() \
+    {
+      ::win.Enable( ::histomode_id, \
+                    ::params.scalar_modes[::params.scalar_mode]=="Additive")
+    }
+    
+  
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+      # parameters window
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("AnisoScalar",&::parent_panel)
+      } else {
+        ::win = ParamPanel("AnisoScalar")
+      }
+  
+      ::win.BeginBook()
+        ::win.AddPage("Main")
+          ::win.AddImageChoice( &::input_name, "Input")
+          ::win.AddFloat( &::params.dt,"dt",0.01,1)
+          ::win.AddFloat( &::params.t,"T",0,10)
+          
+          ::win.AddInt( &::params.neighborhood,"Neighborhood",0,4)
+      
+          ::win.BeginHorizontal()
+            ::scheme_id       = ::win.AddEnum( &::params.scheme,"Sch.")
+              ::win.AddEnumChoice(::scheme_id,"Expl.")
+              ::win.AddEnumChoice(::scheme_id,"Semi-impl.")
+          ::win.EndHorizontal()
+
+      
+          ::scalar_mode_id = ::win.AddEnum( &::params.scalar_mode,\
+                                            "Scalar mode")
+            for n=0 to ::params.scalar_modes.size()-1 { 
+              ::win.AddEnumChoice(::scalar_mode_id,::params.scalar_modes[n])
+            }
+          ::win.SetCallback( &::new_eq_type)
+
+          ::histomode_id = ::win.AddBoolean(&::params.estimate_noise_from_histogram, \
+              "Estimate noise from histogram ")
+  
+    
+            ::win.BeginHorizontal()
+              ::AddBitmapButton(&::win, &::icons._Refresh,   32, "ReloadInput")
+              ::win.SetPositionProp(-1,0)
+              ::AddBitmapButton(&::win, &::icons._Selection, 32, "GetRoi")
+              ::win.SetPositionProp(-1,0)
+              ::AddBitmapButton(&::win, &::icons._Apply,     32, "Filter")
+              ::win.SetPositionProp(-1,0)
+              ::AddBitmapButton(&::win, &::icons._Show,      32, "Display")
+              ::win.SetPositionProp(-1,0)
+            ::win.EndHorizontal()
+            ::win.AddBoolean( &::params.run_on_roi,"Run on ROI")
+            ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
+
+          ::win.AddPage("Save")
+            ::win.BeginBoxPanel("Result --> disk")
+              ::win.BeginHorizontal()
+                ::win.AddString(&::result_filename,"File")
+                # make it proportional
+                ::win.SetPositionProp(1)
+                ::AddBitmapButton16(&::win, &::icons._Save, "Save")
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("Result --> global variable")
+              ::win.BeginHorizontal()
+                ::win.AddString(&::result_imagename,"Name")
+                # make it proportional
+                ::win.SetPositionProp(1)
+                ::AddBitmapButton16(&::win, &::icons._Copy, "SaveToImage")
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel()
+
+          ::AddParamPage(&::win)
+          if wx.wxFileName(::html_filename).FileExists() {
+            ::AddHelpPage(&::win)
+          }
+  
+      ::win.EndBook()
+  
+      ::AddStandardButtons(&::win)
+      
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+      ::new_eq_type()
+    }
+    #---------------------------------------------------------------------------
+    
+    ::Init()
+  
+  }#End of Class
+
+}#End of if
+

@@ -5,6 +5,7 @@ wxActivateEvent
 wxAmiEventHandler
 wxApp
 wxArrayInt
+wxArrayString
 wxArtProvider
 wxAuiDockArt
 wxAuiFloatingFrame
@@ -18,7 +19,6 @@ wxAuiToolBar
 wxAuiToolBarArt
 wxAuiToolBarItem
 wxAuiToolBarItemArray
-wxArrayString
 wxBitmap
 wxBitmapButton
 wxBitmapHandler
@@ -134,6 +134,7 @@ wxPluginBase
 wxPluginInterface
 wxPluginManager
 wxPoint
+wxRadioBox
 wxRect
 wxRegEx
 wxRegion

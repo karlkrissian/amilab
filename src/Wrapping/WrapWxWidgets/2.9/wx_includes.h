@@ -8,6 +8,7 @@
 #include <wx/wx.h>
 #include <wx/aui/aui.h>
 #include <wx/app.h>
+#include <wx/arrstr.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/html/htmlwin.h>
@@ -18,6 +19,7 @@
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
 #include <wx/splitter.h>
+#include <wx/radiobox.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/richtext/richtextstyles.h>
 #include <wx/stdpaths.h>

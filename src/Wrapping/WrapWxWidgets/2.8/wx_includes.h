@@ -27,6 +27,7 @@
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
 #include <wx/panel.h>
+#include <wx/radiobox.h>
 #include <wx/regex.h> 
 #include <wx/richtext/richtextctrl.h>
 #include <wx/richtext/richtextstyles.h>

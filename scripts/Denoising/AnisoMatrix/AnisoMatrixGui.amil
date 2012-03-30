@@ -1,0 +1,23 @@
+
+func "AnisoMatrixClass.amil"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(AnisoMatrix_obj)) {
+
+  AnisoMatrixClass AnisoMatrix_obj  
+  AnisoMatrix_obj.Gui()
+   
+  if (argc>=1) {
+    printn "reading image"
+    input_arg = Image($1)
+    ::input_image = "input_arg"
+    ::win.Update(-1)
+    #NRAD_CreateParams( input)
+    #NRAD_CreateWindow()
+  }
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
