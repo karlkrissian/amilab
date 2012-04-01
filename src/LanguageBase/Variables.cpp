@@ -75,7 +75,7 @@ unsigned char Variables::deleteVar(int i)
 //--------------------------------------------------
 Variables::~Variables()
 {
-  //CLASS_MESSAGE((boost::format("Deleting context %1% ") % _context_name.c_str()).str().c_str());
+  CLASS_MESSAGE((boost::format("Deleting context %1% ") % _context_name.c_str()).str().c_str());
   EmptyVariables();
 }
 
@@ -353,6 +353,7 @@ void Variables::display()
 //--------------------------------------------------
 void Variables::EmptyVariables()
 {
+  if (_vars.size()==0) return;
   CLASS_MESSAGE((boost::format("  in %1% ") % GetName()).str().c_str());
   std::vector<BasicVariable::ptr>::iterator Iter;
 /* useless now ???
@@ -367,11 +368,13 @@ void Variables::EmptyVariables()
     Iter++;
   }
 */
+  //std::cout << "_vars.size() = " << _vars.size() << std::endl;
   Iter  = _vars.begin();
   while ( Iter != _vars.end())
   {
     Iter = _vars.erase(Iter);
   }
+  //std::cout << "done" << std::endl;
 
 } // Variables::EmptyVariables()
 

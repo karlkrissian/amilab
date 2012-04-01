@@ -39,7 +39,7 @@ class LanguageBase_EXPORT Variables{
  public:
 
   Variables() {
-    _context_name = "global context";
+    _context_name = "unamed context";
     _global_new = false;
   }
 

@@ -53,6 +53,7 @@ SET(  wxParams_HDRS
   wxIntegerParameter.h
   wxFloatParameter.h
   wxNumericParameter.h
+  wxNumericParameter.tpp
   wxFilenameParameter.h
   wxDirnameParameter.h
   CoutwxString.h

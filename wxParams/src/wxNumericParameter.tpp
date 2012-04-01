@@ -95,7 +95,9 @@ wxNumericParameter<T>::wxNumericParameter(
                       wxString::FromAscii(value.c_str()),
                       wxDefaultPosition, 
                       //wxDefaultSize, 
-                      wxSize( 40+10*_decimate,
+                      // should use wxDC.GetTextExtent here ...
+                      // what recompute text size should be doing here
+                      wxSize( 50+10*_decimate,
                               wxDefaultCoord),
                       wxTE_PROCESS_ENTER);
     _text->SetCallback( (void*)wxNumericParameter<T>::OnTextUpdate,
@@ -274,7 +276,7 @@ void wxNumericParameter<T>::RecomputeTextSize()
       newsize += 5;
     #endif
     #if defined(__WXGTK__)
-      newsize += 10;
+      newsize += 15;
     #endif
 
   } // we don´t need dc anymore

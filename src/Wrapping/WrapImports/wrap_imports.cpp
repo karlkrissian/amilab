@@ -440,7 +440,8 @@ void AddWrapAmilab(AMIObject::ptr& obj)
   BasicVariable::ptr mainframe_var = WrapClass_MainFrame::CreateVar(GB_main_wxFrame);
   amiobject->GetContext()->AddVar("MainFrame", mainframe_var, amiobject->GetContext());
 
-  BasicVariable::ptr config_var = AMILabType<wxConfigBase>::CreateVar(GB_Config);
+  // create variable, but without deleter !!!
+  BasicVariable::ptr config_var = AMILabType<wxConfigBase>::CreateVar(GB_Config,true);
   amiobject->GetContext()->AddVar("AMILabConfig", config_var, amiobject->GetContext());
 
   // Add the App as an object

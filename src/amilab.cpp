@@ -264,6 +264,7 @@ bool MyApp::OnInit()
 
  ::wxInitAllImageHandlers();
 
+  // here need a smart pointer !!!
   config = new wxConfig(wxT("AMILab"));
 /*
                         wxEmptyString,
@@ -518,9 +519,9 @@ bool MyApp::OnInit()
 int MyApp::OnExit()
 {
  // mainframe->Close();
-  delete config;
   Vars.EmptyVariables();
- std::cout << "MyApp::OnExit()" << std::endl;
+  std::cout << "MyApp::OnExit()" << std::endl;
+  delete config;
   return 0;
 }
 

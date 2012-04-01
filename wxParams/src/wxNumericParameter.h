@@ -104,7 +104,8 @@ public:
 //  void Show( bool show) { this->Show(show); }
   void ShowSlider( bool showslider)
   {
-    this->_slider->Show(showslider);
+    this->_slider        ->Show(showslider);
+    this->_spinbut_limits->Show(showslider);
   }
   
   void UpdateValue();

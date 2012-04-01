@@ -34,14 +34,77 @@ if (!exists(AnisoMatrixClass)) {
     #===========================================================================
     Class ::ParamClass : public ObjectIO {
 
+        func "WxUtils/alEnum"
+
         ::description = "Default parameters", \
                         "Description of the set of parameters"
 
         ::dt   = 1.0/6.0, "Time step for the Partial Differential Equation"
         ::t    = 2.0,     "Total diffusion time of the equation"
   
-        # 0: Grad, 1: MRI,  2:MRI_NEW 
-        ::matrix_mode  = INT(2), "Matrix mode: 0:Gradient, 1:MRI or 2:MRI_new"
+   #enum ContourMode {
+      #CONTOURS_FLUX, /**< Matrix diffusion based on Flux-based anisotropic diffusion paper. */
+      #CONTOURS_OSRAD, /**< Matrix diffusion based on OSRAD paper */
+      #CONTOURS_NRAD, /**< Matrix diffusion based on NRAD paper 
+                        #* new version using directional local statistics 
+                        #* for the diffusion matrix. */
+    #};
+  
+
+        # ----- Contour mode
+        alEnum ::contour_modes
+        ::contour_modes.SetTitle("Contours")
+        ::contour_modes.SetHelp("Defines the way to filter noise at the "+\
+                                "contours")
+        ::contour_modes.AddValue( "FLUX",\
+                                  "Matrix diffusion based on Flux-based"+\
+                                  " anisotropic diffusion paper")
+        ::contour_modes.AddValue( "OSRAD",\
+                                  "Matrix diffusion based on OSRAD paper "+\
+                                  "(diffusion in minimal curvature direction)")
+        ::contour_modes.AddValue( "NRAD",\
+                                  "Matrix diffusion based on NRAD paper "+\
+                                  "(directional local statistics)")
+        ::contour_mode = INT(2), ::contour_modes.GetHelpMessage()
+        ::contour_modes.SetVariable(&::contour_mode)
+
+    #enum NoiseEstimationModel {
+      #NOISE_LEE,  /**< Multiplicative Gaussian noise with Lee's estimation (Speckle)*/
+      #NOISE_KUAN, /**< Multiplicative Gaussian noise with Kuan's estimation (Speckle) */
+      #NOISE_GAUSSIAN_ADDITIVE,/**< Additive Gaussian noise */
+      #NOISE_RICIAN /**< Rician noise (MRI)*/
+    #};
+
+        # ----- Noise Models
+        alEnum ::noise_models
+        ::noise_models.SetTitle("Noise Model")
+        ::noise_models.SetHelp( "Defines the statistical distribution of the "+\
+                                "noise and its estimator")
+        ::noise_models.AddValue("Lee",  "Multiplicative Gaussian (Speckle) "+\
+                                        "with Lee's estimation")
+        ::noise_models.AddValue("Kuan", "Multiplicative Gaussian (Speckle) "+\
+                                        "with Kuan's estimation")
+        ::noise_models.AddValue("AddGauss", "Additive Gaussian model")
+        ::noise_models.AddValue("Rician",   "Rician model (MRI)")
+        ::noise_model = INT(2), ::noise_models.GetHelpMessage()
+        ::noise_models.SetVariable(&::noise_model)
+
+
+        # obsolete ...
+        ## ----- Matrix mode
+        ## 0: Grad, 1: MRI,  2:MRI_NEW 
+        #alEnum ::matrix_modes
+        #::matrix_modes.SetTitle("Matrix")
+        #::matrix_modes.SetHelp("Diffusion Matrix mode")
+        #::matrix_modes.AddValue("Gradient", "Using Gradient to compute "+\
+                                            #"eigenvalues")
+        #::matrix_modes.AddValue("MRI",      "Using local statistics to compute "+\
+                                            #"eigenvalue in gradient direction")
+        #::matrix_modes.AddValue("MRI_new",  "Using local statistics to compute "+\
+                                            #"eigenvalues in all directions")
+        #::matrix_mode  = INT(2), ::matrix_modes.GetHelpMessage()
+        #::matrix_modes.SetVariable(&::matrix_mode)
+
         ::neighborhood = INT(1),  "Size of the neighborhood for local "+\
                                   "statistics, the window size is (2n+1)^3, "+\
                                   "where n is the parameter"
@@ -52,14 +115,27 @@ if (!exists(AnisoMatrixClass)) {
         ::local_struct = INT(1),    "Local Structure mode: either gradient "+\
                                     "and principal curvature directions, or "+\
                                     "structure tensor eigenvectors"
+        # ----- Eigenvalue mode
+        alEnum ::eigen_modes
+        ::eigen_modes.SetTitle("EigenMode")
+        ::eigen_modes.SetHelp("Eigenvalues mode, decides how to combine "+\
+                              "the diffusions along each line, plane and "+\
+                              "local volume.")
+        ::eigen_modes.AddValue("SUM", "Taking the sum of eigenvalues (def)")
+        ::eigen_modes.AddValue("MAX", "Taking the maximum of eigenvalues ")
         # Eigenvalues mode 0: SUM 1: MAX
-        ::eigen_mode = INT(0),  "Eigenvalues mode, decides how to combine "+\
-                                "the diffusions along each line, plane and "+\
-                                "local volume: either the sum, or the maximum "+\
-                                "(default is sum)"
+        ::eigen_mode = INT(0),  ::eigen_modes.GetHelpMessage()
+        ::eigen_modes.SetVariable(&::eigen_mode)
   
-        # Scheme, 0: explicit 1: semi-implicit
-        ::scheme = INT(1),        "Numerical scheme: explicit or semi-implicit"
+        # ----- Scheme, 0: explicit 1: semi-implicit
+        alEnum ::scheme_modes
+        ::scheme_modes.SetTitle("Num.Scheme")
+        ::scheme_modes.SetHelp("PDE Numerical Scheme")
+        ::scheme_modes.AddValue("Explicit","Explicit numerical scheme")
+        ::scheme_modes.AddValue("Semi-implicit","Semi-implicit numerical "\
+                                  +"scheme, Jacobi")
+        ::scheme = INT(1),   ::scheme_modes.GetHelpMessage()
+        ::scheme_modes.SetVariable(&::scheme)
     
         ::run_on_roi = UCHAR(0),  "Run only on the selected region-of-interest"
 
@@ -69,7 +145,9 @@ if (!exists(AnisoMatrixClass)) {
         proc ::__assign__( VAR p) {
           ::t                     = p.t
           ::dt                    = p.dt
-          ::matrix_mode           = p.matrix_mode
+          ::noise_model           = p.noise_model
+          ::contour_mode          = p.contour_mode
+          #::matrix_mode           = p.matrix_mode
           ::neighborhood          = p.neighborhood
           ::sigma                 = p.sigma
           ::local_struct          = p.local_struct
@@ -212,19 +290,22 @@ if (!exists(AnisoMatrixClass)) {
       ::NRADfilter.Settang_coeff(0.25)
     
       ::NRADfilter.SetSRAD_ROI(&::roi)
-      if (::params.matrix_mode==1) {
-        # set Rician Noise Reducing Anisotropic Diffusion and the ROI
-        # important here to use reference to the image, 
-        # otherwise the temporary copy will be automatically deleted !!!
-        ::NRADfilter.Setcontours_mode( algorithms.ami_AnisoGS.CONTOURS_OSRAD)
-        ::NRADfilter.Setnoise_model( algorithms.ami_AnisoGS.NOISE_RICIAN)
-      }
-      if (::params.matrix_mode==2) {
-        # set Rician Noise Reducing Anisotropic Diffusion and the ROI
-        # same comment as above
-        ::NRADfilter.Setcontours_mode(algorithms.ami_AnisoGS.CONTOURS_NRAD)
-        ::NRADfilter.Setnoise_model( algorithms.ami_AnisoGS.NOISE_RICIAN)
-      }
+
+      ::NRADfilter.Setnoise_model(   ::params.noise_model)
+      ::NRADfilter.Setcontours_mode( ::params.contour_mode)
+
+      #if (::params.matrix_mode==1) {
+        ## set Rician Noise Reducing Anisotropic Diffusion and the ROI
+        ## important here to use reference to the image, 
+        ## otherwise the temporary copy will be automatically deleted !!!
+        #::NRADfilter.Setcontours_mode( algorithms.ami_AnisoGS.CONTOURS_OSRAD)
+      #}
+      #if (::params.matrix_mode==2) {
+        ## set Rician Noise Reducing Anisotropic Diffusion and the ROI
+        ## same comment as above
+        #::NRADfilter.Setcontours_mode(algorithms.ami_AnisoGS.CONTOURS_NRAD)
+        #::NRADfilter.Setnoise_model( algorithms.ami_AnisoGS.NOISE_RICIAN)
+      #}
     
       ::NRADfilter.Setlocal_structure_mode(::params.local_struct)
       ::NRADfilter.Setdiffusion_eigenvalues_mode(::params.eigen_mode)
@@ -350,6 +431,7 @@ if (!exists(AnisoMatrixClass)) {
     }
     Comments( ::Display, "Display results")
     
+    #---------------------------------------------------------------------------
     proc ::CompareSurfaces(IMAGE i1, IMAGE i2) {
       
         delvars "::*_surf_draw"
@@ -365,6 +447,7 @@ if (!exists(AnisoMatrixClass)) {
         ::input_surf_draw.compare(&::res_surf_draw)
     }
   
+    #---------------------------------------------------------------------------
     proc ::DisplaySurfaces() {
       if (::input.tz==1) {
         ::CompareSurfaces(&::input,&::res)
@@ -382,17 +465,31 @@ if (!exists(AnisoMatrixClass)) {
       }
     }
     
+    #---------------------------------------------------------------------------
     proc ::Save() {
       ::res.save ::result_filename
     }
     Comments( ::Save, "Save image to disk.")
   
+    #---------------------------------------------------------------------------
     proc ::SaveToImage() {
       eval ::result_imagename+" <<= ::res;"
     }
     Comments( ::SaveToImage, "Save to global image variable.")
     
   
+    #---------------------------------------------------------------------------
+    proc ::CB_ContourMode() \
+    {
+      ::params.eigen_modes.ShowParam(::params.contour_mode==2)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_NoiseModel() \
+    {
+      ::win.Enable(::bias_id,::params.noise_model==3)
+    }
+
     #---------------------------------------------------------------------------
     proc ::Gui() {
       # parameters window
@@ -404,47 +501,75 @@ if (!exists(AnisoMatrixClass)) {
   
       ::win.BeginBook()
         ::win.AddPage("Main")
-          ::win.AddImageChoice( &::input_name, "Input")
+          ::win.BeginBoxPanel("Input")
+            ::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,220,200))
+            ::win.AddImageChoice( &::input_name, "Input")
+          ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("PDE parameters")
             ::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,210,230))
             ::win.AddFloat( &::params.dt,"dt",0.01,1)
             ::win.AddFloat( &::params.t,"T",0,10)
-            ::win.BeginHorizontal()
-              ::scheme_id       = ::win.AddEnum( &::params.scheme,"Sch.")
-                ::win.AddEnumChoice(::scheme_id,"Expl.")
-                ::win.AddEnumChoice(::scheme_id,"Semi-impl.")
-            ::win.EndHorizontal()
+
+            ::params.scheme_modes.SetGuiMode(1)
+            ::params.scheme_modes.AddGui(&::win)
           ::win.EndBoxPanel()
 
 
+          #------------ Matrix diffusion ----------------
           ::mat_boxid = ::win.BeginBoxPanel("Matrix diffusion parameters")
+            del s
+            s = ::win.GetCurrentSizer()
             ::win.CurrentParent().SetBackgroundColour(wx.wxColour(200,240,230))
-            ::sigma_id = ::win.AddFloat( &::params.sigma,"sigma",0.01,10)
-            ::matrix_mode_id = ::win.AddEnum( &::params.matrix_mode,\
-                                              "Matrix mode")
-              ::win.AddEnumChoice(::matrix_mode_id,"Grad")
-              ::win.AddEnumChoice(::matrix_mode_id,"MRI")
-              ::win.AddEnumChoice(::matrix_mode_id,"MRI new")
-    
+
             ::localstruct_id = ::win.AddEnum( &::params.local_struct,\
                                               "Local Struct.")
               ::win.AddEnumChoice(::localstruct_id,"Grad & Curv. Dir.")
               ::win.AddEnumChoice(::localstruct_id,"Struct. Tensor")
-        
-            ::eigenmode_id = ::win.AddEnum( &::params.eigen_mode,"Eigen mode")
-              ::win.AddEnumChoice(::eigenmode_id,"Sum")
-              ::win.AddEnumChoice(::eigenmode_id,"Max")
+
+            ::sigma_id = ::win.AddFloat( &::params.sigma,"sigma",0.5,5)
+            ::win.ShowSlider(::sigma_id,false)
+
+            ::win.BeginHorizontal()
+              ::params.contour_modes.SetGuiMode(1)
+              ::params.contour_modes.AddGui(&::win)
+              ::params.contour_modes.SetCallback(&::CB_ContourMode)
+
+              #::params.matrix_modes.SetGuiMode(1)
+              #::params.matrix_modes.AddGui(&::win)
+              #s.GetItem(1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
+      
+          
+              ::params.eigen_modes.SetGuiMode(1)
+              ::params.eigen_modes.AddGui(&::win)
+              #s.GetItem(3).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
+            ::win.EndHorizontal()
+
           ::win.EndBoxPanel()
           
+          #------------ Noise ----------------
           ::win.BeginBoxPanel("Noise parameters")
             ::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,240,220))
-            ::win.AddInt( &::params.neighborhood,"Neighborhood",0,4)
-            ::win.AddBoolean( &::params.remove_bias,"Remove Bias")
-          ::win.EndBoxPanel()
+
+            ::win.BeginHorizontal()
+              ::params.noise_models.SetGuiMode(1)
+              ::params.noise_models.AddGui(&::win)
+              ::params.noise_models.SetCallback(&::CB_NoiseModel)
+
+              ::bias_id = ::win.AddBoolean( &::params.remove_bias,"Remove Bias")
+            ::win.EndHorizontal()
+            ::neigh_id = ::win.AddInt(  &::params.neighborhood,\
+                                        "Neighborhood",0,4)
+            ::win.ShowSlider(::neigh_id,false)
+            # Recompute text size ?
+            #::win.IntegerConstraints(::neigh_id,0,10,1)
+         ::win.EndBoxPanel()
           
+          #------------ Controls ----------------
           ::win.BeginBoxPanel("Controls")
             ::win.CurrentParent().SetBackgroundColour(wx.wxColour(200,220,250))
+            del s
+            s = ::win.GetCurrentSizer()
             ::win.BeginHorizontal()
               ::AddBitmapButton(&::win, &::icons._Refresh,   32, "ReloadInput")
               ::win.SetPositionProp(-1,0)
@@ -455,7 +580,9 @@ if (!exists(AnisoMatrixClass)) {
               ::AddBitmapButton(&::win, &::icons._Show,      32, "Display")
               ::win.SetPositionProp(-1,0)
             ::win.EndHorizontal()
+            s.GetItem(0).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
             ::win.AddBoolean( &::params.run_on_roi,"Run on ROI")
+            s.GetItem(1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
             ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
           ::win.EndBoxPanel()
           
@@ -491,6 +618,8 @@ if (!exists(AnisoMatrixClass)) {
       } else {
         ::win.Display()
       }
+      ::CB_NoiseModel()
+      ::CB_ContourMode()
       ::win.Update(-1)
     }
     #---------------------------------------------------------------------------

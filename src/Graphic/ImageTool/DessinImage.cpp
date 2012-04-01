@@ -4011,21 +4011,21 @@ void DessinImage::Boutton_Relache()
       switch ( etat ){
         case IMAGE_XY:
           Param._Zoom._xmin = macro_min(x1,x2);
-          Param._Zoom._xmax = macro_max(x1+1,x2);
+          Param._Zoom._xmax = macro_max(x1,x2);
           Param._Zoom._ymin = macro_min(y1,y2);
-          Param._Zoom._ymax = macro_max(y1+1,y2);
+          Param._Zoom._ymax = macro_max(y1,y2);
         break;
         case IMAGE_XZ:
           Param._Zoom._xmin = macro_min(x1,x2);
-          Param._Zoom._xmax = macro_max(x1+1,x2);
+          Param._Zoom._xmax = macro_max(x1,x2);
           Param._Zoom._zmin = macro_min(z1,z2);
-          Param._Zoom._zmax = macro_max(z1+1,z2);
+          Param._Zoom._zmax = macro_max(z1,z2);
         break;
         case IMAGE_ZY:
           Param._Zoom._zmin = macro_min(z1,z2);
-          Param._Zoom._zmax = macro_max(z1+1,z2);
+          Param._Zoom._zmax = macro_max(z1,z2);
           Param._Zoom._ymin = macro_min(y1,y2);
-          Param._Zoom._ymax = macro_max(y1+1,y2);
+          Param._Zoom._ymax = macro_max(y1,y2);
         break;
       } // end switch
     }

@@ -51,6 +51,7 @@ VarContexts::VarContexts() {
   _context[0]->SetName("Global context");
   _current_context = 0;
   _builtin_context = Variables::ptr(new Variables());
+  _builtin_context->SetName("Builtin context");
 }
 
 //--------------------------------------------------
@@ -60,6 +61,7 @@ VarContexts::~VarContexts() {
   while (_context.size()>1) {
     DeleteLastContext();
   }
+  _builtin_context->EmptyVariables();
 }
 
 //--------------------------------------------------

@@ -344,9 +344,9 @@ public:
     Si _zmin < 0           AlorsFait _zmin = 0;
     Si _zmax >= image->_tz AlorsFait _zmax = image->_tz-1;
 
-    Si _xmin >= _xmax Alors _xmin = 0; _xmax = image->_tx-1; FinSi
-    Si _ymin >= _ymax Alors _ymin = 0; _ymax = image->_ty-1; FinSi
-    Si _zmin >= _zmax Alors _zmin = 0; _zmax = image->_tz-1; FinSi
+    Si _xmin > _xmax Alors _xmax = _xmin; FinSi
+    Si _ymin > _ymax Alors _ymax = _ymin; FinSi
+    Si _zmin > _zmax Alors _zmax = _zmin; FinSi
 
     ComputeSize();
   }

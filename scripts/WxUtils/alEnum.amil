@@ -1,0 +1,118 @@
+
+
+#===============================================================================
+# Class to help dealing with Enumeration parameters and their interface
+#===============================================================================
+Class alEnum \
+{
+  ::names    = VarVector()
+  ::comments = VarVector()
+  ::gui_mode = INT(0)
+  ::title    = "Enum"
+
+  #-----------------------------------------------------------------------------
+  proc ::SetVariable( NUM var ) \
+  {
+    ::var = &var
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::AddValue( STRING name, STRING comment) \
+  {
+    ::names.push_back(name)
+    ::comments.push_back(comment)
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetTitle( STRING t) \
+  {
+    ::title = t
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetHelp( STRING h) \
+  {
+    ::help = h
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetGuiMode( NUM m) \
+  {
+    ::gui_mode = m
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::GetHelpMessage() \
+  {
+    mess = ::title + ": "+ ::help + " ("
+    for n=0 to ::names.size()-1 {
+      if n>0 { mess += " | "; }
+      mess += "'%1%': " % ::names[n] + "%1%" % ::comments[n]
+    }
+    mess += ")"
+    return = mess
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetCallback(  VAR selcmd) \
+  {
+    ::callback = &selcmd
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::OnRadioBox( ) \
+  {
+    ::var = ::rb.GetSelection()
+    if exists(::callback) {
+      ::callback()
+    }
+    #printn "Selection is %1%" % ::var
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::ShowParam( NUM s) \
+  {
+    if ::gui_mode == 0 {
+    }
+    if ::gui_mode == 1 {
+      # need to pass through wxControl: pb in wrapping system ???
+      ::rb.wxControl.Show(s)
+      ::win.Update(-1)
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::AddGui( OBJECT win) \
+  {
+    ::win = &win
+    if ::gui_mode == 0 {
+      enum_id = win.AddEnum(&::var,::title)
+      for n=0 to ::names.size()-1 {
+        win.AddEnumChoice(enum_id,::names[n])
+      }
+      return=enum_id
+    }
+    if ::gui_mode == 1 {
+      list = wx.wxArrayString()
+      for n=0 to ::names.size()-1 {
+        list.Add(::names[n])
+      }
+      ::rb = wx.wxRadioBox( &win.CurrentParent(),\
+                          wx.wxID_ANY,::title,\
+                          wx.wxPoint(-1,-1),\
+                          wx.wxSize(-1,-1),\
+                          &list,0,wx.wxHORIZONTAL)
+      ::rb.SetToolTip(::help)
+      for n=0 to ::names.size()-1 {
+        ::rb.SetItemToolTip(n,::help+": "+::comments[n])
+      }
+      win.AddWidget(&::rb,0)
+      ::evh_radio = wx.wxAmiEventHandler(&::OnRadioBox)
+      ::rb.Connect( wx.wxEVT_COMMAND_RADIOBOX_SELECTED,\
+                          &::evh_radio.GetEventFunction(),\
+                          &NULL, &::evh_radio)
+      ::rb.SetSelection(::var)
+    }
+  }
+
+}
