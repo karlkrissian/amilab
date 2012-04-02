@@ -1,0 +1,25 @@
+#!/home/karl/projects/Sourceforge/amilab/trunk/src/build/relwithdebinfo/amilab_3.2.1_relwithdebinfo 
+# pa1_st1_se3_half = Image "/home/karl/projects/Sourceforge/amilab/trunk/src/build/debug/pa1_st1_se3_half.ami.gz" // from menu
+
+del alHysteresisThresholdingClass
+
+Class alHysteresisThresholdingClass \
+{
+  proc ::Run( IMAGE input, NUM high_th, NUM low_th ) \
+  {
+    initmask = (UCHAR) (input>=high_th)
+    rg = Algorithms.algorithms.ami_IntensityBasedRegionGrowing\
+        .IntensityBasedRegionGrowing(&input,&initmask)
+    rg.SetMin(low_th)
+    rg.SetMax(high_th*2)
+    rg.Evolve()
+    #return = initmask
+    st = rg.ami_RegionGrowingBase.GetStateImage()
+    return = (st==2)
+  }
+
+}
+
+del alHysteresis
+alHysteresisThresholdingClass alHysteresis
+
