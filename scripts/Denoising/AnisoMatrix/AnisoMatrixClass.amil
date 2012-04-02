@@ -111,10 +111,18 @@ if (!exists(AnisoMatrixClass)) {
   
         ::sigma = 0.7,  "Gaussian convolution standard deviation for "+\
                         "computing the local structure"
-        # Local Structure 0: princ. curv 1: struct tensor
-        ::local_struct = INT(1),    "Local Structure mode: either gradient "+\
-                                    "and principal curvature directions, or "+\
-                                    "structure tensor eigenvectors"
+
+        # ----- Local Structure 0: princ. curv 1: struct tensor
+        alEnum ::local_struct_modes
+        ::local_struct_modes.SetTitle("LocalStruct")
+        ::local_struct_modes.SetHelp( "Computation of the local structure "+\
+                                      "matrix")
+        ::local_struct_modes.AddValue("GradCurv","Smoothed gradient and principal"+\
+                                "curvature directions")
+        ::local_struct_modes.AddValue("StructTensor","Structure Tensor")
+        ::local_struct = INT(1),  ::local_struct_modes.GetHelpMessage()
+        ::local_struct_modes.SetVariable(&::local_struct)
+
         # ----- Eigenvalue mode
         alEnum ::eigen_modes
         ::eigen_modes.SetTitle("EigenMode")
@@ -522,10 +530,8 @@ if (!exists(AnisoMatrixClass)) {
             s = ::win.GetCurrentSizer()
             ::win.CurrentParent().SetBackgroundColour(wx.wxColour(200,240,230))
 
-            ::localstruct_id = ::win.AddEnum( &::params.local_struct,\
-                                              "Local Struct.")
-              ::win.AddEnumChoice(::localstruct_id,"Grad & Curv. Dir.")
-              ::win.AddEnumChoice(::localstruct_id,"Struct. Tensor")
+            ::params.local_struct_modes.SetGuiMode(1)
+            ::params.local_struct_modes.AddGui(&::win)
 
             ::sigma_id = ::win.AddFloat( &::params.sigma,"sigma",0.5,5)
             ::win.ShowSlider(::sigma_id,false)
