@@ -1,3 +1,3 @@
 
-#include "vtkAMILabGPUMultiVolumeRayCastMapper.h"
-#include "vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.h"
+#include "vtkGPUMultiVolumeRayCastMapper.h"
+#include "vtkOpenGLGPUMultiVolumeRayCastMapper.h"

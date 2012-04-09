@@ -4,3 +4,4 @@
 
 op_system.SetGlobalScriptDir("@CMAKE_CURRENT_SOURCE_DIR@/../scripts/")
 
+#if exists() config.amil in user home load it

@@ -92,6 +92,7 @@ namespace ami {
 
     // Initialisation des images des d�riv�es 
     filtre = GeneralGaussianFilter::ptr(new GeneralGaussianFilter(image, dimension));
+    filtre->Set_use_new_filter(true);
   //  filtre->SetScaleUnit(PIXEL_SPACE);
     filtre->FixeMasque(mask);
     filtre->Utilise_Image(   false);

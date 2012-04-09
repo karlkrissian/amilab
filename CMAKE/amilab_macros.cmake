@@ -229,3 +229,19 @@ MACRO( ClassUsedName input_name output_name )
 
 ENDMACRO( ClassUsedName)
 #-------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
+# save a list to a file
+MACRO( SAVE_LIST VAR_LIST VAR_FILENAME)
+  # only way found to convert back the string to a list ...
+  SET( REALLIST ${VAR_LIST})
+  IF(DEFINED VAR_LIST )
+    LIST(SORT               REALLIST)
+    LIST(REMOVE_DUPLICATES  REALLIST)
+  ENDIF(DEFINED VAR_LIST)
+  FILE(WRITE ${VAR_FILENAME} "${REALLIST}")
+ENDMACRO( SAVE_LIST VAR_LIST VAR_FILENAME)
+#-------------------------------------------------------------------------------
+
+

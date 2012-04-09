@@ -32,7 +32,7 @@ SET( ${KIT}_ENABLE_WRAPPING      ON )
 
 SET(${KIT}_INCLUDE_PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping
-    ${CMAKE_BINARY_SOURCE_DIR}/Wrapping/Generated
+    ${${KIT}_BINARY_DIR}/Wrapping/Generated
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${AMILab_PATHS}
@@ -71,15 +71,15 @@ ENDIF(${KIT}_ENABLE_WRAPPING)
 
 SET(${KIT}_HDRS
   ${${KIT}_HDRS}
-  vtkAMILabGPUMultiVolumeRayCastMapper.h
-  vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.h
+  vtkGPUMultiVolumeRayCastMapper.h
+  vtkOpenGLGPUMultiVolumeRayCastMapper.h
   ${KIT}Plugin.h
 )
 
 SET(${KIT}_SRCS
   ${${KIT}_SRCS}
-  vtkAMILabGPUMultiVolumeRayCastMapper.cxx
-  vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.cxx
+  vtkGPUMultiVolumeRayCastMapper.cxx
+  vtkOpenGLGPUMultiVolumeRayCastMapper.cxx
   ${KIT}Plugin.cpp
 )
 

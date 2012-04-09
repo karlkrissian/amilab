@@ -209,7 +209,7 @@ if __name__ == '__main__':
     for cl in config.available_builtin_classes:
       config.available_classes.append(cl)
     FindAvailableClasses()
-    print "available classes:", config.available_classes
+    #print "available classes:", config.available_classes
     
     # create a list of available_classes with changed name to simplify further
     # search (and avoid differences like short int, short, etc ...)
@@ -261,9 +261,25 @@ if __name__ == '__main__':
 
     inputfile = open(args.val.xmlfilename,'r')
     
+    # add classes from the corresponding file if any
+    if args.val.classes_file != '':
+      # append list of functions from file
+      classes_file = open(args.val.classes_file,'r')
+      classes = classes_file.read().split(';')
+      n=0
+      for cl in classes:
+        if cl!='':
+          args.val.classes.append(cl)
+          n=n+1
+      classes_file.close()
+      if n>0:
+        # remove the file to allow its new creation by cmake
+        os.rename(args.val.classes_file,args.val.classes_file+".bak")
+      
     # Create the handler
     # Get public members of available classes given in parameter
     config.parsed_classes = args.val.classes[:]
+
     print config.parsed_classes
     
     ft = findtypesvars.FindTypesAndVariables(config.parsed_classes)
@@ -321,10 +337,10 @@ if __name__ == '__main__':
                 #print "    added ..."
               #else:
                 #print "    not in classes_dict.values()"
-      print "New ancestors list = ",ancestors_templates
+      #print "New ancestors list = ",ancestors_templates
       ancestors = ancestors_templates[:]
       for b in ancestors:
-        print "b=",b
+        #print "b=",b
         # find the class corresponding to typedefs
         #for k in typedef_dict.keys():
           #if typedef_dict[k].replace(' ','')==b.replace(' ',''):
@@ -383,11 +399,27 @@ if __name__ == '__main__':
       #print "All ancestors are   {0} ".format(ancestors)
       # write ancestors file
       print args.val.ancestors_file
+      print "ancestors={0}".format(ancestors)
       f = open (args.val.ancestors_file, "w")
+      # ancestors dependencies
+      ancestors_depfile = os.path.splitext(args.val.ancestors_file)[0]+\
+                          "_depfile.txt"
+      f1 = open(ancestors_depfile,"w")
       # first sort
       ancestors.sort()
       for a in ancestors:
         f.write(a+"\n")
+        print a
+        #print config.types.values()
+        if a in classes_dict.values():
+          #print "*"
+          pos = classes_dict.values().index(a)
+          #print pos
+          fid = config.types[classes_dict.keys()[pos]].fileid
+          #print fid
+          print config.files[fid]
+          f1.write(a+" | "+config.files[fid]+"\n")
+      
       if(args.val.generate_html):
         generate_html.obj.Initialization( args.val.templatefile_dir, \
                                           args.val.outputhtmldir,\
@@ -421,6 +453,21 @@ if __name__ == '__main__':
     #include_file="wx/aui/aui.h"
     include_file=headerfile
     
+    # add classes from the corresponding file if any
+    if args.val.methodpointers_file != '':
+      # append list of functions from file
+      methodpointers_file = open(args.val.methodpointers_file,'r')
+      methodpointers = methodpointers_file.read().split(';')
+      n=0
+      for cl in methodpointers:
+        if cl!='':
+          n=n+1
+          args.val.methodpointers.append(cl)
+      methodpointers_file.close()
+      if n>0:
+        # remove the file to allow its new creation by cmake
+        os.remove(args.val.methodpointers_file)
+      
     if args.val.methodpointers!=None:
       for mp in args.val.methodpointers:
         WrapMethodTypePointer(mp,include_file)
@@ -699,6 +746,21 @@ if __name__ == '__main__':
       # intelligent copy only if modified
       wrap_class.BackupFile(createcontextname)
     
+    # add functions from the corresponding file if any
+    if args.val.functions_file != '':
+      # append list of functions from file
+      functions_file = open(args.val.functions_file,'r')
+      functions = functions_file.read().split(';')
+      n=0
+      for cl in functions:
+        if cl!='':
+          n=n+1
+          args.val.functions.append(cl)
+      functions_file.close()
+      if n>0:
+        # remove the file to allow its new creation by cmake
+        os.remove(args.val.functions_file)
+      
     # deal with functions
     needed_functions = args.val.functions
     wrapped_functions=[]

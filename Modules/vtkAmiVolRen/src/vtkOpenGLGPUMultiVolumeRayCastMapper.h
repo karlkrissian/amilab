@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.h
+  Module:    vtkOpenGLGPUMultiVolumeRayCastMapper.h
   
   Modifications over vtk file: Carlos Falcón cfalcon@ctim.es 
                                Karl Krissian karl@ctim.es 
@@ -12,7 +12,7 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkAMILabOpenGLGPUMultiVolumeRayCastMapper - OpenGL subclass that draws the
+// .NAME vtkOpenGLGPUMultiVolumeRayCastMapper - OpenGL subclass that draws the
 // image to the screen
 // .SECTION Description
 // This is the concrete implementation of a ray cast image display helper -
@@ -21,10 +21,10 @@
 // .SECTION see also
 // vtkGPUVolumeRayCastMapper
 
-#ifndef __vtkAMILabOpenGLGPUMultiVolumeRayCastMapper_h
-#define __vtkAMILabOpenGLGPUMultiVolumeRayCastMapper_h
+#ifndef __vtkOpenGLGPUMultiVolumeRayCastMapper_h
+#define __vtkOpenGLGPUMultiVolumeRayCastMapper_h
 
-#include "vtkAMILabGPUMultiVolumeRayCastMapper.h"
+#include "vtkGPUMultiVolumeRayCastMapper.h"
 //carlos #include "vtkGPUVolumeRayCastMapper.h"
 
 class vtkGPUVolumeRayCastMapper;
@@ -57,13 +57,13 @@ class vtkTransform;
 
 #include "vtkSmartPointer.h"
 
-//carlos public vtkGPUVolumeRayCastMapper vtkAMILabGPUMultiVolumeRayCastMapper
-class VTK_VOLUMERENDERING_EXPORT vtkAMILabOpenGLGPUMultiVolumeRayCastMapper : public vtkAMILabGPUMultiVolumeRayCastMapper
+//carlos public vtkGPUVolumeRayCastMapper vtkGPUMultiVolumeRayCastMapper
+class VTK_VOLUMERENDERING_EXPORT vtkOpenGLGPUMultiVolumeRayCastMapper : public vtkGPUMultiVolumeRayCastMapper
 {
 public:
-  static vtkAMILabOpenGLGPUMultiVolumeRayCastMapper *New();
-  //carlos  vtkTypeMacro(vtkAMILabOpenGLGPUMultiVolumeRayCastMapper,vtkGPUVolumeRayCastMapper);
-  vtkTypeMacro(vtkAMILabOpenGLGPUMultiVolumeRayCastMapper,vtkAMILabGPUMultiVolumeRayCastMapper);
+  static vtkOpenGLGPUMultiVolumeRayCastMapper *New();
+  //carlos  vtkTypeMacro(vtkOpenGLGPUMultiVolumeRayCastMapper,vtkGPUVolumeRayCastMapper);
+  vtkTypeMacro(vtkOpenGLGPUMultiVolumeRayCastMapper,vtkGPUMultiVolumeRayCastMapper);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -91,8 +91,8 @@ public:
   static void PrintError(const char *headerMessage);
 
 protected:
-  vtkAMILabOpenGLGPUMultiVolumeRayCastMapper();
-  ~vtkAMILabOpenGLGPUMultiVolumeRayCastMapper();
+  vtkOpenGLGPUMultiVolumeRayCastMapper();
+  ~vtkOpenGLGPUMultiVolumeRayCastMapper();
 
   // The render method called by the superclass
   virtual void GPURender(vtkRenderer *ren,
@@ -255,7 +255,7 @@ protected:
   // Description:
   // Concatenate the header string, projection type code and method to the
   // final fragment code in this->FragmentCode.
-  // \pre valid_raycastMethod: raycastMethod>= vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodMaximumIntensityProjection && raycastMethod<=vtkAMILabOpenGLGPUMultiVolumeRayCastMapperMethodMinIPFourDependent
+  // \pre valid_raycastMethod: raycastMethod>= vtkOpenGLGPUMultiVolumeRayCastMapperMethodMaximumIntensityProjection && raycastMethod<=vtkOpenGLGPUMultiVolumeRayCastMapperMethodMinIPFourDependent
   void BuildProgram(vtkRenderWindow *w,
                     int parallelProjection,
                     int raycastMethod,
@@ -483,8 +483,8 @@ protected:
   vtkShaderProgram2 *ScaleBiasProgram;
 
 private:
-  vtkAMILabOpenGLGPUMultiVolumeRayCastMapper(const vtkAMILabOpenGLGPUMultiVolumeRayCastMapper&);  // Not implemented.
-  void operator=(const vtkAMILabOpenGLGPUMultiVolumeRayCastMapper&);  // Not implemented.
+  vtkOpenGLGPUMultiVolumeRayCastMapper(const vtkOpenGLGPUMultiVolumeRayCastMapper&);  // Not implemented.
+  void operator=(const vtkOpenGLGPUMultiVolumeRayCastMapper&);  // Not implemented.
 };
 
 #endif

@@ -65,13 +65,15 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   # Generating the classes, functions, etc...  lists
   #------------------------------------------------------------
 
+  SET(WRAPPING_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION})
+
   # Read list of classes to wrap
-  READ_CLASSES(  "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt")
+  READ_CLASSES(  "${WRAPPING_DIR}/classes.txt")
   # Read list of functions to wrap
-  READ_FUNCTIONS("${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/functions.txt")
+  READ_FUNCTIONS("${WRAPPING_DIR}/functions.txt")
 
   # Read list of method pointers to wrap
-  FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/methodpointers.txt" methodpointers_txt)
+  FILE(READ "${WRAPPING_DIR}/methodpointers.txt" methodpointers_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
 
   #------------------------------------------------------------
@@ -88,21 +90,16 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   #------------------------------------------------------------
 
   # Wrap all missing classes at once since it is now fast
-  CHECK_WRAPPED_FILES( "${ancestors_list}"       "MISSING_CLASSES")
-  CHECK_WRAPPED_FILES( "${functions_list}"       "MISSING_FUNCTIONS")
-  CHECK_WRAPPED_FILES( "${methodpointers_list}"  "MISSING_METHODS")
-
-  WRAP_MESSAGE("MISSING_CLASSES   = ${MISSING_CLASSES}")
-  WRAP_MESSAGE("MISSING_FUNCTIONS = ${MISSING_FUNCTIONS}")
-  WRAP_MESSAGE("MISSING_METHODS   = ${MISSING_METHODS}")
+  #CHECK_WRAPPED_FILES( "${ancestors_list}"       "MISSING_CLASSES")
+  #CHECK_WRAPPED_FILES( "${functions_list}"       "MISSING_FUNCTIONS")
+  #CHECK_WRAPPED_FILES( "${methodpointers_list}"  "MISSING_METHODS")
+  UPDATE_OUTPUT_LIST( "${ancestors_list}"     )
+  UPDATE_OUTPUT_LIST( "${functions_list}"     )
+  UPDATE_OUTPUT_LIST( "${methodpointers_list}")
 
   FOREACH( MP ${methodpointers_list})
     SET( methodpointers_files ${methodpointers_files} ${GENERATED_DIR}/wrap_${MP}.h ${GENERATED_DIR}/wrap_${MP}.cpp )
   ENDFOREACH( MP ${methodpointers_list})
-
-  LIST(LENGTH MISSING_CLASSES   NB_MISSING_CLASSES)
-  LIST(LENGTH MISSING_METHODS   NB_MISSING_METHODS)
-  LIST(LENGTH MISSING_FUNCTIONS NB_MISSING_FUNCTIONS)
   
   #------------------------------------------------------------
   # Create the rule that wraps the code

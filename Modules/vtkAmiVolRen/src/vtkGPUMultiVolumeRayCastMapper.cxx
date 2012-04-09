@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkAMILabGPUMultiVolumeRayCastMapper.cxx
+  Module:    vtkGPUMultiVolumeRayCastMapper.cxx
 
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -11,7 +11,7 @@
 =========================================================================*/
 #define COUT 1
 
-#include "vtkAMILabGPUMultiVolumeRayCastMapper.h"
+#include "vtkGPUMultiVolumeRayCastMapper.h"
 
 #include "vtkVolumeRenderingFactory.h"
 #include "vtkImageData.h"
@@ -40,18 +40,17 @@
 #include "vtkInformation.h"
 //
 
-vtkInstantiatorNewMacro(vtkAMILabGPUMultiVolumeRayCastMapper);
-vtkCxxSetObjectMacro(vtkAMILabGPUMultiVolumeRayCastMapper, MaskInput, 
+vtkInstantiatorNewMacro(vtkGPUMultiVolumeRayCastMapper);
+vtkCxxSetObjectMacro(vtkGPUMultiVolumeRayCastMapper, MaskInput, 
                      vtkImageData);
-vtkCxxSetObjectMacro(vtkAMILabGPUMultiVolumeRayCastMapper, TransformedInput,  
+vtkCxxSetObjectMacro(vtkGPUMultiVolumeRayCastMapper, TransformedInput,  
                      vtkImageData);
-vtkCxxSetObjectMacro(vtkAMILabGPUMultiVolumeRayCastMapper, TransformedInput2, 
+vtkCxxSetObjectMacro(vtkGPUMultiVolumeRayCastMapper, TransformedInput2, 
                      vtkImageData);
 
-vtkAMILabGPUMultiVolumeRayCastMapper::vtkAMILabGPUMultiVolumeRayCastMapper()
+vtkGPUMultiVolumeRayCastMapper::vtkGPUMultiVolumeRayCastMapper()
 {
 //carlos  
-  this->SecondVolLoad=false;
   this->Property2                  = NULL;
 //
   this->AutoAdjustSampleDistances  = 1;
@@ -70,7 +69,7 @@ vtkAMILabGPUMultiVolumeRayCastMapper::vtkAMILabGPUMultiVolumeRayCastMapper()
   this->MaskInput                  = NULL;
   this->MaskBlendFactor            = 1.0f;
   this->MaskType
-    = vtkAMILabGPUMultiVolumeRayCastMapper::LabelMapMaskType;
+    = vtkGPUMultiVolumeRayCastMapper::LabelMapMaskType;
 
 
   this->AMRMode=0;
@@ -115,7 +114,7 @@ vtkAMILabGPUMultiVolumeRayCastMapper::vtkAMILabGPUMultiVolumeRayCastMapper()
 }
 
 // ----------------------------------------------------------------------------
-vtkAMILabGPUMultiVolumeRayCastMapper::~vtkAMILabGPUMultiVolumeRayCastMapper()
+vtkGPUMultiVolumeRayCastMapper::~vtkGPUMultiVolumeRayCastMapper()
 {
   this->SetMaskInput(NULL);
   this->SetTransformedInput(NULL);
@@ -128,14 +127,14 @@ vtkAMILabGPUMultiVolumeRayCastMapper::~vtkAMILabGPUMultiVolumeRayCastMapper()
 // ----------------------------------------------------------------------------
 //SetInput 2
 //New funcions adds
-void vtkAMILabGPUMultiVolumeRayCastMapper::SetInput2( vtkDataSet *genericInput )
+void vtkGPUMultiVolumeRayCastMapper::SetInput( int port, vtkDataSet *genericInput )
 {
   vtkImageData *input = 
     vtkImageData::SafeDownCast( genericInput );
   
   if ( input )
     {
-    SetInput( input );
+    SetInput( port, input );
     }
   else
     {
@@ -143,36 +142,34 @@ void vtkAMILabGPUMultiVolumeRayCastMapper::SetInput2( vtkDataSet *genericInput )
     }
 }
 
-void vtkAMILabGPUMultiVolumeRayCastMapper::SetInput2( vtkImageData *input )
+void vtkGPUMultiVolumeRayCastMapper::SetInput( int port, vtkImageData *input )
 {
-  //SetNumberOfInputPorts(2);
   if(input)
     {
-    this->SecondVolLoad=true;
-    this->SetInputConnection(1, input->GetProducerPort());
+    this->SetInputConnection(port, input->GetProducerPort());
     }
   else
     {
     // Setting a NULL input removes the connection.
-    this->SetInputConnection(1,0);
+    this->SetInputConnection(port,0);
     }
 }
 
 
-vtkImageData * vtkAMILabGPUMultiVolumeRayCastMapper::GetInput2()
+vtkImageData * vtkGPUMultiVolumeRayCastMapper::GetInput(int port)
 {
-  if (this->GetNumberOfInputConnections(1) < 1)
+  if (this->GetNumberOfInputConnections(port) < 1)
     {
     return 0;
     }
   
   return vtkImageData::SafeDownCast(
-    this->GetExecutive()->GetInputData(1, 0));
+    this->GetExecutive()->GetInputData(port, 0));
 }
 
 
 
-void vtkAMILabGPUMultiVolumeRayCastMapper::SetProperty2(vtkVolumeProperty *property)
+void vtkGPUMultiVolumeRayCastMapper::SetProperty2(vtkVolumeProperty *property)
 {
   if( this->Property2 != property )
     {
@@ -188,7 +185,7 @@ void vtkAMILabGPUMultiVolumeRayCastMapper::SetProperty2(vtkVolumeProperty *prope
 
 }
 
-vtkVolumeProperty *vtkAMILabGPUMultiVolumeRayCastMapper::GetProperty2()
+vtkVolumeProperty *vtkGPUMultiVolumeRayCastMapper::GetProperty2()
 {
   if( this->Property2 == NULL )
     {
@@ -202,12 +199,12 @@ vtkVolumeProperty *vtkAMILabGPUMultiVolumeRayCastMapper::GetProperty2()
 
 
 // ----------------------------------------------------------------------------
-vtkAMILabGPUMultiVolumeRayCastMapper *vtkAMILabGPUMultiVolumeRayCastMapper::New()
+vtkGPUMultiVolumeRayCastMapper *vtkGPUMultiVolumeRayCastMapper::New()
 {
   // First try to create the object from the vtkObjectFactory
   vtkObject* ret =
-    vtkVolumeRenderingFactory::CreateInstance("vtkAMILabGPUMultiVolumeRayCastMapper");
-  return static_cast<vtkAMILabGPUMultiVolumeRayCastMapper*>(ret);
+    vtkVolumeRenderingFactory::CreateInstance("vtkGPUMultiVolumeRayCastMapper");
+  return static_cast<vtkGPUMultiVolumeRayCastMapper*>(ret);
 }
 
 // ----------------------------------------------------------------------------
@@ -221,7 +218,7 @@ vtkAMILabGPUMultiVolumeRayCastMapper *vtkAMILabGPUMultiVolumeRayCastMapper::New(
 //   - Stop the timer and record results
 //   - Invoke an end event
 // ----------------------------------------------------------------------------
-void vtkAMILabGPUMultiVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *vol )
+void vtkGPUMultiVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *vol )
 {
   // Catch renders that are happening due to a canonical view render and
   // handle them separately.
@@ -272,7 +269,7 @@ void vtkAMILabGPUMultiVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *
 // Special version for rendering a canonical view - we don't do things like
 // invoke start or end events, and we don't capture the render time.
 // ----------------------------------------------------------------------------
-void vtkAMILabGPUMultiVolumeRayCastMapper::CanonicalViewRender(vtkRenderer *ren,
+void vtkGPUMultiVolumeRayCastMapper::CanonicalViewRender(vtkRenderer *ren,
                                                     vtkVolume *vol )
 {
   // Make sure everything about this render is OK
@@ -292,7 +289,7 @@ void vtkAMILabGPUMultiVolumeRayCastMapper::CanonicalViewRender(vtkRenderer *ren,
 // a volume or 0 or less) it will fail silently. If everything is OK, it will
 // return with a value of 1.
 // ----------------------------------------------------------------------------
-int vtkAMILabGPUMultiVolumeRayCastMapper::ValidateRender(vtkRenderer *ren,
+int vtkGPUMultiVolumeRayCastMapper::ValidateRender(vtkRenderer *ren,
                                               vtkVolume *vol)
 {
   // Check that we have everything we need to render.
@@ -345,8 +342,8 @@ int vtkAMILabGPUMultiVolumeRayCastMapper::ValidateRender(vtkRenderer *ren,
     }
 
   // Check that we have input data
-  vtkImageData *input=this->GetInput();
-  vtkImageData *input2=this->GetInput2();
+  vtkImageData *input =this->GetInput(0);
+  vtkImageData *input2=this->GetInput(1);
 
   if(goodSoFar && (input==0||input2==0))
     {
@@ -629,13 +626,13 @@ int vtkAMILabGPUMultiVolumeRayCastMapper::ValidateRender(vtkRenderer *ren,
 // Called by the AMR Volume Mapper.
 // Set the flag that tells if the scalars are on point data (0) or
 // cell data (1).
-void vtkAMILabGPUMultiVolumeRayCastMapper::SetCellFlag(int cellFlag)
+void vtkGPUMultiVolumeRayCastMapper::SetCellFlag(int cellFlag)
 {
   this->CellFlag=cellFlag;
 }
 
 // ----------------------------------------------------------------------------
-void vtkAMILabGPUMultiVolumeRayCastMapper::CreateCanonicalView(
+void vtkGPUMultiVolumeRayCastMapper::CreateCanonicalView(
   vtkRenderer *ren,
   vtkVolume *volume,
   vtkImageData *image,
@@ -781,8 +778,8 @@ void vtkAMILabGPUMultiVolumeRayCastMapper::CreateCanonicalView(
 }
 
 // ----------------------------------------------------------------------------
-// Print method for vtkAMILabGPUMultiVolumeRayCastMapper
-void vtkAMILabGPUMultiVolumeRayCastMapper::PrintSelf(ostream& os, vtkIndent indent)
+// Print method for vtkGPUMultiVolumeRayCastMapper
+void vtkGPUMultiVolumeRayCastMapper::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os,indent);
 
@@ -816,9 +813,9 @@ void vtkAMILabGPUMultiVolumeRayCastMapper::PrintSelf(ostream& os, vtkIndent inde
 //             this->CroppingRegionPlanes[0]<this->CroppingRegionPlanes[1] &&
 //             this->CroppingRegionPlanes[2]<this->CroppingRegionPlanes[3] &&
 //             this->CroppingRegionPlanes[4]<this->CroppingRegionPlanes[5])
-void vtkAMILabGPUMultiVolumeRayCastMapper::ClipCroppingRegionPlanes()
+void vtkGPUMultiVolumeRayCastMapper::ClipCroppingRegionPlanes()
 {
-  assert("pre: volume_exists" && this->GetInput()!=0);
+  assert("pre: volume_exists" && this->GetInput(0)!=0);
   assert("pre: valid_cropping" && this->Cropping &&
          this->CroppingRegionPlanes[0]<this->CroppingRegionPlanes[1] &&
          this->CroppingRegionPlanes[2]<this->CroppingRegionPlanes[3] &&
@@ -834,7 +831,7 @@ void vtkAMILabGPUMultiVolumeRayCastMapper::ClipCroppingRegionPlanes()
 //    }
 
   double volBounds[6];
-  this->GetInput()->GetBounds(volBounds);
+  this->GetInput(0)->GetBounds(volBounds);
 
   int i=0;
   while(i<6)
@@ -863,13 +860,13 @@ void vtkAMILabGPUMultiVolumeRayCastMapper::ClipCroppingRegionPlanes()
 }
 
 //----------------------------------------------------------------------------
-void vtkAMILabGPUMultiVolumeRayCastMapper::SetMaskTypeToBinary()
+void vtkGPUMultiVolumeRayCastMapper::SetMaskTypeToBinary()
 {
-  this->MaskType = vtkAMILabGPUMultiVolumeRayCastMapper::BinaryMaskType;
+  this->MaskType = vtkGPUMultiVolumeRayCastMapper::BinaryMaskType;
 }
 
 //----------------------------------------------------------------------------
-void vtkAMILabGPUMultiVolumeRayCastMapper::SetMaskTypeToLabelMap()
+void vtkGPUMultiVolumeRayCastMapper::SetMaskTypeToLabelMap()
 {
-  this->MaskType = vtkAMILabGPUMultiVolumeRayCastMapper::LabelMapMaskType;
+  this->MaskType = vtkGPUMultiVolumeRayCastMapper::LabelMapMaskType;
 }

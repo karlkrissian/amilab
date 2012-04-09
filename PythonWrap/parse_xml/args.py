@@ -11,9 +11,6 @@ arg_parser.add_argument('xmlfilename',                      \
 
 #arg_parser.add_argument('headerfile',                       help='name of file to include, used by gccxml' )
 
-arg_parser.add_argument('--classes', nargs='*',  default=[],  \
-  help='name of the class(es) to wrap' )
-
 arg_parser.add_argument('--available_classes', nargs='*',  default=[],  \
   help='Lists available classes' )
 
@@ -38,17 +35,35 @@ arg_parser.add_argument('--available_external_classes2', nargs='*',  default=[],
 arg_parser.add_argument('--external_dllname2',  default='',  \
   help='dllname for classes of second external lib' )
 
+# ---- Classes, functions, method pointers to wrap 
+
+arg_parser.add_argument('--classes', nargs='*',  default=[],  \
+  help='name of the class(es) to wrap' )
+
 arg_parser.add_argument('--functions', nargs='*', default=[],  \
   help='name of the function(s) to wrap' )
+
+arg_parser.add_argument('--methodpointers', nargs='*', default=[], \
+  help='name of the method pointers to wrap' )
+
+# ----
+
+arg_parser.add_argument('--classes_file',        default='',  \
+  help='file containing the name of the class(es) to wrap' )
+
+arg_parser.add_argument('--functions_file',      default='',  \
+  help='file containing the name of the function(s) to wrap' )
+
+arg_parser.add_argument('--methodpointers_file', default='', \
+  help='file containing the name of the method pointer(s) to wrap' )
+
+# ----
 
 arg_parser.add_argument('--available_functions', nargs='*', default=[],  \
   help='name of the available wrapped function(s)' )
 
 arg_parser.add_argument('--available_functions_file',  default='',  \
   help='File containing the list of the available wrapped function(s)' )
-
-arg_parser.add_argument('--methodpointers', nargs='*', default=[], \
-  help='name of the method pointers to wrap' )
 
 arg_parser.add_argument('--wrap_includes', nargs='*',  default=[],  \
   help='directories where are the available wrapped classes' )

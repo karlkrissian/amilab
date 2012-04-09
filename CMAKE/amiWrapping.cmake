@@ -1,4 +1,5 @@
 
+INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/CHECK_WRAPPED_FILES.cmake)
 
 #-------------------------------------------------------------------------------
 #
@@ -137,7 +138,7 @@ MACRO( READ_CLASSES2 filename_common filename)
   ENDIF(EXISTS ${filename_common})
   READ_CLASSES(${filename})
   SET( classes_list ${classes_common_list} ${classes_list})
-  MESSAGE("classes_list = ${classes_list}")
+  #MESSAGE("classes_list = ${classes_list}")
 ENDMACRO( READ_CLASSES2 )
 
 #-------------------------------------------------------------------------------
@@ -220,6 +221,8 @@ MACRO( CREATE_ANCESTORS )
   ENDFOREACH( C ${ANCESTORS_CMD})
   WRAP_MESSAGE("ANCESTORS_CMD: ${ANCESTORS_CMD_TXT}")
 
+#  ADD_CUSTOM_COMMAND(
+#    OUTPUT ${ANCESTORS_FILE}
   EXECUTE_PROCESS(
     COMMAND ${ANCESTORS_CMD}
     RESULT_VARIABLE ANCESTORS_CMD_RESULT
@@ -233,27 +236,86 @@ MACRO( CREATE_ANCESTORS )
 
 ENDMACRO( CREATE_ANCESTORS )
 
+#-------------------------------------------------------------------------------
+# Create classes dependencies as the file including the class given by
+# gccxml result
+# it creates a "map" between the classname and the dependency file
 #
-# Check existence of files to create
-# if missing, add them to OUTPUT_LIST
-# and to the list of missing elements
+MACRO( CREATE_ANCESTORS_DEPS )
+  SET(ANCESTORS_DEPFILE "${GENERATED_DIR}/ancestors_depfile.txt")
+  IF(EXISTS ${ANCESTORS_DEPFILE})
+    FILE(READ "${ANCESTORS_DEPFILE}" ancestors_depfile)
+    STRING(REGEX REPLACE "[\r\n]" ";" ancestors_depfile_list 
+            ${ancestors_depfile})
+    # now create map for each class dependency
+    FOREACH( dep ${ancestors_depfile_list})
+      STRING(FIND ${dep} "|" SPLIT_POS)
+      MATH(EXPR LEN "${SPLIT_POS}-1")
+      STRING(SUBSTRING ${dep} 0 ${LEN} CLASSNAME)
+      MATH(EXPR BEG "${SPLIT_POS}+2")
+      STRING(SUBSTRING ${dep} ${BEG} -1 DEPFILE)
+      #MESSAGE("${CLASSNAME} --> ${DEPFILE}")
+      # create the simulated map structure
+      ClassUsedName( CLASSNAME m_class )
+      SET(CLASSDEP_${m_class} ${DEPFILE})
+    ENDFOREACH( dep ${ancestors_depfile_list})
+  ENDIF(EXISTS ${ANCESTORS_DEPFILE})
+ENDMACRO( CREATE_ANCESTORS_DEPS )
+
+#-------------------------------------------------------------------------------
+# list of classes dependencies
 #
-# needs:
-#   GENERATED_DIR
-#   ClassUsedName
+MACRO( CREATE_ANCESTORS_DEPLIST )
+  SET(ANCESTORS_DEPFILE "${GENERATED_DIR}/ancestors_depfile.txt")
+  SET(ANCESTORS_DEPLIST "")
+  IF(EXISTS ${ANCESTORS_DEPFILE})
+    FILE(READ "${ANCESTORS_DEPFILE}" ancestors_depfile)
+    STRING(REGEX REPLACE "[\r\n]" ";" ancestors_depfile_list 
+            ${ancestors_depfile})
+    # now create map for each class dependency
+    FOREACH( dep ${ancestors_depfile_list})
+      STRING(FIND ${dep} "|" SPLIT_POS)
+      MATH(EXPR BEG "${SPLIT_POS}+2")
+      STRING(SUBSTRING ${dep} ${BEG} -1 DEPFILE)
+      SET(ANCESTORS_DEPLIST ${ANCESTORS_DEPLIST} ${DEPFILE})
+    ENDFOREACH( dep ${ancestors_depfile_list})
+  ENDIF(EXISTS ${ANCESTORS_DEPFILE})
+ENDMACRO( CREATE_ANCESTORS_DEPLIST )
+
+#-------------------------------------------------------------------------------
+# Create the files MISSING_CLASSES.txt, MISSING_FUNCTIONS.txt
+# and MISSING_METHODPOINTERS.txt
 #
-MACRO( CHECK_WRAPPED_FILES ELTS_LIST MISSING_VAR)
-  FOREACH( elt  ${ELTS_LIST})
-    ClassUsedName( elt m_elt )
-    IF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_elt}.cpp) OR
-        (NOT EXISTS ${GENERATED_DIR}/wrap_${m_elt}.h))
-      SET(OUTPUT_LIST ${GENERATED_DIR}/wrap_${m_elt}.cpp ${OUTPUT_LIST})
-      SET(OUTPUT_LIST ${GENERATED_DIR}/wrap_${m_elt}.h ${OUTPUT_LIST})
-      SET(${MISSING_VAR} ${elt} ${${MISSING_VAR}})
-    ENDIF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_elt}.cpp) OR
-           (NOT EXISTS ${GENERATED_DIR}/wrap_${m_elt}.h))
-  ENDFOREACH( elt ${ELTS_LIST}) 
-ENDMACRO( CHECK_WRAPPED_FILES ELTS_LIST MISSING_VAR)
+MACRO( CREATE_DEPENDENCIES_COMMAND )
+  SET(  DEP_CMD ${CMAKE_COMMAND})
+  SET(  DEP_CMD   ${DEP_CMD} 
+                  "-D" "AMILAB_SOURCE_DIR:PATH=${AMILAB_SOURCE_DIR}")
+  SET(  DEP_CMD   ${DEP_CMD} 
+                  "-D" "GENERATED_DIR:PATH=${GENERATED_DIR}")
+  SET(  DEP_CMD   ${DEP_CMD} 
+                  "-D" "WRAPPING_DIR:PATH=${WRAPPING_DIR}")
+  SET(  DEP_CMD   ${DEP_CMD} 
+                  "-P" 
+                  ${AMILab_SOURCE_DIR}/../CMAKE/RUN_DEPENDENCIES.cmake)
+
+  MESSAGE("WRAPPING DEPENDENCIES")
+  SET(DEP_CMD_TXT "")
+  FOREACH( C ${DEP_CMD})
+    SET( DEP_CMD_TXT "${DEP_CMD_TXT} ${C}")
+  ENDFOREACH( C ${WRAP_CMD})
+  WRAP_MESSAGE("DEP_CMD: ${DEP_CMD_TXT}")
+#   ADD_CUSTOM_COMMAND(
+#     OUTPUT
+#       ${GENERATED_DIR}/MISSING_CLASSES.txt
+#     COMMAND
+#       ${DEP_CMD}
+      #CHECK_WRAPPED_FILES("${ancestors_list}"       "MISSING_CLASSES")
+#     DEPENDS
+#       ${CLASSES_FILES}
+#       ${MISSING_CLASSES}
+#     VERBATIM
+#   )
+ENDMACRO( CREATE_DEPENDENCIES_COMMAND )
 
 
 #-------------------------------------------------------------------------------
@@ -261,12 +323,6 @@ ENDMACRO( CHECK_WRAPPED_FILES ELTS_LIST MISSING_VAR)
 # Wrap the classes and functions
 #
 # needed:
-#   NB_MISSING_CLASSES
-#   NB_MISSING_FUNCTIONS
-#   NB_MISSING_METHODS
-#   MISSING_CLASSES
-#   MISSING_FUNCTIONS
-#   MISSING_METHODS (optional)
 #   GENERATED_DIR
 #   LIBNAME
 #   LIBFILTER (optional)
@@ -289,131 +345,144 @@ ENDMACRO( CHECK_WRAPPED_FILES ELTS_LIST MISSING_VAR)
 #  command to wrap all the classes, functions, etc ...
 #
 MACRO( WRAP_CODE )
-  #
-  #
-  IF(NOT DEFINED NB_MISSING_CLASSES)
-    SET(NB_MISSING_CLASSES 0)
-  ENDIF(NOT DEFINED NB_MISSING_CLASSES)
-  IF(NOT DEFINED NB_MISSING_FUNCTIONS)
-    SET(NB_MISSING_FUNCTIONS 0)
-  ENDIF(NOT DEFINED NB_MISSING_FUNCTIONS)
-  IF(NOT DEFINED NB_MISSING_METHODS)
-    SET(NB_MISSING_METHODS 0)
-  ENDIF(NOT DEFINED NB_MISSING_METHODS)
-  #
-  #
-  IF ((${NB_MISSING_CLASSES}   GREATER 0)                 OR 
-      (${NB_MISSING_FUNCTIONS} GREATER 0)                 OR
-      (${NB_MISSING_METHODS}   GREATER 0)                 OR
-      (NOT EXISTS ${GENERATED_DIR}/addwrap_${LIBNAME}.h)  OR
-      (NOT EXISTS ${GENERATED_DIR}/addwrap_${LIBNAME}.cpp))
 
-    WRAP_MESSAGE("Try to generate wrapping...")
-    WRAP_MESSAGE("PYTHON_EXECUTABLE = ${PYTHON_EXECUTABLE}")
-    # to avoid too long command, write available classes and functions to a file in disk
-    #IF(DEFINED MISSING_METHODS)
-    SET(available_classes_list ${ancestors_list} ${methodpointers_list})
-    #ELSE(DEFINED MISSING_METHODS)
-    #  SET(available_classes_list ${ancestors_list})
-    #ENDIF(DEFINED MISSING_METHODS)
+  CREATE_DEPENDENCIES_COMMAND()
 
-    IF(DEFINED available_classes_list)
-      LIST(SORT               available_classes_list)
-      LIST(REMOVE_DUPLICATES  available_classes_list)
-      FILE(WRITE ${GENERATED_DIR}/available_classes.txt "${available_classes_list}")
-    ENDIF(DEFINED available_classes_list)
-
-    IF(DEFINED functions_list)
-      LIST(SORT               functions_list)
-      LIST(REMOVE_DUPLICATES  functions_list)
-      FILE(WRITE ${GENERATED_DIR}/available_functions.txt "${functions_list}")
-    ENDIF(DEFINED functions_list)
+  CREATE_ANCESTORS_DEPLIST()
 
 
-    SET(  WRAP_CMD ${PYTHON_EXECUTABLE})
-    SET(  WRAP_CMD ${WRAP_CMD} ${AMI_WRAPPER})
-    SET(  WRAP_CMD ${WRAP_CMD} ${XML_OUTPUT})
-    SET(  WRAP_CMD ${WRAP_CMD} "--libname" "${LIBNAME}")
-    IF(DEFINED LIBFILTER)
-      SET(WRAP_CMD ${WRAP_CMD} "--filter" "\"${LIBFILTER}\"")
-    ENDIF(DEFINED LIBFILTER)
-    IF(DEFINED LIBCONSTRUCTOR)
-      SET(WRAP_CMD ${WRAP_CMD} "--constructor" "\"${LIBCONSTRUCTOR}\"")
-    ENDIF(DEFINED LIBCONSTRUCTOR)
-    IF(DEFINED DLLNAME)
-      SET(WRAP_CMD ${WRAP_CMD} "--dllname" ${DLLNAME})
-    ENDIF(DEFINED DLLNAME)
-    SET(  WRAP_CMD ${WRAP_CMD} "--classes" ${MISSING_CLASSES})
-    IF(DEFINED MISSING_METHODS)
-      SET(WRAP_CMD ${WRAP_CMD} "--methodpointers" "${MISSING_METHODS}")
-    ENDIF(DEFINED MISSING_METHODS)
-    SET(  WRAP_CMD ${WRAP_CMD} "--available_classes_file" "${GENERATED_DIR}/available_classes.txt")
+  WRAP_MESSAGE("Try to generate wrapping...")
+  WRAP_MESSAGE("PYTHON_EXECUTABLE = ${PYTHON_EXECUTABLE}")
 
-    IF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
-      WRAP_MESSAGE("***** available external classes *****")
-      SET(WRAP_CMD ${WRAP_CMD} "--available_external_classes" "${AVAILABLE_EXTERNAL_CLASSES}")
-      IF(DEFINED EXTERNAL_DLLNAME)
-        SET(WRAP_CMD ${WRAP_CMD} "--external_dllname" ${EXTERNAL_DLLNAME} )
-      ENDIF(DEFINED EXTERNAL_DLLNAME)
-    ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
+  # to avoid too long command, write available classes and functions to a file in disk
+  SET(available_classes_list ${ancestors_list} ${methodpointers_list})
 
-    IF(DEFINED AVAILABLE_EXTERNAL_CLASSES2)
-      WRAP_MESSAGE("***** available external classes 2 *****")
-      SET(WRAP_CMD ${WRAP_CMD} "--available_external_classes2" "${AVAILABLE_EXTERNAL_CLASSES2}")
-      IF(DEFINED EXTERNAL_DLLNAME2)
-        SET(WRAP_CMD ${WRAP_CMD} "--external_dllname2" ${EXTERNAL_DLLNAME2} )
-      ENDIF(DEFINED EXTERNAL_DLLNAME2)
-    ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES2)
+  SAVE_LIST(  "${available_classes_list}"
+              ${GENERATED_DIR}/available_classes.txt)
 
-    IF(DEFINED HAS_FUNCTIONS)
-      SET(WRAP_CMD ${WRAP_CMD} "--functions" "${MISSING_FUNCTIONS}")
-      SET(WRAP_CMD ${WRAP_CMD} "--available_functions_file" "${GENERATED_DIR}/available_functions.txt")
-    ENDIF(DEFINED HAS_FUNCTIONS)
-    #SET(WRAP_CMD ${WRAP_CMD} "--wrap_includes" ${WrapWxWidgetsDir})
-    SET(  WRAP_CMD ${WRAP_CMD} "--outputdir" ${GENERATED_DIR})
-    SET(  WRAP_CMD ${WRAP_CMD} "--addwrap")
-    SET(  WRAP_CMD ${WRAP_CMD} "--profile")
-    SET(  WRAP_CMD ${WRAP_CMD} "--templates")
-    SET(  WRAP_CMD ${WRAP_CMD} "--templatefile_dir" ${AMILab_SOURCE_DIR}/../PythonWrap/)
-    IF(GENERATE_HTML_HELP)
-      # flag to generate html help
-      SET(WRAP_CMD ${WRAP_CMD} "--generate-html")
-      # base URL html help
-      SET(WRAP_CMD ${WRAP_CMD} "--url" "${CLASSES_URL_LIST}")
-      #HTML directory
-      SET(WRAP_CMD ${WRAP_CMD} "--outputhtmldir" ${HTML_DIR})
-    ENDIF(GENERATE_HTML_HELP)
-    SET(  WRAP_CMD ${WRAP_CMD} "-q")
+  SAVE_LIST(  "${functions_list}"
+              ${GENERATED_DIR}/available_functions.txt)
 
-    # Write the command to the standard output for information
-    SET(WRAP_CMD_TXT "")
-    FOREACH( C ${WRAP_CMD})
-      SET( WRAP_CMD_TXT "${WRAP_CMD_TXT} ${C}")
-    ENDFOREACH( C ${WRAP_CMD})
-    WRAP_MESSAGE("WRAP_CMD: ${WRAP_CMD_TXT}")
 
-    IF(EXISTS  ${GENERATED_DIR}/../classes.txt)
-      SET( CLASSES_FILES ${GENERATED_DIR}/../classes.txt)
-    ENDIF(EXISTS  ${GENERATED_DIR}/../classes.txt)
-    IF(EXISTS  ${GENERATED_DIR}/../../classes_common.txt)
-      SET( CLASSES_FILES ${CLASSES_FILES} ${GENERATED_DIR}/../../classes_common.txt)
-    ENDIF(EXISTS  ${GENERATED_DIR}/../../classes_common.txt)
+  SET(  WRAP_CMD ${PYTHON_EXECUTABLE})
+  SET(  WRAP_CMD ${WRAP_CMD} ${AMI_WRAPPER})
+  SET(  WRAP_CMD ${WRAP_CMD} ${XML_OUTPUT})
+  SET(  WRAP_CMD ${WRAP_CMD} "--libname" "${LIBNAME}")
+  IF(DEFINED LIBFILTER)
+    SET(WRAP_CMD ${WRAP_CMD} "--filter" "\"${LIBFILTER}\"")
+  ENDIF(DEFINED LIBFILTER)
+  IF(DEFINED LIBCONSTRUCTOR)
+    SET(WRAP_CMD ${WRAP_CMD} "--constructor" "\"${LIBCONSTRUCTOR}\"")
+  ENDIF(DEFINED LIBCONSTRUCTOR)
+  IF(DEFINED DLLNAME)
+    SET(WRAP_CMD ${WRAP_CMD} "--dllname" ${DLLNAME})
+  ENDIF(DEFINED DLLNAME)
+  SET(WRAP_CMD ${WRAP_CMD}  "--classes_file" 
+                            "${GENERATED_DIR}/MISSING_CLASSES.txt")
+  SET(WRAP_CMD ${WRAP_CMD}  "--methodpointers_file" 
+                            "${GENERATED_DIR}/MISSING_METHODS.txt")
+  SET(WRAP_CMD ${WRAP_CMD}  "--available_classes_file" 
+                            "${GENERATED_DIR}/available_classes.txt")
+  SET(  WRAP_CMD ${WRAP_CMD}    "--functions_file" 
+                                "${GENERATED_DIR}/MISSING_FUNCTIONS.txt")
 
-    ADD_CUSTOM_COMMAND(
-      OUTPUT
-        ${OUTPUT_LIST} 
-        ${GENERATED_DIR}/addwrap_${LIBNAME}.h
-        ${GENERATED_DIR}/addwrap_${LIBNAME}.cpp
-      COMMAND
-        ${WRAP_CMD}
-      DEPENDS
-        ${CLASSES_FILES}
-      VERBATIM
-    )
-  ENDIF ( (${NB_MISSING_CLASSES}   GREATER 0)                 OR 
-          (${NB_MISSING_FUNCTIONS} GREATER 0)                 OR
-          (${NB_MISSING_METHODS}   GREATER 0)                 OR
-          (NOT EXISTS ${GENERATED_DIR}/addwrap_${LIBNAME}.h)  OR
-          (NOT EXISTS ${GENERATED_DIR}/addwrap_${LIBNAME}.cpp))
+  IF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
+    WRAP_MESSAGE("***** available external classes *****")
+    SET(WRAP_CMD ${WRAP_CMD} "--available_external_classes" "${AVAILABLE_EXTERNAL_CLASSES}")
+    IF(DEFINED EXTERNAL_DLLNAME)
+      SET(WRAP_CMD ${WRAP_CMD} "--external_dllname" ${EXTERNAL_DLLNAME} )
+    ENDIF(DEFINED EXTERNAL_DLLNAME)
+  ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
+
+  IF(DEFINED AVAILABLE_EXTERNAL_CLASSES2)
+    WRAP_MESSAGE("***** available external classes 2 *****")
+    SET(WRAP_CMD ${WRAP_CMD} "--available_external_classes2" "${AVAILABLE_EXTERNAL_CLASSES2}")
+    IF(DEFINED EXTERNAL_DLLNAME2)
+      SET(WRAP_CMD ${WRAP_CMD} "--external_dllname2" ${EXTERNAL_DLLNAME2} )
+    ENDIF(DEFINED EXTERNAL_DLLNAME2)
+  ENDIF(DEFINED AVAILABLE_EXTERNAL_CLASSES2)
+
+  IF(DEFINED HAS_FUNCTIONS)
+    #SET(WRAP_CMD ${WRAP_CMD} "--functions" "${MISSING_FUNCTIONS}")
+    SET(WRAP_CMD ${WRAP_CMD} "--available_functions_file" "${GENERATED_DIR}/available_functions.txt")
+  ENDIF(DEFINED HAS_FUNCTIONS)
+  #SET(WRAP_CMD ${WRAP_CMD} "--wrap_includes" ${WrapWxWidgetsDir})
+  SET(  WRAP_CMD ${WRAP_CMD} "--outputdir" ${GENERATED_DIR})
+  SET(  WRAP_CMD ${WRAP_CMD} "--addwrap")
+  SET(  WRAP_CMD ${WRAP_CMD} "--profile")
+  SET(  WRAP_CMD ${WRAP_CMD} "--templates")
+  SET(  WRAP_CMD ${WRAP_CMD} "--templatefile_dir" ${AMILab_SOURCE_DIR}/../PythonWrap/)
+  IF(GENERATE_HTML_HELP)
+    # flag to generate html help
+    SET(WRAP_CMD ${WRAP_CMD} "--generate-html")
+    # base URL html help
+    SET(WRAP_CMD ${WRAP_CMD} "--url" "${CLASSES_URL_LIST}")
+    #HTML directory
+    SET(WRAP_CMD ${WRAP_CMD} "--outputhtmldir" ${HTML_DIR})
+  ENDIF(GENERATE_HTML_HELP)
+  SET(  WRAP_CMD ${WRAP_CMD} "-q")
+
+  # Write the command to the standard output for information
+  SET(WRAP_CMD_TXT "")
+  FOREACH( C ${WRAP_CMD})
+    SET( WRAP_CMD_TXT "${WRAP_CMD_TXT} ${C}")
+  ENDFOREACH( C ${WRAP_CMD})
+  WRAP_MESSAGE("WRAP_CMD: ${WRAP_CMD_TXT}")
+
+  IF(EXISTS  ${GENERATED_DIR}/../classes.txt)
+    SET( CLASSES_FILES ${GENERATED_DIR}/../classes.txt)
+  ENDIF(EXISTS  ${GENERATED_DIR}/../classes.txt)
+  IF(EXISTS  ${GENERATED_DIR}/../../classes_common.txt)
+    SET( CLASSES_FILES ${CLASSES_FILES} ${GENERATED_DIR}/../../classes_common.txt)
+  ENDIF(EXISTS  ${GENERATED_DIR}/../../classes_common.txt)
+
+  ADD_CUSTOM_COMMAND(
+    OUTPUT
+      ${GENERATED_DIR}/MISSING_CLASSES.txt
+      ${GENERATED_DIR}/MISSING_FUNCTIONS.txt
+      ${GENERATED_DIR}/MISSING_METHODS.txt
+    COMMAND
+      ${DEP_CMD}
+    DEPENDS
+      # add function file, method pointers file + python files ?
+      ${CLASSES_FILES}
+      ${ANCESTORS_DEPLIST}
+  )
+
+  ADD_CUSTOM_COMMAND(
+    OUTPUT
+      # comment ${OUTPUT_LIST} because the file there may be older
+      # than one of the dependencies, but the timestep of addwrap_... files
+      # if enough because they are always creating
+      # however, now deleting one of the wrapped files may cause the 
+      # makefile to fail ?
+      # CHANGE:can't get rid of this dependency for initial cmake to work ...
+      ${GENERATED_DIR}/addwrap_${LIBNAME}.h
+      ${GENERATED_DIR}/addwrap_${LIBNAME}.cpp
+    COMMAND
+      # to work well, this command should delete MISSING_XXX.txt
+      # if they contained elts to wrap, so that they
+      ${WRAP_CMD}
+    DEPENDS
+      ${GENERATED_DIR}/MISSING_CLASSES.txt
+      ${GENERATED_DIR}/MISSING_FUNCTIONS.txt
+      ${GENERATED_DIR}/MISSING_METHODS.txt
+    VERBATIM
+  )
+
+  # put it separate for dependency problem with all the generated files
+  # need to add this rule to allow cmake to configure
+  ADD_CUSTOM_COMMAND(
+    OUTPUT
+      ${OUTPUT_LIST} 
+    COMMAND
+      ${DEP_CMD}
+    COMMAND
+      # to work well, this command should delete MISSING_XXX.txt
+      # if they contained elts to wrap, so that they
+      ${WRAP_CMD}
+    VERBATIM
+  )
+
 ENDMACRO( WRAP_CODE )
 

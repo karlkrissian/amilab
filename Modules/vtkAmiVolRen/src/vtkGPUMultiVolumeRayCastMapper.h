@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkAMILabGPUMultiVolumeRayCastMapper.h
+  Module:    vtkGPUMultiVolumeRayCastMapper.h
 
   Modifications over vtk file: Carlos Falcón cfalcon@ctim.es 
                                Karl Krissian karl@ctim.es 
@@ -11,15 +11,15 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkAMILabGPUMultiVolumeRayCastMapper - Ray casting performed on the GPU.
+// .NAME vtkGPUMultiVolumeRayCastMapper - Ray casting performed on the GPU.
 // .SECTION Description
-// vtkAMILabGPUMultiVolumeRayCastMapper is a volume mapper that performs ray casting on
+// vtkGPUMultiVolumeRayCastMapper is a volume mapper that performs ray casting on
 // the GPU using fragment programs.
 //vtkGPUVolumeRayCastMapper
 
 
-#ifndef __vtkAMILabGPUMultiVolumeRayCastMapper_h
-#define __vtkAMILabGPUMultiVolumeRayCastMapper_h
+#ifndef __vtkGPUMultiVolumeRayCastMapper_h
+#define __vtkGPUMultiVolumeRayCastMapper_h
 
 #include "vtkVolumeMapper.h"
 
@@ -30,19 +30,19 @@ class vtkImageData;
 
 //class vtkKWAMRVolumeMapper; // friend class.
 
-class VTK_VOLUMERENDERING_EXPORT vtkAMILabGPUMultiVolumeRayCastMapper : public vtkVolumeMapper
+class VTK_VOLUMERENDERING_EXPORT vtkGPUMultiVolumeRayCastMapper : public vtkVolumeMapper
 {
 public:
-  static vtkAMILabGPUMultiVolumeRayCastMapper *New();
-  //vtkTypeMacro(vtkAMILabGPUMultiVolumeRayCastMapper,vtkVolumeMapper);
-  vtkTypeMacro(vtkAMILabGPUMultiVolumeRayCastMapper,vtkVolumeMapper);
+  static vtkGPUMultiVolumeRayCastMapper *New();
+  //vtkTypeMacro(vtkGPUMultiVolumeRayCastMapper,vtkVolumeMapper);
+  vtkTypeMacro(vtkGPUMultiVolumeRayCastMapper,vtkVolumeMapper);
   void PrintSelf( ostream& os, vtkIndent indent );
 
 //carlos Description:
   // Define the Input/output functions for a second data 
-  void SetInput2( vtkImageData *input );
-  void SetInput2( vtkDataSet *genericInput );
-  vtkImageData * GetInput2();
+  void SetInput( int port, vtkImageData *input );
+  void SetInput( int port, vtkDataSet *genericInput );
+  vtkImageData * GetInput( int port=0);
   // Functions for set/get the properties of the second volume
   void SetProperty2(vtkVolumeProperty *property);
   vtkVolumeProperty *GetProperty2();;
@@ -225,8 +225,8 @@ public:
 //ETX
 
 protected:
-  vtkAMILabGPUMultiVolumeRayCastMapper();
-  ~vtkAMILabGPUMultiVolumeRayCastMapper();
+  vtkGPUMultiVolumeRayCastMapper();
+  ~vtkGPUMultiVolumeRayCastMapper();
 
   // Check to see that the render will be OK
   int ValidateRender( vtkRenderer *, vtkVolume * );
@@ -276,9 +276,6 @@ protected:
 
   vtkIdType MaxMemoryInBytes;
   float MaxMemoryFraction;
-//carlos
-  //If a second volume exists
-  bool SecondVolLoad;
   //Property of the second volume
   vtkVolumeProperty *Property2;
 //
@@ -333,8 +330,8 @@ protected:
   vtkImageData* LastInput2;
 
 private:
-  vtkAMILabGPUMultiVolumeRayCastMapper(const vtkAMILabGPUMultiVolumeRayCastMapper&);  // Not implemented.
-  void operator=(const vtkAMILabGPUMultiVolumeRayCastMapper&);  // Not implemented.
+  vtkGPUMultiVolumeRayCastMapper(const vtkGPUMultiVolumeRayCastMapper&);  // Not implemented.
+  void operator=(const vtkGPUMultiVolumeRayCastMapper&);  // Not implemented.
 };
 
 #endif

@@ -71,6 +71,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   ) 
   #MESSAGE("classes.txt : ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt")
 
+  SET(WRAPPING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
   #------------------------------------------------------------
   # Generating and reading ancestors
   #------------------------------------------------------------
@@ -85,10 +87,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   #------------------------------------------------------------
 
   # Wrap all missing classes at once since it is now fast
-  CHECK_WRAPPED_FILES( "${ancestors_list}"       "MISSING_CLASSES")
-
-  LIST(LENGTH MISSING_CLASSES   NB_MISSING_CLASSES)
-  WRAP_MESSAGE("MISSING_CLASSES   = ${MISSING_CLASSES}")
+  #CHECK_WRAPPED_FILES( "${ancestors_list}"       "MISSING_CLASSES")
+  UPDATE_OUTPUT_LIST( "${ancestors_list}"  )
 
   #------------------------------------------------------------
   # Create the rule that wraps the code

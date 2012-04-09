@@ -1,2 +1,2 @@
-vtkAMILabGPUMultiVolumeRayCastMapper
-vtkAMILabOpenGLGPUMultiVolumeRayCastMapper
+vtkGPUMultiVolumeRayCastMapper
+vtkOpenGLGPUMultiVolumeRayCastMapper

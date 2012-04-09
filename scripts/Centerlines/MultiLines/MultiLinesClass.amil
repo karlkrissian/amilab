@@ -294,14 +294,54 @@ if (!exists(MultiLinesClass)) {
     
       # Compute Structure Tensor
       printn "Structure Tensor"
+      inittime = wx.wxDateTime.UNow()
       sth = filters.StructureTensorH(&::input,sigma,1,&::mask)
+      diff=wx.wxDateTime.UNow()-inittime
+      time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      printn "time: "+time_elapsed
     
       SetProgress(::current_progress+::current_step*0.25)
     
-      # EigenDecomp, parameters:  the structure tensor,
-      # the eigenvalues flag: 0
-      # the eigenvectors flag 3
-      eig = filters.EigenDecomp(&sth,0,3,&::mask)
+      ## EigenDecomp, parameters:  the structure tensor,
+      ## the eigenvalues flag: 0
+      ## the eigenvectors flag 3
+      #inittime = wx.wxDateTime.UNow()
+      #eig = filters.EigenDecomp(&sth,0,3,&::mask)
+      ## using eig[3] and eig[4]
+      #diff=wx.wxDateTime.UNow()-inittime
+      #time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      #printn "EigenDecomp time: "+time_elapsed
+      
+      #
+      p = algorithms.ami_ImageToImageFilterParam.ImageToImageFilterParam()
+      p.SetNumberOfThreads(wx.wxThread.GetCPUCount())
+      p.SetInput(&sth)
+
+      inittime = wx.wxDateTime.UNow()
+      del ed
+      ed = algorithms.ami_EigenDecomp.EigenDecomp()
+      ed.SetParameters(&p)
+      ed.Setdiag_algorithm(algorithms.ami_EigenDecomp.KOPP_HYBRID)
+      ed.Setenable_eigenvalue1(false)
+      ed.Setenable_eigenvalue2(false)
+      ed.Setenable_eigenvalue3(false)
+      ed.Setenable_eigenvector1(true)
+      ed.Setenable_eigenvector2(true)
+      ed.Setenable_eigenvector3(false)
+      ed.Setmask(&::mask)
+      ed.Run()
+      diff=wx.wxDateTime.UNow()-inittime
+      time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      printn "EigenDecomp2 time: "+time_elapsed
+
+      # check that the 2 ways are identical
+      #::eig_3 <<= eig[3]
+      #::eig_3_new <<= ed.Geteigenvector1()
+      #m = min(norm(eig[3]-ed.Geteigenvector1()),norm(eig[3]+ed.Geteigenvector1()))
+      #printn  max(m)
+      #m = min(norm(eig[4]-ed.Geteigenvector2()),norm(eig[4]+ed.Geteigenvector2()))
+      #printn  max(m)
+
       SetProgress(::current_progress+::current_step*0.5)
       del sth
     
@@ -335,6 +375,7 @@ if (!exists(MultiLinesClass)) {
                           #::keephighest)
     
       # second response new way to do it
+      inittime = wx.wxDateTime.UNow()
       repcircle = algorithms.CalculRepCercle(&grad,algorithms.CalculRepCercle.circle_mean)
       repcircle.SetGradient(&grad)
       repcircle.SetNoLinearInterp(!::use_linearinterp)
@@ -347,12 +388,19 @@ if (!exists(MultiLinesClass)) {
       cb3d = algorithms.CircleBoundaries3D()
       cb3d.SetBoundaryComputationClass(&repcircle)
       cb3d.SetMask(&::mask)
-      e3 = eig[3]
-      e4 = eig[4]
+
+      #e3 = eig[3]
+      #e4 = eig[4]
+      e3 = ed.Geteigenvector1()
+      e4 = ed.Geteigenvector2()
+
       cb3d.SetOrientations(&e3,&e4)
       #::grad0 = grad
       #response
       cb3d.Execute(&response)
+      diff=wx.wxDateTime.UNow()-inittime
+      time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      printn "Circle boundaries time: "+time_elapsed
 
       #diff = max(norm(response-::response2))
       #printn "Maximal difference = %1%" % diff
@@ -366,8 +414,8 @@ if (!exists(MultiLinesClass)) {
     
       if (::local_maxima) {
         # copy the 2 eigenvectors
-        ::current_v1 <<= eig[3]
-        ::current_v2 <<= eig[4]
+        ::current_v1 <<= e3
+        ::current_v2 <<= e4
       }
     
     } 

@@ -322,7 +322,7 @@ if (!exists(SimplevtkVolumeClass)) {
         if (::volrenmapper_type==0)||(::volrenmapper_type==3) {
           if  (::volrenmapper_type==3) && \
               (exists(vtkAmiVolRen)) {
-            ::volmapper = vtkAmiVolRen.vtkAMILabOpenGLGPUMultiVolumeRayCastMapper.New()
+            ::volmapper = vtkAmiVolRen.vtkOpenGLGPUMultiVolumeRayCastMapper.New()
           } else {
             SetStatusText("Setting vtkGPUVolumeMapper")
             ::volrenmapper_type=0
@@ -404,7 +404,15 @@ if (!exists(SimplevtkVolumeClass)) {
           if (::volrenmapper_type==3) {
             del ::vtkinput2
             ::vtkinput2 = vtktools.ToVtkImageData(&::input2)
-            ::volmapper.SetInput2(&::vtkinput2)
+            #printn "number of input connections before %1%" % \
+                  #::volmapper.GetNumberOfInputConnections(0) +\
+                  #" %1% " % + \
+                  #::volmapper.GetNumberOfInputConnections(1) 
+            ::volmapper.SetInput(1,&::vtkinput2)
+            #printn "number of input connections after %1%" % \
+                  #::volmapper.GetNumberOfInputConnections(0) +\
+                  #" %1% " % + \
+                  #::volmapper.GetNumberOfInputConnections(1) 
           }
           
           ::volmapper.SetBlendMode(::blend_mode)
@@ -714,7 +722,7 @@ if (!exists(SimplevtkVolumeClass)) {
       if (exists(::volmapper)) {
         if  (::volmapper.GetClassName()=="vtkOpenGLGPUVolumeRayCastMapper") || \
             (::volmapper.GetClassName()=="vtkGLGPUVolumeRayCastMapper") || \
-            (::volmapper.GetClassName()=="vtkAMILabOpenGLGPUMultiVolumeRayCastMapper") ||\
+            (::volmapper.GetClassName()=="vtkOpenGLGPUMultiVolumeRayCastMapper") ||\
             (::volmapper.GetClassName()=="vtkSmartVolumeMapper") \
         {
           printn "Texture =  %1%" %::volmapper.GetClassName()

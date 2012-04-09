@@ -851,6 +851,7 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
   # Implement the description/help part
   #
   res = ImplementMethodDescription(classname,method,constructor)
+  #res = ''
   
   # don't return help in case of duplicated method
   if methodcount>1:
@@ -914,7 +915,9 @@ def BackupFile(filename):
   if os.path.isfile(filename[:-4]):
     if filecmp.cmp(filename,filename[:-4]):
       # if same "mv xxx.cpp.new xxx.cpp.old", not changing the original file to avoid recompilation
-      shutil.move(filename,filename[:-4]+".old")
+      #shutil.move(filename,filename[:-4]+".old")
+      # changed because we need to update file timestamp
+      shutil.move(filename,filename[:-4])
     else:
       print "FILES differ: {0}".format(filename[:-4])
       # else "mv xxx.cpp xxx.cpp.old" and "mv xxx.cpp.new xxx.cpp"

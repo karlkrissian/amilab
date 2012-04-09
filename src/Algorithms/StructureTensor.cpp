@@ -854,6 +854,7 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
   // Initialisation des images des d�riv�es 
   filtre = GeneralGaussianFilter::ptr(new GeneralGaussianFilter(image.get(), dimension));
 //  filtre->SetScaleUnit(PIXEL_SPACE);
+  filtre->Set_use_new_filter(true);
   if (mask.use_count()) filtre->FixeMasque(mask.get());
   filtre->Utilise_Image(   false);
   filtre->UtiliseHessien(  true);
