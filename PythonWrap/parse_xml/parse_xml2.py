@@ -272,7 +272,7 @@ if __name__ == '__main__':
           args.val.classes.append(cl)
           n=n+1
       classes_file.close()
-      if n>0:
+      if n>0 and args.val.addwrap:
         # remove the file to allow its new creation by cmake
         os.rename(args.val.classes_file,args.val.classes_file+".bak")
       
@@ -464,7 +464,7 @@ if __name__ == '__main__':
           n=n+1
           args.val.methodpointers.append(cl)
       methodpointers_file.close()
-      if n>0:
+      if n>0 and args.val.addwrap:
         # remove the file to allow its new creation by cmake
         os.remove(args.val.methodpointers_file)
       
@@ -757,7 +757,7 @@ if __name__ == '__main__':
           n=n+1
           args.val.functions.append(cl)
       functions_file.close()
-      if n>0:
+      if n>0 and args.val.addwrap:
         # remove the file to allow its new creation by cmake
         os.remove(args.val.functions_file)
       

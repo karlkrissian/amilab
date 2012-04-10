@@ -1,0 +1,59 @@
+proc EditImageArray(IMAGE im) \
+{
+  del fr
+  fr = wx.wxFrame( &ami.MainFrame, wx.wxID_ANY, "Frame Title",\
+            wx.wxPoint(100,100), wx.wxSize(400,600))
+  fr.Show()
+  # Create a wxGrid object
+      
+  del grid
+  grid = wx.wxGrid( &fr,\
+                      -1)
+  grid.SetCellAlignment(wx.wxALIGN_CENTRE)
+
+  xdim=im.tx
+  ydim=im.ty
+
+  # Then we call CreateGrid to set the dimensions of the grid
+  # (100 rows and 10 columns in this example)
+  grid.CreateGrid( xdim, ydim )
+
+  for x=0 to xdim-1 {
+    grid.SetColLabelValue(x,"%1%"%x)
+    grid.SetColFormatNumber(x)
+  }
+  for y=0 to ydim-1 {
+    grid.SetRowLabelValue(y,"%1%"%y)
+  }
+  grid.SetRowLabelSize(30)
+  grid.SetColLabelSize(20)
+
+  for x=0 to xdim-1 {
+    for y=0 to ydim-1 {
+      grid.SetCellValue(y,x,"%1%" % im(x,y,0))
+      grid.SetCellAlignment(x,y,wx.wxALIGN_CENTRE,wx.wxALIGN_CENTRE)
+    }
+  }
+
+  #grid.Fit()
+  #grid.AutoSize()
+
+  ## And set grid cell contents as strings
+  #grid.SetCellValue( 0, 0, "wxGrid is good" )
+
+  ## We can specify that some cells are read-only
+  #grid.SetCellValue( 0, 3, "This is read-only" )
+  #grid.SetReadOnly( 0, 3 )
+
+  ## Colours can be specified for grid cell contents
+  #grid.SetCellValue(3, 3, "green on grey")
+  #grid.SetCellTextColour(3, 3, wx.wxColour(0,255,0))
+  #grid.SetCellBackgroundColour(3, 3, wx.wxColour(200,200,200))
+
+  ## We can specify the some cells will store numeric 
+  ## values rather than strings. Here we set grid column 5 
+  ## to hold floating point values displayed with width of 6 
+  ## and precision of 2
+  #grid.SetColFormatFloat(5, 6, 2)
+  #grid.SetCellValue(0, 6, "3.1415")
+}

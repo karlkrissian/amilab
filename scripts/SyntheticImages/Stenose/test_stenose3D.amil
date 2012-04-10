@@ -23,9 +23,9 @@ for z=0  to i.tz-1   {
 i_draw.update
 is = filter(i,1,0,0,0)
 i_draw.compare(is)
-isn = AddGaussNoise(is,0,20)
+isn = algorithms.ami_AddImageNoise.AddGaussianNoise(&is,0,20)
 Show isn
- isn = AddGaussNoise(is,0,15)
+isn = algorithms.ami_AddImageNoise.AddGaussianNoise(&is,0,15)
 i_draw.compare(isn)
 isnr = algorithms.ami_AnisoGS.Run(is,1,6,0.05,20)
 i_draw.compare(isnr)

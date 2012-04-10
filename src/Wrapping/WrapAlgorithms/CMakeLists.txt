@@ -195,10 +195,12 @@ IF(AMI_ENABLE_WRAPPING)
 #   MESSAGE(" GENERATED_DIR = ${GENERATED_DIR} ")
 #   MESSAGE(" GENERATE_HTML_HELP = ${GENERATE_HTML_HELP}")
 
-  #------------------------------------------------------------
+  #------------------------------------------------------------  
   # Create the rule that wraps the code
   #------------------------------------------------------------
 
+
+  SET(NO_METHOD_HELP true)
   WRAP_CODE()
 ENDIF(AMI_ENABLE_WRAPPING)
 

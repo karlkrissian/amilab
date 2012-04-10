@@ -1,6 +1,6 @@
 
 
-MESSAGE("executing RUN_DEPENDCIES.cmake")
+MESSAGE("***** executing RUN_DEPENDCIES.cmake *****")
 
 # need as parameters
 #   AMILAB_SOURCE_DIR
@@ -8,9 +8,9 @@ MESSAGE("executing RUN_DEPENDCIES.cmake")
 
 #MESSAGE("AMILAB_SOURCE_DIR=${AMILAB_SOURCE_DIR}")
 
-INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
-INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
-INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/CHECK_WRAPPED_FILES.cmake)
+INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
+INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
+INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/CHECK_WRAPPED_FILES.cmake)
 
 #MESSAGE("AMILAB_SOURCE_DIR=${AMILAB_SOURCE_DIR}")
 
@@ -37,7 +37,12 @@ CHECK_WRAPPED_FILES( "${functions_list}"       "MISSING_FUNCTIONS")
 IF(EXISTS "${WRAPPING_DIR}/methodpointers.txt")
   # Read list of method pointers to wrap
   FILE(READ "${WRAPPING_DIR}/methodpointers.txt" methodpointers_txt)
-  STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
+  IF(methodpointers_txt)
+    STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list 
+            ${methodpointers_txt} )
+  ENDIF(methodpointers_txt)
+ELSE(EXISTS "${WRAPPING_DIR}/methodpointers.txt")
+  SET(methodpointers_list "")
 ENDIF(EXISTS "${WRAPPING_DIR}/methodpointers.txt")
 CHECK_WRAPPED_FILES( "${methodpointers_list}"  "MISSING_METHODS")
 

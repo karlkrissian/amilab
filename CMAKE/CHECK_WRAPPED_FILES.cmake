@@ -1,6 +1,6 @@
 
 
-INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
+INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 
 
 #
@@ -17,7 +17,7 @@ INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
 #   NB_${MISSING_VAR}
 #
 MACRO( CHECK_WRAPPED_FILES ELTS_LIST MISSING_VAR)
-  #MESSAGE("MISSING_VAR=${MISSING_VAR}  ${ELTS_LIST}")
+  MESSAGE("MISSING_VAR=${MISSING_VAR}  ${ELTS_LIST}")
   FOREACH( elt  ${ELTS_LIST})
     ClassUsedName( elt m_elt )
     #MESSAGE("CHECK_WRAPPED_FILES for ${m_elt}")

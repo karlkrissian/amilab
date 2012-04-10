@@ -85,6 +85,27 @@ void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #m
   tmpobj->GetContext()->AddVar<WrapClassMember>(newname, tmp,tmpobj->GetContext()); \
 }
 
+#define ADD_CLASS_METHOD_LIGHT(methodname,description_str) \
+/**\
+ * description_str\
+ **/\
+class wrap_##methodname : public WrapClassMember { \
+  protected:\
+    _parentclass_ptr _objectptr; \
+  public: \
+    wrap_##methodname(_parentclass_ptr& pp) : \
+     _objectptr(pp) { \
+      Set_arg_failure(false);\
+      Set_quiet(false);\
+    } \
+    BasicVariable::ptr CallMember(ParamList*); \
+}; \
+\
+void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #methodname) {\
+  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname(pc));\
+  AMIObject::ptr tmpobj(amiobject.lock()); \
+  tmpobj->GetContext()->AddVar<WrapClassMember>(newname, tmp,tmpobj->GetContext()); \
+}
 //    const boost::shared_ptr<ObjectType>& GetObj() const { return _objectptr->GetObj(); }  
 
 
@@ -426,7 +447,7 @@ class WrapCommon_DECLARE WrapClassMember {
     bool quiet;
 
   public:
-    virtual ~WrapClassMember() = 0;
+    virtual ~WrapClassMember() {}
     virtual void SetParametersComments()          {};
     virtual BasicVariable::ptr CallMember(ParamList*)  
     { return BasicVariable::ptr(); };
@@ -453,7 +474,7 @@ class WrapCommon_DECLARE WrapClassMember {
     virtual const std::string GetFunctionName() { return std::string();};
 };
  
-inline WrapClassMember::~WrapClassMember() { }  // defined even though it's pure virtual; it's faster this way; 
+//inline WrapClassMember::~WrapClassMember() { }  // defined even though it's pure virtual; it's faster this way; 
 
 
 #endif 

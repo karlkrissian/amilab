@@ -509,15 +509,20 @@ if (!exists(AnisoMatrixClass)) {
   
       ::win.BeginBook()
         ::win.AddPage("Main")
-          ::win.BeginBoxPanel("Input")
+          ::win.BeginPanel("Input")
             ::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,220,200))
             ::win.AddImageChoice( &::input_name, "Input")
-          ::win.EndBoxPanel()
+          ::win.EndPanel()
 
           ::win.BeginBoxPanel("PDE parameters")
             ::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,210,230))
-            ::win.AddFloat( &::params.dt,"dt",0.01,1)
-            ::win.AddFloat( &::params.t,"T",0,10)
+            
+            ::win.BeginHorizontal()
+              ::dt_id = ::win.AddFloat( &::params.dt,"dt",0.01,1)
+              ::win.ShowSlider(::dt_id,false)
+              ::T_id = ::win.AddFloat( &::params.t,"T",0,10)
+              ::win.ShowSlider(::T_id,false)
+            ::win.EndHorizontal()
 
             ::params.scheme_modes.SetGuiMode(1)
             ::params.scheme_modes.AddGui(&::win)
@@ -561,18 +566,19 @@ if (!exists(AnisoMatrixClass)) {
               ::params.noise_models.SetGuiMode(1)
               ::params.noise_models.AddGui(&::win)
               ::params.noise_models.SetCallback(&::CB_NoiseModel)
-
-              ::bias_id = ::win.AddBoolean( &::params.remove_bias,"Remove Bias")
             ::win.EndHorizontal()
-            ::neigh_id = ::win.AddInt(  &::params.neighborhood,\
+            ::win.BeginHorizontal()
+              ::bias_id = ::win.AddBoolean( &::params.remove_bias,"Remove Bias")
+              ::neigh_id = ::win.AddInt(  &::params.neighborhood,\
                                         "Neighborhood",0,4)
+            ::win.EndHorizontal()
             ::win.ShowSlider(::neigh_id,false)
             # Recompute text size ?
             #::win.IntegerConstraints(::neigh_id,0,10,1)
          ::win.EndBoxPanel()
           
           #------------ Controls ----------------
-          ::win.BeginBoxPanel("Controls")
+          ::win.BeginPanel("Controls")
             ::win.CurrentParent().SetBackgroundColour(wx.wxColour(200,220,250))
             del s
             s = ::win.GetCurrentSizer()
@@ -590,7 +596,7 @@ if (!exists(AnisoMatrixClass)) {
             ::win.AddBoolean( &::params.run_on_roi,"Run on ROI")
             s.GetItem(1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
             ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
-          ::win.EndBoxPanel()
+          ::win.EndPanel()
           
         ::win.AddPage("Save")
           ::win.BeginBoxPanel("Result --> disk")

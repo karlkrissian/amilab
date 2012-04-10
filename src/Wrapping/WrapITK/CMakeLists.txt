@@ -174,6 +174,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
   # Create the rule that wraps the code
   #------------------------------------------------------------
 
+  SET(NO_METHOD_HELP true)
+
   WRAP_CODE()
 
 #   WRAP_MESSAGE("OUTPUT_LIST=${OUTPUT_LIST}")

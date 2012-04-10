@@ -1,5 +1,5 @@
 
-INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/CHECK_WRAPPED_FILES.cmake)
+INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/CHECK_WRAPPED_FILES.cmake)
 
 #-------------------------------------------------------------------------------
 #
@@ -289,7 +289,7 @@ ENDMACRO( CREATE_ANCESTORS_DEPLIST )
 MACRO( CREATE_DEPENDENCIES_COMMAND )
   SET(  DEP_CMD ${CMAKE_COMMAND})
   SET(  DEP_CMD   ${DEP_CMD} 
-                  "-D" "AMILAB_SOURCE_DIR:PATH=${AMILAB_SOURCE_DIR}")
+                  "-D" "AMILab_SOURCE_DIR:PATH=${AMILab_SOURCE_DIR}")
   SET(  DEP_CMD   ${DEP_CMD} 
                   "-D" "GENERATED_DIR:PATH=${GENERATED_DIR}")
   SET(  DEP_CMD   ${DEP_CMD} 
@@ -388,7 +388,8 @@ MACRO( WRAP_CODE )
 
   IF(DEFINED AVAILABLE_EXTERNAL_CLASSES)
     WRAP_MESSAGE("***** available external classes *****")
-    SET(WRAP_CMD ${WRAP_CMD} "--available_external_classes" "${AVAILABLE_EXTERNAL_CLASSES}")
+    SET(WRAP_CMD ${WRAP_CMD} "--available_external_classes" 
+          "${AVAILABLE_EXTERNAL_CLASSES}")
     IF(DEFINED EXTERNAL_DLLNAME)
       SET(WRAP_CMD ${WRAP_CMD} "--external_dllname" ${EXTERNAL_DLLNAME} )
     ENDIF(DEFINED EXTERNAL_DLLNAME)
@@ -396,7 +397,8 @@ MACRO( WRAP_CODE )
 
   IF(DEFINED AVAILABLE_EXTERNAL_CLASSES2)
     WRAP_MESSAGE("***** available external classes 2 *****")
-    SET(WRAP_CMD ${WRAP_CMD} "--available_external_classes2" "${AVAILABLE_EXTERNAL_CLASSES2}")
+    SET(WRAP_CMD ${WRAP_CMD} "--available_external_classes2" 
+          "${AVAILABLE_EXTERNAL_CLASSES2}")
     IF(DEFINED EXTERNAL_DLLNAME2)
       SET(WRAP_CMD ${WRAP_CMD} "--external_dllname2" ${EXTERNAL_DLLNAME2} )
     ENDIF(DEFINED EXTERNAL_DLLNAME2)
@@ -408,19 +410,36 @@ MACRO( WRAP_CODE )
   ENDIF(DEFINED HAS_FUNCTIONS)
   #SET(WRAP_CMD ${WRAP_CMD} "--wrap_includes" ${WrapWxWidgetsDir})
   SET(  WRAP_CMD ${WRAP_CMD} "--outputdir" ${GENERATED_DIR})
-  SET(  WRAP_CMD ${WRAP_CMD} "--addwrap")
   SET(  WRAP_CMD ${WRAP_CMD} "--profile")
   SET(  WRAP_CMD ${WRAP_CMD} "--templates")
-  SET(  WRAP_CMD ${WRAP_CMD} "--templatefile_dir" ${AMILab_SOURCE_DIR}/../PythonWrap/)
+  SET(  WRAP_CMD ${WRAP_CMD} "--templatefile_dir" 
+          ${AMILab_SOURCE_DIR}/../PythonWrap/)
   IF(GENERATE_HTML_HELP)
     # flag to generate html help
     SET(WRAP_CMD ${WRAP_CMD} "--generate-html")
     # base URL html help
     SET(WRAP_CMD ${WRAP_CMD} "--url" "${CLASSES_URL_LIST}")
     #HTML directory
-    SET(WRAP_CMD ${WRAP_CMD} "--outputhtmldir" ${HTML_DIR})
+    IF (HTML_DIR)
+      SET(WRAP_CMD ${WRAP_CMD} "--outputhtmldir" ${HTML_DIR})
+    ENDIF (HTML_DIR)
   ENDIF(GENERATE_HTML_HELP)
+
+  IF(DEFINED NO_METHOD_HELP)
+  SET(  WRAP_CMD ${WRAP_CMD} "-light")
+  ENDIF(DEFINED NO_METHOD_HELP)
+
   SET(  WRAP_CMD ${WRAP_CMD} "-q")
+
+  IF(EXISTS ${WRAPPING_DIR}/classes_includes.py)
+    SET(WRAP_CMD ${WRAP_CMD} "--classes_includes" 
+          ${WRAPPING_DIR}/classes_includes.py)
+  ENDIF(EXISTS ${WRAPPING_DIR}/classes_includes.py)
+  IF(EXISTS ${WRAPPING_DIR}/members_blacklist.py)
+    SET(WRAP_CMD ${WRAP_CMD} "--members_blacklist" 
+          ${WRAPPING_DIR}/members_blacklist.py)
+  ENDIF(EXISTS ${WRAPPING_DIR}/members_blacklist.py)
+
 
   # Write the command to the standard output for information
   SET(WRAP_CMD_TXT "")
@@ -433,7 +452,8 @@ MACRO( WRAP_CODE )
     SET( CLASSES_FILES ${GENERATED_DIR}/../classes.txt)
   ENDIF(EXISTS  ${GENERATED_DIR}/../classes.txt)
   IF(EXISTS  ${GENERATED_DIR}/../../classes_common.txt)
-    SET( CLASSES_FILES ${CLASSES_FILES} ${GENERATED_DIR}/../../classes_common.txt)
+    SET( CLASSES_FILES ${CLASSES_FILES} 
+            ${GENERATED_DIR}/../../classes_common.txt)
   ENDIF(EXISTS  ${GENERATED_DIR}/../../classes_common.txt)
 
   ADD_CUSTOM_COMMAND(
@@ -462,11 +482,13 @@ MACRO( WRAP_CODE )
     COMMAND
       # to work well, this command should delete MISSING_XXX.txt
       # if they contained elts to wrap, so that they
-      ${WRAP_CMD}
+      ${WRAP_CMD} "--addwrap"
     DEPENDS
       ${GENERATED_DIR}/MISSING_CLASSES.txt
       ${GENERATED_DIR}/MISSING_FUNCTIONS.txt
       ${GENERATED_DIR}/MISSING_METHODS.txt
+      ${CLASSES_FILES}
+      ${ANCESTORS_DEPLIST}
     VERBATIM
   )
 
@@ -476,11 +498,19 @@ MACRO( WRAP_CODE )
     OUTPUT
       ${OUTPUT_LIST} 
     COMMAND
+      # regenerate files 
       ${DEP_CMD}
     COMMAND
       # to work well, this command should delete MISSING_XXX.txt
       # if they contained elts to wrap, so that they
       ${WRAP_CMD}
+#     COMMAND
+#       # regenerate files 
+#       ${DEP_CMD}
+#     DEPENDS
+#       ${GENERATED_DIR}/MISSING_CLASSES.txt
+#       ${GENERATED_DIR}/MISSING_FUNCTIONS.txt
+#       ${GENERATED_DIR}/MISSING_METHODS.txt
     VERBATIM
   )
 

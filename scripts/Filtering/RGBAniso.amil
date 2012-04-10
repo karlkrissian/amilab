@@ -31,9 +31,9 @@ proc RGBAddNoise( IMAGE in, IMAGE out, NUM _sd) {
 
   print "*\n"
 
-  _inrr = AddGaussNoise(_inr,0,_sd)
-  _ingr = AddGaussNoise(_ing,0,_sd)
-  _inbr = AddGaussNoise(_inb,0,_sd)
+  _inrr = algorithms.ami_AddImageNoise.AddGaussianNoise(&_inr,0,_sd)
+  _ingr = algorithms.ami_AddImageNoise.AddGaussianNoise(&_ing,0,_sd)
+  _inbr = algorithms.ami_AddImageNoise.AddGaussianNoise(&_inb,0,_sd)
   
   Float2Uchar(&_inrr)
   Float2Uchar(&_ingr)

@@ -214,7 +214,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
   if (get_var_param<AMIObject>(var, p, n))  \
   { \
     WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());\
-    WrapClass_##type::ptr obj( boost::dynamic_pointer_cast<WrapClass_##type>(object));\
+    boost::shared_ptr<WrapClass_##type> obj( boost::dynamic_pointer_cast<WrapClass_##type>(object));\
     if (obj.get()) {\
       name = obj->membername;\
     } else {\

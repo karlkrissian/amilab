@@ -69,7 +69,7 @@ del f
 i.save "stenose4.ami.gz"
 
 Show i
-in = AddGaussNoise(i,0,30)
+in = algorithms.ami_AddImageNoise.AddGaussianNoise(&i,0,30)
 i_draw.compare(in);
 
 print "\n Initial image \n"

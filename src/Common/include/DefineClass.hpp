@@ -51,6 +51,7 @@
 //#include <stdio.h>
  
 // TODO: deal with templates here ...
+
 #define DEFINE_CLASS(class) \
 public:\
   virtual char const* get_name() const { return #class; } \

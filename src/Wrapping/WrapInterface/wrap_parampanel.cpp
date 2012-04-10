@@ -1357,7 +1357,8 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddWidget::CallMember( ParamList* 
   if (getvar) 
   {
     WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());
-    WrapClass_wxWindow::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
+    boost::shared_ptr<WrapClass_wxWindow> obj( 
+      boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
     if (obj.get()) {
 
       res = this->_objectptr->GetObj()->AddWidget(obj->GetObj().get(), proportion);

@@ -79,10 +79,13 @@ void WrapClass_wxVTKRenderWindowInteractor::AddMethods(WrapClass<wxVTKRenderWind
 {
   
       // Add members from wxWindow
-      WrapClass_wxWindow::ptr parent_wxWindow(        boost::dynamic_pointer_cast<WrapClass_wxWindow >(this_ptr));
+      boost::shared_ptr<WrapClass_wxWindow> parent_wxWindow(
+        boost::dynamic_pointer_cast<WrapClass_wxWindow >(this_ptr));
       parent_wxWindow->AddMethods(parent_wxWindow);
       // Add members from vtkRenderWindowInteractor
-      WrapClass_vtkRenderWindowInteractor::ptr parent_vtkRenderWindowInteractor(        boost::dynamic_pointer_cast<WrapClass_vtkRenderWindowInteractor >(this_ptr));
+      boost::shared_ptr<WrapClass_vtkRenderWindowInteractor>
+        parent_vtkRenderWindowInteractor(        
+          boost::dynamic_pointer_cast<WrapClass_vtkRenderWindowInteractor >(this_ptr));
       parent_vtkRenderWindowInteractor->AddMethods(parent_vtkRenderWindowInteractor);
 
 

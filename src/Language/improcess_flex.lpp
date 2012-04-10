@@ -506,8 +506,6 @@ AnisoCW           return(token::T_AnisoCW); /*{AnisoCW,T_AnisoCW}*/
 
 AnisoRudinMult    return(token::T_AnisoRudinMult); /*{AnisoRudinMult,T_AnisoRudinMult}*/
 
-AddGaussNoise     return(token::TAddGaussNoise); /*{AddGaussNoise,TAddGaussNoise}*/
-
 SNR               return(token::T_SNR); /*{SNR,T_SNR}*/
 
 eccentricity      return(token::T_eccentricity); /*{eccentricity,T_eccentricity}*/

@@ -33,3 +33,6 @@ ami::AnisoGS_NRAD
 
 # ami::GnuPlot
 ami::GnuPlot
+
+# adding noise to an image
+ami::AddImageNoise

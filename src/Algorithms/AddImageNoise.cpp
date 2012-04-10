@@ -41,8 +41,9 @@ extern "C" {
 #include <stdio.h>
 }
 
-#include "bruit.hpp"
+#include "AddImageNoise.h"
 #include <time.h>
+#include <boost/scoped_ptr.hpp>
 
 #define IA   16807
 #define IM   2147483647
@@ -54,8 +55,25 @@ extern "C" {
 #define EPS  1.2E-7
 #define RNMX (1.0-EPS)
 
+
+namespace ami {
+  
 //-----------------------------------------------------------------------------
-float ran1(int* idum)
+void AddImageNoise::InitRand(int* _idnum)
+{
+  // initialisation de la sequence
+  time_t rawtime;
+  struct tm * timeinfo;
+
+  time ( &rawtime );
+  timeinfo = localtime ( &rawtime );
+
+  *_idnum = -timeinfo->tm_sec;
+  ran1(_idnum);
+}
+
+//-----------------------------------------------------------------------------
+float AddImageNoise::ran1(int* idum)
 //    ----
 // Returns a uniform random deviate between 0.0 and 1.0.
 // Set idum to any negative value to initialize or reinitialize the sequence.
@@ -91,7 +109,7 @@ float ran1(int* idum)
 }
 
 
-float bruit_gaussien(int* idum)
+float AddImageNoise::bruit_gaussien(int* idum)
 //   --------------
 //  return une variable aleatoire qui suit une loi gaussienne
 //  de moyenne nulle et d'ecart type 1
@@ -123,7 +141,7 @@ float bruit_gaussien(int* idum)
 
 
 
-float bruit_gaussien(int* idum, float moyenne, float ecart_type)
+float AddImageNoise::bruit_gaussien(int* idum, float moyenne, float ecart_type)
 //   --------------
 //  return une variable aleatoire qui suit une loi gaussienne
 //  de moyenne et d'ecart type donnes
@@ -135,48 +153,60 @@ float bruit_gaussien(int* idum, float moyenne, float ecart_type)
 } // bruit_gaussien()
 
 
-//======================================================================
-
-//
-AjouteBruit ::  AjouteBruit()
+//------------------------------------------------------------------------------
+void AddImageNoise::AddGaussianNoise(InrImage* im, float moy, float et)
 //
 {
-  // initialisation de la sequence
-  time_t rawtime;
-  struct tm * timeinfo;
-
-  time ( &rawtime );
-  timeinfo = localtime ( &rawtime );
-
-  _idnum = new int(-timeinfo->tm_sec);
-  ran1(_idnum);
-} // Constructor AjouteBruit()
-
-//
-AjouteBruit :: ~AjouteBruit()
-//
-{
-
-  delete  _idnum;
-  _idnum = NULL;
-
-} // Destructor AjouteBruit()
-
-
-//
-void AjouteBruit :: AjouteBruitGaussien(InrImage* im, float moy, float et)
-//
-{
-
+  boost::scoped_ptr<int> _idnum(new int(0));
+  AddImageNoise::InitRand(_idnum.get());
   
-//     int x,y,z;
+  im->InitBuffer();
+  Repeter
+    for(int n=0;n<im->GetVDim();n++) {
+      im->VectFixeValeur( n,
+                          im->VectValeurBuffer(n) + 
+                          bruit_gaussien(_idnum.get(),moy,et) );
+    }
+  JusquA Non(im->IncBuffer()) FinRepeter
+  
+} // AddGaussianNoise()
+
+
+//------------------------------------------------------------------------------
+void AddImageNoise::AddSaltAndPepper( InrImage* im, 
+                                      double salt, double pepper,
+                                      double imin, double imax)
+{
+  boost::scoped_ptr<int> _idnum(new int(0));
+  AddImageNoise::InitRand(_idnum.get());
 
   im->InitBuffer();
   Repeter
-
-    im->FixeValeur( im->ValeurBuffer() + bruit_gaussien(_idnum,moy,et) );
-
+    for(int n=0;n<im->GetVDim();n++) {
+      double val = ran1(_idnum.get());
+      if (val<salt)     im->VectFixeValeur(n, imax );
+      if (val>=pepper)  im->VectFixeValeur(n, imin );
+    }
   JusquA Non(im->IncBuffer()) FinRepeter
+  
+}
+
+//------------------------------------------------------------------------------
+void AddImageNoise::AddUniformNoise(InrImage* im, float valmax)
+{
+  boost::scoped_ptr<int> _idnum(new int(0));
+  AddImageNoise::InitRand(_idnum.get());
+
+  im->InitBuffer();
+  Repeter
+    for(int n=0;n<im->GetVDim();n++) {
+      double val = ran1(_idnum.get());
+      im->VectFixeValeur(n, im->VectValeurBuffer(n+val*valmax) );
+    }
+  JusquA Non(im->IncBuffer()) FinRepeter
+}
 
 
-} // AjouteBruitGaussien()
+}
+
+

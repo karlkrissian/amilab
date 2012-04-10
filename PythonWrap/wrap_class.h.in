@@ -32,11 +32,12 @@ ${INCLUDE_BASES}
   ${DECLARE_TYPE}
 #endif
 
+
 // TODO: check for inheritence ...
 class ${EXPORT_MACRO} WrapClass_${TEMPLATE} : public WrapClass<${TEMPLATE}>
     ${INHERIT_BASES}
 {
-  DEFINE_CLASS(WrapClass_${TEMPLATE});
+  //DEFINE_CLASS(WrapClass_${TEMPLATE});
 
   protected:
     typedef WrapClass<${TEMPLATE}>::ptr _parentclass_ptr;

@@ -66,7 +66,7 @@ for z=0  to i.tz-1   {
 i.save "stenose3D.ami.gz"
 
 Show i
-in = AddGaussNoise(i,0,30)
+in = algorithms.ami_AddImageNoise.AddGaussianNoise(&i,0,30)
 i_draw.compare(in);
 inr = algorithms.ami_AnisoGS.Run(in,1,5,0.1,20)
 i_draw.compare(isnr)

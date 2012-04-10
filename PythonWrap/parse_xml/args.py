@@ -105,6 +105,10 @@ arg_parser.add_argument('-q',
                         action='store_true',    
                         help='Quiet mode')
 
+arg_parser.add_argument('-light',       
+                        action='store_true',    
+                        help='Disable comments in class members')
+
 arg_parser.add_argument('--filter', default=r'.*',          
                         help='Recursively wrap needed classes')
 

@@ -202,7 +202,8 @@ if (!exists(thickTADClass)){
         local_std  = 0.0
         ::RunIteration()
         for k=0 to 3 {
-          res_noise <<= AddGaussNoise(::res,0,j)
+          res_noise <<= algorithms.ami_AddImageNoise.\
+                          AddGaussianNoise(&::res,0,j)
           #Denoise the image using AnisoNRAD command
           if(exists(res_noise_draw)) { del res_noise_draw; }
           res_denoised <<= algorithms.ami_SRAD.AnisoNRAD(&res_noise, 2, dt, \
@@ -253,7 +254,8 @@ if (!exists(thickTADClass)){
           ::RunIteration()
           
           for k=1 to ::num_experiments {
-            res_noise <<= AddGaussNoise(::res,0,j)
+            res_noise <<= algorithms.ami_AddImageNoise.\
+                          AddGaussianNoise(&::res,0,j)
             #Denoise the image using AnisoNRAD command
             res_denoised <<= \
               algorithms.ami_SRAD.AnisoNRAD(&res_noise, 2, dt, \

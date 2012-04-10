@@ -62,6 +62,7 @@ wxFont
 wxFrame
 wxFSFile
 wxGDIObject
+wxGrid
 wxGridSizer
 wxHelpEvent
 wxHtmlCell

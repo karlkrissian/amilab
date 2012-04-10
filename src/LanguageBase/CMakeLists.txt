@@ -89,11 +89,11 @@ SET(LanguageBase_HDRS
 #    VarArray.h
 )
 
-IF(WIN32 OR APPLE)
+# IF(WIN32 OR APPLE)
   OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" ON)
-ELSE(WIN32)
-  OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" OFF)
-ENDIF(WIN32 OR APPLE)
+# ELSE(WIN32)
+#   OPTION(LanguageBase_SHARED     "Compile LanguageBase library as shared" OFF)
+# ENDIF(WIN32 OR APPLE)
 
  
 IF(LanguageBase_SHARED)

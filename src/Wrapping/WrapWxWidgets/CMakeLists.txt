@@ -106,6 +106,8 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   #------------------------------------------------------------
 
   SET(LIBFILTER "wx*")
+  SET(NO_METHOD_HELP true)
+
   WRAP_CODE()
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)

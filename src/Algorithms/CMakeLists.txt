@@ -73,7 +73,7 @@ SET(Algorithms_SRCS
   func_globalstats.cpp
 
   # files coming from previous Filtering directory
-  bruit.cpp
+  AddImageNoise.cpp
   DeriveesLissees.cpp
   GaussianFilter.cpp
   filtrage_rec.cpp
@@ -170,7 +170,7 @@ SET(Algorithms_HDRS
   include/func_globalstats.h
 
   # files coming from previous Filtering directory
-  include/bruit.hpp
+  include/AddImageNoise.h
   include/DeriveesLissees.hpp
   include/GaussianFilter.h
   include/filtrage_rec.hpp

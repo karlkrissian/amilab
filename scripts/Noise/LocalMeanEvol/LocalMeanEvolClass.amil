@@ -51,7 +51,7 @@ if (!exists(LocalMeanEvolClass)) {
       ::noisy <<= Image(FLOAT,100,100,1)
       ::noisy = 0
       # add noise
-      ::noisy <<= AddGaussNoise(::noisy,0,35)
+      ::noisy <<= algorithms.ami_AddImageNoise.AddGaussianNoise(&::noisy,0,35)
 
       ::psf_2D <<= Image(FLOAT,100,100,1)
       ::psf_2D = 0 

@@ -107,18 +107,18 @@ def CreateSmartPointer(classname,pointervarname,resname,indent,bases):
   #print "CreateSmartPointer \n"
   # need to check if the class inherits from wxWindow
   #classname_typedef = config.ClassTypeDef(classname)
-  print 'CreateSmartPointer({0},...)--'.format(classname),
+  #print 'CreateSmartPointer({0},...)--'.format(classname),
   res = indent+'boost::shared_ptr<{0} > res;\n'.format(classname)
   bases1 = bases
   bases1.append(classname)
   if ('wxWindow' in bases1) or ('wxMenu' in bases1) or ('wxSizer' in bases1) or\
      ('wxMenuItem' in bases1):
-    print " no deleter"
+    #print " no deleter"
     res += indent+'  {0} =  '.format(resname)+ \
             'boost::shared_ptr<{0} >({1}, smartpointer_nodeleter<{0} >());\n'.\
               format(classname,pointervarname)
   else:
-    print " use C++ delete"
+    #print " use C++ delete"
     res += indent+'  {0} =  boost::shared_ptr<{1} >({2});\n'.\
             format(resname,classname,pointervarname)
   return res

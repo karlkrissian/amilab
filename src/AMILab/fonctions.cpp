@@ -96,9 +96,9 @@ InrImage* Func_OpImage( InrImage* im1, InrImage* im2, InrImage* im3,
     res->InitBuffer();
 
     Si im2 != NULL Alors
-      Si (im1->_tx != im2->_tx) Ou
-         (im1->_ty != im2->_ty) Ou
-         (im1->_tz != im2->_tz) Alors
+      Si (im1->DimX() != im2->DimX()) Ou
+         (im1->DimY() != im2->DimY()) Ou
+         (im1->DimZ() != im2->DimZ()) Alors
          printf("Image 1 et 2 de dimensions diff�entes ...\n");
          return NULL;
       FinSi
@@ -106,9 +106,9 @@ InrImage* Func_OpImage( InrImage* im1, InrImage* im2, InrImage* im3,
     FinSi
 
     Si im3 != NULL Alors
-      Si (im1->_tx != im3->_tx) Ou
-         (im1->_ty != im3->_ty) Ou
-         (im1->_tz != im3->_tz) Alors
+      Si (im1->DimX() != im3->DimX()) Ou
+         (im1->DimY() != im3->DimY()) Ou
+         (im1->DimZ() != im3->DimZ()) Alors
          printf("Image 1 et 3 de dimensions diff�entes ...\n");
          return NULL;
       FinSi
@@ -116,13 +116,13 @@ InrImage* Func_OpImage( InrImage* im1, InrImage* im2, InrImage* im3,
     FinSi
 
 
-    cx = (ref->_tx/2);
-    cy = (ref->_ty/2);
-    cz = (ref->_tz/2);
+    cx = (ref->DimX()/2);
+    cy = (ref->DimY()/2);
+    cz = (ref->DimZ()/2);
 
-    Pour( z, 0, ref->_tz - 1)
-        Pour( y, 0, ref->_ty - 1)
-        Pour( x, 0, ref->_tx - 1)
+    Pour( z, 0, ref->DimZ() - 1)
+        Pour( y, 0, ref->DimY() - 1)
+        Pour( x, 0, ref->DimX() - 1)
       
       expr_math->SetParamValue('X', x);
       expr_math->SetParamValue('Y', y);
@@ -469,8 +469,8 @@ float  Func_eccentricity( InrImage* im)
   bx = by  = 0;
 
   im->InitBuffer();
-  Pour(y,0,im->_ty-1)
-  Pour(x,0,im->_tx-1)
+  Pour(y,0,im->DimY()-1)
+  Pour(x,0,im->DimX()-1)
     val      = im->ValeurBuffer();
     Si val>1E-5 Alors
       bx      += val*x;
@@ -490,8 +490,8 @@ float  Func_eccentricity( InrImage* im)
   printf(" Barycenter %f %f  \n", bx,by);
 
   im->InitBuffer();
-  Pour(y,0,im->_ty-1)
-  Pour(x,0,im->_tx-1)
+  Pour(y,0,im->DimY()-1)
+  Pour(x,0,im->DimX()-1)
     val      = im->ValeurBuffer();
     Si val>1E-5 Alors
       var_x    += val*(x-bx)*(x-bx);
@@ -524,13 +524,13 @@ InrImage* Func_rot2D( InrImage* image,
 
   res->InitBuffer();
 
-  Pour(y1,0,res->_ty-1)
-  Pour(x1,0,res->_tx-1)
+  Pour(y1,0,res->DimY()-1)
+  Pour(x1,0,res->DimX()-1)
 
     x = (cx+ cosd(-angle)*(x1-cx) - sind(-angle)*(y1-cy));
     y = (cy+ sind(-angle)*(x1-cx) + cosd(-angle)*(y1-cy));
 
-    Si x >=0 Et x < image->_tx Et y >=0 Et y < image->_ty Alors
+    Si x >=0 Et x < image->DimX() Et y >=0 Et y < image->DimY() Alors
       res->FixeValeur(image->InterpLinIntensite(x,y));
     Sinon
       res->FixeValeur(0.0);
@@ -677,7 +677,7 @@ InrImage*  Func_OutFlux2D( InrImage* im)
     fprintf(stderr,"Func_OutFlux() \t input must be vectorial \n");
   FinSi
 
-  tx = im->_tx;
+  tx = im->DimX();
 
   n = 0;
   Pour(i,-1,1)
@@ -694,10 +694,10 @@ InrImage*  Func_OutFlux2D( InrImage* im)
   res = new InrImage(WT_FLOAT,"outflux.ami.gz",im);
   res->InitImage(0.0);  
 
-  Pour(y,1,im->_ty-2)
+  Pour(y,1,im->DimY()-2)
   im ->BufferPos(1,y,0);
   res->BufferPos(1,y,0);
-  Pour(x,1,im->_tx-2)
+  Pour(x,1,im->DimX()-2)
 
     flux = 0;
     res_buf0 = (float*) im->BufferPtr();
@@ -747,8 +747,8 @@ InrImage*  Func_OutFluxScalar( InrImage* im)
     fprintf(stderr,"Func_OutFlux() \t input must be of type WT_FLOAT\n");
   FinSi
 
-  tx = im->_tx;
-  txy = tx*im->_ty;
+  tx = im->DimX();
+  txy = tx*im->DimY();
 
   n = 0;
   Pour(i,-1,1)
@@ -768,11 +768,11 @@ InrImage*  Func_OutFluxScalar( InrImage* im)
   res = new InrImage(WT_FLOAT,"outflux.ami.gz",im);
   res->InitImage(0.0);  
 
-  Pour(z,1,im->_tz-2)
-  Pour(y,1,im->_ty-2)
+  Pour(z,1,im->DimZ()-2)
+  Pour(y,1,im->DimY()-2)
   im ->BufferPos(1,y,z);
   res->BufferPos(1,y,z);
-  Pour(x,1,im->_tx-2)
+  Pour(x,1,im->DimX()-2)
 
     flux = 0;
     res_buf0 = (float*) im->BufferPtr();
@@ -838,8 +838,8 @@ InrImage*  Func_OutFlux( InrImage* im)
     fprintf(stderr,"Func_OutFlux() \t input must be vectorial\n");
   FinSi
 
-  tx = im->_tx;
-  txy = tx*im->_ty;
+  tx = im->DimX();
+  txy = tx*im->DimY();
 
   n = 0;
   Pour(i,-1,1)
@@ -859,11 +859,11 @@ InrImage*  Func_OutFlux( InrImage* im)
   res = new InrImage(WT_FLOAT,1,"outflux.ami.gz",im);
   res->InitImage(0.0);  
 
-  Pour(z,1,im->_tz-2)
-  Pour(y,1,im->_ty-2)
+  Pour(z,1,im->DimZ()-2)
+  Pour(y,1,im->DimY()-2)
   im ->BufferPos(1,y,z);
   res->BufferPos(1,y,z);
-  Pour(x,1,im->_tx-2)
+  Pour(x,1,im->DimX()-2)
 
     flux = 0;
     res_buf0 = (float*) im->BufferPtr();
@@ -909,7 +909,7 @@ InrImage*  Func_OrientationRatio2D( InrImage* im)
     fprintf(stderr,"Func_OutFlux() \t input must be vectorial \n");
   FinSi
 
-  tx = im->_tx;
+  tx = im->DimX();
 
   n = 0;
   Pour(i,-1,1)
@@ -923,10 +923,10 @@ InrImage*  Func_OrientationRatio2D( InrImage* im)
   res = new InrImage(WT_FLOAT,"outflux.ami.gz",im);
   res->InitImage(0.0);  
 
-  Pour(y,1,im->_ty-2)
+  Pour(y,1,im->DimY()-2)
   im ->BufferPos(1,y,0);
   res->BufferPos(1,y,0);
-  Pour(x,1,im->_tx-2)
+  Pour(x,1,im->DimX()-2)
 
     res_buf0 = (float*) im->BufferPtr();
 
@@ -970,8 +970,8 @@ InrImage*    Func_ThresholdCrossing( InrImage* im, float th)
   res = new InrImage(WT_UNSIGNED_CHAR,"TC.ami.gz",im);
   res->InitImage(0);
 
-  tx = im->_tx;
-  txy = tx*im->_ty;
+  tx = im->DimX();
+  txy = tx*im->DimY();
 
   n = 0;
   Pour(i,0,1)
@@ -984,10 +984,10 @@ InrImage*    Func_ThresholdCrossing( InrImage* im, float th)
   FinPour
   FinPour
 
-  Pour(z,0,im->_tz-2)
-  Pour(y,0,im->_ty-2)
+  Pour(z,0,im->DimZ()-2)
+  Pour(y,0,im->DimY()-2)
   im ->BufferPos(0,y,z);
-  Pour(x,0,im->_tx-2)
+  Pour(x,0,im->DimX()-2)
 
     sign = (im->ValeurBuffer()>th); 
 
@@ -1029,8 +1029,8 @@ InrImage*    Func_IsocontourPoints( InrImage* im, float th)
   Point_3D<float> p;
   int             zmax,num_dir;
 
-  tx = im->_tx;
-  txy = tx*im->_ty;
+  tx = im->DimX();
+  txy = tx*im->DimY();
 
   displace[0] = 1;
   displace[1] = tx;
@@ -1038,7 +1038,7 @@ InrImage*    Func_IsocontourPoints( InrImage* im, float th)
 
   Si (im->DimZ()>1) Alors
     num_dir=3;
-    zmax = im->_tz-2;
+    zmax = im->DimZ()-2;
   Sinon
     num_dir=2;
     zmax = 0;
@@ -1046,9 +1046,9 @@ InrImage*    Func_IsocontourPoints( InrImage* im, float th)
 
   // first parse, check the number of points
   Pour(z,0,zmax)
-  Pour(y,0,im->_ty-2)
+  Pour(y,0,im->DimY()-2)
   im ->BufferPos(0,y,z);
-  Pour(x,0,im->_tx-2)
+  Pour(x,0,im->DimX()-2)
 
     val1 = im->ValeurBuffer()-th;
     sign = (val1>0); 
@@ -1132,16 +1132,16 @@ InrImage*    Func_IsosurfDist2D( InrImage* im, float th)
   JusquA Non(im->IncBuffer())
   FinRepeter
 
-  tx = im->_tx;
+  tx = im->DimX();
 
   n = 0;
 
   displace[0] = 1;
   displace[1] = tx;
 
-  Pour(y,0,im->_ty-2)
+  Pour(y,0,im->DimY()-2)
   im ->BufferPos(0,y,0);
-  Pour(x,0,im->_tx-2)
+  Pour(x,0,im->DimX()-2)
 
     val0 = im->ValeurBuffer()-th;
     sign = (val0>0); 
@@ -1264,8 +1264,8 @@ InrImage*    Func_IsosurfDist( InrImage* im, float th)
   JusquA Non(im->IncBuffer())
   FinRepeter
 
-  tx = im->_tx;
-  txy = tx*im->_ty;
+  tx = im->DimX();
+  txy = tx*im->DimY();
 
   n = 0;
 
@@ -1273,10 +1273,10 @@ InrImage*    Func_IsosurfDist( InrImage* im, float th)
   displace[1] = tx;
   displace[2] = txy;
 
-  Pour(z,0,im->_tz-2)
-  Pour(y,0,im->_ty-2)
+  Pour(z,0,im->DimZ()-2)
+  Pour(y,0,im->DimY()-2)
   im ->BufferPos(0,y,z);
-  Pour(x,0,im->_tx-2)
+  Pour(x,0,im->DimX()-2)
 
     val0 = im->ValeurBuffer()-th;
     sign = (val0>0); 
@@ -1375,25 +1375,25 @@ InrImage*  Func_Convolve( InrImage* in, InrImage* kernel )
   (*res) = (*in);
 
   
-  msx2 = kernel->_tx/2;
-  msy2 = kernel->_ty/2;
-  msz2 = kernel->_tz/2;
+  msx2 = kernel->DimX()/2;
+  msy2 = kernel->DimY()/2;
+  msz2 = kernel->DimZ()/2;
 
-  kernel_size = kernel->_tx*kernel->_ty*kernel->_tz;
+  kernel_size = kernel->DimX()*kernel->DimY()*kernel->DimZ();
   kernel_pos = new int[kernel_size];
 
   min_x = msx2;
-  max_x = in->_tx-1-msx2;
+  max_x = in->DimX()-1-msx2;
   min_y = msy2;
-  max_y = in->_ty-1-msy2;
+  max_y = in->DimY()-1-msy2;
   min_z = msz2;
-  max_z = in->_tz-1-msz2;
+  max_z = in->DimZ()-1-msz2;
 
   n = 0;
-  Pour(k,0,kernel->_tz-1)
-  Pour(j,0,kernel->_ty-1)
-  Pour(i,0,kernel->_tx-1)
-    kernel_pos[n]  = (i-msx2)+((j-msy2)+(k-msz2)*in->_ty)*in->_tx; 
+  Pour(k,0,kernel->DimZ()-1)
+  Pour(j,0,kernel->DimY()-1)
+  Pour(i,0,kernel->DimX()-1)
+    kernel_pos[n]  = (i-msx2)+((j-msy2)+(k-msz2)*in->DimY())*in->DimX(); 
     kernel_pos[n] *= -1;
     n++;
   FinPour
@@ -1451,25 +1451,25 @@ InrImage*  Func_ConvolveMask( InrImage* in, InrImage* kernel, InrImage* mask )
   (*res) = (*in);
 
   
-  msx2 = kernel->_tx/2;
-  msy2 = kernel->_ty/2;
-  msz2 = kernel->_tz/2;
+  msx2 = kernel->DimX()/2;
+  msy2 = kernel->DimY()/2;
+  msz2 = kernel->DimZ()/2;
 
-  kernel_size = kernel->_tx*kernel->_ty*kernel->_tz;
+  kernel_size = kernel->DimX()*kernel->DimY()*kernel->DimZ();
   kernel_pos = new int[kernel_size];
 
   min_x = msx2;
-  max_x = in->_tx-1-msx2;
+  max_x = in->DimX()-1-msx2;
   min_y = msy2;
-  max_y = in->_ty-1-msy2;
+  max_y = in->DimY()-1-msy2;
   min_z = msz2;
-  max_z = in->_tz-1-msz2;
+  max_z = in->DimZ()-1-msz2;
 
   n = 0;
-  Pour(k,0,kernel->_tz-1)
-  Pour(j,0,kernel->_ty-1)
-  Pour(i,0,kernel->_tx-1)
-    kernel_pos[n]  = (i-msx2)+((j-msy2)+(k-msz2)*in->_ty)*in->_tx; 
+  Pour(k,0,kernel->DimZ()-1)
+  Pour(j,0,kernel->DimY()-1)
+  Pour(i,0,kernel->DimX()-1)
+    kernel_pos[n]  = (i-msx2)+((j-msy2)+(k-msz2)*in->DimY())*in->DimX(); 
     kernel_pos[n] *= -1;
     n++;
   FinPour

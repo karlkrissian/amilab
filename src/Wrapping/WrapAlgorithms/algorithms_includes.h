@@ -24,6 +24,7 @@
 #include "amiEigenDecomp.h"
 #include "amiAnisoGS.h"
 #include "amiAnisoGS_NRAD.h"
+#include "AddImageNoise.h"
 
 #ifdef __GCCXML__
   template class ami::ImageExtent<float>;

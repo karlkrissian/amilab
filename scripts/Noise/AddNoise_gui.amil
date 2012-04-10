@@ -9,101 +9,144 @@ func "Common/ScriptGui"
 
 if (!exists(AddNoiseClass)){
   Class AddNoiseClass : public ScriptGui {
-  #------------------------------------
-  
-  proc ::Init() {
-    ::input_name  = "",  "name of input image"
-    ::output_name = "global::AddNoise_output", "name of output image variable"
-  
-    # 0: Additive Gaussian Noise
-    # 1: Multiplicative Gaussian Noise
-    # 2: Rician Noise
-    ::type       = INT(0), "Noise type: 0: Additive Gaussian, 1: Multiplicative Gaussian, 1: Rician Noise"
-    
-    ::mean       = 0, "Mean of the noise"
-    ::stddev     = 1, "Standard deviation of the noise"
-    ::CreateGui()
-  }
-  
-  #------------------------------------
-  proc ::load_input() {
-    eval "::input <<="+::input_name+";"
-    if (::input_name=="Image") {
-      ::input_name = "AddNoise_input"
-      ::win.Update(-1)
-    }
-  }
-  
-  #------------------------------------
-  proc ::Run() {
-    ::load_input()
-    if (::type==0) {
-      ::res <<= AddGaussNoise(::input,::mean,::stddev)
-    }
-    if (::type==1) {
-      ::noise = ::input*0
-      ::noise = AddGaussNoise(::noise,1,::stddev)
-      ::res <<= ::input*::noise
-    }
-    if (::type==2) {
-      ::res <<= ::input
-      global::AddRiceNoise(&::res,::stddev)
-    }
-    
-    eval ::output_name+" <<= ::res;"
-  
-    #  ::Display()
-  }
-  
-  #------------------------------------
-  proc ::Display() {
-    show ::input
-    
-    if (exists(::res)) {
-      show ::res
-      ::input_draw.compare(&::res_draw)
-    }
-  }
-  
-  #------------------------------------
-  proc ::Save() {
-    ::res.save resultname
-  }
-  
-  #------------------------------------
-  proc ::CreateGui() {  
-    # parameters window
-    ::win = ParamPanel("Noise")
-  
-    ::win.BeginBook()
-      ::win.AddPage("Param")
-        ::win.AddImageChoice( &::input_name, "Input")
+
+    func "Variable/ObjectIO"
+    # 
+    #===========================================================================
+    Class ::ParamClass : public ObjectIO {
+      func "WxUtils/alEnum"
+      ::description = "Default parameters", \
+                      "Description of the set of parameters"
+
+      alEnum ::noise_types
+      ::noise_types.SetTitle("Noise Distribution")
+      ::noise_types.SetHelp("Defines the available noise distributions")
+      ::noise_types.AddValue( "+Gau",    "Additive Gaussian Noise")
+      ::noise_types.AddValue( "*Gau",    "Multiplicative Gaussian Noise")
+      ::noise_types.AddValue( "Ric",     "Rician Noise")
+      ::noise_types.AddValue( "SP",      "Salt and Pepper Noise")
+      ::noise_type = INT(2), ::noise_types.GetHelpMessage()
+      ::noise_types.SetVariable(&::noise_type)
       
-        ::win.AddString( &::output_name,"Output name")
+      ::salt_percent   = 0.05, "percentage of salt noise"
+      ::pepper_percent = 0.05, "percentage of pepper noise"
+
+      ::mean       = 0, "Mean of the noise"
+      ::stddev     = 1, "Standard deviation of the noise"
+
+      #-----------------------------------------------------------------------
+      proc ::__assign__( VAR p) {
+        ::noise_type = p.noise_type
+        ::mean       = p.mean
+        ::stddev     = p.stddev
+      }
+    }
+
+
+    #------------------------------------
+    proc ::Init() {
+      ::input_name  = "",  "name of input image"
+      ::output_name = "global::AddNoise_output", "name of output image variable"
+    
+      ::ParamClass ::params
+      ::CreateGui()
+    }
+    
+    #------------------------------------
+    proc ::load_input() {
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "AddNoise_input"
+        ::win.Update(-1)
+      }
+    }
+    
+    #------------------------------------
+    proc ::Run() {
+      ::load_input()
+      if (::params.noise_type==0) {
+        ::res <<= ::input
+        algorithms.ami_AddImageNoise.AddGaussianNoise(&::res,\
+                          ::params.mean,::params.stddev)
+      }
+      if (::params.noise_type==1) {
+        ::noise = ::input*0
+        algorithms.ami_AddImageNoise.AddGaussianNoise(&::noise,\
+                          1,::params.stddev)
+        ::res <<= ::input*::noise
+      }
+      if (::params.noise_type==2) {
+        ::res <<= ::input
+        global::AddRiceNoise(&::res,::params.stddev)
+      }
+      if (::params.noise_type==3) {
+        ::res <<= ::input
+        algorithms.ami_AddImageNoise.AddSaltAndPepper(&::res,\
+            ::params.salt_percent,1-::params.pepper_percent)
+      }
       
-        ::type_id = ::win.AddEnum( &::type, "Type")
-          ::win.AddEnumChoice(::type_id,"Add. Gaussian")
-          ::win.AddEnumChoice(::type_id,"Mult. Gaussian")
-          ::win.AddEnumChoice(::type_id,"Rician")
+      eval ::output_name+" <<= ::res;"
+    
+      #  ::Display()
+    }
+    
+    #------------------------------------
+    proc ::Display() {
+      show ::input
+      
+      if (exists(::res)) {
+        show ::res
+        ::input_draw.compare(&::res_draw)
+      }
+    }
+    
+    #------------------------------------
+    proc ::Save() {
+      ::res.save resultname
+    }
+    
+    #------------------------------------
+    proc ::CreateGui() {  
+      # parameters window
+      ::win = ParamPanel("Noise")
+    
+      ::win.BeginBook()
+        ::win.AddPage("Param")
+          ::win.AddImageChoice( &::input_name, "Input")
         
-        ::win.AddFloat( &::mean,"Mean",0.1,  50)
-        ::win.AddFloat( &::stddev,"Std dev",0.1,50)
-      
-        #::win.SetCallback(::Run)
-      
-        ::win.AddButton("Run",        ::Run)
-        ::win.AddButton("Display",    ::Display)
-    ::win.EndBook()
+          ::win.AddString( &::output_name,"Output name")
+
+          ::params.noise_types.SetGuiMode(1)
+          ::params.noise_types.AddGui(&::win)
+          
+          ::win.BeginHorizontal()
+            ::mean_id = ::win.AddFloat( &::params.mean,"Mean",0.1,  50)
+            ::win.ShowSlider(::mean_id,false)
+            ::std_id  = ::win.AddFloat( &::params.stddev,"Stdev",0.1,50)
+            ::win.ShowSlider(::std_id,false)
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
+            ::salt_id = ::win.AddFloat(&::params.salt_percent,"Salt%",0,1)
+            ::win.ShowSlider(::salt_id,false)
+            ::pep_id = ::win.AddFloat(&::params.pepper_percent,"Pepper%",0,1)
+            ::win.ShowSlider(::pep_id,false)
+          ::win.EndHorizontal()
+        
+          #::win.SetCallback(::Run)
+        
+          ::win.AddButton("Run",        ::Run)
+          ::win.AddButton("Display",    ::Display)
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+    
+      ::win.Update(-1)
+      ::win.Display()
+    }
+    
+    ::Init()
   
-    ::AddStandardButtons(&::win)
-  
-    ::win.Update(-1)
-    ::win.Display()
-  }
-  
-  ::Init()
-  
- } #End of class 
+  } #End of class 
    
 } #End of if
 

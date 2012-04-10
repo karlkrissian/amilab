@@ -190,7 +190,7 @@ def MissingTypes(classname,method,check_includes=False):
     ispointer= config.types[a.typeid].GetType()=="PointerType"
     isconstpointer = typefullname.endswith("const *")
     if typename=='void' and ispointer:
-      print "need to deal with 'void pointer' here\n"
+      print "need to deal with 'void pointer' here"
     else:
       #
       # discard triple pointers or double pointers with const (TODO: improve this part)
@@ -839,7 +839,8 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
 #  ImplementMethodWrap
 #  if classname="" then can be used for a standard function
 #------------------------------------------------------------------
-def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
+def ImplementMethodWrap(classname, method, constructor=False, methodcount=1,\
+                        light=False):
   #print "ImplementMethodWrap {0} {1} {2}".format(classname,method.usedname,constructor)
   wrapmethod_name = method.usedname
   if classname!="":
@@ -850,8 +851,10 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1):
   #
   # Implement the description/help part
   #
-  res = ImplementMethodDescription(classname,method,constructor)
-  #res = ''
+  if not light:
+    res = ImplementMethodDescription(classname,method,constructor)
+  else:
+    res = ''
   
   # don't return help in case of duplicated method
   if methodcount>1:
@@ -930,7 +933,8 @@ def BackupFile(filename):
 #------------------------------------------------------------------
 #  ImplementDuplicatedMethodWrap
 #------------------------------------------------------------------
-def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, constructor=False):
+def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, \
+                                  constructor=False, light=False):
   # first: easy display
   #if method.returntype==None:
   #  print 'void',
@@ -950,10 +954,11 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, constr
   res += classname+"::"+method.name+'(...)\n'
   res += "//---------------------------------------------------\n"
   # second implementation
-  #   Documentation part
-  res += "void {0}::\n".format(wrapclass_name)
-  res += "    wrap_{0}::SetParametersComments()\n".format(wrapmethod_name) 
-  res += "{}\n"
+  if not light:
+    #   Documentation part
+    res += "void {0}::\n".format(wrapclass_name)
+    res += "    wrap_{0}::SetParametersComments()\n".format(wrapmethod_name) 
+    res += "{}\n"
   #   Execution part
   res += "\n"
   res += "//---------------------------------------------------\n"
@@ -996,19 +1001,20 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, constr
 #------------------------------------------------------------------
 #  ImplementCopyMethodWrap
 #------------------------------------------------------------------
-def ImplementCopyMethodWrap(classname, method):
+def ImplementCopyMethodWrap(classname, method, light=False):
   wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
   res = "\n"
   res += "//---------------------------------------------------\n"
   res += "//  Wrapping of 'copy' method for {0}.\n".format(classname)
   res += "//---------------------------------------------------\n"
   # second implementation
-  #   Documentation part
-  res += "void {0}::\n".format(wrapclass_name)
-  res += "    wrap___copy__::SetParametersComments()\n"
-  res += "{\n"
-  res += '  return_comments="A copy of the {0} object within a new variable.";\n'.format(classname)
-  res += "}\n"
+  if not light:
+    #   Documentation part
+    res += "void {0}::\n".format(wrapclass_name)
+    res += "    wrap___copy__::SetParametersComments()\n"
+    res += "{\n"
+    res += '  return_comments="A copy of the {0} object within a new variable.";\n'.format(classname)
+    res += "}\n"
   #   Execution part
   res += "\n"
   res += "//---------------------------------------------------\n"
@@ -1054,7 +1060,7 @@ def WrapClass(classname,include_file,inputfile):
 
   bases=[]
   config.GetBases(classname,bases)
-  print "bases :", bases
+  #print "bases :", bases
 
   #
   if found:
@@ -1320,11 +1326,17 @@ def WrapClass(classname,include_file,inputfile):
       pos=pos+1
     staticmethods_decl+='\n'
 
+    if args.val.light:
+      method_macro="ADD_CLASS_METHOD_LIGHT"
+    else:
+      method_macro="ADD_CLASS_METHOD"
+
     class_decl='\n'
     # check for 'copy' method
     if dh.has_copyconstr and (dh.abstract!="1"):
       class_decl+=indent+'// Adding copy method\n'
-      class_decl+=indent+'ADD_CLASS_METHOD(__copy__,"Copy method, uses the copy constructor.");\n'
+      class_decl+=indent+method_macro+\
+                  '(__copy__,"Copy method, uses the copy constructor.");\n'
 
     class_decl+=indent+'// Adding standard methods\n'
     # step 1:
@@ -1336,7 +1348,8 @@ def WrapClass(classname,include_file,inputfile):
       if missingtypes!="":
         class_decl+= "/* The following types are missing: "+missingtypes+"\n"
         fm.Methods[pos].missingtypes=True
-      class_decl+=indent+'ADD_CLASS_METHOD('+m.usedname+',"{0}  ({1})")\n'.format(\
+      class_decl+=indent+method_macro+\
+                  '('+m.usedname+',"{0}  ({1})")\n'.format(\
             m.GetDescription(classname,False),\
             WxHelpLink(classname,m))
       if missingtypes!="":
@@ -1349,6 +1362,7 @@ def WrapClass(classname,include_file,inputfile):
     #print "\nEnd: {0}\n".format(classname)
     #print "Done"
         
+        
     if len(fm.OperatorMethods)>0:
       class_decl+=indent+"// Operators:\n"
     pos = 0
@@ -1359,12 +1373,13 @@ def WrapClass(classname,include_file,inputfile):
         class_decl+= "/* The following types are missing: "+missingtypes+"\n"
         fm.OperatorMethods[pos].missingtypes=True
       if m.usedname=="operator not available":
-        class_decl+=indent+'// ADD_CLASS_METHOD('+m.usedname+',"{0} ({1})")\n'.format(\
+        class_decl+=indent+'// {0}('.format(method_macro)+\
+            m.usedname+',"{0} ({1})")\n'.format(\
             m.GetDescription(classname,False),\
             WxHelpLink(classname,m))
         m.iswrapped=False
       else:
-        class_decl+=indent+'ADD_CLASS_METHOD('+m.usedname+',\
+        class_decl+=indent+'{0}('.format(method_macro)+m.usedname+',\
             "{0} ({1})")\n'.format(\
             m.GetDescription(classname,False),\
             WxHelpLink(classname,m))
@@ -1578,13 +1593,13 @@ def WrapClass(classname,include_file,inputfile):
       config.templatetypes(m.group(2),template_params)
       for template_param in template_params:
         template_param = template_param.strip(' ')
-        print "To check for include: {0}".format(template_param)
+        #print "To check for include: {0}".format(template_param)
         if template_param in config.classes.keys():
           fileid = config.types[config.classes[template_param]].fileid
           filetoadd = FindIncludeFile(template_param,fileid)
           #local_include_file += '\n#include "{0}"'.format(filetoadd)
           local_include_file += '\n{0}'.format(filetoadd)
-    print "from {0}".format(local_include_file)
+    #print "from {0}".format(local_include_file)
     if args.val.dllname != '':
       local_include_file += '\n#include "{0}Configure.h"'.format(
         args.val.dllname)
@@ -1675,7 +1690,7 @@ def WrapClass(classname,include_file,inputfile):
     
     # implement copy method
     if dh.has_copyconstr and (dh.abstract!="1"):
-      impl+=ImplementCopyMethodWrap(classname,m)
+      impl+=ImplementCopyMethodWrap(classname,m,args.val.light)
 
     # Methods
     for m in fm.Methods:
@@ -1685,9 +1700,12 @@ def WrapClass(classname,include_file,inputfile):
         impl += "/* The following types are missing: "+missingtypes+"\n"
       methodcount=fm.MethodNames.count(m.name)
       if m.duplicated:
-        impl += ImplementDuplicatedMethodWrap(classname,m,methodcount,fm.Methods)
+        impl += ImplementDuplicatedMethodWrap(classname,m,methodcount,\
+                                              fm.Methods,\
+                                              False,\
+                                              args.val.light)
       else:
-        impl += ImplementMethodWrap(classname,m,False,methodcount)
+        impl += ImplementMethodWrap(classname,m,False,methodcount,args.val.light)
       if missingtypes!="":
         impl += "*/\n"
         
@@ -1702,9 +1720,12 @@ def WrapClass(classname,include_file,inputfile):
         impl += " * operator not available \n"
       methodcount=fm.OperatorMethodNames.count(m.name)
       if m.duplicated:
-        impl += ImplementDuplicatedMethodWrap(classname,m,methodcount,fm.OperatorMethods)
+        impl += ImplementDuplicatedMethodWrap(classname,m,methodcount,\
+                                              fm.OperatorMethods,\
+                                              False,\
+                                              args.val.light)
       else:
-        impl += ImplementMethodWrap(classname,m,False,methodcount)
+        impl += ImplementMethodWrap(classname,m,False,methodcount,args.val.light)
       if (missingtypes!="") or (m.usedname=="operator not available"):
         impl += "*/\n"
         

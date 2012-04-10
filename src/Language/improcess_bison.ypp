@@ -120,7 +120,7 @@ typedef ami::ImageExtent<float> ami_ImageExtent_float;
 #include "Viewer3D.hpp"
 #include "DessinImage.hpp"
 //#include "CompareImage.hpp"
-#include "bruit.hpp"
+//#include "AddImageNoise.h"
 #include "CalculAireSection.hpp"
 #include "CalculRepCercle.hpp"
 #include "ShortestPathClass.h"
@@ -550,7 +550,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_AnisoRudinMult
 %token T_point_Init 
 %token T_point_iterate T_point_end 
-%token TAddGaussNoise T_SNR
+%token T_SNR
 %token T_info
 %token T_point_info
 %token T_point_save
@@ -4069,7 +4069,20 @@ param_list:
           /**
             Description: it is now a new reference to the variable, so basically similar to &variable (should be removed?)...
           **/
-          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
+
+          ParamList* pl = new ParamList();
+          // Creating a new variable that points to the same value, and a slightly different name (with added "_ref"), comments are also copied.
+          BasicVariable::ptr newvar(var->NewReference());
+
+          pl->AddParam(newvar);
+          $$ = pl;
+/* passing all by reference ...
+ *          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
           if (!var.get()) {
             driver.error("Empty Variable as parameter !");
             YYABORT;
@@ -4084,13 +4097,29 @@ param_list:
             driver.error(boost::format("Could not copy parameter 0 variable expression !").str().c_str());
             YYABORT;
           }
+        */
         }
         | param_list T_COMMA expr_var
         {
           /**
             Description: it is now a new reference to the variable, so basically similar to &variable (should be removed?)...
           **/
-          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+
+          BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
+          ParamList* pl =  $1;
+
+          // Creating a new variable that points to the same value, and a slightly different name (with added "_ref"), comments are also copied.
+          BasicVariable::ptr newvar(var->NewReference());
+
+          pl->AddParam(newvar);
+          $$ = pl;
+          
+/* passing all by reference
+ *          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
           if (!var.get()) {
             driver.error("Empty Variable as parameter !");
             YYABORT;
@@ -4106,6 +4135,7 @@ param_list:
             driver.error((boost::format("Could not copy parameter %1% variable expression !") % pl->GetNumParam()).str().c_str());
             YYABORT;
           }
+        */
         }
         ;
 
@@ -6638,6 +6668,7 @@ image:
       FinSi
       ADD_VARSTACK_PTR(InrImage,res);
     }
+/* deprecated
     |
     TAddGaussNoise
     T_OP_PAR var_image
@@ -6646,10 +6677,9 @@ image:
       /**
         Description:
           Add Gaussian noise with specified mean and variance.
-      **/
+      ** /
 
-      GET_VARSTACK_VALUE(InrImage, im);
-        AjouteBruit* addnoise;
+        GET_VARSTACK_VALUE(InrImage, im);
         float mean;
         float sd;
         char  resname[256];
@@ -6661,13 +6691,12 @@ image:
       InrImage::ptr res( new InrImage(WT_FLOAT, resname, im.get()));
 
       (*res)=(*im);
-      addnoise = new AjouteBruit();
-      addnoise->AjouteBruitGaussien(res.get(),mean,sd);
-      delete addnoise;
+      ami::AddImageNoise::AddGaussianNoise(res.get(),mean,sd);
       ADD_VARSTACK_PTR(InrImage,res);
 
     }
-        |
+*/
+      |
     T_rot2D T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA
                     expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
