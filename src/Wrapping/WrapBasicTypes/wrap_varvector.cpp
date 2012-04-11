@@ -71,9 +71,9 @@ BasicVariable::ptr WrapClass_VarVector::wrap_VarVector::CallMember( ParamList* p
   if ((initial_size>0)&&(v.get()))  {
     for (int i=0; i<initial_size; i++)
       vv->push_back(v->NewCopy());
-  } else {
-    CLASS_MESSAGE("Needs a valid variable as second parameter.");
-  }
+  } //else {
+    //CLASS_MESSAGE("Needs a valid variable as second parameter.");
+  //}
 
   boost::shared_ptr<VarVector> vv_ptr(vv);
 

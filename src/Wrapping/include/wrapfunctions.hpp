@@ -92,7 +92,7 @@ class WrapClassMember;
 /**\
  * description_str\
  **/ \
-class wrap_##methodname : public WrapClassMember { \
+class wrap_##methodname : public WrapClassMemberWithDoc { \
   public: \
     wrap_##methodname()  \
     { \

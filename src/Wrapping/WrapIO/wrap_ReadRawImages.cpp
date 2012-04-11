@@ -76,11 +76,11 @@ BasicVariable::ptr wrap_ReadRawImages2D::CallMember( ParamList* p)
     im->SetAMImage(amim);
     Variable<InrImage>::ptr varres( new Variable<InrImage>(im));
     return varres; 
-  } else {
-    // Error message
-    CLASS_ERROR("Failed ... \n");
-    return BasicVariable::ptr();
-  }
+  } //else {
+    //// Error message
+    //CLASS_ERROR("Failed ... \n");
+    //return BasicVariable::ptr();
+  //}
 
 }
 
@@ -135,11 +135,11 @@ BasicVariable::ptr wrap_ReadRawImage3D::CallMember( ParamList* p)
     im->SetAMImage(amim);
     Variable<InrImage>::ptr varres( new Variable<InrImage>(im));
     return varres; 
-  } else {
-    // Error message
-    CLASS_ERROR("Failed ... \n");
-    return BasicVariable::ptr();
-  }
+  } //else {
+    //// Error message
+    //CLASS_ERROR("Failed ... \n");
+    //return BasicVariable::ptr();
+  //}
 
 }
 
@@ -198,10 +198,10 @@ BasicVariable::ptr wrap_ReadRawVectImage3D::CallMember( ParamList* p)
     im->SetAMImage(amim);
     Variable<InrImage>::ptr varres( new Variable<InrImage>(im));
     return varres; 
-  } else {
+  } /*else {
     // Error message
     CLASS_ERROR("Failed ... \n");
     return BasicVariable::ptr();
-  }
+  }*/
 
 }

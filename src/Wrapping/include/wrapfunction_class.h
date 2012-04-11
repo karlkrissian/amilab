@@ -31,7 +31,7 @@
 /**\
  * description_str\
  **/\
-class wrap_##classname##methodname : public WrapClassMember { \
+class wrap_##classname##methodname : public WrapClassMemberWithDoc { \
   protected:\
     classname::ptr _objectptr; \
   public: \
@@ -60,7 +60,7 @@ class wrap_##classname##methodname : public WrapClassMember { \
 /**\
  * description_str\
  **/\
-class wrap_##methodname : public WrapClassMember { \
+class wrap_##methodname : public WrapClassMemberWithDoc { \
   protected:\
     _parentclass_ptr _objectptr; \
   public: \
@@ -116,7 +116,7 @@ void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #m
 /**\
  * Sets the variable varname, description_str\
  **/\
-class wrap_Set##varname : public WrapClassMember { \
+class wrap_Set##varname : public WrapClassMemberWithDoc { \
   protected:\
     _parentclass_ptr _objectptr; \
   public: \
@@ -144,7 +144,7 @@ class wrap_Set##varname : public WrapClassMember { \
 /**\
  * Gets the variable varname, description_str\
  **/\
-class wrap_Get##varname : public WrapClassMember { \
+class wrap_Get##varname : public WrapClassMemberWithDoc { \
   protected:\
     _parentclass_ptr _objectptr; \
   public: \
@@ -185,7 +185,7 @@ void AddVar_SetGet##varname(  _parentclass_ptr& pc) {\
 /**\
  * description_str\
  **/\
-class wrap_##methodname : public WrapClassMember { \
+class wrap_##methodname : public WrapClassMemberWithDoc { \
   public: \
     wrap_##methodname() { \
       Set_arg_failure(false);\
@@ -212,7 +212,7 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 /**\
  * description_str\
  **/\
-class wrap_static_##methodname : public WrapClassMember { \
+class wrap_static_##methodname : public WrapClassMemberWithDoc { \
   public: \
     wrap_static_##methodname() { \
       Set_arg_failure(false);\
@@ -429,25 +429,50 @@ class WrapClass: public virtual WrapClassBase
 
 };
 
+//------------------------------------------------------------------------------
 /**
  * Basic class for wrapping class function members.
  **/
 class WrapCommon_DECLARE WrapClassMember {
 
-  DEFINE_CLASS(WrapClassMember);
+  //DEFINE_CLASS(WrapClassMember);
 
   protected:
-//    std::string functionname; 
-//    std::string description; 
-    std::vector<std::string> parameters_comments;
-    std::vector<std::string> paramtypes;
-    std::string return_comments;
-    std::string return_type;
     bool arg_failure;
     bool quiet;
 
   public:
     virtual ~WrapClassMember() {}
+    virtual void SetParametersComments()          {};
+    virtual BasicVariable::ptr CallMember(ParamList*)  
+    { return BasicVariable::ptr(); };
+
+    /**
+     * Display the function help in an information dialog.
+     */
+    virtual void ShowHelp() {}
+
+    void Set_arg_failure(bool const & f) { arg_failure=f;}
+    bool Get_arg_failure() { return arg_failure;}
+
+    void Set_quiet(bool const & q) { quiet=q;}
+
+};
+ 
+
+//------------------------------------------------------------------------------
+class WrapCommon_DECLARE WrapClassMemberWithDoc : public WrapClassMember {
+
+  //DEFINE_CLASS(WrapClassMemberWithDoc);
+
+  protected:
+    std::vector<std::string> parameters_comments;
+    std::vector<std::string> paramtypes;
+    std::string return_comments;
+    std::string return_type;
+
+  public:
+    virtual ~WrapClassMemberWithDoc() {}
     virtual void SetParametersComments()          {};
     virtual BasicVariable::ptr CallMember(ParamList*)  
     { return BasicVariable::ptr(); };
@@ -463,18 +488,11 @@ class WrapCommon_DECLARE WrapClassMember {
     size_t get_parameters_comments_size() const { return parameters_comments.size(); }
     std::string get_parameters_comments( int n) { return parameters_comments[n]; }
     std::string get_paramtypes( int n) { return paramtypes[n]; }
-    //void ParamError(int n);
-    
-    void Set_arg_failure(bool const & f) { arg_failure=f;}
-    bool Get_arg_failure() { return arg_failure;}
-
-    void Set_quiet(bool const & q) { quiet=q;}
 
     virtual const std::string GetDescription()  { return std::string();};
     virtual const std::string GetFunctionName() { return std::string();};
 };
- 
-//inline WrapClassMember::~WrapClassMember() { }  // defined even though it's pure virtual; it's faster this way; 
+
 
 
 #endif 

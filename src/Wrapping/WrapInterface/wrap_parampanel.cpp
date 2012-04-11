@@ -626,7 +626,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddPage::CallMember( ParamList* p)
       obj->GetObj()->Show();
     } else
     {
-      CLASS_ERROR("Could not cast dynamically the parameter ..., check its type");
+      //CLASS_ERROR("Could not cast dynamically the parameter ..., check its type");
       ClassHelpAndReturn;
     }
   }

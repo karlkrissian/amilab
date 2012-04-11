@@ -66,9 +66,9 @@ BasicVariable::ptr WrapClass_StdVector<T>::
       for (int i=0; i<initial_size; i++)
         v->push_back(lobj);
     }
-  } else {
-    CLASS_MESSAGE("Needs a valid variable as second parameter.");
-  }
+  } //else {
+    //CLASS_MESSAGE("Needs a valid variable as second parameter.");
+  //}
   return WrapClass_StdVector<T>::CreateVar(v);
 }
 

@@ -44,7 +44,7 @@ std::string GetPointerAsString(void* p)
 }
 
 
-void WrapClassMember::ShowHelp() 
+void WrapClassMemberWithDoc::ShowHelp() 
 {
   std::string mess; 
   std::string paramlist_str;

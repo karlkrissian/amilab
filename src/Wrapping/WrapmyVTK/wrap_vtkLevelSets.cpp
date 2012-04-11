@@ -438,8 +438,8 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetCurvWeights::CallMember( Para
   if (!get_val_ptr_param<InrImage>(  input,  p, n)) ClassHelpAndReturn;
   if (input->GetFormat()==WT_FLOAT) {
     this->_objectptr->GetObj()->SetCurvatureWeights((float*)(input->GetData()));
-  } else
-    CLASS_ERROR("Input image is not in float format ...");
+  } //else
+   //CLASS_ERROR("Input image is not in float format ...");
   return BasicVariable::ptr();
 }
 
@@ -566,8 +566,8 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetExpansionImage::CallMember( P
   if (input) {
     parent->expansion_image  = vtk_new<vtkImageData>()((vtkImageData*) (*input));
     curv->Setballoon_image(parent->expansion_image.get());
-  } else
-    CLASS_ERROR("Input image not allocated ...");
+  } //else
+    //CLASS_ERROR("Input image not allocated ...");
   return BasicVariable::ptr();
 }
 
@@ -586,7 +586,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetExpansion::CallMember( ParamL
   if (!get_val_param<float>(        coeff,   p, n))     ClassHelpAndReturn;
   boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
-    CLASS_ERROR("Empty object")
+    //CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
   }
 
@@ -610,7 +610,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_GetExpansion::CallMember( ParamL
 
   boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
-    CLASS_ERROR("Empty object")
+    //CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
   }
 
@@ -637,13 +637,13 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetProbThreshold::CallMember( Pa
   if (!get_val_param<float>(        coeff,   p, n))     ClassHelpAndReturn;
   boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
-    CLASS_ERROR("Empty object")
+    //CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
   }
   if ((coeff>0)&&(coeff<1))
     curv->SetProbabilityThreshold(coeff);
-  else
-    CLASS_ERROR("threshold must be in ]0,1[");
+  //else
+    //CLASS_ERROR("threshold must be in ]0,1[");
   return BasicVariable::ptr();
 }
 
@@ -662,7 +662,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetProbHighTh::CallMember( Param
   if (!get_val_param<float>(        coeff,   p, n))     ClassHelpAndReturn;
   boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
-    CLASS_ERROR("Empty object")
+    //CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
   }
   curv->SetProbabilityHighThreshold(coeff);
@@ -707,7 +707,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetGaussian::CallMember( ParamLi
   if (!get_val_param<float>(  std,    p, n))     ClassHelpAndReturn;
   boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
-    CLASS_ERROR("Empty object")
+    //CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
   }
   curv->SetGaussian(id,mean,std);
@@ -740,7 +740,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetAdvectionField::CallMember( P
 
   boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
   if (!curv.get()) {
-    CLASS_ERROR("Empty object")
+    //CLASS_ERROR("Empty object")
     return BasicVariable::ptr();
   }
   
@@ -752,8 +752,8 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetAdvectionField::CallMember( P
           (float*)(input_y->GetData()),
           (float*)(input_z->GetData()));
   }
-  else
-    CLASS_ERROR("All images should be in float format.");
+  //else
+    //CLASS_ERROR("All images should be in float format.");
 
   return BasicVariable::ptr();
 }
@@ -800,8 +800,8 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetDistMethod::CallMember( Param
   if (!get_int_param( val,   p, n))     ClassHelpAndReturn;
   if ((val>=0)&&(val<=3))
     this->_objectptr->GetObj()->SetDMmethod( val);
-  else
-    CLASS_ERROR("Bad value ");
+  //else
+    //CLASS_ERROR("Bad value ");
   return BasicVariable::ptr();
 }
 

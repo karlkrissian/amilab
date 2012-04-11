@@ -145,7 +145,9 @@ VARTYPE_DEFAULT( WrapClassMember)
 template<> AMI_DLLEXPORT std::string Variable<WrapClassMember>::TreeCtrlInfo() const
 {
   // limit size of description here ???
-  return Pointer()->GetDescription();
+  return "";
+  // should try to cast to WrapClassMemberWithDoc
+  //Pointer()->GetDescription();
 };
 
 //------------------------------------------------------

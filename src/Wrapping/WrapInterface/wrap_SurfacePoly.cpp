@@ -92,9 +92,9 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   SurfacePoly::ptr surf_ptr(new SurfacePoly());
   if (filename!="") {
     int res = surf_ptr->Read(filename.c_str());
-    if (!res) {
-      CLASS_ERROR("Failed to read polydata.");
-    }
+    //if (!res) {
+      //CLASS_ERROR("Failed to read polydata.");
+    //}
   }
   return WrapClass<SurfacePoly>::CreateVar(new WrapClass_SurfacePoly(surf_ptr));
 }
@@ -1172,7 +1172,7 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   if (varsurf.get()) {
     // should be OK
     if (varsurf->GetPtrCounter()==1) {
-      CLASS_MESSAGE("GetPtrCounter()==1");
+      //CLASS_MESSAGE("GetPtrCounter()==1");
       this->_objectptr->_obj = surf; 
     } else {
       // make a copy first

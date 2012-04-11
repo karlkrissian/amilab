@@ -1045,7 +1045,7 @@ def WrapClass(classname,include_file,inputfile):
     t0 = time.clock()
     #print "\n**************"
     print "\n   Wrapping: {0}".format(classname)
-    print "             **************"
+    #print "             **************"
     #print "WrapClass({0},{1},{2})".format(classname,include_file,inputfile)
   parser = make_parser()
   # Create the handler
@@ -1228,7 +1228,7 @@ def WrapClass(classname,include_file,inputfile):
     #print dh.bases
     for (base,virtual) in dh.bases:
       basename=config.types[base].GetString()
-      print "base:",base," name:",basename
+      #print "base:",base," name:",basename
       virtualstring=''
       baseusedname=config.ClassUsedName(basename)
       wrapped_base='WrapClass_{0}'.format(baseusedname)
