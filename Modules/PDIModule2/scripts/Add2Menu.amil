@@ -1,0 +1,10 @@
+
+ami.MainFrame.AddToMenu("&Modules","&PDIModule2","&Load",    "../Modules/PDIModule2/scripts/Load_PDIModule2")
+ami.MainFrame.AddToMenu("&Modules","&PDIModule2","&ReLoad",  "../Modules/PDIModule2/scripts/ReLoad_PDIModule2")
+
+#func "2D/Add2Menu.amil"
+
+#if exists(global::scripts_toolbar) {
+#  global::scripts_toolbar.AddSeparator()
+#}
+func "URLLoad/Add2Menu.amil"

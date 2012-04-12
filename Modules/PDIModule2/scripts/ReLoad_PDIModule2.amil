@@ -1,0 +1,4 @@
+
+if exists(PDIModule2_obj) {
+  PDIModule2_obj.ReLoad()
+}

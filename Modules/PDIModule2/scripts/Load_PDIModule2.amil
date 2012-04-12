@@ -1,0 +1,12 @@
+
+#del PDIModule2Plugin
+#func "PDIModule2Plugin"
+func "Common/ModulePlugin"
+
+if (!exists(PDIModule2_obj)) {
+  ModulePlugin PDIModule2_obj
+  PDIModule2_obj.SetModuleName("PDIModule2")
+  PDIModule2_obj.Load()
+} else {
+  InfoDialog "The script class PDIModule2Plugin to be already instanciated." 
+}
