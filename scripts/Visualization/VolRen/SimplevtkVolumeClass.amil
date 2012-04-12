@@ -399,7 +399,7 @@ if (!exists(SimplevtkVolumeClass)) {
           if (exists(::mask)){
             ::volmapper.SetMaskInput(&::mask)
           }
-          ::volmapper.SetInput(&::vtkinput)
+          ::volmapper.SetInput(0,&::vtkinput)
           
           if (::volrenmapper_type==3) {
             del ::vtkinput2
@@ -605,7 +605,7 @@ if (!exists(SimplevtkVolumeClass)) {
     ::vol.SetProperty( &::property )
     ::vol.SetMapper( &::volmapper )
 
-    ::volmapper.SetInput(&::vtkinput)
+    ::volmapper.SetInput(0,&::vtkinput)
     #Add volume to renderer
     if (exists(::renderer)){
       ::renderer.AddVolume(&::vol)
