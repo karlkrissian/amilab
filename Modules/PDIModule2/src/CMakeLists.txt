@@ -41,6 +41,7 @@ SET(${KIT}_INCLUDE_PATHS
     ${AMILab_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
     ${AMILab_SOURCE_DIR}
     ${AMILab_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 
