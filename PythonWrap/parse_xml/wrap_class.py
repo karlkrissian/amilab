@@ -656,19 +656,12 @@ def ImplementMethodDescription(classname, method, constructor=False, methodcount
   if method.static=="1":
      wrapmethod_name = "static_"+wrapmethod_name
   
-  res = "\n"
-  res += "//---------------------------------------------------\n"
-  res += "//  Wrapping of "
-  if classname!="":
-    res += method.GetDescription(classname,constructor)+'\n'
-  else:
-    res += method.GetDescription()+'\n'
-  res += "//---------------------------------------------------\n"
   # second implementation
   #   Documentation part
   #res += "\n"
   #res += "//  wrapping of {0}::{1}\n".format(classname,method.name)
   #res += "//---------------------------------------------------\n"
+  res = ""
   res += "void "
   if classname!="":
     res += "{0}::\n".format(wrapclass_name)
@@ -851,10 +844,19 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1,\
   #
   # Implement the description/help part
   #
-  if not light:
-    res = ImplementMethodDescription(classname,method,constructor)
+  res = "\n"
+  res += "//---------------------------------------------------\n"
+  res += "//  Wrapping of "
+  if classname!="":
+    res += method.GetDescription(classname,constructor)+'\n'
   else:
-    res = ''
+    res += method.GetDescription()+'\n'
+  res += "//---------------------------------------------------\n"
+
+  if not light:
+    res += ImplementMethodDescription(classname,method,constructor)
+  else:
+    res += ''
   
   # don't return help in case of duplicated method
   if methodcount>1:
@@ -1044,7 +1046,7 @@ def WrapClass(classname,include_file,inputfile):
   if (args.val.profile):
     t0 = time.clock()
     #print "\n**************"
-    print "\n   Wrapping: {0}".format(classname)
+    #print "\n   Wrapping: {0}".format(classname)
     #print "             **************"
     #print "WrapClass({0},{1},{2})".format(classname,include_file,inputfile)
   parser = make_parser()
