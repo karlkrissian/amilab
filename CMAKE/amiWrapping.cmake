@@ -469,29 +469,6 @@ MACRO( WRAP_CODE )
       ${ANCESTORS_DEPLIST}
   )
 
-  ADD_CUSTOM_COMMAND(
-    OUTPUT
-      # comment ${OUTPUT_LIST} because the file there may be older
-      # than one of the dependencies, but the timestep of addwrap_... files
-      # if enough because they are always creating
-      # however, now deleting one of the wrapped files may cause the 
-      # makefile to fail ?
-      # CHANGE:can't get rid of this dependency for initial cmake to work ...
-      ${GENERATED_DIR}/addwrap_${LIBNAME}.h
-      ${GENERATED_DIR}/addwrap_${LIBNAME}.cpp
-    COMMAND
-      # to work well, this command should delete MISSING_XXX.txt
-      # if they contained elts to wrap, so that they
-      ${WRAP_CMD} "--addwrap"
-    DEPENDS
-      ${GENERATED_DIR}/MISSING_CLASSES.txt
-      ${GENERATED_DIR}/MISSING_FUNCTIONS.txt
-      ${GENERATED_DIR}/MISSING_METHODS.txt
-      ${CLASSES_FILES}
-      ${ANCESTORS_DEPLIST}
-    VERBATIM
-  )
-
   # put it separate for dependency problem with all the generated files
   # need to add this rule to allow cmake to configure
   ADD_CUSTOM_COMMAND(
@@ -513,6 +490,35 @@ MACRO( WRAP_CODE )
 #       ${GENERATED_DIR}/MISSING_METHODS.txt
     VERBATIM
   )
+
+  ADD_CUSTOM_COMMAND(
+    OUTPUT
+      # comment ${OUTPUT_LIST} because the file there may be older
+      # than one of the dependencies, but the timestep of addwrap_... files
+      # if enough because they are always creating
+      # however, now deleting one of the wrapped files may cause the 
+      # makefile to fail ?
+      # CHANGE:can't get rid of this dependency for initial cmake to work ...
+      ${GENERATED_DIR}/addwrap_${LIBNAME}.h
+      ${GENERATED_DIR}/addwrap_${LIBNAME}.cpp
+    COMMAND
+      # regenerate files 
+      ${DEP_CMD}
+    COMMAND
+      # to work well, this command should delete MISSING_XXX.txt
+      # if they contained elts to wrap, so that they
+      ${WRAP_CMD} "--addwrap"
+    DEPENDS
+      ${GENERATED_DIR}/MISSING_CLASSES.txt
+      ${GENERATED_DIR}/MISSING_FUNCTIONS.txt
+      ${GENERATED_DIR}/MISSING_METHODS.txt
+      ${CLASSES_FILES}
+      ${ANCESTORS_DEPLIST}
+      ${OUTPUT_LIST}
+    VERBATIM
+  )
+
+
 
 ENDMACRO( WRAP_CODE )
 
