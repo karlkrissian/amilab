@@ -7,4 +7,4 @@ ami.MainFrame.AddToMenu("&Modules","&PDIModule2","&ReLoad",  "../Modules/PDIModu
 #if exists(global::scripts_toolbar) {
 #  global::scripts_toolbar.AddSeparator()
 #}
-func "URLLoad/Add2Menu.amil"
+#func "URLLoad/Add2Menu.amil"
