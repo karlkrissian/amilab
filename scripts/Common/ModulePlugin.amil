@@ -10,6 +10,7 @@ Class ModulePlugin \
     ::f_dynlibs = wx.wxArrayString()
     ::quiet=false
     ::ModuleName = "Module"
+    ::IsLoaded = false
   }
 
   proc ::SetModuleName( STRING mname ) {
@@ -18,6 +19,10 @@ Class ModulePlugin \
 
   proc ::SetQuiet(NUM q) {
     ::quiet=q
+  }
+
+  proc ::LoadOK() {
+    return = ::IsLoaded
   }
 
   #
@@ -90,13 +95,12 @@ Class ModulePlugin \
   }
   
   proc ::Load() {
-
     ::CheckModule()
     found_libs  = ::f_dynlibs.Count()>0
     
     load_ok=false
     # try to load .so library
-    if found_libs>0 {
+    if found_libs {
       libname = wx.FromWxString(::f_dynlibs[0])
       SetStatusText("Loading "+libname)
       load_ok = ::plugin_mgr.Load(libname)
@@ -111,23 +115,26 @@ Class ModulePlugin \
     #}
     if load_ok {
       ::plugin_mgr.Getplugin().Execute()
-      return=true
     } else {
        if (!::quiet) {
         InfoDialog("Dynamic Library not found ...")
       } else {
         SetStatusText("Dynamic Library not found ...")
       }
-      return=false
     }
+    ::IsLoaded = load_ok
+    return = load_ok
   }
 
   proc ::UnLoad() {
-    # should delete variables in Buitin
-    del Module
-    # need to call detach first, otherwise SEGFAULT!
-    ::plugin_mgr.Detach()
-    ::plugin_mgr.Unload()
+    if ::IsLoaded {
+      # should delete variables in Builtin
+      eval "del %1%;" % ::ModuleName
+      # need to call detach first, otherwise SEGFAULT!
+      ::plugin_mgr.Detach()
+      ::plugin_mgr.Unload()
+      ::IsLoaded = false
+    }
   }
 
   proc ::ReLoad() {
