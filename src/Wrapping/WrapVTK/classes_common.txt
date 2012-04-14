@@ -11,6 +11,7 @@ vtkAlgorithm
 vtkAlgorithmOutput
 vtkAmiCommand
 vtkAnnotatedCubeActor
+vtkAppendPolyData
 vtkArrowSource
 vtkAxesActor
 vtkAxis
@@ -27,6 +28,7 @@ vtkChartXY
 vtkCollection
 vtkColorTransferFunction
 vtkCommand
+vtkConeSource
 vtkContextScene
 vtkContextView
 vtkCoordinate
@@ -68,6 +70,7 @@ vtkInteractorStyleTrackball
 vtkInteractorStyleTrackballCamera
 vtkJPEGReader
 vtkLinearTransform
+vtkLODActor
 vtkLookupTable
 vtkMapper
 vtkMatrix4x4

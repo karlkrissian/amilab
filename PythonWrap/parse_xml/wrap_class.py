@@ -1249,10 +1249,10 @@ def WrapClass(classname,include_file,inputfile):
             virtualstring, wrapped_base)
         constructor_bases+=', {0}(si)'.format(wrapped_base)
       else:
-        print "basename = ", basename
-        print "baseusedname = ", baseusedname
-        print "config.available_classes_usedname = ", \
-          config.available_classes_usedname
+        #print "basename = ", basename
+        #print "baseusedname = ", baseusedname
+        #print "config.available_classes_usedname = ", \
+        #  config.available_classes_usedname
         config.new_needed_classes.append(basename)
         include_bases+='//#include "wrap_{0}.h"\n'.format(baseusedname)
         inherit_bases+='//, public {0} {1}'.format(virtualstring,wrapped_base)
@@ -1627,7 +1627,7 @@ def WrapClass(classname,include_file,inputfile):
           
 
     # Implement CreateVar
-    #print "Implement CreateVar"
+    print "Implement CreateVar"
     implement_createvar=''
     if dh.abstract=='1':
       implement_createvar += "  // No variable creation for an abstract class ...\n"
@@ -1641,7 +1641,6 @@ def WrapClass(classname,include_file,inputfile):
       else:
         # check for possible other method
         utils.WarningMessage( "Using args.val.constructor = {0}".format(args.val.constructor))
-        #print fm.StaticMethods
         if args.val.constructor != '' and \
           (args.val.constructor in fm.StaticMethodNames):
           implement_createvar += "  WrapClass_{0}::wrap_static_{1} construct;\n".format(config.ClassUsedName(classname),args.val.constructor)

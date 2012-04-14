@@ -4,6 +4,7 @@
 #include <vtkAlgorithmOutput.h>
 #include "vtkAmiCommand.h"
 #include <vtkAnnotatedCubeActor.h>
+#include <vtkAppendPolyData.h>
 #include <vtkArrowSource.h>
 #include <vtkAxesActor.h>
 #include <vtkAxis.h>
@@ -19,6 +20,7 @@
 #include <vtkChartXY.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkCommand.h>
+#include <vtkConeSource.h>
 #include <vtkContextScene.h>
 #include <vtkContextView.h>
 #include <vtkCoordinate.h>
@@ -48,6 +50,7 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkInteractorStyleTrackball.h>
 #include <vtkJPEGReader.h>
+#include <vtkLODActor.h>
 #include <vtkLookupTable.h>
 #include <vtkOpenGLGPUVolumeRayCastMapper.h>
 #include <vtkOrientationMarkerWidget.h>
