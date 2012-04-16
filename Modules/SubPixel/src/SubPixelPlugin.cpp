@@ -97,6 +97,6 @@ bool SubPixelPlugin::Execute(void)
 
 void SubPixelPlugin::Destroy()
 {
-  std::cout << "SubPixelPlugin::Destroy()" << std::endl;
+  //std::cout << "SubPixelPlugin::Destroy()" << std::endl;
   Vars.GetBuiltinContext()->deleteVar(this->GetName().c_str());
 }

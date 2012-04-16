@@ -20,6 +20,9 @@
 class wxPluginInterface
 {
   public:
+    
+    virtual ~wxPluginInterface() {}
+    
     /**
      * @brief Get the plugin name.
      *

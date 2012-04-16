@@ -10,12 +10,13 @@
 //
 
 #include "wxPluginManager.h"
-#include <iostream>
+//#include <iostream>
 
 //=======================================================
 wxPluginManager::~wxPluginManager()
 {
-  std::cout << "~wxPluginManager::wxPluginManager()" << std::endl;
+  //std::cout << "~wxPluginManager::wxPluginManager()" << std::endl;
+  //m_plugin->Destroy();
   m_plugin.reset();
   Unload();
 }

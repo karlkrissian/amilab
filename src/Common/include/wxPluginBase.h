@@ -68,6 +68,7 @@ class WXEXPORT wxPluginBase: public wxPluginInterface
     
   public:
     
+   virtual ~wxPluginBase() { }
 
     /**
      * @brief Get the plugin name.
