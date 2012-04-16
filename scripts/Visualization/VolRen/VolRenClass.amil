@@ -75,7 +75,6 @@ if (!exists(VolRenClass)) {
       ::elevationAnt  = INT(0), "Rotate camera angle along horizontal axis (in degrees)"
       ::zoomAnt       = 0
       ::volrenmapper_type = INT(0), "Choose volume rendering mapper type, 0: GPU 1: Fixed Point 2: Standard 3: AMILab type 4: Smart"
-      ::hist_mode = 0
       ::volVector = VarVector()
       ::volPageVector = VarVector()
       ::resizevol1 = 0
@@ -186,7 +185,7 @@ if (!exists(VolRenClass)) {
       ::mgr.Update()
 
       id=0
-      ::evh_tb_h = wx.wxAmiEventHandler(&::ShowHistogram) 
+      ::evh_tb_h = wx.wxAmiEventHandler(&::ShowHistogramToggle) 
       ::tb.Connect( tb_id+id, wx.wxEVT_COMMAND_MENU_SELECTED \
                   ,&::evh_tb_h.GetEventFunction(),\
                   &NULL,&::evh_tb_h)
@@ -225,13 +224,19 @@ if (!exists(VolRenClass)) {
       if ::trace { eval ::trace_end; }
     }
 
-    #----------------------------
-    proc ::ShowHistogram() {
+    #---------------------------------------------------------------------------
+    proc ::ShowHistograms( NUM toggle) \
+    {
       if ::trace { eval ::trace_begin; }
       if (::volVector.size()>0){
         index=::vbCtrl.GetSelection()
-        if (::hist_mode==1){
-        ::volVector[index].imhisto1.dw.Show(true)
+        if (!toggle){
+          ::volVector[index].imhisto1.dw.Show(true)
+          if ::volVector[index].volmapper.GetClassName()==\
+              "vtkOpenGLGPUMultiVolumeRayCastMapper" \
+          {
+            ::volVector[index].imhisto2.dw.Show(true)
+          }
         }else{
           ::volVector[index].imhisto1.dw.Show(!::volVector[index].imhisto1.dw.IsShown())
         }
@@ -251,7 +256,15 @@ if (!exists(VolRenClass)) {
       }
       if ::trace { eval ::trace_end; }
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
+    proc ::ShowHistogramToggle( ) \
+    {
+      ::ShowHistograms(true)
+    }
+
+
+    #---------------------------------------------------------------------------
     proc ::load_input() {
       if ::trace { eval ::trace_begin; }
       del ::input
@@ -520,9 +533,7 @@ if (!exists(VolRenClass)) {
         ::renwin_interact.Render()
         ::renwin_interact.Refresh()
         ::EnableGPUmode(0)
-        ::hist_mode = 1
-        ::ShowHistogram()
-        ::hist_mode = 0
+        ::ShowHistograms(false)
         ::volVector[0].OnLinearColormap()
 
         # TODO: fix the dependency of the renderer for the volVector[0] ...
@@ -606,9 +617,7 @@ if (!exists(VolRenClass)) {
         ::renwin_interact.Render()
         ::renwin_interact.Refresh()
         ::EnableGPUmode(1)
-        ::hist_mode = 1
-        ::ShowHistogram()
-        ::hist_mode = 0
+        ::ShowHistograms(false)
         ::volVector[1].OnLinearColormap()
         #Set Linear curve
         ::volVector[1].ResetLinearCurve1()
@@ -653,6 +662,8 @@ if (!exists(VolRenClass)) {
       ::win.EnablePanel(::vol1_page , true)
       ::win.EnablePanel(::vol2_page , true)
 
+      # show histogram and curve controls at the bottom
+      # for the first volume
       sbox_sizerH = wx.wxBoxSizer(wx.wxHORIZONTAL)
       ::panel2.SetSizer(&sbox_sizerH)   
       ::obj1 = &::volVector[0].imhisto1.dw
@@ -660,6 +671,16 @@ if (!exists(VolRenClass)) {
       ::obj1.Reparent(&::panel2)
       sbox_sizerH.Add(&::obj1,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
       ::obj1.Hide() 
+
+      # add histogram of the second input of the first mapper in case
+      # in are using vtkOpenGLGPUMultiVolumeRayCastMapper
+      ::obj1_2 = &::volVector[0].imhisto2.dw
+      ::volVector[0].imhisto2.dw_boxsizer.Detach(&::obj1_2)
+      ::obj1_2.Reparent(&::panel2)
+      sbox_sizerH.Add(&::obj1_2,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+      ::obj1_2.Hide() 
+
+      # for the second volume
       ::obj2 = &::volVector[1].imhisto1.dw
       ::volVector[1].imhisto1.dw_boxsizer.Detach(&::obj2)
       ::obj2.Reparent(&::panel2)
@@ -834,9 +855,7 @@ if (!exists(VolRenClass)) {
 
     #----------------------------
     proc ::OnChangePage(){
-      ::hist_mode=1
-      ::ShowHistogram()
-      ::hist_mode=0
+      ::ShowHistograms(false)
     }
     #----------------------------
     proc ::PreviewApplied() \
@@ -896,7 +915,8 @@ if (!exists(VolRenClass)) {
     #---------------------------------------------------------------------------
     # Redefinition of Close to close the panel tab in main_book
     #
-    proc ::Close() {
+    proc ::Close() \
+    {
       ::MainBook_CloseTab()
       ::win.HidePanel()
       ::mgr.DetachPane(&::tb)
@@ -908,6 +928,12 @@ if (!exists(VolRenClass)) {
         ::previewer.Destroy()
         del ::previewer
       }
+
+      ## unload module
+      #if (exists(global::vtkAmiVolRenPlugin_obj)) {
+        #global::vtkAmiVolRenPlugin_obj.UnLoad()
+        #del global::vtkAmiVolRenPlugin_obj
+      #}
       delvars GetObjectName(::Close)
     }
     Comments( ::Close,  "Will close the interface and delete the "+\
@@ -921,25 +947,6 @@ if (!exists(VolRenClass)) {
       ::renwin_interact.Render()
     }
 
-    #---------------------------------------------------------------------------
-    proc ::OnOrigin1() \
-    {
-      ::vol0.vtkinput.SetOrigin( ::firstvolorig_x,\
-                                 ::firstvolorig_y,\
-                                 ::firstvolorig_z)
-      ::renwin_interact.Render()
-    }
-
-    #---------------------------------------------------------------------------
-    proc ::OnOrigin2() \
-    {
-      if exists(::vol0->vtkinput2) {
-        ::vol0.vtkinput2.SetOrigin( ::secvolorig_x,\
-                                    ::secvolorig_y,\
-                                    ::secvolorig_z)
-        ::renwin_interact.Render()
-      }
-    }
 
     #----------------------------
     proc ::Gui() {
@@ -1048,28 +1055,6 @@ if (!exists(VolRenClass)) {
               #::win.AddButton("Reset",&::ResetView)
             #::win.EndHorizontal()
           #::win.EndBoxPanel()
-
-        ::win.AddPage("Transf")
-          ::win.BeginBoxPanel("First Volume")
-            ::win.BeginBoxPanel("Origin")
-              ::win.AddFloat(&::firstvolorig_x, "X",-200,200)
-              ::win.SetCallback(&::OnOrigin1)
-              ::win.AddFloat(&::firstvolorig_y, "Y",-200,200)
-              ::win.SetCallback(&::OnOrigin1)
-              ::win.AddFloat(&::firstvolorig_z, "Z",-200,200)
-              ::win.SetCallback(&::OnOrigin1)
-            ::win.EndBoxPanel()
-          ::win.EndBoxPanel()
-          ::win.BeginBoxPanel("Second Volume")
-            ::win.BeginBoxPanel("Origin")
-              ::win.AddFloat(&::secvolorig_x, "X",-200,200)
-              ::win.SetCallback(&::OnOrigin2)
-              ::win.AddFloat(&::secvolorig_y, "Y",-200,200)
-              ::win.SetCallback(&::OnOrigin2)
-              ::win.AddFloat(&::secvolorig_z, "Z",-200,200)
-              ::win.SetCallback(&::OnOrigin2)
-            ::win.EndBoxPanel()
-          ::win.EndBoxPanel()
 
       ::win.EndBook()
       ::AddStandardButtons(&::win)

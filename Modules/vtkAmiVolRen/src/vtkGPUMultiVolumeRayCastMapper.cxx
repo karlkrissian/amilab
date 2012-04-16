@@ -3,13 +3,18 @@
   Program:   Visualization Toolkit
   Module:    vtkGPUMultiVolumeRayCastMapper.cxx
 
+  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+  All rights reserved.
+  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+
+  Modified by:  Carlos Falcón cfalcon@ctim.es 
+                Karl Krissian karl@ctim.es 
 
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#define COUT 1
 
 #include "vtkGPUMultiVolumeRayCastMapper.h"
 
@@ -31,14 +36,12 @@
 #include "vtkMultiThreader.h"
 #include "vtkGPUInfoList.h"
 #include "vtkGPUInfo.h"
+#include "vtkTransform.h"
 
-//carlos
+// new required classes
 #include "vtkVolumeMapper.h"
 #include "vtkDataSet.h"
 #include "vtkExecutive.h"
-#include "vtkGarbageCollector.h"
-#include "vtkInformation.h"
-//
 
 vtkInstantiatorNewMacro(vtkGPUMultiVolumeRayCastMapper);
 vtkCxxSetObjectMacro(vtkGPUMultiVolumeRayCastMapper, MaskInput, 
@@ -50,9 +53,7 @@ vtkCxxSetObjectMacro(vtkGPUMultiVolumeRayCastMapper, TransformedInput2,
 
 vtkGPUMultiVolumeRayCastMapper::vtkGPUMultiVolumeRayCastMapper()
 {
-//carlos  
   this->Property2                  = NULL;
-//
   this->AutoAdjustSampleDistances  = 1;
   this->ImageSampleDistance        = 1.0;
   this->MinimumImageSampleDistance = 1.0;
@@ -108,9 +109,9 @@ vtkGPUMultiVolumeRayCastMapper::vtkGPUMultiVolumeRayCastMapper()
   this->LastInput = NULL;
   this->TransformedInput2 = NULL;
   this->LastInput2 = NULL;
-  //carlos
   this->SetNumberOfInputPorts(2);
-  //
+  this->SecondInputUserTransform = (vtkTransform*) vtkTransform::New();
+  this->SecondInputUserTransform->Identity();
 }
 
 // ----------------------------------------------------------------------------
@@ -121,12 +122,26 @@ vtkGPUMultiVolumeRayCastMapper::~vtkGPUMultiVolumeRayCastMapper()
   this->LastInput = NULL;
   this->SetTransformedInput2(NULL);
   this->LastInput2 = NULL;
+  this->SecondInputUserTransform->Delete();
+}
+
+// ----------------------------------------------------------------------------
+void vtkGPUMultiVolumeRayCastMapper::SetSecondInputUserTransform(
+      vtkTransform *t)
+{
+  this->SecondInputUserTransform->DeepCopy(t);
+}
+
+// ----------------------------------------------------------------------------
+vtkTransform *vtkGPUMultiVolumeRayCastMapper::
+    GetSecondInputUserTransform()
+{
+  return this->SecondInputUserTransform;
 }
 
 
 // ----------------------------------------------------------------------------
-//SetInput 2
-//New funcions adds
+//New functions added
 void vtkGPUMultiVolumeRayCastMapper::SetInput( int port, vtkDataSet *genericInput )
 {
   vtkImageData *input = 
@@ -142,6 +157,7 @@ void vtkGPUMultiVolumeRayCastMapper::SetInput( int port, vtkDataSet *genericInpu
     }
 }
 
+// ----------------------------------------------------------------------------
 void vtkGPUMultiVolumeRayCastMapper::SetInput( int port, vtkImageData *input )
 {
   if(input)

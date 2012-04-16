@@ -45,7 +45,7 @@ if (!exists(vtkVolumeClass)) {
     proc ::Init( ) \
     {
       if ::trace { eval ::trace_begin; }
-      #comentado
+
       ::InitInherit()
       ::curve_folder    =  "", "Histogram curve Path Folder"
       ::curve_filename  =  "Curve.amil", "name of the input/output histogram curve"
@@ -55,14 +55,28 @@ if (!exists(vtkVolumeClass)) {
       ::cm_active_blend_curves = 0, "Number of curves created for the current blend type in the Colormap  drawing area."
       ::dw_active_blend_curves = 0, "Number of curves created for the current blend type in the Histogram drawing area."
 
-      ::opacity_attenuation = 1, "Attenuation factor for the opacity"
+      ::opacity_attenuation  = 1, "Attenuation factor for the opacity"
+      ::opacity_attenuation2 = 1, "Attenuation factor for the second volume"
 
       # plane widget
       ::planeX = UCHAR(0), "Use ImagePlaneWidget X"
       ::planeY = UCHAR(0), "Use ImagePlaneWidget Y"
       ::planeZ = UCHAR(0), "Use ImagePlaneWidget Z"
 
-      #comentado
+      ::clip = UCHAR(0), "Enable/Disable clipping box"
+      ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
+      ::clip_interactive = UCHAR(1), "Interactive clipping"
+
+      ::enable_transf_box = UCHAR(0), "Enable/Disable 2nd volume "+\
+                                      "transformation box widget"
+      ::transfbox_interactive     = UCHAR(1), "Interactive transformation box"
+      ::transfbox_enable_rotation    = UCHAR(1),  "Enable rotation "+\
+                                                  "(from selected plane)"
+      ::transfbox_enable_scaling     = UCHAR(1),  "Enable scaling "+\
+                                                  "(right mouse button)"
+      ::transfbox_enable_translation = UCHAR(1),  "Enable translation "+ \
+                                                  "(middle mouse button)"
+
       if ::trace { eval ::trace_end; }
     }
 
@@ -139,12 +153,9 @@ if (!exists(vtkVolumeClass)) {
         ::box.SetDefaultRenderer(&::renderer)
         ::box.InsideOutOn()
         ::box.PlaceWidget()
-        #vtkBoxWidgetCallback *callback = vtkBoxWidgetCallback::New();
-        #callback->SetMapper(mapper);
         ::box_cmd = vtk.vtkAmiCommand.New()
         ::box_cmd.SetAmiFunction(&::CB_Clip)
         ::box.AddObserver(vtk.vtkCommand.InteractionEvent, &::box_cmd);
-        #callback->Delete();
         ::box.SetRotationEnabled(::clip_enable_rotation)
         ::box.EnabledOn()
         #::box.GetSelectedFaceProperty().SetOpacity(0.0)
@@ -152,6 +163,89 @@ if (!exists(vtkVolumeClass)) {
       if ::trace { eval ::trace_end; }
     }
 
+    #----------------------------
+    proc ::OnClip() \
+    {
+      if (exists(::box)) {
+        ::box.SetEnabled(::clip)
+        ::box.SetRotationEnabled(::clip_enable_rotation)
+      } else {
+        ::InitBoxWidget()
+      }
+    }
+
+    #----------------------------
+    proc ::ApplyClip() \
+    {
+      if (::clip) {
+        # to do: vtkPlanes
+        planes = vtk.vtkPlanes.New()
+        ::box.GetPlanes(&planes)
+        ::volmapper.SetClippingPlanes(&planes)
+        ::renwininter.Render()
+      }
+    }
+
+    #----------------------------
+    proc ::CB_TransfBox(OBJECT caller, NUM id) \
+    {
+      if (::transfbox_interactive) {
+        ::ApplyTransfBox()
+      }
+    }
+
+    #----------------------------
+    proc ::InitTransfBoxWidget() \
+    {
+      del ::transf_box
+      ::transf_box = vtk.vtkBoxWidget.New()
+      if (::enable_transf_box)&&(exists(::vtkinput2)) \
+      {
+        ::transf_box.SetInteractor(&::renwininter)
+        ::transf_box.SetPlaceFactor(1.01)
+        ::transf_box.SetInput(&::vtkinput2) 
+        ::transf_box.SetDefaultRenderer(&::renderer)
+        ::transf_box.InsideOutOn()
+        ::transf_box.PlaceWidget()
+        ::transf_box_cmd = vtk.vtkAmiCommand.New()
+        ::transf_box_cmd.SetAmiFunction(&::CB_TransfBox)
+        ::transf_box.AddObserver(vtk.vtkCommand.InteractionEvent, &::transf_box_cmd);
+        ::transf_box.SetRotationEnabled   (::transfbox_enable_rotation   )
+        ::transf_box.SetTranslationEnabled(::transfbox_enable_translation)
+        ::transf_box.SetScalingEnabled    (::transfbox_enable_scaling    )
+        ::transf_box.EnabledOn()
+      }
+    }
+
+    #----------------------------
+    proc ::OnTransfBox() \
+    {
+      if (exists(::transf_box)) {
+        ::transf_box.SetEnabled(::enable_transf_box)
+        ::transf_box.SetRotationEnabled   (::transfbox_enable_rotation   )
+        ::transf_box.SetTranslationEnabled(::transfbox_enable_translation)
+        ::transf_box.SetScalingEnabled    (::transfbox_enable_scaling    )
+      } else {
+        ::InitTransfBoxWidget()
+      }
+    }
+
+    #----------------------------
+    proc ::ApplyTransfBox() \
+    {
+      #printn "ApplyTransfBox"
+      #printn ::volmapper.GetClassName()
+      #printn ::enable_transf_box
+      if (::volmapper.GetClassName()=="vtkOpenGLGPUMultiVolumeRayCastMapper") && \
+         (::enable_transf_box) \
+      {
+        #printn "*"
+        t = vtk.vtkTransform.New()
+        ::transf_box.GetTransform(&t)
+        ::volmapper.SetSecondInputUserTransform(t)
+        ::renwininter.Render()
+      }
+    }
 
     #----------------------------
     proc ::SetLinearCurve( OBJECT curve) \
@@ -556,7 +650,7 @@ if (!exists(vtkVolumeClass)) {
      
         for n=0 to ::imhisto2.dw.GetSizelinearCM()-1 {
           #printn "-point number %1%" %n
-          y =  ::opacity_attenuation/hmax*::imhisto2.dw.GetAlphalinearCM(n)
+          y =  ::opacity_attenuation2/hmax*::imhisto2.dw.GetAlphalinearCM(n)
           pos = ::imhisto2.dw.GetPoslinearCM(n)
           col = ::imhisto2.dw.GetColourlinearCM(n)
           mp  = ::imhisto2.dw.GetMidpointlinearCM(n)
@@ -653,13 +747,13 @@ if (!exists(vtkVolumeClass)) {
       if (exists(::property)){
         ::vol.SetProperty( &::property )
       }
-      printn "::move_2 = %1%" % ::move_2
-      if ::move_2 {
-        if (exists(::property2) && ::volrenmapper_type==3){
-          ::volmapper.SetProperty2( &::property2 )
-          printn "::volmapper.SetProperty2( &::property2 )"
-        }
+      #      printn "::move_2 = %1%" % ::move_2
+      #      if ::move_2 {
+      if (exists(::property2) && ::volrenmapper_type==3){
+        ::volmapper.SetProperty2( &::property2 )
+        printn "::volmapper.SetProperty2( &::property2 )"
       }
+      #      }
 
       ::volmapper.SetBlendMode(::blend_mode)
       if ::trace { eval ::trace_end; }
@@ -886,40 +980,6 @@ if (!exists(vtkVolumeClass)) {
 
       ::win.BeginBook()
 
-        ::imhisto1.SetParentPanel(&::win)
-        ::imhisto1.log10=true
-        ::imhisto1.Gui()
-
-        ::win.AddBoolean(&::move_2,"move_2")
-
-        ::win.AddPage("Blend", &::imhisto1->win)
-          ::win.BeginHorizontal()
-            ::icons.LoadIconPNG2("Chart xy","Chart_xy")
-            ::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
-            ::win.AddButton("DrawTr",&::Draw_Functions)
-            ::blend_mode_id = ::win.AddEnum(&::blend_mode,"Mode")
-              ::win.AddEnumChoice(::blend_mode_id,"Composite")
-              ::win.AddEnumChoice(::blend_mode_id,"Max. Int.")
-              ::win.AddEnumChoice(::blend_mode_id,"Min. Int.")
-              ::win.AddEnumChoice(::blend_mode_id,"Additive.")
-         ::win.EndHorizontal()
-
-
-        ::imhisto2.SetParentPanel(&::win)
-        ::imhisto2.log10=true
-        ::imhisto2.Gui()
-        ::win.AddPage("Blend2", &::imhisto2->win)
-          ::win.BeginHorizontal()
-            ::win.AddLabel("Second Dataset in the vtkVolume","")
-            #::icons.LoadIconPNG2("Chart xy","Chart_xy")
-            #::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
-            #::win.AddButton("DrawTr",&::Draw_Functions)
-            #::blend_mode_id = ::win.AddEnum(&::blend_mode,"Mode")
-              #::win.AddEnumChoice(::blend_mode_id,"Composite")
-              #::win.AddEnumChoice(::blend_mode_id,"Max. Int.")
-              #::win.AddEnumChoice(::blend_mode_id,"Min. Int.")
-              #::win.AddEnumChoice(::blend_mode_id,"Additive.")
-          ::win.EndHorizontal()
 
          ::win.AddPage("Clip")
           ::win.AddBoolean(&::clip, "Clip")
@@ -950,16 +1010,8 @@ if (!exists(vtkVolumeClass)) {
             ::win.SetCallback( &::OnRender)
           ::win.EndBoxPanel()
 
-        ::GPU_page = ::win.AddPage("GPU")
-          ::volmapper_classname_id = ::win.AddLabel("VTK Class:","")
-          ::win.BeginBoxPanel("3D texture memory")
-            ::win.AddInt(&::maxmemory,"max",50,1000)
-            ::win.SetCallback( &::OnTextureMemory)
-            ::win.AddFloat(&::maxmemoryfraction,"fraction",0.05,1)
-            ::win.SetCallback( &::OnTextureMemory)
-          ::win.EndBoxPanel()
-
-          ::win.AddPage("Rend")
+         #::win.AddPage("GPU")
+         ::win.AddPage("Rend")
           ::win.BeginBoxPanel("Sample distances")
             ::win.AddBoolean(&::AutoAdjustSampleDistances,"Auto")
             #::win.SetCallback( &::OnSampleDistance)
@@ -968,7 +1020,36 @@ if (!exists(vtkVolumeClass)) {
             ::win.AddFloat(&::ImageSampleDistance,"Im Dist",0.2,2)
             ::win.AddButton("Apply",&::OnSampleDistance)
           ::win.EndBoxPanel()
+          ::volmapper_classname_id = ::win.AddLabel("VTK Class:","")
+          ::GPU_page = ::win.BeginBoxPanel("3D texture memory")
+            ::win.AddInt(&::maxmemory,"max",50,1000)
+            ::win.SetCallback( &::OnTextureMemory)
+            ::win.AddFloat(&::maxmemoryfraction,"fraction",0.05,1)
+            ::win.SetCallback( &::OnTextureMemory)
+          ::win.EndBoxPanel()
           
+         ::win.AddPage("Transf")
+          ::win.AddBoolean(&::enable_transf_box, "Transf.Box")
+          ::win.SetCallback( &::OnTransfBox)
+          ::win.BeginHorizontal()
+            ::win.AddBoolean(&::transfbox_enable_translation,"Trans")
+            ::win.SetCallback( &::OnTransfBox)
+            ::win.AddBoolean(&::transfbox_enable_rotation,   "Rot")
+            ::win.SetCallback( &::OnTransfBox)
+            ::win.AddBoolean(&::transfbox_enable_scaling,    "Scal")
+            ::win.SetCallback( &::OnTransfBox)
+          ::win.EndHorizontal()
+          ::win.AddBoolean(&::transfbox_interactive,"Interactive")
+          ::win.SetCallback( &::OnTransfBox)
+          ::win.AddButton( "Apply",&::ApplyTransfBox)
+
+          ::win.BeginBoxPanel("Volume Attenuation (Opacity)")
+            ::win.AddFloat(&::opacity_attenuation,"First Volume",0,1)
+            ::win.SetCallback( &::OnWindow)
+            ::win.AddFloat(&::opacity_attenuation2,"Second Volume",0,1)
+            ::win.SetCallback( &::OnWindow)
+          ::win.EndBoxPanel()
+
         ::Plane_page = ::win.AddPage("Plane")
           ::win.AddBoolean(&::planeX, "PlaneX")
           ::win.SetCallback( &::OnPlane)
@@ -976,6 +1057,41 @@ if (!exists(vtkVolumeClass)) {
           ::win.SetCallback( &::OnPlane)
           ::win.AddBoolean(&::planeZ, "PlaneZ")
           ::win.SetCallback( &::OnPlane)
+
+        ::imhisto1.SetParentPanel(&::win)
+        ::imhisto1.log10=true
+        ::imhisto1.Gui()
+
+        #::win.AddBoolean(&::move_2,"move_2")
+
+        ::win.AddPage("Blend", &::imhisto1->win)
+          ::win.BeginHorizontal()
+            ::icons.LoadIconPNG2("Chart xy","Chart_xy")
+            ::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
+            ::win.AddButton("DrawTr",&::Draw_Functions)
+            ::blend_mode_id = ::win.AddEnum(&::blend_mode,"Mode")
+              ::win.AddEnumChoice(::blend_mode_id,"Composite")
+              ::win.AddEnumChoice(::blend_mode_id,"Max. Int.")
+              ::win.AddEnumChoice(::blend_mode_id,"Min. Int.")
+              ::win.AddEnumChoice(::blend_mode_id,"Additive.")
+         ::win.EndHorizontal()
+
+
+        ::imhisto2.SetParentPanel(&::win)
+        ::imhisto2.log10=true
+        ::imhisto2.Gui()
+        ::win.AddPage("Blend2", &::imhisto2->win)
+          ::win.BeginHorizontal()
+            ::win.AddLabel("Second Dataset in the vtkVolume","")
+            #::icons.LoadIconPNG2("Chart xy","Chart_xy")
+            #::AddBitmapButton16(&::win, &::icons._Chart_xy, "UpdateHistogram")
+            #::win.AddButton("DrawTr",&::Draw_Functions)
+            #::blend_mode_id = ::win.AddEnum(&::blend_mode,"Mode")
+              #::win.AddEnumChoice(::blend_mode_id,"Composite")
+              #::win.AddEnumChoice(::blend_mode_id,"Max. Int.")
+              #::win.AddEnumChoice(::blend_mode_id,"Min. Int.")
+              #::win.AddEnumChoice(::blend_mode_id,"Additive.")
+          ::win.EndHorizontal()
 
       ::win.EndBook()
 

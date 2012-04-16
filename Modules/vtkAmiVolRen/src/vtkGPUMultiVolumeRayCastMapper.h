@@ -3,8 +3,12 @@
   Program:   Visualization Toolkit
   Module:    vtkGPUMultiVolumeRayCastMapper.h
 
-  Modifications over vtk file: Carlos Falcón cfalcon@ctim.es 
-                               Karl Krissian karl@ctim.es 
+  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+  All rights reserved.
+  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+
+  Modified by:  Carlos Falcón cfalcon@ctim.es 
+                Karl Krissian karl@ctim.es 
   
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
@@ -14,8 +18,7 @@
 // .NAME vtkGPUMultiVolumeRayCastMapper - Ray casting performed on the GPU.
 // .SECTION Description
 // vtkGPUMultiVolumeRayCastMapper is a volume mapper that performs ray casting on
-// the GPU using fragment programs.
-//vtkGPUVolumeRayCastMapper
+// the GPU using fragment programs, using two input datasets.
 
 
 #ifndef __vtkGPUMultiVolumeRayCastMapper_h
@@ -27,6 +30,7 @@
 class vtkVolumeProperty;
 class vtkRenderWindow;
 class vtkImageData;
+class vtkTransform;
 
 //class vtkKWAMRVolumeMapper; // friend class.
 
@@ -34,18 +38,21 @@ class VTK_VOLUMERENDERING_EXPORT vtkGPUMultiVolumeRayCastMapper : public vtkVolu
 {
 public:
   static vtkGPUMultiVolumeRayCastMapper *New();
-  //vtkTypeMacro(vtkGPUMultiVolumeRayCastMapper,vtkVolumeMapper);
   vtkTypeMacro(vtkGPUMultiVolumeRayCastMapper,vtkVolumeMapper);
   void PrintSelf( ostream& os, vtkIndent indent );
 
-//carlos Description:
-  // Define the Input/output functions for a second data 
+  // Define the Input for both datasets 
   void SetInput( int port, vtkImageData *input );
   void SetInput( int port, vtkDataSet *genericInput );
   vtkImageData * GetInput( int port=0);
-  // Functions for set/get the properties of the second volume
+ 
+  // set/get the properties of the second volume
   void SetProperty2(vtkVolumeProperty *property);
-  vtkVolumeProperty *GetProperty2();;
+  vtkVolumeProperty *GetProperty2();
+
+  // set/get a user transformation for 2nd input user transform
+  void SetSecondInputUserTransform(vtkTransform *t);
+  vtkTransform *GetSecondInputUserTransform();
   
   
   // Description:
@@ -278,7 +285,6 @@ protected:
   float MaxMemoryFraction;
   //Property of the second volume
   vtkVolumeProperty *Property2;
-//
 
   // 1 if we are generating the canonical image, 0 otherwise
   int   GeneratingCanonicalView;
@@ -314,7 +320,7 @@ protected:
   int            MaskType;
 
   vtkImageData * TransformedInput;
-  // need to duplicate the TransformedInput "system"
+  // need to duplicate the TransformedInput
   vtkImageData * TransformedInput2;
 
   vtkGetObjectMacro(TransformedInput, vtkImageData);
@@ -328,6 +334,9 @@ protected:
   // Render() call.
   vtkImageData* LastInput;
   vtkImageData* LastInput2;
+  
+  //
+  vtkTransform* SecondInputUserTransform;
 
 private:
   vtkGPUMultiVolumeRayCastMapper(const vtkGPUMultiVolumeRayCastMapper&);  // Not implemented.

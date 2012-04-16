@@ -94,31 +94,16 @@ void trace(void)
       // scalarValue
       opacity=texture1D(opacityTexture,scalar);
 
-      bool cylinder=false;
-      // trying implicit cylinder change false to true
-      if (false) {
-        float dist =  (pos.x-0.5)*(pos.x-0.5)+(pos.y-0.5)*(pos.y-0.5);
-        if (dist<0.1*0.1) {
-          opacity.a = 0.9;
-          cylinder=true;
-          color[0] = abs(1.0-sin(pos.z*24.0)/2.0);
-          color[1] = abs(0.2+sin(pos.z*24.0))*1.5;
-          color[2] = 0.2;
-          color[3] = 0.5;
-          //value.x=50.0;
-        }
-      }
-
       if(opacity.a>0.0)
         {
         text1=true;
         color=shade(value);
-        if (!cylinder) color=color*opacity.a;
+        color=color*opacity.a;
         destColor=destColor+color*remainOpacity;
         remainOpacity=remainOpacity*(1.0-opacity.a);
         }
 
-      //Texture2 (dataSetTexture2)
+    //Texture2 (dataSetTexture2)
     if (all(greaterThanEqual(pos2,lowBounds2))
          && all(lessThanEqual(pos2,highBounds2)))
       {
@@ -129,7 +114,7 @@ void trace(void)
         opacity2=texture1D(opacityTexture2,scalar2);
         if(opacity2.a>0.0)
         {
-          text1=true;
+          text2=true;
           color2=shade2(value2);
           color2=color2*opacity2.a;
           destColor=destColor+color2*remainOpacity;
@@ -137,12 +122,6 @@ void trace(void)
         }
       }
 
-
-//       if(text1 && text2)
-//         {
-//          destColor=destColor*0.5;
-//          remainOpacity=remainOpacity*0.5;
-//         }
       pos=pos+rayDir;
       t+=1.0;
       inside=t<tMax && all(greaterThanEqual(pos,lowBounds))

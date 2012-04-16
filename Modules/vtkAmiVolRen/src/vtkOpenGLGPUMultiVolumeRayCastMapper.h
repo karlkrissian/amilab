@@ -3,8 +3,12 @@
   Program:   Visualization Toolkit
   Module:    vtkOpenGLGPUMultiVolumeRayCastMapper.h
   
-  Modifications over vtk file: Carlos Falcón cfalcon@ctim.es 
-                               Karl Krissian karl@ctim.es 
+  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+  All rights reserved.
+  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+
+  Modified by:  Carlos Falcón cfalcon@ctim.es 
+                Karl Krissian karl@ctim.es 
   
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -25,9 +29,6 @@
 #define __vtkOpenGLGPUMultiVolumeRayCastMapper_h
 
 #include "vtkGPUMultiVolumeRayCastMapper.h"
-//carlos #include "vtkGPUVolumeRayCastMapper.h"
-
-class vtkGPUVolumeRayCastMapper;
 
 class vtkVolume;
 class vtkRenderer;
@@ -57,12 +58,10 @@ class vtkTransform;
 
 #include "vtkSmartPointer.h"
 
-//carlos public vtkGPUVolumeRayCastMapper vtkGPUMultiVolumeRayCastMapper
 class VTK_VOLUMERENDERING_EXPORT vtkOpenGLGPUMultiVolumeRayCastMapper : public vtkGPUMultiVolumeRayCastMapper
 {
 public:
   static vtkOpenGLGPUMultiVolumeRayCastMapper *New();
-  //carlos  vtkTypeMacro(vtkOpenGLGPUMultiVolumeRayCastMapper,vtkGPUVolumeRayCastMapper);
   vtkTypeMacro(vtkOpenGLGPUMultiVolumeRayCastMapper,vtkGPUMultiVolumeRayCastMapper);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
@@ -149,7 +148,7 @@ protected:
   int AllocateFrameBuffers(vtkRenderer *ren);
 
   // Description
-  // Load the scalar field (one or four component scalar field), cell or point
+  // Load the two scalar fields (one or four component scalar field), cell or point
   // based for a given subextent of the whole extent (can be the whole extent)
   // as a 3D texture on the GPU.
   // Extents are expressed in point if the cell flag is false or in cells of
@@ -160,7 +159,7 @@ protected:
   // and LoadedTime. It also succeed if the scalar field is already loaded
   // (ie since last load, input has not changed and cell flag has not changed
   // and requested texture extents are enclosed in the loaded extent).
-  // \pre input_exists: input!=0
+  // \pre input_exists: input!=0 
   // \pre valid_point_extent: (this->CellFlag ||
   //                           (textureExtent[0]<textureExtent[1] &&
   //                            textureExtent[2]<textureExtent[3] &&
@@ -170,7 +169,7 @@ protected:
   //                           textureExtent[2]<=textureExtent[3] &&
   //                           textureExtent[4]<=textureExtent[5])))
   int LoadScalarField(vtkImageData *input,
-                      vtkImageData *maskInput,
+                      vtkImageData *input2,
                       int textureExtent[6],
                       vtkVolume *volume);
 
@@ -443,14 +442,14 @@ protected:
   vtkMapMaskTextureId *MaskTextures; // need a list for AMR mode.
 
   vtkRGBTable *RGBTable;
-  vtkRGBTable *RGBTable2;             //carlos
+  vtkRGBTable *RGBTable2;
   vtkRGBTable *Mask1RGBTable;
   vtkRGBTable *Mask2RGBTable;
 
   vtkOpacityTables *OpacityTables;
-  vtkOpacityTables *OpacityTables2;   //carlos
+  vtkOpacityTables *OpacityTables2;
   vtkKWScalarField *CurrentScalar;
-  vtkKWScalarField *CurrentScalar2;   //carlos
+  vtkKWScalarField *CurrentScalar2;
   vtkKWMask *CurrentMask;
 
 

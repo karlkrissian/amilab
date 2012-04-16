@@ -34,9 +34,7 @@ if (!exists(SimplevtkVolumeClass)) {
     #----------------------------
     proc ::InitInherit( ) \
     {
-      ::clip = UCHAR(0), "Enable/Disable clipping box"
-      ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
-      ::clip_interactive = UCHAR(1), "Interactive clipping"
+
       ::initialized=false
 
       #::opacity_attenuation = 1, "Attenuation factor for the opacity"
@@ -58,7 +56,7 @@ if (!exists(SimplevtkVolumeClass)) {
       ::blend_mode = INT(0), "0: Composite, 1: Maximum Intensity, 2:Minimum Intensity, 3:Additive_blend"
       ::volrenmapper_type = INT(0), "Volume Rendering Mapper type 0: GPU, 1: Fixed Point 2: Standard, 3: AMILab Multi-VolRen"
 
-      ::move_2 = UCHAR(1)
+      #::move_2 = UCHAR(1)
 
     }
 
@@ -616,23 +614,23 @@ if (!exists(SimplevtkVolumeClass)) {
     }
    }
 
-    #----------------------------
-    proc ::InitBoxWidget() \
-    {
-      del ::box
-      ::box = vtk.vtkBoxWidget.New()
-      if (::clip) \
-      {
-        ::box.SetInteractor(&::renwininter)
-        ::box.SetPlaceFactor(1.01)
-        ::box.SetInput(&::vtkinput) 
-        ::box.SetDefaultRenderer(&::renderer)
-        ::box.InsideOutOn()
-        ::box.PlaceWidget()
-        ::box.SetRotationEnabled(::clip_enable_rotation)
-        ::box.EnabledOn()
-      }
-    }
+    ##----------------------------
+    #proc ::InitBoxWidget() \
+    #{
+      #del ::box
+      #::box = vtk.vtkBoxWidget.New()
+      #if (::clip) \
+      #{
+        #::box.SetInteractor(&::renwininter)
+        #::box.SetPlaceFactor(1.01)
+        #::box.SetInput(&::vtkinput) 
+        #::box.SetDefaultRenderer(&::renderer)
+        #::box.InsideOutOn()
+        #::box.PlaceWidget()
+        #::box.SetRotationEnabled(::clip_enable_rotation)
+        #::box.EnabledOn()
+      #}
+    #}
 
     #----------------------------
     proc ::ResetVTK() \
@@ -660,12 +658,12 @@ if (!exists(SimplevtkVolumeClass)) {
         if (exists(::property)){
           ::vol.SetProperty( &::property )
         }
-        if ::move_2 {
-          if (exists(::property2) && ::volrenmapper_type==3){
-            ::volmapper.SetProperty2( &::property2 )
-            printn "::volmapper.SetProperty2( &::property2 )"
-          }
+        #if ::move_2 {
+        if (exists(::property2) && ::volrenmapper_type==3){
+          ::volmapper.SetProperty2( &::property2 )
+          printn "::volmapper.SetProperty2( &::property2 )"
         }
+        #}
         if (exists(::volmapper)){
           ::volmapper.SetBlendMode(::blend_mode)
         }
@@ -697,28 +695,6 @@ if (!exists(SimplevtkVolumeClass)) {
       ::OnRender()
     }
 
-    #----------------------------
-    proc ::OnClip() \
-    {
-      if (exists(::box)) {
-        ::box.SetEnabled(::clip)
-        ::box.SetRotationEnabled(::clip_enable_rotation)
-      } else {
-        ::InitBoxWidget()
-      }
-    }
-
-    #----------------------------
-    proc ::ApplyClip() \
-    {
-      if (::clip) {
-        # to do: vtkPlanes
-        planes = vtk.vtkPlanes.New()
-        ::box.GetPlanes(&planes)
-        ::volmapper.SetClippingPlanes(&planes)
-        ::renwininter.Render()
-      }
-    }
 
     #----------------------------
     proc ::OnTextureMemory() \
