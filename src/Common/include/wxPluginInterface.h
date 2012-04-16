@@ -55,6 +55,13 @@ class wxPluginInterface
      **/
     virtual bool Execute (void) = 0;
 
+    /**
+     * @brief Free the elements created by Execute to allow the destruction 
+     * of the plugin
+     *
+     **/
+    virtual void Destroy () = 0;
+    
 }; // wxPluginInterface
 
 #endif // wxPluginInterface_H

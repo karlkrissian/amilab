@@ -65,7 +65,10 @@
  **/
 class WXEXPORT wxPluginBase: public wxPluginInterface
 {
+    
   public:
+    
+
     /**
      * @brief Get the plugin name.
      *
@@ -217,7 +220,12 @@ class WXEXPORT wxPluginBase: public wxPluginInterface
       return true;
     }      
   
-  private:
+    virtual void Destroy ()
+    {
+       std::cout << "Destroy() {}" << std::endl;
+    }      
+
+private:
     unsigned char m_plugin_mode;  // Determines the mode in which the plugin is executed.
     std::string      m_Name,         // The plugin name
                   m_Description,  // The plugin description 
@@ -250,7 +258,8 @@ extern "C"
 
 #define PLUGIN_DEFINE() \
 public: \
-    virtual bool Execute (void);
+    virtual bool Execute (void); \
+    virtual void Destroy();
 
 #define PLUGIN_ENTRY_FUNCTION(name) \
 extern "C" PLUGIN_AMILAB_DLLEXPORT wxPluginBase* CreatePlugin() \

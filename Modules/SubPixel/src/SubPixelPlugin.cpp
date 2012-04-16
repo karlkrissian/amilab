@@ -48,7 +48,7 @@ bool SubPixelPlugin::Execute(void)
 {
   // Create a new context (or namespace)
   AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("SubPixel");
+  amiobject->SetName(this->GetName());
 
    // wrap_SubPixel_classes(  amiobject->GetContext());
 
@@ -92,4 +92,11 @@ bool SubPixelPlugin::Execute(void)
   Vars.GetBuiltinContext()->AddDefault(amiobject->GetContext());
 
   return true;
+}
+
+
+void SubPixelPlugin::Destroy()
+{
+  std::cout << "SubPixelPlugin::Destroy()" << std::endl;
+  Vars.GetBuiltinContext()->deleteVar(this->GetName().c_str());
 }

@@ -26,6 +26,9 @@ class COMMON_EXPORT wxPluginManager
   DEFINE_CLASS(wxPluginManager);
 public:
 
+  /// Destructor
+  ~wxPluginManager();
+  
   /**
    * @brief Load the library with the given name (full or not), return true if ok.
    *
@@ -46,14 +49,14 @@ public:
    *
    * Works when previously the Detach method has been invoked.
    **/  
-  void Unload (void);
+  bool Unload (void);
 
   /**
    * @brief Gets the plugin handler.
    *
    * @return return the plugin handler
    **/
-  wxPluginBase* Getplugin() { return m_plugin;}
+  boost::shared_ptr<wxPluginBase> Getplugin() { return m_plugin;}
   
   wxDynamicLibrary& Getdll() { return m_dll; }
   
@@ -61,7 +64,7 @@ public:
 private:
   wxDllType         m_Detach; // Library handle
   wxDynamicLibrary  m_dll;    // Library manager.
-  wxPluginBase*       m_plugin; // Plugin handle.
+  boost::shared_ptr<wxPluginBase>     m_plugin; // Plugin handle.
 
 }; // wxPluginManager
 

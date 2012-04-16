@@ -10,10 +10,18 @@
 //
 
 #include "wxPluginManager.h"
-
+#include <iostream>
 
 //=======================================================
+wxPluginManager::~wxPluginManager()
+{
+  std::cout << "~wxPluginManager::wxPluginManager()" << std::endl;
+  m_plugin.reset();
+  Unload();
+}
 
+  
+//=======================================================
 bool wxPluginManager::Load (const char* LibName)
 {
   m_dll.Load(wxString(LibName, wxConvUTF8));
@@ -25,7 +33,7 @@ bool wxPluginManager::Load (const char* LibName)
     if(pfnCreatePlugin)
     {
       //Create the plugin
-      m_plugin = pfnCreatePlugin();
+      m_plugin = boost::shared_ptr<wxPluginBase>(pfnCreatePlugin());
       return true;
     }
   }
@@ -33,7 +41,6 @@ bool wxPluginManager::Load (const char* LibName)
 } //LoadPlugins definition.
 
 //=======================================================
-
 void wxPluginManager::Detach (void)
 {
   if(m_dll.IsLoaded())
@@ -41,8 +48,13 @@ void wxPluginManager::Detach (void)
 } //Detach definition.
 
 //=======================================================
-
-void wxPluginManager::Unload (void)
+bool wxPluginManager::Unload (void)
 {
-  m_dll.Unload(m_Detach);
+  if(m_dll.IsLoaded()) {
+    m_Detach = m_dll.Detach();
+    m_dll.Unload(m_Detach);
+    return true;
+  }
+  return false;
 } //Unload definition.
+

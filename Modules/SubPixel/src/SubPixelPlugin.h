@@ -23,6 +23,11 @@ class WX_AMILAB_EXPORT SubPixelPlugin : public wxPluginBase
 
 public:
   SubPixelPlugin();
+
+  ~SubPixelPlugin() 
+  {
+    this->Destroy();
+  }
 };
 
 #endif // _SubPixelPlugin_h_
