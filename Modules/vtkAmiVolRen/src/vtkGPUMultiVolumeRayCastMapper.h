@@ -34,7 +34,9 @@ class vtkTransform;
 
 //class vtkKWAMRVolumeMapper; // friend class.
 
-class VTK_VOLUMERENDERING_EXPORT vtkGPUMultiVolumeRayCastMapper : public vtkVolumeMapper
+class 
+    VTK_VOLUMERENDERING_EXPORT 
+    vtkGPUMultiVolumeRayCastMapper : public vtkVolumeMapper
 {
 public:
   static vtkGPUMultiVolumeRayCastMapper *New();

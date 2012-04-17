@@ -145,6 +145,13 @@ private:
 
 //-----------------------------------------------------------------------------
 
+#if defined(WIN32) 
+    #define VTK_VAR_IMPORT __declspec( dllimport ) 
+#else
+  #define VTK_VAR_IMPORT extern
+#endif
+
+
 // 2 volumes shaders
 extern const char *vtkGPUMultiVolumeRayCastMapper_CompositeFS;
 extern const char *vtkGPUMultiVolumeRayCastMapper_NoShadeFS;
@@ -152,32 +159,32 @@ extern const char *vtkGPUMultiVolumeRayCastMapper_ShadeFS;
 extern const char *vtkGPUMultiVolumeRayCastMapper_OneComponentFS;
 extern const char *vtkGPUMultiVolumeRayCastMapper_FourComponentsFS;
 
-extern const char *vtkGPUVolumeRayCastMapper_CompositeFS;
-extern const char *vtkGPUVolumeRayCastMapper_CompositeCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_CompositeNoCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_HeaderFS;
-extern const char *vtkGPUVolumeRayCastMapper_MIPFS;
-extern const char *vtkGPUVolumeRayCastMapper_MIPBinaryMaskFS;
-extern const char *vtkGPUVolumeRayCastMapper_MIPFourDependentFS;
-extern const char *vtkGPUVolumeRayCastMapper_MIPFourDependentCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_MIPFourDependentNoCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_MIPCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_MIPNoCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_ParallelProjectionFS;
-extern const char *vtkGPUVolumeRayCastMapper_PerspectiveProjectionFS;
-extern const char *vtkGPUVolumeRayCastMapper_ScaleBiasFS;
-extern const char *vtkGPUVolumeRayCastMapper_MinIPFS;
-extern const char *vtkGPUVolumeRayCastMapper_MinIPBinaryMaskFS;
-extern const char *vtkGPUVolumeRayCastMapper_MinIPFourDependentFS;
-extern const char *vtkGPUVolumeRayCastMapper_MinIPFourDependentCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_MinIPFourDependentNoCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_MinIPCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_MinIPNoCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_CompositeMaskFS;
-extern const char *vtkGPUVolumeRayCastMapper_CompositeBinaryMaskFS;
-extern const char *vtkGPUVolumeRayCastMapper_AdditiveFS;
-extern const char *vtkGPUVolumeRayCastMapper_AdditiveCroppingFS;
-extern const char *vtkGPUVolumeRayCastMapper_AdditiveNoCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_CompositeFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_CompositeCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_CompositeNoCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_HeaderFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MIPFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MIPBinaryMaskFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MIPFourDependentFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MIPFourDependentCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MIPFourDependentNoCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MIPCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MIPNoCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_ParallelProjectionFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_PerspectiveProjectionFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_ScaleBiasFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MinIPFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MinIPBinaryMaskFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MinIPFourDependentFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MinIPFourDependentCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MinIPFourDependentNoCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MinIPCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_MinIPNoCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_CompositeMaskFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_CompositeBinaryMaskFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_AdditiveFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_AdditiveCroppingFS;
+VTK_VAR_IMPORT const char *vtkGPUVolumeRayCastMapper_AdditiveNoCroppingFS;
 
 enum
 {

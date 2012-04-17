@@ -89,6 +89,8 @@ SET(${KIT}_scriptsdir
 
 IF(WIN32)
   set_source_files_properties(${${KIT}_SRCS} PROPERTIES COMPILE_FLAGS "-D${KIT}_EXPORTS")
+  # add this definition to allow original VTK macros to work
+  set_source_files_properties(${${KIT}_SRCS} PROPERTIES COMPILE_FLAGS "-DvtkVolumeRendering_EXPORTS")
 ENDIF(WIN32)
 
 SET(${KIT}_SRCS
@@ -234,6 +236,8 @@ IF(WIN32 OR APPLE)
     ${wxWidgets_LIBRARIES}
     ${Boost_LIBRARIES}
     ${LINK_VTK}
+    ${OPENGL_LIBRARIES}
+    ${OPENGL_glu_LIBRARY}
     )
   TARGET_LINK_LIBRARIES( ${KIT}
     ITKIO
@@ -271,6 +275,9 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../vtkAmiVolRen
           PATTERN "*.sh"
           PATTERN "*.html"
           # ----  Exclude
+          PATTERN "build"          EXCLUDE
+          PATTERN "Generated"      EXCLUDE
+          PATTERN "CMakeFiles"     EXCLUDE
           PATTERN "CMakeLists.txt" EXCLUDE
           PATTERN "src"            EXCLUDE
           PATTERN ".svn"           EXCLUDE

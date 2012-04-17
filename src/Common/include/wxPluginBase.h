@@ -223,7 +223,7 @@ class WXEXPORT wxPluginBase: public wxPluginInterface
   
     virtual void Destroy ()
     {
-       std::cout << "Destroy() {}" << std::endl;
+       //std::cout << "Destroy() {}" << std::endl;
     }      
 
 private:

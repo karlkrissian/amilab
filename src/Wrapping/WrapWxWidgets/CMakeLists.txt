@@ -2,6 +2,7 @@
 # The extension is already found.  Any number of sources could be listed here.
 
 INCLUDE( ${wxWidgets_USE_FILE})
+INCLUDE( ${USE_ITK_FILE} )
 
 include_directories (
   ${wxParams_INCLUDE_DIRS}
@@ -188,3 +189,15 @@ IF(WrapWxWidgets_SHARED)
 ELSE(WrapWxWidgets_SHARED)
   my_add_library ( WrapWxWidgets)
 ENDIF(WrapWxWidgets_SHARED)
+
+SET(amilab_ownlibs
+  LanguageBase
+  CommonBase
+  WrapCommon
+)
+
+target_link_libraries( WrapWxWidgets
+  ${amilab_ownlibs}
+  ${wxWidgets_LIBRARIES}
+  ${Boost_LIBRARIES}
+)

@@ -58,7 +58,9 @@ class vtkTransform;
 
 #include "vtkSmartPointer.h"
 
-class VTK_VOLUMERENDERING_EXPORT vtkOpenGLGPUMultiVolumeRayCastMapper : public vtkGPUMultiVolumeRayCastMapper
+class 
+    VTK_VOLUMERENDERING_EXPORT 
+    vtkOpenGLGPUMultiVolumeRayCastMapper : public vtkGPUMultiVolumeRayCastMapper
 {
 public:
   static vtkOpenGLGPUMultiVolumeRayCastMapper *New();
