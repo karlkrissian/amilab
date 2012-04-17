@@ -31,7 +31,7 @@ bool vtkAmiVolRenPlugin::Execute(void)
 {
   // Create a new context (or namespace)
   AMIObject::ptr amiobject(new AMIObject);
-  amiobject->SetName("vtkAmiVolRen");
+  amiobject->SetName(this->GetName().c_str());
 
     wrap_vtkAmiVolRen_classes(  amiobject->GetContext());
 
@@ -41,4 +41,10 @@ bool vtkAmiVolRenPlugin::Execute(void)
       amiobject,Vars.GetBuiltinContext());  
 
   return true;
+}
+
+
+void vtkAmiVolRenPlugin::Destroy()
+{
+  Vars.GetBuiltinContext()->deleteVar(this->GetName().c_str());
 }

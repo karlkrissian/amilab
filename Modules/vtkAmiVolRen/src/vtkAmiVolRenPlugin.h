@@ -23,6 +23,13 @@ class WX_AMILAB_EXPORT vtkAmiVolRenPlugin : public wxPluginBase
 
 public:
   vtkAmiVolRenPlugin();
+
+  ~vtkAmiVolRenPlugin() 
+  {
+    this->Destroy();
+  }
+  
+  
 };
 
 #endif // PLUGIN_H
