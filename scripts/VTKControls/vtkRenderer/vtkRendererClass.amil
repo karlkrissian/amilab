@@ -2,8 +2,9 @@
 # This class is designed to control the parameters of a vtkRenderer
 #
 del vtkRendererClass
+func "Common/ScriptGui"
 
-Class vtkRendererClass \
+Class vtkRendererClass : public ScriptGui \
 {
 
   func "Variable/ObjectIO"
@@ -24,6 +25,7 @@ Class vtkRendererClass \
   # initialize the parameters
   proc ::Init() {
     ::ParamClass ::params
+    ::renderer_name = ""
   }
 
   #-----------------------------------------------------------------------------
@@ -76,18 +78,79 @@ Class vtkRendererClass \
   }
 
   #-----------------------------------------------------------------------------
+  proc ::CB_AddSurface() \
+  {
+    printn "adding surface %1%" % ::surface_selected
+ 
+    eval "vtksurf = vtktools.ToVtkPolyData(&%1%);" % ::surface_selected
+    polynormals = vtk.vtkPolyDataNormals.New()
+    polynormals.SetInput(&vtksurf)
+    polynormals.SetFeatureAngle(60.0)
+    polymapper = vtk.vtkPolyDataMapper.New()
+    polymapper.SetInputConnection(&polynormals.GetOutputPort())
+    polymapper.ScalarVisibilityOff()
+    polyactor = vtk.vtkActor.New()
+    polyactor.SetMapper(&polymapper)
+    ::vtkrenderer.AddActor(polyactor)
+    ::vtkrenderer.GetRenderWindow().Render()
+  }
+
+  #-----------------------------------------------------------------------------
   # create the gui on a ParamPanel
   proc ::AddGui( OBJECT win) \
   {
-    ::win = &win
+    if (!exists(::win)) {
+      ::win = &win
+    }
     win.BeginBoxPanel("vtkRenderer control")
       ::nblights_id   = win.AddLabel("Number of Lights", "")
       ::nbactors_id   = win.AddLabel("Number of Actors", "")
       ::nbvols_id     = win.AddLabel("Number of Volumes","")
       ::time_id       = win.AddLabel("Last render time","")
       ::win.AddButton("Update",::Update)
+      ::surface_selected=""
+      win.AddAMIObjectChoice( &::surface_selected, "", "SurfacePoly")
+      win.AddButton("Add Selected Surface",::CB_AddSurface)
     win.EndBoxPanel()
   }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_Renderer( ) \
+  {
+    printn "::CB_Renderer()"
+    #eval "ok = exists(%1%);" % ::renderer_name
+    #if (ok) {
+      eval "::SetRenderer(%1%);" % ::renderer_name
+      ::Update()
+    #}
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::Gui( ) \
+  {
+      # parameters window
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("vtkRen",&::parent_panel)
+      } else {
+        ::win = ParamPanel("vtkRen")
+      }
+      ::win.BeginBook()
+        ::win.AddPage("Main")
+
+        # Select Renderer
+        ::win.AddAMIObjectChoice( &::renderer_name, "", "vtkRenderer")
+        ::win.SetCallback(::CB_Renderer)
+
+        # add gui
+        ::AddGui(::win)
+      ::win.EndBook()
+  
+      ::AddStandardButtons(&::win)
+      
+      ::win.Display()
+      ::win.Update(-1)
+  }
+
 
   ::Init()
 }
