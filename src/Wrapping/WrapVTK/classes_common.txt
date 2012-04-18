@@ -69,6 +69,8 @@ vtkInteractorStyleSwitch
 vtkInteractorStyleTrackball
 vtkInteractorStyleTrackballCamera
 vtkJPEGReader
+vtkLight
+vtkLightCollection
 vtkLinearTransform
 vtkLODActor
 vtkLookupTable

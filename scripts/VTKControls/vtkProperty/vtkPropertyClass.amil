@@ -1,0 +1,104 @@
+#
+# This class is designed to control the parameters of a vtkProperty
+#
+del vtkPropertyClass
+
+Class vtkPropertyClass \
+{
+
+  func "Variable/ObjectIO"
+  # 
+  #=============================================================================
+  Class ::ParamClass : public ObjectIO \
+  {
+    func "WxUtils/alEnum"
+    ::description = "Default parameters", \
+                    "vtkProperty parameters"
+    ::color   = wx.wxColour(0,0,255)
+    ::opacity = 1.0, "opacity property"
+
+    #---------------------------------------------------------------------------
+    proc ::__assign__( VAR p) {
+      ::color   = p.color
+      ::opacity = p.opacity
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  # initialize the parameters
+  proc ::Init() {
+    ::ParamClass ::params
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetCallback( VAR cb) {
+    del ::callback
+    ::callback = &cb
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::Update() \
+  {
+    # get the camera parameters: position, focal point and view up vector
+    # color
+    color = vector_double(3)
+    ::vtkproperty.GetColor(&color[0])
+    ::params.color.Set(color[0]*255,color[1]*255,color[2]*255)
+
+    # opacity
+    ::params.opacity = ::vtkproperty.GetOpacity()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::UpdateVTK() \
+  {
+    if (exists(::vtkproperty)) {
+      ::vtkproperty.SetColor( (FLOAT)::params.color.Red()  /255,\
+                              (FLOAT)::params.color.Green()/255,\
+                              (FLOAT)::params.color.Blue() /255)
+      ::vtkproperty.SetOpacity(::params.opacity)
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetProperty( OBJECT obj) \
+  {
+    if obj.IsA("vtkProperty") {
+      del ::vtkproperty
+      ::vtkproperty = &obj
+    } else {
+      if obj.IsA("vtkActor") {
+        del ::vtkproperty
+        ::vtkproperty = obj.GetProperty()
+      } else {
+        InfoDialog "vtkPropertyClass.SetProperty(obj): wrong object type"
+      }
+    }
+
+    ::Update()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::ChangeProperty( ) \
+  {
+    ::UpdateVTK()
+      if (exists(::callback)) {
+        ::callback()
+      }
+  }
+
+  #-----------------------------------------------------------------------------
+  # create the gui on a ParamPanel
+  proc ::AddGui( OBJECT win) \
+  {
+    ::win = &win
+    win.BeginBoxPanel("vtkProperty control")
+      ::color_id   = win.AddColor("Color",&::params.color)
+      win.SetCallback( &::ChangeProperty)
+      ::opacity_id = win.AddFloat(&::params.opacity,"Opacity",0,1)
+      win.SetCallback( &::ChangeProperty)
+    win.EndBoxPanel()
+  }
+
+  ::Init()
+}

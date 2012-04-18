@@ -17,6 +17,14 @@ if (!exists(vtkIsoSurfaceClass)) {
   #-----------------------------------------------------
   Class vtkIsoSurfaceClass : public ScriptGui {
 
+    func "VTKControls/vtkCamera/vtkCameraClass"
+    vtkCameraClass ::vtk_camera_gui
+
+    func "VTKControls/vtkRenderer/vtkRendererClass"
+    vtkRendererClass ::vtk_renderer_gui
+
+    func "VTKControls/vtkProperty/vtkPropertyClass"
+    vtkPropertyClass ::vtk_property1_gui
 
     #----------------------------
     proc ::Init() \
@@ -45,6 +53,7 @@ if (!exists(vtkIsoSurfaceClass)) {
       ::win.SetLabelValue(::input_size_id,::input_size)
       ::vol1min = min(::input)
       ::vol1max = max(::input)
+      ::vol1_threshold = (::vol1min+::vol1max)/2.0
       ::win.FloatConstraints(::vol1threshold_id,::vol1min,::vol1max,::vol1_threshold)
       ::win.Update(-1)
     }
@@ -195,7 +204,15 @@ if (!exists(vtkIsoSurfaceClass)) {
         interact = vtk.vtkInteractorStyleTrackballCamera.New()
         ::renwin_interact.SetInteractorStyle(&interact)
 
+        ::vtk_renderer_gui.SetRenderer(&::renderer)
+
+        ::vtk_camera_gui.SetCamera(::renderer.GetActiveCamera())
+        ::vtk_camera_gui.SetCallback(&::CameraCallback)
+
         ::StartVolume1()
+
+        ::vtk_property1_gui.SetProperty(::vol1_actor.GetProperty())
+        ::vtk_property1_gui.SetCallback(::Vol1PropertyCallback)
       }
 
     }
@@ -394,6 +411,18 @@ if (!exists(vtkIsoSurfaceClass)) {
     }
 
     #----------------------------
+    proc ::CameraCallback() \
+    {
+      ::renwin_interact.Render()
+    }
+
+    #----------------------------
+    proc ::Vol1PropertyCallback() \
+    {
+      ::renwin_interact.Render()
+    }
+
+    #----------------------------
     proc ::ChangeView()  \
     {    
       ::renderer.GetActiveCamera().Azimuth(::azimuth)
@@ -493,6 +522,8 @@ if (!exists(vtkIsoSurfaceClass)) {
             ::vol1_page = ::win.AddPage("Vol1")
               ::vol1threshold_id = ::win.AddFloat(&::vol1_threshold,"Th",0,255)
               ::win.AddButton("Apply",&::ApplyVol1)
+              ::vtk_property1_gui.AddGui(&::win)
+
             ::vol2_page = ::win.AddPage("Vol2")
               ::vol2threshold_id = ::win.AddFloat(&::vol2_threshold,"Th",0,255)
               ::win.AddButton("Apply",&::ApplyVol2)
@@ -514,17 +545,21 @@ if (!exists(vtkIsoSurfaceClass)) {
             ::win.AddButton("Get",&::GetSnapshot)
           ::win.EndBoxPanel()
 
-          ::win.BeginBoxPanel("Camera control")
-            ::win.AddInt(&::azimuth,"azimuth",-180,180)
-            ::win.BeginHorizontal()
-              ::win.AddButton("Apply",&::ChangeView)
-              ::win.AddButton("Reset",&::ResetView)
-            ::win.EndHorizontal()
-            ::win.BeginHorizontal()
-              ::win.AddButton("Backup", &::BackupView)
-              ::win.AddButton("Restore",&::RestoreView)
-            ::win.EndHorizontal()
-          ::win.EndBoxPanel()
+          ::vtk_camera_gui.AddGui(&::win)
+
+          ::vtk_renderer_gui.AddGui(&::win)
+
+          #::win.BeginBoxPanel("Camera control")
+            #::win.AddInt(&::azimuth,"azimuth",-180,180)
+            #::win.BeginHorizontal()
+              #::win.AddButton("Apply",&::ChangeView)
+              #::win.AddButton("Reset",&::ResetView)
+            #::win.EndHorizontal()
+            #::win.BeginHorizontal()
+              #::win.AddButton("Backup", &::BackupView)
+              #::win.AddButton("Restore",&::RestoreView)
+            #::win.EndHorizontal()
+          #::win.EndBoxPanel()
 
           #::win.AddButton("Start",   ::Start)
           #::icons.LoadIconPNG("Play")

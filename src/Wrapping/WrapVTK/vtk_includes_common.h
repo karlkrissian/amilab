@@ -1,5 +1,6 @@
 
 #include <vtkActor2D.h>
+#include <vtkActorCollection.h>
 #include <vtkAlgorithm.h>
 #include <vtkAlgorithmOutput.h>
 #include "vtkAmiCommand.h"
@@ -50,6 +51,8 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkInteractorStyleTrackball.h>
 #include <vtkJPEGReader.h>
+#include <vtkLight.h>
+#include <vtkLightCollection.h>
 #include <vtkLODActor.h>
 #include <vtkLookupTable.h>
 #include <vtkOpenGLGPUVolumeRayCastMapper.h>
@@ -84,6 +87,7 @@
 #include <vtkTransform.h>
 #include <vtkUnstructuredGridVolumeRayCastMapper.h>
 #include <vtkVolume.h>
+#include <vtkVolumeCollection.h>
 #include <vtkVolumeProperty.h>
 #include <vtkVolumeRayCastCompositeFunction.h> 
 #include <vtkVolumeRayCastMapper.h>

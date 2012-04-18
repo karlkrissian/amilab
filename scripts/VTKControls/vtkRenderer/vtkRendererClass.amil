@@ -1,0 +1,93 @@
+#
+# This class is designed to control the parameters of a vtkRenderer
+#
+del vtkRendererClass
+
+Class vtkRendererClass \
+{
+
+  func "Variable/ObjectIO"
+  # 
+  #=============================================================================
+  Class ::ParamClass : public ObjectIO \
+  {
+    func "WxUtils/alEnum"
+    ::description = "Default parameters", \
+                    "vtkRenderer parameters"
+
+    #---------------------------------------------------------------------------
+    proc ::__assign__( VAR p) {
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  # initialize the parameters
+  proc ::Init() {
+    ::ParamClass ::params
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetCallback( VAR cb) {
+    del ::callback
+    ::callback = &cb
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::Update() \
+  {
+    ::win.SetLabelValue(::nblights_id,\
+                        "%1%" % ::vtkrenderer.GetLights().GetNumberOfItems())
+    ::win.SetLabelValue(::nbactors_id,\
+                        "%1%" % ::vtkrenderer.GetActors().GetNumberOfItems())
+    ::win.SetLabelValue(::nbvols_id,\
+                        "%1%" % ::vtkrenderer.GetVolumes().GetNumberOfItems())
+    ::win.SetLabelValue(::time_id,\
+                        "%1% sec" % ::vtkrenderer.GetLastRenderTimeInSeconds())
+
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::UpdateVTK() \
+  {
+    if (exists(::vtkrenderer)) {
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetRenderer( OBJECT obj) \
+  {
+    if obj.IsA("vtkRenderer") {
+      del ::vtkrenderer
+      ::vtkrenderer = &obj
+    } else {
+      InfoDialog "vtkRendererClass.SetRenderer(obj): wrong object type"
+    }
+
+    ::Update()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::ChangeRenderer( ) \
+  {
+    ::UpdateVTK()
+      if (exists(::callback)) {
+        ::callback()
+      }
+  }
+
+  #-----------------------------------------------------------------------------
+  # create the gui on a ParamPanel
+  proc ::AddGui( OBJECT win) \
+  {
+    ::win = &win
+    win.BeginBoxPanel("vtkRenderer control")
+      ::nblights_id   = win.AddLabel("Number of Lights", "")
+      ::nbactors_id   = win.AddLabel("Number of Actors", "")
+      ::nbvols_id     = win.AddLabel("Number of Volumes","")
+      ::time_id       = win.AddLabel("Last render time","")
+      ::win.AddButton("Update",::Update)
+    win.EndBoxPanel()
+  }
+
+  ::Init()
+}
