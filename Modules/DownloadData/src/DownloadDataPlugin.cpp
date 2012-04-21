@@ -52,3 +52,10 @@ bool DownloadDataPlugin::Execute(void)
 
   return true;
 }
+
+
+void DownloadDataPlugin::Destroy()
+{
+  Vars.GetBuiltinContext()->deleteVar(this->GetName().c_str());
+}
+

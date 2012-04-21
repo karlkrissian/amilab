@@ -34,9 +34,13 @@ if (!exists(URLLoadClass)) {
           current_line = f[n]
           #printn "*"
           if sipi_re.Matches(&current_line) {
+            del im_name
             im_name  = wx.FromWxString(sipi_re.GetMatch(&current_line,1))
+            del im_desc
             im_desc  = wx.FromWxString(sipi_re.GetMatch(&current_line,2))
+            del im_size
             im_size  = wx.FromWxString(sipi_re.GetMatch(&current_line,5))
+            del im_color
             im_color = wx.FromWxString(sipi_re.GetMatch(&current_line,6))
             #printn " '%1%' " % im_name + \
                     #" '%1%' " %im_desc  + \
@@ -279,7 +283,7 @@ if (!exists(URLLoadClass)) {
     #---------------------------------------------------------------------------
     proc ::AddImageButton( STRING varname) \
     {
-      #printn "Starting ::AddImageButton(%1%)" %varname
+      printn "Starting ::AddImageButton(%1%)" %varname
       return=::LoadImageIcon(varname);
       eval "bmp = wx.wxBitmap(&::%1%_icon.Scale(32,32));" % varname
       #eval "::bmp_%1% = &bmp;" % varname

@@ -23,6 +23,11 @@ class WX_AMILAB_EXPORT DownloadDataPlugin : public wxPluginBase
 
 public:
   DownloadDataPlugin();
+  
+  ~DownloadDataPlugin() 
+  {
+    this->Destroy();
+  }
 };
 
 #endif // _DownloadDataPlugin_h_
