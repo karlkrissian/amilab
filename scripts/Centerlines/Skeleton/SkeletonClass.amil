@@ -241,7 +241,7 @@ if (!exists(SkeletonClass)) {
     proc ::SelectPrune() {
       func "Centerlines/Prune"
       if (exists(::res)) {
-        SelectPrune(&::res,::prunesize)
+        return = SelectPrune(&::res,::prunesize)
         if (exists(::res_draw)) {
           ::res_draw.Paint()
         }

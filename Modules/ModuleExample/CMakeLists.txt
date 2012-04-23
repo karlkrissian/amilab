@@ -31,6 +31,9 @@ IF(ITK_FOUND)
   INCLUDE(${ITK_USE_FILE})
 ENDIF(ITK_FOUND)
 
+FIND_PACKAGE( VTK )
+MESSAGE( "VTK_FOUND=${VTK_FOUND}")
+
 FIND_PACKAGE( wxWidgets REQUIRED COMPONENTS adv  core base )
 
 # default boost parameters
@@ -45,11 +48,11 @@ OPTION( ${KIT}_GENERATE_HTML_HELP "Generate HTML file help" OFF)
 
 FIND_PACKAGE(AMILab REQUIRED)
 
-INCLUDE(${AMILAB_BINARY_DIR}/AMILabConfig.cmake)
+SET(AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR})
+INCLUDE(${AMILab_BINARY_DIR}/AMILabConfig.cmake)
 MESSAGE("Boost_USE_STATIC_LIBS has been set to ${Boost_USE_STATIC_LIBS}")
 
 INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
-
 
 FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
 FIND_PACKAGE( ZLIB)

@@ -4,14 +4,6 @@
 # Adding main Gui scripts to the menu
 #
 
-proc AddMenuAnisoGS_Flux() \
-{
-  category = "&PDI"
-  script = "PDI/AnisoGS_Flux/AnisoGS_FluxGui.amil"
+ami.MainFrame.AddToMenu("&Scripts","&Denoising","&AnisoGS_Flux",  \
+                        "Denoising/AnisoGS_Flux/AnisoGS_FluxGui")
 
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&AnisoGS_Flux",script)
-}
-
-AddMenuAnisoGS_Flux()
-del AddMenuAnisoGS_Flux

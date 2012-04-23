@@ -836,8 +836,15 @@ public:
   // Save the selected lines in a vtk format file
   void SaveSelectedLines( char* name);
 
-  // values higher than one will be selected
-  void SelectLines( InrImage* lines_selection);
+  /**
+   * @brief Toogle the selection of lines based on the 1D input image.
+   * If the value is higher than 0.5, then toggle the corresponding line
+   * selection (select it if unselected or unselect it if selected).
+   *
+   * @param lines_selection ...
+   * @return returns the number of new selected lines
+   **/
+  int SelectLines( InrImage* lines_selection);
 
   //
   // Functions for point selection

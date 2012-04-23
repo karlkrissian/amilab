@@ -4,14 +4,7 @@
 # Adding main Gui scripts to the menu
 #
 
-proc AddMenuScriptExample() \
-{
-  category = "&PDI"
-  script = "PDI/ScriptExample/ScriptExampleGui.amil"
 
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&ScriptExample",script)
-}
-
-AddMenuScriptExample()
-del AddMenuScriptExample
+# Scripts Menu
+ami.MainFrame.AddToMenu("&Scripts","&CATEGORY","&ScriptExample",\
+    op_system.GetCurrentScriptDir()+"/ScriptExampleGui.amil")

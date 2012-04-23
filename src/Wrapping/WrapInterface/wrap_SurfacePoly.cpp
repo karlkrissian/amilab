@@ -688,9 +688,9 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_SMTPTR_PARAM(InrImage,im);
-  s->SelectLines(im.get());
+  int count = s->SelectLines(im.get());
   s->GLRecomputeList();
-  return BasicVariable::ptr();
+  return AMILabType<int>::CreateVar(count);
 }
 
 //---------------------------------------------------

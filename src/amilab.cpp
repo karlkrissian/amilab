@@ -443,12 +443,6 @@ bool MyApp::OnInit()
       amilab_config.SetFullName(wxT("config.amil"));
     }
     
-    // 3. in user home directory ~/.amilab/config.amil
-    if (!amilab_config.FileExists()) {
-      amilab_config.AssignHomeDir();
-      amilab_config.AppendDir(wxT(".amilab"));
-      amilab_config.SetFullName(wxT("config.amil"));
-    }
 
     if (amilab_config.FileExists())
       try {
@@ -458,6 +452,25 @@ bool MyApp::OnInit()
       catch (char * str ) {
           std::cerr << "Error catched ! " << str << std::endl;
       }
+
+    // also run the config.amil here
+    // 3. in user home directory ~/.amilab/config.amil
+    //if (!amilab_config.FileExists()) {
+
+    //amilab_config.AssignHomeDir();
+    //amilab_config.AppendDir(wxT(".amilab"));
+    amilab_config.AssignDir(wxStandardPaths::Get().GetUserLocalDataDir());
+    
+    amilab_config.SetFullName(wxT("config.amil"));
+    if (amilab_config.FileExists())
+      try {
+          GB_driver.parse_file(string(amilab_config.GetFullPath().mb_str(wxConvUTF8)));
+          //GB_main_wxFrame->GetConsole()->ProcessReturn();
+      }
+      catch (char * str ) {
+          std::cerr << "Error catched ! " << str << std::endl;
+      }
+    //}
 
     // check for existence of Menus for scripts
     wxFileName amilab_menuscripts;

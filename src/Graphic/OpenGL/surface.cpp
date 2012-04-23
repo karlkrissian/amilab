@@ -4296,24 +4296,27 @@ void SurfacePoly :: SaveSelectedLines( char* name)
 } // SaveSelectedLines()
 
 // ----------------------------------------------------------------------
-void SurfacePoly :: SelectLines( InrImage* lines_selection)
+int SurfacePoly :: SelectLines( InrImage* lines_selection)
 //                            ----------
 {
 
   int l;
   int pos;
+  int count = 0;
   BackupLines();
 
   for(l=0;l<lines_selection->DimX();l++) {
     if ((l<_tab_lines.NbElts())&&((*lines_selection)(l,0,0)>0.5)) {
       pos = _selected_lines.Position(l);
       Si pos != -1 Alors
-	_selected_lines.Supprime(pos);
+        _selected_lines.Supprime(pos);
       Sinon
-	_selected_lines += l;
+        _selected_lines += l;
+        count++;
       FinSi
     }
   }
+  return count;
 
 } // SelectLines()
 

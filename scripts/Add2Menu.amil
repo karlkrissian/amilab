@@ -1,38 +1,38 @@
 #!/usr/bin/amilab
 
-#
-# Adding main GUI scripts to the menu interface
-#
-printn "Main Add2Menu begin"
-for dir in  "BasicFilters"\
-            ,"DistanceTransform"\
-            ,"Filtering"\
-            ,"Denoising"\
-            ,"Noise"\
-            ,"Segmentation"\
-            ,"SyntheticImages"\
-            ,"Visualization","IO","Centerlines"\
-            ,"QualityMeasures", "Fitting", "Optimization" \
-            ,"OpticFlow" \
-            ,"CarotidBifurcationWorkshop2009" \
-            ,"Utils" \
-            ,"Vessels" \
-            ,"Variable" \
-            ,"Drawing" \
+#-------------------------------------------------------------------------------
+proc RunAdd2Menus( STRING base_dir) \
 {
-  del local_f
-  local_f = wx.wxFileName(GetScriptsDir)
-  local_f.AppendDir(dir)
-  local_f.SetFullName("Add2Menu.amil")
-  if local_f.FileExists() {
-    func dir+"/Add2Menu.amil"
-  } else {
-    InfoDialog wx.FromWxString(local_f.GetFullPath())+" does not exists"
+  currentDir = wx.wxDir(base_dir)
+  nextDir = wx.wxString()
+  # go through all the directories
+  process = currentDir.GetFirst(&nextDir,"",wx.wxDIR_DIRS)
+
+  list = wx.wxArrayString()
+  # and while there are still files to process
+  while process {
+    #printn "nextDir is %1%" % wx.FromWxString(nextDir)
+    inputfilename = base_dir+"/"+wx.FromWxString(nextDir)+"/Add2Menu.amil"
+    if wx.wxFileExists( inputfilename) {
+      list.Add(inputfilename)
+      #func inputfilename
+      #printn "will run 'func \"%1%\"'" % inputfilename
+    }
+    # and get the next file
+    process = currentDir.GetNext(&nextDir);
+  }
+  list.Sort()
+  for n=0 to list.GetCount()-1 {
+    func wx.FromWxString(list[n])
   }
 }
 
-file=op_system.GetCurrentScriptDir()+"/../Modules/Add2Menu.amil"
-func file
+#
+# Adding main GUI scripts to the menu interface
+#
+RunAdd2Menus(op_system.GetCurrentScriptDir())
+
+func op_system.GetCurrentScriptDir()+"/../Modules/Add2Menu.amil"
 
 #quit
 

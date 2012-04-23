@@ -4,14 +4,5 @@
 # Adding main Gui scripts to the menu
 #
 
-proc AddMenuPeronaMalik() \
-{
-  category = "&PDI"
-  script = "PDI/PeronaMalik/PeronaMalikGui.amil"
-
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&PeronaMalik",script)
-}
-
-AddMenuPeronaMalik()
-del AddMenuPeronaMalik
+ami.MainFrame.AddToMenu("&Scripts","&Denoising","&Perona-Malik", \
+                        "Denoising/PeronaMalik/PeronaMalikGui")

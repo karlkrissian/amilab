@@ -21,7 +21,7 @@ proc SelectPrune( OBJECT _s, NUM threshold) {
 #  printn _i.info
 #  printn _ext1c.info
 #  printn _ext2c.info
-  _s.SelectLines((_i<threshold)*((_ext1c==1)+(_ext2c==1)))
+  return = _s.SelectLines((_i<threshold)*((_ext1c==1)+(_ext2c==1)))
   printn "End SelectPrune"
 #
 }

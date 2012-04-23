@@ -9,36 +9,20 @@ filt_dir = "Denoising/"
 
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &GS",        filt_dir+"AnisoGS_gui")
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &SRAD",      filt_dir+"AnisoSRAD_gui")
-ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &NRAD",      filt_dir+"AnisoNRAD/AnisoNRADGui")
 
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"AnisoScalar",    filt_dir+"AnisoScalar/AnisoScalarGui")
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"AnisoMatrix",    filt_dir+"AnisoMatrix/AnisoMatrixGui")
 
-#ami.MainFrame.AddToMenu("&Scripts",filt_category,"Non-Local &Means", filt_dir+"NLmeans_gui")
-#ami.MainFrame.AddToMenu("&Scripts",filt_category,"itk Non-Local &Means", filt_dir+"itkNLMeans")
-
-# add also to ITK menu
-#ami.MainFrame.AddToMenu("&ITK",filt_category,"Non-Local &Means", filt_dir+"itkNLMeans")
-#ami.MainFrame.AddToMenu("&Scripts",filt_category,"itk Fast Non-Local &Means", filt_dir+"itkFastNLmeans")
-
 del filt_category
 del filt_dir
 
-proc AddSegMenu() {
-  for dir in  "NLmeans" \
-  {
-    if wx.wxFileName(GetScriptsDir+"/Denoising/"+dir+"/Add2Menu.amil").FileExists() {
-      func "/Denoising/"+dir+"/Add2Menu.amil"
-    } else {
-      InfoDialog GetScriptsDir+"/Denoising/"+dir+"/Add2Menu.amil does not exists"
-    }
-  }
-}
+#
+# Adding main GUI scripts to the menu interface
+#
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())
 
-AddSegMenu()
-del AddSegMenu
-
-ami.MainFrame.AddToMenu("&Scripts","&Denoising","&Perona-Malik", "Denoising/PeronaMalik/PeronaMalikGui")
-ami.MainFrame.AddToMenu("&Scripts","&Denoising","&AnisoGS_Flux",  "Denoising/AnisoGS_Flux/AnisoGS_FluxGui")
-ami.MainFrame.AddToMenu("&Scripts","&Denoising","&AnisoGS_NRAD",  "Denoising/AnisoGS_NRAD/AnisoGS_NRADGui")
-
+# OK
+#ami.MainFrame.AddToMenu("&Scripts","&Denoising","&Perona-Malik", "Denoising/PeronaMalik/PeronaMalikGui")
+#ami.MainFrame.AddToMenu("&Scripts","&Denoising","&AnisoGS_Flux",  "Denoising/AnisoGS_Flux/AnisoGS_FluxGui")
+#ami.MainFrame.AddToMenu("&Scripts","&Denoising","&AnisoGS_NRAD",  "Denoising/AnisoGS_NRAD/AnisoGS_NRADGui")
+#ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &NRAD",      filt_dir+"AnisoNRAD/AnisoNRADGui")
