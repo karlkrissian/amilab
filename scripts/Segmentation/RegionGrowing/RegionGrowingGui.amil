@@ -1,0 +1,11 @@
+
+func "RegionGrowingClass"
+
+if (!exists(RegionGrowing_obj)) {
+  RegionGrowingClass RegionGrowing_obj
+  RegionGrowing_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

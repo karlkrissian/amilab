@@ -6,19 +6,24 @@
 
 
 
-proc AddSegMenu() {
-  for dir in  "LevelSets","itkWaterShed", "itkLevelSet", "itkFastMarching", "MultipleLevelSets" \
-  {
-    if wx.wxFileName(GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil").FileExists() {
-      func "/Segmentation/"+dir+"/Add2Menu.amil"
-    } else {
-      InfoDialog GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil does not exists"
-    }
-  }
-}
+#proc AddSegMenu() {
+  #for dir in  "LevelSets","itkWaterShed", "itkLevelSet", "itkFastMarching", "MultipleLevelSets" \
+  #{
+    #if wx.wxFileName(GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil").FileExists() {
+      #func "/Segmentation/"+dir+"/Add2Menu.amil"
+    #} else {
+      #InfoDialog GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil does not exists"
+    #}
+  #}
+#}
 
-AddSegMenu()
-del AddSegMenu
+#AddSegMenu()
+#del AddSegMenu
+
+#
+# Adding main GUI scripts to the menu interface
+#
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())
 
 if exists(global::scripts_toolbar) {
   global::scripts_toolbar.AddSeparator()

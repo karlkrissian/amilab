@@ -36,3 +36,7 @@ ami::GnuPlot
 
 # adding noise to an image
 ami::AddImageNoise
+
+# Reconstruction of tubes around lines
+ami::LineRecons
+

@@ -11,8 +11,9 @@ if (!exists(NewScriptClass)) {
     #---------------------------------------------------------------------------
     proc ::Init() {
       
-      ::new_script_dir    = GetScriptsDir, "Directory of the new script"
-      ::new_script_name   = "","Name of the new script"
+      ::new_script_dir      = GetScriptsDir, "Directory of the new script"
+      ::new_script_name     = "","Name of the new script"
+      ::new_script_category = "","Category of the new script"
 
       #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
       # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
@@ -32,6 +33,10 @@ if (!exists(NewScriptClass)) {
       ::cdr.repl_out    = ::new_script_name
       ::cdr.Run()
 
+      ::cdr.repl_in     = "CATEGORY"
+      ::cdr.repl_out    = ::new_script_category
+      add2menu_filename=::new_script_dir+"/"+::new_script_name+"/Add2Menu.amil"
+      ::cdr.CopyFileAndReplace(add2menu_filename,add2menu_filename)
       # check for Add2Menu.amil in destination directory
       
       InfoDialog "The directory %1% has been created based from the template" % \
@@ -53,6 +58,7 @@ if (!exists(NewScriptClass)) {
 
          dir_id = ::win.AddDirname(&::new_script_dir,"Script Path")
          ::win.AddString(&::new_script_name,"Script Filename")
+         ::win.AddString(&::new_script_category,"Script Category")
          ::win.AddButton("Create", &::Create)
 
         # add help page

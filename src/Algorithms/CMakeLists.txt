@@ -72,6 +72,8 @@ SET(Algorithms_SRCS
   DistanceTransforms.cpp
   func_globalstats.cpp
 
+  amiLineRecons.cpp
+
   # files coming from previous Filtering directory
   AddImageNoise.cpp
   DeriveesLissees.cpp
@@ -151,6 +153,8 @@ SET(Algorithms_HDRS
   include/amiAnisoGS_NRAD.h
   #include/WrapOld_AnisoGS.h
   include/NLmeans.h
+
+  include/amiLineRecons.h
 
 
   include/AnalyticFunctionBase.h
