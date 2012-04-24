@@ -1,0 +1,87 @@
+
+func "Common/ScriptGui"
+
+if (!exists(NewModuleClass)) {
+
+  Class NewModuleClass : public ScriptGui \
+  {
+    func "Utils/CopyDirAndReplace/CopyDirAndReplaceClass.amil"
+    CopyDirAndReplaceClass ::cdr
+    
+
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      
+      ::new_module_name   = "","Name of the new module"
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+\
+                        "/NewModule/Doc/NewModule/index.html"
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::Create() \
+    {
+      ::cdr._from = GetScriptsDir + "../Modules/ModuleExample"
+      ::cdr._to = GetScriptsDir + "../Modules"
+      ::cdr._newdirname = ::new_module_name
+      ::cdr.repl_in     = "ModuleExample"
+      ::cdr.repl_out    = ::new_module_name
+      ::cdr.Run()
+
+      # check for Add2Menu.amil in destination directory
+      
+      InfoDialog "The directory %1% has been created based from the template" % \
+        (::cdr._to+"/"+::new_module_name)
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("NewModule",&::parent_panel)
+      } else {
+        ::win = ParamPanel("NewModule")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Params")
+
+         ::win.AddString(&::new_module_name,"Module Name")
+         ::win.AddButton("Create", &::Create)
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

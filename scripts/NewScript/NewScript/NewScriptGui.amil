@@ -1,0 +1,11 @@
+
+func "NewScriptClass"
+
+if (!exists(NewScript_obj)) {
+  NewScriptClass NewScript_obj
+  NewScript_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

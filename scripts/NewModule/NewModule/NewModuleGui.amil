@@ -1,0 +1,11 @@
+
+func "NewModuleClass"
+
+if (!exists(NewModule_obj)) {
+  NewModuleClass NewModule_obj
+  NewModule_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
