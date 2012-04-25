@@ -1,0 +1,2 @@
+ ami.MainFrame.AddToMenu("&New","&Module","&NewModule",  "NewModule/NewModule/NewModuleGui")
+

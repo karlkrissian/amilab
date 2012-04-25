@@ -1,0 +1,94 @@
+
+func "Common/ScriptGui"
+
+if (!exists(NewScriptClass)) {
+
+  Class NewScriptClass : public ScriptGui \
+  {
+    func "Utils/CopyDirAndReplace/CopyDirAndReplaceClass.amil"
+    CopyDirAndReplaceClass ::cdr
+    
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      
+      ::new_script_dir      = GetScriptsDir, "Directory of the new script"
+      ::new_script_name     = "","Name of the new script"
+      ::new_script_category = "","Category of the new script"
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+\
+                        "/NewScript/Doc/NewScript/index.html"
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::Create() \
+    {
+      ::cdr._from = GetScriptsDir + "ScriptExample"
+      ::cdr._to = ::new_script_dir
+      ::cdr._newdirname = ::new_script_name
+      ::cdr.repl_in     = "ScriptExample"
+      ::cdr.repl_out    = ::new_script_name
+      ::cdr.Run()
+
+      ::cdr.repl_in     = "CATEGORY"
+      ::cdr.repl_out    = ::new_script_category
+      add2menu_filename=::new_script_dir+"/"+::new_script_name+"/Add2Menu.amil"
+      ::cdr.CopyFileAndReplace(add2menu_filename,add2menu_filename)
+      # check for Add2Menu.amil in destination directory
+      
+      InfoDialog "The directory %1% has been created based from the template" % \
+        (::new_script_dir+::new_script_name)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("NewScript",&::parent_panel)
+      } else {
+        ::win = ParamPanel("NewScript")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Params")
+
+         dir_id = ::win.AddDirname(&::new_script_dir,"Script Path")
+         ::win.AddString(&::new_script_name,"Script Filename")
+         ::win.AddString(&::new_script_category,"Script Category")
+         ::win.AddButton("Create", &::Create)
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+      
+      # strange behavior TODO: check this problem
+      ::new_script_dir += "/"
+      ::win.Update(dir_id)
+      ::new_script_dir -= "/"
+      ::win.Update(dir_id)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If
