@@ -1,0 +1,46 @@
+
+del ITKImage2ImageFilterClass
+
+#-------------------------------------------------------------------------------
+# Class to simplify dealing with itk ImageToImageFilter types in amilab
+#-------------------------------------------------------------------------------
+Class ITKImage2ImageFilterClass \
+{
+  ::filter_context = "itk", "Default context is itk"
+  #-----------------------------------------------------------------------------
+  proc ::SetContext( STRING c) {
+    ::filter_context = c
+  }
+  
+
+  #-----------------------------------------------------------------------------
+  proc ::Create( STRING filtername, STRING inputtype, STRING outputtype) \
+  {
+    ::inputtype  = inputtype
+    ::outputtype = outputtype
+    eval "::filter_ptr = %1%." % ::filter_context \
+          + filtername+"ImageFilter_Image_"+inputtype\
+          +"_Image_"+outputtype+".New();" 
+    ::filter = ::filter_ptr.GetPointer()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetInput(IMAGE input) \
+  {
+    # 1. Get Input image
+    eval "::input_itk = itk.amiConvert.ToITK_"+::inputtype+"(&input);"
+    ::filter.SetInput( &::input_itk.GetPointer() )
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::GetOutput() \
+  {
+    ::filter.Update()
+    eval "res_itk = itk.SmartPointer_Image_" \
+                    +::outputtype\
+                    + ".SmartPointer(&::filter.GetOutput());"
+    eval "res = itk.amiConvert.FromITK_"+::outputtype+"(&res_itk);"
+    return=&res
+  }
+}
+

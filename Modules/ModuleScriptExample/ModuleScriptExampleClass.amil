@@ -42,7 +42,7 @@ if (!exists(ModuleScriptExampleClass)) {
     proc ::Run() \
     {
       if (!exists(::input)) {
-        Infodialog "First load the input image !"
+        InfoDialog "First load the input image !"
       } else {
         InfoDialog "Filtro fantastico :) !!!"
       }

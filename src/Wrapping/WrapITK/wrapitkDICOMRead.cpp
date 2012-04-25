@@ -36,9 +36,17 @@
 
 #ifndef _WITHOUT_ITK_
 #include <stddef.h>
-#include "itkOrientedImage.h"
+#include <itkVersion.h>
+
+#if ITK_VERSION_MAJOR<4
+  #include "itkOrientedImage.h"
+#else
+  #include "itkImage.h"
+#endif
+
 #include "itkImageSeriesReader.h"
 #include "itkDICOMImageIO2.h"
+#include "itkGDCMImageIO.h"
 #include "itkDICOMSeriesFileNames.h"
 #include "itkImageIOBase.h"
 #endif // _WITHOUT_ITK_
@@ -48,10 +56,44 @@
 #include "wrapConversion.tpp"
 #include "wrapitkDICOMRead.h"
 
+//  The following section of code implements a Command observer
+//  used to monitor the evolution of the registration process.
+//
+#include "itkCommand.h"
+class CommandProgressUpdate : public itk::Command
+{
+public:
+  typedef  CommandProgressUpdate   Self;
+  typedef  itk::Command            Superclass;
+  typedef  itk::SmartPointer<Self> Pointer;
+  itkNewMacro( Self );
+protected:
+  CommandProgressUpdate() {};
+public:
+  void Execute(itk::Object *caller, const itk::EventObject & event)
+    {
+    Execute( (const itk::Object *)caller, event);
+    }
+
+  void Execute(const itk::Object * object, const itk::EventObject & event)
+    {
+    const itk::ProcessObject * filter =
+      dynamic_cast< const itk::ProcessObject * >( object );
+    if( ! itk::ProgressEvent().CheckEvent( &event ) )
+      {
+      return;
+      }
+    std::cout << filter->GetProgress() << std::endl;
+    }
+};
 
 template<class PixelType, unsigned int Dimension>
 class itkReadDICOMClass {
+#if ITK_VERSION_MAJOR<4
   typedef itk::OrientedImage< PixelType, Dimension > ImageType;
+#else
+  typedef itk::Image< PixelType, Dimension > ImageType;
+#endif
   typedef itk::ImageSeriesReader< ImageType > ReaderType;
   
   private:
@@ -75,6 +117,8 @@ class itkReadDICOMClass {
 
       try
         {
+        CommandProgressUpdate::Pointer observer = CommandProgressUpdate::New();
+        reader->AddObserver( itk::ProgressEvent(), observer );
         reader->Update();
         inputImage = reader->GetOutput();
         }
@@ -138,12 +182,17 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
   itk::ImageIOBase* image_io=NULL;
   typedef  itk::Image< unsigned char, 3>    ImageType;
   typedef  itk::ImageSeriesReader< ImageType >  ReaderType;
+
   ReaderType::Pointer reader = ReaderType::New();
+
   typedef   itk::ImageIOBase::IOComponentType comptype;
   comptype image_component_type = itk::ImageIOBase::UNKNOWNCOMPONENTTYPE;
+
   typedef   itk::ImageIOBase::IOPixelType ptype;
   ptype image_pixel_type = itk::ImageIOBase::UNKNOWNPIXELTYPE;
+  
   typedef itk::DICOMImageIO2 ImageIOType;
+//  typedef itk::GDCMImageIO ImageIOType;
   ImageIOType::Pointer dicomIO = ImageIOType::New();
 
   typedef itk::DICOMSeriesFileNames NamesGeneratorType;
@@ -168,19 +217,21 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
       seriesIdentifier = seriesUID.begin()->c_str();
                     
       fileNames = nameGenerator->GetFileNames( seriesIdentifier );
-  
       reader->SetImageIO( dicomIO );
-      reader->SetFileNames( fileNames );
-      reader->Update();
-      reader->GenerateOutputInformation();
+
+      // Don't need to read all images to get the information
       image_io= reader->GetImageIO();
-      image_component_type = image_io->GetComponentType();
-      image_pixel_type = image_io->GetPixelType();
-      std::cout << "  Component Type = " << image_io->GetComponentTypeAsString(image_component_type) << std::endl;
-      std::cout << "  Pixel Type = "     << image_io->GetPixelTypeAsString(image_pixel_type) << std::endl;
-      std::cout << "  Number of Dimensions = "<< image_io->GetNumberOfDimensions() << std::endl;
-      int vdim = image_io->GetNumberOfComponents();
-      std::cout << "  Number of Components = "<< vdim << std::endl;
+      if (image_io->CanReadFile( fileNames.front().c_str() )) {
+        image_io->SetFileName(fileNames.front().c_str() );
+        image_io->ReadImageInformation();
+        image_component_type = image_io->GetComponentType();
+        image_pixel_type = image_io->GetPixelType();
+        std::cout << "  Component Type = " << image_io->GetComponentTypeAsString(image_component_type) << std::endl;
+        std::cout << "  Pixel Type = "     << image_io->GetPixelTypeAsString(image_pixel_type) << std::endl;
+        std::cout << "  Number of Dimensions = "<< image_io->GetNumberOfDimensions() << std::endl;
+        int vdim = image_io->GetNumberOfComponents();
+        std::cout << "  Number of Components = "<< vdim << std::endl;
+      }
     } else
     {
       FILE_ERROR("Dicom series not found ...");

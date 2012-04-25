@@ -11,6 +11,7 @@ type_shortname={
   'long int'           : 'lint',
   'long long int'      : 'llint',
   'long unsigned int'  : 'luint',
+  'long long unsigned int'  : 'lluint',
   'std::string'        : 'string',
   'long long int'      : 'llint',
   'short unsigned int' : 'suint',
@@ -23,6 +24,7 @@ type_substitute={
   'unsigned int'       : 'long',
 #  'long int'          : 'long',
   'long unsigned int'  : 'long',
+  'long long unsigned int'  : 'long',
   'char'               : 'std::string',
   'wchar_t'            : 'std::string',
   'long long int'      : 'long',
@@ -37,7 +39,7 @@ def GetShortName(typename):
   if typename in type_shortname.keys():
     return type_shortname[typename]
   else:
-    return typename.replace(":","_")
+    return config.ClassShortName(typename)
 
 #
 # Operators
@@ -272,7 +274,8 @@ def ConvertSmtPtrToDoublePtr_void(typeid,substvar,typevar):
 # Generic calls
 #
 def ConvertValFrom(typeid,typevar,substvar):
-  typename=config.types[typeid].GetString()
+  maintypeid = config.types[typeid].GetMainTypeId()
+  typename=config.types[maintypeid].GetString()
   substtype = type_substitute[typename]
   shorttypename=GetShortName(typename)
   if shorttypename=="wchar_t":
@@ -286,7 +289,8 @@ def ConvertValFrom(typeid,typevar,substvar):
 
 
 def ConvertPtrFrom(typeid,typevar,substvar):
-  typename=config.types[typeid].GetString()
+  maintypeid = config.types[typeid].GetMainTypeId()
+  typename=config.types[maintypeid].GetString()
   substtype = type_substitute[typename]
   shorttypename=GetShortName(typename)
   try:
@@ -297,7 +301,8 @@ def ConvertPtrFrom(typeid,typevar,substvar):
     return res
 
 def ConvertValTo(typeid,substvar,typevar):
-  typename=config.types[typeid].GetString()
+  maintypeid = config.types[typeid].GetMainTypeId()
+  typename=config.types[maintypeid].GetString()
   shorttypename=GetShortName(typename)
   try:
     return eval("ConvertValTo_{0}(substvar,typevar)".format(shorttypename))

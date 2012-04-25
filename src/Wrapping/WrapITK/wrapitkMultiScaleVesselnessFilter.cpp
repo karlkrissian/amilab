@@ -46,7 +46,9 @@
 InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
 {
 
-#ifndef _WITHOUT_ITK_
+#if !defined(_WITHOUT_ITK_) && (ITK_VERSION_MAJOR<4)
+// need to be fixed for 4.0
+
 
   char functionname[] = "itkMultiScaleVesselnessFilter2D";
   char description[]=" \n\
@@ -123,13 +125,17 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
-#endif // _WITHOUT_ITK_	
+
+#endif // !defined(_WITHOUT_ITK_) && (ITK_VERSION_MAJOR<4)
+
+  
 } // wrap_itkMultiScaleVesselnessFilter2D
 
 InrImage* wrap_itkMultiScaleVesselnessFilter3D(ParamList* p)
 {
 
-#ifndef _WITHOUT_ITK_
+#if !defined(_WITHOUT_ITK_) && (ITK_VERSION_MAJOR<4)
+// need to be fixed for 4.0
 
 char functionname[] = "itkMultiScaleVesselnessFilter3D";
   char description[]=" \n\
@@ -206,5 +212,7 @@ char functionname[] = "itkMultiScaleVesselnessFilter3D";
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
-#endif // _WITHOUT_ITK_	
+
+#endif // !defined(_WITHOUT_ITK_) && (ITK_VERSION_MAJOR<4)
+	
 } // wrap_itkMultiScaleVesselnessFilter3D
