@@ -1,0 +1,11 @@
+
+func "ModuleScriptExampleClass"
+
+if (!exists(ModuleScriptExample_obj)) {
+  ModuleScriptExampleClass ModuleScriptExample_obj
+  ModuleScriptExample_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
