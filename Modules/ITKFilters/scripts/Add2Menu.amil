@@ -1,0 +1,8 @@
+
+ami.MainFrame.AddToMenu("&Modules","&ITKFilters","&Load",    \
+    op_system.GetCurrentScriptDir()+"/Load_ITKFilters")
+ami.MainFrame.AddToMenu("&Modules","&ITKFilters","&ReLoad",  \
+    op_system.GetCurrentScriptDir()+"/ReLoad_ITKFilters")
+
+# Checking scripts in subdirectories
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())

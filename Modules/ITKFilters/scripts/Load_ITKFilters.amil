@@ -1,0 +1,12 @@
+
+#del ITKFiltersPlugin
+#func "ITKFiltersPlugin"
+func "Common/ModulePlugin"
+
+if (!exists(ITKFilters_obj)) {
+  ModulePlugin ITKFilters_obj
+  ITKFilters_obj.SetModuleName("ITKFilters")
+  ITKFilters_obj.Load()
+} else {
+  InfoDialog "The script class ITKFiltersPlugin to be already instanciated." 
+}
