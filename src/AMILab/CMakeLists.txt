@@ -38,7 +38,7 @@ SET(AMILab_SRCS
     InterpolateTransform.cpp
     LevelSetsCURVES.cpp
     LineCC.cpp
-    LineRecons.cpp
+    #LineRecons.cpp
     NormalSmoothField.cpp
     PositiveArea.cpp
     ReSlice.cpp
@@ -81,7 +81,7 @@ SET (AMILab_HDRS
     InterpolateTransform.h
     LevelSetsCURVES.h
     LineCC.h
-    LineRecons.h
+    #LineRecons.h
     messages.h
     myscan.h
     Rudin.h

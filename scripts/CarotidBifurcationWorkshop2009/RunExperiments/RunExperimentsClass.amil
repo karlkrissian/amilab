@@ -781,6 +781,7 @@ if (!exists(RunExperimentsClass)){
     #
     proc ::CheckICALength() \
     {
+      func "ShortCuts/ShortCuts.amil"
       SetStatusText("Checking ICA length")
       lI = ResampleLines(::pathCIs,::resample_dist)
       lIp = lI.GetLine(0)
@@ -1067,6 +1068,7 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::LevelSetsExternal() \
     {
+      func "ShortCuts/ShortCuts.amil"
       if (!exists(::pathCEs)) {
         if (!::nointeraction) {
           InfoDialog "no ECA path for levelset"
@@ -1155,6 +1157,7 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::LevelSetsInternal() \
     {
+      func "ShortCuts/ShortCuts.amil"
       if (!exists(::pathCIs)) {
         if (!::nointeraction) {
           InfoDialog "no ICA path for levelset"

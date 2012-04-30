@@ -89,7 +89,7 @@
 //#include "myscan.h"
 #include "ImageDraw.hpp"
 #include "Func_ReadCTALine.h"
-#include "LineRecons.h"
+//#include "LineRecons.h"
 //#include "PruneLines.h"
 
 #include "wrapfunction_class.h"
@@ -599,7 +599,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_ShortestPathImage
 %token T_PathFromDispl
 %token T_PathFromVectField
-%token T_LineRecons
+//%token T_LineRecons
 
 %token T_ReadCTALine
 %token T_ReadCTALineRadii
@@ -7662,9 +7662,10 @@ image:
           fprintf(stderr,"only UCHAR format for now \n");
         }
     |
+    /* deprecated
     T_LineRecons T_OP_PAR VAR_AMI_OBJECT T_COMMA var_image T_COMMA expr_image T_CL_PAR
     {
-    /**
+    / **
     Parameters:
       (3) input PolyData containing lines to reconstruct
       (5) reference image for reconstruction
@@ -7672,7 +7673,7 @@ image:
     Description:
       Tubular reconstruction based on a set of lines and an estimated radius
       size for each point
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage,rad);
       GET_VARSTACK_VALUE(InrImage,ref);
       GET_VARSTACK_OBJECT(SurfacePoly,surf)
@@ -7681,6 +7682,7 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
     }
     |
+    */
     T_ReadCTALineRadii T_OP_PAR VAR_AMI_OBJECT T_COMMA expr_string T_CL_PAR
     {
     /**

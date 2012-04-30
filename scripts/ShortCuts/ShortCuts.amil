@@ -1,0 +1,3 @@
+# shortcuts to replace previous grammar rules
+
+LineRecons = &algorithms.ami_LineRecons.LineReconstruction

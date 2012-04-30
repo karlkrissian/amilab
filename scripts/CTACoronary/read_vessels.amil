@@ -22,6 +22,8 @@ v3_rad = ReadCTALineRadii(v3,"vessel3/reference.txt")
 ref = Image $1
 
 printn "Reconstructing vessel0"
+func "ShortCuts/ShortCuts.amil"
+
 recons = LineRecons(v0,ref,v0_rad)
 printn "Reconstructing vessel1"
 recons = max(recons,LineRecons(v1,ref,v1_rad))

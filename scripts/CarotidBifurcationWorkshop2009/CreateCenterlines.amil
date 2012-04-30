@@ -134,6 +134,7 @@ CarotidExperiments_Path2
   CE_GTiso_draw += line1
   CE_GTiso_draw += line2
 
+  func "ShortCuts/ShortCuts.amil"
 # Reconstruct a thin tube around the lines
   # reconstruction of the first line
   tube_size = 1

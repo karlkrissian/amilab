@@ -612,6 +612,7 @@ if (!exists(RunExperimentsGuiITKClass)){
     #
     proc ::CarotidExperiments_CheckICALength() \
     {
+      func "ShortCuts/ShortCuts.amil"
       SetStatusText("Checking ICA length...")
       lI = ResampleLines(::pathCIs,::resample_dist)
       lIp = lI.GetLine(0)
@@ -853,6 +854,7 @@ if (!exists(RunExperimentsGuiITKClass)){
     #------------------------------------------
     proc ::CarotidExperiments_LevelSetsExternal() \
     {
+      func "ShortCuts/ShortCuts.amil"
       SetStatusText("ECA levelset...")
       if (!exists(::pathCEs)) {
         if (!::nointeraction) {
@@ -907,6 +909,7 @@ if (!exists(RunExperimentsGuiITKClass)){
     #------------------------------------------
     proc ::CarotidExperiments_LevelSetsInternal() \
     {
+      func "ShortCuts/ShortCuts.amil"
       SetStatusText("ICA levelset...")
       if (!exists(::pathCIs)) {
         if (!::nointeraction) {

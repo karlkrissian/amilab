@@ -555,7 +555,6 @@ ShortestPath      return(token::T_ShortestPath); /*{ShortestPath,T_ShortestPath}
 ShortestPathImage return(token::T_ShortestPathImage); /*{ShortestPathImage,T_ShortestPathImage}*/
 PathFromDispl     return(token::T_PathFromDispl); /*{PathFromDispl,T_PathFromDispl}*/
 PathFromVectField return(token::T_PathFromVectField); /*{PathFromVectField,T_PathFromVectField}*/
-LineRecons        return(token::T_LineRecons); /*{LineRecons,T_LineRecons}*/
 
 CircleInt         return(token::T_CircleIntegral); /*{CircleInt,T_CircleIntegral}*/
 CircleIntExc      return(token::T_CircleIntegralExc); /*{CircleIntExc,T_CircleIntegralExc}*/

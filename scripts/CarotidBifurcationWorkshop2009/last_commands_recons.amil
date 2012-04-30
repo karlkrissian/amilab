@@ -32,6 +32,7 @@ recons = NLM_input*0
 radii_im = recons*0+2
 radii_pts = line1.GetIntensities(radii_im)
 radii_pts.info
+func "ShortCuts/ShortCuts.amil"
 recons = LineRecons(line1,recons,radii_pts)
 show recons
 recons2 = NLM_input*0

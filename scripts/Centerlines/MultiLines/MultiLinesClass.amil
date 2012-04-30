@@ -796,6 +796,7 @@ if (!exists(MultiLinesClass)) {
           # reconstruction
           rad_info = ::skeleton_obj.lines.GetIntensities(&::radii_smoothed)
           if exists(::skeleton_obj->slines) { l = &::skeleton_obj.slines; } else { l = &::skeleton_obj.lines; }
+          func "ShortCuts/ShortCuts.amil"
           if (::upsample_recons) {
             in2 = Resize(::input,::input.tx*2,::input.ty*2,::input.tz*2,0)
             ::s_recons <<= LineRecons(l, in2, rad_info)            
@@ -819,6 +820,7 @@ if (!exists(MultiLinesClass)) {
         } else {
           rad_info = ::skeleton_obj.lines.GetIntensities(&::radii)
           if exists(::skeleton_obj->slines) { l = &::skeleton_obj.slines; } else { l = &::skeleton_obj.lines; }
+          func "ShortCuts/ShortCuts.amil"
           if (::upsample_recons) {
             in2 = Resize(::input,::input.tx*2,::input.ty*2,::input.tz*2,0)
             ::recons <<= LineRecons(l, in2, rad_info)            

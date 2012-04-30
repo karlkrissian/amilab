@@ -11,6 +11,7 @@ pdf = Image $2
 # iterate with increasing radius
 radius = 1
 
+  func "ShortCuts/ShortCuts.amil"
   # 1 reconstruct line at 2mm
   recons = LineRecons(vessel,pdf,2)
   recons = -recons+1.5

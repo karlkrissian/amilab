@@ -107,6 +107,8 @@ for i=0 to 3 {
 
 
 # Reconstruction of the vessels
+func "ShortCuts/ShortCuts.amil"
+
 printn "Reconstructing vessel 1"
 v_rad = Image(FLOAT,vessels[0].NbPoints(),1,1)
 v_rad = 1
