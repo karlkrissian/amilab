@@ -83,7 +83,7 @@ if (!exists(AnisoGS_NRADClass)) {
                                      "tensor (%1%)" % mess
         ::eigen_onfly = UCHAR(0), "Compute eigenvalues on the fly"
 
-        ::nb_threads = INT(1), "Nb of threads"
+        ::nb_threads = INT(wx.wxThread.GetCPUCount()), "Number of threads"
 
         #-----------------------------------------------------------------------
         proc ::__assign__( OBJECT p) {

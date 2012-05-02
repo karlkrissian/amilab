@@ -722,7 +722,7 @@ if (!exists(LevelSetsClass)) {
       printn "continue commands"
       setvoxelsize( ::input, ::v_x, ::v_y, ::v_z)
       setvoxelsize( ::inls,  ::v_x, ::v_y, ::v_z)
-      setvoxelsize( ::lsres,    ::v_x, ::v_y, ::v_z)
+      setvoxelsize( ::lsres, ::v_x, ::v_y, ::v_z)
       del ::v_x
       del ::v_y
       del ::v_z
