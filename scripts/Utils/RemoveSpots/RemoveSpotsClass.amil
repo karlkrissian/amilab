@@ -80,7 +80,7 @@ if (!exists(GreyMorphoClass)) {
         print "%1%\t" % diffval
         #sprint(" %0.2f \t",sqrt(mean[m1>0.5](diff)))
         _i = _i+1
-        needsmore = (_i<::fill_iterations)*(abs(diffval)>0.001)
+        needsmore = (FLOAT)(_i<::fill_iterations)*(FLOAT)(abs(diffval)>0.001)
       }
 
       print "\n"
