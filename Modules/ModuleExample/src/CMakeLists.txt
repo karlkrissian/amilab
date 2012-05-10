@@ -38,7 +38,7 @@ SET(${KIT}_INCLUDE_PATHS
     ${AMILab_SOURCE_DIR}/Common/include
     ${AMILab_SOURCE_DIR}/CommonBase
     ${AMILab_SOURCE_DIR}/Wrapping/include
-    ${AMILab_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
+    ${AMILab_SOURCE_DIR}/Wrapping/WrapITK/${AMI_ITK_VERSION}/Generated
     ${AMILab_SOURCE_DIR}
     ${AMILab_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -64,6 +64,14 @@ IF(${KIT}_ENABLE_WRAPPING)
     SET(AVAILABLE_EXTERNAL_CLASSES ${vtk_ancestors_list})
     MESSAGE("AVAILABLE_EXTERNAL_CLASSES=${AVAILABLE_EXTERNAL_CLASSES}")
   ENDIF(${KIT}_NEED_VTK_WRAPPING)
+
+  IF(${KIT}_NEED_ITK_WRAPPING)
+    # allow use of itk classes  wrapped within AMILab
+    FILE(READ "${AMILab_SOURCE_DIR}/Wrapping/WrapITK/${AMI_ITK_VERSION}/Generated/ancestors.txt" itk_ancestors_txt)
+    STRING(REGEX REPLACE "[\r\n]" ";" itk_ancestors_list ${itk_ancestors_txt} )
+    SET(AVAILABLE_EXTERNAL_CLASSES ${itk_ancestors_list})
+    MESSAGE("AVAILABLE_EXTERNAL_CLASSES=${AVAILABLE_EXTERNAL_CLASSES}")
+  ENDIF(${KIT}_NEED_ITK_WRAPPING)
 
   IF(${KIT}_NEED_WX_WRAPPING)
     # allow use of vtk classes  wrapped within AMILab
