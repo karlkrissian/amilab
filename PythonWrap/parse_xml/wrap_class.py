@@ -171,6 +171,9 @@ def MissingTypes(classname,method,check_includes=False):
     typename = config.types[method.returntype].GetDemangled()
     typeid=config.types[method.returntype].GetMainTypeId()
     shared_type = config.IsSharedPtr(typename)
+    #print "type = {0}".format(config.types[method.returntype].GetType())
+    #print "shared_type = {0}".format(shared_type)
+    #print "typename = {0}".format(typename)
     if shared_type!=None:
       avail = AvailableType(shared_type,typeid,missing_types,check_includes,True)
     else:
@@ -1137,7 +1140,8 @@ def WrapClass(classname,include_file,inputfile):
     #print "number of bases:",len(dh.bases)
     #print dh.bases
     for (base,virtual) in dh.bases:
-      basename=config.types[base].GetString()
+      #basename=config.types[base].GetString()
+      basename=config.types[base].GetDemangled()
       print "base:",base," name:",basename
       virtualstring=''
       baseusedname=config.ClassUsedName(basename)

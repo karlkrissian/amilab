@@ -183,6 +183,13 @@ class TypedefInfo(ArgTypeBase):
     else:
       return self.GetId()
 
+  def GetDemangled(self):
+    if self._reftypeid in config.types.keys():
+      typename=config.types[self._reftypeid].GetDemangled()
+    else:
+      typename=self._reftypeid
+    return typename
+
 #------------------------------
 class StructInfo(ArgTypeBase):
   def __init__(self):

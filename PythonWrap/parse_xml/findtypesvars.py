@@ -49,16 +49,20 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # Name
     classname = attrs.get('name', None)
-    #print "Classname='{0}'".format(classname)
     self.argtype.SetName(classname)
     
     if classname!=None:
+      #if classname.startswith("SmartPointer<itk::"):
+        #print "Classname='{0}'".format(classname)
       if re.match(args.val.filter, classname) != None:
         self.number_of_libclasses = self.number_of_libclasses +1
     
     
     demangled=attrs.get('demangled',None)
     self.argtype.SetDemangled(demangled)
+    #if classname!=None:
+      #if classname.startswith("SmartPointer<itk::"):
+        #print "demangled='{0}'".format(demangled)
     
     #print classname
     #if (classname == self.search_classname)or(demangled==self.search_classname):

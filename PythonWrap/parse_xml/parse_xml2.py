@@ -264,6 +264,7 @@ if __name__ == '__main__':
       for f in config.types.keys():
         if config.types[f].GetType()=="Class":
           classes_dict[f] = config.types[f].GetFullString()
+          #print "added class '{0}'\n".format(classes_dict[f])
         if config.types[f].GetType()=="Typedef":
           typedef_dict[f] = config.types[f].GetFullString()
         #print "typedef : {0}".format(typedef_dict[f])
@@ -280,22 +281,24 @@ if __name__ == '__main__':
       ancestors_templates = ancestors[:]
       for b in ancestors:
         if wrap_class.IsTemplate(b):
-          #print "Looking for additional types in ", b
+          print "Looking for additional types in ", b
           ttypes=[]
           config.templatetypes(b,ttypes)
-          #print ttypes
+          print ttypes
           for nt in ttypes:
-            #print "  Searching for '{0}'".format(nt)
+            print "  Searching for '{0}'".format(nt)
             if nt not in ancestors_templates:
+              #print " nt in classes_dict.values(): {0}\n".format(nt in classes_dict.values())
+              #print " nt not in config.classes_blacklist: {0}\n".format(nt not in config.classes_blacklist)
+              #print " nt not in config.available_types: {0}\n".format(nt not in config.available_types)
+              #print " nt not in args.val.available_external_classes: {0}\n".format(nt not in args.val.available_external_classes)
               if nt in classes_dict.values() and \
                  nt not in config.classes_blacklist and\
                  (nt not in config.available_types) and \
                  (nt not in args.val.available_external_classes) and \
                  (nt not in config.available_builtin_classes):
                 ancestors_templates.append(nt)
-                #print "    added ..."
-              #else:
-                #print "    not in classes_dict.values()"
+                print "    added {0}...".format(nt)
       print "New ancestors list = ",ancestors_templates
       ancestors = ancestors_templates[:]
       for b in ancestors:
@@ -361,7 +364,11 @@ if __name__ == '__main__':
       # first sort
       ancestors.sort()
       for a in ancestors:
-        f.write(a+"\n")
+        # don't include ancestors that belong to external classes
+        if a not in args.val.available_external_classes:
+          f.write(a+"\n")
+        else:
+          print "Rejecting {0} from ancestors\n".format(a)
       if(args.val.generate_html):
         generate_html.obj.Initialization( args.val.templatefile_dir, \
                                           args.val.outputhtmldir,\
