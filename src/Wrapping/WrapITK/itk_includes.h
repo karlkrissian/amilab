@@ -30,6 +30,7 @@
 
 typedef itk::Image<unsigned char, 2u>  ImageUC2;
 typedef itk::Image<float, 2u>  ImageF2;
+typedef itk::Image<unsigned long, 2u>  ImageUL2;
 
 #define INSTANTIATE(classname,varname) \
   classname::Pointer varname = classname::New();
@@ -47,6 +48,11 @@ typedef itk::Image<float, 2u>  ImageF2;
   template class itk::Image<unsigned char,2>;
   template class itk::SmartPointer<itk::Image<unsigned char, 2u> >;
   template class itk::DefaultPixelAccessor<unsigned char>;
+  
+  // Declaring Image unsigned long 2
+  template class itk::Image<unsigned long,2>;
+  template class itk::SmartPointer<itk::Image<unsigned long, 2u> >;
+  template class itk::DefaultPixelAccessor<unsigned long>;
   
   // Image reader/writer
   INSTANTIATE(itk::ImageFileReader<ImageUC2>,image_filter_reader_UC2)
