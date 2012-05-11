@@ -223,7 +223,7 @@ MACRO( ClassUsedName input_name output_name )
   STRING(REGEX REPLACE "unsignedchar"  "UC"  ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE "unsignedshort" "US" ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE "unsignedint"   "UI"   ${output_name} ${${output_name}} )
-  STRING(REGEX REPLACE "unsignedlong"  "uL"  ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsignedlong"  "UL"  ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE "itk_"           ""      ${output_name} ${${output_name}} )
 
 ENDMACRO( ClassUsedName)
