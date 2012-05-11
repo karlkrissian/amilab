@@ -18,6 +18,10 @@ Class ITKImage2ImageFilterClass \
   {
     ::inputtype  = inputtype
     ::outputtype = outputtype
+    cmd =  "::filter_ptr = %1%." % ::filter_context \
+          + filtername+"ImageFilter_Image_"+inputtype\
+          +"_Image_"+outputtype+".New();" 
+    printn "cmd = "+cmd
     eval "::filter_ptr = %1%." % ::filter_context \
           + filtername+"ImageFilter_Image_"+inputtype\
           +"_Image_"+outputtype+".New();" 
@@ -30,7 +34,7 @@ Class ITKImage2ImageFilterClass \
     ::inputtype  = inputtype
     eval "::filter_ptr = %1%." % ::filter_context \
           + filtername+"ImageFilter_Image_"+inputtype\
-          .New();" 
+          +".New();" 
     ::filter = ::filter_ptr.GetPointer()
   }
 
@@ -43,7 +47,7 @@ Class ITKImage2ImageFilterClass \
   }
 
   #-----------------------------------------------------------------------------
-  proc ::GetOutput(string outputtype) \
+  proc ::GetOutputWithType(STRING outputtype) \
   {
     ::filter.Update()
     eval "res_itk = itk.SmartPointer_Image_" \
