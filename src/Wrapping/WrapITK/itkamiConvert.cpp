@@ -39,6 +39,23 @@ Image_float2_ptr itk::amiConvert::ToITK_float_2u( InrImage::ptr input)
 }
 
 //--------------------------------------------------------------
+// itk unsigned long 2D --> amilab
+InrImage::ptr itk::amiConvert::FromITK_UL_2u( Image_ulong2_ptr input)
+{
+  Image_ulong2::RegionType region = input->GetLargestPossibleRegion();
+  InrImage::ptr res( ITKToInr<unsigned long, 2>(input,region));
+  return res;
+}
+
+//--------------------------------------------------------------
+// amilab --> itk unsigned long 2D
+Image_ulong2_ptr itk::amiConvert::ToITK_UL_2u( InrImage::ptr input)
+{
+  Image_ulong2::RegionType region;
+  return InrToITK<unsigned long, 2>(input.get(),region);
+}
+
+//--------------------------------------------------------------
 // itk short 3D --> amilab
 InrImage::ptr itk::amiConvert::FromITK_short3( Image_short3_ptr input)
 {

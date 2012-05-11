@@ -12,6 +12,9 @@ typedef  itk::Image<unsigned char,2>::RegionType Image_UC2_region;
 typedef  itk::Image<float,2> Image_float2;
 typedef  itk::Image<float,2>::Pointer Image_float2_ptr;
 
+typedef  itk::Image<unsigned long,2> Image_ulong2;
+typedef  itk::Image<unsigned long,2>::Pointer Image_ulong2_ptr;
+
 typedef  itk::Image<short,3> Image_short3;
 typedef  itk::Image<short,3>::Pointer Image_short3_ptr;
 
@@ -32,6 +35,10 @@ public:
   // itk float 2D <--> amilab
   static InrImage::ptr FromITK_float_2u( Image_float2_ptr );
   static Image_float2_ptr ToITK_float_2u( InrImage::ptr);
+  
+  // itk unsigned long 2D <--> amilab
+  static InrImage::ptr FromITK_UL_2u( Image_ulong2_ptr );
+  static Image_ulong2_ptr ToITK_UL_2u( InrImage::ptr);
   
   // itk short 3D <--> amilab
   static InrImage::ptr FromITK_short3( Image_short3_ptr );

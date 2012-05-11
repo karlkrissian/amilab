@@ -25,11 +25,32 @@ Class ITKImage2ImageFilterClass \
   }
 
   #-----------------------------------------------------------------------------
+  proc ::CreateNoOutputTemplate( STRING filtername, STRING inputtype) \
+  {
+    ::inputtype  = inputtype
+    eval "::filter_ptr = %1%." % ::filter_context \
+          + filtername+"ImageFilter_Image_"+inputtype\
+          .New();" 
+    ::filter = ::filter_ptr.GetPointer()
+  }
+
+  #-----------------------------------------------------------------------------
   proc ::SetInput(IMAGE input) \
   {
     # 1. Get Input image
     eval "::input_itk = itk.amiConvert.ToITK_"+::inputtype+"(&input);"
     ::filter.SetInput( &::input_itk.GetPointer() )
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::GetOutput(string outputtype) \
+  {
+    ::filter.Update()
+    eval "res_itk = itk.SmartPointer_Image_" \
+                    +outputtype\
+                    + ".SmartPointer(&::filter.GetOutput());"
+    eval "res = itk.amiConvert.FromITK_"+outputtype+"(&res_itk);"
+    return=&res
   }
 
   #-----------------------------------------------------------------------------
