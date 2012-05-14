@@ -1,0 +1,14 @@
+
+func "vtkRendererClass.amil"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(vtkRenderer_obj)) {
+
+  vtkRendererClass vtkRenderer_obj  
+  vtkRenderer_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
