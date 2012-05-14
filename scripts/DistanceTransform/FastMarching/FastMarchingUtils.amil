@@ -1,11 +1,54 @@
 
 
+del FastMarchingUtils
+
 #
 # usefull functions for the Fast Marching Geodesic Distance Transform
 #
 Class FastMarchingUtils \
 {
 
+
+  #---------------------------------------------
+  proc ::FastMarchingFromPointWithTrajInfo( IMAGE speed, \
+                              NUM maxtime, NUM x, NUM y, NUM z,\
+                              IMAGE trajdist, IMAGE trajcost) \
+  {
+    # Create initialization image
+    initim = (FLOAT) speed*0+maxtime
+    initim.setpos(x,y,z)
+    initim.set(-4)
+
+    # convert images to VTK images
+    vtk_input    = vtktools.ToVtkImageData(&speed)
+    vtk_init     = vtktools.ToVtkImageData(&initim)
+    vtk_trajdist = vtktools.ToVtkImageData(&trajdist)
+    vtk_trajcost = vtktools.ToVtkImageData(&trajcost)
+
+    vtk_FM = algorithms.vtkLevelSetFastMarching.New()
+
+    vtk_FM.SetInput(&vtk_input)
+    vtk_FM.Setinitimage(&vtk_init);
+    # if we set initiso to a different value than -1E10 (default value)
+    # the it will call InitIsoSurf which recomputes the distance close to the surface
+    # otherwise, it call InitWithImage which is much faster, and
+    # all values lower than initmaxdist will be accepted to start with.
+
+    vtk_FM.Setinitiso(   0);
+    vtk_FM.Setinitmaxdist(1+1E-3);
+    vtk_FM.SetmaxTime( maxtime);
+    vtk_FM.Settrajectory_distance(&vtk_trajdist);
+    vtk_FM.Settrajectory_cost(    &vtk_trajcost);
+    vtk_FM.Update();
+
+    trajdist = vtktools.FromVtkImageData(&vtk_FM.Gettrajectory_distance())
+    trajcost = vtktools.FromVtkImageData(&vtk_FM.Gettrajectory_cost())
+    return = vtktools.FromVtkImageData(&vtk_FM.GetOutput())
+    vtk_FM.Delete()
+  }
+  Comments(::FastMarchingFromPointWithTrajInfo, "Fast Marching evolution from "+\
+          "the initial point up to the given maximal distance, returns also "+\
+          "info on the trajectories: distance, cost.")
 
   #---------------------------------------------
   proc ::FastMarchingFromPoint( IMAGE speed, \
@@ -133,6 +176,7 @@ Class FastMarchingUtils \
 #---------------------------------------------------------
 # CompetingFastMarching
 #---------------------------------------------------------
+del CompetingFastMarching
 
 Class CompetingFastMarching {
 

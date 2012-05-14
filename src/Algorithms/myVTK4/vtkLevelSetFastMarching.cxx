@@ -149,6 +149,8 @@ vtkLevelSetFastMarching::vtkLevelSetFastMarching() : mh(100000)
 
   mask        = NULL;
   track       = NULL;
+  trajectory_cost = NULL;
+  trajectory_distance = NULL;
   class_image = NULL;
   
   force  = NULL;
@@ -267,6 +269,24 @@ void vtkLevelSetFastMarching::InitParam()
     if (type != VTK_INT) {
       vtkDebugMacro("track image must be INT, setting to NULL");
       track = NULL;
+    }
+  }
+
+  // The trajectory_cost must be float
+  if (trajectory_cost != NULL) {
+    type = trajectory_cost->GetScalarType();
+    if (type != VTK_FLOAT) {
+      vtkDebugMacro("trajectory cost image must be FLOAT, setting to NULL");
+      trajectory_cost = NULL;
+    }
+  }
+
+  // The trajectory_distance must be float
+  if (trajectory_distance != NULL) {
+    type = trajectory_distance->GetScalarType();
+    if (type != VTK_FLOAT) {
+      vtkDebugMacro("trajectory distance image must be FLOAT, setting to NULL");
+      trajectory_distance = NULL;
     }
   }
 
@@ -434,6 +454,58 @@ void vtkLevelSetFastMarching::ExecuteData(vtkDataObject *outData)
       int* track_buf = (int*)track->GetScalarPointer();
       track_buf[p.impos] = (int) p.track;
     }
+
+    if (trajectory_distance!=NULL) {
+      float* td_buf = (float*)trajectory_distance->GetScalarPointer();
+      // p.impos corresponds to p.x,p.y,p.z
+      // p.track corresponds to x,y,z
+      int pos = p.track;
+      if (pos!=-1) {
+        int x = pos%tx;
+        pos = (pos-x)/tx;
+        int y = pos%ty;
+        int z = (pos-y)/ty;
+        double newdist = (double)td_buf[p.track]+sqrt( (double)(p.x-x)*(p.x-x)+
+                                                (double)(p.y-y)*(p.y-y)+
+                                                (double)(p.z-z)*(p.z-z));
+        std::cout << "distance at " 
+                  << p.impos << " ( " << p.x << "," << p.y << "," << p.z << ") from " 
+                  << p.track << " ( " << x   << "," << y   << "," << z   << ")" 
+                  << "value " << td_buf[p.track] << " --> " << newdist << std::endl;
+        td_buf[p.impos] = newdist;
+      } else {
+        std::cout << "distance at " 
+                  << p.impos << " ( " << p.x << "," << p.y << "," << p.z << ")"
+                  << " unchanged" << std::endl;
+      }
+    }
+
+    if (trajectory_cost!=NULL) {
+      float* tc_buf = (float*)trajectory_cost->GetScalarPointer();
+      force_buf     = (float*) (this->force->GetScalarPointer());
+      // p.impos corresponds to p.x,p.y,p.z
+      // p.track corresponds to x,y,z
+      int pos = p.track;
+      if (pos!=-1) {
+        int x = pos%tx;
+        pos = (pos-x)/tx;
+        int y = pos%ty;
+        int z = (pos-y)/ty;
+        double d = sqrt( (double)(p.x-x)*(p.x-x)+ (double)(p.y-y)*(p.y-y)+
+                  (double)(p.z-z)*(p.z-z));
+        double newcost = (double)tc_buf[p.track]+d/(force_buf[p.track]+1E-4);
+        std::cout << "cost at " 
+                  << p.impos << " ( " << p.x << "," << p.y << "," << p.z << ") from " 
+                  << p.track << " ( " << x   << "," << y   << "," << z   << ")" 
+                  << "value " << tc_buf[p.track] << " --> " << newcost << std::endl;
+        tc_buf[p.impos] = newcost;
+      } else {
+        std::cout << "cost at " 
+                  << p.impos << " ( " << p.x << "," << p.y << "," << p.z << ")"
+                  << " unchanged" << std::endl;
+      }
+    }
+
 
     if (Class_buf!=NULL) {
 //      short* class_buf = (short*)class_image->GetScalarPointer();

@@ -225,6 +225,14 @@ public:
   vtkGetObjectMacro(track,vtkImageData);
 
   //
+  vtkSetObjectMacro(trajectory_distance,vtkImageData);
+  vtkGetObjectMacro(trajectory_distance,vtkImageData);
+
+  //
+  vtkSetObjectMacro(trajectory_cost,vtkImageData);
+  vtkGetObjectMacro(trajectory_cost,vtkImageData);
+
+  //
   vtkSetObjectMacro(class_image,vtkImageData);
   vtkGetObjectMacro(class_image,vtkImageData);
 
@@ -318,6 +326,9 @@ protected:
 
   // Mask where to evolve the surface
   vtkImageData* track;
+
+  vtkImageData* trajectory_distance;
+  vtkImageData* trajectory_cost;
 
   // Class image to partition the result based on the initial points
   vtkImageData* class_image;

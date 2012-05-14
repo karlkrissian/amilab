@@ -88,6 +88,7 @@ vtkPlanes
 vtkPlaneSource
 vtkPlot
 vtkPointData
+vtkPointWidget
 vtkPoints
 vtkPointSet
 vtkPolyData

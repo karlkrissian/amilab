@@ -65,6 +65,7 @@
 #include <vtkPlaneSource.h>
 #include <vtkPlot.h>
 #include <vtkPointData.h>
+#include <vtkPointWidget.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataNormals.h>
