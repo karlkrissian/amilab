@@ -69,6 +69,7 @@ if (!exists(MultiLinesClass)) {
       ::local_maxima      = UCHAR(0), "Compute local maxima"
 
       ::keep_orientations = UCHAR(0), "Keep orientations image"
+      ::keep_eigenratio   = UCHAR(0), "Keep ratio between 2 highest eigenvalues"
       ::keep_radii        = UCHAR(0), "Keep radii image"
 
       ::use_linearinterp  = UCHAR(1), "Use linear interpolation"
@@ -322,8 +323,8 @@ if (!exists(MultiLinesClass)) {
       ed = algorithms.ami_EigenDecomp.EigenDecomp()
       ed.SetParameters(&p)
       ed.Setdiag_algorithm(algorithms.ami_EigenDecomp.KOPP_HYBRID)
-      ed.Setenable_eigenvalue1(false)
-      ed.Setenable_eigenvalue2(false)
+      ed.Setenable_eigenvalue1(::keep_eigenratio)
+      ed.Setenable_eigenvalue2(::keep_eigenratio)
       ed.Setenable_eigenvalue3(false)
       ed.Setenable_eigenvector1(true)
       ed.Setenable_eigenvector2(true)
@@ -333,6 +334,11 @@ if (!exists(MultiLinesClass)) {
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = diff.Format("%M min %S s %l ms").c_str()
       printn "EigenDecomp2 time: "+time_elapsed
+
+      if (::keep_eigenratio) {
+        ::current_eigen_ratio <<= sqrt(ed.Geteigenvalue1())/\
+                                       (sqrt(ed.Geteigenvalue2())+0.01)
+      }
 
       # check that the 2 ways are identical
       #::eig_3 <<= eig[3]
@@ -642,6 +648,9 @@ if (!exists(MultiLinesClass)) {
             if (::keep_radii) {
               radius = (response>0)*::current_rad;
             }
+            if (::keep_eigenratio) {
+              ::eigen_ratio = ::current_eigen_ratio
+            }
           }
         } else {
 
@@ -658,6 +667,11 @@ if (!exists(MultiLinesClass)) {
             }
             if (::keep_radii) {
               radius = (max_response>=response)*radius+(max_response<response)*::current_rad
+            }
+            if (::keep_eigenratio) {
+              ::eigen_ratio = ::current_eigen_ratio*(max_response>=response)+\
+                              ::eigen_ratio*(max_response<response)
+              del ::current_eigen_ratio
             }
             # Compute local maxima
             current_maxima = LocalExtrema(response,::current_v1,::current_v2,::mask)
@@ -905,6 +919,7 @@ if (!exists(MultiLinesClass)) {
           ::win.SetCallback(&::OnLocalMaxima)
           ::keep_or_id  = ::win.AddBoolean( &::keep_orientations,"Orientations")
           ::keep_rad_id = ::win.AddBoolean( &::keep_radii,"Radii")
+          ::keep_ratio_id = ::win.AddBoolean( &::keep_eigenratio,"Eigenvalue ratio")
 
         ::run_page = ::win.AddPage("Run")
           modeid = ::win.AddEnum( &::mode)
