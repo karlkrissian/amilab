@@ -30,6 +30,7 @@
 
 typedef itk::Image<unsigned char, 2u>  ImageUC2;
 typedef itk::Image<float, 2u>  ImageF2;
+typedef itk::Image<float, 3u>  ImageF3;
 typedef itk::Image<unsigned long, 2u>  ImageUL2;
 
 #define INSTANTIATE(classname,varname) \
@@ -43,6 +44,10 @@ typedef itk::Image<unsigned long, 2u>  ImageUL2;
   template class itk::Image<float,2>;
   template class itk::SmartPointer<ImageF2>;
   template class itk::DefaultPixelAccessor<float>;
+
+  // Declaring Image float 3
+  template class itk::Image<float,3>;
+  template class itk::SmartPointer<ImageF3>;
 
   // Declaring Image unsigned char 2
   template class itk::Image<unsigned char,2>;
