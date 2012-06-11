@@ -1,0 +1,11 @@
+
+func "vtkPropertyClass"
+
+if (!exists(vtkProperty_obj)) {
+  vtkPropertyClass vtkProperty_obj
+  vtkProperty_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

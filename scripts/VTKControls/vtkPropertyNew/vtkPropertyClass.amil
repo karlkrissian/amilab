@@ -1,0 +1,95 @@
+
+func "Common/ScriptGui"
+
+if (!exists(vtkPropertyClass)) {
+
+  Class vtkPropertyClass : public ScriptGui \
+  {
+    
+    func "Variable/ObjectIO"
+    #===========================================================================
+    # Set parameters here
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+
+        #-----------------------------------------------------------------------
+        # copy parameters
+        proc ::__assign__( VAR p) {
+        }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      
+      ::property_name   = "","Name of the input vtkProperty variable"
+      ::ParamClass ::params
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+\
+                        "/vtkProperty/Doc/vtkProperty/index.html"
+    }
+
+
+    #-----------------------------------------------------------------------------
+    proc ::Update() \
+    {
+
+    }
+
+    #-----------------------------------------------------------------------------
+    proc ::CB_Property( ) \
+    {
+        eval "::SetProperty(%1%);" % ::property_name
+        ::Update()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("vtkProperty",&::parent_panel)
+      } else {
+        ::win = ParamPanel("vtkProperty")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Main")
+
+          # Select Property
+          ::win.AddAMIObjectChoice( &::property_name, "", "vtkProperty")
+          ::win.SetCallback(::CB_Property)
+
+        # add page for saving/loading parameters
+        ::AddParamPage(&::win)
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If
