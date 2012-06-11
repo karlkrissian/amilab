@@ -1,0 +1,59 @@
+
+  if $# >= 2 {
+    reader1 = vtk.vtkPolyDataReader.New()
+    reader1.SetFileName($1)
+    reader1.Update()
+    input1 = reader1.GetOutput()
+ 
+    reader2 =  vtk.vtkPolyDataReader.New()
+    reader2.SetFileName(argv[2])
+    reader2.Update()
+    input2 = reader2.GetOutput()
+  } else {
+    sphereSource1 = vtk.vtkSphereSource.New()
+    sphereSource1.SetCenter(1, 0, 0)
+    sphereSource1.Update()
+    input1 = sphereSource1.GetOutput()
+ 
+    sphereSource2 = vtk.vtkSphereSource.New()
+    sphereSource2.Update()
+    input2 = sphereSource2.GetOutput()
+  }
+ 
+  clean1 = vtk.vtkCleanPolyData.New()
+  clean1.SetInputConnection( input1.GetProducerPort())
+ 
+  clean2 = vtk.vtkCleanPolyData.New()
+  clean2.SetInputConnection( input2.GetProducerPort())
+ 
+  distanceFilter = vtk.vtkDistancePolyDataFilter.New()
+ 
+  distanceFilter.SetInputConnection( 0, clean1.GetOutputPort() )
+  distanceFilter.SetInputConnection( 1, clean2.GetOutputPort() )
+  distanceFilter.Update()
+ 
+  mapper =  vtk.vtkPolyDataMapper.New()
+  mapper.SetInputConnection( distanceFilter.GetOutputPort() )
+  r = vector_double(2)
+  distanceFilter.GetOutput().GetPointData().GetScalars().GetRange_4(&r[0])
+  mapper.SetScalarRange( r[0],r[1]) 
+  actor = vtk.vtkActor.New()
+  actor.SetMapper( mapper )
+ 
+  scalarBar = vtk.vtkScalarBarActor.New()
+  scalarBar.SetLookupTable(mapper.GetLookupTable())
+  scalarBar.SetTitle("Distance")
+  scalarBar.SetNumberOfLabels(4)
+  renderer =  vtk.vtkRenderer.New()
+ 
+  renWin = vtk.vtkRenderWindow.New()
+  renWin.AddRenderer( renderer )
+ 
+  renWinInteractor = vtk.vtkRenderWindowInteractor.New()
+  renWinInteractor.SetRenderWindow( renWin )
+ 
+  renderer.AddActor( actor )
+  renderer.AddActor2D(scalarBar)
+ 
+  renWin.Render()
+  renWinInteractor.Start()

@@ -80,6 +80,8 @@ if (!exists(VolRenClass)) {
       ::resizevol1 = 0
       ::resizevol2 = 0
       ::d          = INT(0), "Background"
+
+      #::keep_curve = UCHAR(0), "Keep transfer curve while changing the volume"
       
       ::AnnotatedCubeVisible = UCHAR(true), "Displays or hides annotated cube"
 
@@ -158,21 +160,20 @@ if (!exists(VolRenClass)) {
       wxim = wx.wxImage(icon_32)
       bm = wx.wxBitmap(&wxim.Rescale(16,16))
       ::tb.AddTool( tb_id+id, "Snapshot", &bm,"Snapshot")
-      ::tb.Realize()
 
-      #id=id+1
-      #icon_32=GetScriptsDir+"/Icons/png/32x32/Curve.png"
-      #wxim = wx.wxImage(icon_32)
-      #bm = wx.wxBitmap(&wxim.Rescale(16,16))
-      #::tb.AddTool( tb_id+id, "Load curve", &bm, \
-          #"Set a new curve in the current volume")
-      #::tb.Realize()
+      id=id+1
+      icon_32=GetScriptsDir+"/Icons/png/32x32/Curve.png"
+      wxim = wx.wxImage(icon_32)
+      bm = wx.wxBitmap(&wxim.Rescale(16,16))
+      ::tb.AddTool( tb_id+id, "Load curve", &bm, \
+          "Set a new curve in the current volume")
 
       id=id+1
       icon_32=GetScriptsDir+"/Icons/png/32x32/Save Curve.png"
       wxim = wx.wxImage(icon_32)
       bm = wx.wxBitmap(&wxim.Rescale(16,16))
       ::tb.AddTool( tb_id+id, "Save curve", &bm,"Save the current curve")
+
       ::tb.Realize()
 
       #add the toolbars to the manager
@@ -200,11 +201,12 @@ if (!exists(VolRenClass)) {
                   ,&::evh_tb_s.GetEventFunction(),\
                   &NULL,&::evh_tb_s)
 
-      #id=id+1
-      #evh_tb_jc = wx.wxAmiEventHandler(&::LoadCurve) 
-      #::tb.Connect( tb_id+id, wx.wxEVT_COMMAND_MENU_SELECTED \
-                  #,&evh_tb_jc.GetEventFunction(),\
-                  #&NULL,&evh_tb_jc)
+      id=id+1
+      ::evh_tb_jc = wx.wxAmiEventHandler(&::LoadCurve) 
+      ::tb.Connect( tb_id+id, wx.wxEVT_COMMAND_MENU_SELECTED \
+                  ,&::evh_tb_jc.GetEventFunction(),\
+                  &NULL,&::evh_tb_jc)
+
       id=id+1
       ::evh_tb_sc = wx.wxAmiEventHandler(&::SaveCurve) 
       ::tb.Connect( tb_id+id, wx.wxEVT_COMMAND_MENU_SELECTED \
@@ -393,11 +395,13 @@ if (!exists(VolRenClass)) {
          printn "Load 1"
         ::load_input()
       }
-      del ::input2
-      eval "::input2 = &"+::input2_name+";"
-      if (::input2_name!="BrowseImage") {
-        printn "Load 2"
-        ::load_input2()
+      if (::volrenmapper_type==3){
+        del ::input2
+        eval "::input2 = &"+::input2_name+";"
+        if (::input2_name!="BrowseImage") {
+          printn "Load 2"
+          ::load_input2()
+        }
       }
       if ::trace { eval ::trace_end; }
     }
@@ -510,7 +514,7 @@ if (!exists(VolRenClass)) {
           ::volVector[0].AddAnnotatedCube() 
         }
         ::volVector[0].DelVTK()
-        ::volVector[0].DefaultProperties() 
+        ::volVector[0].DefaultProperties()
         ::volVector[0].SetVolRenMapper(::volrenmapper_type)
         #::volVector[0].CreateVTK( &::input)
         if (::volrenmapper_type!=3){
@@ -754,29 +758,40 @@ if (!exists(VolRenClass)) {
         ::volVector[n].Close()
       }
     }
-  #----------------------------
-    #proc ::LoadCurve()  \
-    #{
-      #index=::vbCtrl.GetSelection()
-      #//if (::volVector[index].initialized){
-        #pathname=wx.FromWxString(wx.wxFileName.GetCwd())
-#//aa=wx.wxFileDialog.wxFileDialog_2(::win,"Load Curve")
-        ##del ::selected_curv
-        ##selected_curv.Load(pathname)
-        ##::background_color.Set(selected_curv.r1,selected_curv.g1,selected_curv.b1)
-        ##::background_color2.Set(selected_curv.r2,selected_curv.g2,selected_curv.b2)
-        ##::volVector[index].PreviewApplied(&selected_curv)
-      #//}
-    #}
-  #----------------------------
-    proc ::SaveCurve()  \
+
+    #----------------------------
+    proc ::LoadCurve()  \
     {
+      # todo
+      index=::vbCtrl.GetSelection()
+      ::InitUserScriptData()
+      res = wx.wxFileSelector("Select Curve Filename",\
+                              ::scriptdata_path,"VolRen_Curve.txt","txt",\
+                              "*.*",wx.wxFD_OPEN)
+
+      func "vtkCurveClass.amil"
+      vtkCurveClass selected_curv
+
+      selected_curv.Load(wx.FromWxString(res))
+      ::background_color.Set(selected_curv.r1,selected_curv.g1,selected_curv.b1)
+      ::background_color2.Set(selected_curv.r2,selected_curv.g2,selected_curv.b2)
+      ::volVector[index].PreviewApplied(&selected_curv)
+    }
+
+    #----------------------------
+    proc ::SaveCurve()  \
+    { 
+      ::InitUserScriptData()
       index=::vbCtrl.GetSelection()
       if (::volVector[index].initialized){
         pathname=wx.FromWxString(wx.wxFileName.GetCwd())
 
-       ::volVector[index].SaveVTKCurve(pathname+wx.FromWxString(wx.wxFileName.GetPathSeparator()))
-       InfoDialog "Curve saved in %1%" %pathname
+        res = wx.wxFileSelector("Select Curve Filename",\
+                                ::scriptdata_path,"VolRen_Curve.txt","txt",\
+                                "*.*",wx.wxFD_SAVE)
+
+       ::volVector[index].SaveVTKCurve(wx.FromWxString(res))
+       InfoDialog "Curve saved as %1%" % wx.FromWxString(res)
       }
     }
     #----------------------------
@@ -965,6 +980,7 @@ if (!exists(VolRenClass)) {
         ::AddBitmapButton16(&::win, &::icons._Add, "AddVolume2")
         ::win.SetPositionProp(1)
       ::win.EndHorizontal()
+      #::win.AddBoolean(::keep_curve,"Keep Curve")
 
       ::volrentype_id = ::win.AddEnum(&::volrenmapper_type,"VolRen Mapper")
         ::win.AddEnumChoice(::volrentype_id,"GPU mapper")

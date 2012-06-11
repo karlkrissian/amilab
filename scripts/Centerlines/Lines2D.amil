@@ -36,8 +36,8 @@ Class Lines2D  : public ScriptGui \
     }
     ::win.Update(-1)
     if (::input.vdim>1) {
-      InfoDialog "Taking first component of multi-channel image."
-      ::input <<= ::input[0]
+      InfoDialog "Taking second (green) component of multi-channel image."
+      ::input <<= ::input[1]
     }
     show ::input
     # reset mask if any

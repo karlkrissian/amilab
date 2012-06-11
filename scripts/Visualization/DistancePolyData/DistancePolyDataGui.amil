@@ -1,0 +1,11 @@
+
+func "DistancePolyDataClass"
+
+if (!exists(DistancePolyData_obj)) {
+  DistancePolyDataClass DistancePolyData_obj
+  DistancePolyData_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

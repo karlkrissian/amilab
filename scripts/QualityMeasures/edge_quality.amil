@@ -1,0 +1,39 @@
+
+func "ITK_Examples/ITKImage2ImageFilterClass"
+
+i1 = Image($1)
+i2 = Image($2)
+
+var=0.1
+threshold=0.5
+
+
+ITKImage2ImageFilterClass gad
+if (input.tz>=1) {
+  imtype = "float_3u"
+} else {
+  imtype = "float_2u"
+}
+gad.Create("CannyEdgeDetection",imtype,imtype)
+
+gad.SetInput                      ( &i1 )
+gad.filter.SetVariance            ( var      )
+gad.filter.SetLowerThreshold      ( threshold/2  )
+gad.filter.SetUpperThreshold      ( threshold  )
+i1c = gad.GetOutput()
+
+gad.SetInput                      ( &i2 )
+i2c = gad.GetOutput()
+
+show i2c
+
+
+func "PrattFOM"
+
+res = 0
+PrattFOM(i1c, i2c, &res)
+
+print "\n"
+print sprint("%3.3f\n",res)
+
+quit

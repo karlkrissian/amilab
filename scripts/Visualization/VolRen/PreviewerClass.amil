@@ -18,7 +18,7 @@ Class PreviewerClass \
   # curve
   ::vtkcurve = &vtkCurveClass 
 
-  #-----------------------------
+  #-----------------------------------------------------------------------------
   #proc ::Curve() \
   #{
      #del aux_curve2
@@ -35,7 +35,7 @@ Class PreviewerClass \
        #aux_curve2.Save("/home/carlos/Escritorio/")
   #}
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::Init() \
   {
     printn "PreviewerClass::Init()"
@@ -50,6 +50,7 @@ Class PreviewerClass \
     //::Gui()
   }
 
+  #-----------------------------------------------------------------------------
   proc ::PostGuiInit(){
     ::isAvailable=  vector_int(::files*::cols,0)
     ::InfoTextVector[::active_window].SetForegroundColour( wx.wxColour(255,0,0))
@@ -68,7 +69,7 @@ Class PreviewerClass \
     ::choice1.SetSelection(0)
   }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::ReduceImage(IMAGE im) \
   {
     numvox = im.tx*im.ty*im.tz
@@ -81,7 +82,7 @@ Class PreviewerClass \
     }
   }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::SetInput(IMAGE image) {
     printn "PreviewerClass::SetInput()"
     del ::input
@@ -90,7 +91,7 @@ Class PreviewerClass \
     ::Render()
   }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::LoadCurves() \
   {
     #::pathname=wx.FromWxString(wx.wxFileName.GetCwd())
@@ -149,13 +150,14 @@ Class PreviewerClass \
       #aux_curve.Save("/home/carlos/Escritorio/")
     }
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::SetIntensityValues(NUM xmin, NUM xmax){
     ::x_min= xmin
     ::x_max= xmax
   }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::GetCurveIndex(NUM i){
     nelem=0
     #printn "i= %1%" %i
@@ -165,7 +167,8 @@ Class PreviewerClass \
     #printn "nelem= %1%" %nelem
     return= &(nelem)
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::Render() \
   {
     if (exists(::input)) {
@@ -205,7 +208,7 @@ Class PreviewerClass \
     } # end if
   } # end Render()
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::Load() { #obsolete method you should use ::Render()
     if (exists(::input)) {
 #Visualize
@@ -221,7 +224,7 @@ Class PreviewerClass \
   }
  }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::AddVolume(IMAGE image, NUM n) \
   {
     del a
@@ -241,25 +244,29 @@ Class PreviewerClass \
     #::RWIVector[n].Render()
     #::RWIVector[n].Refresh()
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::Show() \
   {
     ::frame.Show()
     wait(33)
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::Hide() \
   {
     ::frame.Hide()
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::Refresh() \
   {
     for n=0 to ::RWIVector.size()-1 {
      ::RWIVector[n].Render()
    }
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::ResetView() \
   {
     for n=0 to ::RWIVector.size()-1 {
@@ -268,7 +275,7 @@ Class PreviewerClass \
    ::Refresh()
   }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::Destroy(){
    del ::vtkcurve
    del ::SVCVector
@@ -276,11 +283,12 @@ Class PreviewerClass \
    ::frame.Destroy()
   }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::Close(){
     ::Hide()
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::GetSelection(){
     index= ::choice1.GetCurrentSelection()
     indexCurve= ::GetCurveIndex(index)+::apply_window
@@ -290,7 +298,7 @@ Class PreviewerClass \
     //::Close()
   }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   # sets an object that contains a method named call()
   proc ::SetApplyCallback( VAR cb) \
   {
@@ -298,13 +306,14 @@ Class PreviewerClass \
     ::apply_cb = &cb
   }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::Apply(){
     if exists(::apply_cb) {
       ::apply_cb()
     }
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::Rotate(NUM n){
    rend=::RWIVector[n].GetRenderWindow().GetRenderers().GetFirstRenderer()
    for i=0 to 10 {
@@ -314,14 +323,16 @@ Class PreviewerClass \
     }
 
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::Rotate2(NUM n){
    for i=0 to 35 {
       wait(33)
       ::SVCVector[n].Rotate()
     }
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::MultView(){
    del angle
    angle=360/::cols
@@ -334,7 +345,8 @@ Class PreviewerClass \
    }
    ::Refresh()
   }
-  #----------------------------
+
+  #-----------------------------------------------------------------------------
   proc ::ChangeViewConfiguration(NUM index){
     ::Render()
     ::Refresh()
@@ -354,7 +366,7 @@ Class PreviewerClass \
      event.Skip()
   }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::cpView(OBJECT event) \
   { 
     del cam
@@ -367,14 +379,14 @@ Class PreviewerClass \
     event.Skip()
    }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::OnEnter1( OBJECT event) \
   {
     ::active_window=event.GetId()-10000
     event.Skip()
   }
 
-  #----------------------------
+  #-----------------------------------------------------------------------------
   proc ::OnChoiceW(OBJECT event) \
   {
     w= event.GetWindow()

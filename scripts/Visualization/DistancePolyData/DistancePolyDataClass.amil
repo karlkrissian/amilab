@@ -1,0 +1,262 @@
+
+func "Common/ScriptGui"
+
+if (!exists(DistancePolyDataClass)) {
+
+  Class DistancePolyDataClass : public ScriptGui \
+  {
+    
+    func "Variable/ObjectIO"
+    #===========================================================================
+    # Set parameters here
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+        ::get_main_component = UCHAR(1), "keep only the main connected component"
+        ::range_min = -1, "minimal displayed distance value"
+        ::range_max = 1, "maximal displayed distance value"
+        ::labels = INT(4), "number of labels for scalar bar"
+
+
+        #-----------------------------------------------------------------------
+        # copy parameters
+        proc ::__assign__( VAR p) {
+        }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      
+      ::surface1_selected=""
+      ::surface2_selected=""
+
+      ::ParamClass ::params
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+\
+                        "/DistancePolyData/Doc/DistancePolyData/index.html"
+    }
+
+
+
+    #---------------------------------------------------------------------------
+    proc ::UpdateRange() \
+    {
+      ::mapper.SetScalarRange( ::params.range_min, ::params.range_max) 
+      ::renwin_interact.GetRenderWindow().Render()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::UpdateLabels() \
+    {
+      ::scalarBar.SetNumberOfLabels( ::params.labels) 
+      ::renwin_interact.GetRenderWindow().Render()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::vtksurf1)) {
+        eval "::vtksurf1 = vtktools.ToVtkPolyData(&%1%);" % ::surface1_selected
+        eval "::vtksurf2 = vtktools.ToVtkPolyData(&%1%);" % ::surface2_selected
+      }
+
+      clean1 = vtk.vtkCleanPolyData.New()
+
+      if (::params.get_main_component) {
+        ::pdc = vtk.vtkPolyDataConnectivityFilter.New()
+        ::pdc.SetInputConnection(::vtksurf1.GetProducerPort())
+        ::pdc.SetExtractionModeToLargestRegion()
+        ::pdc.Update()
+        clean1.SetInputConnection( ::pdc.GetOutputPort())
+      } else {
+        clean1.SetInputConnection( ::vtksurf1.GetProducerPort())
+      }
+
+    
+      clean2 = vtk.vtkCleanPolyData.New()
+      clean2.SetInputConnection( ::vtksurf2.GetProducerPort())
+    
+      ::distanceFilter = vtk.vtkDistancePolyDataFilter.New()
+    
+      ::distanceFilter.SetInputConnection( 0, clean1.GetOutputPort() )
+      ::distanceFilter.SetInputConnection( 1, clean2.GetOutputPort() )
+      ::distanceFilter.Update()
+    
+      ::mapper =  vtk.vtkPolyDataMapper.New()
+      ::mapper.SetInputConnection( ::distanceFilter.GetOutputPort() )
+      r = vector_double(2)
+      ::distanceFilter.GetOutput().GetPointData().GetScalars().GetRange_4(&r[0])
+      ::win.FloatConstraints(::range_min_id,r[0],0,r[0])
+      ::win.FloatConstraints(::range_max_id,0,r[1],r[0])
+      #::params.range_min = r[0]
+      #::params.range_max = r[1]
+      ::win.Update(-1)
+
+      ::mapper.SetScalarRange( ::params.range_min, ::params.range_max) 
+      ::actor = vtk.vtkActor.New()
+      ::actor.SetMapper( ::mapper )
+    
+      ::scalarBar = vtk.vtkScalarBarActor.New()
+      ::scalarBar.SetLookupTable(::mapper.GetLookupTable())
+      ::scalarBar.SetTitle("Distance")
+      ::scalarBar.SetNumberOfLabels(::params.labels)
+
+      ::renderer =  vtk.vtkRenderer.New()
+      ::renderer.ResetCamera()   
+      ::renwin_interact.GetRenderWindow().AddRenderer(::renderer)
+      interact = vtk.vtkInteractorStyleTrackballCamera.New()
+      ::renwin_interact.SetInteractorStyle(interact)
+    
+      ::renderer.AddActor( ::actor )
+      ::renderer.AddActor2D(::scalarBar)
+      ::renwin_interact.GetRenderWindow().Render()
+
+      #renWin.Render()
+      #renWinInteractor.Start()
+
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Stats() \
+    {
+      da = ::distanceFilter.GetOutput().GetPointData().GetScalars()
+      printn da.GetNumberOfComponents()
+      ::valim = Image(DOUBLE,da.GetNumberOfTuples(),1,1)
+      valim_vtk = vtktools.ToVtkImageData(::valim)
+      valim_vtk.GetPointData().SetScalars(da)
+      ::valim = vtktools.FromVtkImageData(valim_vtk)
+      printn min(::valim)
+      printn max(::valim)
+      #func "Visualization/ImageHistogram/ImageHistogramGui.amil" // from menu
+      printn "mean  = %1%" % mean(::valim)
+      printn "mean of abs = %1%" % mean(abs(::valim))
+      printn "RMS = %1%" %sqrt(mean(::valim*::valim))
+
+
+    }
+    
+    #----------------------------
+    proc ::MainBook_AddVolRenTab()  \
+    {
+       mb = ami.MainFrame.GetMainBook()
+
+      ::panel = wx.wxPanel(&ami.MainFrame)
+      ::panel.SetName("DistPoly panel")
+
+      ::panel_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+      ::panel.SetSizer(&::panel_sizer)
+
+      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+
+      ::panel_sizer.Add(&::renwin_interact,1,wx.wxEXPAND )
+      #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+      ::renwin_interact.UseCaptureMouseOn()
+      ::renwin_interact.Enable(true)
+      ::renwin_interact.Initialize()
+
+      ::icons.LoadIconPNG("Units")
+      mb.AddPage( &::panel,  "DistPoly",1, \
+        wx.wxBitmap(&::icons._Units.Scale(16,16)))
+      ::pageindex = mb.GetPageIndex(&::panel)
+      
+      # initialize the renderer, camera, renderwindow in volvVctor[0]
+      #::renwin_interact.Hide()
+      # NEED TO CALL SHOW AND UPDATE TO MAKE IT WORK ON WINDOWS !!!
+      ::renwin_interact.Show()
+      ::panel.Show()
+      ::renwin_interact.Update()
+      ::panel.Update()
+      ## now can create the renderer
+      #::volVector[0].CreateRenderer(&::renwin_interact)
+      #::volVector[0].AddAnnotatedCube() 
+      #::SetRendererBg()
+      
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::MainBook_CloseTab()  \
+    {
+      if (exists(::pageindex)){
+        mb = ami.MainFrame.GetMainBook()
+        mb.DeletePage(::pageindex)
+      }
+    }
+
+
+    #---------------------------------------------------------------------------
+    # Redefinition of Close to close the panel tab in main_book
+    #
+    proc ::Close() \
+    {
+      ::MainBook_CloseTab()
+      ::win.HidePanel()
+
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close,  "Will close the interface and delete the "+\
+                        "corresponding "+\
+                        "object named '"+GetObjectName(::Close)+"'.")
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("DistancePolyData",&::parent_panel)
+      } else {
+        ::win = ParamPanel("DistancePolyData")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.AddAMIObjectChoice( &::surface1_selected, "", "SurfacePoly")
+          ::win.AddBoolean(::params.get_main_component,"main component")
+          
+          ::win.AddAMIObjectChoice( &::surface2_selected, "", "SurfacePoly")
+
+          ::win.BeginBoxPanel("Distance display range")
+            ::range_min_id = ::win.AddFloat(::params.range_min,"min",-20,0)
+            ::win.SetCallback(::UpdateRange)
+            ::range_max_id = ::win.AddFloat(::params.range_max,"max",0,20)
+            ::win.SetCallback(::UpdateRange)
+            ::win.AddInt(::params.labels,"labels",1,10)
+            ::win.SetCallback(::UpdateLabels)
+          ::win.EndBoxPanel()
+
+          ::win.AddButton("Run Filter",::Run)
+          ::win.AddButton("Stats",::Stats)
+
+        # add page for saving/loading parameters
+        ::AddParamPage(&::win)
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+      ::MainBook_AddVolRenTab()
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

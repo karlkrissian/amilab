@@ -577,17 +577,20 @@ if (!exists(SimplevtkVolumeClass)) {
       }
       del ::input
       del ::input2
+      #if (!delete_transfunc) {
       del ::colorFun
       del ::opacityFun
       del ::property 
       del ::colorFun2
       del ::opacityFun2
       del ::property2 
+      #}
       del ::vol       
       del ::volmapper
       del ::vtkinput
       del ::vtkinput2
-      del ::box
+      # don't delete box here ...
+      #del ::box
      ::renwininter.Render()
 
      //::InitCamera()

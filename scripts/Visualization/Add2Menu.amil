@@ -51,3 +51,6 @@ if exists(global::scripts_toolbar) {
 
 # ami.MainFrame.AddToMenu("&Scripts","&Visualization","&GraphViz",  "Visualization/GraphViz/alGraphVizGui")
 
+#global::RunAdd2Menus(op_system.GetCurrentScriptDir())
+ami.MainFrame.AddToMenu("&Scripts","&Visualization","&DistancePolyData",\
+    op_system.GetCurrentScriptDir()+"/DistancePolyData/DistancePolyDataGui.amil")

@@ -85,11 +85,11 @@ printn ""
     proc ::ReadInput() \
     {
       n = ::STARE_image_numbers[::input_number]
-      ::input_name = ::STARE_path+"im%04d.png" % n
+      ::input_name = ::STARE_path+"/im%04d.png" % n
       ::load_input()
 
-      ::observer1 = Image(::STARE_path+"im%04d.ah.png" % n)
-      ::observer2 = Image(::STARE_path+"im%04d.vk.png" % n)
+      ::observer1 = Image(::STARE_path+"/im%04d.ah.png" % n)
+      ::observer2 = Image(::STARE_path+"/im%04d.vk.png" % n)
     }
 
     #-----------------------------------------------

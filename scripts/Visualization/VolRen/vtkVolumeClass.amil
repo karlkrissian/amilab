@@ -81,7 +81,7 @@ if (!exists(vtkVolumeClass)) {
     }
 
     #----------------------------
-    proc ::SaveVTKCurve(STRING path)\
+    proc ::SaveVTKCurve(STRING filename)\
     {
       if ::trace { eval ::trace_begin; }
       del aux_curve
@@ -91,12 +91,10 @@ if (!exists(vtkVolumeClass)) {
       aux_curve.type        = "UNKNOWN_curve"
       aux_curve.descripcion = "general descripcion"
 
-        del color
-        color=vector_double(3,0)
-        ::renderer.GetBackground (&color[0], &color[1], &color[2])
-        del color2
-        color2=vector_double(3,0)
-        ::renderer.GetBackground (&color2[0], &color2[1], &color2[2])
+      color=vector_double(3,0)
+      ::renderer.GetBackground (&color[0], &color[1], &color[2])
+      color2=vector_double(3,0)
+      ::renderer.GetBackground2(&color2[0], &color2[1], &color2[2])
 
       aux_curve.SetColorFun(&::colorFun)
       aux_curve.SetOpacityFun(&::opacityFun)
@@ -123,7 +121,7 @@ if (!exists(vtkVolumeClass)) {
         aux_curve.norma = ::selected_curv.norma
       }
       aux_curve.blend_mode  = ::blend_mode
-      aux_curve.Save(path)
+      aux_curve.Save(filename)
       if ::trace { eval ::trace_end; }
     }
  
@@ -131,10 +129,13 @@ if (!exists(vtkVolumeClass)) {
     proc ::CB_Clip(OBJECT caller, NUM id) \
     {
       if ::trace { eval ::trace_begin; }
-      if (::clip_interactive) {
+      if (::clip_interactive)&&(exists(::box)) {
         planes = vtk.vtkPlanes.New()
         ::box.GetPlanes(&planes)
-        ::volmapper->SetClippingPlanes(&planes);
+        ::volmapper.SetClippingPlanes(&planes);
+      }
+      if (!exists(::box)) {
+        InfoDialog "::box does not exists ???"
       }
       if ::trace { eval ::trace_end; }
     }

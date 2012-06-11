@@ -129,11 +129,11 @@ if (!exists(vtkCurveClass)) {
     }
 
     #----------------------------
-    proc ::Save( STRING path){
+    proc ::Save( STRING filename){
       numelem = ::colorFun.GetSize()
       if(numelem>0) {
         #Open the file in write mode.
-        outputfile = File(path+::type+".txt")
+        outputfile = File(filename) #path+::type+".txt")
         text  = "# Points (IRGBOMS)"
         outputfile._printn(text)
         text= "%1%" %numelem
