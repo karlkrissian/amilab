@@ -46,7 +46,14 @@ if (!exists(DistancePolyDataClass)) {
     #---------------------------------------------------------------------------
     proc ::UpdateRange() \
     {
-      ::mapper.SetScalarRange( ::params.range_min, ::params.range_max) 
+      if (::renderer.GetActors().GetNumberOfItems()>0) {
+        ::renderer.GetActors().GetLastItem().GetMapper().\
+          SetScalarRange( ::params.range_min, ::params.range_max) 
+      }
+      if (::renderer2.GetActors().GetNumberOfItems()>0) {
+        ::renderer2.GetActors().GetLastItem().GetMapper().\
+          SetScalarRange( ::params.range_min, ::params.range_max) 
+      }
       ::renwin_interact.GetRenderWindow().Render()
     }
 
@@ -58,64 +65,143 @@ if (!exists(DistancePolyDataClass)) {
     }
 
     #---------------------------------------------------------------------------
-    proc ::Run() \
+    # distance computation from surf1 to surf2
+    # the points of surf2 are projected to surf1 using vtkDistancePolyDataFilter
+    # 
+    proc ::ProcessAndDisplay( OBJECT surf1, OBJECT surf2, NUM use_scalarbar) \
     {
-      if (!exists(::vtksurf1)) {
-        eval "::vtksurf1 = vtktools.ToVtkPolyData(&%1%);" % ::surface1_selected
-        eval "::vtksurf2 = vtktools.ToVtkPolyData(&%1%);" % ::surface2_selected
-      }
-
       clean1 = vtk.vtkCleanPolyData.New()
 
       if (::params.get_main_component) {
-        ::pdc = vtk.vtkPolyDataConnectivityFilter.New()
-        ::pdc.SetInputConnection(::vtksurf1.GetProducerPort())
-        ::pdc.SetExtractionModeToLargestRegion()
-        ::pdc.Update()
-        clean1.SetInputConnection( ::pdc.GetOutputPort())
+        pdc = vtk.vtkPolyDataConnectivityFilter.New()
+        pdc.SetInputConnection(surf1.GetProducerPort())
+        pdc.SetExtractionModeToLargestRegion()
+        pdc.Update()
+        clean1.SetInputConnection( pdc.GetOutputPort())
       } else {
-        clean1.SetInputConnection( ::vtksurf1.GetProducerPort())
+        clean1.SetInputConnection( surf1.GetProducerPort())
       }
 
     
       clean2 = vtk.vtkCleanPolyData.New()
-      clean2.SetInputConnection( ::vtksurf2.GetProducerPort())
+      clean2.SetInputConnection( surf2.GetProducerPort())
     
-      ::distanceFilter = vtk.vtkDistancePolyDataFilter.New()
+      distanceFilter = vtk.vtkDistancePolyDataFilter.New()
     
-      ::distanceFilter.SetInputConnection( 0, clean1.GetOutputPort() )
-      ::distanceFilter.SetInputConnection( 1, clean2.GetOutputPort() )
-      ::distanceFilter.Update()
+      distanceFilter.SetInputConnection( 0, clean1.GetOutputPort() )
+      distanceFilter.SetInputConnection( 1, clean2.GetOutputPort() )
+      distanceFilter.Update()
     
-      ::mapper =  vtk.vtkPolyDataMapper.New()
-      ::mapper.SetInputConnection( ::distanceFilter.GetOutputPort() )
+      mapper =  vtk.vtkPolyDataMapper.New()
+      mapper.SetInputConnection( distanceFilter.GetOutputPort() )
       r = vector_double(2)
-      ::distanceFilter.GetOutput().GetPointData().GetScalars().GetRange_4(&r[0])
+      distanceFilter.GetOutput().GetPointData().GetScalars().GetRange_4(&r[0])
       ::win.FloatConstraints(::range_min_id,r[0],0,r[0])
       ::win.FloatConstraints(::range_max_id,0,r[1],r[0])
       #::params.range_min = r[0]
       #::params.range_max = r[1]
       ::win.Update(-1)
 
-      ::mapper.SetScalarRange( ::params.range_min, ::params.range_max) 
-      ::actor = vtk.vtkActor.New()
-      ::actor.SetMapper( ::mapper )
+      mapper.SetScalarRange( ::params.range_min, ::params.range_max) 
+      actor = vtk.vtkActor.New()
+      actor.SetMapper( mapper )
     
-      ::scalarBar = vtk.vtkScalarBarActor.New()
-      ::scalarBar.SetLookupTable(::mapper.GetLookupTable())
-      ::scalarBar.SetTitle("Distance")
-      ::scalarBar.SetNumberOfLabels(::params.labels)
+      if (use_scalarbar) {
+        scalarBar = vtk.vtkScalarBarActor.New()
+        scalarBar.SetLookupTable(mapper.GetLookupTable())
+        scalarBar.SetTitle("Distance")
+        scalarBar.SetNumberOfLabels(::params.labels)
+      }
 
-      ::renderer =  vtk.vtkRenderer.New()
-      ::renderer.ResetCamera()   
-      ::renwin_interact.GetRenderWindow().AddRenderer(::renderer)
-      interact = vtk.vtkInteractorStyleTrackballCamera.New()
-      ::renwin_interact.SetInteractorStyle(interact)
+      return = VarVector()
+      return.push_back(actor)
+      if (use_scalarbar) {
+        return.push_back(scalarBar)
+      }
+      
+    }
+
+    #---------------------------------------------------------------------------
+    # todo ...
+    proc ::CB_DistProgressEvent(OBJECT caller, NUM id) \
+    {
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_CamEvent(OBJECT caller, NUM id) \
+    {
+      ::renwin_interact.Render()
+      ::renwin_interact2.Render()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Run() \
+    {
+      # always reload the surfaces
+      del ::vtksurf1
+      del ::vtksurf2
+      eval "::vtksurf1 = vtktools.ToVtkPolyData(&%1%);" % ::surface1_selected
+      eval "::vtksurf2 = vtktools.ToVtkPolyData(&%1%);" % ::surface2_selected
+
+      #clean1 = vtk.vtkCleanPolyData.New()
+
+      #if (::params.get_main_component) {
+        #::pdc = vtk.vtkPolyDataConnectivityFilter.New()
+        #::pdc.SetInputConnection(::vtksurf1.GetProducerPort())
+        #::pdc.SetExtractionModeToLargestRegion()
+        #::pdc.Update()
+        #clean1.SetInputConnection( ::pdc.GetOutputPort())
+      #} else {
+        #clean1.SetInputConnection( ::vtksurf1.GetProducerPort())
+      #}
+
     
-      ::renderer.AddActor( ::actor )
-      ::renderer.AddActor2D(::scalarBar)
+      #clean2 = vtk.vtkCleanPolyData.New()
+      #clean2.SetInputConnection( ::vtksurf2.GetProducerPort())
+    
+      #del ::distanceFilter
+      #::distanceFilter = vtk.vtkDistancePolyDataFilter.New()
+    
+      #::distanceFilter.SetInputConnection( 0, clean1.GetOutputPort() )
+      #::distanceFilter.SetInputConnection( 1, clean2.GetOutputPort() )
+      #::distanceFilter.Update()
+    
+      #del ::mapper
+      #::mapper =  vtk.vtkPolyDataMapper.New()
+      #::mapper.SetInputConnection( ::distanceFilter.GetOutputPort() )
+      #r = vector_double(2)
+      #::distanceFilter.GetOutput().GetPointData().GetScalars().GetRange_4(&r[0])
+      #::win.FloatConstraints(::range_min_id,r[0],0,r[0])
+      #::win.FloatConstraints(::range_max_id,0,r[1],r[0])
+      ##::params.range_min = r[0]
+      ##::params.range_max = r[1]
+      #::win.Update(-1)
+
+      #::mapper.SetScalarRange( ::params.range_min, ::params.range_max) 
+      #::actor = vtk.vtkActor.New()
+      #::actor.SetMapper( ::mapper )
+    
+      #::scalarBar = vtk.vtkScalarBarActor.New()
+      #::scalarBar.SetLookupTable(::mapper.GetLookupTable())
+      #::scalarBar.SetTitle("Distance")
+      #::scalarBar.SetNumberOfLabels(::params.labels)
+    
+      actors1 = ::ProcessAndDisplay(::vtksurf1,::vtksurf2, true)
+      ::renderer.AddActor( actors1[0] )
+      ::renderer.AddActor2D(actors1[1])
       ::renwin_interact.GetRenderWindow().Render()
 
+      actors2 = ::ProcessAndDisplay(::vtksurf2,::vtksurf1, false)
+      ::renderer2.AddActor( actors2[0] )
+      ::renwin_interact2.GetRenderWindow().Render()
+
+      # share active camera
+      ::renderer2.SetActiveCamera(::renderer.GetActiveCamera())
+      ::cam_cmd = vtk.vtkAmiCommand.New()
+      ::cam_cmd.SetAmiFunction(&::CB_CamEvent)
+      ::renderer.GetActiveCamera().AddObserver(vtk.vtkCommand.ModifiedEvent, &::cam_cmd)
+      ::renderer.ResetCamera()
+ 
       #renWin.Render()
       #renWinInteractor.Start()
 
@@ -148,16 +234,34 @@ if (!exists(DistancePolyDataClass)) {
       ::panel = wx.wxPanel(&ami.MainFrame)
       ::panel.SetName("DistPoly panel")
 
-      ::panel_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+      ::panel_sizer = wx.wxBoxSizer(wx.wxHORIZONTAL)
       ::panel.SetSizer(&::panel_sizer)
 
+      # Prepare first renderer
       ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
-
       ::panel_sizer.Add(&::renwin_interact,1,wx.wxEXPAND )
       #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.Enable(true)
       ::renwin_interact.Initialize()
+      ::renderer =  vtk.vtkRenderer.New()
+      ::renderer.ResetCamera()   
+      ::renwin_interact.GetRenderWindow().AddRenderer(::renderer)
+      interact = vtk.vtkInteractorStyleTrackballCamera.New()
+      ::renwin_interact.SetInteractorStyle(interact)
+
+      # Prepare second renderer
+      ::renwin_interact2 = wxvtk.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+      ::panel_sizer.Add(&::renwin_interact2,1,wx.wxEXPAND )
+      #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+      ::renwin_interact2.UseCaptureMouseOn()
+      ::renwin_interact2.Enable(true)
+      ::renwin_interact2.Initialize()
+      ::renderer2 =  vtk.vtkRenderer.New()
+      ::renderer2.ResetCamera()   
+      ::renwin_interact2.GetRenderWindow().AddRenderer(::renderer2)
+      interact2 = vtk.vtkInteractorStyleTrackballCamera.New()
+      ::renwin_interact2.SetInteractorStyle(interact2)
 
       ::icons.LoadIconPNG("Units")
       mb.AddPage( &::panel,  "DistPoly",1, \

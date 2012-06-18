@@ -121,7 +121,7 @@ if (!exists(ScriptDisplayClass)) \
       ## version 2: pb??? segfault ???
       # ok fixed by setting new_mi as object member to prevent it 
       # from beeing deleted
-      ::new_mi = wx.wxMenuItem.wxMenuItem_1(&submenu,new_mi_id,::menu_name,::menu_help)
+      ::new_mi = wx.wxMenuItem.wxMenuItem(&submenu,new_mi_id,::menu_name,::menu_help)
       ::new_mi.SetBitmap(&::bm)
       submenu.Append_2(&::new_mi)
 

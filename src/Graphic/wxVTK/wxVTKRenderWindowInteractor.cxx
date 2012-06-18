@@ -67,22 +67,64 @@ wxWindow* wxGetTopLevelParent(wxWindow *win)
 #endif //__WXCOCOA__
 
 #ifdef __WXGTK__
-#    include <gdk/gdkx.h> // GDK_WINDOW_XWINDOW is found here in wxWidgets 2.8.0
-#    include "gdk/gdkprivate.h"
-#if wxCHECK_VERSION(2, 8, 0)
-#ifdef __WXGTK20__
-#include <wx/gtk/win_gtk.h>
-#else
-#include <wx/gtk1/win_gtk.h>
-#endif
-#else
-#include <wx/gtk/win_gtk.h>
-#endif
-#define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
-                          GDK_WINDOW_XWINDOW(GTK_PIZZA((wxwin)->m_wxwindow)->bin_window) : \
-                          GDK_WINDOW_XWINDOW((wxwin)->m_widget->window)
+  #    include <gdk/gdkx.h> // GDK_WINDOW_XWINDOW is found here in wxWidgets 2.8.0
+  #    include "gdk/gdkprivate.h"
+  #if wxCHECK_VERSION(2, 8, 0)
+    #ifdef __WXGTK20__
+      #if  wxCHECK_VERSION(2, 9, 0)
+        #include <wx/gtk/private/win_gtk.h>
+      #else
+        #include <wx/gtk/win_gtk.h>
+      #endif
+    #else
+      #include <wx/gtk1/win_gtk.h>
+    #endif
+  #else
+    #include <wx/gtk/win_gtk.h>
+  #endif
+  #if  wxCHECK_VERSION(2, 9, 0)
+    #define piz(wxwin) WX_PIZZA((wxwin)->m_wxwindow)
+    #define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
+    GDK_WINDOW_XWINDOW(((GtkWidget*)piz(wxwin))->window) : \
+                            GDK_WINDOW_XWINDOW((wxwin)->m_widget->window)
+  #else
+    #define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
+    GDK_WINDOW_XWINDOW(GTK_PIZZA((wxwin)->m_wxwindow)->bin_window) : \
+                              GDK_WINDOW_XWINDOW((wxwin)->m_widget->window)
+    #endif
 #endif
 
+ /*
+#ifdef __WXGTK__
+  #    include <gdk/gdkx.h> // GDK_WINDOW_XWINDOW is found here in wxWidgets 2.8.0
+  #    include "gdk/gdkprivate.h"
+  #if wxCHECK_VERSION(2, 8, 0)
+    #ifdef __WXGTK20__
+      #if wxCHECK_VERSION(2, 9, 3)
+        //#include <wx/gtk/private/win_gtk.h>
+        //#include <wx/gtk1/win_gtk.h>
+      #else
+        #include <wx/gtk/win_gtk.h>
+      #endif
+    #else
+      #include <wx/gtk1/win_gtk.h>
+    #endif
+  #else
+    #include <wx/gtk/win_gtk.h>
+  #endif
+
+  #if wxCHECK_VERSION(2, 9, 3)
+    // need to fix it for 2.9,3 ...
+    #define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
+                              GDK_WINDOW_XWINDOW(WX_PIZZA((wxwin)->m_wxwindow)->bin_window) : \
+                              GDK_WINDOW_XWINDOW((wxwin)->m_widget->window)
+  #else
+    #define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
+                              GDK_WINDOW_XWINDOW(GTK_PIZZA((wxwin)->m_wxwindow)->bin_window) : \
+                              GDK_WINDOW_XWINDOW((wxwin)->m_widget->window)
+  #endif
+#endif
+*/
 #ifdef __WXX11__
 #include "wx/x11/privx.h"
 #define GetXWindow(wxwin)   ((Window)(wxwin)->GetHandle())

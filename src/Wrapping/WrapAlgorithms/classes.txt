@@ -40,3 +40,8 @@ ami::AddImageNoise
 # Reconstruction of tubes around lines
 ami::LineRecons
 
+# try some graphics (should not be here ...)
+amilab::GLObject
+GLMaterialParam
+#ClasseCouleur
+

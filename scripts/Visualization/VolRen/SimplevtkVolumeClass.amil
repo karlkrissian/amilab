@@ -197,11 +197,11 @@ if (!exists(SimplevtkVolumeClass)) {
       ::renderer.ResetCamera()
     } 
     #----------------------------
-    proc ::SetBackground(NUM r,NUM g, NUM b,NUM r2,NUM g2, NUM b2,NUM gradiant){
+    proc ::SetBackground(NUM r,NUM g, NUM b,NUM r2,NUM g2, NUM b2,NUM _gradient){
       if (exists(::renderer)) {
         ::renderer.SetBackground((FLOAT)r/255, (FLOAT)g/255, (FLOAT)b/255)
         ::renderer.SetBackground2((FLOAT)r2/255, (FLOAT)g2/255, (FLOAT)b2/255)
-        ::renderer.SetGradientBackground( gradiant)
+        ::renderer.SetGradientBackground( _gradient)
         ::renwininter.Render()
 
       }

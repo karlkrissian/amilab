@@ -25,6 +25,7 @@ vtkCellArray
 vtkCellPicker
 vtkCellTypes
 vtkChartXY
+vtkCleanPolyData
 vtkCollection
 vtkColorTransferFunction
 vtkCommand
@@ -93,6 +94,7 @@ vtkPoints
 vtkPointSet
 vtkPolyData
 vtkPolyDataAlgorithm
+vtkPolyDataConnectivityFilter
 vtkPolyDataMapper
 vtkPolyDataNormals
 vtkProp
@@ -104,6 +106,7 @@ vtkProperty2D
 vtkRendererCollection
 vtkRenderWindow
 vtkRenderWindowInteractor
+vtkScalarBarActor
 vtkScalarsToColors
 vtkSliderWidget
 vtkSliderRepresentation2D
@@ -122,6 +125,7 @@ vtkUnicodeString
 vtkUnsignedCharArray
 vtkUnstructuredGridVolumeRayCastMapper
 vtkVariant
+vtkVersion
 vtkViewport
 vtkVolume
 vtkVolumeCollection

@@ -95,22 +95,22 @@ Class PreviewerClass \
   proc ::LoadCurves() \
   {
     #::pathname=wx.FromWxString(wx.wxFileName.GetCwd())
-    pathname=GetScriptsDir+"Visualization"+\
-            wx.FromWxString(wx.wxFileName.GetPathSeparator())\
-            +"VolRen"+wx.FromWxString(wx.wxFileName.GetPathSeparator())
+    pathname=GetScriptsDir+"Visualization/Volren/"
+            #wx.FromWxString(wx.wxFileName.GetPathSeparator())+\
+            #+"VolRen"+wx.FromWxString(wx.wxFileName.GetPathSeparator())
     #printn pathname
     defaultdir= "Curves/"
     path=pathname+defaultdir
-    #printn path
+    printn path
     dir=wx.wxDir(path)
     nelem=0
     if ( dir.IsOpened() ){
      del list
      list=wx.wxArrayString()
      nelem=wx.wxDir.GetAllFiles(path,&list,"*.txt")
+     list.Sort()
     }
 
-    list.Sort()
     #printn  "File(s) number %1%" %nelem 
     ::listCategory=wx.wxArrayString()
     ::numElemCategory= VarVector() 
@@ -127,7 +127,7 @@ Class PreviewerClass \
       aux=wx.wxString()
       aux=list[n].SubString(lenghdir,list[n].Len())
       #printn wx.FromWxString(aux)
-      bar=aux.Find(wx.wxFileName.GetPathSeparator())
+      bar=aux.Find("/")
       category= wx.FromWxString(aux.SubString(0,bar-1))
       #printn category
       if (categoryPre!=category){

@@ -37,8 +37,16 @@ IF(AMILab_FOUND)
       ${AMILab_BINARY_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
       ${AMILab_PATHS}
       )
-    MESSAGE(" VTK wrapping path is ${AMILab_SOURCE_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated")
+    MESSAGE(" VTK wrapping path is ${AMILab_BINARY_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated")
   ENDIF(${KIT}_NEED_VTK_WRAPPING)
+
+  IF (${KIT}_NEED_ITK_WRAPPING)
+    SET(AMILab_PATHS
+      ${AMILab_BINARY_DIR}/Wrapping/WrapITK/${AMI_ITK_VERSION}/Generated
+      ${AMILab_PATHS}
+      )
+    MESSAGE(" ITK wrapping path is ${AMILab_BINARY_DIR}/Wrapping/WrapITK/${AMI_ITK_VERSION}/Generated")
+  ENDIF(${KIT}_NEED_ITK_WRAPPING)
 
   IF (${KIT}_NEED_WX_WRAPPING)
     SET(AMILab_PATHS

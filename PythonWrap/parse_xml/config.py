@@ -18,6 +18,8 @@ classes_blacklist=[
   'wxHtmlWindowMouseHelper', # pb: no public constructor, destructor: can't be used with boost smart pointers
   'std::_Container_base_aux', # pb: wrapping std::vector with VC++
   'std::_Container_base_aux_alloc_real<std::allocator<std::string> >', # idem
+  'wxTrackable', # problem protected destructor: to fix (wx2.9.3)
+  #'wxConfigBase', # problems in 2.9.3 also
  ]
 
 # ignore specific members
@@ -54,6 +56,11 @@ members_blacklist=[
   'wxColour::GetPixel', # problem with COLOREF on mac which is unsigned char[6]
   'wxColour::FromRGBColor', # pb with COLORREF
   'wxColour::m_pixel', # idem
+  'wxConfigBase::Read(wxString const&, wchar_t const*) const', # version 2.9.3: pb with wxFromString(...)
+  'wxConfigBase::Write(wxString const&, unsigned char const*)', # idem
+  'wxConfigBase::Write(wxString const&, wchar_t const*)', # idem
+  'wxAuiNotebook::InsertPage(unsigned long, wxWindow*, wxString const&, bool, wxBitmap const&)', # wx 2.9.3 ambiguity due to default param values
+  'wxAuiNotebook::InsertPage(unsigned long, wxWindow*, wxString const&, bool, int)', # ambiguity 
   'wxCursor::GetHCURSOR',           # linking pb on macros
   'wxDateTime::IsGregorianDate',    # no implemented
   'wxToolBar::OnMouse',             # idem, MacOS linking error

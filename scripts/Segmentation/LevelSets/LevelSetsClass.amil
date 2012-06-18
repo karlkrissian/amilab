@@ -28,6 +28,9 @@ if (!exists(LevelSetsClass)) {
         ::init_mode         = INT(0),  "Contour initialization mode: spheres "+\
                                   "or zero-crossing of an image"
         ::minimal_intensity = 0,  "Minimal Intensity for the input image"
+        
+        # initial image threshold
+        ::initial_image_threshold = 0, "Threshold for initial level set"
 
         # using world coordinates
 
@@ -92,6 +95,7 @@ if (!exists(LevelSetsClass)) {
         proc ::__assign__( VAR p) {
           ::init_mode             = p.init_mode
           ::minimal_intensity     = p.minimal_intensity
+          ::initial_image_threshold = p.initial_image_threshold
 
           ::use_expansion         = p.use_expansion
           ::use_expansion_image   = p.use_expansion_image
@@ -460,6 +464,7 @@ if (!exists(LevelSetsClass)) {
             ::initial_name = "::initial_name"
             ::win.Update(-1)
           }
+          ::inls = ::inls-::params.initial_image_threshold
           ::ComputeIntensityStats()
         } else {
           ::inls <<= ::input*0-1
@@ -479,6 +484,10 @@ if (!exists(LevelSetsClass)) {
         InfoDialog "::load_initial() \t Need to load input image first!"
       } else {
         if (::params.init_mode==1) {
+          if (::params.initial_image_threshold!=0) {
+            ::params.initial_image_threshold=0
+            ::win.Update(-1)
+          }
           # Delete ::inls is it exists
           if (exists(::inls0)) { del ::inls0; }
           eval "::inls0 = &"+::initial_name+";"
@@ -1005,6 +1014,7 @@ if (!exists(LevelSetsClass)) {
                   ::win.AddButton("Load",::load_initial)
                   ::win.AddButton("Ref",::ref_initial)
                 ::win.EndHorizontal()
+                ::win.AddFloat(::params.initial_image_threshold,"threshold",-10,10)
             ::win.EndBook()
     
           #::win.EndBoxPanel

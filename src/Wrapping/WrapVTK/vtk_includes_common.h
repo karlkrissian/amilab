@@ -19,6 +19,7 @@
 #include <vtkCell.h>
 #include <vtkCellPicker.h>
 #include <vtkChartXY.h>
+#include <vtkCleanPolyData.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkCommand.h>
 #include <vtkConeSource.h>
@@ -67,6 +68,7 @@
 #include <vtkPointData.h>
 #include <vtkPointWidget.h>
 #include <vtkPolyData.h>
+#include <vtkPolyDataConnectivityFilter.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkProperty.h>
@@ -75,6 +77,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkScalarBarActor.h>
 #include <vtkSliderWidget.h>
 #include <vtkSliderRepresentation2D.h>
 #include <vtkSliderRepresentation3D.h>
@@ -87,6 +90,7 @@
 #include <vtkTexture.h>
 #include <vtkTransform.h>
 #include <vtkUnstructuredGridVolumeRayCastMapper.h>
+#include <vtkVersion.h>
 #include <vtkVolume.h>
 #include <vtkVolumeCollection.h>
 #include <vtkVolumeProperty.h>

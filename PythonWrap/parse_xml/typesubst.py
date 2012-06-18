@@ -8,6 +8,7 @@ type_equivalence={}
 type_shortname={
   'unsigned char'      : 'uchar',
   'unsigned int'       : 'uint',
+  'unsigned long'      : 'luint',
   'long int'           : 'lint',
   'long long int'      : 'llint',
   'long unsigned int'  : 'luint',

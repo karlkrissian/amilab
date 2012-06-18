@@ -311,7 +311,7 @@ void GLObject :: DisplayBB()
 
 
 //----------------------------------------------------------------------
-void GLObject  :: DisplayObject(GLMaterialParam* mat)
+void GLObject::DisplayObject(GLMaterialParam* mat)
 //
 {
 

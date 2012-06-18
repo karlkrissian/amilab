@@ -294,6 +294,7 @@ if __name__ == '__main__':
     #print "wxConfig is available ? ", wrap_class.AvailableType("wxConfigBase",config.classes["wxConfigBase"],[])
 
     #print "Number of classes matching the filter : {0}".format(ft.number_of_libclasses)
+    #print "BLACKLIST=", config.classes_blacklist
 
     if args.val.ancestors != []:
 
@@ -387,6 +388,7 @@ if __name__ == '__main__':
                   if m != None:
                     #print "OK"
                     ancestors.append(classes_dict[anc_id])
+                    #print "adding {0}".format(classes_dict[anc_id])
                     newlist.append(classes_dict[anc_id])
                     bases=config.types[anc_id].bases
                     #if b.startswith("itk"):
@@ -394,7 +396,9 @@ if __name__ == '__main__':
                       #print "**** bases=",bases
                     if bases!=None:
                       for newanc in bases:
-                        f_anc.append(newanc)
+                        if f_anc not in config.classes_blacklist:
+                          f_anc.append(newanc)
+                          #print "adding __ {0}".format(newanc)
             #print "New ancestors of {0} are {1}".format(b,newlist)
       #print "All ancestors are   {0} ".format(ancestors)
       # write ancestors file
@@ -408,7 +412,10 @@ if __name__ == '__main__':
       # first sort
       ancestors.sort()
       for a in ancestors:
-        f.write(a+"\n")
+        if a not in args.val.available_external_classes:
+          f.write(a+"\n")
+        else:
+          print "Rejecting {0} from ancestors\n".format(a)
         print a
         #print config.types.values()
         if a in classes_dict.values():

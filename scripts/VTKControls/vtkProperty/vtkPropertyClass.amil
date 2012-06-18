@@ -1,95 +1,227 @@
 
 func "Common/ScriptGui"
 
-if (!exists(vtkPropertyClass)) {
+del vtkPropertyClass
 
-  Class vtkPropertyClass : public ScriptGui \
-  {
-    
-    func "Variable/ObjectIO"
-    #===========================================================================
-    # Set parameters here
-    Class ::ParamClass : public ObjectIO {
-
-        ::description = "Default parameters", \
-                        "Description of the set of parameters"
-
-
-        #-----------------------------------------------------------------------
-        # copy parameters
-        proc ::__assign__( VAR p) {
-        }
-    }
-
-    #---------------------------------------------------------------------------
-    proc ::Init() {
-      
-      ::property_name   = "","Name of the input vtkProperty variable"
-      ::ParamClass ::params
-
-      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
-      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
-
-      ::html_filename = GetScriptsDir+\
-                        "/vtkProperty/Doc/vtkProperty/index.html"
-    }
-
-
-    #-----------------------------------------------------------------------------
-    proc ::Update() \
-    {
-
-    }
-
-    #-----------------------------------------------------------------------------
-    proc ::CB_Property( ) \
-    {
-        eval "::SetProperty(%1%);" % ::property_name
-        ::Update()
-    }
-
-    #---------------------------------------------------------------------------
-    proc ::Gui() {
-    
-      if (exists(::parent_panel)) {
-        ::win = ParamPanel("vtkProperty",&::parent_panel)
-      } else {
-        ::win = ParamPanel("vtkProperty")
-      }
-      
-      ::win.BeginBook()
-    
-        ::win.AddPage("Main")
-
-          # Select Property
-          ::win.AddAMIObjectChoice( &::property_name, "", "vtkProperty")
-          ::win.SetCallback(::CB_Property)
-
-        # add page for saving/loading parameters
-        ::AddParamPage(&::win)
-
-        # add help page
-        if wx.wxFileName(::html_filename).FileExists() {
-          ::AddHelpPage(&::win)
-        }
-    
-      ::win.EndBook()
-    
-      ::AddStandardButtons(&::win)
-
-      if (exists(::parent_panel)) {
-        ::win.ShowPanel()
-      } else {
-        ::win.Display()
-      }
-      ::win.Update(-1)
-
-
-    }
-    ::Init()
-    
-  }
-  # End of class
+Class vtkPropertyClass : public ScriptGui \
+{
   
-} 
-# End of If
+  func "Variable/ObjectIO"
+  #===========================================================================
+  # Set parameters here
+  Class ::ParamClass : public ObjectIO {
+
+    func "WxUtils/alEnum"
+    ::description = "Default parameters", \
+                    "vtkProperty parameters"
+    ::color   = wx.wxColour(0,0,255)
+    ::opacity = 1.0, "opacity property"
+    ::enable_lighting = UCHAR(1), "Enable lighting"
+
+    # ----- Shading interpolation mode
+    alEnum ::interpolation_modes
+    ::interpolation_modes.SetTitle("Shading interpolation")
+    ::interpolation_modes.SetHelp("Shading interpolation modes")
+    ::interpolation_modes.AddValue( "Flat",    "Flat mode")
+    ::interpolation_modes.AddValue( "Gouraud", "Gouraud mode")
+    ::interpolation_modes.AddValue( "Phong",   "Phong mode")
+    ::interpolation_mode = INT(1), ::interpolation_modes.GetHelpMessage()
+    ::interpolation_modes.SetVariable(&::interpolation_mode)
+
+    # ----- Shading representation mode
+    alEnum ::representation_modes
+    ::representation_modes.SetTitle("Representation modes")
+    ::representation_modes.SetHelp("Representation modes")
+    ::representation_modes.AddValue( "Points",    "Points mode")
+    ::representation_modes.AddValue( "Wireframe", "Wireframe mode")
+    ::representation_modes.AddValue( "Surface",   "Surface mode")
+    ::representation_mode = INT(2), ::representation_modes.GetHelpMessage()
+    ::representation_modes.SetVariable(&::representation_mode)
+
+
+    #-----------------------------------------------------------------------
+    # copy parameters
+    proc ::__assign__( VAR p) {
+      ::color               = p.color
+      ::opacity             = p.opacity
+      ::enable_lighting     = p.enable_lighting
+      ::interpolation_mode  = p.interpolation_mode
+      ::representation_mode = p.representation_mode
+    }
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::Init() {
+    
+    ::property_name   = "","Name of the input vtkProperty variable"
+    ::ParamClass ::params
+
+    #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+    # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+    ::html_filename = GetScriptsDir+\
+                      "/vtkProperty/Doc/vtkProperty/index.html"
+  }
+
+
+  #-----------------------------------------------------------------------------
+  proc ::SetCallback( VAR cb) {
+    del ::callback
+    ::callback = &cb
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::Update() \
+  {
+    # get the camera parameters: position, focal point and view up vector
+    # color
+    color = vector_double(3)
+    ::vtkproperty.GetColor(&color[0])
+    ::params.color.Set(color[0]*255,color[1]*255,color[2]*255)
+
+    # opacity
+    ::params.opacity             = ::vtkproperty.GetOpacity()
+    ::params.enable_lighting     = ::vtkproperty.GetLighting()
+    ::params.interpolation_mode  = ::vtkproperty.GetInterpolation()
+    ::params.representation_mode = ::vtkproperty.GetRepresentation()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::UpdateVTK() \
+  {
+    if (exists(::vtkproperty)) {
+      ::vtkproperty.SetColor( (FLOAT)::params.color.Red()  /255,\
+                              (FLOAT)::params.color.Green()/255,\
+                              (FLOAT)::params.color.Blue() /255)
+      ::vtkproperty.SetOpacity(::params.opacity)
+      ::vtkproperty.SetInterpolation( ::params.interpolation_mode)
+      ::vtkproperty.SetRepresentation(::params.representation_mode)
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetProperty( OBJECT obj) \
+  {
+    if obj.IsA("vtkProperty") {
+      del ::vtkproperty
+      ::vtkproperty = &obj
+    } else {
+      if obj.IsA("vtkActor") {
+        del ::vtkproperty
+        ::vtkproperty = obj.GetProperty()
+      } else {
+        InfoDialog "vtkPropertyClass.SetProperty(obj): wrong object type"
+      }
+    }
+
+    ::Update()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::ChangeProperty( ) \
+  {
+    ::UpdateVTK()
+      if (exists(::callback)) {
+        ::callback()
+      }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_Lighting( ) \
+  {
+    ::vtkproperty.SetLighting(::params.enable_lighting)
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_Interpolation( ) \
+  {
+    #printn "Setting interpolation to %1%" % ::params.interpolation_mode
+    ::vtkproperty.SetInterpolation(::params.interpolation_mode)
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_Representation( ) \
+  {
+    #printn "Setting interpolation to %1%" % ::params.interpolation_mode
+    ::vtkproperty.SetRepresentation(::params.representation_mode)
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_Property( ) \
+  {
+      eval "::SetProperty(%1%);" % ::property_name
+      ::Update()
+  }
+
+  #-----------------------------------------------------------------------------
+  # create the gui on a ParamPanel
+  proc ::AddGui( OBJECT win) \
+  {
+    if (!exists(::win)) {
+      ::win = &win
+    }
+    return = win.BeginBoxPanel("vtkProperty control")
+      ::color_id   = win.AddColor("Color",&::params.color)
+      win.SetCallback( &::ChangeProperty)
+      ::opacity_id = win.AddFloat(&::params.opacity,"Opacity",0,1)
+      win.SetCallback( &::ChangeProperty)
+      win.AddBoolean(::params.enable_lighting,"Lighting")
+      win.SetCallback(::CB_Lighting)
+
+      ::params.interpolation_modes.SetGuiMode(1)
+      ::params.interpolation_modes.AddGui(win)
+      ::params.interpolation_modes.SetCallback(::CB_Interpolation)
+
+      ::params.representation_modes.SetGuiMode(1)
+      ::params.representation_modes.AddGui(win)
+      ::params.representation_modes.SetCallback(::CB_Representation)
+    win.EndBoxPanel()
+  }
+
+
+  #---------------------------------------------------------------------------
+  proc ::Gui() {
+  
+    if (exists(::parent_panel)) {
+      ::win = ParamPanel("vtkProperty",&::parent_panel)
+    } else {
+      ::win = ParamPanel("vtkProperty")
+    }
+    
+    ::win.BeginBook()
+  
+      ::win.AddPage("Main")
+
+        # Select Property
+        ::win.AddAMIObjectChoice( &::property_name, "", "vtkProperty")
+        ::win.SetCallback(::CB_Property)
+
+         # add gui
+        ::AddGui(::win)
+
+      # add page for saving/loading parameters
+      ::AddParamPage(&::win)
+
+      # add help page
+      if wx.wxFileName(::html_filename).FileExists() {
+        ::AddHelpPage(&::win)
+      }
+  
+    ::win.EndBook()
+  
+    ::AddStandardButtons(&::win)
+
+    if (exists(::parent_panel)) {
+      ::win.ShowPanel()
+    } else {
+      ::win.Display()
+    }
+    ::win.Update(-1)
+
+
+  }
+  ::Init()
+  
+}
+# End of class
+

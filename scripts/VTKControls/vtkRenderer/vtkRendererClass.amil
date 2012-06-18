@@ -15,9 +15,17 @@ Class vtkRendererClass : public ScriptGui \
     func "WxUtils/alEnum"
     ::description = "Default parameters", \
                     "vtkRenderer parameters"
+    ::background_color  = wx.wxColour(173,216,230)
+    ::background_color2 = wx.wxColour(144,238,144)
+    ::UseGradientBackground = UCHAR(1)
+    ::bg_type = INT(0)
 
     #---------------------------------------------------------------------------
     proc ::__assign__( VAR p) {
+      ::background_color      = p.background_color
+      ::background_color2     = p.background_color2
+      ::UseGradientBackground = p.UseGradientBackground
+      ::bg_type               = p.bg_type
     }
   }
 
@@ -45,6 +53,8 @@ Class vtkRendererClass : public ScriptGui \
                         "%1%" % ::vtkrenderer.GetVolumes().GetNumberOfItems())
     ::win.SetLabelValue(::time_id,\
                         "%1% sec" % ::vtkrenderer.GetLastRenderTimeInSeconds())
+
+    # update background colors
 
   }
 
@@ -95,6 +105,46 @@ Class vtkRendererClass : public ScriptGui \
     ::vtkrenderer.GetRenderWindow().Render()
   }
 
+  #----------------------------
+  proc ::SetRendererBg() \
+  {
+    if (exists(::vtkrenderer)) {
+    
+      ::vtkrenderer.SetBackground((FLOAT)::params.background_color.Red()/255,\
+                                  (FLOAT)::params.background_color.Green()/255,\
+                                  (FLOAT)::params.background_color.Blue()/255)
+                                  
+      ::vtkrenderer.SetBackground2((FLOAT)::params.background_color2.Red()/255,\
+                                   (FLOAT)::params.background_color2.Green()/255,\
+                                   (FLOAT)::params.background_color2.Blue()/255)
+
+      ::vtkrenderer.SetGradientBackground( ::params.UseGradientBackground)
+
+      ::vtkrenderer.GetRenderWindow().Render()
+    }
+
+  }
+
+  #----------------------------
+  proc ::ChoiceBackground() \
+  {
+    if (::params.bg_type==1){
+      ::background_color=wx.wxColour(255,255,255)
+      ::background_color2=::background_color
+      ::UseGradientBackground=0
+
+    }
+    if (::params.bg_type==2){
+      ::background_color=wx.wxColour(0,0,0)
+      ::background_color2=::background_color
+      ::UseGradientBackground=0
+
+    }
+    ::SetRendererBg()
+    ::win.Update(::bg_id)
+    ::win.Update(::bg2_id)
+  }
+
   #-----------------------------------------------------------------------------
   # create the gui on a ParamPanel
   proc ::AddGui( OBJECT win) \
@@ -111,6 +161,26 @@ Class vtkRendererClass : public ScriptGui \
       ::surface_selected=""
       win.AddAMIObjectChoice( &::surface_selected, "", "SurfacePoly")
       win.AddButton("Add Selected Surface",::CB_AddSurface)
+
+      win.BeginBoxPanel("Background")
+        win.BeginHorizontal()
+          ::bg_id = win.AddColor("Color",&::params.background_color)
+          win.SetCallback(&::SetRendererBg)
+          ::bg2_id = win.AddColor("Color 2",&::params.background_color2)
+          win.SetCallback(&::SetRendererBg)
+          win.AddBoolean(&::params.UseGradientBackground,"Gradient")
+          win.SetCallback(&::SetRendererBg)
+        win.EndHorizontal()
+
+        win.BeginHorizontal()
+          ::d_id = win.AddEnum(&::params.bg_type,"Background")
+          win.AddEnumChoice(::d_id,"Manual")
+          win.AddEnumChoice(::d_id,"White")
+          win.AddEnumChoice(::d_id,"Black")
+          win.SetCallback(&::ChoiceBackground)
+        win.EndHorizontal()
+      win.EndBoxPanel()
+
     win.EndBoxPanel()
   }
 

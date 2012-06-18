@@ -278,7 +278,7 @@ void FastLocalSumX_noborder( InrImage* in, InrImage* out,
   // 2*size+1 needs to be smaller than the extent in X !!
   // now need to go line by line
   int x,y,z;
-  T sum;
+  double sum;
   for (z=zmin;z<=zmax;z++) {
     for (y=ymin;y<=ymax;y++) {
       // position buffers at the beginning of the lines
@@ -343,7 +343,7 @@ void FastLocalMeanX_noborder( InrImage* in, InrImage* out,
   // 2*size+1 needs to be smaller than the extent in X !!
   // now need to go line by line
   int x,y,z;
-  T sum;
+  double sum;
   for (z=zmin;z<=zmax;z++) {
     for (y=ymin;y<=ymax;y++) {
       // position buffers at the beginning of the lines
@@ -410,7 +410,7 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
   // now need to go line by line
   int x,y,z;
   unsigned short incy = in->DimX(); // limit to approx. 64000 dim in X
-  boost::scoped_array<float> sum(new float[incy]);
+  boost::scoped_array<double> sum(new double[incy]);
 
   for (z=zmin;z<=zmax;z++) {
     // initialize sums
@@ -535,11 +535,11 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
   // ensure multiple of 4 to help alignment of the beginning of each line
   line_size = floor((double)((line_size+3.0)/4.0))*4;
   //cout << "line_size = " << line_size << std::endl;
-  float** sum;
+  double** sum;
   // allocation of sum
-  sum = new float*[dy];
+  sum = new double*[dy];
   for(int k=0;k<dy;k++) {
-	sum[k] = new float[line_size];
+	sum[k] = new double[line_size];
   }
 
   for(y=ymin;y<=ymax;y++)
@@ -549,7 +549,7 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
   for(i=0;i<d;i++) {
     in_buf = (float*) in->BufferPtr(0,ymin,zmin+i);
     for(y=ymin;y<=ymax;y++) {
-      float* sum1 = sum[y];
+      double* sum1 = sum[y];
       for(x=xmin;x<=xmax;x++) *sum1++ += in_buf[x];
       in_buf += dx;
     } // y
@@ -559,7 +559,7 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
 
   // set values at zmin+size
   for(y=ymin;y<=ymax;y++) {
-    float* sum1      = sum[y];
+    double* sum1      = sum[y];
     for(x=xmin;x<=xmax;x++)  vres_buf[x] = *sum1++;
     vres_buf += dx; // point to the beginning of next line
   } // y
@@ -575,7 +575,7 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
     vres_buf = (float*)out->BufferPtr(0,ymin,z);
 
     for(y=ymin;y<=ymax;y++) {
-      float* sum1      = sum[y];
+      double* sum1      = sum[y];
       short xmax1=xmax-stepsize;
       unsigned char ns;
       x = xmin;
@@ -652,8 +652,8 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
   unsigned int dxy = dx*dy;
 
   int line_size = xmax-xmin+1;
-  boost::scoped_array<float> sum(new float[line_size]);
-  float* sum1;
+  boost::scoped_array<double> sum(new double[line_size]);
+  double* sum1;
 
   for(y=ymin;y<=ymax;y++) {
 
@@ -750,7 +750,7 @@ void FastLocalSumX( InrImage* in, InrImage* out,
   //T*        bufmin[stepsize];
   //T*        bufmax[stepsize];
   register boost::scoped_array<T*> res_buf(new T*[stepsize]);
-  register boost::scoped_array<float> sum(new float[stepsize]);
+  register boost::scoped_array<double> sum(new double[stepsize]);
   //register T*        res_buf[stepsize];
   //register float     sum[stepsize];
   //int       num_values;
@@ -925,7 +925,7 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
   T*        bufmax;
   register T*        res_buf;
 
-  register boost::scoped_array<float> sum(new float[stepsize]);
+  register boost::scoped_array<double> sum(new double[stepsize]);
   //register float    sum[stepsize]; // compute 4 sums in parallel
 
   register unsigned char ns;

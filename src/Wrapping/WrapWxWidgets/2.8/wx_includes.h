@@ -1,19 +1,15 @@
 
 #pragma once
 
+#include "wx_includes_common.h"
+
 //#include "wrapfunction_class.h"
 //#include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
-#include "wxAmiEventHandler.h"
 #include "wxPluginManager.h"
 #include <wx/wx.h>
-#include <wx/aboutdlg.h>
-#include <wx/app.h>
-#include <wx/arrstr.h>
-#include <wx/artprov.h> 
-#include <wx/aui/aui.h>
 #include <wx/choice.h>
 #include <wx/cmdline.h>
 #include <wx/config.h>
@@ -22,25 +18,18 @@
 #include <wx/event.h>
 #include <wx/fileconf.h>
 #include <wx/filename.h>
-#include <wx/ffile.h>
-#include <wx/grid.h>
 #include <wx/html/htmlwin.h>
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
 #include <wx/panel.h>
 #include <wx/radiobox.h>
-#include <wx/regex.h> 
 #include <wx/richtext/richtextctrl.h>
 #include <wx/richtext/richtextstyles.h>
-#include <wx/slider.h>
 #include <wx/splitter.h>
 #include <wx/stc/stc.h>
 #include <wx/stdpaths.h>
 #include <wx/statline.h>
 #include <wx/dcclient.h>
-#include <wx/stattext.h>
-#include <wx/tipdlg.h>
-#include <wx/platinfo.h>
 
 #include <wx/filefn.h>
 //----- Dialog functions

@@ -15,7 +15,7 @@
 
 //icons
 #include "wx/artprov.h"
-
+#include "xmtext.hpp"
 #include "MainFrame.h"
 
 #include "AMILabConfigure.h"
