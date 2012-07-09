@@ -156,7 +156,10 @@ class TypedefInfo(ArgTypeBase):
     if self._reftypeid in config.types.keys():
       #print config.types[self._reftypeid].GetString()
       # if member typedef (or function), keep the typedef name
-      if config.types[self._reftypeid].GetString()=="__MethodType__":
+      #print "*** {0}".format(self._name)
+      maintyperef = config.types[self._reftypeid].GetMainTypeId()
+      if config.types[maintyperef].GetType()=="MethodType":
+        #print "*** returning '{0}'".format(self._name)
         typename=self._name
       else:
         typename=config.types[self._reftypeid].GetString()
@@ -169,7 +172,8 @@ class TypedefInfo(ArgTypeBase):
     if self._reftypeid in config.types.keys():
       #print config.types[self._reftypeid].GetString()
       # if member typedef (or function), keep the typedef name
-      if config.types[self._reftypeid].GetString()=="__MethodType__":
+      maintyperef = config.types[self._reftypeid].GetMainTypeId()
+      if config.types[maintyperef].GetType()=="MethodType":
         typename=self._name
       else:
         typename=config.types[self._reftypeid].GetFullString()
@@ -179,16 +183,26 @@ class TypedefInfo(ArgTypeBase):
 
   def GetMainTypeId(self):
     if self._reftypeid in config.types.keys():
-      return config.types[self._reftypeid].GetId()
+      maintyperef = config.types[self._reftypeid].GetMainTypeId()
+      # Do an exception for MethodType ...
+      if config.types[maintyperef].GetType()=="MethodType":
+        return self.GetId()
+      else:
+        return maintyperef
     else:
       return self.GetId()
 
   def GetDemangled(self):
-    if self._reftypeid in config.types.keys():
-      typename=config.types[self._reftypeid].GetDemangled()
+    maintyperef = config.types[self._reftypeid].GetMainTypeId()
+    if config.types[maintyperef].GetType()=="MethodType":
+      typename = self._name
     else:
-      typename=self._reftypeid
+      if self._reftypeid in config.types.keys():
+        typename=config.types[self._reftypeid].GetDemangled()
+      else:
+        typename=self._reftypeid
     return typename
+
 
 #------------------------------
 class StructInfo(ArgTypeBase):
@@ -255,6 +269,7 @@ class ArrayTypeInfo(ArgTypeBase):
     else:
       typename=self._reftypeid
     return typename
+
 #------------------------------
 class MethodTypeInfo(ArgTypeBase):
   def __init__(self):
@@ -263,7 +278,8 @@ class MethodTypeInfo(ArgTypeBase):
     self.const="0"
   
   def GetString(self):
-    return "__MethodType__"
+    # return "__MethodType__"
+    return self._name
 
   def SetConst(self,v):
     self.const = v
