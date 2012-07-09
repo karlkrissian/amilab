@@ -241,6 +241,9 @@ public:
 
   virtual ~amimage();
 
+  SCANORDER GetScanOrder()       { return scanorder; }
+  void SetScanOrder(SCANORDER s) { scanorder = s; }
+  
   void SetRepres(AMI_REPRES r) { repres = r; }
 
   AMI_REPRES GetRepres() { return repres; }

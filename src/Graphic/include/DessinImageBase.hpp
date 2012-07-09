@@ -490,6 +490,15 @@ int        _nb_images_XY;
    int       _bottom_axe_height;
    int       _right_axe_width;
 
+/** @name Flip image
+ */
+//@{
+    bool _flip_x;
+    bool _flip_y;
+    bool _flip_z;
+//@}
+    
+   
 /** @name facteurs d'aggrandissement en x , y et z
  */
 //@{
@@ -599,9 +608,10 @@ protected:
 */
 
   ///
-  void AfficheImage( int id_image);
+  void AfficheImage( int id_image, bool fx=false, bool fy=false);
   //   ------------
 
+  
   ///
 //  void EffaceImage( int id_image);
   //   -----------
@@ -724,6 +734,9 @@ public:
 
   ///
   ~DessinImageBase();
+
+  bool GetFlipZ() { return _flip_z; }
+  void SetFlipZ( bool f) { _flip_z=f; }
 
   ///
   InrImage::ptr& GetImage() { return _image_initiale;}

@@ -395,7 +395,7 @@ void DessinImageBase :: AfficheImage( int pos_x, int pos_y)
 */
 
 //----------------------------------------------------------------
-void DessinImageBase :: AfficheImage( int id_image)
+void DessinImageBase :: AfficheImage( int id_image, bool fx, bool fy)
 //                      ------------
 {
   CLASS_MESSAGE("begin")
@@ -406,7 +406,9 @@ void DessinImageBase :: AfficheImage( int id_image)
 
   PutSlice( _tab_ximage_pos_x[id_image],
             _tab_ximage_pos_y[id_image],
-            _tab_slices[id_image].image);
+            _tab_slices[id_image].image,
+            fx, fy
+          );
 
   CLASS_MESSAGE("end")
 } // AfficheImage()

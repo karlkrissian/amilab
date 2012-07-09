@@ -120,6 +120,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
     ADD_CLASS_METHOD(SetUseMask,    "Enable/Disable mask image")
     ADD_CLASS_METHOD(SetMaskColor,  "Sets the mask color")
     ADD_CLASS_METHOD(CursorToImage, "Gets the image position based on the cursor")
+    ADD_CLASS_METHOD(FlipZ,         "Flips Z direction")
 
     void AddMethods(WrapClass<DessinImage>::ptr this_ptr )
     {
@@ -173,6 +174,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
       AddVar_SetUseMask(            this_ptr);
       AddVar_SetMaskColor(          this_ptr);
       AddVar_CursorToImage(         this_ptr);
+      AddVar_FlipZ(                 this_ptr);
       
       // Adding Bases
 //       WrapClass_FenetreDessin::ptr parent_obj(

@@ -3001,6 +3001,10 @@ void DessinImage::InitParametres()
   _within_animation = false;
 
 
+  _flip_x = false;
+  _flip_y = false;
+  _flip_z = false;
+  
 } // InitParametres()
 
 
@@ -4857,14 +4861,14 @@ void DessinImage::Paint( unsigned char affiche)
 
       Si Param._MAJ._planXY AlorsFait DessinePlanZ();
       Si Non(_MIP_stereo_lunettes) Alors
-        AfficheImage( IMAGE_XY);
+        AfficheImage( IMAGE_XY,_flip_x,_flip_y);
       FinSi
 
     Sinon
       Si (Param._type_coupe+1) & (TYPE_COUPE_XY+1) Alors
           if (Param._MAJ._planXY) DrawSlice(IMAGE_XY);
           Si Param._MAJ._planXY Ou affiche Alors
-            AfficheImage( IMAGE_XY);
+            AfficheImage( IMAGE_XY,_flip_x,_flip_y);
             DessineAxesXY();
           FinSi
       FinSi
@@ -4872,7 +4876,7 @@ void DessinImage::Paint( unsigned char affiche)
       Si (Param._type_coupe+1) & (TYPE_COUPE_XZ+1) Alors
           if (Param._MAJ._planXZ) DrawSlice(IMAGE_XZ);
           Si Param._MAJ._planXZ Ou affiche Alors
-            AfficheImage( IMAGE_XZ);
+            AfficheImage( IMAGE_XZ,_flip_x,_flip_z);
             DessineAxesXZ();
           FinSi
       FinSi
@@ -4880,7 +4884,7 @@ void DessinImage::Paint( unsigned char affiche)
       Si (Param._type_coupe+1) & (TYPE_COUPE_ZY+1) Alors
           if (Param._MAJ._planZY) DrawSlice(IMAGE_ZY);
           Si Param._MAJ._planZY Ou affiche Alors
-            AfficheImage( IMAGE_ZY);
+            AfficheImage( IMAGE_ZY,_flip_z,_flip_y);
             DessineAxesZY();
           FinSi
       FinSi
@@ -5096,7 +5100,7 @@ void DessinImage::UpdateAnimation()
       p->UpdateParameter(p->_id_planZ);
     
       DessinePlanZ();
-      AfficheImage( IMAGE_XY);
+      AfficheImage( IMAGE_XY,_flip_x,_flip_y);
       DrawingAreaDisplay();
 
       Param._MAJ._planXY = true;

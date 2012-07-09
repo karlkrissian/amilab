@@ -1518,3 +1518,19 @@ BasicVariable::ptr WrapClass_DessinImage::
 }
 
 
+//---------------------------------------------------
+//  FlipZ
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_FlipZ::SetParametersComments() 
+{
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_FlipZ::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  di->SetFlipZ(!di->GetFlipZ());
+  return BasicVariable::ptr();
+}
+

@@ -60,6 +60,14 @@ Class alEnum \
   }
 
   #-----------------------------------------------------------------------------
+  proc ::OnCallback( ) \
+  {
+    if exists(::callback) {
+      ::callback()
+    }
+  }
+
+  #-----------------------------------------------------------------------------
   proc ::OnRadioBox( ) \
   {
     ::var = ::rb.GetSelection()
@@ -90,6 +98,7 @@ Class alEnum \
       for n=0 to ::names.size()-1 {
         win.AddEnumChoice(enum_id,::names[n])
       }
+      win.SetCallback(::OnCallback)
       return=enum_id
     }
     if ::gui_mode == 1 {

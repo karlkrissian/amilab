@@ -22,7 +22,7 @@ class FindTypesAndVariables(handler.ContentHandler):
   #---------------------------------------------
   def __init__(self,class_list):
     self.class_list = class_list
-    self.parse_public_members = wrap_class.ParsePublicMembers(class_list)
+    #self.parse_public_members = wrap_class.ParsePublicMembers(class_list)
     self.found=False
     self.number_of_libclasses=0 # classes that match the current library filter
     self.inenum  = False
@@ -112,14 +112,14 @@ class FindTypesAndVariables(handler.ContentHandler):
   #---------------------------------------------
   def startElement(self, name, attrs):
 
-    # first check for variable
+    # first check for Files
     if name == 'File':
       self.number_of_files = self.number_of_files + 1
       fileid = attrs.get('id', None)
       name   = attrs.get('name', None)
       config.files[fileid]=name
 
-    # first check for Files
+    # first check for variable
     if name in variablelist:
       name = attrs.get('name', None)
       if name == None: return
@@ -132,12 +132,12 @@ class FindTypesAndVariables(handler.ContentHandler):
     if self.ParseClass(name,attrs):
       return
     
-    # don't parse public members if only looking at the class hierarchy
-    if args.val.ancestors == []:
-      # Check for public members of user-given classes
-      if self.parse_public_members.startElement(name,attrs):
-        # if parsing has found the right contexts, and there is nothing else to process
-        return
+    ## don't parse public members if only looking at the class hierarchy
+    #if args.val.ancestors == []:
+      ## Check for public members of user-given classes
+      #if self.parse_public_members.startElement(name,attrs):
+        ## if parsing has found the right contexts, and there is nothing else to process
+        #return
     
     # don't parse enums if only looking at the class hierarchy
     if args.val.ancestors == []:
@@ -164,6 +164,10 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # Look for the title and number attributes (see text)
     id = attrs.get('id', None)
+    if id=="_3252c":
+      print "*** Found"
+    #if name=="CvQualifiedType":
+      #print "id = {0}".format(id)
     self.argtype.SetId(id)
     config.types[id] = self.argtype
 
@@ -204,6 +208,26 @@ class FindTypesAndVariables(handler.ContentHandler):
     if (self.inclass==True) and (name =="Class"):
       #print self.argtype.bases
       self.inclass=False
+    #if args.val.ancestors == []:
+      #self.parse_public_members.endElement(name)
+
+
+#-------------------------------------------------------------------------------
+class FindPublicMembers(handler.ContentHandler):
+  #---------------------------------------------
+  def __init__(self,class_list):
+    self.parse_public_members = wrap_class.ParsePublicMembers(class_list)
+    self.found=False
+  #---------------------------------------------
+  def startElement(self, name, attrs):
+    # don't parse public members if only looking at the class hierarchy
+    if args.val.ancestors == []:
+      # Check for public members of user-given classes
+      if self.parse_public_members.startElement(name,attrs):
+        # if parsing has found the right contexts, and there is nothing 
+        # else to process
+        return
+  #-------------------------------------------------------
+  def endElement(self, name):
     if args.val.ancestors == []:
       self.parse_public_members.endElement(name)
-

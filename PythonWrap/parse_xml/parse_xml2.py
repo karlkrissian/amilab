@@ -282,11 +282,21 @@ if __name__ == '__main__':
 
     print config.parsed_classes
     
+    print "*** Find types and variables"
     ft = findtypesvars.FindTypesAndVariables(config.parsed_classes)
     parser.setContentHandler(ft)
     # Parse the input
     inputfile.seek(0)
     parser.parse(inputfile)
+    print "*** Find types and variables end"
+
+    print "*** Find public members"
+    fpm = findtypesvars.FindPublicMembers(config.parsed_classes)
+    parser.setContentHandler(fpm)
+    # Parse the input
+    inputfile.seek(0)
+    parser.parse(inputfile)
+    print "*** Find public members end"
     
     saveconf = open(args.val.outputdir+"/saveconfig.dat","w")
     pickle.dump(config.types,saveconf,-1)

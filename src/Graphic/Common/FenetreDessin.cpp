@@ -743,7 +743,10 @@ void FenetreDessin::PlaceImage( int pos_x, int pos_y, XImage* ximage )
 //---------------------------------------------------------------------
 void  FenetreDessin::PutSlice(  int pos_x, int pos_y, 
 //                   --------
-                                const wxImage_ptr& slice)
+                                const wxImage_ptr& slice,
+                                bool flip_x, 
+                                bool flip_y
+                             )
 {
   if (!_bitmap) {
     std::cerr << "FenetreDessin::PutSlice() _bitmap not allocated " << std::endl;
@@ -754,17 +757,34 @@ void  FenetreDessin::PutSlice(  int pos_x, int pos_y,
     return;
   }
   //_memory_dc->SelectObject(*_bitmap);
-  wxBitmap bitmap(*slice);
-  _memory_dc->DrawBitmap( bitmap,
-                          (wxCoord)pos_x,
-                          (wxCoord)pos_y );
-  // Draw a rectangle outside?
-  SetPenColor( *wxBLACK);
-  FixeStyleRemplissage(wxTRANSPARENT);
-  SetLineParameters(1,PENSTYLE_SOLID);
-  Rectangle((wxCoord)pos_x,(wxCoord)pos_y,
-            (wxCoord)pos_x+bitmap.GetWidth(),
-            (wxCoord)pos_y+bitmap.GetHeight());
+  if (flip_x||flip_y) {
+    wxImage im(*slice);
+    if (flip_x) im = im.Mirror();
+    if (flip_y) im = im.Mirror(false);
+    wxBitmap bitmap(im);
+    _memory_dc->DrawBitmap( bitmap,
+                            (wxCoord)pos_x,
+                            (wxCoord)pos_y );
+    // Draw a rectangle outside?
+    SetPenColor( *wxBLACK);
+    FixeStyleRemplissage(wxTRANSPARENT);
+    SetLineParameters(1,PENSTYLE_SOLID);
+    Rectangle((wxCoord)pos_x,(wxCoord)pos_y,
+              (wxCoord)pos_x+bitmap.GetWidth(),
+              (wxCoord)pos_y+bitmap.GetHeight());
+  } else {
+    wxBitmap bitmap(*slice);
+    _memory_dc->DrawBitmap( bitmap,
+                            (wxCoord)pos_x,
+                            (wxCoord)pos_y );
+    // Draw a rectangle outside?
+    SetPenColor( *wxBLACK);
+    FixeStyleRemplissage(wxTRANSPARENT);
+    SetLineParameters(1,PENSTYLE_SOLID);
+    Rectangle((wxCoord)pos_x,(wxCoord)pos_y,
+              (wxCoord)pos_x+bitmap.GetWidth(),
+              (wxCoord)pos_y+bitmap.GetHeight());
+  }
   FixeStyleRemplissage(PENSTYLE_SOLID);
   
 

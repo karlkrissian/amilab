@@ -64,9 +64,10 @@ if (!exists(vtkXYPlotClass)) {
       }
     
       # Add multiple line plots, setting the colors etc
-      del ::chart
-      ::chart = vtk.vtkChartXY.New()
-      ::view.GetScene().AddItem(&::chart)
+      if (!exists(::chart)) {
+        ::chart = vtk.vtkChartXY.New()
+        ::view.GetScene().AddItem(&::chart)
+      }
       line = ::chart.AddPlot(vtk.vtkChart.LINE)
       line.SetInput_3(&::table, 0, 1)
       line.SetColor(0, 255, 0, 255)

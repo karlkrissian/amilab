@@ -263,7 +263,8 @@ public:
          unsigned char overwrite = false);
 
 //  void  PlaceImage( int pos_x, int pos_y, XImage* ximage);
-  void  PutSlice( int pos_x, int pos_y, const wxImage_ptr& slice);
+  void  PutSlice( int pos_x, int pos_y, const wxImage_ptr& slice,
+                  bool flip_x=false, bool flip_y=false  );
 
   void  EffaceEcran( unsigned char expose);
   void  EffaceRegion( int h, int g, int b, int d, unsigned char expose);

@@ -233,6 +233,7 @@ class MethodInfo:
     self.static="0"
     self.deprecated=False
     self.demangled=""
+    self.converter=False
 
   def GetDescription(self,classname,constructor=False):
     res=''
@@ -330,6 +331,7 @@ class PublicMembers:
     self.Constructors=[]
     self.StaticMethods=[]
     self.OperatorMethods=[]
+    self.Converters=[]
     self.Fields=[]
     self.Typedefs=[]
     self.Enumerations=[]
@@ -354,10 +356,12 @@ class GlobalMembers:
 # Store Class information
 class ParsePublicMembers:
   def __init__(self, class_list):
+    print "*** ParsePublicMembers __init__"
     self.class_list = class_list
     self.found=False
     self.inmethod=0
-    self.available_methods=['Method','Constructor','Destructor','OperatorMethod']
+    self.available_methods=['Method','Constructor','Destructor',\
+                            'OperatorMethod','Converter']
     self.inenum=False
 
   #---------------------------------------------
@@ -425,6 +429,24 @@ class ParsePublicMembers:
         self.method.usedname=config.available_operators[mname]+methodindex
       else:
         self.method.usedname="operator not available"
+
+  #---------------------------------------------
+  def CheckConverterName(self,method):
+    # need to create method convertor usedname
+    maintypeid = config.types[method.returntype].GetMainTypeId()
+    returntypest = config.types[maintypeid].GetString()
+    
+    if returntypest in typesubst.type_substitute.keys():
+      substtype=typesubst.type_substitute[returntypest]
+      opname = typesubst.GetShortName(substtype)
+    else:
+      opname = typesubst.GetShortName(returntypest)
+
+    self.method.usedname = "convert_"+opname
+    self.method.usedname = self.method.usedname.replace('*','')
+    self.method.usedname = self.method.usedname.replace(' ','_')
+    print "*** usedname = {0}".format(method.usedname)
+    print "*** CheckConverterName --> {0}\n".format(self.method.usedname)
 
   #---------------------------------------------
   # Note: could be simplified since we don't need perfect default values anymore
@@ -603,6 +625,9 @@ class ParsePublicMembers:
       self.public_members.Constructors.append(self.method)
     if name=='OperatorMethod':
       self.public_members.OperatorMethods.append(self.method)
+    if name=='Converter':
+      self.method.converter=True
+      self.public_members.Converters.append(self.method)
     if name=='Destructor':
       self.public_members.destructor = self.method
       
@@ -614,6 +639,8 @@ class ParsePublicMembers:
     if (self.inmethod==1) and (name in self.available_methods):
       if name=='OperatorMethod':
         self.CheckOperatorMethodName(self.method)
+      if name=='Converter':
+        self.CheckConverterName(self.method)
       self.inmethod=0
     if (self.inenum==True) and (name=="Enumeration"):
       self.inenum=False
@@ -750,14 +777,19 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
         # operator without arguments: put it in front
         methodcall = '{0} (*{1})'.format(method.name,obj_ptr)
     else:
-      if method.static=="1":
-        methodcall = "{0}::{1}".format(classname,method.name)
+      if method.converter:
+        methodcall = '({0}) *{1}'.format(\
+                      config.types[method.returntype].GetFullString(),\
+                      obj_ptr)
       else:
-        if classname!="":
-          methodcall = '{0}->{1}'.format(obj_ptr,method.name)
+        if method.static=="1":
+          methodcall = "{0}::{1}".format(classname,method.name)
         else:
-          methodcall = '{0}'.format(method.name)
-      methodcall += methodparams;
+          if classname!="":
+            methodcall = '{0}->{1}'.format(obj_ptr,method.name)
+          else:
+            methodcall = '{0}'.format(method.name)
+        methodcall += methodparams;
     
     # not in constructor and returning void
     if returntypest=="void":
@@ -1046,7 +1078,7 @@ def WrapClass(classname,include_file,inputfile):
   if (args.val.profile):
     t0 = time.clock()
     #print "\n**************"
-    #print "\n   Wrapping: {0}".format(classname)
+    print "\n   Wrapping: {0}".format(classname)
     #print "             **************"
     #print "WrapClass({0},{1},{2})".format(classname,include_file,inputfile)
   parser = make_parser()
@@ -1075,12 +1107,14 @@ def WrapClass(classname,include_file,inputfile):
     #print "args.val.classes is ",config.parsed_classes
 
     if classname not in config.parsed_classes:
+      print "*** Find Public Members"
       fpm = FindPublicMembers([classname])
       # Tell the parser to use our handler
       parser.setContentHandler(fpm)
       # Parse the input
       inputfile.seek(0)
       parser.parse(inputfile)
+      print "*** Find Public Members end"
     #else:
       #print "Is part of args.val.classes"
     
@@ -1364,7 +1398,7 @@ def WrapClass(classname,include_file,inputfile):
     #print "\nEnd: {0}\n".format(classname)
     #print "Done"
         
-        
+    # Operators
     if len(fm.OperatorMethods)>0:
       class_decl+=indent+"// Operators:\n"
     pos = 0
@@ -1390,6 +1424,25 @@ def WrapClass(classname,include_file,inputfile):
       pos = pos + 1
     class_decl+='\n'
 
+    # Converters
+    if len(fm.Converters)>0:
+      class_decl+=indent+"// Converters:\n"
+    pos = 0
+    for m in fm.Converters:
+      missingtypes = MissingTypes(classname,m)
+      m.iswrapped=(missingtypes=="")
+      if missingtypes!="":
+        class_decl+= "/* The following types are missing: "+missingtypes+"\n"
+        fm.Converters[pos].missingtypes=True
+      class_decl+=indent+'{0}('.format(method_macro)+m.usedname+',\
+          "{0} ({1})")\n'.format(\
+          m.GetDescription(classname,False),\
+          WxHelpLink(classname,m))
+      if missingtypes!="":
+        class_decl += "*/\n"
+      pos = pos + 1
+    class_decl+='\n'
+
     # step 2:
     add_var_all='\n'
     indent ="  "
@@ -1401,6 +1454,19 @@ def WrapClass(classname,include_file,inputfile):
 
     add_var_all+=indent+'// Adding standard methods \n'
     for m in fm.Methods:
+      missingtypes = MissingTypes(classname,m)
+      if missingtypes!="":
+        add_var_all += "/* The following types are missing: "+missingtypes+"\n"
+      if m.usedname in config.ami_tokens.values():
+        add_var_all += indent+'AddVar_{0}( this_ptr,"_{0}"); // it is a language token\n'.format(m.usedname)
+      else:
+        add_var_all += indent+'AddVar_'+m.usedname+'( this_ptr);\n'
+      if missingtypes!="":
+        add_var_all += "*/\n"
+    add_var_all += '\n'
+
+    add_var_all+=indent+'// Adding Converters \n'
+    for m in fm.Converters:
       missingtypes = MissingTypes(classname,m)
       if missingtypes!="":
         add_var_all += "/* The following types are missing: "+missingtypes+"\n"
@@ -1728,6 +1794,18 @@ def WrapClass(classname,include_file,inputfile):
       else:
         impl += ImplementMethodWrap(classname,m,False,methodcount,args.val.light)
       if (missingtypes!="") or (m.usedname=="operator not available"):
+        impl += "*/\n"
+        
+    # Converters
+    for m in fm.Converters:
+      missingtypes = MissingTypes(classname,m,True)
+      if missingtypes!="":
+        impl += "/*\n"
+      if missingtypes!="":
+        impl += " * The following types are missing: "+missingtypes+"\n"
+      methodcount=fm.OperatorMethodNames.count(m.name)
+      impl += ImplementMethodWrap(classname,m,False,methodcount,args.val.light)
+      if missingtypes!="":
         impl += "*/\n"
         
     # in place replace TEMPLATE by classname
