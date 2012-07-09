@@ -464,12 +464,16 @@ if (!exists(LevelSetsClass)) {
             ::initial_name = "::initial_name"
             ::win.Update(-1)
           }
+          minin = min(::inls)
+          maxin = max(::inls)
+          ::win.FloatConstraints(::initim_threshold_id,\
+                                    minin,maxin,(minin+maxin)/2)
           ::inls = ::inls-::params.initial_image_threshold
           ::ComputeIntensityStats()
         } else {
           ::inls <<= ::input*0-1
         }
-    
+   
         ::inls0 <<= ::inls
         ::viewer.SetIsoContour(::isocontour_index,&::inls,0)
         ::viewer.DrawIsoContour(::isocontour_index,1)
@@ -1014,7 +1018,9 @@ if (!exists(LevelSetsClass)) {
                   ::win.AddButton("Load",::load_initial)
                   ::win.AddButton("Ref",::ref_initial)
                 ::win.EndHorizontal()
-                ::win.AddFloat(::params.initial_image_threshold,"threshold",-10,10)
+                ::initim_threshold_id = ::win.AddFloat(\
+                                            ::params.initial_image_threshold,\
+                                            "threshold",-10,10)
             ::win.EndBook()
     
           #::win.EndBoxPanel

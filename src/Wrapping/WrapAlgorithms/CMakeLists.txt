@@ -134,12 +134,15 @@ IF(AMI_ENABLE_WRAPPING)
   # Generating the classes, functions, etc...  lists
   #------------------------------------------------------------
 
+  SET(WRAPPING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
   # Read list of classes to wrap
   READ_CLASSES(
     "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"
   ) 
   #FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt" classes_txt)
   #STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+  READ_FUNCTIONS("${CMAKE_CURRENT_SOURCE_DIR}/functions.txt")
 
   #------------------------------------------------------------
   # Generating and reading ancestors
@@ -171,6 +174,7 @@ IF(AMI_ENABLE_WRAPPING)
   # Wrap all missing classes at once since it is now fast
   #CHECK_WRAPPED_FILES( "${ancestors_list}"       "MISSING_CLASSES")
   UPDATE_OUTPUT_LIST( "${ancestors_list}"  )
+  UPDATE_OUTPUT_LIST( "${functions_list}"  )
 
 #   # Wrap all classes at once since it is now fast
 #   FOREACH( class ${ancestors_list})
@@ -205,11 +209,11 @@ IF(AMI_ENABLE_WRAPPING)
 ENDIF(AMI_ENABLE_WRAPPING)
 
 
-FOREACH( class ${ancestors_list}) #${compilation_list}  ) 
+FOREACH( class ${ancestors_list} ${functions_list}  ) 
   ClassUsedName( class m_class )
   SET( WrapAlgorithms_HDRS ${GENERATED_DIR}/wrap_${m_class}.h ${WrapAlgorithms_HDRS})
   SET( WrapAlgorithms_SRCS ${GENERATED_DIR}/wrap_${m_class}.cpp ${WrapAlgorithms_SRCS})
-ENDFOREACH( class ${ancestors_list}  ) 
+ENDFOREACH( class ${ancestors_list}  ${functions_list}) 
 SET( WrapAlgorithms_HDRS ${GENERATED_DIR}/addwrap_algorithms.h   ${WrapAlgorithms_HDRS})
 SET( WrapAlgorithms_SRCS ${GENERATED_DIR}/addwrap_algorithms.cpp ${WrapAlgorithms_SRCS})
 

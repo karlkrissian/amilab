@@ -40,6 +40,10 @@ ami::AddImageNoise
 # Reconstruction of tubes around lines
 ami::LineRecons
 
+# linear interpolator
+amimage
+ImageLinearInterpolator
+
 # try some graphics (should not be here ...)
 amilab::GLObject
 GLMaterialParam

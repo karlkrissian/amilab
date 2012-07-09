@@ -74,6 +74,7 @@ IF(AMI_ENABLE_WRAPPING)
   # Generating the classes, functions, etc...  lists
   #-----------------------------------------------------------------------------
   READ_CLASSES(  "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"  ) 
+  READ_FUNCTIONS("${CMAKE_CURRENT_SOURCE_DIR}/functions.txt")
 
   #-----------------------------------------------------------------------------
   # Generating and reading ancestors
@@ -88,6 +89,7 @@ IF(AMI_ENABLE_WRAPPING)
   # Wrap all missing classes at once since it is now fast
   #CHECK_WRAPPED_FILES( "${ancestors_list}"       "MISSING_CLASSES")
   UPDATE_OUTPUT_LIST( "${ancestors_list}"  )
+  UPDATE_OUTPUT_LIST( "${functions_list}"  )
 
   #-----------------------------------------------------------------------------
   # Create the rule that wraps the code
@@ -96,11 +98,11 @@ IF(AMI_ENABLE_WRAPPING)
 
 ENDIF(AMI_ENABLE_WRAPPING)
 
-FOREACH( class ${ancestors_list}) 
+FOREACH( class ${ancestors_list} ${functions_list}) 
   ClassUsedName( class m_class )
   SET( WrapCommon_HDRS ${GENERATED_DIR}/wrap_${m_class}.h ${WrapCommon_HDRS})
   SET( WrapCommon_SRCS ${GENERATED_DIR}/wrap_${m_class}.cpp ${WrapCommon_SRCS})
-ENDFOREACH( class ${ancestors_list}  ) 
+ENDFOREACH( class ${ancestors_list} ${functions_list}) 
 SET( WrapCommon_HDRS ${GENERATED_DIR}/addwrap_common.h   ${WrapCommon_HDRS})
 SET( WrapCommon_SRCS ${GENERATED_DIR}/addwrap_common.cpp ${WrapCommon_SRCS})
 

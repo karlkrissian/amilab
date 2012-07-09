@@ -349,14 +349,16 @@ public:
       return *(T*)(buf+offset);
   }
 
+#ifndef __GCCXML__
   unsigned char CheckGenesisHeader(char* ptr, int slice, float corner[4][3]);
 
   void          GetTransfMatrix(float m[4][4])
   {
     for(int i=0;i<4;i++)
       for(int j=0;j<4;j++)
-	m[i][j] = TransfMatrix[i][j];
+        m[i][j] = TransfMatrix[i][j];
   }
+#endif
 
   unsigned char readheader(const char* filename);
 

@@ -285,8 +285,6 @@ int IM_WriteImage ( const char *name,
 
 
 
-
-
 /**
  Image Class, not templated
  */
@@ -1433,4 +1431,10 @@ inline void InrImage :: MinMax( float* min, float* max)
 
 } // MinMax()
 
+amimage* GetAMImage(InrImage::ptr im);
+// {
+//   return (amimage*) *im;
+// }
+        
+        
 #endif // _INRIMAGE_HPP

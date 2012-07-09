@@ -179,6 +179,11 @@ int InrImage::TailleFormat[NB_FORMATS]  = { 1,   // WT_UNSIGNED_CHAR
   fprintf(stderr,"Allocation of %03.2f Mb \n", 1.0*size*sizeof(type)/1000000);
 
 
+amimage* GetAMImage(InrImage::ptr im)
+{
+  return (amimage*) *im;
+}
+
 InrImage::DepassementLimites::DepassementLimites( const std::string message)
 {
   std::cout << "InrImage "

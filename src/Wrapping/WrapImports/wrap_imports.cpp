@@ -287,6 +287,7 @@ void AddWrapAlgorithms(AMIObject::ptr& obj)
 
   // Add classes to wx context
   wrap_algorithms_classes(amiobject->GetContext());
+  wrap_algorithms_functions(amiobject->GetContext());
 
   // Add wx context to builtin
   obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 

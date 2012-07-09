@@ -1,0 +1,217 @@
+
+func "Common/ScriptGui"
+
+del vtkActorClass
+
+Class vtkActorClass : public ScriptGui \
+{
+  
+  func "VTKControls/vtkProperty/vtkPropertyClass"
+  vtkPropertyClass ::vtk_front_property
+  vtkPropertyClass ::vtk_back_property
+
+  func "Variable/ObjectIO"
+  #===========================================================================
+  # Set parameters here
+  Class ::ParamClass : public ObjectIO {
+
+    ::description = "Default parameters", \
+                    "vtkActor parameters"
+    
+    ::visibility = UCHAR(1), "Actor visibility"
+    ::use_backface_property = UCHAR(0), "Enable backface property"
+
+    #-----------------------------------------------------------------------
+    # copy parameters
+    proc ::__assign__( VAR p) {
+    }
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::Init() {
+    
+    ::actor_name   = "","Name of the input vtkActor variable"
+
+    ::ParamClass ::params
+
+    #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+    # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+    ::html_filename = GetScriptsDir+\
+                      "/vtkActor/Doc/vtkActor/index.html"
+  }
+
+
+  #-----------------------------------------------------------------------------
+  proc ::SetCallback( VAR cb) {
+    del ::callback
+    ::callback = &cb
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::Update() \
+  {
+    ::vtk_front_property.Update()
+    ::vtk_back_property .Update()
+    printn "::use_backface_property %1% " % ::params.use_backface_property
+    ::win.EnablePanel(::backprop_id,::params.use_backface_property)
+    ::visibility = ::vtkactor.GetVisibility()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::UpdateVTK() \
+  {
+    if (exists(::vtkactor)) {
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetActor( OBJECT obj) \
+  {
+    if obj.IsA("vtkActor") {
+      del ::vtkactor
+      ::vtkactor = &obj
+
+      ::vtk_front_property.SetProperty(::vtkactor.GetProperty())
+      #::vtk_back_property. SetProperty(::vtkactor.GetProperty())
+      if (exists(::callback)) {
+        ::vtk_front_property.SetCallback(&::callback)
+        ::vtk_back_property. SetCallback(&::callback)
+      }
+
+      # Check if it has a back property
+      bp = ::vtkactor.GetBackfaceProperty()
+      has_bp= (language.WrapVariable(bp).GetTypeName()=="AMIObject")
+      printn "has_bp %1% " % has_bp
+      if (has_bp) {
+        ::params.use_backface_property=true
+        ::vtk_back_property. SetProperty(::vtkactor.GetBackfaceProperty())
+        if exists(::win) {
+          ::win.Update(-1)
+        }
+      }
+
+    } else {
+      InfoDialog "vtkActorClass.SetProperty(obj): wrong object type"
+    }
+
+    ::Update()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::ChangeProperty( ) \
+  {
+    ::UpdateVTK()
+      if (exists(::callback)) {
+        ::callback()
+      }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_Actor( ) \
+  {
+      eval "::SetActor(%1%);" % ::actor_name
+      ::Update()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_BackProp( ) \
+  {
+    if (exists(::vtkactor)) {
+      bp=::vtkactor.GetBackfaceProperty()
+      has_bp= (language.WrapVariable(bp).GetTypeName()=="AMIObject")
+      printn "has_bp %1%" % has_bp
+      if (::params.use_backface_property!=has_bp) {
+        if (::params.use_backface_property) {
+          # create a new vtkProperty
+          if (exists(::backfaceprop_bak)) {
+            ::vtkactor.SetBackfaceProperty(::backfaceprop_bak)
+          } else {
+            prop = vtk.vtkProperty.New()
+            prop.DeepCopy(::vtkactor.GetProperty())
+            ::vtkactor.SetBackfaceProperty(prop)
+            ::vtk_back_property. SetProperty(::vtkactor.GetBackfaceProperty())
+          }
+        } else {
+          # remove current vtkProperty?
+          ::backfaceprop_bak = ::vtkactor.GetBackfaceProperty()
+          ::vtkactor.SetBackfaceProperty(NULL)
+          ::vtk_back_property. SetProperty(::vtkactor.GetProperty())
+        }
+      }
+      ::Update()
+    } else {
+      InfoDialog "Choose the input actor first"
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_Visibility( ) \
+  {
+    ::vtkactor.SetVisibility(::params.visibility)
+  }
+
+  #-----------------------------------------------------------------------------
+  # create the gui on a ParamPanel
+  proc ::AddGui( OBJECT win) \
+  {
+    if (!exists(::win)) {
+      ::win = &win
+    }
+    win.BeginBoxPanel("vtkActor control")
+      win.AddBoolean(::params.visibility,"Visibility")
+      win.SetCallback(::CB_Visibility)
+      ::frontprop_id = ::vtk_front_property.AddGui(win)
+      win.AddBoolean(::params.use_backface_property,"Backface property")
+      win.SetCallback(::CB_BackProp)
+      ::backprop_id  = ::vtk_back_property. AddGui(win)
+    win.EndBoxPanel()
+  }
+
+
+  #---------------------------------------------------------------------------
+  proc ::Gui() {
+  
+    if (exists(::parent_panel)) {
+      ::win = ParamPanel("vtkActor",&::parent_panel)
+    } else {
+      ::win = ParamPanel("vtkActor")
+    }
+    
+    ::win.BeginBook()
+  
+      ::win.AddPage("Main")
+
+        # Select Property
+        ::win.AddAMIObjectChoice( &::actor_name, "", "vtkActor")
+        ::win.SetCallback(::CB_Actor)
+
+         # add gui
+        ::AddGui(::win)
+
+      # add page for saving/loading parameters
+      ::AddParamPage(&::win)
+
+      # add help page
+      if wx.wxFileName(::html_filename).FileExists() {
+        ::AddHelpPage(&::win)
+      }
+  
+    ::win.EndBook()
+  
+    ::AddStandardButtons(&::win)
+
+    if (exists(::parent_panel)) {
+      ::win.ShowPanel()
+    } else {
+      ::win.Display()
+    }
+    ::win.Update(-1)
+
+
+  }
+  ::Init()
+  
+}
+# End of class
+
