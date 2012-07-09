@@ -1,0 +1,145 @@
+
+func "Common/ScriptGui"
+
+if (!exists(vtkChartClass)) {
+
+  Class vtkChartClass : public ScriptGui \
+  {
+    
+    func "Variable/ObjectIO"
+    #===========================================================================
+    # Set parameters here
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+        ::show_legend = UCHAR(1), "Show legend"
+        ::title = "Title", "Chart title"
+
+
+        #-----------------------------------------------------------------------
+        # copy parameters
+        proc ::__assign__( VAR p) {
+          ::show_legend = p.show_legend
+        }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() \
+    {
+      ::ParamClass ::params
+      ::chart_name = ""
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+      ::html_filename = GetScriptsDir+\
+                        "/vtkChart/Doc/vtkPen/index.html"
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SetChart( OBJECT obj) \
+    {
+      if obj.IsA("vtkChart") {
+        del ::vtkchart
+        ::vtkchart = &obj
+      } else {
+        InfoDialog "vtkChartClass.SetChart(obj): wrong object type"
+      }
+
+      ::Update()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_Chart( ) \
+    {
+      eval "::SetChart(%1%);" % ::chart_name
+      ::Update()
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::Update() \
+    {
+      ::win.SetLabelValue(::nbplots_id,\
+                          "%1%" % ::vtkchart.GetNumberOfPlots())
+      ::win.SetLabelValue(::nbaxes_id,\
+                          "%1%" % ::vtkchart.GetNumberOfAxes())
+      ::params.show_legend = ::vtkchart.GetShowLegend()
+      ::params.title       = ::vtkchart.GetTitle().convert_string()
+      ::win.Update(-1)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_ShowLegend( ) \
+    {
+      if (exists(::vtkchart)) {
+        ::vtkchart.SetShowLegend(::params.show_legend)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_Title( ) \
+    {
+      if (exists(::vtkchart)) {
+        ::vtkchart.SetTitle(::params.title)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    # create the gui on a ParamPanel
+    proc ::AddGui( OBJECT win) \
+    {
+      if (!exists(::win)) {
+        ::win = &win
+      }
+      win.BeginBoxPanel("vtkChart control")
+        ::nbplots_id   = win.AddLabel("Number of Plots", "")
+        ::nbaxes_id    = win.AddLabel("Number of Axes", "")
+        win.AddBoolean(::params.show_legend,"Show Legend")
+        win.SetCallback(::CB_ShowLegend)
+        win.AddString(::params.title,"Title")
+        win.SetCallback(::CB_Title)
+      win.EndBoxPanel()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() \
+    {
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("vtkChart",&::parent_panel)
+      } else {
+        ::win = ParamPanel("vtkChart")
+      }
+      
+      ::win.BeginBook()
+        ::win.AddPage("Main")
+          # Select Chart
+          ::win.AddAMIObjectChoice( &::chart_name, "", "vtkChart")
+          ::win.SetCallback(::CB_Chart)
+          # add gui
+          ::AddGui(::win)
+        # add page for saving/loading parameters
+        ::AddParamPage(&::win)
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+      ::win.EndBook()
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+    }
+
+    #---------------------------------------------------------------------------
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

@@ -1,0 +1,11 @@
+
+func "vtkPenClass"
+
+if (!exists(vtkPen_obj)) {
+  vtkPenClass vtkPen_obj
+  vtkPen_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

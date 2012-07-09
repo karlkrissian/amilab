@@ -1,0 +1,11 @@
+
+func "vtkChartXYClass"
+
+if (!exists(vtkChartXY_obj)) {
+  vtkChartXYClass vtkChartXY_obj
+  vtkChartXY_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

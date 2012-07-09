@@ -1,0 +1,190 @@
+
+func "Common/ScriptGui"
+
+if (!exists(vtkPenClass)) {
+
+  Class vtkPenClass : public ScriptGui \
+  {
+    
+    func "Variable/ObjectIO"
+    #===========================================================================
+    # Set parameters here
+    Class ::ParamClass : public ObjectIO {
+
+        func "WxUtils/alEnum"
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+        ::color    = wx.wxColour(0,0,0)
+        ::opacity  = INT(255), "Opacity in [0,255]"
+        ::width    = 1, "Line width"
+
+        # ----- Shading interpolation mode
+        alEnum ::line_modes
+        ::line_modes.SetTitle("Line types")
+        ::line_modes.SetHelp("vtkPen line types")
+        ::line_modes.AddValue( "NO PEN",      "None")
+        ::line_modes.AddValue( "SOLID",       "Solid")
+        ::line_modes.AddValue( "DASH",        "Dash")
+        ::line_modes.AddValue( "DOT",         "Dot")
+        ::line_modes.AddValue( "DASH DOT",    "Dash dot")
+        ::line_modes.AddValue( "DASH DOT DOT","Dash dot dot")
+        ::line_mode = INT(1), ::line_modes.GetHelpMessage()
+        ::line_modes.SetVariable(&::line_mode)
+
+        #-----------------------------------------------------------------------
+        # copy parameters
+        proc ::__assign__( VAR p) {
+          ::color     = p.color
+          ::opacity   = p.opacity
+          ::line_mode = p.line_mode
+          ::width     = p.width
+        }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() \
+    {
+      ::ParamClass ::params
+      ::pen_name = ""
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+      ::html_filename = GetScriptsDir+\
+                        "/vtkPen/Doc/vtkPen/index.html"
+    }
+
+
+    #-----------------------------------------------------------------------------
+    proc ::Update() \
+    {
+      c = vector_double(3,0)
+      ::vtkpen.GetColorF(&c[0])
+      ::params.color.Set(c[0]*255,c[1]*255,c[2]*255)
+      ::params.opacity = ::vtkpen.GetOpacity()
+      ::params.width   = ::vtkpen.GetWidth()
+
+      ::params.line_mode = ::vtkpen.GetLineType()
+
+      ::win.Update(-1)
+
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        Infodialog "First load the input image !"
+      } else {
+        InfoDialog "Filtro fantastico :) !!!"
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SetColor( ) \
+    {
+      ::vtkpen.SetColor(::params.color.Red(),\
+                        ::params.color.Green(),\
+                        ::params.color.Blue())
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SetOpacity( ) \
+    {
+      ::vtkpen.SetOpacity(::params.opacity)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SetWidth( ) \
+    {
+      ::vtkpen.SetWidth(::params.width)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_LineMode( ) \
+    {
+      ::vtkpen.SetLineType(::params.line_mode)
+    }
+
+    #---------------------------------------------------------------------------
+    # create the gui on a ParamPanel
+    proc ::AddGui( OBJECT win) \
+    {
+      if (!exists(::win)) {
+        ::win = &win
+      }
+      win.BeginBoxPanel("vtkPen control")
+        ::color_id = win.AddColor("Color",&::params.color)
+        win.SetCallback(&::SetColor)
+        win.AddInt(&::params.opacity,"Opacity",0,255)
+        win.SetCallback(&::SetOpacity)
+        win.AddFloat(&::params.width,"Width",0,10)
+        win.SetCallback(&::SetWidth)
+
+        ::params.line_modes.SetGuiMode(0)
+        ::params.line_modes.AddGui(win)
+        ::params.line_modes.SetCallback(::CB_LineMode)
+      win.EndBoxPanel()
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::SetPen( OBJECT obj) \
+    {
+      if obj.IsA("vtkPen") {
+        del ::vtkpen
+        ::vtkpen = &obj
+      } else {
+        InfoDialog "vtkPenClass.SetPen(obj): wrong object type"
+      }
+
+      ::Update()
+    }
+
+    #-----------------------------------------------------------------------------
+    proc ::CB_Pen( ) \
+    {
+      eval "::SetPen(%1%);" % ::pen_name
+      ::Update()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() \
+    {
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("vtkPen",&::parent_panel)
+      } else {
+        ::win = ParamPanel("vtkPen")
+      }
+      
+      ::win.BeginBook()
+        ::win.AddPage("Main")
+          # Select Pen
+          ::win.AddAMIObjectChoice( &::pen_name, "", "vtkPen")
+          ::win.SetCallback(::CB_Pen)
+          # add gui
+          ::AddGui(::win)
+        # add page for saving/loading parameters
+        ::AddParamPage(&::win)
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+      ::win.EndBook()
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+    }
+
+    #---------------------------------------------------------------------------
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If
