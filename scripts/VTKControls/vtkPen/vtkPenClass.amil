@@ -21,7 +21,7 @@ if (!exists(vtkPenClass)) {
 
         # ----- Shading interpolation mode
         alEnum ::line_modes
-        ::line_modes.SetTitle("Line types")
+        ::line_modes.SetTitle("Line")
         ::line_modes.SetHelp("vtkPen line types")
         ::line_modes.AddValue( "NO PEN",      "None")
         ::line_modes.AddValue( "SOLID",       "Solid")
@@ -70,16 +70,6 @@ if (!exists(vtkPenClass)) {
     }
 
     #---------------------------------------------------------------------------
-    proc ::Run() \
-    {
-      if (!exists(::input)) {
-        Infodialog "First load the input image !"
-      } else {
-        InfoDialog "Filtro fantastico :) !!!"
-      }
-    }
-
-    #---------------------------------------------------------------------------
     proc ::SetColor( ) \
     {
       ::vtkpen.SetColor(::params.color.Red(),\
@@ -113,16 +103,18 @@ if (!exists(vtkPenClass)) {
         ::win = &win
       }
       win.BeginBoxPanel("vtkPen control")
-        ::color_id = win.AddColor("Color",&::params.color)
-        win.SetCallback(&::SetColor)
         win.AddInt(&::params.opacity,"Opacity",0,255)
         win.SetCallback(&::SetOpacity)
         win.AddFloat(&::params.width,"Width",0,10)
         win.SetCallback(&::SetWidth)
 
-        ::params.line_modes.SetGuiMode(0)
-        ::params.line_modes.AddGui(win)
-        ::params.line_modes.SetCallback(::CB_LineMode)
+        win.BeginHorizontal()
+          ::color_id = win.AddColor("Color",&::params.color)
+          win.SetCallback(&::SetColor)
+          ::params.line_modes.SetGuiMode(0)
+          ::params.line_modes.AddGui(win)
+          ::params.line_modes.SetCallback(::CB_LineMode)
+        win.EndHorizontal()
       win.EndBoxPanel()
     }
 

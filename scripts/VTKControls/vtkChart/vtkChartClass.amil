@@ -6,6 +6,12 @@ if (!exists(vtkChartClass)) {
   Class vtkChartClass : public ScriptGui \
   {
     
+    func "VTKControls/vtkPlot/vtkPlotClass"
+    vtkPlotClass ::plotctrl
+
+    func "VTKControls/vtkAxis/vtkAxisClass"
+    vtkAxisClass ::axisctrl
+
     func "Variable/ObjectIO"
     #===========================================================================
     # Set parameters here
@@ -30,6 +36,13 @@ if (!exists(vtkChartClass)) {
     {
       ::ParamClass ::params
       ::chart_name = ""
+
+      ::num_plots = INT(0),     "number of plots"
+      ::selected_plot = INT(0), "selected plot"
+
+      ::num_axes = INT(0),     "number of axes"
+      ::selected_axis = INT(0), "selected axis"
+
       #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
       # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
       ::html_filename = GetScriptsDir+\
@@ -60,12 +73,30 @@ if (!exists(vtkChartClass)) {
     #---------------------------------------------------------------------------
     proc ::Update() \
     {
+      # deal with plots
+      ::num_plots = ::vtkchart.GetNumberOfPlots()
+      if (::selected_plot>=::num_plots) { ::selected_plot = ::num_plots-1;  }
+      ::win.IntegerConstraints(::plot_id,0,::num_plots-1,::selected_plot)
+      if (::num_plots>0) {
+        ::plotctrl.SetPlot(::vtkchart.GetPlot(::selected_plot))
+      }
+
+      # del with axes
+      ::num_axes = ::vtkchart.GetNumberOfAxes()
+      if (::selected_axis>=::num_axes) { ::selected_axis = ::num_axes-1; }
+      ::win.IntegerConstraints(::axis_id,0,::num_axes-1,::selected_axis)
+      if (::num_axes>0) {
+        ::axisctrl.SetAxis(::vtkchart.GetAxis(::selected_plot))
+      }
+
       ::win.SetLabelValue(::nbplots_id,\
-                          "%1%" % ::vtkchart.GetNumberOfPlots())
+                          "%1%" % ::num_plots)
       ::win.SetLabelValue(::nbaxes_id,\
                           "%1%" % ::vtkchart.GetNumberOfAxes())
       ::params.show_legend = ::vtkchart.GetShowLegend()
       ::params.title       = ::vtkchart.GetTitle().convert_string()
+
+
       ::win.Update(-1)
     }
 
@@ -86,6 +117,22 @@ if (!exists(vtkChartClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::CB_SelectPlot( ) \
+    {
+      if (exists(::vtkchart)) {
+        ::plotctrl.SetPlot(::vtkchart.GetPlot(::selected_plot))
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_SelectAxis( ) \
+    {
+      if (exists(::vtkchart)) {
+        ::axisctrl.SetAxis(::vtkchart.GetAxis(::selected_axis))
+      }
+    }
+
+    #---------------------------------------------------------------------------
     # create the gui on a ParamPanel
     proc ::AddGui( OBJECT win) \
     {
@@ -93,13 +140,29 @@ if (!exists(vtkChartClass)) {
         ::win = &win
       }
       win.BeginBoxPanel("vtkChart control")
-        ::nbplots_id   = win.AddLabel("Number of Plots", "")
-        ::nbaxes_id    = win.AddLabel("Number of Axes", "")
-        win.AddBoolean(::params.show_legend,"Show Legend")
-        win.SetCallback(::CB_ShowLegend)
-        win.AddString(::params.title,"Title")
-        win.SetCallback(::CB_Title)
-      win.EndBoxPanel()
+        win.BeginHorizontal()
+          ::nbplots_id   = win.AddLabel("Plots:", "")
+          ::nbaxes_id    = win.AddLabel("Axes:", "")
+        win.EndHorizontal()
+        win.BeginHorizontal()
+          win.AddBoolean(::params.show_legend,"Legend")
+          win.SetCallback(::CB_ShowLegend)
+          win.AddString(::params.title,"Title")
+          win.SetCallback(::CB_Title)
+        win.EndHorizontal()
+        win.BeginBoxPanel("Plots")
+          ::plot_id = win.AddInt(::selected_plot,"Plot",0,::num_plots-1)
+          win.SetCallback(::CB_SelectPlot)
+          # Add Plot Gui
+          ::plotctrl.AddGui(::win)
+        win.EndBoxPanel()
+        win.BeginBoxPanel("Axes")
+          ::axis_id = win.AddInt(::selected_axis,"Axis",0,::num_axes-1)
+          win.SetCallback(::CB_SelectAxis)
+          # Add Axis Gui
+          ::axisctrl.AddGui(::win)
+        win.EndBoxPanel()
+        win.EndBoxPanel()
     }
 
     #---------------------------------------------------------------------------

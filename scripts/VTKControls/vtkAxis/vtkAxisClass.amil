@@ -1,0 +1,141 @@
+
+func "Common/ScriptGui"
+
+if (!exists(vtkAxisClass)) {
+
+  Class vtkAxisClass : public ScriptGui \
+  {
+    
+    func "Variable/ObjectIO"
+    #===========================================================================
+    # Set parameters here
+    Class ::ParamClass : public ObjectIO {
+
+        func "WxUtils/alEnum"
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+        ::minval        = 0,        "Axis minimum"
+        ::maxval        = 0,        "Axis maximum"
+        ::num_ticks     = INT(5),   "Number of ticks"
+        ::title         = "Title",  "Axis title"
+        ::logscale      = UCHAR(0), "Log scale"
+        ::gridvisible   = UCHAR(0), "Grid visible"
+        ::labelsvisible = UCHAR(0), "Labels visible"
+
+        #-----------------------------------------------------------------------
+        # copy parameters
+        proc ::__assign__( VAR p) {
+          ::minval        = p.minval
+          ::maxval        = p.maxval
+          ::num_ticks     = p.num_ticks
+          ::title         = p.title
+          ::logscale      = p.logscale
+          ::gridvisible   = p.gridvisible
+          ::labelsvisible = p.labelsvisible
+        }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() \
+    {
+      ::ParamClass ::params
+      ::axis_name = ""
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+      ::html_filename = GetScriptsDir+\
+                        "/vtkAxis/Doc/vtkAxis/index.html"
+    }
+
+
+    #-----------------------------------------------------------------------------
+    proc ::Update() \
+    {
+      ::params.title = ::vtkaxis.GetTitle().convert_string()
+      ::win.Update(-1)
+
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_Title( ) \
+    {
+      if (exists(::vtkaxis)) {
+        ::vtkaxis.SetTitle(::params.title)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    # create the gui on a ParamPanel
+    proc ::AddGui( OBJECT win) \
+    {
+      if (!exists(::win)) {
+        ::win = &win
+      }
+      win.BeginBoxPanel("vtkAxis control")
+        win.AddString(::params.title,"Title")
+        win.SetCallback(::CB_Title)
+      win.EndBoxPanel()
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::SetAxis( OBJECT obj) \
+    {
+      if obj.IsA("vtkAxis") {
+        del ::vtkaxis
+        ::vtkaxis = &obj
+      } else {
+        InfoDialog "vtkAxisClass.SetAxis(obj): wrong object type"
+      }
+
+      ::Update()
+    }
+
+    #-----------------------------------------------------------------------------
+    proc ::CB_Axis( ) \
+    {
+      eval "::SetAxis(%1%);" % ::axis_name
+      ::Update()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() \
+    {
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("vtkAxis",&::parent_panel)
+      } else {
+        ::win = ParamPanel("vtkAxis")
+      }
+      
+      ::win.BeginBook()
+        ::win.AddPage("Main")
+          # Select Pen
+          ::win.AddAMIObjectChoice( &::axis_name, "", "vtkAxis")
+          ::win.SetCallback(::CB_Pen)
+          # add gui
+          ::AddGui(::win)
+        # add page for saving/loading parameters
+        ::AddParamPage(&::win)
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+      ::win.EndBook()
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+    }
+
+    #---------------------------------------------------------------------------
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

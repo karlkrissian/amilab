@@ -1,0 +1,11 @@
+
+func "vtkAxisClass"
+
+if (!exists(vtkAxis_obj)) {
+  vtkAxisClass vtkAxis_obj
+  vtkAxis_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
