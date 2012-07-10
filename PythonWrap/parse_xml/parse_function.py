@@ -40,6 +40,7 @@ class FindFunction(handler.ContentHandler):
     self.duplicated   = False
     self.args         = []
     self.missingtypes = False
+    self.converter    = False
 
   #---------------------------------------------
   def CheckEnumDefault(self, default):
