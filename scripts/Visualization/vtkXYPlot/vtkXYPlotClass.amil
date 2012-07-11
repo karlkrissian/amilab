@@ -202,6 +202,21 @@ if (!exists(vtkXYPlotClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::CreateRenderer() \
+    {
+      ::renwin_interact1 = wxvtk.wxVTKRenderWindowInteractor(\
+                                ::panel, -1)
+      ::panel.GetSizer().Add( ::renwin_interact1, \
+                              wx.wxSizerFlags().Expand().Proportion(1))
+
+      ::view = vtk.vtkContextView.New()
+      ::view.SetInteractor(&::renwin_interact1)
+      #::view.SetInteractionModeTo2D()
+      ::renwin_interact1.UseCaptureMouseOn()
+      ::renwin_interact1.Enable(true)
+    }
+
+    #---------------------------------------------------------------------------
     proc ::CB_Detach() \
     {
       if (!exists(::plotframe)) {
@@ -232,7 +247,7 @@ if (!exists(vtkXYPlotClass)) {
       }
       ::is_attached=false
       ::renwin_interact2.Render()
-      ::renwin_interact1.Hide()
+      ::panel.Hide()
       ::win.Layout()
     }
 
@@ -245,7 +260,7 @@ if (!exists(vtkXYPlotClass)) {
         }
         ::is_attached=true
         ::plotframe.Hide()
-        ::renwin_interact1.Show()
+        ::panel.Show()
         ::win.Layout()
         ::renwin_interact1.Render()
       }
@@ -268,15 +283,17 @@ if (!exists(vtkXYPlotClass)) {
       }
       
         # add Drawing Window
-        d = ::win.CurrentParent()
-        ::renwin_interact1 = wxvtk.wxVTKRenderWindowInteractor(&d,-1)
-        ::renwin_interact1.SetMinSize(&wx.wxSize(100,200))
-        ::win.AddWidget(&::renwin_interact1,0)
-        ::view = vtk.vtkContextView.New()
-        ::view.SetInteractor(&::renwin_interact1)
-        #::view.SetInteractionModeTo2D()
-        ::renwin_interact1.UseCaptureMouseOn()
-        ::renwin_interact1.Enable(true)
+
+      #::win.BeginBook()
+      #::win.AddPage("")
+        # Create a panel with its sizer
+        ::panel = wx.wxPanel(::win.CurrentParent())
+        ::panel.SetMinSize(wx.wxSize(100,200))
+        ::panel.SetSizer(wx.wxBoxSizer(wx.wxVERTICAL))
+        ::win.AddWidget(::panel,0)
+      #::win.EndBook()
+        #::panel.Show()
+        #::panel.Update()
 
         #::renwin_interact2 = wxvtk.wxVTKRenderWindowInteractor(&d,-1)
         #interact = vtk.vtkXYPlotWidget.New()
@@ -325,8 +342,8 @@ if (!exists(vtkXYPlotClass)) {
       } else {
         ::win.Display()
       }
+      ::CreateRenderer()
       ::win.Update(-1)
-
 
     }
     ::Init()

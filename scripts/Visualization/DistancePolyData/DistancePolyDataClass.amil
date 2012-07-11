@@ -6,6 +6,9 @@ if (!exists(DistancePolyDataClass)) {
   Class DistancePolyDataClass : public ScriptGui \
   {
     
+    func "Visualization/vtkXYPlot/vtkXYPlotClass"
+    vtkXYPlotClass ::xyplot
+
     func "Variable/ObjectIO"
     #===========================================================================
     # Set parameters here
@@ -178,20 +181,26 @@ if (!exists(DistancePolyDataClass)) {
     proc ::Stats() \
     {
       printn "*** DIST1 ***"
-      printn min(::dist1)
-      printn max(::dist1)
+      d1min = min(::dist1)
+      d1max = max(::dist1)
+      printn d1min
+      printn d1max
       #func "Visualization/ImageHistogram/ImageHistogramGui.amil" // from menu
       printn "mean  = %1%" % mean(::dist1)
       printn "mean of abs = %1%" % mean(abs(::dist1))
       printn "RMS = %1%" %sqrt(mean(::dist1*::dist1))
+      ::histo1 = histo(::dist1,d1min,d1max,(d1max-d1min)/0.1)
 
       printn "*** DIST2 ***"
-      printn min(::dist2)
-      printn max(::dist2)
+      d2min = min(::dist2)
+      d2max = max(::dist2)
+      printn d2min
+      printn d2max
       #func "Visualization/ImageHistogram/ImageHistogramGui.amil" // from menu
       printn "mean  = %1%" % mean(::dist2)
       printn "mean of abs = %1%" % mean(abs(::dist2))
       printn "RMS = %1%" %sqrt(mean(::dist2*::dist2))
+      ::histo2 = histo(::dist2,d2min,d2max,(d2max-d2min)/0.1)
     }
     
     #----------------------------
@@ -303,6 +312,10 @@ if (!exists(DistancePolyDataClass)) {
 
           ::win.AddButton("Run Filter",::Run)
           ::win.AddButton("Stats",::Stats)
+
+          ::xyplot.SetParentPanel(::win.CurrentParent())
+          ::xyplot.Gui()
+          ::win.AddPage("Hist",::xyplot.win)
 
         # add page for saving/loading parameters
         ::AddParamPage(&::win)
