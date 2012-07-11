@@ -268,7 +268,7 @@ def CreateIncludes():
         args.val.external_dllname!='':
       declare_dll=True
       if not(external_dll_included):
-        res += '#include "{}Configure.h"\n'.format(args.val.external_dllname)
+        res += '#include "{0}Configure.h"\n'.format(args.val.external_dllname)
       external_dll_included = True
     # second external library
     declare_dll2=False
