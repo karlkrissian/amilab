@@ -20,10 +20,16 @@ if (!exists(vtkPlotClass)) {
         ::description = "Default parameters", \
                         "Description of the set of parameters"
 
+        ::label     = "label",  "Plot label"
+        ::show_axes = UCHAR(0), "Show axes guis"
+        ::visible   = UCHAR(1), "Visible"
 
         #-----------------------------------------------------------------------
         # copy parameters
         proc ::__assign__( VAR p) {
+          ::label     = p.label
+          ::show_axes = p.show_axes
+          ::visible   = p.visible
         }
     }
 
@@ -38,6 +44,12 @@ if (!exists(vtkPlotClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::SetShowAxis( NUM v) \
+    {
+      ::params.show_axes=v
+    }
+
+    #---------------------------------------------------------------------------
     proc ::SetPlot( OBJECT obj) \
     {
       if obj.IsA("vtkPlot") {
@@ -47,9 +59,42 @@ if (!exists(vtkPlotClass)) {
         InfoDialog "vtkPlotClass.SetPlot(obj): wrong object type"
       }
       ::penctrl.SetPen(::vtkplot.GetPen())
-      ::xaxisctrl.SetAxis(::vtkplot.GetXAxis())
-      ::yaxisctrl.SetAxis(::vtkplot.GetYAxis())
+      if (::params.show_axes) {
+        ::xaxisctrl.SetAxis(::vtkplot.GetXAxis())
+        ::yaxisctrl.SetAxis(::vtkplot.GetYAxis())
+      }
       ::Update()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SetChangedCallback( VAR ccb ) \
+    {
+      ::changed_cb = &ccb
+      ::penctrl.SetChangedCallback(ccb)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Modified() \
+    {
+      if (exists(::changed_cb)) {
+        ::changed_cb()
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_Label( ) \
+    {
+      if (exists(::vtkplot)) {
+        ::vtkplot.SetLabel(::params.label)
+        ::Modified()
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_Visible( ) \
+    {
+      ::vtkplot.SetVisible(::params.visible)
+      ::Modified()
     }
 
     #---------------------------------------------------------------------------
@@ -63,12 +108,8 @@ if (!exists(vtkPlotClass)) {
     #---------------------------------------------------------------------------
     proc ::Update() \
     {
-      #::win.SetLabelValue(::nbplots_id,\
-                          #"%1%" % ::vtkplot.GetNumberOfPlots())
-      #::win.SetLabelValue(::nbaxes_id,\
-                          #"%1%" % ::vtkplot.GetNumberOfAxes())
-      #::params.show_legend = ::vtkplot.GetShowLegend()
-      #::params.title       = ::vtkplot.GetTitle().convert_string()
+      ::params.label   = ::vtkplot.GetLabel().convert_string()
+      ::params.visible = ::vtkplot.GetVisible()
       ::win.Update(-1)
     }
 
@@ -81,17 +122,21 @@ if (!exists(vtkPlotClass)) {
         ::win = &win
       }
       win.BeginBoxPanel("vtkPlot control")
-        #::nbplots_id   = win.AddLabel("Number of Plots", "")
-        #::nbaxes_id    = win.AddLabel("Number of Axes", "")
-        #win.AddBoolean(::params.show_legend,"Show Legend")
-        #win.SetCallback(::CB_ShowLegend)
-        #win.AddString(::params.title,"Title")
-        #win.SetCallback(::CB_Title)
+        win.BeginHorizontal()
+          win.AddString(::params.label,"Label")
+          win.SetCallback(::CB_Label)
+
+          win.AddBoolean(::params.visible,"Visible")
+          win.SetCallback(::CB_Visible)
+        win.EndHorizontal()
+      
         # Add Pen Gui
         ::penctrl.AddGui(::win)
-        # Add Axes Gui
-        ::xaxisctrl.AddGui(::win)
-        ::yaxisctrl.AddGui(::win)
+        if (::params.show_axes) {
+          # Add Axes Gui
+          ::xaxisctrl.AddGui(::win)
+          ::yaxisctrl.AddGui(::win)
+        }
       win.EndBoxPanel()
     }
 

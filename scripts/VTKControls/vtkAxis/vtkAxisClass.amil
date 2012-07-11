@@ -51,9 +51,25 @@ if (!exists(vtkAxisClass)) {
     #-----------------------------------------------------------------------------
     proc ::Update() \
     {
-      ::params.title = ::vtkaxis.GetTitle().convert_string()
+      ::params.title         = ::vtkaxis.GetTitle().convert_string()
+      ::params.gridvisible   = ::vtkaxis.GetGridVisible()
+      ::params.labelsvisible = ::vtkaxis.GetLabelsVisible()
       ::win.Update(-1)
 
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SetChangedCallback( VAR ccb ) \
+    {
+      ::changed_cb = &ccb
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Modified() \
+    {
+      if (exists(::changed_cb)) {
+        ::changed_cb()
+      }
     }
 
     #---------------------------------------------------------------------------
@@ -61,6 +77,25 @@ if (!exists(vtkAxisClass)) {
     {
       if (exists(::vtkaxis)) {
         ::vtkaxis.SetTitle(::params.title)
+        ::Modified()
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_Grid( ) \
+    {
+      if (exists(::vtkaxis)) {
+        ::vtkaxis.SetGridVisible(::params.gridvisible)
+        ::Modified()
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_Labels( ) \
+    {
+      if (exists(::vtkaxis)) {
+        ::vtkaxis.SetLabelsVisible(::params.labelsvisible)
+        ::Modified()
       }
     }
 
@@ -74,6 +109,12 @@ if (!exists(vtkAxisClass)) {
       win.BeginBoxPanel("vtkAxis control")
         win.AddString(::params.title,"Title")
         win.SetCallback(::CB_Title)
+        win.BeginHorizontal()
+          win.AddBoolean(::params.gridvisible,"Grid")
+          win.SetCallback(::CB_Grid)
+          win.AddBoolean(::params.labelsvisible,"Labels")
+          win.SetCallback(::CB_Labels)
+        win.EndHorizontal()
       win.EndBoxPanel()
     }
 

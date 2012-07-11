@@ -70,29 +70,47 @@ if (!exists(vtkPenClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::SetChangedCallback( VAR ccb ) \
+    {
+      ::changed_cb = &ccb
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Modified() \
+    {
+      if (exists(::changed_cb)) {
+        ::changed_cb()
+      }
+    }
+
+   #---------------------------------------------------------------------------
     proc ::SetColor( ) \
     {
       ::vtkpen.SetColor(::params.color.Red(),\
                         ::params.color.Green(),\
                         ::params.color.Blue())
+      ::Modified()
     }
 
     #---------------------------------------------------------------------------
     proc ::SetOpacity( ) \
     {
       ::vtkpen.SetOpacity(::params.opacity)
+      ::Modified()
     }
 
     #---------------------------------------------------------------------------
     proc ::SetWidth( ) \
     {
       ::vtkpen.SetWidth(::params.width)
+      ::Modified()
     }
 
     #---------------------------------------------------------------------------
     proc ::CB_LineMode( ) \
     {
       ::vtkpen.SetLineType(::params.line_mode)
+      ::Modified()
     }
 
     #---------------------------------------------------------------------------

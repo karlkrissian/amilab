@@ -23,6 +23,7 @@
 #include <vtkColorTransferFunction.h>
 #include <vtkCommand.h>
 #include <vtkConeSource.h>
+#include <vtkContext2D.h>
 #include <vtkContextScene.h>
 #include <vtkContextView.h>
 #include <vtkCoordinate.h>

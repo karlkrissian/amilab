@@ -6,6 +6,9 @@ if (!exists(vtkXYPlotClass)) {
   Class vtkXYPlotClass : public ScriptGui \
   {
     
+    func "VTKControls/vtkChart/vtkChartClass"
+    vtkChartClass ::chartctrl
+
     //---------------------------------------------------
     proc ::Init() {
       
@@ -13,6 +16,7 @@ if (!exists(vtkXYPlotClass)) {
         #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
 
         ::html_filename = GetScriptsDir+"/vtkXYPlot/Doc/vtkXYPlot/index.html"
+        ::is_attached   = true
     }
 
 
@@ -31,49 +35,75 @@ if (!exists(vtkXYPlotClass)) {
     Comments( ::load_input, "Copies the input image in a local image member named 'input'")
 
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::RunExample() \
     {
       ::RunChartXY()
       #::RunXYPlot()
     }
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
+    proc ::UpdateDisplay() \
+    {
+      if (exists(::renwin_interact1)) {
+        if (::renwin_interact1.IsShown()) {
+          ::renwin_interact1.Render()
+        }
+      }
+      if (exists(::renwin_interact2)) {
+        if (::renwin_interact2.IsShown()) {
+          ::renwin_interact2.Render()
+        }
+      }
+    }
+
+    #---------------------------------------------------------------------------
     proc ::RunImage() \
     {
-      del ::table
-      ::table = vtk.vtkTable.New()
-    
-      arrX = vtk.vtkFloatArray.New()
-      arrX.SetName("X Axis")
-      ::table.AddColumn(&arrX)
-    
-      arrY = vtk.vtkFloatArray.New()
-      arrY.SetName("Y Axis")
-      ::table.AddColumn(&arrY)
+      chart_created = false
+      if (!exists(::input)) {
+        InfoDialog "Load input image first!"
+      } else {
+        del ::table
+        ::table = vtk.vtkTable.New()
       
-      printn "Fill in the table with some example values"
-      p = SpacePos(::input)
-      px = p[0]
-      # Fill in the table with some example values
-      numPoints = ::input.tx
-      ::table.SetNumberOfRows(numPoints)
-      for  i = 0 to numPoints-1  {
-        ::table.SetValue(i, 0, &vtk.vtkVariant.vtkVariant_16(px(i)))
-        ::table.SetValue(i, 1, &vtk.vtkVariant.vtkVariant_16(::input(i)))
+        arrX = vtk.vtkFloatArray.New()
+        arrX.SetName("X Axis")
+        ::table.AddColumn(&arrX)
+      
+        arrY = vtk.vtkFloatArray.New()
+        arrY.SetName("Y Axis")
+        ::table.AddColumn(&arrY)
+        
+        printn "Fill in the table with some example values"
+        p = SpacePos(::input)
+        px = p[0]
+        # Fill in the table with some example values
+        numPoints = ::input.tx
+        ::table.SetNumberOfRows(numPoints)
+        for  i = 0 to numPoints-1  {
+          ::table.SetValue(i, 0, &vtk.vtkVariant.vtkVariant_16(px(i)))
+          ::table.SetValue(i, 1, &vtk.vtkVariant.vtkVariant_16(::input(i)))
+        }
+      
+        # Add multiple line plots, setting the colors etc
+        if (!exists(::chart)) {
+          ::chart = vtk.vtkChartXY.New()
+          chart_created=true
+          ::view.GetScene().AddItem(&::chart)
+        }
+        line = ::chart.AddPlot(vtk.vtkChart.LINE)
+        line.SetInput_3(&::table, 0, 1)
+        line.SetColor(0, 255, 0, 255)
+        line.SetWidth(1.0)
+        del line
       }
-    
-      # Add multiple line plots, setting the colors etc
-      if (!exists(::chart)) {
-        ::chart = vtk.vtkChartXY.New()
-        ::view.GetScene().AddItem(&::chart)
+      if (chart_created) { 
+        ::chartctrl.SetChart(::chart)
+        ::chartctrl.SetChangedCallback(::UpdateDisplay)
+      } else {
+        ::chartctrl.Update()
       }
-      line = ::chart.AddPlot(vtk.vtkChart.LINE)
-      line.SetInput_3(&::table, 0, 1)
-      line.SetColor(0, 255, 0, 255)
-      line.SetWidth(1.0)
-      del line
-
     }
 
     #-----------------------------------------------
@@ -171,6 +201,63 @@ if (!exists(vtkXYPlotClass)) {
       ::plot.SetXValuesToIndex ()
     }
 
+    #---------------------------------------------------------------------------
+    proc ::CB_Detach() \
+    {
+      if (!exists(::plotframe)) {
+        #--- Create frame, sizer and interactor
+        ::plotframe = wx.wxFrame( &ami.MainFrame,wx.wxID_ANY,"wxVTK example")
+        ::plotframe.Show(); ::plotframe.Update()
+        ::plotframe.SetSizer(&wx.wxBoxSizer(wx.wxVERTICAL))
+        ::renwin_interact2 = \
+          wxvtk.wxVTKRenderWindowInteractor(&::plotframe,wx.wxID_ANY)
+        ::renwin_interact2.SetInteractorStyle(\
+          &vtk.vtkInteractorStyleTrackballCamera.New())
+        ::view2 = vtk.vtkContextView.New()
+        ::view2.SetInteractor(&::renwin_interact2)
+        ::renwin_interact2.UseCaptureMouseOn()
+        ::renwin_interact2.Enable(true)
+        ::plotframe.GetSizer().Add( &::renwin_interact2, \
+                                wx.wxSizerFlags().Expand().Proportion(1))
+      
+        ::plotframe.SetSize(wx.wxSize(400,400))
+        ::plotframe.Layout()
+
+      } else {
+        ::plotframe.Show()
+      }
+      if (exists(::chart)&&(::is_attached)) {
+        ::view.GetScene().RemoveItem(::chart)
+        ::view2.GetScene().AddItem(::chart)
+      }
+      ::is_attached=false
+      ::renwin_interact2.Render()
+      ::renwin_interact1.Hide()
+      ::win.Layout()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_Attach() {
+      if (exists(::plotframe)&&(!::is_attached)) {
+        if (exists(::chart)) {
+          ::view2.GetScene().RemoveItem(::chart)
+          ::view.GetScene().AddItem(::chart)
+        }
+        ::is_attached=true
+        ::plotframe.Hide()
+        ::renwin_interact1.Show()
+        ::win.Layout()
+        ::renwin_interact1.Render()
+      }
+    }
+
+    # overwrite scriptgui
+    proc ::Attach() { ::CB_Attach(); }
+    proc ::Detach() { ::CB_Detach(); }
+    proc ::AttachDetach() {
+      if (!::is_attached) { ::Attach(); } else { ::Detach(); }
+    }
+
     //---------------------------------------------------
     proc ::Gui() {
     
@@ -216,8 +303,15 @@ if (!exists(vtkXYPlotClass)) {
 
         #::win.AddPage("Run")
           ::win.AddButton("Run Example",::RunExample)
-          ::win.AddButton("Run Image",::RunImage)
+          ::win.AddButton("Add Image",::RunImage)
+          ::win.BeginHorizontal()
+            ::win.AddButton("Detach", ::CB_Detach)
+            ::win.AddButton("Attach", ::CB_Attach)
+          ::win.EndHorizontal()
 
+        ::win.AddPage("Chart")
+            # Add Chart Gui
+            ::chartctrl.AddGui(::win)
         if wx.wxFileName(::html_filename).FileExists() {
           ::AddHelpPage(&::win)
         }

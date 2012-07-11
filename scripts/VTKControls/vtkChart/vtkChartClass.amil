@@ -101,10 +101,27 @@ if (!exists(vtkChartClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::SetChangedCallback( VAR ccb ) \
+    {
+      ::changed_cb = &ccb
+      ::plotctrl.SetChangedCallback(ccb)
+      ::axisctrl.SetChangedCallback(ccb)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Modified() \
+    {
+      if (exists(::changed_cb)) {
+        ::changed_cb()
+      }
+    }
+
+    #---------------------------------------------------------------------------
     proc ::CB_ShowLegend( ) \
     {
       if (exists(::vtkchart)) {
         ::vtkchart.SetShowLegend(::params.show_legend)
+        ::Modified()
       }
     }
 
@@ -113,6 +130,7 @@ if (!exists(vtkChartClass)) {
     {
       if (exists(::vtkchart)) {
         ::vtkchart.SetTitle(::params.title)
+        ::Modified()
       }
     }
 
