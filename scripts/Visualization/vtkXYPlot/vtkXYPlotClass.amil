@@ -337,12 +337,12 @@ if (!exists(vtkXYPlotClass)) {
     
       ::AddStandardButtons(&::win)
 
+      ::CreateRenderer()
       if (exists(::parent_panel)) {
         ::win.ShowPanel()
       } else {
         ::win.Display()
       }
-      ::CreateRenderer()
       ::win.Update(-1)
 
     }

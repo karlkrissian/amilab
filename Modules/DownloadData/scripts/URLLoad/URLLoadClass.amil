@@ -149,7 +149,9 @@ if (!exists(URLLoadClass)) {
       ::output_path = ".",    "Save Path Folder"
       ::output_filename = "", "Output filename"
       ::output_imagename = "", "Output image name"
-      ::download_dir = "/home/karl/projects/data", "Directory for downloads"
+      
+      ::InitUserScriptData()
+      ::download_dir = ::scriptdata_path, "Directory for downloads"
         
       ::html_filename = GetScriptsDir+"/URLLoad/Doc/URLLoad/index.html"
 
@@ -217,7 +219,7 @@ if (!exists(URLLoadClass)) {
 
     #---------------------------------------------------------------------------
     proc ::Load_osirix_examples_Image( STRING imname, NUM n ) {
-      ::url_name = "http://pubimage.hcuge.ch:8080/DATA/%1%.zip" % imname
+      ::url_name = "http://www.osirix-viewer.com/datasets/DATA/%1%.zip" % imname
       varname=::Im2Var_osirix_examples(imname)
       ::output_filename  = varname
       ::output_imagename = varname
@@ -355,19 +357,21 @@ if (!exists(URLLoadClass)) {
     #---------------------------------------------------------------------------
     proc ::Osirix_load_previews( ) \
     {
+      #
       for n=0 to ::osirix_examples.size()-1 {
         imname = ::osirix_examples[n].name
         # special case ...
         if imname == "WRIX" { imname = "WRIST"; }
         varname = ::Im2Var_osirix_examples(::osirix_examples[n].name)
         # 1. check if the icon exists
+        printn "varname = %1%" % varname
         icon_filename = ::IconFileName(varname)
         if !wx.wxFileName(icon_filename).FileExists() {
           # preview link
           SetStatusText(  " getting file %1%  " % varname + \
                           " %1%"%(n+1) + "/%1%" % ::osirix_examples.size())
           SetProgress((100.0*n)/(::osirix_examples.size()-1))
-          preview_link = "http://pubimage.hcuge.ch:8080/Thumbnails/%1%.jpg" \
+          preview_link = "http://www.osirix-viewer.com/datasets/Thumbnails/%1%.jpg" \
                             % imname
           ::URL2Icon(preview_link,varname)
           # Read icon
@@ -483,6 +487,7 @@ if (!exists(URLLoadClass)) {
     #---------------------------------------------
     proc ::URL2Icon( STRING urlstr, STRING varname) \
     {
+      printn "%1%" % urlstr
       icon_filename = ::IconFileName(varname)
       url = wx.wxURL(urlstr)
       if url.IsOk() {
