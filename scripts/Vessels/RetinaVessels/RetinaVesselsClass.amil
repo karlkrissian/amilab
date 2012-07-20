@@ -96,7 +96,7 @@ printn ""
     proc ::Display() \
     {
       if (!exists(::input)) {
-        Infodialog "First load the input image !"
+        InfoDialog "First load the input image !"
       } else {
         del ::input_draw
         del ::observer1_draw

@@ -2261,6 +2261,7 @@ bool MainFrame::TryToOpenImage( const wxString& string_filename)
 //-----------------------------------------------------
 void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
 {
+  std::cout << "OnFileOpenImageHistory" << std::endl;
 //  string cmd; // increment the command line string
   std::string varname;
   size_t pos = event.GetId() - wxID_Images_History;
@@ -2278,6 +2279,7 @@ void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
 void MainFrame::OnFileOpenScriptHistory ( wxCommandEvent& event )
 {
 //  string cmd; // increment the command line string
+  std::cout << "OnFileOpenScriptHistory" << std::endl;
   std::string varname;
   size_t pos = event.GetId() - wxID_Scripts_History;
   wxString filename(scripts_history->GetHistoryFile(pos));
