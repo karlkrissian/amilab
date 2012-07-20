@@ -1,0 +1,124 @@
+#!/home/karl/projects/Sourceforge/amilab/trunk/src/build/debug/amilab_3.2.0_debug 
+
+
+func "../Modules/DownloadData/scripts/Load_DownloadData" // from menu
+
+# todo: put this in a class ...
+
+#------------------------------------------------------------------------------
+proc EntryOK( VAR entry) {
+  return = language.WrapVariable(&entry).GetTypeName()=="AMIObject"
+}
+
+#------------------------------------------------------------------------------
+proc FileSizeAsString( NUM size) \
+{
+  size_unit = "b"
+  if size>1000 {
+    size = size/1000
+    size_unit = "Kb"
+    if size>1000 {
+      size = size/1000
+      size_unit = "Mb"
+    }
+  }
+  return = " Size=%1% "  % size + size_unit
+}
+
+#------------------------------------------------------------------------------
+proc WriteFileStream( OBJECT in_st, STRING fname) \
+{
+  out_file = wxFileOutputStream(fname)
+  canread = in_st.CanRead()
+  while canread {
+    in_st.Read(&out_file)
+    #SetStatusText("%1% Kb written" % (in_st.LastRead()/1000))
+    canread = in_st.CanRead()
+  }
+}
+
+#-------------------------------------------------------------------------------
+#   MAIN
+#-------------------------------------------------------------------------------
+
+filename=$1
+extract_path = $2
+
+del f_in
+f_in = wxFFileInputStream(  filename )
+printn f_in.Ok()
+
+
+del fcf
+fcf = wxFilterClassFactory.Find( filename , wx.wxSTREAM_FILEEXT)
+printn fcf
+
+acf = wxArchiveClassFactory.Find( filename, wx.wxSTREAM_FILEEXT);
+printn "protocol = %1%" % wx.FromWxString(acf.GetProtocol())
+printn "canhandle = %1%" % acf.CanHandle(wx.FromWxString(acf.GetProtocol()))
+
+del v
+v = language.WrapVariable(acf)
+printn "GetTypeName()= %1%" % v.GetTypeName()
+
+
+if v.GetTypeName()=="AMIObject" {
+
+  # first get number of entries
+  nb_entries=0
+  del arc
+  arc = acf.NewStream(f_in)
+  del entry
+  entry = arc.GetNextEntry()
+  ok = EntryOK(&entry)
+  while ok {
+    nb_entries++
+    del entry
+    entry = arc.GetNextEntry()
+    ok = EntryOK(entry)
+  }
+
+  # Second write entries
+  printn "*"
+  del arc
+  arc = acf.NewStream(f_in)
+
+  del entry
+  entry = arc.GetNextEntry()
+  ok = EntryOK(&entry)
+  pos = 0
+  #print "ok=%1%" % ok
+  while ok {
+    SetProgress(pos/nb_entries*100)
+    pos++
+    filename = extract_path+wx.FromWxString(entry.GetName())
+    #printn  wx.FromWxString(entry.GetName())
+    is_dir = entry.IsDir()
+    #print " IsDir=%1%"    % is_dir
+    if is_dir {
+      printn "Creating dir %1%" % filename
+      # create dir
+      if (!wx.wxDirExists(filename)) { wx.wxMkdir(filename); }
+    } else {
+      #printn FileSizeAsString( entry.GetSize())
+      #printn ""
+      # extract file
+      WriteFileStream(arc,filename)
+    }
+    
+    del entry
+    entry = arc.GetNextEntry()
+    ok = EntryOK(entry)
+    #print "ok=%1%" % ok
+  }
+  SetProgress(0)
+}
+
+del entry
+del acf
+del arc
+del fcf
+del f_in
+del v
+
+quit
