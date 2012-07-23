@@ -23,6 +23,11 @@ class WX_AMILAB_EXPORT ModuleExamplePlugin : public wxPluginBase
 
 public:
   ModuleExamplePlugin();
+
+  ~ModuleExamplePlugin() 
+  {
+    this->Destroy();
+  }
 };
 
 #endif // _ModuleExamplePlugin_h_

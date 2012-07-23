@@ -52,3 +52,8 @@ bool ModuleExamplePlugin::Execute(void)
 
   return true;
 }
+
+void ModuleExamplePlugin::Destroy()
+{
+  Vars.GetBuiltinContext()->deleteVar(this->GetName().c_str());
+}
