@@ -20,7 +20,7 @@ if (!exists(GreyMorphoClass)) {
           ::operation_types.push_back("Open")
           ::operation_types.push_back("Close")
           ::operation_types.push_back("White top-hat")
-          ::operation_types.push_back("Back top-hat")
+          ::operation_types.push_back("Black top-hat")
         mess = ::operation_types[0]
         for n=1 to ::operation_types.size()-1 { 
           mess += ", %1%" % ::operation_types[n]; 

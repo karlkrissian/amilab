@@ -5,6 +5,9 @@ if (!exists(ImageDrawClass)) {
 
   Class ImageDrawClass : public ScriptGui \
   {
+    func "Segmentation/RegionGrowing/RegionGrowingClass"
+    RegionGrowingClass ::rg
+
     Class ::backup_voxel {
       ::x   = 0
       ::y   = 0
@@ -52,6 +55,11 @@ if (!exists(ImageDrawClass)) {
       ::y = INT(0)
       ::z = INT(0)
       ::_slice = INT(0)
+      
+      ::rg_current_slice = UCHAR(1), "Apply Region Growing on current slice"
+      ::rg_current_zoom  = UCHAR(1), "Apply Region Growing on zoom"
+      ::rg_min_intensity = 0, "minimal intensity for Region Growing"
+      ::rg_max_intensity = 0, "maximal intensity for Region Growing"
 
       # TODO: backups
       ::backup_actions = VarVector()
@@ -80,11 +88,16 @@ if (!exists(ImageDrawClass)) {
         ::input_name = "::input"
         ::win.Update(-1)
       }
+
       # Create mask image from input
       ::mask_image <<= (UCHAR) ::input
       ::mask_image = 0
       ::mask_backup <<= ::mask_image
       if (exists(::win)) {
+        m = min(::input)
+        M = max(::input)
+        ::win.FloatConstraints(::rgminint_id,m,M,m)
+        ::win.FloatConstraints(::rgmaxint_id,m,M,M)
         ::win.Update(-1)
       }
     }
@@ -595,6 +608,202 @@ if (!exists(ImageDrawClass)) {
                         "corresponding "+\
                         "object named '"+GetObjectName(::Close)+"'.")
 
+
+
+    #---------------------------------------------------------------------------
+    proc ::GetMaskFilename( ) \
+    {
+      # Use input image if available
+      if exists(::input_name) {
+        # make replacements to have a valid name
+        wx_name = wx.wxString(::input_name)
+        wx_name.Replace("/","_")
+        wx_name.Replace("::","_")
+        wx_name.Replace(" ", "_")
+        wx_name.Replace(".", "_")
+        wx_name.Replace("(", "_")
+        wx_name.Replace(")", "_")
+        wx_name.Replace("[", "_")
+        wx_name.Replace("]", "_")
+        wx_name.Replace("-", "_")
+        wx_name.Replace("+", "_")
+        return = wx.FromWxString(wx_name)
+      } else {
+        return = ::classname
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SaveImage() \
+    {
+      if exists(::mask_image) {
+        n=0
+        fileexists=true
+        filename0 = ::GetMaskFilename()
+        while fileexists {
+          n++
+          filename = ::scriptdata_path+"/"+filename0+"_manual%1%.ami.gz" % n
+          fileexists=wx.wxFileName.FileExists(filename)
+        }
+        SetStatusText("Saving %1%" % filename)
+        printn "min = %1%" % min(::mask_image)
+        printn "max = %1%" % max(::mask_image)
+        printn "mean = %1%" % mean(::mask_image)
+        ::mask_image.save filename
+        ::maskimagelistgui.Scan()
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ScanMasks() \
+    {
+      ::maskimagelistgui.Scan()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ReadImage() \
+    {
+      selection = ::maskimagelistgui.GetSelected()
+      # keep only the last selected file for the moment
+      if selection.size()>0 {
+        ::mask_filename = selection.back()
+        eval "::mask_image <<= Image \"%1%\";" % ::mask_filename
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::MaskFilterAll() \
+    {
+      ::maskimagelistgui.ClearFileSpecs()
+      ::maskimagelistgui.AddFileSpec("*_manual*.ami.gz")
+      ::ScanMasks()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::MaskFilterCurrent() \
+    {
+      ::maskimagelistgui.ClearFileSpecs()
+      filename = ::GetMaskFilename()
+      ::maskimagelistgui.AddFileSpec(filename+"_manual*.ami.gz")
+      ::ScanMasks()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ReadMASK() \
+    {
+      selection = ::maskimagelistgui.GetSelected()
+
+      # keep only the last selected file for the moment
+      if selection.size()>0 {
+        input_file = selection.back()
+        # TODO: need to have the constant wxRICHTEXT_TYPE_ANY ..., 
+        # using value 1 here
+        # could give information about the file ...
+        #::txtctrl.DoLoadFile(param_file,1)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    #
+    proc ::AddIOPage( OBJECT win) \
+    {
+      # using alWxFileList
+      func "WxUtils/alWxFileList"
+      alWxFileList ::maskimagelistgui
+
+      # Setup ::filelistgui
+      ::maskimagelistgui.AddFileSpec("*.ami.gz")
+      #::ROIfilelistgui.SetSelectionCommand(&::OnSelection)
+
+      ::maskimagelistgui.ClearPaths()
+      ::InitUserScriptData()
+      printn "::scriptdata_path %1%" % ::scriptdata_path
+      ::maskimagelistgui.AddPath(::scriptdata_path)
+      ::maskimagelistgui.SetSelectionCommand(&::ReadMASK)
+
+      win.AddPage("Disk")
+        win.BeginHorizontal()
+          win.AddButton("Save",&::SaveImage)
+          win.SetPositionProp(1,2)
+          win.AddButton("Read",&::ReadImage)
+          win.SetPositionProp(1,2)
+          #win.AddButton("Scan",&::ScanParameters)
+          win.SetPositionProp(1,2)
+        win.EndHorizontal()
+
+        win.BeginBoxPanel("Filter")
+          win.BeginHorizontal()
+            win.AddButton("All",&::MaskFilterAll)
+            win.SetPositionProp(1,2)
+            win.AddButton("Current",&::MaskFilterCurrent)
+            win.SetPositionProp(1,2)
+          win.EndHorizontal()
+        win.EndBoxPanel()
+
+        ::maskimagelistgui.AddGui(&win)
+        ::txtctrl = wx.wxRichTextCtrl(&win.CurrentParent())
+        win.AddWidget(&::txtctrl,1)
+      ::ScanMasks()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::AutoRangeRegGrow() {
+      z = ::input_draw.GetZPos()
+      ::rg_input = ::input[:,:,z:z]
+      # extract slice from mask
+      ::rg_init  = ::mask_image[:,:,z:z]
+      ::rg_min_intensity = min[::rg_init>0](::rg_input)
+      ::rg_max_intensity = max[::rg_init>0](::rg_input)
+      ::win.Update(-1)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::TryRegGrow() {
+      # extract current slice and zoom from display
+      if (exists(::input_draw)) {
+        z = ::input_draw.GetZPos()
+        if (exists(::rg_z)) {
+          if (z!=::rg_z) {
+            printn "Deleting..."
+            del ::rg_input
+            del ::rg_init
+            del ::rg_res_draw
+            del ::rg_res
+          }
+        }
+        ::rg_z = z
+        # extract slice from input
+        ::rg_input = ::input[:,:,z:z]
+        # extract slice from mask
+        ::rg_init  = ::mask_image[:,:,z:z]
+
+        rg = Algorithms.algorithms.ami_IntensityBasedRegionGrowing\
+            .IntensityBasedRegionGrowing(&::rg_input,&::rg_init)
+        rg.SetMin(::rg_min_intensity)
+        rg.SetMax(::rg_max_intensity)
+        rg.Evolve()
+        #return = initmask
+        ::rg_res = (rg.ami_RegionGrowingBase.GetStateImage()==2)*255
+        show ::rg_res
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ApplyRegGrow() {
+      if (exists(::rg_res)) {
+        ::mask_image.putimage(::rg_res)
+        show ::input
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::UndoRegGrow() {
+      if (exists(::rg_init)) {
+        ::mask_image.putimage(::rg_init)
+        show ::input
+      }
+    }
+
     #---------------------------------------------------------------------------
     proc ::Gui() {
     
@@ -612,11 +821,14 @@ if (!exists(ImageDrawClass)) {
         ::win.AddPage("Param")
 
           ::win.AddImageChoice( &::input_name, "input")
+          ::win.SetCallback(::MaskFilterCurrent)
 
           ::win.BeginBoxPanel("Mask Image (optional)")
             ::win.AddImageChoice( &::mask_name, "mask input")
             ::win.SetCallback(::CB_mask_image)
           ::win.EndBoxPanel()
+
+          ::win.AddButton("Display",    &::Display)
 
           ::win.AddColor( "Mask color", &::mask_color)
           ::win.SetCallback(&::OnColor)
@@ -639,7 +851,25 @@ if (!exists(ImageDrawClass)) {
           ::pencil_thickness_id = ::win.AddInt( &::pencil_thickness,\
                                                 "Thickness",1,20)
 
-          ::win.AddButton("Display",    &::Display)
+          
+          ::win.BeginBoxPanel("RegionGrowing")
+            ::rgminint_id = ::win.AddFloat( ::rg_min_intensity,\
+                                            "min intensity",0,100)
+            ::rgmaxint_id = ::win.AddFloat( ::rg_max_intensity,\
+                                            "max intensity",0,100)
+            ::win.AddButton("Auto-range", ::AutoRangeRegGrow)
+            ::win.BeginHorizontal()
+              ::win.AddButton("Try",    ::TryRegGrow)
+              ::win.AddButton("Apply",  ::ApplyRegGrow)
+              ::win.AddButton("Undo",   ::UndoRegGrow)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+        ::AddIOPage(::win)
+
+        #::rg.SetParentPanel(&::win)
+        #::rg.Gui()
+        #::win.AddPage("RegGrow",&::rg.win)
 
         if wx.wxFileName(::html_filename).FileExists() {
           ::AddHelpPage(&::win)

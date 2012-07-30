@@ -50,6 +50,12 @@ if (!exists(RegionGrowingClass)) {
       }
   
       if (exists(::win)) {
+        m = min(::input)
+        M = max(::input)
+        printn "m=%1%" % m
+        printn "M=%1%" % M
+        ::win.FloatConstraints(::min_id,m,M,m)
+        ::win.FloatConstraints(::max_id,m,M,M)
         ::win.Update(-1)
       }
     }
@@ -118,8 +124,8 @@ if (!exists(RegionGrowingClass)) {
           ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("Evolving intensity range")
-            ::win.AddFloat(&::params.minval,"min",0,100)
-            ::win.AddFloat(&::params.maxval,"max",0,100)
+            ::min_id = ::win.AddFloat(&::params.minval,"min",0,100)
+            ::max_id = ::win.AddFloat(&::params.maxval,"max",0,100)
           ::win.EndBoxPanel()
 
           ::win.AddButton("Run Filter",::Run)
