@@ -82,14 +82,22 @@ public:
   {
     //printf("ImageExtent(InrImage* im)\n");
     // TODO: fix this constructor
-//    std::cout << "ImageExtent(InrImage* im)" << std::endl;
-    extent[0][0] = 0;
-    extent[1][0] = 0;
-    extent[2][0] = 0;
-    extent[0][1] = im->DimX()-1;
-    extent[1][1] = im->DimY()-1;
-    extent[2][1] = im->DimZ()-1;
-    mode = Absolute;
+    printf("ImageExtent(InrImage* im)\n");
+    SetMode(Absolute); // absolute
+    SetXmin( im->SpacePosX(0));
+    SetXmax( im->SpacePosX(im->DimX()-1));
+    SetYmin( im->SpacePosY(0));
+    SetYmax( im->SpacePosY(im->DimY()-1));
+    SetZmin( im->SpacePosZ(0));
+    SetZmax( im->SpacePosZ(im->DimZ()-1));
+
+//     extent[0][0] = 0;
+//     extent[1][0] = 0;
+//     extent[2][0] = 0;
+//     extent[0][1] = im->DimX()-1;
+//     extent[1][1] = im->DimY()-1;
+//     extent[2][1] = im->DimZ()-1;
+//    mode = Absolute;
   }
 
   const T& Xmin() const { return extent[0][0];}
@@ -275,6 +283,24 @@ public:
 
 };
 
+
+
+template <> ImageExtent<int>::ImageExtent(InrImage* im);
+// {
+//   printf("ImageExtent<int>(InrImage* im)\n");
+//   extent[0][0] = 0;
+//   extent[1][0] = 0;
+//   extent[2][0] = 0;
+//   extent[0][1] = im->DimX()-1;
+//   extent[1][1] = im->DimY()-1;
+//   extent[2][1] = im->DimZ()-1;
+//   mode = Absolute;
+// }
+
+
 }
+
+
+
 
 #endif // _amiImageExtent_h_

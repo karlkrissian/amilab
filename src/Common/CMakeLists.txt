@@ -38,6 +38,7 @@ SET(Common_SRCS
   Crest/MultiCrest.cpp
 
   # from Images
+  amiImageExtent.cpp
   Images/inrimage.cpp
   Images/ImageLinearInterpolator.cpp
   #      inrimage_base.cpp
