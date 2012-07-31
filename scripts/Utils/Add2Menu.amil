@@ -5,29 +5,12 @@
 #
 
 
-proc AddUtilsMenu() {
-  for dir in  "Calculator" , "Timer" , "RemoveSpots"\
-  {
-    if wx.wxFileName(GetScriptsDir+"/Utils/"+dir+"/Add2Menu.amil").FileExists() {
-      func "/Utils/"+dir+"/Add2Menu.amil"
-    } else {
-      InfoDialog GetScriptsDir+"/Utils/"+dir+"/Add2Menu.amil does not exists"
-    }
-  }
-}
+#
+# Adding main GUI scripts to the menu interface
+#
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())
 
-AddUtilsMenu()
-del AddUtilsMenu
 
 if exists(global::scripts_toolbar) {
   global::scripts_toolbar.AddSeparator()
 }
-
- ami.MainFrame.AddToMenu("&Scripts","&Utils","&Fiducials",  "Utils/Fiducials/FiducialsGui")
-
- ami.MainFrame.AddToMenu("&Scripts","&Utils","&CopyDirAndReplace",  "Utils/CopyDirAndReplace/CopyDirAndReplaceGui")
-
- ami.MainFrame.AddToMenu("&Scripts","&Utils","&RegEx",  "Utils/RegEx/RegExGui")
-
- ami.MainFrame.AddToMenu("&Scripts","&Utils","&SystemInfo",  "Utils/SystemInfo/SystemInfoGui")
-

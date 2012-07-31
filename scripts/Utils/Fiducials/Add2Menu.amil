@@ -3,15 +3,4 @@
 #
 # Adding main Gui scripts to the menu
 #
-
-proc AddMenuFiducials() \
-{
-  category = "&PDI"
-  script = "PDI/Fiducials/FiducialsGui.amil"
-
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&Fiducials",script)
-}
-
-AddMenuFiducials()
-del AddMenuFiducials
+ami.MainFrame.AddToMenu("&Scripts","&Utils","&Fiducials",  "Utils/Fiducials/FiducialsGui")

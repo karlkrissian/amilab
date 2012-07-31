@@ -3,15 +3,4 @@
 #
 # Adding main Gui scripts to the menu
 #
-
-proc AddMenuCopyDirAndReplace() \
-{
-  category = "&Utils"
-  script = "Utils/CopyDirAndReplace/CopyDirAndReplaceGui.amil"
-
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&CopyDirAndReplace",script)
-}
-
-AddMenuCopyDirAndReplace()
-del AddMenuCopyDirAndReplace
+ami.MainFrame.AddToMenu("&Scripts","&Utils","&CopyDirAndReplace",  "Utils/CopyDirAndReplace/CopyDirAndReplaceGui")

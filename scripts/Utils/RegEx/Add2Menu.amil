@@ -4,14 +4,4 @@
 # Adding main Gui scripts to the menu
 #
 
-proc AddMenuRegEx() \
-{
-  category = "&PDI"
-  script = "PDI/RegEx/RegExGui.amil"
-
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&RegEx",script)
-}
-
-AddMenuRegEx()
-del AddMenuRegEx
+ami.MainFrame.AddToMenu("&Scripts","&Utils","&RegEx",  "Utils/RegEx/RegExGui")

@@ -3,15 +3,5 @@
 #
 # Adding main Gui scripts to the menu
 #
-
-proc AddMenuSystemInfo() \
-{
-  category = "&PDI"
-  script = "PDI/SystemInfo/SystemInfoGui.amil"
-
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&SystemInfo",script)
-}
-
-AddMenuSystemInfo()
-del AddMenuSystemInfo
+ami.MainFrame.AddToMenu("&Scripts","&Utils","&SystemInfo",\
+                        "Utils/SystemInfo/SystemInfoGui")
