@@ -1,0 +1,11 @@
+
+func "ResizeImagesClass"
+
+if (!exists(ResizeImages_obj)) {
+  ResizeImagesClass ResizeImages_obj
+  ResizeImages_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

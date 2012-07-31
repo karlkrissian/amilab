@@ -1,0 +1,189 @@
+
+func "Common/ScriptGui"
+
+if (!exists(ResizeImagesClass)) {
+
+  Class ResizeImagesClass : public ScriptGui \
+  {
+    
+    func "Variable/ObjectIO"
+    #===========================================================================
+    # Set parameters here
+    Class ::ParamClass : public ObjectIO {
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+        ::newwidth = INT(400),  "new width"
+        ::newheight = INT(600), "new height"
+        ::bg_color = wx.wxColour(255,255,255), "Background colour"
+        ::interpolation = INT(1), "Interpolation mode"
+        ::auto_crop        = UCHAR(1), "Automatic cropping"
+        ::auto_crop_margin = INT(0), "Automatic cropping margin in pixels"
+
+        #-----------------------------------------------------------------------
+        # copy parameters
+        proc ::__assign__( VAR p) {
+          ::newwidth      = p.newwidth
+          ::newheight     = p.newheight
+          ::bg_color      = p.bg_color
+          ::interpolation = p.interpolation
+          ::auto_crop     = p.auto_crop
+          ::auto_crop_margin = p.auto_crop_margin
+        }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      
+      ::input_name   = "","Name of the input image variable"
+
+      ::ParamClass ::params
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+\
+                        "/ResizeImages/Doc/ResizeImages/index.html"
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::load_input() {
+      eval "::input <<= "+::input_name+";"
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+  
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
+    }
+    Comments( ::load_input, "Copies the input image in a local image "+\
+                            "member named 'input'")
+
+
+    #---------------------------------------------------------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) {
+        InfoDialog "First load the input image !"
+      } else {
+        if (::input.vdim!=3)&&(::input.vdim!=4) {
+          DialogInfo "This script only works with vectorial images of 3 or 4 components (like RGB and RGBA)"
+        } else {
+          # Create a new white image of the same format
+          res = Image(BasicType(::input.GetFormat),::params.newwidth,::params.newheight,1,::input.vdim)
+          if ::input.vdim>=3  {
+            res.SetComponent(0,res[0]*0+::params.bg_color.Red())
+            res.SetComponent(1,res[1]*0+::params.bg_color.Green())
+            res.SetComponent(2,res[2]*0+::params.bg_color.Blue())
+          }
+          if ::input.vdim==4  {
+            res.SetComponent(3,res[2]*0+::params.bg_color.Alpha())
+          }
+
+          if (::params.auto_crop) {
+            # Crop input based on backgound color
+            ::obj = (::input[0]!=::params.bg_color.Red())+\
+                  (::input[1]!=::params.bg_color.Green())+\
+                  (::input[2]!=::params.bg_color.Blue())
+            ::sobj = autocrop(::obj,::params.auto_crop_margin)
+            input = ::input[::sobj]
+            ::sinput = input
+          } else {
+            input = &::input
+          }
+
+          # Resize and put previous image at the center
+          new_prop  = 1.0*::params.newheight/::params.newwidth
+          init_prop = 1.0*input.ty/input.tx
+          if (init_prop>new_prop) {
+            # resize to new height keeping proportions
+            ny = ::params.newheight
+            nx = ny/init_prop
+            SetStatusText("Resizing to "+"%1%"%nx+" x %1%"%ny)
+            rim = Resize(input,nx,ny,1,::params.interpolation)
+            res.putimage(rim,(::params.newwidth-nx)/2,0,0)
+          } else {
+            # resize to new width keeping proportions
+            nx = ::params.newwidth
+            ny = nx*init_prop
+            SetStatusText("Resizing to "+"%1%"%nx+" x %1%"%ny)
+            rim = Resize(input,nx,ny,1,::params.interpolation)
+            res.putimage(rim,0,(::params.newheight-ny)/2,0)
+          }
+
+          ::rim = &rim
+          del ::input_draw
+          show ::input
+          del ::res_draw
+          del ::res
+          ::res = &res
+          show ::res
+        }
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("ResizeImages",&::parent_panel)
+      } else {
+        ::win = ParamPanel("ResizeImages")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Params")
+
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+          
+          ::win.BeginBoxPanel("New dimensions")
+            ::win.AddInt(&::params.newwidth,  "width",1,1000)
+            ::win.AddInt(&::params.newheight, "height",1,1000)
+          ::win.EndBoxPanel()
+          
+          ::bgcolor_id = ::win.AddColor("Background color",&::params.bg_color)
+          
+          ::win.AddInt(::params.interpolation,"Interpolation",0,2)
+          ::win.AddBoolean(::params.auto_crop,"Automatic crop")
+          
+          ::win.AddButton("Run Filter",::Run)
+
+        # add page for saving/loading parameters
+        ::AddParamPage(&::win)
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

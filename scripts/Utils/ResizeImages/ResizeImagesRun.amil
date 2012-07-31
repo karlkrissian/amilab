@@ -1,0 +1,19 @@
+#!/usr/bin/amilab
+
+
+func "ResizeImagesClass"
+
+ResizeImagesClass ri
+
+if (argc==2) {
+  input = Image $1
+  ri.input_name ="global::input"
+  ri.load_input()
+  ri.params.interpolation=1
+  ri.Run()
+  ri->res.save $2
+} else {
+  printn "Need two parameters: input and output images"
+}
+
+quit

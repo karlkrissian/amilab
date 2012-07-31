@@ -83,7 +83,7 @@ Class VariablesUtilsClass {
     # list variables in the context
     for n=0 to oc.GetSize()-1 {
       typestr = oc[n].GetTypeName()
-      if typestr=="wrap_WrapClassMember" \
+      if typestr=="WrapClassMember" \
       {
         # Convert it to Variable<WrapClassMember>
         del wcmv
@@ -133,14 +133,14 @@ Class VariablesUtilsClass {
     rtc.BeginFontSize(20)
     rtc.BeginAlignment(wx.wxTEXT_ALIGNMENT_CENTER)
     rtc.WriteText( " %1% " % wv.Name() )
-    rtc.WriteText( "("+oc._GetName()+")")
+    rtc.WriteText( "("+oc.GetName()+")")
     rtc.EndAlignment()
     rtc.EndFontSize()
 
     # list variables in the context
     for n=0 to oc.GetSize()-1 {
       typestr = oc[n].GetTypeName()
-      if typestr=="wrap_WrapClassMember" \
+      if typestr=="WrapClassMember" \
       {
         # Convert it to Variable<WrapClassMember>
         del wcmv
@@ -199,12 +199,12 @@ Class VariablesUtilsClass {
   #----------------------------------------------------------
   proc ::ClassMember2HTML( OBJECT var) \
   {
-    wcmv = language.Variable_WrapClassMember.DynCast(&var)
+    wcmv = language.Variable_WrapClassMemberWithDoc.DynCast(&var)
     wcm = wcmv.Pointer()
     text = "<BR>\n"
     commentcolor = wx.wxColour(20,155,20)
     fname= wcmv.Name() # it is better to use the variable name because it may have been changed 
-    #fname=::StripStart(wcm.GetFunctionName(),oc._GetName()+"::")
+    #fname=::StripStart(wcm.GetFunctionName(),oc.GetName()+"::")
     #fname=::StripWrap(wcm.GetFunctionName())
 
     text += "<A NAME=\"%1%\">" % fname
@@ -273,7 +273,7 @@ Class VariablesUtilsClass {
     if ::const_name!="" {
       title = "%1% Documentation" % ::const_name
     } else {
-      title = "%1% Documentation" % ::StripWrap(oc._GetName())
+      title = "%1% Documentation" % ::StripWrap(oc.GetName())
     }
     text+=title
     text+="</title>\n"
@@ -296,7 +296,7 @@ Class VariablesUtilsClass {
 
     for n=0 to oc.GetSize()-1 {
       typestr = oc[n].GetTypeName()
-      if typestr=="wrap_AMIObject" \
+      if typestr=="AMIObject" \
       {
         del wov
         wov = language.Variable_AMIObject.DynCast(&oc[n])
@@ -305,7 +305,7 @@ Class VariablesUtilsClass {
         basestext += "<strong> %1% </strong> " % wov.Name()
         basescount++
       }
-      if (typestr=="wrap_WrapClassMember") \
+      if (typestr=="WrapClassMember") \
       {
         if tablecol==0 {
           tabletext += "<tr>\n"
@@ -315,7 +315,7 @@ Class VariablesUtilsClass {
         del wcm
         wcm = wcmv.Pointer()
         fname= wcmv.Name() # it is better to use the variable name because it may have been changed 
-        #::StripStart(wcm.GetFunctionName(),oc._GetName()+"::")
+        #::StripStart(wcm.GetFunctionName(),oc.GetName()+"::")
         tabletext += "<td>\n"
         tabletext += "<A href=\"#%1%\">"% fname
         tabletext +=  "%1%" % fname
@@ -335,7 +335,7 @@ Class VariablesUtilsClass {
     if (::const_name!="") {
       constname=::const_name
     } else {
-      constname=::StripWrap(oc._GetName())
+      constname=::StripWrap(oc.GetName())
     }
     # Check for constructor
     if exists(::cc) {
@@ -346,12 +346,12 @@ Class VariablesUtilsClass {
       occ = vcc.Pointer().GetContext()
       # looking for the constructor
       for n=0 to occ.GetSize()-1 {
-        if occ[n].GetTypeName()=="wrap_WrapClassMember" \
+        if occ[n].GetTypeName()=="WrapClassMember" \
         {
           del var
           var = language.Variable_WrapClassMember.DynCast(&occ[n])
           if var.Name()== constname  {
-            text+="<strong>Constructor</strong> in <strong>%1%</strong> context: <BR>\n" % (occ._GetName())
+            text+="<strong>Constructor</strong> in <strong>%1%</strong> context: <BR>\n" % (occ.GetName())
             text+=::ClassMember2HTML(&occ[n])
           }
         }
@@ -385,7 +385,7 @@ Class VariablesUtilsClass {
     # list variables in the context
     for n=0 to oc.GetSize()-1 {
       typestr = oc[n].GetTypeName()
-      if typestr=="wrap_WrapClassMember" \
+      if typestr=="WrapClassMember" \
       {
         # Convert it to Variable<WrapClassMember>
         text += ::ClassMember2HTML(&oc[n])
@@ -430,7 +430,7 @@ Class VariablesUtilsClass {
       if ::const_name!="" {
         filename =  op_system.GetHomeDir()+"/amilab_%1%.html" % ::const_name
       } else {
-        filename =  op_system.GetHomeDir()+"/amilab_%1%.html" % ::StripWrap(oc._GetName())
+        filename =  op_system.GetHomeDir()+"/amilab_%1%.html" % ::StripWrap(oc.GetName())
       }
       SetStatusText("Saving documentation as '%1%'" % filename)
     }

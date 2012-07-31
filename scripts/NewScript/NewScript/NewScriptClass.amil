@@ -40,7 +40,7 @@ if (!exists(NewScriptClass)) {
       # check for Add2Menu.amil in destination directory
       
       InfoDialog "The directory %1% has been created based from the template" % \
-        (::new_script_dir+::new_script_name)
+        (::new_script_dir+"/"+::new_script_name)
     }
 
     #---------------------------------------------------------------------------
