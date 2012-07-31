@@ -173,6 +173,24 @@ bool itkWrite(InrImage* input, const std::string& fname)
           FILE_ERROR("Format not supported ");  
           return false;
       }
+  } else 
+  // for floating point vectorial images (3D vectors)
+  if ((input->GetVDim())==4) {
+    if (input->DimZ()==1)  
+    {
+      switch(image_component_type) { 
+        case WT_RGBA          :  INRWRITEITK_RGBA(unsigned char,2); break;
+        default:  
+          FILE_ERROR("Format not supported ");  
+          return false;
+      }
+    }  else
+      switch(image_component_type) { 
+        case WT_RGBA          :  INRWRITEITK_RGBA(unsigned char,3); break;
+        default:  
+          FILE_ERROR("Format not supported ");  
+          return false;
+      }
   } else {
     FILE_ERROR("Format not supported");
     return false;
