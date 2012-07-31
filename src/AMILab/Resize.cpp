@@ -194,68 +194,75 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
 //  FinSi
 
   // check if 2D spline interpolation
-  InrImage* im_splinecoeff = NULL;
+  InrImage::ptr im_splinecoeff;
   float*    splinecoeff_buf = NULL;
 
-  InrImage* im_splinecoeff_r = NULL;
+  InrImage::ptr im_splinecoeff_r;
   float*    splinecoeff_buf_r = NULL;
-  InrImage* im_splinecoeff_g = NULL;
+  InrImage::ptr im_splinecoeff_g;
   float*    splinecoeff_buf_g = NULL;
-  InrImage* im_splinecoeff_b = NULL;
+  InrImage::ptr im_splinecoeff_b;
   float*    splinecoeff_buf_b = NULL;
+  InrImage::ptr im_splinecoeff_a;
+  float*    splinecoeff_buf_a = NULL;
 
   if ((interpolate == 2) && (in->DimZ() == 1)) {
     if (in->ScalarFormat()) {
-      im_splinecoeff = new InrImage(WT_FLOAT, "splinecoeff.ami.gz", in);
+      im_splinecoeff = InrImage::ptr(new InrImage(WT_FLOAT, "splinecoeff.ami.gz", in));
       (*im_splinecoeff) = (*in);
       splinecoeff_buf = (float*)im_splinecoeff->GetData();
       SamplesToCoefficients(splinecoeff_buf, in->DimX(), in->DimY(), spline_degree);
-    } else {
+    } else 
+    // accept RGB and RGBA, but only process RGB
+    if ((in->GetVDim()==3)||(in->GetVDim()==4)) {
+
       // process Red component
-      im_splinecoeff_r = new InrImage(WT_FLOAT, "splinecoeff_r.ami.gz", in);
+      im_splinecoeff_r = InrImage::ptr(new InrImage(WT_FLOAT, "splinecoeff_r.ami.gz", in));
       in->InitBuffer();
       im_splinecoeff_r->InitBuffer();
-
       do {
         im_splinecoeff_r->FixeValeur(in->VectValeurBuffer(0));
         im_splinecoeff_r->IncBuffer();
       } while (in->IncBuffer());
-
       splinecoeff_buf_r = (float*)im_splinecoeff_r->GetData();
-
       SamplesToCoefficients(splinecoeff_buf_r, in->DimX(), in->DimY(), spline_degree);
 
       // process Green component
-      im_splinecoeff_g = new InrImage(WT_FLOAT, "splinecoeff_g.ami.gz", in);
-
+      im_splinecoeff_g = InrImage::ptr(new InrImage(WT_FLOAT, "splinecoeff_g.ami.gz", in));
       in->InitBuffer();
-
       im_splinecoeff_g->InitBuffer();
-
       do {
         im_splinecoeff_g->FixeValeur(in->VectValeurBuffer(1));
         im_splinecoeff_g->IncBuffer();
       } while (in->IncBuffer());
-
       splinecoeff_buf_g = (float*)im_splinecoeff_g->GetData();
-
       SamplesToCoefficients(splinecoeff_buf_g, in->DimX(), in->DimY(), spline_degree);
 
       // process Blue component
-      im_splinecoeff_b = new InrImage(WT_FLOAT, "splinecoeff_b.ami.gz", in);
-
+      im_splinecoeff_b = InrImage::ptr(new InrImage(WT_FLOAT, "splinecoeff_b.ami.gz", in));
       in->InitBuffer();
-
       im_splinecoeff_b->InitBuffer();
-
       do {
         im_splinecoeff_b->FixeValeur(in->VectValeurBuffer(2));
         im_splinecoeff_b->IncBuffer();
       } while (in->IncBuffer());
-
       splinecoeff_buf_b = (float*)im_splinecoeff_b->GetData();
-
       SamplesToCoefficients(splinecoeff_buf_b, in->DimX(), in->DimY(), spline_degree);
+      
+      if (in->GetVDim()==4) {
+        im_splinecoeff_a = InrImage::ptr(new InrImage(WT_FLOAT, "splinecoeff_a.ami.gz", in));
+        in->InitBuffer();
+        im_splinecoeff_a->InitBuffer();
+        do {
+          im_splinecoeff_a->FixeValeur(in->VectValeurBuffer(2));
+          im_splinecoeff_a->IncBuffer();
+        } while (in->IncBuffer());
+        splinecoeff_buf_a = (float*)im_splinecoeff_a->GetData();
+        SamplesToCoefficients(splinecoeff_buf_a, in->DimX(), in->DimY(), spline_degree);
+      }
+    }  else
+    {
+      std::cerr << "Interpolation not available for this image type" << std::endl;
     }
   }
 
@@ -301,20 +308,31 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
               res = (float)InterpolatedValue(splinecoeff_buf, in->DimX(), in->DimY(),
                                              x1, y1, spline_degree);
               out->FixeValeur(res);
-            } else {
+            } else 
+            if ((in->GetVDim()==3)||(in->GetVDim()==4)) {
               // to do spline interpolation for vectors
-              float red   = (float)InterpolatedValue(splinecoeff_buf_r, in->DimX(), in->DimY(),
+              float red   = (float)InterpolatedValue(splinecoeff_buf_r, 
+                                                     in->DimX(), in->DimY(),
                                                      x1, y1, spline_degree);
-              float green = (float)InterpolatedValue(splinecoeff_buf_g, in->DimX(), in->DimY(),
+              float green = (float)InterpolatedValue(splinecoeff_buf_g, 
+                                                     in->DimX(), in->DimY(),
                                                      x1, y1, spline_degree);
-              float blue  = (float)InterpolatedValue(splinecoeff_buf_b, in->DimX(), in->DimY(),
+              float blue  = (float)InterpolatedValue(splinecoeff_buf_b, 
+                                                     in->DimX(), in->DimY(),
                                                      x1, y1, spline_degree);
-              out->VectFixeValeurs(red, green, blue);
+              out->VectFixeValeur(0,red);
+              out->VectFixeValeur(1,green);
+              out->VectFixeValeur(2,blue);
+              if (in->GetVDim()==4) {
+                float alpha  = (float)InterpolatedValue(splinecoeff_buf_a, 
+                                                        in->DimX(), in->DimY(),
+                                                        x1, y1, spline_degree);
+                out->VectFixeValeur(3,alpha);
+              }
             }
           }
           else {
             in->BufferPos((int) x1, (int) y1, (int) z1);
-
             if (in->ScalarFormat()) {
               out->FixeValeur(in->ValeurBuffer());
             } else {
@@ -322,9 +340,7 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
                 out->VectFixeValeur(i, in->VectValeurBuffer(i));
             }
           }
-
         out->IncBuffer();
-
       }
     }
 
@@ -352,17 +368,6 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
   //  out->Sauve();
 
   out->SetTranslation(tr_x, tr_y, tr_z);
-
-  if ((interpolate == 2) && (in->DimZ() == 1))
-  {
-    if (in->ScalarFormat()) {
-      delete im_splinecoeff;
-    } else {
-      delete im_splinecoeff_r;
-      delete im_splinecoeff_g;
-      delete im_splinecoeff_b;
-    }
-  }
 
   return out;
 
