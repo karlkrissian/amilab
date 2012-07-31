@@ -449,6 +449,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
      switch (_vdim) {
        case 1: _format = WT_UNSIGNED_CHAR; break;
        case 3: _format = WT_RGB; break;
+       case 4: _format = WT_RGBA; break;
        default: 
           CLASS_ERROR((boost::format("Non-scalar UCHAR vdim=%1% !=3 not available")%_vdim).str().c_str());
      }
@@ -2293,6 +2294,7 @@ InrImage :: operator vtkImageData*()
      case WT_FLOAT_VECTOR  : vtk_image->SetScalarType(VTK_FLOAT);  break;
      case WT_UNSIGNED_CHAR : 
      case WT_RGB           : vtk_image->SetScalarType(VTK_UNSIGNED_CHAR);  break;
+     case WT_RGBA          : vtk_image->SetScalarType(VTK_UNSIGNED_CHAR);  break;
      case WT_UNSIGNED_SHORT: vtk_image->SetScalarType(VTK_UNSIGNED_SHORT); break;
      case WT_SIGNED_SHORT  : vtk_image->SetScalarType(VTK_SHORT);  break;
      case WT_UNSIGNED_INT    : vtk_image->SetScalarType(VTK_UNSIGNED_INT);    break;
