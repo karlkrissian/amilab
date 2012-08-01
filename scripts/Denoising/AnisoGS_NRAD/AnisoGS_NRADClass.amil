@@ -177,6 +177,12 @@ if (!exists(AnisoGS_NRADClass)) {
     Comments( ::load_input, "Copies the input image in a local image "+\
                             "member named 'input'")
 
+    #---------------------------------------------------------------------------
+    proc ::set_input( IMAGE inp) \
+    {
+      del ::input
+      ::input = &inp
+    }
 
     #---------------------------------------------------------------------------
     proc ::ReloadInput() \
@@ -195,7 +201,7 @@ if (!exists(AnisoGS_NRADClass)) {
     proc ::GetRoi() \
     {
       if (!exists(::input)) {
-        ::load_input
+        ::load_input()
         ::Display()
       }
       if (exists(::input_draw)) {
@@ -206,6 +212,13 @@ if (!exists(AnisoGS_NRADClass)) {
     Comments( ::GetRoi, "Select the Region of Interest (ROI) for noise estimation.")
 
     #---------------------------------------------------------------------------
+    proc ::SetRoi( IMAGE roi) \
+    {
+      del ::roi
+      ::roi = &roi
+    }
+    
+    #---------------------------------------------------------------------------
     proc ::FilterNRAD_Init() \
     {
       if (!exists(::input)) {
@@ -213,10 +226,11 @@ if (!exists(AnisoGS_NRADClass)) {
       }
       # running on the squared image
       ::squared=(::params.noise_models[::params.noise_model] == "Rician")
+      del ::input1
       if ::squared {
-        ::input1 = ::input*::input
+        ::input1 <<= ::input*::input
       } else {
-        ::input1 = ::input
+        ::input1 = &::input
       }
       if (::params.run_on_roi) {
         ::input1 <<= ::input1[::roi.GetExtent]
@@ -322,7 +336,7 @@ if (!exists(AnisoGS_NRADClass)) {
           ::NRADfilter.SetST_sigma2(new_s2)
 
           ::NRADfilter.Iterate()
-          ::res0 = ::NRADfilter.GetOutput()
+          ::res0 <<= ::NRADfilter.GetOutput()
           if ::params.noise_models[::params.noise_model] == "Rician" {
             ::res0 = ::res0*(::res0>0)
             if (::params.remove_bias) {
@@ -410,14 +424,19 @@ if (!exists(AnisoGS_NRADClass)) {
     #---------------------------------------------------------------------------
     proc ::FilterNRAD() \
     {
-
+printn "::FilterNRAD() begin"
+printn "  1"
       ::FilterNRAD_Init()
       if (::input.tz==1) {
         InfoDialog "Filter only available for 3D images at the moment"
       } else {
     
+printn "  2"
         ::FilterNRAD_Params()
       
+printn "  3"
+printn " run_on_roi %1% " % ::params.run_on_roi
+printn " squared %1%" % ::squared
         # process iterations
         ::res0 <<= ::NRADfilter.GetOutput()
         if (::params.run_on_roi) {
@@ -434,10 +453,13 @@ if (!exists(AnisoGS_NRADClass)) {
 
         # Output estimated noise standard deviation
         if ::params.noise_models[::params.noise_model] == "Rician" {
-          noise_variance = ::NRADfilter.Compute_sigma2_MRI_mode(&input1)
+printn "Rician"
+          noise_variance = ::NRADfilter.Compute_sigma2_MRI_mode(&::input1)
         } else {
+printn "Gaussian"
           noise_variance = ::NRADfilter.Compute_sigma2_Gaussian_mode(&::input1,\
                             ::params.noise_estim_neigh)
+printn "3.1"
         }
         printn " ------------------------"
         printn " Noise Standard Deviation  = %1% " % sqrt(noise_variance)
@@ -461,7 +483,10 @@ if (!exists(AnisoGS_NRADClass)) {
           del noisefile
         }
 
+printn "  4"
         ::FilterNRAD_Iterations()
+printn "  5"
+
       }
     
     }
@@ -476,6 +501,7 @@ if (!exists(AnisoGS_NRADClass)) {
 
     #---------------------------------------------------------------------------
     proc ::Filter() {
+print "::Filter()"
       inittime = wx.wxDateTime.UNow()
       if (!exists(::input)) {
         ::load_input()

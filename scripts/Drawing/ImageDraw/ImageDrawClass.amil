@@ -8,6 +8,9 @@ if (!exists(ImageDrawClass)) {
     func "Segmentation/RegionGrowing/RegionGrowingClass"
     RegionGrowingClass ::rg
 
+    func "Denoising/AnisoGS_NRAD/AnisoGS_NRADClass"
+    ::AnisoGS_NRADClass = &AnisoGS_NRADClass 
+
     Class ::backup_voxel {
       ::x   = 0
       ::y   = 0
@@ -61,8 +64,10 @@ if (!exists(ImageDrawClass)) {
       ::rg_min_intensity = 0, "minimal intensity for Region Growing"
       ::rg_max_intensity = 0, "maximal intensity for Region Growing"
 
-      ::allow_undo = UCHAR(1), "Enable Undo/Redo"
 
+      ::local_denoising  = UCHAR(1), "Apply denoising locally"
+
+      ::allow_undo = UCHAR(1), "Enable Undo/Redo"
       # TODO: backups
       ::backup_actions = VarVector()
       ::max_backups = 50
@@ -819,6 +824,50 @@ if (!exists(ImageDrawClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::ApplyLocalDenoising() {
+      printn "1"
+      if (::local_denoising) {
+      printn "1.1"
+        # Get current XY zoom
+        xmin = ::input_draw.GetXmin()
+        xmax = ::input_draw.GetXmax()
+        ymin = ::input_draw.GetYmin()
+        ymax = ::input_draw.GetYmax()
+        z = ::input_draw.GetZPos()
+        # set small Z interval
+        zmargin=2
+      printn "1.2"
+        # save original data
+        ::input_denoising_ROI = ::input[xmin:xmax,ymin:ymax,\
+                                        (z-zmargin):(z+zmargin)]
+      printn "1.3"
+        # call denoising
+        ::AnisoGS_NRADClass ::denoise
+        ::denoise.set_input(::input_denoising_ROI)
+        ::denoise.SetRoi(::input_denoising_ROI)
+        ::denoise.params.noise_model = 1 # Gaussian
+        ::denoise.params.noise_estim_neigh = 2 # small to avoid problems
+        ::denoise.params.use_new_convolution_filter = true
+        ::denoise.params.eigendecomp_mode = 1 # new faster code
+      printn "1.4"
+        ::denoise.Filter()
+        # replace original by denoised
+        ::input.putimage(::denoise->res)
+        del ::denoise
+        show ::input
+      printn "1.5"
+      } else {
+      printn "2.1"
+        # if saved original data, put it back
+        if (exists(::input_denoising_ROI)) {
+          ::input.putimage(::input_denoising_ROI)
+        }
+        del ::input_denoising_ROI
+      }
+      printn "3"
+    }
+
+    #---------------------------------------------------------------------------
     proc ::Gui() {
     
       ::AddToolbar()
@@ -850,11 +899,13 @@ if (!exists(ImageDrawClass)) {
           ::win.AddInt(&::mask_opacity,"Opacity",0,255)
           ::win.SetCallback(&::OnOpacity)
 
-          ::win.AddBoolean(&::enable_mask, "Enable label")
-          ::win.SetCallback(&::OnEnableMask)
+          ::win.BeginHorizontal()
+            ::win.AddBoolean(&::enable_mask, "Enable label")
+            ::win.SetCallback(&::OnEnableMask)
 
-          ::win.AddBoolean(&::enable_draw, "Enable draw")
-          ::win.SetCallback(&::Display)
+            ::win.AddBoolean(&::enable_draw, "Enable draw")
+            ::win.SetCallback(&::Display)
+          ::win.EndHorizontal()
 
           ::win.AddBoolean(&::allow_undo, "Allow undo")
  
@@ -881,7 +932,14 @@ if (!exists(ImageDrawClass)) {
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
-        ::AddIOPage(::win)
+          ::win.BeginBoxPanel("Denoising")
+            ::win.BeginHorizontal()
+              ::win.AddBoolean(&::local_denoising, "Local denoising")
+              ::win.AddButton("Apply",::ApplyLocalDenoising)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+ 
+          ::AddIOPage(::win)
 
         #::rg.SetParentPanel(&::win)
         #::rg.Gui()

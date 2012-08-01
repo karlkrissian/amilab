@@ -661,7 +661,11 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
 
     // initialize sums
     for(i=0;i<d;i++) {
-      in_buf = (float*) in->BufferPtr(xmin,y,zmin+i);
+      if (zmin+i<in->DimZ()) {
+        in_buf = (float*) in->BufferPtr(xmin,y,zmin+i);
+      } else {
+        in_buf = (float*) in->BufferPtr(xmin,y,in->DimZ()-1);
+      }
       for(x=0;x<line_size;x++) sum[x] += in_buf[x];
     } // i
   
