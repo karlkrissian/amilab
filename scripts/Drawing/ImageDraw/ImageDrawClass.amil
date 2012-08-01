@@ -61,6 +61,8 @@ if (!exists(ImageDrawClass)) {
       ::rg_min_intensity = 0, "minimal intensity for Region Growing"
       ::rg_max_intensity = 0, "maximal intensity for Region Growing"
 
+      ::allow_undo = UCHAR(1), "Enable Undo/Redo"
+
       # TODO: backups
       ::backup_actions = VarVector()
       ::max_backups = 50
@@ -320,21 +322,27 @@ if (!exists(ImageDrawClass)) {
     proc ::DrawPoint( NUM x, NUM y, NUM z, NUM val) \
     {
       ::backup_voxel v
-      ::mask_image.setpos(x,y,z)
       current_val = ::mask_image(x,y,z)
       if val!=current_val {
         v.x = x; v.y = y; v.z = z; v.val = current_val; v.newval = val
         ::backup_actions[::current_backup].push_back(&v)
+        ::mask_image.setpos(x,y,z)
         ::mask_image.set(val)
       }
       #printn " saved points : %1%" % ::backup_actions[::current_backup].size()
     }
 
+
     #---------------------------------------------------------------------------
     proc ::DrawFast( NUM x, NUM y, NUM z) \
     {
       if ::pencil_thickness==1 {
-        ::DrawPoint( x,y,z, ::draw_value[::paint_option])
+        if (::allow_undo) {
+          ::DrawPoint( x,y,z, ::draw_value[::paint_option])
+        } else {
+          ::mask_image.setpos(x,y,z)
+          ::mask_image.set(::draw_value[::paint_option])
+        }
       } else {
         min_t = floor((FLOAT)::pencil_thickness/2-0.1)
         max_t = floor((FLOAT)::pencil_thickness/2)
@@ -344,10 +352,16 @@ if (!exists(ImageDrawClass)) {
           max_x = min(::input.tx-1,x+max_t)
           min_y = max(0,y-min_t)
           max_y = min(::input.ty-1,y+max_t)
-          for i=min_x to max_x {
-            for j=min_y to max_y {
-              ::DrawPoint(i,j,z,val)
+          if (::allow_undo) {
+            for i=min_x to max_x {
+              for j=min_y to max_y {
+                ::DrawPoint(i,j,z,val)
+              }
             }
+          } else {
+            subim = ::mask_image[min_x:max_x,min_y:max_y,z:z]
+            subim = val
+            ::mask_image.putimage(subim)
           }
         } else {
           if ::_slice == 1 {
@@ -841,6 +855,8 @@ if (!exists(ImageDrawClass)) {
 
           ::win.AddBoolean(&::enable_draw, "Enable draw")
           ::win.SetCallback(&::Display)
+
+          ::win.AddBoolean(&::allow_undo, "Allow undo")
  
           ::options_id  = ::win.AddEnum( &::paint_option,"Paint")
           for n=0 to ::options.size()-1 { 
