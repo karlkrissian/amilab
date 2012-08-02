@@ -857,6 +857,8 @@ if (!exists(ImageDrawClass)) {
       del ::input_denoising_ROI
       ::input_denoising_ROI <<= ::input[xmin:xmax,ymin:ymax,\
                                       (z-zmargin):(z+zmargin)]
+      ::input_denoising_ROI.info
+      del ::denoise
       # call denoising
       ::AnisoGS_NRADClass ::denoise
       ::denoise.set_input(::input_denoising_ROI)
@@ -865,6 +867,7 @@ if (!exists(ImageDrawClass)) {
       ::denoise.params.noise_estim_neigh = 2 # small to avoid problems
       ::denoise.params.use_new_convolution_filter = true
       ::denoise.params.eigendecomp_mode = 1 # new faster code
+      ::denoise.params.display_evolution = false # avoid own display
       ::denoise.Filter()
       del ::input_denoising_res
       ::input_denoising_res <<= ::denoise->res
@@ -873,6 +876,18 @@ if (!exists(ImageDrawClass)) {
       del ::denoise
       show ::input
     }
+
+    #---------------------------------------------------------------------------
+    # Redefinition of Close to restore denoised ROI
+    #
+    proc ::Close() {
+      ::show_local_denoising = false
+      ::ShowLocalDenoising()
+      ::win.HidePanel()
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+
 
     #---------------------------------------------------------------------------
     proc ::Gui() {
@@ -898,23 +913,27 @@ if (!exists(ImageDrawClass)) {
             ::win.SetCallback(::CB_mask_image)
           ::win.EndBoxPanel()
 
-          ::win.AddButton("Display",    &::Display)
+          ::win.BeginHorizontal()
+            ::win.AddButton("Display",    &::Display)
 
-          ::win.AddColor( "Mask color", &::mask_color)
-          ::win.SetCallback(&::OnColor)
+            ::win.AddColor( "Mask color", &::mask_color)
+            ::win.SetCallback(&::OnColor)
+          ::win.EndHorizontal()
+            
 
           ::win.AddInt(&::mask_opacity,"Opacity",0,255)
           ::win.SetCallback(&::OnOpacity)
 
           ::win.BeginHorizontal()
-            ::win.AddBoolean(&::enable_mask, "Enable label")
+            ::win.AddBoolean(&::enable_mask, "Mask")
             ::win.SetCallback(&::OnEnableMask)
 
-            ::win.AddBoolean(&::enable_draw, "Enable draw")
+            ::win.AddBoolean(&::enable_draw, "Draw")
             ::win.SetCallback(&::Display)
+            
+            ::win.AddBoolean(&::allow_undo, "Undo")
           ::win.EndHorizontal()
 
-          ::win.AddBoolean(&::allow_undo, "Allow undo")
  
           ::options_id  = ::win.AddEnum( &::paint_option,"Paint")
           for n=0 to ::options.size()-1 { 

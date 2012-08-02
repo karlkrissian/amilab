@@ -5,7 +5,7 @@ namespace ami {
   
   template <> ImageExtent<int>::ImageExtent(InrImage* im)
   {
-    printf("ImageExtent<int>(InrImage* im)\n");
+    //printf("ImageExtent<int>(InrImage* im)\n");
     extent[0][0] = 0;
     extent[1][0] = 0;
     extent[2][0] = 0;

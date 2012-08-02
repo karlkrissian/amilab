@@ -85,6 +85,9 @@ if (!exists(AnisoGS_NRADClass)) {
 
         ::nb_threads = INT(wx.wxThread.GetCPUCount()), "Number of threads"
 
+        ::display_evolution = UCHAR(1), "Display evolution"
+        ::show_timing       = UCHAR(1), "Show timing"
+
         #-----------------------------------------------------------------------
         proc ::__assign__( OBJECT p) {
           printn "__assign__"
@@ -107,6 +110,8 @@ if (!exists(AnisoGS_NRADClass)) {
           ::nb_threads            = p.nb_threads
           ::noise_estim_neigh     = p.noise_estim_neigh
           ::use_linearinterp      = p.use_linearinterp
+          ::display_evolution     = p.display_evolution
+          ::show_timing           = p.show_timing
         }
         #-----------------------------------------------------------------------
         proc ::__copy__( ) {
@@ -131,6 +136,8 @@ if (!exists(AnisoGS_NRADClass)) {
           newp.nb_threads            = ::nb_threads
           newp.noise_estim_neigh     = ::noise_estim_neigh
           newp.use_linearinterp      = ::use_linearinterp
+          newp.display_evolution     = ::display_evolution
+          newp.show_timing           = ::show_timing
           return = &newp
         }
     }
@@ -267,6 +274,8 @@ if (!exists(AnisoGS_NRADClass)) {
       ::NRADfilter.Settrace_voxel_y(::trace_voxel_y)
       ::NRADfilter.Settrace_voxel_z(::trace_voxel_z)
 
+      ::NRADfilter.Setshow_timing(::params.show_timing)
+
       ::NRADfilter.SetST_sigma1(::params.ST_sigma1)
       ::NRADfilter.SetST_sigma2(::params.ST_sigma2)
 
@@ -331,7 +340,7 @@ if (!exists(AnisoGS_NRADClass)) {
           new_s2 = max(1.2*1.2,::params.ST_sigma2*::params.ST_sigma2-_t*_t)
           new_s1 = sqrt(new_s1)
           new_s2 = sqrt(new_s2)
-          printn "new_s1 = %1%, " % new_s1 + "new_s2 = %1% " % new_s2
+          #printn "new_s1 = %1%, " % new_s1 + "new_s2 = %1% " % new_s2
           ::NRADfilter.SetST_sigma1(new_s1)
           ::NRADfilter.SetST_sigma2(new_s2)
 
@@ -365,8 +374,10 @@ if (!exists(AnisoGS_NRADClass)) {
             #::ComputeMSE(::res);
           #}
           SetProgress((FLOAT)k/numit*100)
-          show ::res
-          ProcessXEvents(50)
+          if (::params.display_evolution) {
+            show ::res
+            ProcessXEvents(50)
+          }
 
           if (::evaluate) {
             ::im_diff.SetInput(&::res)

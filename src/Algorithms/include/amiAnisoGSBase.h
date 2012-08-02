@@ -330,6 +330,9 @@ namespace ami {
     InrImage::ptr Get_eigenvect2_zp() { return eigenvect2_zp; }
     InrImage::ptr Get_eigenvect3_zp() { return eigenvect3_zp; }
 
+    /// Show timing
+    AddSetGetVar(show_timing,bool)
+
     /// Structure Tensor parameters
     AddSetGetVar(ST_sigma1,float)
     AddSetGetVar(ST_sigma2,float)
@@ -473,6 +476,8 @@ namespace ami {
       trace_voxel_x = -1;
       trace_voxel_y = -1;
       trace_voxel_z = -1;
+      
+      show_timing = true;
 
       ST_sigma1 = 0.7;
       ST_sigma2 = 1;

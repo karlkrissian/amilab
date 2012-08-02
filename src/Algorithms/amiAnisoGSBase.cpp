@@ -476,7 +476,7 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
   Timing Smoothing_timing;
   Timing Smoothing_timing2;
   
-  std::cout << "Begin ami::AnisoGSBase::ComputeStructureTensor()" << std::endl;
+//  std::cout << "Begin ami::AnisoGSBase::ComputeStructureTensor()" << std::endl;
 //std::cout << "*" << std::endl;
   printf("sig1 %f sig2 %f \n",sigma_1,sigma_2);
 //std::cout << "*" << std::endl;
@@ -564,7 +564,8 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
   //std::cout << "CalculFiltres()" << std::endl;
   filtre->CalculFiltres( );
   gradient_timing.Fin();
-  std::cout << "gradient timing " << gradient_timing << std::endl;
+  if (show_timing)
+    std::cout << "gradient timing " << gradient_timing << std::endl;
 
   // Calcul des coefficients du tenseur non liss�
   Tensor_timing.Debut();
@@ -629,7 +630,8 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
   } // endfor
 
   Tensor_timing.Fin();
-  std::cout << "Tensor_timing " << Tensor_timing << std::endl;
+  if (show_timing)
+    std::cout << "Tensor_timing " << Tensor_timing << std::endl;
 
   filtre.reset();
 
@@ -677,16 +679,19 @@ void ami::AnisoGSBase::ComputeStructureTensor(InrImage* im, float sigma_1,
     }
   }
   Smoothing_timing.Fin();
-  std::cout << "Smoothing_timing " << Smoothing_timing << std::endl;
-  std::cout << "Smoothing_timing2 " << std::endl;
-  Smoothing_timing2.AfficheCumul(std::cout);
+  if (show_timing) {
+    std::cout << "Smoothing_timing " << Smoothing_timing << std::endl;
+    std::cout << "Smoothing_timing2 " << std::endl;
+    Smoothing_timing2.AfficheCumul(std::cout);
+  }
 
   if (image!=im) delete image;
 
   structtensor_time.Fin();
   structtensor_time.AddCumul();
-  std::cout << "End ami::AnisoGSBase::ComputeStructureTensor()" << std::endl;
-  std::cout << structtensor_time << std::endl;
+//  std::cout << "End ami::AnisoGSBase::ComputeStructureTensor()" << std::endl;
+  if (show_timing) 
+    std::cout << structtensor_time << std::endl;
 
 } // ComputeStructureTensor()
 
@@ -795,7 +800,8 @@ eigenvect_zp->Sauve();
   eigendecomp_time.AddCumul();
   
   //std::cout << "End ami::AnisoGSBase::ComputeEigenVectors()" << std::endl;
-  std::cout << eigendecomp_time << std::endl;
+  if (show_timing)
+    std::cout << eigendecomp_time << std::endl;
 }
 
 
@@ -905,7 +911,8 @@ void ami::AnisoGSBase::ComputeEigenVectors_new()
   eigendecomp_time.AddCumul();
   
   //std::cout << "End ami::AnisoGSBase::ComputeEigenVectors_new()" << std::endl;
-  std::cout << eigendecomp_time << std::endl;
+  if (show_timing)
+    std::cout << eigendecomp_time << std::endl;
 }
 
 
@@ -1132,10 +1139,16 @@ void ami::AnisoGSBase::GetVectors( int coord, int x, int y, int z,
       e1.x = ev2_buf[0];
       e1.y = ev2_buf[1];
       e1.z = ev2_buf[2];
+      if (e1.x!=e1.x) {
+        std::cout << "Numerical problem e1" << std::endl;
+      }
 
       e2.x = ev3_buf[0];
       e2.y = ev3_buf[1];
       e2.z = ev3_buf[2];
+      if (e2.x!=e2.x) {
+        std::cout << "Numerical problem e2" << std::endl;
+      }
     }
 
     e0.x = e1.y*e2.z-e1.z*e2.y;
@@ -1198,6 +1211,7 @@ void ami::AnisoGSBase::GetVectors( int coord, int x, int y, int z,
     e2.y = vep_d[1][i2];
     e2.z = vep_d[2][i2];
   }
+  
 }
 
 // 
