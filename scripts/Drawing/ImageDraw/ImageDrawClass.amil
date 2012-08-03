@@ -68,6 +68,9 @@ if (!exists(ImageDrawClass)) {
       ::show_local_denoising  = UCHAR(1), "Show denoising locally"
 
       ::allow_undo = UCHAR(1), "Enable Undo/Redo"
+      
+      ::denoise_thickness = INT(3), "Denoising ROI will include the current XY slice +/- this value"
+      
       # TODO: backups
       ::backup_actions = VarVector()
       ::max_backups = 50
@@ -659,6 +662,13 @@ if (!exists(ImageDrawClass)) {
         n=0
         fileexists=true
         filename0 = ::GetMaskFilename()
+
+#now = wx.wxDateTime.Now()
+#> printn now.GetDay()
+#> printn now.GetMonth()
+#> printn now.GetHour()
+#> printn now.GetMinute()
+
         while fileexists {
           n++
           filename = ::scriptdata_path+"/"+filename0+"_manual%1%.ami.gz" % n
@@ -852,7 +862,7 @@ if (!exists(ImageDrawClass)) {
       ymax = ::input_draw.GetYmax()
       z = ::input_draw.GetZPos()
       # set small Z interval
-      zmargin=3
+      zmargin=::denoise_thickness
       # save original data
       del ::input_denoising_ROI
       ::input_denoising_ROI <<= ::input[xmin:xmax,ymin:ymax,\
@@ -964,6 +974,7 @@ if (!exists(ImageDrawClass)) {
               ::win.SetCallback(::ShowLocalDenoising)
               ::win.AddButton("Compute",::ComputeLocalDenoising)
             ::win.EndHorizontal()
+            ::win.AddInt(::denoise_thickness,"Thickness",1,10)
           ::win.EndBoxPanel()
  
           ::AddIOPage(::win)

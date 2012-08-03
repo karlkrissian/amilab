@@ -41,6 +41,8 @@ wxCursor
 wxDC
 wxDateSpan
 wxDateTime
+wxDateTime::TimeZone
+wxDateTime::Tm
 wxDialog
 wxDir
 wxDrawObject

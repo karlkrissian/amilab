@@ -16,3 +16,4 @@
 #include <wx/slider.h>
 #include <wx/stattext.h>
 #include <wx/tipdlg.h>
+#include <wx/utils.h>

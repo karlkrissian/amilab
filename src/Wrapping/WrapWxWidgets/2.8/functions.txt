@@ -75,3 +75,11 @@ wxGetUserHome
 wxGetUserId
 wxGetUserName
 
+
+#
+# Time functions
+# 
+wxNow
+wxSleep
+wxMilliSleep
+wxMicroSleep

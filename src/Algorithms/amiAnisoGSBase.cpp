@@ -1140,14 +1140,24 @@ void ami::AnisoGSBase::GetVectors( int coord, int x, int y, int z,
       e1.y = ev2_buf[1];
       e1.z = ev2_buf[2];
       if (e1.x!=e1.x) {
-        std::cout << "Numerical problem e1" << std::endl;
+        std::cout << "Numerical problem e1 at " 
+                  << "(" << x << "," << y << "," << z << ") " 
+                  <<", setting to(1,0,0)" << std::endl;
+        e1.x = 1;
+        e1.y = 0;
+        e1.z = 0;
       }
 
       e2.x = ev3_buf[0];
       e2.y = ev3_buf[1];
       e2.z = ev3_buf[2];
       if (e2.x!=e2.x) {
-        std::cout << "Numerical problem e2" << std::endl;
+        std::cout << "Numerical problem e2 at " 
+                  << "(" << x << "," << y << "," << z << ") " 
+                  << ", setting (0,1,1)" << std::endl;
+        e2.x = 0;
+        e2.y = 1;
+        e2.z = 0;
       }
     }
 

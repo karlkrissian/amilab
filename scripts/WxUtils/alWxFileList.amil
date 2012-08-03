@@ -248,6 +248,7 @@ Class alWxFileList \
 
   #-----------------------------------------------------------------------------
   proc ::AddToList( NUM pathid, STRING subpath, STRING disksize, \
+                    STRING modif_time,\
                     STRING filename) \
   {
     n = ::listctrl.GetItemCount()
@@ -256,6 +257,7 @@ Class alWxFileList \
     ::listctrl.SetItem(pos,1,"%1%"%filename)
     ::listctrl.SetItem(pos,2,"%1%"%pathid)
     ::listctrl.SetItem(pos,3,"%1%"%disksize)
+    ::listctrl.SetItem(pos,4,"%1%"%modif_time)
   }
 
 
@@ -276,20 +278,23 @@ Class alWxFileList \
       # and while there are still files to process
       files_info = VarVector()
       sum_size = 0
+      wxT = &wx.FromWxString
 
       for n=0 to ::file_specs.size()-1 \
       {
         process = nextDir.GetFirst(&nextFile, ::file_specs[n], wx.wxDIR_FILES)
         while process {
-          nfile = wx.FromWxString(&nextFile)
-          sum_size = sum_size + wx.wxFileName(dirpath+"/"+nfile)\
-                                    .GetSize().ToDouble()
-          fsize = wx.FromWxString(wx.wxFileName(dirpath+"/"+nfile)\
-                                    .GetHumanReadableSize())
+          nfile = wxT(&nextFile)
+          del wxfile
+          wxfile = wx.wxFileName(dirpath+"/"+nfile)
+          sum_size = sum_size + wxfile.GetSize().ToDouble()
+          fsize = wxT(wxfile.GetHumanReadableSize())
           ::scan_count++
           files_info.push_back(indent+"%1%" % nfile + " \t%1%"%fsize)
 
-          ::AddToList( pathid, subpath, fsize,nfile)
+          modif_date = wxT(wxfile.GetModificationTime().FormatDate())
+          modif_time = wxT(wxfile.GetModificationTime().FormatTime())
+          ::AddToList( pathid, subpath, fsize, modif_date+"; "+modif_time, nfile)
           # and get the next file
           process = nextDir.GetNext(&nextFile);
         }
@@ -350,6 +355,8 @@ Class alWxFileList \
     ::listctrl.SetColumnWidth(0, wx.wxLIST_AUTOSIZE)
     ::listctrl.SetColumnWidth(1, wx.wxLIST_AUTOSIZE)
     ::listctrl.SetColumnWidth(2, wx.wxLIST_AUTOSIZE)
+    ::listctrl.SetColumnWidth(3, wx.wxLIST_AUTOSIZE)
+    ::listctrl.SetColumnWidth(4, wx.wxLIST_AUTOSIZE)
   }
 
   #-----------------------------------------------------------------------------
@@ -365,6 +372,7 @@ Class alWxFileList \
         ::listctrl.InsertColumn_2(1,"File")
         ::listctrl.InsertColumn_2(2,"Path ID")
         ::listctrl.InsertColumn_2(3,"Description")
+        ::listctrl.InsertColumn_2(4,"Date")
 
         # connect event
         ::evh_selected = wx.wxAmiEventHandler(&::CB_ListItemSelected)
