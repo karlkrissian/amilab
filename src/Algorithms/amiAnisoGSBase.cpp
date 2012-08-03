@@ -808,7 +808,7 @@ eigenvect_zp->Sauve();
 //------------------------------------------------------------------------------
 void ami::AnisoGSBase::ComputeEigenVectors_new()
 {
-  //std::cout << "Begin ami::AnisoGSBase::ComputeEigenVectors_new()" << std::endl;
+  std::cout << "Begin ami::AnisoGSBase::ComputeEigenVectors_new()" << std::endl;
   eigendecomp_time.Debut();
 
   if (!eigenvect2_xp.get()) 
@@ -910,7 +910,7 @@ void ami::AnisoGSBase::ComputeEigenVectors_new()
   eigendecomp_time.Fin();
   eigendecomp_time.AddCumul();
   
-  //std::cout << "End ami::AnisoGSBase::ComputeEigenVectors_new()" << std::endl;
+  std::cout << "End ami::AnisoGSBase::ComputeEigenVectors_new()" << std::endl;
   if (show_timing)
     std::cout << eigendecomp_time << std::endl;
 }

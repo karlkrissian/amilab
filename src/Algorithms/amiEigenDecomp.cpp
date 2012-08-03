@@ -249,17 +249,34 @@ void EigenDecomp::TemplateProcess( int threadid)
               evect1_ptr[0] = vec_propre[0][0];
               evect1_ptr[1] = vec_propre[1][0];
               evect1_ptr[2] = vec_propre[2][0];
+              if (evect1_ptr[0]!=evect1_ptr[0]) {
+                std::cout << "EigenDecomp::TemplateProcess() \t "
+                          << "Numerical Problem with evect1"
+                          << std::endl;
+                matrix.PrintSelf();
+              }
             }
             if (eigenvector2.get()) {
               evect2_ptr[0] = vec_propre[0][1];
               evect2_ptr[1] = vec_propre[1][1];
               evect2_ptr[2] = vec_propre[2][1];
+              if (evect2_ptr[0]!=evect2_ptr[0]) {
+                std::cout << "EigenDecomp::TemplateProcess() \t "
+                          << "Numerical Problem with evect2"
+                          << std::endl;
+                matrix.PrintSelf();
+              }
             }
             
             if (eigenvector3.get()) {
               evect3_ptr[0] = vec_propre[0][2];
               evect3_ptr[1] = vec_propre[1][2];
               evect3_ptr[2] = vec_propre[2][2];
+              if (evect3_ptr[0]!=evect3_ptr[0]) {
+                std::cout << "EigenDecomp::TemplateProcess() \t "
+                          << "Numerical Problem with evect3"
+                          << std::endl;
+              }
             }
           } else // Diagonal
           {

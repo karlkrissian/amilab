@@ -192,9 +192,18 @@ Class alWxFileList \
                               wx.wxYES | wx.wxNO | wx.wxCANCEL);
     if (answer == wx.wxYES) {
       # rename
-      newfilename = wx.wxFileName(currentfullpath)
-      newfilename.SetFullName("bak."+wx.FromWxString(currentname))
-      ok = wx.wxRenameFile(currentfullpath,newfilename.GetFullPath(),false)
+      backupfilename = wx.wxFileName(currentfullpath)
+      backupfilename.SetFullName("bak."+wx.FromWxString(currentname))
+      if backupfilename.FileExists() {
+        answer = wx.wxMessageBox("Delete file %1%?" % \
+                            wx.FromWxString(backupfilename.GetFullPath()), \
+                              "Confirm",\
+                              wx.wxYES | wx.wxNO | wx.wxCANCEL)
+        if (answer==wx.wxYES) {
+          wx.wxRemoveFile(backupfilename.GetFullPath())
+        }
+      }
+      ok = wx.wxRenameFile(currentfullpath,backupfilename.GetFullPath(),false)
       if (ok) {
         ::Scan()
       }

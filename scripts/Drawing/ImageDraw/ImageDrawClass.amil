@@ -59,6 +59,10 @@ if (!exists(ImageDrawClass)) {
       ::z = INT(0)
       ::_slice = INT(0)
       
+      ::enable_draw_range = UCHAR(0), "Enable/disable drawing intensity range"
+      ::draw_range_min = INT(0   ), "Minimal intensity for drawing"
+      ::draw_range_max = INT(1000), "Maximal intensity for drawing"
+      
       ::rg_current_slice = UCHAR(1), "Apply Region Growing on current slice"
       ::rg_current_zoom  = UCHAR(1), "Apply Region Growing on zoom"
       ::rg_min_intensity = 0, "minimal intensity for Region Growing"
@@ -106,8 +110,15 @@ if (!exists(ImageDrawClass)) {
       if (exists(::win)) {
         m = min(::input)
         M = max(::input)
+        # Region Growing Intensity Range
         ::win.FloatConstraints(::rgminint_id,m,M,m)
         ::win.FloatConstraints(::rgmaxint_id,m,M,M)
+
+        # Drawing Intensity Range
+        ::draw_range_min = m
+        ::draw_range_max = M
+        ::win.FloatConstraints(::rangemin_id,m,M,m)
+        ::win.FloatConstraints(::rangemax_id,m,M,M)
         ::win.Update(-1)
       }
     }
@@ -216,7 +227,7 @@ if (!exists(ImageDrawClass)) {
           if (::pencil_thickness<20) { ::pencil_thickness++;}
         }
         if rot<0 {
-          if (::pencil_thickness>0) { ::pencil_thickness--;}
+          if (::pencil_thickness>1) { ::pencil_thickness--;}
         }
         ::input_draw.update()
         ::win.Update(::pencil_thickness_id)
@@ -329,13 +340,19 @@ if (!exists(ImageDrawClass)) {
     # take care of backups
     proc ::DrawPoint( NUM x, NUM y, NUM z, NUM val) \
     {
-      ::backup_voxel v
-      current_val = ::mask_image(x,y,z)
-      if val!=current_val {
-        v.x = x; v.y = y; v.z = z; v.val = current_val; v.newval = val
-        ::backup_actions[::current_backup].push_back(&v)
-        ::mask_image.setpos(x,y,z)
-        ::mask_image.set(val)
+      if (::enable_draw_range) {
+        inval = ::input(x,y,z)
+        ok = (inval>=::draw_range_min) && (inval<=::draw_range_max) 
+      } else { ok = true; }
+      if (ok) {
+        ::backup_voxel v
+        current_val = ::mask_image(x,y,z)
+        if val!=current_val {
+          v.x = x; v.y = y; v.z = z; v.val = current_val; v.newval = val
+          ::backup_actions[::current_backup].push_back(&v)
+          ::mask_image.setpos(x,y,z)
+          ::mask_image.set(val)
+        }
       }
       #printn " saved points : %1%" % ::backup_actions[::current_backup].size()
     }
@@ -613,23 +630,6 @@ if (!exists(ImageDrawClass)) {
 
     }
 
-    #---------------------------------------------------------------------------
-    # Redefinition of Close to close the toolbar
-    #
-    proc ::Close() \
-    {
-      ::win.HidePanel()
-      ::mgr.DetachPane(&::tb)
-      ::tb.Destroy()
-      del ::tb
-      ::mgr.Update()
-
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close,  "Will close the interface and delete the "+\
-                        "corresponding "+\
-                        "object named '"+GetObjectName(::Close)+"'.")
-
 
 
     #---------------------------------------------------------------------------
@@ -888,16 +888,24 @@ if (!exists(ImageDrawClass)) {
     }
 
     #---------------------------------------------------------------------------
-    # Redefinition of Close to restore denoised ROI
+    # Redefinition of Close to close the toolbar
     #
-    proc ::Close() {
+    proc ::Close() \
+    {
+      # restore denoised ROI
       ::show_local_denoising = false
       ::ShowLocalDenoising()
       ::win.HidePanel()
+      ::mgr.DetachPane(&::tb)
+      ::tb.Destroy()
+      del ::tb
+      ::mgr.Update()
+
       delvars GetObjectName(::Close)
     }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-
+    Comments( ::Close,  "Will close the interface and delete the "+\
+                        "corresponding "+\
+                        "object named '"+GetObjectName(::Close)+"'.")
 
     #---------------------------------------------------------------------------
     proc ::Gui() {
@@ -943,6 +951,12 @@ if (!exists(ImageDrawClass)) {
             
             ::win.AddBoolean(&::allow_undo, "Undo")
           ::win.EndHorizontal()
+          
+          ::win.BeginBoxPanel("Drawing intensity range")
+            ::win.AddBoolean(::enable_draw_range,"Enable")
+            ::rangemin_id = ::win.AddInt(::draw_range_min,"min",-1000,3000)
+            ::rangemax_id = ::win.AddInt(::draw_range_max,"max",-1000,3000)
+          ::win.EndBoxPanel()
 
  
           ::options_id  = ::win.AddEnum( &::paint_option,"Paint")
@@ -954,7 +968,7 @@ if (!exists(ImageDrawClass)) {
           ::pencil_thickness_id = ::win.AddInt( &::pencil_thickness,\
                                                 "Thickness",1,20)
 
-          
+        ::win.AddPage("Tools")
           ::win.BeginBoxPanel("RegionGrowing")
             ::rgminint_id = ::win.AddFloat( ::rg_min_intensity,\
                                             "min intensity",0,100)
