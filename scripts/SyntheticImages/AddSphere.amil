@@ -41,11 +41,17 @@ if (!exists(AddSphereClass)) {
       _dx = x-(INT)x
       _dy = y-(INT)y
       _dz = z-(INT)z
-      radx=(INT) (2*(rad+0.99)/_vx)
-      rady=(INT) (2*(rad+0.99)/_vy)
-      radz=(INT) (2*(rad+0.99)/_vz)
+      radx=(INT) (2.0*rad/_vx+0.99)
+      rady=(INT) (2.0*rad/_vy+0.99)
+      radz=(INT) (2.0*rad/_vz+0.99)
+      printn "rad = %1%" % rad
+      printn "_vx = %1%" % _vx
+      printn radx
+      printn rady
+      printn radz
       if (im.tz>1) {
         sph = im[(x-radx):(x+radx),(y-rady):(y+rady),(z-radz):(z+radz)]
+        sph.info
         px = (FLOAT) Xpos(sph)-(radx+_dx)
         py = (FLOAT) Ypos(sph)-(rady+_dy)
         pz = (FLOAT) Zpos(sph)-(radz+_dz)
@@ -58,6 +64,7 @@ if (!exists(AddSphereClass)) {
         sph =  exp(-sph*sph)*(_I2-_I1) + _I1
         # set as max
         sim = im[sph.GetExtent]
+        sim.info
         sim = max(sim,sph)
         im.putimage(sim)
       } else {

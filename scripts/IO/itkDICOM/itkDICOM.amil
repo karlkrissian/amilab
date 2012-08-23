@@ -223,6 +223,12 @@ if (!exists(DICOMClass)) {
     }
 
     #---------------------------
+    proc ::DisplayLoaded() \
+    {
+      eval "show ::%1%;" % ::image_name
+    }
+    
+    #---------------------------
     proc ::Gui() \
     {
       ::win = ParamPanel("DICOM")
@@ -242,12 +248,15 @@ if (!exists(DICOMClass)) {
           ::win.EndBoxPanel()
           
           ::win.BeginHorizontal()
-            ::win.AddButton("Scan",&::Scan)
             ::win.AddButton("Run",&::Run)
             ::win.AddButton("Copy to global",&::Copy)
             ::win.AddButton("Display",&::Display)
           ::win.EndHorizontal()
-          ::win.AddButton("LoadSelected",&::LoadSelected)
+          ::win.BeginHorizontal()
+            ::win.AddButton("Scan",&::Scan)
+            ::win.AddButton("LoadSelected",&::LoadSelected)
+            ::win.AddButton("Display",&::DisplayLoaded)
+          ::win.EndHorizontal()
           ::win.AddInt(&::scan_level,"scan_level",1,10)
 
           ::win.BeginBook()

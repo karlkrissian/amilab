@@ -34,7 +34,7 @@ if (!exists(ImageResampleClass)) {
     #-----------------------------------------------
     proc ::load_input() {
       del ::input_draw
-      eval "::input <<= (FLOAT)"+::input_name+";"
+      eval "::input <<= "+::input_name+";"
       if (::input_name=="BrowseImage") {
         ::input_name = "::input"
         ::win.Update(-1)
