@@ -25,7 +25,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "myDataViewModels.h"
+#include "AMILabTreeModel.h"
 
 ///@cond wxCHECK
 #if wxCHECK_VERSION(2,9,0)

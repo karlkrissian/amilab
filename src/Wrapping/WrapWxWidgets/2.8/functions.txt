@@ -77,9 +77,15 @@ wxGetUserName
 
 
 #
+# Miscellaneous functions
+#
+wxNewId
+
+#
 # Time functions
 # 
 wxNow
 wxSleep
 wxMilliSleep
 wxMicroSleep
+

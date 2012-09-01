@@ -95,7 +95,7 @@ Class PreviewerClass \
   proc ::LoadCurves() \
   {
     #::pathname=wx.FromWxString(wx.wxFileName.GetCwd())
-    pathname=GetScriptsDir+"Visualization/Volren/"
+    pathname=GetScriptsDir+"Visualization/VolRen/"
             #wx.FromWxString(wx.wxFileName.GetPathSeparator())+\
             #+"VolRen"+wx.FromWxString(wx.wxFileName.GetPathSeparator())
     #printn pathname
@@ -382,7 +382,7 @@ Class PreviewerClass \
   #-----------------------------------------------------------------------------
   proc ::OnEnter1( OBJECT event) \
   {
-    ::active_window=event.GetId()-10000
+    ::active_window=event.GetId()-::wxvtk_id
     event.Skip()
   }
 
@@ -390,7 +390,7 @@ Class PreviewerClass \
   proc ::OnChoiceW(OBJECT event) \
   {
     w= event.GetWindow()
-    ::active_window=w.GetId()-10000
+    ::active_window=w.GetId()-::wxvtk_id
     if (::isAvailable[::active_window]){
       if(::apply_window!=::active_window){
 

@@ -19,7 +19,7 @@
 
 #include <wx/dataview.h>
 
-#include "myDataViewNodes.h"
+#include "AMILabTreeModelNode.h"
 
 /**
   * @brief  Models for render on the wxDataViewCtrl wxWidgets

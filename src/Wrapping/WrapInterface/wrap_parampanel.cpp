@@ -261,9 +261,14 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_BeginBoxPanel::CallMember( ParamLi
   if (!get_val_ptr_param<std::string>( label,  p, n)) 
     ClassHelpAndReturn;
 
+  int id;
+#if wxCHECK_VERSION(2,9,0)
+  id = this->_objectptr->GetObj()->BeginBox( label->c_str());
+#else
   this->_objectptr->GetObj()->BeginBox( label->c_str());
-  int id = this->_objectptr->GetObj()->BeginPanel( label->c_str());
-
+  id = this->_objectptr->GetObj()->BeginPanel( label->c_str());
+#endif
+  
   // create integer variable to return
   RETURN_VARINT(id,label->c_str());
 }
@@ -276,8 +281,12 @@ void WrapClass_ParamPanel::wrap_EndBoxPanel::SetParametersComments(){}
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_ParamPanel::wrap_EndBoxPanel::CallMember( ParamList* p)
 {
+#if wxCHECK_VERSION(2,9,0)
+  this->_objectptr->GetObj()->EndBox( );
+#else
   this->_objectptr->GetObj()->EndPanel();
   this->_objectptr->GetObj()->EndBox( );
+#endif
   return BasicVariable::ptr();
 }
 

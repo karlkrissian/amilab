@@ -1269,10 +1269,11 @@ int ParamPanel::BeginBox( const char* boxname)
 #if wxCHECK_VERSION(2,9,0)
   _panels.push( sb);
 #endif
-  
+
   wxStaticBoxSizer* sizer  = new wxStaticBoxSizer( sb, wxVERTICAL );
   _current_sizer.top()->Add(sizer, 0,wxEXPAND | wxALL, BoxBorder);
   _current_sizer.push(sizer);
+  
 
   return (int)_tab_boxes.size()-1;
 } // BeginBox

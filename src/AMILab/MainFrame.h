@@ -284,8 +284,8 @@ protected:
   wxMenu *menuVisualization;
   wxMenu *menuSyntheticImages;
 
-  int usermenu_id;
-  std::map<int,std::string> usermenu_scripts; // Scripts added to the menu by the user
+  long usermenu_id;
+  std::map<long,std::string> usermenu_scripts; // Scripts added to the menu by the user
 
   CustomStatusBar* _status_bar;
 

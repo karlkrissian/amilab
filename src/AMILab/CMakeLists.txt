@@ -65,7 +65,7 @@ SET(AMILab_SRCS
 #    wrap_StructureTensor.cpp
     xmtext.cpp
     MainFrame.cpp
-    myDataViewModels.cpp
+    AMILabTreeModel.cpp
     myDataViewCtrl.cpp
     myTreeCtrl.cpp
 )
@@ -93,8 +93,8 @@ SET (AMILab_HDRS
     Resize.hpp
     xmtext.hpp
     MainFrame.h
-    myDataViewNodes.h
-    myDataViewModels.h
+    AMILabTreeModelNode.h
+    AMILabTreeModel.h
     myDataViewCtrl.h
     myTreeCtrl.h
 )

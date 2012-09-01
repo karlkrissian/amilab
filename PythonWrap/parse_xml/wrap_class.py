@@ -327,6 +327,7 @@ class PublicMembers:
     self.StaticMethodNames=[]
     self.ConstructorNames=[]
     self.OperatorMethodNames=[]
+    self.ConverterMethodNames=[]
     self.Methods=[]
     self.Constructors=[]
     self.StaticMethods=[]
@@ -343,6 +344,7 @@ class GlobalMembers:
     #self.StaticMethodNames=[]
     #self.ConstructorNames=[]
     self.OperatorMethodNames=[]
+    self.ConverterMethodNames=[]
     self.Methods=[]
     #self.Constructors=[]
     #self.StaticMethods=[]
@@ -432,6 +434,7 @@ class ParsePublicMembers:
 
   #---------------------------------------------
   def CheckConverterName(self,method):
+    methodlist=self.public_members.ConverterMethodNames
     # need to create method convertor usedname
     maintypeid = config.types[method.returntype].GetMainTypeId()
     returntypest = config.types[maintypeid].GetString()
@@ -445,6 +448,12 @@ class ParsePublicMembers:
     self.method.usedname = "convert_"+opname
     self.method.usedname = self.method.usedname.replace('*','')
     self.method.usedname = self.method.usedname.replace(' ','_')
+
+    methodlist.append(opname)
+    num=methodlist.count(opname)
+    if num>1:
+      self.method.usedname = self.method.usedname+"{0}".format(num)
+    
     print "*** usedname = {0}".format(method.usedname)
     print "*** CheckConverterName --> {0}\n".format(self.method.usedname)
 

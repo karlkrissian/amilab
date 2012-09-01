@@ -94,6 +94,7 @@ members_blacklist=[
   'wxButton::GTKMouseLeaves',    # not define with wx 2.9.2
   'wxButton::GTKPressed',        # not define with wx 2.9.2
   'wxButton::GTKReleased',       # not define with wx 2.9.2
+  'wxAppConsoleBase::HandleEvent', # *func ? type not recognized probably
   'InternalTransformDerivative', # VTK: pointer to array ...
   'vtkPolyData::GetPointCells', # reference to pointer as parameter
   'vtkPolyData::GetCellPoints',  # idem

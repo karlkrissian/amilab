@@ -131,8 +131,8 @@ enum {
 };
 
 enum {
-    wxID_Images_History  = 1100,
-    wxID_Scripts_History = 1200
+    wxID_Images_History  = 2100,
+    wxID_Scripts_History = 2200
 };
 
 enum {
@@ -431,8 +431,6 @@ void MainFrame::CreateMenu()
   images_history->AddFilesToMenu();
   scripts_history->UseMenu(scripts_history_menu);
   scripts_history->AddFilesToMenu();
-
-  usermenu_id = 1000;
 
   menuFile = new wxMenu;
   menuFile->Append( ID_File_OpenImage,    GetwxStr("Open &image") );
@@ -2577,7 +2575,7 @@ void MainFrame::AddMenuScript(  const std::string& script_category,
 {
   wxMenu* parent = menuScripts;
 
-  usermenu_id++;
+  usermenu_id = wxNewId();
   usermenu_scripts[usermenu_id] = script_name;
   // first try to find the menu corresponding to the given category
   int menuid = menuScripts->FindItem(wxString(script_category.c_str(), wxConvUTF8));
@@ -2631,7 +2629,7 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
   wxMenu* current_menu = menuBar->GetMenu(menuid); // current main menu
   wxMenu* cat_menu = NULL; // category menu
 
-  usermenu_id++;
+  usermenu_id = wxNewId();
   usermenu_scripts[usermenu_id] = script_name;
   // first try to find the menu corresponding to the given category
   wxString menu_cat=wxString(script_category.c_str(), wxConvUTF8);
