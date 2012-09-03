@@ -55,10 +55,16 @@ def CreateHeaderFileMacros(inputfile,outputfile,headerfilename):
     found_macros=[]
     for line in headerfile:
       # limited to macros of type #define wxXXXX 0x9999 for the moment
-      findmacro = re.match(r"^\s*#define\s+(wx[_0-9a-zA-Z]+)\s*((0x[0-9]+)|([0-9]+))\s(//.*)*$",line)
+      findmacro = re.match(r"^\s*#define\s+(wx[_0-9a-zA-Z]+)\s*((0x[0-9]+)|([0-9]+))\s*(//.*)*$",line)
       if (findmacro!=None):
         found_macros.append(findmacro.group(1))
         #print "Found macro : ", findmacro.group(1), " = ", findmacro.group(2)
+      # allow macro defined from a previous one
+      findmacro = re.match(r"^\s*#define\s+(wx[_0-9a-zA-Z]+)\s*(wx[_0-9a-zA-Z]+)\s*(//.*)*$",line)
+      if (findmacro!=None):
+        if findmacro.group(2) in found_macros:
+          found_macros.append(findmacro.group(1))
+      
       
     if len(found_macros)>0:
       # add all the values

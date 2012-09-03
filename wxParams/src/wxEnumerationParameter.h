@@ -30,17 +30,26 @@
 typedef boost::shared_ptr<std::string>     string_ptr;
 
 #include <wx/choice.h>
+#include <wx/combobox.h>
 #include <wx/sizer.h>
 #include "widget.hpp"
+
+
+#if wxCHECK_VERSION(2,9,0)
+  #define CHOICE_CLASS wxComboBox
+  #define USING_COMBOBOX
+#else
+  #define CHOICE_CLASS wxChoice
+#endif
 
 class wxBitmapButtonParameter;
 
 //==============================================================================
 //==============================================================================
 /*!
-  \brief myChoice: inherit of wxChoice to add a callback for any value change.
+  \brief myChoice: inherit of CHOICE_CLASS to add a callback for any value change.
 */
-class myChoice: public wxChoice
+class myChoice: public CHOICE_CLASS
 {
   public:
     myChoice(wxWindow *parent, wxWindowID id,
@@ -50,7 +59,16 @@ class myChoice: public wxChoice
         long style = 0,
         const wxValidator& validator = wxDefaultValidator,
         const wxString& name = wxChoiceNameStr) :
-        wxChoice(parent,id,pos,size,n,choices,style,validator,name)        
+        CHOICE_CLASS( parent,id,
+#ifdef USING_COMBOBOX
+                      _T(""),
+#endif
+                      pos,size,n,choices,\
+                      style
+#ifdef USING_COMBOBOX
+                      |wxCB_READONLY
+#endif
+                      ,validator,name)
   { 
     _calldata = _callback = NULL;
     _updatelist_calldata = _updatelist_callback = NULL;
@@ -68,7 +86,7 @@ class myChoice: public wxChoice
      _updatelist_callback_functor=cb;
   }
 
-void OnChoiceUpdate( wxCommandEvent &WXUNUSED(event) )
+  void OnChoiceUpdate( wxCommandEvent &WXUNUSED(event) )
   {
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
@@ -80,6 +98,7 @@ void OnChoiceUpdate( wxCommandEvent &WXUNUSED(event) )
 
   void OnFocus( wxFocusEvent &event );
   void OnLeftDown( wxMouseEvent& event );
+  void OnEnterWindow(wxMouseEvent& event);
 
 protected:
   void* _callback;

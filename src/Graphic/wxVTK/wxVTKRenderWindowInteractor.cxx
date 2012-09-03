@@ -71,6 +71,11 @@ wxWindow* wxGetTopLevelParent(wxWindow *win)
   #    include "gdk/gdkprivate.h"
   #if wxCHECK_VERSION(2, 8, 0)
     #ifdef __WXGTK20__
+
+      #if  wxCHECK_VERSION(2, 9, 4)
+        #include <gtk/gtk.h>
+      #endif
+
       #if  wxCHECK_VERSION(2, 9, 0)
         #include <wx/gtk/private/win_gtk.h>
       #else

@@ -8,6 +8,7 @@
 #include <wx/arrstr.h>
 #include <wx/artprov.h> 
 #include <wx/aui/aui.h>
+#include <wx/combobox.h>
 #include <wx/ffile.h>
 #include <wx/grid.h>
 #include <wx/object.h>

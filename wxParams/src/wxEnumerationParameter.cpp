@@ -50,11 +50,16 @@ wxString GetwxStr(const std::string& str);
 //      wxEnumerationParameter
 //==============================================================================
 
-BEGIN_EVENT_TABLE(myChoice, wxChoice)
-//BEGIN_EVENT_TABLE(myChoice, wxComboBox)
-  EVT_CHOICE    (wxID_ANY,  myChoice::OnChoiceUpdate)
-  EVT_SET_FOCUS (myChoice::OnFocus)
-  EVT_LEFT_DOWN (myChoice::OnLeftDown)
+
+BEGIN_EVENT_TABLE(myChoice, CHOICE_CLASS)
+#ifdef USING_COMBOBOX
+  EVT_COMBOBOX     (wxID_ANY,  myChoice::OnChoiceUpdate)
+#else
+  EVT_CHOICE       (wxID_ANY,  myChoice::OnChoiceUpdate)
+#endif
+  EVT_SET_FOCUS    (myChoice::OnFocus)
+  EVT_LEFT_DOWN    (myChoice::OnLeftDown)
+  EVT_ENTER_WINDOW (myChoice::OnEnterWindow)
 END_EVENT_TABLE()
 
 //---------------------------------------------------------------
@@ -75,6 +80,17 @@ void myChoice::OnLeftDown(wxMouseEvent& event)
 }
 
 //---------------------------------------------------------------
+void myChoice::OnEnterWindow(wxMouseEvent& event)
+{
+  std::cout << "Enter Window..." << std::endl;
+  this->UpdateListCallback();
+//void (*cbf)( void*) = (void (*)(void*)) this->_callback;
+//  cbf(this->_calldata);
+  event.Skip();
+}
+
+
+  //---------------------------------------------------------------
 void myChoice::Callback()
 //
 {

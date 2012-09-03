@@ -59,6 +59,7 @@ class wxGauge;
 
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))
+  #define AMI_USE_DATAVIEW
   #include "myDataViewCtrl.h"
 #endif
 /// @endcond
@@ -222,10 +223,11 @@ public:
                       int rec_level, std::string varpath="");
 
 ///@cond wxCHECK
-#if (wxCHECK_VERSION(2,9,0))
+#ifdef AMI_USE_DATAVIEW
   void UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context);  
 #endif
 /// @endcond
+
   wxAuiNotebook* _param_book;
   wxPanel*       GetPromptPanel() { return _prompt_panel; }
   wxAuiNotebook* GetParamBook() { return _param_book; }
@@ -346,7 +348,7 @@ protected:
   std::set<std::string> expanded_items;
 
 ///@cond wxCHECK
-#if (wxCHECK_VERSION(2,9,0))
+#ifdef AMI_USE_DATAVIEW
   myDataViewCtrl* _var_dataview;
   wxObjectDataPtr<AMILabTreeModel> m_amilab_model; // the model associated.
 #endif
@@ -377,7 +379,7 @@ protected:
   void CreateAboutPanel       (wxWindow* parent);
 
 ///@cond wxCHECK
-#if wxCHECK_VERSION(2,9,0)
+#ifdef AMI_USE_DATAVIEW
   void CreateVarDataViewPanel ( wxWindow*);
 #endif
 /// @endcond  

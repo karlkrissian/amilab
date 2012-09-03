@@ -36,6 +36,7 @@ wxCmdLineParser
 wxCloseEvent
 wxColour
 wxCommandEvent
+wxComboBox
 wxControl
 wxCursor
 wxDC

@@ -20,9 +20,10 @@ def CreateVariables(outputfile,config):
     argtype = config.types[config.variables[v]]
     typeok  = argtype.IsConst() and \
       (argtype.GetString() in config.available_types or \
-       argtype.GetString() in config.available_classes)
+       argtype.GetString() in config.available_classes or \
+       argtype.GetString().startswith("wxEventTypeTag"))
     if namecheck:
-      #print "Type '{0}' for var {1}".format(argtype.GetString(),v)
+      #print "Type '{0}' for var {1}, ok={2}".format(argtype.GetString(),v,typeok)
       if typeok:
         #print "Found variable : ", v, " of type : ", argtype.GetString()
         found_variables.append(v)

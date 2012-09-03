@@ -162,7 +162,7 @@ ENDIF(AMI_USE_PRECOMP_HEADERS)
 SET(WrapWxWidgets_HDRS
   ../include/wrap_wxsamples.h
   ../include/wrap_wxfunctions.h
-  ${AMI_WXWIDGETS_VERSION}/wxAmiEventHandler.h
+  wxAmiEventHandler.h
   ${AMI_WXWIDGETS_VERSION}/wx_includes.h
   ${wx_HDRS}
 )

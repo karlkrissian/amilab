@@ -131,8 +131,8 @@ enum {
 };
 
 enum {
-    wxID_Images_History  = 2100,
-    wxID_Scripts_History = 2200
+    wxID_Images_History  = 20100,
+    wxID_Scripts_History = 20200
 };
 
 enum {
@@ -574,7 +574,7 @@ MainFrame::MainFrame( const wxString& title,
                   .MaximizeButton(true));
 
 /// @cond wxCHECK
-#if (wxCHECK_VERSION(2,9,0))
+#ifdef AMI_USE_DATAVIEW
   CreateVarDataViewPanel(this);
 #else
   CreateVarTreePanel(this);
@@ -1069,7 +1069,7 @@ void MainFrame::OnFileCtrl( wxFileCtrlEvent& event )
 ///@endcond
 
 ///@cond wxCHECK
-#if wxCHECK_VERSION(2,9,0)
+#ifdef AMI_USE_DATAVIEW
 //--------------------------------------------------------
 void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 {
@@ -1657,6 +1657,14 @@ void MainFrame::UpdateVarList()
 }
 
 
+#ifdef AMI_USE_DATAVIEW
+  #define TREE_VAR       m_amilab_model
+  #define TREE_ITEM_TYPE wxDataViewItem
+#else
+  #define TREE_VAR       _var_tree
+  #define TREE_ITEM_TYPE wxTreeItemId
+#endif
+
 //-----------------------------------------------------
 /**
  * @brief Update the information in the variable tree control, recursive.
@@ -1665,49 +1673,61 @@ void MainFrame::UpdateVarList()
  * @param context ...
  * @return void
  **/
-void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch, 
+void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch, 
                                 Variables::ptr context, int rec_level, 
                                 std::string varpath)
 {
   if (rec_level>MAX_VARTREE_LEVEL) return;
   
   // delete children of root
-  _var_tree->DeleteChildren(rootbranch);
+  TREE_VAR->DeleteChildren(rootbranch);
   boost::shared_ptr<wxArrayString> variables;
   BasicVariable::ptr emptyvar;
 
-  std::map<std::string,wxTreeItemId> categories_id;
+  std::map<std::string,TREE_ITEM_TYPE> categories_id;
   std::string cat[] = { "Images", "Surfaces", "Numbers", "Strings", 
                         "Functions", "Classes", "Objects", 
                         "Wrapped Image Functions", "Wrapped Procedures",
                         "Wrapped Var. Func.", "Others", ""
                       }; 
 
+#ifndef AMI_USE_DATAVIEW
   // create all the first branches
-  wxFont root_font = _var_tree->GetItemFont(rootbranch);
+  wxFont root_font = TREE_VAR->GetItemFont(rootbranch);
   wxColour vartype_colour = *wxBLUE;
   root_font.SetStyle(wxFONTSTYLE_ITALIC);
   root_font.SetWeight(wxLIGHT);
-
+#endif
+  
   int n=0;
   std::string current_cat;
-  wxTreeItemId current_id;
+  TREE_ITEM_TYPE current_id;
+
   while (cat[n]!="") 
   {
-    current_id =  _var_tree->AppendItem( rootbranch,
+#ifndef AMI_USE_DATAVIEW
+    current_id =  TREE_VAR->AppendItem( rootbranch,
                                          wxString(cat[n].c_str(), wxConvUTF8),
                                          -1,-1,
                                          new MyTreeItemData(emptyvar,varpath));
     categories_id[cat[n]] = current_id;
     _var_tree->SetItemFont(      current_id,root_font);
     _var_tree->SetItemTextColour(current_id,vartype_colour);
+#else
+    current_id = TREE_VAR->CreateBranchNode(rootbranch,
+                                              wxString(cat[n].c_str(), 
+                                                       wxConvUTF8));
+#endif
+    categories_id[cat[n]] = current_id;
     n++;
   }
 
+#ifndef AMI_USE_DATAVIEW
   root_font.SetFamily(wxFONTFAMILY_MODERN);
   //wxFONTSTYLE_NORMAL);
   root_font.SetWeight(wxNORMAL);
-  wxTreeItemId itemid;
+#endif
+  TREE_ITEM_TYPE itemid;
 
   // loop vars
   variables = boost::shared_ptr<wxArrayString>(new wxArrayString());
@@ -1720,7 +1740,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
     wxString type_str;
     BasicVariable::ptr var = context->GetVar((*variables)[i].mb_str());
 
-    wxTreeItemId append_id;
+    TREE_ITEM_TYPE append_id;
     std::string text;
     std::string valtext;
 
@@ -1799,25 +1819,46 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         append_id = categories_id[std::string("Others")];
       }
 
-      itemid = _var_tree->AppendItem(
+#ifndef AMI_USE_DATAVIEW
+      itemid = TREE_VAR->AppendItem(
             append_id,
             wxString(var->Name().c_str(), wxConvUTF8),
             -1,-1,
             new MyTreeItemData(var,varpath));
 
-      _var_tree->SetItemText(itemid,_vartree_col_type,
+      TREE_VAR->SetItemText(itemid,_vartree_col_type,
           wxString(var->GetTypeName().c_str(), wxConvUTF8));
 
       //_var_tree->SetItemToolTip(itemid,
       //    wxString(var->GetTypeName().c_str(), wxConvUTF8));
 
-      _var_tree->SetItemText(itemid,_vartree_col_val,
+      TREE_VAR->SetItemText(itemid,_vartree_col_val,
           wxString(valtext.c_str(), wxConvUTF8));
 
-      _var_tree->SetItemText(itemid,_vartree_col_desc,
+      TREE_VAR->SetItemText(itemid,_vartree_col_desc,
           wxString(text.c_str(), wxConvUTF8));
 
-      _var_tree->SetItemFont(itemid,root_font);
+      TREE_VAR->SetItemFont(itemid,root_font);
+#else
+      if ((var->Type() == type_ami_object)) {
+      {
+        itemid = TREE_VAR->CreateBranchNode(
+                  append_id,
+                  wxString(var->Name().c_str(), wxConvUTF8));
+
+        TREE_VAR->SetVar(itemid, var);
+      } else {
+        itemid = TREE_VAR->CreateLeafNode(
+                  append_id,
+                  wxString(var->Name().c_str(), wxConvUTF8),
+                  wxString(var->GetTypeName().c_str(), wxConvUTF8),
+                  wxString(valtext.c_str(), wxConvUTF8),
+                  wxString(text.c_str(), wxConvUTF8),
+                  var
+                  );
+      }
+      TREE_VAR->BuildAbsoluteName(itemid);
+#endif
 
       if ((var->Type() == type_ami_object)) 
       {
@@ -1832,10 +1873,10 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
           if ((path!="")&&(path!="global::")) path +=".";
           path += var->Name();
           this->UpdateVarTree(itemid, obj->GetContext(),rec_level+1,path);
-          _var_tree->Expand(itemid);
+          TREE_VAR->Expand(itemid);
         } else {
           // add an element to allow expanding
-          _var_tree->AppendItem(itemid,_T("to expand ..."));
+          TREE_VAR->AppendItem(itemid,_T("to expand ..."));
         }
       }
     } // end if var.get()
@@ -1867,7 +1908,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
 }
 
 ///@cond wxCHECK
-#if wxCHECK_VERSION(2,9,0)
+#ifdef AMI_USE_DATAVIEW
 //---------------------------------------------------------------
 void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context)
 {
@@ -2472,7 +2513,7 @@ void MainFrame::UpdateVarsDisplay()
 {
   //UpdateVarList();
 /// @cond wxCHECK
-#if (wxCHECK_VERSION(2,9,0))
+#if AMI_USE_DATAVIEW
   CLASS_MESSAGE("Update global node");
   UpdateVarDataView(m_amilab_model->GetGlobalNode(), Vars.GetCurrentContext());
 
