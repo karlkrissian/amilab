@@ -95,10 +95,7 @@ int AskSurface(     std::string& name);
 
 enum
 {
-    ID_Quit = 200,
-    ID_About,
-
-    ID_File_OpenImage,
+    ID_File_OpenImage=200,
     ID_File_OpenPolydata,
     ID_File_LoadScript,
     ID_View_Reset,
@@ -117,7 +114,7 @@ enum
     
     ID_Help_View,
     ID_Help_Keywords,
-    ID_Help_About,
+//    ID_Help_About,
 
     wxID_ProgressBar,
     ID_CloseAboutPanel,
@@ -131,12 +128,12 @@ enum {
 };
 
 enum {
-    wxID_Images_History  = 20100,
-    wxID_Scripts_History = 20200
+    wxID_Images_History  = 400,
+    wxID_Scripts_History = 450
 };
 
 enum {
-  wxID_ConsoleReset = 2000,
+  wxID_ConsoleReset = 600,
   wxID_ConsoleClear,
   wxID_UpdateVars,
   wxID_ToolLoadImage,
@@ -293,7 +290,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(ID_File_LoadScript,   MainFrame::OnFileLoadScript)
     EVT_MENU_RANGE(wxID_Scripts_History, wxID_Scripts_History+8, MainFrame::OnFileOpenScriptHistory)
 
-    EVT_MENU(ID_Quit,              MainFrame::OnQuit)
+    EVT_MENU(wxID_EXIT,              MainFrame::OnQuit)
 
     EVT_MENU(ID_View_Reset,        MainFrame::OnViewReset)
     EVT_MENU(ID_View_Var_book,     MainFrame::OnViewVar_book)
@@ -305,9 +302,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(ID_View_aui_Status_bar,    MainFrame::OnViewMain_bar2)
     EVT_MENU(ID_View_aui_Script_bar,    MainFrame::OnViewScript_bar)
     
-    EVT_MENU(ID_Help_Keywords,     MainFrame::OnHelpKeywords)
+    EVT_MENU(ID_Help_Keywords,      MainFrame::OnHelpKeywords)
     
-    EVT_MENU(ID_Help_About,        MainFrame::OnAbout)
+    EVT_MENU(wxID_ABOUT,            MainFrame::OnAbout)
     EVT_CLOSE(MainFrame::OnClose)
     
     EVT_UPDATE_UI(wxID_ANY,MainFrame::OnUpdate)
@@ -439,7 +436,7 @@ void MainFrame::CreateMenu()
   menuFile->Append( ID_File_LoadScript, GetwxStr("Load &script") );
   menuFile->AppendSubMenu( scripts_history_menu, GetwxStr("Recent scripts"));
 
-  menuFile->Append( ID_Quit, GetwxStr("E&xit") );
+  menuFile->Append( wxID_EXIT, GetwxStr("E&xit") );
 
   menuView = new wxMenu;
   menuView2 = new wxMenu;
@@ -473,7 +470,7 @@ void MainFrame::CreateMenu()
   //menuHelp->Append( ID_Help_View, GetwxStr("What's This?") );
   menuHelp->Append( ID_Help_Keywords, GetwxStr("Keywords") );  
   menuHelp->AppendSeparator();
-  menuHelp->Append( ID_Help_About, GetwxStr("About ...") );  
+  menuHelp->Append( wxID_ABOUT, GetwxStr("About ...") );  
   
   menuScripts = new wxMenu;
 
@@ -2513,7 +2510,7 @@ void MainFrame::UpdateVarsDisplay()
 {
   //UpdateVarList();
 /// @cond wxCHECK
-#if AMI_USE_DATAVIEW
+#ifdef AMI_USE_DATAVIEW
   CLASS_MESSAGE("Update global node");
   UpdateVarDataView(m_amilab_model->GetGlobalNode(), Vars.GetCurrentContext());
 
