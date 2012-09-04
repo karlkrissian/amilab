@@ -31,12 +31,102 @@ typedef boost::shared_ptr<std::string>     string_ptr;
 
 #include <wx/choice.h>
 #include <wx/combobox.h>
+#include <wx/combo.h>
+#include "wx/odcombo.h"
 #include <wx/sizer.h>
 #include "widget.hpp"
+#include <wx/listctrl.h>
 
+
+// //------------------------------------------------------------------------------
+// // Create own combo list: events work better
+// //------------------------------------------------------------------------------
+// 
+// class ListViewComboPopup : public wxListView, public wxComboPopup
+// {
+// public:
+// 
+//     virtual void Init()
+//     {
+//         m_value = -1;
+//         m_itemHere = -1; // hot item in list
+//     }
+// 
+//     virtual bool Create( wxWindow* parent )
+//     {
+//         return wxListView::Create(parent,1,
+//                                   wxPoint(0,0),wxDefaultSize,
+//                                   wxLC_LIST|wxLC_SINGLE_SEL|
+//                                   wxLC_SORT_ASCENDING|wxSIMPLE_BORDER);
+//     }
+// 
+//     virtual wxWindow *GetControl() { return this; }
+// 
+//     virtual void SetStringValue( const wxString& s )
+//     {
+//         int n = wxListView::FindItem(-1,s);
+//         if ( n >= 0 && n < GetItemCount() )
+//             wxListView::Select(n);
+//     }
+// 
+//     virtual wxString GetStringValue() const
+//     {
+//         if ( m_value >= 0 )
+//             return wxListView::GetItemText(m_value);
+//         return wxEmptyString;
+//     }
+// 
+//     //
+//     // Popup event handlers
+//     //
+// 
+//     // Mouse hot-tracking
+//     void OnMouseMove(wxMouseEvent& event)
+//     {
+//         // Move selection to cursor if it is inside the popup
+// 
+//         int resFlags;
+//         int itemHere = HitTest(event.GetPosition(),resFlags);
+//         if ( itemHere >= 0 )
+//         {
+//             wxListView::Select(itemHere,true);
+//             m_itemHere = itemHere;
+//         }
+//         event.Skip();
+//     }
+// 
+//     // On mouse left, set the value and close the popup
+//     void OnMouseClick(wxMouseEvent& WXUNUSED(event))
+//     {
+//         m_value = m_itemHere;
+//         // TODO: Send event
+//         Dismiss();
+//     }
+// 
+//     //
+//     // Utilies for item manipulation
+//     //
+// 
+//     void AddSelection( const wxString& selstr )
+//     {
+//         wxListView::InsertItem(GetItemCount(),selstr);
+//     }
+// 
+// protected:
+// 
+//     int             m_value; // current item index
+//     int             m_itemHere; // hot item in popup
+// 
+// private:
+//     DECLARE_EVENT_TABLE()
+// };
+// 
+
+
+//------------------------------------------------------------------------------
 
 #if wxCHECK_VERSION(2,9,0)
-  #define CHOICE_CLASS wxComboBox
+  #define CHOICE_CLASS wxOwnerDrawnComboBox
   #define USING_COMBOBOX
 #else
   #define CHOICE_CLASS wxChoice
@@ -66,12 +156,16 @@ class myChoice: public CHOICE_CLASS
                       pos,size,n,choices,\
                       style
 #ifdef USING_COMBOBOX
-                      |wxCB_READONLY
+//                      |wxCB_READONLY
 #endif
                       ,validator,name)
   { 
     _calldata = _callback = NULL;
     _updatelist_calldata = _updatelist_callback = NULL;
+#ifdef USING_COMBOBOX
+    this->GetTextCtrl()->SetWindowStyle(
+      this->GetTextCtrl()->GetWindowStyle()|wxTE_READONLY|wxTE_RIGHT);
+#endif
   }
     
   void SetCallback(void* cb, void* cd) { _callback=cb; _calldata=cd;}
@@ -86,10 +180,17 @@ class myChoice: public CHOICE_CLASS
      _updatelist_callback_functor=cb;
   }
 
-  void OnChoiceUpdate( wxCommandEvent &WXUNUSED(event) )
+  void OnChoiceUpdate( wxCommandEvent &event )
   {
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
+    event.Skip();
+  }
+
+  void OnDropDown( wxCommandEvent & event )
+  {
+    this->UpdateListCallback();
+    event.Skip();
   }
 
   void Callback();

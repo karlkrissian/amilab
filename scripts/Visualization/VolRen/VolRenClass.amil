@@ -999,6 +999,7 @@ if (!exists(VolRenClass)) {
           ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
+              ::win.SetPositionProp(1)
               ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload")
 
               ::icons.LoadIconPNG2("Resize image","Resize_image")
@@ -1012,6 +1013,7 @@ if (!exists(VolRenClass)) {
           ::win.BeginBoxPanel("Second Volume")
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input2_name, "")
+              ::win.SetPositionProp(1)
               ::AddBitmapButton16(&::win, &::icons._Refresh, "ImReload2")
               ::AddBitmapButton16(&::win, &::icons._Resize_image, "Resize_Vol2")
             ::win.EndHorizontal()

@@ -46,6 +46,18 @@
 wxString GetwxStr(const char* str);
 wxString GetwxStr(const std::string& str);
 
+
+// //==============================================================================
+// //      ListViewComboPopup
+// //==============================================================================
+// BEGIN_EVENT_TABLE(ListViewComboPopup, wxListView)
+//     EVT_MOTION(ListViewComboPopup::OnMouseMove)
+//     // NOTE: Left down event is used instead of left up right now
+//     //       since MSW wxListCtrl doesn't seem to emit left ups
+//     //       consistently.
+//     EVT_LEFT_DOWN(ListViewComboPopup::OnMouseClick)
+// END_EVENT_TABLE()
+
 //==============================================================================
 //      wxEnumerationParameter
 //==============================================================================
@@ -53,13 +65,19 @@ wxString GetwxStr(const std::string& str);
 
 BEGIN_EVENT_TABLE(myChoice, CHOICE_CLASS)
 #ifdef USING_COMBOBOX
-  EVT_COMBOBOX     (wxID_ANY,  myChoice::OnChoiceUpdate)
+  EVT_COMBOBOX         ( wxID_ANY,  myChoice::OnChoiceUpdate)
+  #if (!__WXMAC)
+    EVT_COMBOBOX_DROPDOWN( wxID_ANY,  myChoice::OnDropDown)
+  #else
+    EVT_LEFT_DOWN    (myChoice::OnLeftDown)
+    EVT_ENTER_WINDOW (myChoice::OnEnterWindow)
+  #endif
 #else
   EVT_CHOICE       (wxID_ANY,  myChoice::OnChoiceUpdate)
-#endif
-  EVT_SET_FOCUS    (myChoice::OnFocus)
+  //EVT_SET_FOCUS    (myChoice::OnFocus)
   EVT_LEFT_DOWN    (myChoice::OnLeftDown)
   EVT_ENTER_WINDOW (myChoice::OnEnterWindow)
+#endif
 END_EVENT_TABLE()
 
 //---------------------------------------------------------------
@@ -133,7 +151,7 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
   this->_choice->SetCallback((void*)wxEnumerationParameter::OnEnumUpdate,(void*) this);
 
   this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
-  this->Add(this->_choice,0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+  this->Add(this->_choice,1, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
 
   if (tooltip!="") {
     _label->SetToolTip(GetwxStr(tooltip.c_str()));
@@ -170,7 +188,7 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
   this->_choice->SetCallback((void*)wxEnumerationParameter::OnEnumUpdate,(void*) this);
 
   this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
-  this->Add(this->_choice,0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+  this->Add(this->_choice,1, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
 
   if (tooltip!="") {
     _label->SetToolTip(GetwxStr(tooltip.c_str()));
@@ -258,7 +276,11 @@ void wxEnumerationParameter::SetChoices( const boost::shared_ptr<wxArrayString>&
 //----------------------------------------------
 wxString wxEnumerationParameter::GetStringSelection()
 {
-  return this->_choice->GetStringSelection();
+#ifdef USING_COMBOBOX
+  return this->_choice->GetValue();
+#else
+  return this->_choice->GetTextCtrl()->GetStringSelection();
+#endif
 }
 
 //----------------------------------------------
@@ -295,7 +317,7 @@ void wxEnumerationParameter::OnEnumUpdate(void* data)
     (*_this->_parameter) = (int)_this->_choice->GetSelection();
   if (_this->_selection_param.get()) 
   {
-    std::string res = std::string(_this->_choice->GetStringSelection().mb_str(wxConvUTF8));
+    std::string res = std::string(_this->GetStringSelection().mb_str(wxConvUTF8));
     std::cout << __func__ << "setting selection string to " << res << std::endl;
     *_this->_selection_param = res;
   }
