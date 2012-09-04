@@ -59,8 +59,8 @@ class wxGauge;
 
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))
-  #define AMI_USE_DATAVIEW
-  #include "myDataViewCtrl.h"
+//  #define AMI_USE_DATAVIEW
+//  #include "myDataViewCtrl.h"
 #endif
 /// @endcond
 
