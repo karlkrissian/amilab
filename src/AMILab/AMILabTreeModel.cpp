@@ -31,6 +31,7 @@ AMILabTreeModel::AMILabTreeModel()
         CreateBranchNode(wxDataViewItem(m_root),"Builtin").GetID();
 }
 
+//------------------------------------------------------------------------------
 wxString AMILabTreeModel::GetName( const wxDataViewItem &item ) const
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -41,6 +42,7 @@ wxString AMILabTreeModel::GetName( const wxDataViewItem &item ) const
   return node->m_Name;
 }
 
+//------------------------------------------------------------------------------
 wxString AMILabTreeModel::GetType( const wxDataViewItem &item ) const
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -51,6 +53,7 @@ wxString AMILabTreeModel::GetType( const wxDataViewItem &item ) const
   return node->m_Type;
 }
 
+//------------------------------------------------------------------------------
 wxString AMILabTreeModel::GetVal(  const wxDataViewItem &item ) const
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -61,6 +64,7 @@ wxString AMILabTreeModel::GetVal(  const wxDataViewItem &item ) const
   return node->m_Val;
 }
 
+//------------------------------------------------------------------------------
 wxString AMILabTreeModel::GetDetails( const wxDataViewItem &item ) const
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -71,6 +75,7 @@ wxString AMILabTreeModel::GetDetails( const wxDataViewItem &item ) const
   return node->m_Details;
 }
 
+//------------------------------------------------------------------------------
 boost::weak_ptr<BasicVariable> AMILabTreeModel::GetVar( const wxDataViewItem &item) const
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -81,6 +86,7 @@ boost::weak_ptr<BasicVariable> AMILabTreeModel::GetVar( const wxDataViewItem &it
   return node->m_Var;
 }
 
+//------------------------------------------------------------------------------
 void AMILabTreeModel::SetVar (const wxDataViewItem &item,
   boost::shared_ptr<BasicVariable> var)
 {
@@ -93,6 +99,7 @@ void AMILabTreeModel::SetVar (const wxDataViewItem &item,
     node->m_Var = var;
 }
 
+//------------------------------------------------------------------------------
 void AMILabTreeModel::SetContainer( const wxDataViewItem &item,
   const bool container  )
 {
@@ -105,6 +112,7 @@ void AMILabTreeModel::SetContainer( const wxDataViewItem &item,
     node->m_container = container;
 }
 
+//------------------------------------------------------------------------------
 void AMILabTreeModel::Delete( const wxDataViewItem &item )
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -147,6 +155,7 @@ void AMILabTreeModel::Delete( const wxDataViewItem &item )
   ItemDeleted( parent, item );
 }
 
+//------------------------------------------------------------------------------
 int AMILabTreeModel::Compare( const wxDataViewItem &item1, const wxDataViewItem &item2,
   unsigned int column, bool ascending ) const
 {
@@ -174,6 +183,7 @@ int AMILabTreeModel::Compare( const wxDataViewItem &item1, const wxDataViewItem 
   return wxDataViewModel::Compare( item1, item2, column, ascending );
 }
 
+//------------------------------------------------------------------------------
 void AMILabTreeModel::GetValue( wxVariant &variant,
   const wxDataViewItem &item, unsigned int col ) const
 {
@@ -204,6 +214,7 @@ void AMILabTreeModel::GetValue( wxVariant &variant,
   }
 }
 
+//------------------------------------------------------------------------------
 bool AMILabTreeModel::SetValue( const wxVariant &variant,
   const wxDataViewItem &item, unsigned int col )
 {
@@ -233,6 +244,7 @@ bool AMILabTreeModel::SetValue( const wxVariant &variant,
   return false;
 }
 
+//------------------------------------------------------------------------------
 wxDataViewItem AMILabTreeModel::GetParent( const wxDataViewItem &item ) const
 {
   if (!item.IsOk())
@@ -247,6 +259,7 @@ wxDataViewItem AMILabTreeModel::GetParent( const wxDataViewItem &item ) const
   return wxDataViewItem( (void*) node->GetParent() );
 }
 
+//------------------------------------------------------------------------------
 bool AMILabTreeModel::IsContainer( const wxDataViewItem &item ) const
 {
   if (!item.IsOk())
@@ -257,6 +270,7 @@ bool AMILabTreeModel::IsContainer( const wxDataViewItem &item ) const
   return node->IsContainer();
 }
 
+//------------------------------------------------------------------------------
 unsigned int AMILabTreeModel::GetChildren( const wxDataViewItem &parent,
   wxDataViewItemArray &array ) const
 {
@@ -283,6 +297,7 @@ unsigned int AMILabTreeModel::GetChildren( const wxDataViewItem &parent,
   return count;
 }
 
+//------------------------------------------------------------------------------
 void AMILabTreeModel::DeleteChildren( const wxDataViewItem &item )
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -305,6 +320,7 @@ void AMILabTreeModel::DeleteChildren( const wxDataViewItem &item )
   }
 }
 
+//------------------------------------------------------------------------------
 wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
   const wxString &name, const wxString &type, const wxString &val,
   const wxString &details, boost::shared_ptr<BasicVariable> var)
@@ -332,6 +348,7 @@ wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
   }
 }
 
+//------------------------------------------------------------------------------
 wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
   const wxString &branch)
 {
@@ -358,6 +375,7 @@ wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
   }
 }
 
+//------------------------------------------------------------------------------
 bool AMILabTreeModel::HasChildren(const wxDataViewItem &item) const
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -372,6 +390,7 @@ bool AMILabTreeModel::HasChildren(const wxDataViewItem &item) const
     return (node->GetChildren().GetCount() > 0);
 }
 
+//------------------------------------------------------------------------------
 bool AMILabTreeModel::GetAttr ( const wxDataViewItem &  item,
   unsigned int col, wxDataViewItemAttr &  attr) const
 {
@@ -406,6 +425,7 @@ bool AMILabTreeModel::GetAttr ( const wxDataViewItem &  item,
   return true;
 }
 
+//------------------------------------------------------------------------------
 void AMILabTreeModel::BuildAbsoluteName( const wxDataViewItem & item )
 {
   AMILabTreeModelNode *node = (AMILabTreeModelNode*) item.GetID();
@@ -441,16 +461,19 @@ void AMILabTreeModel::BuildAbsoluteName( const wxDataViewItem & item )
   }
 }
 
+//------------------------------------------------------------------------------
 wxDataViewItem AMILabTreeModel::GetRootNode() const
 {
   return wxDataViewItem( (void*) m_root );
 }
 
+//------------------------------------------------------------------------------
 wxDataViewItem AMILabTreeModel::GetGlobalNode() const
 {
   return wxDataViewItem( (void*) m_global );
 }
 
+//------------------------------------------------------------------------------
 wxDataViewItem AMILabTreeModel::GetBuiltinNode() const
 {
   return wxDataViewItem( (void*) m_builtin );

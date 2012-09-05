@@ -65,16 +65,14 @@ class AMILabTreeModelNode
       boost::shared_ptr<BasicVariable> var
       )
     {
-      m_parent = parent;
-
-      m_Name = name;
-      m_Type = type;
-      m_Val = val;
-      m_Details = details;
-      m_Var = var;
-      m_AbsoluteName = name;
-
-      m_container = false;
+      m_parent        = parent;
+      m_Name          = name;
+      m_Type          = type;
+      m_Val           = val;
+      m_Details       = details;
+      m_Var           = var;
+      m_AbsoluteName  = name;
+      m_container     = false;
     }
 
     /**
@@ -86,14 +84,14 @@ class AMILabTreeModelNode
     {
       m_parent = parent;
 
-      m_Name = branch;
-      m_Type = wxT("");
-      m_Val = wxT("");
+      m_Name    = branch;
+      m_Type    = wxT("");
+      m_Val     = wxT("");
       m_Details = wxT("");
-      m_Var = boost::weak_ptr<BasicVariable>();
+      m_Var     = boost::weak_ptr<BasicVariable>();
 
-      m_AbsoluteName = branch;
-      m_container = true;
+      m_AbsoluteName  = branch;
+      m_container     = true;
     }
 
     /**
@@ -167,6 +165,12 @@ class AMILabTreeModelNode
     unsigned int GetChildCount() const
     { return m_children.GetCount(); }
 
+    
+    void        SetPath(std::string path) { m_path=path; }
+    std::string GetPath()                 { return m_path; }
+    
+    std::string GetName()                 { return std::string(m_Name.char_str()); }
+
 public:     // public to avoid getters/setters
     wxString                        m_Name;
     wxString                        m_Type;
@@ -174,6 +178,7 @@ public:     // public to avoid getters/setters
     wxString                        m_Details;
     wxString                        m_AbsoluteName;
     boost::weak_ptr<BasicVariable>  m_Var;
+    std::string                     m_path;
 
     // TODO/FIXME:
     // the GTK version of wxDVC (in particular wxDataViewCtrlInternal::ItemAdded)
