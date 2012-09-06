@@ -2706,11 +2706,13 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
   int menuid = menuBar->FindMenu(wxString(menu_name.c_str(),wxConvUTF8));
   if (menuid == wxNOT_FOUND) {
     wxMenu* newmenu = new wxMenu;
+    // need to set the title in wxWidgets 2.9.4 on MacOS ...
+    newmenu->SetTitle(wxString(menu_name.c_str(),wxConvUTF8));
     menuBar->Insert(menuBar->FindMenu(_("&Help")), newmenu, wxString(menu_name.c_str(),wxConvUTF8));
     menuid = menuBar->FindMenu(wxString(menu_name.c_str(),wxConvUTF8));
   }
   if (menuid ==wxNOT_FOUND) {
-    CLASS_ERROR("Problem in adding the menu.")
+    CLASS_ERROR((boost::format("Problem in adding the menu '%1%'.") % menu_name.c_str()).str().c_str())
     return;
   }
   

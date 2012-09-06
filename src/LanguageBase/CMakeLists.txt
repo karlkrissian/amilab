@@ -130,6 +130,7 @@ target_link_libraries(LanguageBase
   WrapCommon
   ${wxWidgets_LIBRARIES}
   ${Boost_LIBRARIES}
+  ${ZLIB_LIBRARIES} # need to add it for MacOS ??
 )
 
 IF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)

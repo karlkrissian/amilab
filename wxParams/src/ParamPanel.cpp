@@ -1266,7 +1266,7 @@ int ParamPanel::BeginBox( const char* boxname)
                                     wxString::FromAscii(boxname));
   _tab_boxes.push_back(sb);
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
   _panels.push( sb);
 #endif
 
@@ -1283,7 +1283,7 @@ int ParamPanel::BeginBox( const char* boxname)
 void ParamPanel::EndBox()
 {
   _current_sizer.pop();
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
   _panels.pop();
 #endif
 }
