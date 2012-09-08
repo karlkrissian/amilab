@@ -11,6 +11,7 @@
 //
 
 #include "AMILabTreeModel.h"
+#include <boost/format.hpp>
 
 ///@cond wxCHECK
 #if wxCHECK_VERSION(2,9,0)
@@ -26,9 +27,9 @@ AMILabTreeModel::AMILabTreeModel()
 //  m_builtin = new AMILabTreeModelNode( m_root, "Builtin" );
 
   m_global =  (AMILabTreeModelNode*)
-        CreateBranchNode(wxDataViewItem(m_root),"Global").GetID();
+        CreateBranchNode(wxDataViewItem(m_root),_T("Global")).GetID();
   m_builtin = (AMILabTreeModelNode*)
-        CreateBranchNode(wxDataViewItem(m_root),"Builtin").GetID();
+        CreateBranchNode(wxDataViewItem(m_root),_T("Builtin")).GetID();
 }
 
 //------------------------------------------------------------------------------
@@ -321,11 +322,20 @@ void AMILabTreeModel::DeleteChildren( const wxDataViewItem &item )
 }
 
 //------------------------------------------------------------------------------
-wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
-  const wxString &name, const wxString &type, const wxString &val,
-  const wxString &details, boost::shared_ptr<BasicVariable> var)
+wxDataViewItem AMILabTreeModel::CreateLeafNode(
+                                            const wxDataViewItem &parent,
+                                            const wxString &name,
+                                            const wxString &type,
+                                            const wxString &val,
+                                            const wxString &details,
+                                            boost::weak_ptr<BasicVariable> var
+                                          )
 {
   AMILabTreeModelNode *parent_node = (AMILabTreeModelNode*) parent.GetID();
+  std::cout << boost::format("CreateLeafNode with parent %1%") 
+                % parent_node 
+            << boost::format(" name = '%1%'") % name.c_str()
+            << std::endl;
 
   if (!parent_node)
   {
@@ -344,15 +354,26 @@ wxDataViewItem AMILabTreeModel::CreateLeafNode(const wxDataViewItem &parent,
     wxDataViewItem Parent( (void*) parent_node );
     ItemAdded( Parent, Child );
 
+    std::cout << boost::format("Added item %1%") % Child.GetID() << std::endl;
     return Child;
   }
 }
 
 //------------------------------------------------------------------------------
-wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
-  const wxString &branch)
+wxDataViewItem AMILabTreeModel::CreateBranchNode(
+                                            const wxDataViewItem &parent, 
+                                            const wxString &name,
+                                            const wxString &type, 
+                                            const wxString &val,  
+                                            const wxString &details,
+                                            boost::weak_ptr<BasicVariable> var
+                                          )
 {
   AMILabTreeModelNode *parent_node = (AMILabTreeModelNode*) parent.GetID();
+  std::cout << boost::format("CreateBranchNode with parent %1%") 
+                % parent_node 
+            << boost::format(" name = '%1%'") % name.c_str()
+            << std::endl;
 
   if (!parent_node)
   {
@@ -362,15 +383,22 @@ wxDataViewItem AMILabTreeModel::CreateBranchNode(const wxDataViewItem &parent,
   }
   else
   {
-    AMILabTreeModelNode* child_node =  new AMILabTreeModelNode( parent_node,
-      branch);
+    AMILabTreeModelNode* child_node =  new AMILabTreeModelNode( 
+                                                                parent_node,
+                                                                name,
+                                                                type,
+                                                                val,
+                                                                details,
+                                                                var 
+                                                              );
+    child_node->SetContainer(true);
     parent_node->Append (child_node);
 
     // notify control
     wxDataViewItem Child( (void*) child_node );
-    wxDataViewItem Parent( (void*) parent_node );
-    ItemAdded( Parent, Child );
+    ItemAdded( parent, Child );
 
+    std::cout << boost::format("Added item %1%") % Child.GetID() << std::endl;
     return Child;
   }
 }

@@ -59,10 +59,21 @@ class wxGauge;
 
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))
-//  #define AMI_USE_DATAVIEW
-//  #include "myDataViewCtrl.h"
+  #define AMI_USE_DATAVIEW
+  #include "myDataViewCtrl.h"
 #endif
 /// @endcond
+
+#ifdef AMI_USE_DATAVIEW
+  #define TREE_VAR       m_amilab_model
+  #define TREE_VAR_CTRL  _var_dataview
+  #define TREE_ITEM_TYPE wxDataViewItem
+#else
+  #define TREE_VAR       _var_tree
+  #define TREE_VAR_CTRL  _var_tree
+  #define TREE_ITEM_TYPE wxTreeItemId
+#endif
+
 
 #include "wx/listctrl.h"
 #include "wx/wxhtml.h"
@@ -219,7 +230,7 @@ public:
 
   void UpdateVarList();
 
-  void UpdateVarTree( const wxTreeItemId& rootbranch, Variables::ptr context,
+  void UpdateVarTree( const TREE_ITEM_TYPE& rootbranch, Variables::ptr context,
                       int rec_level, std::string varpath="");
 
 ///@cond wxCHECK

@@ -232,18 +232,35 @@ class AMILabTreeModel: public wxDataViewModel
      *
      * Creates the new leaf node
      */    
-    wxDataViewItem CreateLeafNode(const wxDataViewItem &parent, const wxString &name,
-      const wxString &type, const wxString &val,  const wxString &details,
-      boost::shared_ptr<BasicVariable> var);
+    wxDataViewItem CreateLeafNode(
+                                    const wxDataViewItem &parent, 
+                                    const wxString &name,
+                                    const wxString &type, 
+                                    const wxString &val,  
+                                    const wxString &details,
+                                    boost::weak_ptr<BasicVariable> var
+                                 );
 
     /**
      * @brief CreateBranchNode
      * @param parent
-     * @param branch
+     * @param name
+     * @param type
+     * @param val
+     * @param details
+     * @param var
      *
      * Creates the new branch node
      */      
-    wxDataViewItem CreateBranchNode(const wxDataViewItem &parent, const wxString &branch);
+    wxDataViewItem CreateBranchNode(
+                                      const wxDataViewItem &parent, 
+                                      const wxString &name,
+                                      const wxString &type = _T(""), 
+                                      const wxString &val = _T(""),  
+                                      const wxString &details = _T(""),
+                                      boost::weak_ptr<BasicVariable> var =
+                                        boost::weak_ptr<BasicVariable>()
+                                   );
 
     /**
      * @brief HasChildren
@@ -293,7 +310,7 @@ class AMILabTreeModel: public wxDataViewModel
      */       
     wxDataViewItem GetBuiltinNode() const;
 
-  private:
+  public:
     AMILabTreeModelNode*   m_root;
     AMILabTreeModelNode*   m_global;
     AMILabTreeModelNode*   m_builtin;

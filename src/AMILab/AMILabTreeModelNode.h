@@ -60,10 +60,15 @@ class AMILabTreeModelNode
      *
      * Constructor definition for leaf nodes
      */
-    AMILabTreeModelNode(AMILabTreeModelNode* parent, const wxString &name,
-      const wxString &type, const wxString &val,  const wxString &details,
-      boost::shared_ptr<BasicVariable> var
-      )
+    AMILabTreeModelNode(
+                          AMILabTreeModelNode* parent,
+                          const wxString &name,
+                          const wxString &type = wxT(""),
+                          const wxString &val = wxT(""), 
+                          const wxString &details = wxT(""),
+                          boost::weak_ptr<BasicVariable> var 
+                              = boost::weak_ptr<BasicVariable>()
+                        )
     {
       m_parent        = parent;
       m_Name          = name;
@@ -75,24 +80,6 @@ class AMILabTreeModelNode
       m_container     = false;
     }
 
-    /**
-     * @brief The Class constructor
-     *
-     * Constructor definition for branch nodes
-     */    
-    AMILabTreeModelNode(AMILabTreeModelNode* parent, const wxString &branch)
-    {
-      m_parent = parent;
-
-      m_Name    = branch;
-      m_Type    = wxT("");
-      m_Val     = wxT("");
-      m_Details = wxT("");
-      m_Var     = boost::weak_ptr<BasicVariable>();
-
-      m_AbsoluteName  = branch;
-      m_container     = true;
-    }
 
     /**
      * @brief The Class destructor
@@ -116,6 +103,10 @@ class AMILabTreeModelNode
      */
     bool IsContainer() const
     { return m_container; }
+    
+    void SetContainer(bool c) {
+      m_container = c;
+    }
 
     /**
      * @brief GetParent

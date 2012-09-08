@@ -201,6 +201,7 @@ void myTreeCtrl::ToConsole(wxCommandEvent& event)
 //------------------------------------------------------------------------------
 void myTreeCtrl::OnExpanding(wxTreeEvent& event)
 {
+#ifndef AMI_USE_DATAVIEW
   //std::cout << "Expanding" << std::endl;
   wxTreeItemId itemId = event.GetItem();
   MyTreeItemData *item = (MyTreeItemData *)GetItemData(itemId);
@@ -222,6 +223,7 @@ void myTreeCtrl::OnExpanding(wxTreeEvent& event)
       }
     }
   }
+#endif
   event.Skip();
 }
 

@@ -93,6 +93,8 @@ int AskVarName(wxWindow*,
 int AskSurface(     std::string& name);
 
 
+
+
 enum
 {
     ID_File_OpenImage=200,
@@ -573,6 +575,7 @@ MainFrame::MainFrame( const wxString& title,
 /// @cond wxCHECK
 #ifdef AMI_USE_DATAVIEW
   CreateVarDataViewPanel(this);
+  CreateVarDirCtrl(this);
 #else
   CreateVarTreePanel(this);
 #endif
@@ -1013,8 +1016,6 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
 
   _var_book->AddPage(_var_tree,wxT("Tree"));
 
-  CreateVarDirCtrl(parent);
-
 } // CreateVarTreePanel()
 
 
@@ -1087,11 +1088,17 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
                             );
 
   m_amilab_model = new AMILabTreeModel();
-  _var_dataview->AssociateModel( m_amilab_model.get() );
+
+//  TREE_VAR->CreateBranchNode(wxDataViewItem(TREE_VAR->m_root),_T("test"));
+
+  _var_dataview->AssociateModel(         m_amilab_model.get() );
   _var_dataview->InternalAssociateModel( m_amilab_model.get() );
+
+//  TREE_VAR->CreateBranchNode(wxDataViewItem(TREE_VAR->m_root),_T("test"));
+
   _var_dataview->EnableDragSource( wxDF_UNICODETEXT );
   _var_dataview->EnableDropTarget( wxDF_UNICODETEXT );
-
+  
   wxDataViewTextRenderer *tr =
     new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
 
@@ -1163,7 +1170,7 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 
   _var_book->AddPage(_var_dataview,wxT("Tree"));
 
-  CreateVarDirCtrl(parent);
+//  CreateVarDirCtrl(parent);
 
 } // CreateVarDataViewPanel()
 #endif
@@ -1654,15 +1661,6 @@ void MainFrame::UpdateVarList()
 }
 
 
-#ifdef AMI_USE_DATAVIEW
-  #define TREE_VAR       m_amilab_model
-  #define TREE_VAR_CTRL  _var_dataview
-  #define TREE_ITEM_TYPE wxDataViewItem
-#else
-  #define TREE_VAR       _var_tree
-  #define TREE_VAR_CTRL  _var_tree
-  #define TREE_ITEM_TYPE wxTreeItemId
-#endif
 
 //-----------------------------------------------------
 /**
@@ -1676,9 +1674,8 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
                                 Variables::ptr context, int rec_level, 
                                 std::string varpath)
 {
-  if (rec_level>MAX_VARTREE_LEVEL) return;
-  
-  // delete children of root
+  if (rec_level>MAX_VARTREE_LEVEL) return;  
+    // delete children of root
   TREE_VAR->DeleteChildren(rootbranch);
   boost::shared_ptr<wxArrayString> variables;
   BasicVariable::ptr emptyvar;
@@ -1713,7 +1710,8 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
     _var_tree->SetItemFont(      current_id,root_font);
     _var_tree->SetItemTextColour(current_id,vartype_colour);
 #else
-    current_id = TREE_VAR->CreateLeafNode(
+    std::cout << "Creating branch for " << cat[n].c_str() << std::endl;
+    current_id = TREE_VAR->CreateBranchNode(
                               rootbranch,
                               wxString(cat[n].c_str(),wxConvUTF8),
                               wxEmptyString,
@@ -1846,7 +1844,7 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
 
       TREE_VAR->SetItemFont(itemid,root_font);
 #else
-      itemid = TREE_VAR->CreateLeafNode(
+      itemid = TREE_VAR->CreateBranchNode(
                 append_id,
                 wxString(var->Name().c_str(), wxConvUTF8),
                 wxString(var->GetTypeName().c_str(), wxConvUTF8),
@@ -2528,27 +2526,28 @@ void MainFrame::UpdateVarsDisplay()
 /// @cond wxCHECK
 #ifdef AMI_USE_DATAVIEW
   // get list of expanded items
-  TREE_ITEM_TYPE itemid;
   AMILabTreeModelNode *item;
-  wxString text;
+  std::string text;
   std::string current_item_name;
   
   expanded_items.clear();
 
   wxDataViewItemArray children;
-  itemid = TREE_VAR->GetChildren(TREE_VAR->GetRootNode(),children);
+
+  unsigned int nb_children =
+    TREE_VAR->GetChildren(TREE_VAR->GetRootNode(),children);
   
-  for(int i=0;i<children->Count();i++)
+  for(int i=0;i<children.Count();i++)
   {
     current_item_name = "";
     if (TREE_VAR_CTRL->IsExpanded(children[i])) {
-      item = (AMILabTreeModelNode *) children[i]->GetID();
+      item = (AMILabTreeModelNode *) children[i].GetID();
       if (item != NULL) {
         current_item_name += item->GetPath();
       }
-      text = item->GetName(itemid);
+      text = item->GetName();
       current_item_name += "->";
-      current_item_name += text.ToAscii();
+      current_item_name += text;
       //std::cout << " item: '" << current_item_name << "'"<< std::endl;
       expanded_items.insert(current_item_name);
     }
@@ -2560,15 +2559,15 @@ void MainFrame::UpdateVarsDisplay()
 
   CLASS_MESSAGE("Update global node");
   _var_dataview->Expand( m_amilab_model->GetGlobalNode() );
-  UpdateVarTree(m_amilab_model->GetGlobalNode(), 
-                Vars.GetCurrentContext(),0,"global::");
-  //UpdateVarDataView(m_amilab_model->GetGlobalNode(), Vars.GetCurrentContext());
+//   UpdateVarTree(m_amilab_model->GetGlobalNode(), 
+//                 Vars.GetCurrentContext(),0,"global::");
+  UpdateVarDataView(m_amilab_model->GetGlobalNode(), Vars.GetCurrentContext());
 
   CLASS_MESSAGE("Update builtin node");
   _var_dataview->Expand( m_amilab_model->GetBuiltinNode() );  
-  UpdateVarTree(m_amilab_model->GetBuiltinNode(), 
-                Vars.GetBuiltinContext(),0);
-  //UpdateVarDataView(m_amilab_model->GetBuiltinNode(), Vars.GetBuiltinContext());
+//   UpdateVarTree(m_amilab_model->GetBuiltinNode(), 
+//                 Vars.GetBuiltinContext(),0);
+  UpdateVarDataView(m_amilab_model->GetBuiltinNode(), Vars.GetBuiltinContext());
 
 //  CLASS_MESSAGE("Notifies the control that data model have been updated");
 //  m_amilab_model->Cleared(); 

@@ -279,7 +279,7 @@ wxString wxEnumerationParameter::GetStringSelection()
 #ifdef USING_COMBOBOX
   return this->_choice->GetValue();
 #else
-  return this->_choice->GetTextCtrl()->GetStringSelection();
+  return this->_choice->GetStringSelection();
 #endif
 }
 

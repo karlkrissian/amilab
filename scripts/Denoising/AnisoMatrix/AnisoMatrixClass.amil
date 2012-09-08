@@ -278,12 +278,12 @@ if (!exists(AnisoMatrixClass)) {
       }
       numit = ::params.t/::params.dt
       # running on the squared image
-      input1 = ::input*::input
+      input1 <<= ::input*::input
       if (::params.run_on_roi) {
         input1 <<= input1[::roi.GetExtent]
       }
     
-      if (exists(::NRADfilter)) { del ::NRADfilter; }
+      del ::NRADfilter
       ::NRADfilter = algorithms.ami_AnisoGS.AnisoGS()
       # sigma = 0.7
       # threshold = 1 // not used
@@ -358,7 +358,7 @@ if (!exists(AnisoMatrixClass)) {
       RestartTime; InitTime
       for k=1 to numit {
         ::NRADfilter.Iterate()
-        ::res0 = ::NRADfilter.GetOutput()
+        ::res0 <<= ::NRADfilter.GetOutput()
         ::res0 = ::res0*(::res0>0)
         if (::params.run_on_roi) {
           if (::params.remove_bias) {
@@ -373,9 +373,9 @@ if (!exists(AnisoMatrixClass)) {
           if (::params.remove_bias) {
             ::res0 = ::res0 - 2*noise_variance
             ::res0 = ::res0*(::res0>0)
-            ::res = sqrt(::res0)
+            ::res <<= sqrt(::res0)
           } else {
-            ::res = sqrt(::res0)
+            ::res <<= sqrt(::res0)
           }
         }
         if (exists(::groundtruth)) {
@@ -400,7 +400,7 @@ if (!exists(AnisoMatrixClass)) {
       if (!exists(::roi)) {
         InfoDialog  "Region of Interest not selected taking the full "+\
                     "image by default"
-        ::roi = ::input
+        ::roi <<= ::input
       }
 
       ::FilterFlux()
@@ -423,7 +423,7 @@ if (!exists(AnisoMatrixClass)) {
       }
       // draw limits of ROI
       if exists(::roi) {
-        roibox = ::roi[0]*0+1
+        roibox <<= ::roi[0]*0+1
         ::imbox  <<= ::input[0]*0
         ::imbox.putimage(roibox)
         del roibox
