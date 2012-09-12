@@ -989,6 +989,7 @@ if (!exists(LevelSetsClass)) {
             # set the input image
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
+              ::win.SetPositionProp(1)
               ::win.AddButton("Load",::load_input)
               #::win.AddButton("Ref",::ref_input)
             ::win.EndHorizontal()
