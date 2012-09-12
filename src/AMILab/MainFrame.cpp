@@ -946,7 +946,7 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
 //--------------------------------------------------------
 void MainFrame::CreateVarTreePanel ( wxWindow* parent)
 {
-
+#ifndef AMI_USE_DATAVIEW
   CreateVarBook(parent);
 //  CreateDrawingPanel(this);
 //  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
@@ -1016,6 +1016,8 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
 
   _var_book->AddPage(_var_tree,wxT("Tree"));
 
+#endif
+  
 } // CreateVarTreePanel()
 
 
@@ -1080,19 +1082,19 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 //   _vardataview_panel->SetSizer(vardataviewpanel_sizer);
   
 //  _var_dataview = new myDataViewCtrl( _vardataview_panel,
-  _var_dataview = new myDataViewCtrl( _var_book,
+  _var_dataview = new wxDataViewTreeCtrl( _var_book,
                               wxID_ANY,
                               wxDefaultPosition,
                               wxDefaultSize,
-                              wxDV_SINGLE
+                              wxDV_ROW_LINES
                             );
 
-  m_amilab_model = new AMILabTreeModel();
+//  m_amilab_model = new AMILabTreeModel();
 
 //  TREE_VAR->CreateBranchNode(wxDataViewItem(TREE_VAR->m_root),_T("test"));
 
-  _var_dataview->AssociateModel(         m_amilab_model.get() );
-  _var_dataview->InternalAssociateModel( m_amilab_model.get() );
+//  _var_dataview->AssociateModel(         m_amilab_model.get() );
+//  _var_dataview->InternalAssociateModel( m_amilab_model.get() );
 
 //  TREE_VAR->CreateBranchNode(wxDataViewItem(TREE_VAR->m_root),_T("test"));
 
@@ -1102,11 +1104,11 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
   wxDataViewTextRenderer *tr =
     new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_INERT );
 
+
   // column 0 of the view control: Name
   // wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_REORDERABLE | wxDATAVIEW_COL_RESIZABLE
-  wxDataViewColumn *column0 =
-  new wxDataViewColumn( "Name", tr, 0, 250, wxALIGN_LEFT,
-                        wxDATAVIEW_COL_RESIZABLE |  wxDATAVIEW_COL_SORTABLE );
+  wxDataViewColumn *column0 = _var_dataview->GetColumn(0);
+  column0->SetFlags(column0->GetFlags()|wxDATAVIEW_COL_RESIZABLE);
   column0->SetMinWidth(200); // this column can't be resized to be smaller
   _var_dataview->AppendColumn( column0 );
 
@@ -1168,8 +1170,16 @@ void MainFrame::CreateVarDataViewPanel( wxWindow* parent)
 // 
 //   vardataviewpanel_sizer->Fit(_vardataview_panel);
 
-  _var_book->AddPage(_var_dataview,wxT("Tree"));
 
+  _vartree_root    = TREE_VAR_CTRL->AppendContainer( wxDataViewItem(0), 
+                                                     _T("Root"));
+  _vartree_global  = TREE_VAR_CTRL->AppendContainer( _vartree_root,
+                                                     _T("Global"));
+  _vartree_builtin = TREE_VAR_CTRL->AppendContainer( _vartree_root,
+                                                     _T("Builtin"));
+   
+   
+   _var_book->AddPage(_var_dataview,wxT("Tree"));
 //  CreateVarDirCtrl(parent);
 
 } // CreateVarDataViewPanel()
@@ -1711,16 +1721,17 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
     _var_tree->SetItemTextColour(current_id,vartype_colour);
 #else
     std::cout << "Creating branch for " << cat[n].c_str() << std::endl;
-    current_id = TREE_VAR->CreateBranchNode(
+    current_id = TREE_VAR->AppendContainer(
                               rootbranch,
-                              wxString(cat[n].c_str(),wxConvUTF8),
+                              wxString(cat[n].c_str(),wxConvUTF8));
+/*    ,
                               wxEmptyString,
                               wxEmptyString,
                               wxEmptyString,
                               emptyvar
-                              );
-    AMILabTreeModelNode *node = (AMILabTreeModelNode*) current_id.GetID();
-    node->SetPath(varpath);
+                              );*/
+    //AMILabTreeModelNode *node = (AMILabTreeModelNode*) current_id.GetID();
+    //node->SetPath(varpath);
 #endif
     categories_id[cat[n]] = current_id;
     n++;
@@ -1825,10 +1836,11 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
 
 #ifndef AMI_USE_DATAVIEW
       itemid = TREE_VAR->AppendItem(
-            append_id,
-            wxString(var->Name().c_str(), wxConvUTF8),
-            -1,-1,
-            new MyTreeItemData(var,varpath));
+            append_id);
+//       ,
+//             wxString(var->Name().c_str(), wxConvUTF8),
+//             -1,-1,
+//             new MyTreeItemData(var,varpath));
 
       TREE_VAR->SetItemText(itemid,_vartree_col_type,
           wxString(var->GetTypeName().c_str(), wxConvUTF8));
@@ -1844,17 +1856,18 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
 
       TREE_VAR->SetItemFont(itemid,root_font);
 #else
-      itemid = TREE_VAR->CreateBranchNode(
+      itemid = TREE_VAR->AppendContainer(
                 append_id,
-                wxString(var->Name().c_str(), wxConvUTF8),
+                wxString(var->Name().c_str(), wxConvUTF8));
+/*      ,
                 wxString(var->GetTypeName().c_str(), wxConvUTF8),
                 wxString(valtext.c_str(), wxConvUTF8),
                 wxString(text.c_str(), wxConvUTF8),
                 var
-                );
-      AMILabTreeModelNode *node = (AMILabTreeModelNode*) itemid.GetID();
-      node->SetPath(varpath);
-      TREE_VAR->BuildAbsoluteName(itemid);
+                );*/
+      //AMILabTreeModelNode *node = (AMILabTreeModelNode*) itemid.GetID();
+      //node->SetPath(varpath);
+      //TREE_VAR->BuildAbsoluteName(itemid);
 #endif
 
       if ((var->Type() == type_ami_object)) 
@@ -1876,7 +1889,7 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
 #ifndef AMI_USE_DATAVIEW
           TREE_VAR->AppendItem(itemid,_T("to expand ..."));
 #else
-          TREE_VAR->CreateBranchNode(itemid,_T("to expand ..."));
+          TREE_VAR->AppendContainer(itemid,_T("to expand ..."));
 #endif
         }
       }
@@ -1892,7 +1905,7 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
     TREE_VAR->AppendItem(categories_id[std::string("Images")],
                           wxString(text.c_str(), wxConvUTF8));
 #else
-    TREE_VAR->CreateBranchNode(categories_id[std::string("Images")],
+    TREE_VAR->AppendContainer(categories_id[std::string("Images")],
                           wxString(text.c_str(), wxConvUTF8));
 #endif
   }
@@ -1909,7 +1922,7 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
     if (_var_tree->GetChildrenCount(current_id)==0) 
       _var_tree->Delete(current_id);
 #else
-    if (TREE_VAR->HasChildren(current_id)) 
+    if (TREE_VAR->GetChildCount(current_id)>0) 
       TREE_VAR->DeleteChildren(current_id);
 #endif
     n++;
@@ -1921,12 +1934,13 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
 ///@cond wxCHECK
 #ifdef AMI_USE_DATAVIEW
 //---------------------------------------------------------------
-void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context)
+void MainFrame::UpdateVarDataView( const wxDataViewItem& rootbranch, 
+                                   Variables::ptr context)
 {
   boost::shared_ptr<wxArrayString> variables;
 
   // delete children of rootbranch
-  m_amilab_model->DeleteChildren(rootbranch);
+ // m_amilab_model->DeleteChildren(rootbranch);
 
 //   AMILabTreeModelNode *node1 = (AMILabTreeModelNode*) rootbranch.GetID();
 // std::cout << "rootbranch="
@@ -2535,7 +2549,7 @@ void MainFrame::UpdateVarsDisplay()
   wxDataViewItemArray children;
 
   unsigned int nb_children =
-    TREE_VAR->GetChildren(TREE_VAR->GetRootNode(),children);
+    TREE_VAR->GetStore()->GetChildren(_vartree_root,children);
   
   for(int i=0;i<children.Count();i++)
   {
@@ -2553,21 +2567,19 @@ void MainFrame::UpdateVarsDisplay()
     }
   }
 
+//  m_amilab_model->CreateMainBranches();
 
-
-  _var_dataview->Expand( m_amilab_model->GetRootNode() );
+  _var_dataview->Expand( _vartree_root );
 
   CLASS_MESSAGE("Update global node");
-  _var_dataview->Expand( m_amilab_model->GetGlobalNode() );
-//   UpdateVarTree(m_amilab_model->GetGlobalNode(), 
-//                 Vars.GetCurrentContext(),0,"global::");
-  UpdateVarDataView(m_amilab_model->GetGlobalNode(), Vars.GetCurrentContext());
+  _var_dataview->Expand(_vartree_global);
+   UpdateVarTree(_vartree_global, Vars.GetCurrentContext(),0,"global::");
+//  UpdateVarDataView(_vartree_global, Vars.GetCurrentContext());
 
   CLASS_MESSAGE("Update builtin node");
-  _var_dataview->Expand( m_amilab_model->GetBuiltinNode() );  
-//   UpdateVarTree(m_amilab_model->GetBuiltinNode(), 
-//                 Vars.GetBuiltinContext(),0);
-  UpdateVarDataView(m_amilab_model->GetBuiltinNode(), Vars.GetBuiltinContext());
+  _var_dataview->Expand( _vartree_builtin );  
+   UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext(),0);
+//  UpdateVarDataView(_vartree_builtin, Vars.GetBuiltinContext());
 
 //  CLASS_MESSAGE("Notifies the control that data model have been updated");
 //  m_amilab_model->Cleared(); 

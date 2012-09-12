@@ -65,7 +65,8 @@ class wxGauge;
 /// @endcond
 
 #ifdef AMI_USE_DATAVIEW
-  #define TREE_VAR       m_amilab_model
+//  #define TREE_VAR       m_amilab_model
+  #define TREE_VAR       _var_dataview
   #define TREE_VAR_CTRL  _var_dataview
   #define TREE_ITEM_TYPE wxDataViewItem
 #else
@@ -353,14 +354,16 @@ protected:
   int _vartree_col_type;
   int _vartree_col_val;
   int _vartree_col_desc;
-  wxTreeItemId _vartree_root;
-  wxTreeItemId _vartree_global;
-  wxTreeItemId _vartree_builtin;
+  TREE_ITEM_TYPE _vartree_root;
+  TREE_ITEM_TYPE _vartree_global;
+  TREE_ITEM_TYPE _vartree_builtin;
   std::set<std::string> expanded_items;
 
 ///@cond wxCHECK
 #ifdef AMI_USE_DATAVIEW
-  myDataViewCtrl* _var_dataview;
+  
+//  myDataViewCtrl* _var_dataview;
+  wxDataViewTreeCtrl* _var_dataview;
   wxObjectDataPtr<AMILabTreeModel> m_amilab_model; // the model associated.
 #endif
 /// @endcond
