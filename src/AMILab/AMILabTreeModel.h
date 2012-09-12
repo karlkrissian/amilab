@@ -60,6 +60,17 @@ class AMILabTreeModel: public wxDataViewModel
     }
 
     /**
+     * 
+     */
+    void CreateMainBranches() {
+      m_global =  (AMILabTreeModelNode*)
+            CreateBranchNode(wxDataViewItem(m_root),_T("Global")).GetID();
+
+      m_builtin = (AMILabTreeModelNode*)
+            CreateBranchNode(wxDataViewItem(m_root),_T("Builtin")).GetID();
+    }
+    
+    /**
      * @brief GetName
      * @param item
      *

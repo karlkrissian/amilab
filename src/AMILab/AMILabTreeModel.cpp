@@ -26,10 +26,6 @@ AMILabTreeModel::AMILabTreeModel()
 //  m_global = new AMILabTreeModelNode( m_root, "Global" );
 //  m_builtin = new AMILabTreeModelNode( m_root, "Builtin" );
 
-  m_global =  (AMILabTreeModelNode*)
-        CreateBranchNode(wxDataViewItem(m_root),_T("Global")).GetID();
-  m_builtin = (AMILabTreeModelNode*)
-        CreateBranchNode(wxDataViewItem(m_root),_T("Builtin")).GetID();
 }
 
 //------------------------------------------------------------------------------
