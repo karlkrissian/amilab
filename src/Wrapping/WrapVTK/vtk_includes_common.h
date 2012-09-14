@@ -60,6 +60,7 @@
 #include <vtkOpenGLGPUVolumeRayCastMapper.h>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkOutlineFilter.h>
+#include <vtkParametricSpline.h>
 #include <vtkPen.h>
 #include <vtkPicker.h>
 #include <vtkPiecewiseFunction.h>

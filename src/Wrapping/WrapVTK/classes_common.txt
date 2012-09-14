@@ -84,6 +84,7 @@ vtkObjectBase
 vtkOpenGLGPUVolumeRayCastMapper
 vtkOrientationMarkerWidget
 vtkOutlineFilter
+vtkParametricSpline
 vtkPen
 vtkPicker
 vtkPiecewiseFunction

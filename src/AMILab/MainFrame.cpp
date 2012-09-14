@@ -1836,11 +1836,10 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
 
 #ifndef AMI_USE_DATAVIEW
       itemid = TREE_VAR->AppendItem(
-            append_id);
-//       ,
-//             wxString(var->Name().c_str(), wxConvUTF8),
-//             -1,-1,
-//             new MyTreeItemData(var,varpath));
+            append_id       ,
+             wxString(var->Name().c_str(), wxConvUTF8),
+             -1,-1,
+             new MyTreeItemData(var,varpath));
 
       TREE_VAR->SetItemText(itemid,_vartree_col_type,
           wxString(var->GetTypeName().c_str(), wxConvUTF8));
@@ -2573,12 +2572,12 @@ void MainFrame::UpdateVarsDisplay()
 
   CLASS_MESSAGE("Update global node");
   _var_dataview->Expand(_vartree_global);
-   UpdateVarTree(_vartree_global, Vars.GetCurrentContext(),0,"global::");
+//   UpdateVarTree(_vartree_global, Vars.GetCurrentContext(),0,"global::");
 //  UpdateVarDataView(_vartree_global, Vars.GetCurrentContext());
 
   CLASS_MESSAGE("Update builtin node");
   _var_dataview->Expand( _vartree_builtin );  
-   UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext(),0);
+//   UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext(),0);
 //  UpdateVarDataView(_vartree_builtin, Vars.GetBuiltinContext());
 
 //  CLASS_MESSAGE("Notifies the control that data model have been updated");
