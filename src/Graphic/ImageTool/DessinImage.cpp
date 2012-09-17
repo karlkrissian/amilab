@@ -4726,7 +4726,7 @@ void DessinImage::DrawAllContours()
     threshold += _step_contours;
     TantQue (threshold <= _val_max)Et
             (threshold-threshold_backup < _contours_winsize) Faire
-      line_style = ((line_style==PENSTYLE_SOLID)?wxDOT:PENSTYLE_SOLID);
+      line_style = ((line_style==PENSTYLE_SOLID)?wxDOT:wxSOLID);
       DrawContour(0,line_size,line_style);
       threshold += _step_contours;
     FinTantQue
@@ -4739,7 +4739,7 @@ void DessinImage::DrawAllContours()
     threshold -= _step_contours;
     TantQue (threshold >= _val_min) Et
             (threshold_backup-threshold < _contours_winsize) Faire
-      line_style = ((line_style==PENSTYLE_SOLID)?wxDOT:PENSTYLE_SOLID);
+      line_style = ((line_style==PENSTYLE_SOLID)?wxDOT:wxSOLID);
       DrawContour(0,line_size,line_style);
       threshold -= _step_contours;
     FinTantQue

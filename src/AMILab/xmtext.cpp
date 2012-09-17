@@ -616,7 +616,7 @@ bool TextControl::ProcessReturn()
 
   // Too slow now, need a clever way to update only visible information ...
   if (GB_main_wxFrame)
-    GB_main_wxFrame->UpdateVarsDisplay();
+    GB_main_wxFrame->UpdateVars();
 
   in_changed_value = false;
   return parseok;

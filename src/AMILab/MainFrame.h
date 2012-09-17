@@ -57,10 +57,12 @@ class wxGauge;
 //class AMILabTreeModel;
 //class wxDataViewItem;
 
+#include "amiDataViewTreeList.h"
+
 ///@cond wxCHECK
 #if (wxCHECK_VERSION(2,9,0))
 //  #define AMI_USE_DATAVIEW
-//  #include "myDataViewCtrl.h"
+  #include "myDataViewCtrl.h"
 #endif
 /// @endcond
 
@@ -69,6 +71,7 @@ class wxGauge;
   #define TREE_VAR       _var_dataview
   #define TREE_VAR_CTRL  _var_dataview
   #define TREE_ITEM_TYPE wxDataViewItem
+  
 #else
   #define TREE_VAR       _var_tree
   #define TREE_VAR_CTRL  _var_tree
@@ -129,6 +132,9 @@ class CustomStatusBar : public wxStatusBar
 
   DECLARE_EVENT_TABLE();
 }; // CustomStatusBar
+
+
+
 
 
 //----------------------------------------------------------------
@@ -220,8 +226,10 @@ public:
   /// @endcond
 
   void ConsoleClear ( wxCommandEvent& event );
-  void UpdateVarsDisplay   ();
-  void UpdateVars   ( wxCommandEvent& event);
+  void UpdateVarsDisplay();
+  void UpdateDataViewVarDisplay();
+  void UpdateVars();
+  void CB_UpdateVars   ( wxCommandEvent& event);
   void OnToolHelp   ( wxCommandEvent& event);
 
   void VarListRightClick( wxListEvent& event);
@@ -235,8 +243,15 @@ public:
                       int rec_level, std::string varpath="");
 
 ///@cond wxCHECK
-#ifdef AMI_USE_DATAVIEW
-  void UpdateVarDataView( const wxDataViewItem& rootbranch, Variables::ptr context);  
+#if wxCHECK_VERSION(2,9,0)
+  void UpdateVarDataView( const wxDataViewItem& rootbranch, 
+                          Variables::ptr context,
+                          int rec_level, 
+                          std::string varpath="");
+  
+  // avoid dealing with expand events when updating 
+  void SetUpdatingDataView(bool up) { _updating_vardvt = up; }
+  bool GetUpdatingDataView() { return _updating_vardvt; }
 #endif
 /// @endcond
 
@@ -354,17 +369,24 @@ protected:
   int _vartree_col_type;
   int _vartree_col_val;
   int _vartree_col_desc;
-  TREE_ITEM_TYPE _vartree_root;
-  TREE_ITEM_TYPE _vartree_global;
-  TREE_ITEM_TYPE _vartree_builtin;
+  wxTreeItemId _vartree_root;
+  wxTreeItemId _vartree_global;
+  wxTreeItemId _vartree_builtin;
+
+  
+  bool _updating_vardvt;
+  wxDataViewItem _vardvt_root;
+  wxDataViewItem _vardvt_global;
+  wxDataViewItem _vardvt_builtin;
+  
   std::set<std::string> expanded_items;
+  std::set<std::string> dv_expanded_items;
 
 ///@cond wxCHECK
-#ifdef AMI_USE_DATAVIEW
-  
-//  myDataViewCtrl* _var_dataview;
-  wxDataViewTreeCtrl* _var_dataview;
-  wxObjectDataPtr<AMILabTreeModel> m_amilab_model; // the model associated.
+#if wxCHECK_VERSION(2,9,0)
+  //  myDataViewCtrl* _var_dataview;
+  wxDataViewTreeListCtrl* _var_dataview;
+  wxObjectDataPtr<AMILabTreeModelNew> m_amilab_model; // the model associated.
 #endif
 /// @endcond
 
@@ -393,7 +415,7 @@ protected:
   void CreateAboutPanel       (wxWindow* parent);
 
 ///@cond wxCHECK
-#ifdef AMI_USE_DATAVIEW
+#if wxCHECK_VERSION(2,9,0)
   void CreateVarDataViewPanel ( wxWindow*);
 #endif
 /// @endcond  

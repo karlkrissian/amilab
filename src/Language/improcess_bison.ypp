@@ -9895,3 +9895,45 @@ InrImage* ReadImage( const char* name)
   }
   return res;
 }
+
+//------------------------------------------------------------------------------
+bool Global_ShowImage( BasicVariable::ptr var0) 
+{
+  DYNAMIC_CAST_VARIABLE(InrImage,var0,imagevar)
+  std::string title;
+  Variables::ptr context = imagevar->GetContext();
+  title = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
+  BasicVariable::ptr var;
+  var = context->GetVar(title.c_str());
+  if (var.get()) {
+    GET_WRAPPED_OBJECT(DessinImage, var, di)
+    if (di.get()) {
+      DessinImageParametres* param;
+      param = di->GetParam();
+      param->_MAJ.MAJCoupes();
+      di->Paint();
+      di->Raise();
+    } 
+    else {
+      GB_driver.err_print(
+        (boost::format
+          ("Unable to convert variable %1% to a wrapped DessinImage") % title).str().c_str());
+      return false;
+    }
+  }
+  else
+  {
+    // Call constructor from DessinImage constructor function
+    ParamList::ptr p(new ParamList());
+    p->AddParam(imagevar);
+    BasicVariable::ptr newvar = WrapClass<DessinImage>::CreateVar(p.get());
+    if (newvar.get()) {
+      newvar->Rename(title.c_str());
+      context->AddVar(newvar, context);
+    } else {
+      GB_driver.err_print("Failed to create image viewer.");
+      return false;
+    }
+  }
+  return true;
+}

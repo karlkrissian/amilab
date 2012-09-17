@@ -68,6 +68,7 @@ SET(AMILab_SRCS
     AMILabTreeModel.cpp
     myDataViewCtrl.cpp
     myTreeCtrl.cpp
+    amiDataViewTreeList.cpp
 )
 
 SET (AMILab_HDRS
@@ -97,6 +98,7 @@ SET (AMILab_HDRS
     AMILabTreeModel.h
     myDataViewCtrl.h
     myTreeCtrl.h
+    amiDataViewTreeList.h
 )
 
 IF(WIN32)

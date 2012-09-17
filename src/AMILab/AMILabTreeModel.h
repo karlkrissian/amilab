@@ -21,6 +21,101 @@
 
 #include "AMILabTreeModelNode.h"
 
+
+/**
+  */
+class amiDataViewClientData: public wxClientData
+{
+  public:
+    /**
+     * @brief The Class constructor
+     *
+     * Constructor definition for leaf nodes
+     */
+    amiDataViewClientData(
+                          const wxString &name,
+                          boost::weak_ptr<BasicVariable> var 
+                              = boost::weak_ptr<BasicVariable>()
+                        )
+    {
+      m_Name          = name;
+      m_Var           = var;
+    }
+
+
+    /**
+     * @brief The Class destructor
+     *
+     * Free all the children nodes
+     */      
+    ~amiDataViewClientData() {}
+    void        SetPath(std::string path) { m_path=path; }
+    std::string GetPath()                 { return m_path; }
+    std::string GetName()                 { return std::string(m_Name.char_str()); }
+    boost::weak_ptr<BasicVariable> GetVar() 
+    { return m_Var; }
+    
+
+public:     // public to avoid getters/setters
+    wxString                        m_Name;
+//    wxString                        m_AbsoluteName;
+    boost::weak_ptr<BasicVariable>  m_Var;
+    std::string                     m_path;
+};
+
+class AMILabTreeModelNew: public wxDataViewTreeStore
+{
+  public:
+    AMILabTreeModelNew() : wxDataViewTreeStore() {}
+
+    ~AMILabTreeModelNew() {}
+
+    /**
+     * @brief GetValue
+     * @param variant
+     * @param item
+     * @param col
+     *
+     * Indicates the value of item
+     */
+    virtual void GetValue( wxVariant &variant,
+      const wxDataViewItem &item, unsigned int col ) const;
+
+    /**
+     * @brief GetAttr
+     * @param item The item for which the attribute is requested.
+     * @param col The column of the item for which the attribute is requested.
+     * @param attr The attribute to be filled in if the function returns true.
+     *
+     * Gets the attributes of an item.
+     */     
+    bool GetAttr ( const wxDataViewItem &  item,
+      unsigned int col, wxDataViewItemAttr &  attr) const;
+
+    /**
+     * @brief GetColumnCount
+     *
+     * Returns the number of columns
+     */ 
+    virtual unsigned int GetColumnCount() const
+    {
+      return 4;//The VAR column is not visible.
+    }
+
+    /**
+     * @brief GetColumnType
+     * @param col
+     *
+     * Indicates what type of data is stored in the column specified by col
+     */ 
+    virtual wxString GetColumnType( unsigned int col ) const
+    {
+      return wxT("string");
+    }
+
+};
+
+
 /**
   * @brief  Models for render on the wxDataViewCtrl wxWidgets
   *

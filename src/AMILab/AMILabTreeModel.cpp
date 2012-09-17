@@ -17,6 +17,72 @@
 #if wxCHECK_VERSION(2,9,0)
 //#include <wx/any.h>
 
+
+//------------------------------------------------------------------------------
+void AMILabTreeModelNew::GetValue( wxVariant &variant,
+  const wxDataViewItem &item, unsigned int col ) const
+{
+  wxASSERT(item.IsOk());
+std::cout << "GetValue" << std::endl;
+  amiDataViewClientData* item_data = 
+    (amiDataViewClientData*) GetItemData(item);
+  if (item_data!=NULL) {
+    switch (col)
+    {
+      case 0:
+        std::cout << "column0" << std::endl;
+        wxDataViewTreeStore::GetValue(variant,item,col);
+        break;
+      case 1:
+        std::cout << "column1" << std::endl;
+        //variant = item_data->GetType();
+        break;
+      case 2:
+        //variant = item_data->GetVal();
+        break;
+      case 3:
+        //variant = item_data->GetDetails();
+        break;
+    }
+  } else {
+    wxDataViewTreeStore::GetValue(variant,item,col);
+  }
+}
+
+
+//------------------------------------------------------------------------------
+bool AMILabTreeModelNew::GetAttr ( const wxDataViewItem &  item,
+  unsigned int col, wxDataViewItemAttr &  attr) const
+{
+
+  wxString txt = GetItemText(item);
+  if ((txt == _T("Root")) || (txt == _T("Global")) || (txt == _T("Builtin")))
+  {
+    attr.SetBold(true);
+    attr.SetColour(*wxBLACK);
+  }
+  else
+  {
+    if (GetChildCount(item)>0) 
+    {
+      amiDataViewClientData* item_data = 
+        (amiDataViewClientData*) GetItemData(item);
+      if (item_data!=NULL) {
+        boost::shared_ptr<BasicVariable> variable = item_data->m_Var.lock();
+        if (!variable.get())
+        {
+          attr.SetItalic(true);
+          attr.SetColour(*wxBLUE);
+        } else {
+          attr.SetColour(*wxRED);
+        }
+      }
+    }
+  }
+  return true;
+}
+
+
 // ----------------------------------------------------------------------------
 // AMILabTreeModel
 // ----------------------------------------------------------------------------

@@ -26,10 +26,41 @@
 #endif
 
 #include "AMILabTreeModel.h"
+#include "amiDataViewTreeList.h"
 
 ///@cond wxCHECK
 #if wxCHECK_VERSION(2,9,0)
 // #include <wx/any.h>
+
+
+class myDataViewTreeListCtrl: public wxDataViewTreeListCtrl
+{
+  public:
+    myDataViewTreeListCtrl(wxWindow* parent, wxWindowID id,
+      const wxPoint& pos = wxDefaultPosition,
+      const wxSize& size = wxDefaultSize,
+      long style = 0,
+      const wxValidator& validator = wxDefaultValidator);
+
+
+  protected:
+    void OnContextMenu( wxDataViewEvent &event );
+    void OnAbout( wxCommandEvent& event );
+    void ToConsole( wxCommandEvent& event );
+    void ShowHideImage( wxCommandEvent& event );
+
+    void OnActivated(  wxDataViewEvent& event);
+    void OnExpanding(  wxDataViewEvent& event);
+    void OnCollapsing( wxDataViewEvent& event);
+
+  private:
+    boost::weak_ptr<BasicVariable> _currentmenu_var;
+    void _ShowMenu( const wxDataViewItem &item, const wxPoint& pt );
+
+    DECLARE_EVENT_TABLE();
+};
+
+
 
 //=======================================================
 
