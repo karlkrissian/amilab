@@ -1,0 +1,8 @@
+
+ami.MainFrame.AddToMenu("&Modules","&amiOpenCV","&Load",    \
+    op_system.GetCurrentScriptDir()+"/Load_amiOpenCV")
+ami.MainFrame.AddToMenu("&Modules","&amiOpenCV","&ReLoad",  \
+    op_system.GetCurrentScriptDir()+"/ReLoad_amiOpenCV")
+
+# Checking scripts in subdirectories
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())

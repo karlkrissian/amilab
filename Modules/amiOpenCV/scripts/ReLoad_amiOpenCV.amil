@@ -1,0 +1,4 @@
+
+if exists(amiOpenCV_obj) {
+  amiOpenCV_obj.ReLoad()
+}

@@ -1,0 +1,12 @@
+
+#del amiOpenCVPlugin
+#func "amiOpenCVPlugin"
+func "Common/ModulePlugin"
+
+if (!exists(amiOpenCV_obj)) {
+  ModulePlugin amiOpenCV_obj
+  amiOpenCV_obj.SetModuleName("amiOpenCV")
+  amiOpenCV_obj.Load()
+} else {
+  InfoDialog "The script class amiOpenCVPlugin to be already instanciated." 
+}

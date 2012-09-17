@@ -1,0 +1,14 @@
+
+# IO
+
+#Mat imread(const string& filename, int flags=1)
+cv::imread
+
+# bool imwrite(const string& filename, const Mat& img, const vector<int>& params=vector<int>())
+cv::imwrite
+
+# image display
+
+cv::namedWindow
+cv::imshow
+cv::waitKey

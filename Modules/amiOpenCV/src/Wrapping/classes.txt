@@ -1,0 +1,23 @@
+PruebaClass
+
+# 
+# Matrix class to start with ...
+#
+cv::Mat
+cv::Size_<int>
+cv::Scalar_<double>
+cv::Range
+cv::Rect_<int>
+# compilation errors
+#cv::gpu::GpuMat
+cv::MatExpr
+cv::_OutputArray
+cv::_InputArray
+cv::Point_<int>
+_IplImage
+CvMat
+# wrapping error, need to be checked
+#CvMatND
+
+# need std::vector for imwrite ??
+std::vector<int, std::allocator<int> >
