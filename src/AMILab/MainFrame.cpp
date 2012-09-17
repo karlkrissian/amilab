@@ -2890,8 +2890,6 @@ void MainFrame::AddMenuScript(  const std::string& script_category,
 {
   wxMenu* parent = menuScripts;
 
-  usermenu_id = wxNewId();
-  usermenu_scripts[usermenu_id] = script_name;
   // first try to find the menu corresponding to the given category
   int menuid = menuScripts->FindItem(wxString(script_category.c_str(), wxConvUTF8));
   if (menuid != wxNOT_FOUND) {
@@ -2914,9 +2912,14 @@ void MainFrame::AddMenuScript(  const std::string& script_category,
       return;
   }
   // adding script
-  parent->Append(usermenu_id, GetwxStr(script_label.c_str()));
+  wxMenuItem* mi = new wxMenuItem(parent,wxID_ANY,GetwxStr(script_label.c_str()));
+  parent->Append(mi );
+  usermenu_id = mi->GetId();
+  usermenu_scripts[usermenu_id] = script_name;
+  //parent->Append(usermenu_id, GetwxStr(script_label.c_str()));
 
   // connecting
+  std::cout << "Connecting menu event with id = " << usermenu_id << std::endl;
   Connect(usermenu_id,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnUserMenuScript));
 
@@ -2946,8 +2949,6 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
   wxMenu* current_menu = menuBar->GetMenu(menuid); // current main menu
   wxMenu* cat_menu = NULL; // category menu
 
-  usermenu_id = wxNewId();
-  usermenu_scripts[usermenu_id] = script_name;
   // first try to find the menu corresponding to the given category
   wxString menu_cat=wxString(script_category.c_str(), wxConvUTF8);
   menuid = current_menu->FindItem(menu_cat);
@@ -2975,9 +2976,15 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
   menuid = cat_menu->FindItem(GetwxStr(script_label.c_str()));
   if (menuid!=wxNOT_FOUND) 
     cat_menu->Remove(menuid);
-  cat_menu->Append(usermenu_id, GetwxStr(script_label.c_str()));
+  
+  wxMenuItem* mi=new wxMenuItem (cat_menu,wxID_ANY,GetwxStr(script_label.c_str()));
+  cat_menu->Append(mi );
+  usermenu_id = mi->GetId();
+  //usermenu_id = wxNewId();
+  usermenu_scripts[usermenu_id] = script_name;
 
   // connecting
+  std::cout << "Connecting menu event with id = " << usermenu_id << std::endl;
   Connect(usermenu_id,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnUserMenuScript));
 
