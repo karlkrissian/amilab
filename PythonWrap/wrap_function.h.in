@@ -10,8 +10,8 @@
  *
  **/
 #pragma once
-#ifndef _wrap_${FUNCTION}_h_
-#define _wrap_${FUNCTION}_h_
+#ifndef _wrap_${FUNCTIONNAME}_h_
+#define _wrap_${FUNCTIONNAME}_h_
 
 /*
 #include "wrapfunction_class.h"
@@ -28,4 +28,4 @@ ${INCLUDEFILES}
 ${WRAP_FUNCTION}
 
 
-#endif // _wrap_${FUNCTION}_h
+#endif // _wrap_${FUNCTIONNAME}_h

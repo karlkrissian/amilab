@@ -94,11 +94,11 @@ if (!exists(CopyDirAndReplaceClass)) {
 
       # append a slash if there is not one (for easier parsing)
       # because who knows what people will pass to the function.
-      if (SLASH.Cmp(wx_to[wx_to.length()-1]) != 0) {
+      if (SLASH.Cmp(wx_to[wx_to.length()-1].convert_string()) != 0) {
         wx_to += SLASH
       }
       # for both dirs
-      if (SLASH.Cmp(wx_from[wx_from.length()-1]) != 0) {
+      if (SLASH.Cmp(wx_from[wx_from.length()-1].convert_string()) != 0) {
         wx_from += SLASH
       }
 

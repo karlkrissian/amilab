@@ -16,6 +16,7 @@ def FunctionUsedName(funcname):
   res = res.replace('<','_')
   res = res.replace('>','_')
   res = res.replace(',','_')
+  res = res.replace('::','_')
   return res
 
 #------------------------------
@@ -108,9 +109,13 @@ class FindFunction(handler.ContentHandler):
 
     funcname = attrs.get('name', None)
     demangled=attrs.get('demangled',None)
-    if (funcname != self.search_funcname)and(demangled!=self.search_funcname):
-      return
-    
+    if (funcname != self.search_funcname):
+      if demangled==None: 
+        return
+      else:
+        if (not (self.search_funcname in demangled)):
+          return
+    print "found name = {0}, demangled = {1}".format(funcname,demangled)
     self.found=True
     self.infunc=True
     self.funcid = attrs.get('id',None)

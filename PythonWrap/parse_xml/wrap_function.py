@@ -443,7 +443,7 @@ def WrapFunction(funcname,include_file,inputfile):
       config.AddInclude(to_include_file)
     
     for line in fileinput.FileInput(header_filename,inplace=1):
-      line = line.replace("${FUNCTION}",   funcname)
+      line = line.replace("${FUNCTIONNAME}", parse_function.FunctionUsedName(funcname))
       line = line.replace("${INCLUDEFILES}", "")
       line = line.replace("${WRAP_FUNCTION}",     func_decl)
       print line,
@@ -502,7 +502,7 @@ def WrapFunction(funcname,include_file,inputfile):
     ## in place replace ${ADD_CLASS_METHOD_ALL} by func_decl
     ## in place replace ${ADD_CLASS_METHOD_ALL} by func_decl
     for line in fileinput.FileInput(impl_filename,inplace=1):
-      line = line.replace("${FUNCTION}",   funcname)
+      line = line.replace("${FUNCTIONNAME}", parse_function.FunctionUsedName(funcname))
       line = line.replace("${INCLUDES}",   config.CreateIncludes())
       line = line.replace("${IMPLEMENT_WRAP_FUNCTION}",   impl)
       print line,

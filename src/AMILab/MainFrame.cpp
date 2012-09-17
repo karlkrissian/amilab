@@ -1926,7 +1926,7 @@ void MainFrame::UpdateVarDataView(  const wxDataViewItem& rootbranch,
 
   while (cat[n]!="") 
   {
-    std::cout << "Creating branch for " << cat[n].c_str() << std::endl;
+    //std::cout << "Creating branch for " << cat[n].c_str() << std::endl;
     current_id = _var_dataview->AppendContainer(
                                                 rootbranch,
                                                 wxString( cat[n].c_str(),
@@ -2919,7 +2919,7 @@ void MainFrame::AddMenuScript(  const std::string& script_category,
   //parent->Append(usermenu_id, GetwxStr(script_label.c_str()));
 
   // connecting
-  std::cout << "Connecting menu event with id = " << usermenu_id << std::endl;
+  //std::cout << "Connecting menu event with id = " << usermenu_id << std::endl;
   Connect(usermenu_id,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnUserMenuScript));
 
@@ -2984,7 +2984,7 @@ void MainFrame::AddToMenu(  const std::string& menu_name,
   usermenu_scripts[usermenu_id] = script_name;
 
   // connecting
-  std::cout << "Connecting menu event with id = " << usermenu_id << std::endl;
+  //std::cout << "Connecting menu event with id = " << usermenu_id << std::endl;
   Connect(usermenu_id,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnUserMenuScript));
 

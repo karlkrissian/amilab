@@ -101,6 +101,11 @@ if (!exists(MultiLinesClass)) {
       #::Gui()
       ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/MultiLines/index.html"
       ::wiki_help = "http://www.ctm.ulpgc.es/amilab/doku.php?id=tutorial-mainalgorithms-multilines"
+      
+      ::trackvoxel_x = INT(0),"X position of voxel to track"
+      ::trackvoxel_y = INT(0),"Y position of voxel to track"
+      ::trackvoxel_z = INT(0),"Z position of voxel to track"
+      ::enable_track = UCHAR(0)
 
     }
 
@@ -298,7 +303,7 @@ if (!exists(MultiLinesClass)) {
       inittime = wx.wxDateTime.UNow()
       sth = filters.StructureTensorH(&::input,sigma,1,&::mask)
       diff=wx.wxDateTime.UNow()-inittime
-      time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       printn "time: "+time_elapsed
     
       SetProgress(::current_progress+::current_step*0.25)
@@ -332,7 +337,7 @@ if (!exists(MultiLinesClass)) {
       ed.Setmask(&::mask)
       ed.Run()
       diff=wx.wxDateTime.UNow()-inittime
-      time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       printn "EigenDecomp2 time: "+time_elapsed
 
       if (::keep_eigenratio) {
@@ -405,7 +410,7 @@ if (!exists(MultiLinesClass)) {
       #response
       cb3d.Execute(&response)
       diff=wx.wxDateTime.UNow()-inittime
-      time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       printn "Circle boundaries time: "+time_elapsed
 
       #diff = max(norm(response-::response2))
@@ -622,6 +627,11 @@ if (!exists(MultiLinesClass)) {
         printn sprint(" sigma = %0.2f", ::current_sigma)
     
         ::ComputeResponse_new(::current_sigma, &response)
+        if (::enable_track) {
+          printn "Iteration %1%" %i
+          printn "Response obtained = %1%" % \
+                    response(::trackvoxel_x,::trackvoxel_y,::trackvoxel_z)
+        }
     
         if (::keep_all_scales) {
           ::all_responses.SetComponent(i,response)
@@ -636,8 +646,8 @@ if (!exists(MultiLinesClass)) {
           max_response=response
           if (::local_maxima) {
             # 3 more images in memory
-            prev_response=response
             current_maxima <<= response*0
+            ::num_lmax <<= ((UCHAR) response)*0
             ::maxima       <<= response*0
             if (::keep_orientations) {
               # check how to get the vectors here, or keep the symmetric matric??
@@ -659,6 +669,8 @@ if (!exists(MultiLinesClass)) {
             # only keep the first maxima found
             ::maxima =  (::maxima!=0)*::maxima+\
                         (::maxima==0)*(current_maxima>response)*current_maxima
+            # we are only interested in positive responses ...
+            ::num_lmax = ::num_lmax+(current_maxima>response)*(response>0)
             if (::keep_orientations) {
               # to do
               #v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
@@ -675,12 +687,20 @@ if (!exists(MultiLinesClass)) {
             }
             # Compute local maxima
             current_maxima = LocalExtrema(response,::current_v1,::current_v2,::mask)
+            if (::enable_track) {
+              printn "Local Extrema value =  %1%" % \
+                   current_maxima(::trackvoxel_x,::trackvoxel_y,::trackvoxel_z)
+            }
             current_maxima = current_maxima*(response>prev_response)
           } 
           # end if (::local_maxima)
           max_response=max(response,max_response)
-        }
+        } 
     
+        if (::local_maxima) {
+          # keep current response as previous response for next iteration
+          prev_response=response
+        }
         ::current_rad = ::current_rad*_step
         SetProgress(i/::numrad*100)
       }
@@ -974,6 +994,13 @@ if (!exists(MultiLinesClass)) {
             ::win.AddPage("Skeleton",&::skeleton_obj.win)
           ::win.EndBook()
 
+        ::recons_page = ::win.AddPage("Track")
+          ::win.BeginBoxPanel("Voxel to track")
+            ::win.AddInt(::trackvoxel_x,"X=",0,1024)
+            ::win.AddInt(::trackvoxel_y,"Y=",0,1024)
+            ::win.AddInt(::trackvoxel_z,"Z=",0,1024)
+          ::win.EndBoxPanel()
+          ::win.AddBoolean(::enable_track,"Enable tracking")
       ::win.EndBook()
     
       ::AddStandardButtons(&::win)

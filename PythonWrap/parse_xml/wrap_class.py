@@ -71,7 +71,7 @@ def FindIncludeFile(classname,fileid):
   try:
     #print "classname=",classname, " keys:", classes_inc.classes_includes.keys()
     if classname in classes_inc.classes_includes.keys():
-      print "*"
+      #print "*"
       return '#include "{0}"'.format(classes_inc.classes_includes[classname])
   except:
     pass
@@ -305,8 +305,12 @@ def CheckBlackList(mname,demangled):
     if mname in mem_blacklist.members_blacklist:
       utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format(mname))
       return True
+    #print "check for {0}, {1}, in blacklist".format(mname,demangled)
+    #print mem_blacklist.members_blacklist
     for bname in mem_blacklist.members_blacklist:
-      if demangled.startswith(bname+"(") or demangled==bname:
+      #print "is ok? {0}".format(demangled.startswith(bname+"("))
+      #if demangled.startswith(bname+"(") or demangled==bname:
+      if (bname+"(") in demangled or demangled==bname:
         utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format( demangled))
         return True
   except:
@@ -315,7 +319,8 @@ def CheckBlackList(mname,demangled):
     utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format(mname))
     return True
   for bname in config.members_blacklist:
-    if demangled.startswith(bname+"(") or demangled==bname:
+    #if demangled.startswith(bname+"(") or demangled==bname:
+    if (bname+"(")  in demangled or demangled==bname:
       utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format( demangled))
       return True
   return False
@@ -597,7 +602,10 @@ class ParsePublicMembers:
     #print context
     #print classname
     mname=attrs.get('name',None)
-    if CheckBlackList(mname,demangled): return
+    if CheckBlackList(mname,demangled): 
+      #print "member {0} in blacklist".format(demangled)
+      return
+    #print "continuing with {0}".format(demangled)
     if attributes=="deprecated":
       utils.WarningMessage("Skipping deprecated method {0}".format(mname))
       #print "Skipping deprecated method {0}".format(mname)

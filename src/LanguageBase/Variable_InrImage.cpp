@@ -257,7 +257,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator +(const
     IMAGE_OP_IMAGE_2(Pointer(),var_im2->Pointer(),+);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -276,7 +280,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator +=(cons
       GB_AmiMessage.Error("Error, parameter of += operator points to NULL image\n");
     }
   } else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -292,7 +300,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator -(const
     IMAGE_OP_IMAGE_2(Pointer(),var_im2->Pointer(),-);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -320,7 +332,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator *(const
     IMAGE_OP_IMAGE_2(Pointer(),var_im2->Pointer(),*);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -357,7 +373,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator /(const
     IMAGE_OP_IMAGE_2(Pointer(),var_im2->Pointer(),/);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -389,7 +409,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator %(const
       return BinaryImageOperation(Pointer(),var_im2->Pointer(),Pointwise_Modulus,"Mod");
     }
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -420,7 +444,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator <(const
     IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),<);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -436,7 +464,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator <=(cons
     IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),<=);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -452,7 +484,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator >(const
     IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),>);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -468,7 +504,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator >=(cons
     IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),>=);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -484,7 +524,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator !=(cons
     IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),!=);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -500,7 +544,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator ==(cons
     IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),==);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
@@ -541,7 +589,11 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator ^(const
     IMAGE_OP_IMAGE_2(Pointer(),var_im2->Pointer(),^);
   } 
   else
-    CLASS_ERROR("operation not defined");
+  {
+    ami::format mess("operation not defined ... for variable %1% ");
+    // don't copy a file, keep a reference ...
+    CLASS_ERROR( (mess % Name().c_str()).GetString());
+  }
   return this->NewReference(); 
 }
 
