@@ -1,0 +1,12 @@
+
+#del VesselQuantificationPlugin
+#func "VesselQuantificationPlugin"
+func "Common/ModulePlugin"
+
+if (!exists(VesselQuantification_obj)) {
+  ModulePlugin VesselQuantification_obj
+  VesselQuantification_obj.SetModuleName("VesselQuantification")
+  VesselQuantification_obj.Load()
+} else {
+  InfoDialog "The script class VesselQuantificationPlugin to be already instanciated." 
+}

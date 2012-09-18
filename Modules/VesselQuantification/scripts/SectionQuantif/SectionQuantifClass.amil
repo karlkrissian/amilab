@@ -1,0 +1,895 @@
+
+func "Common/ScriptGui"
+
+# load module 
+if (!exists(VesselQuantification)) {
+  func "../Load_VesselQuantification"
+} else {
+  func "../ReLoad_VesselQuantification"
+}
+
+if (!exists(SectionQuantifClass)) {
+
+  Class SectionQuantifClass : public ScriptGui \
+  {
+    
+    func "VectorClass.amil"
+    ::VectorClass = &VectorClass
+
+    func "../scripts/Visualization/VolRen/VolRenClass"
+    #func "../VolRenClass.amil"
+    VolRenClass ::volren
+  #  ::volren.Gui()
+    func "Centerlines/MultiLines/MultiLinesClass"
+    MultiLinesClass ::ML_obj
+    
+    func "Centerlines/Skeleton/SkeletonClass"
+    SkeletonClass ::SK_obj
+   # ::SK_obj = &::ML_obj.skeleton_obj
+
+    //---------------------------------------------------
+    
+    proc ::Init() {
+      
+        ::input_name   = "","Name of the input image variable"
+        ::input_size  = "0 Mb",  "input volume size in Mb (2^20 bytes)"
+         ::image_name = " ", "Name of the resulting image variable after resize"
+        ::lines_filename = ""
+        ::lines_varname = "Surface", "Name of the input lines"
+        ::dimx = INT(50), "Image dimension in X (in mm)"
+        ::dimy = INT(50), "Image dimension in Y (in mm)"
+        ::spacingx = INT(1), "Espacio en x (in mm)"
+        ::spacingy = INT(1), "Espacio en y (in mm)"
+        ::d = INT(10), "Plane dimension"
+        ::line_number = INT(0), "Selected line number"
+        ::advancedML = UCHAR(1), "Select for Advanced users"
+        ::advancedVR = UCHAR(1), "Select for Advanced users"
+        #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+        ::line_pos = INT(10), "Centerline position"
+
+        ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/SectionQuantif/index.html"
+    }
+
+
+   #---------------------------------------------------------------------------
+    proc ::load_input() {
+      del ::input
+      ::volren.ResetView() #cada vez que carga una imagen resetea la vista
+
+      eval "::input = &"+::input_name+";"
+      ::ML_obj.input_name = ::input_name #Cargar la imagen en el script MultiLines
+      ::ML_obj.load_input()              #Inicializar ::init en el script MultiLines
+      ::volren.input_name = ::input_name
+      ::volren.load_input()
+      if (::input_name=="BrowseImage") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+      if (::input.tz==1){
+        InfoDialog "Warning: input is a 2D image ..."
+        del ::input
+      }
+
+      if (exists (::input)){
+        ::volren.UpdateImageInfo(&::input,&::input_size)
+        ::win.SetLabelValue(::input_size_id,::input_size)
+      }
+   
+      ::load_intensity_multilines()
+      del ::lines_draw
+      
+    }
+    Comments( ::load_input, "Copies the input image in a local image member named 'input'")
+    
+     #---------------------------------------------------------------------------
+    proc ::Clear() {
+      del ::vtksurf
+      del ::w1_poly
+      del ::planew
+      del ::lines
+     # del ::line_number
+      #del ::line_pos
+      del ::lines_draw
+      
+    }
+    #---------------------------------------------------------------------------
+    proc ::GuiUpdateIntensityLimits_multilines( NUM _min, NUM _max) {
+      ::win.FloatConstraints(::mask_threshold_id,_min,_max,(_max-_min)/2)
+      ::win.Update(-1)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::GuiUpdateIntensityLimitsSkeleton( NUM _min, NUM _max) {
+      ::win.FloatConstraints(::Threshold_Upper_id,_min,_max,(_max-_min)/2)
+      ::win.FloatConstraints(::Threshold_Lower_id,_min,_max,(_max-_min)/2)
+      ::win.Update(-1)
+    }
+     
+    
+    #---------------------------------------------------------------------------
+    proc ::load_intensity_multilines() {
+     # ::Init_Multilines()
+      if (exists(::win)) {
+        ::inputmin          = min(::input)
+        ::inputmax          = max(::input)
+        ::GuiUpdateIntensityLimits_multilines(::inputmin,::inputmax)
+        ::win.Update(-1)
+      }
+    }
+    #---------------------------------------------------------------------------
+    proc ::load_input_Skeleton() {
+       ::SK_obj.load_input()
+       if (exists(::input)) {
+        ::inputmins          = min(::SK_obj.input)
+        ::inputmaxs          = max(::SK_obj.input)
+        ::SK_obj.Threshold_Upper   = (::inputmins+::inputmaxs)/2
+        ::SK_obj.Threshold_Lower   = (::inputmins+::inputmaxs)/2
+        ::GuiUpdateIntensityLimitsSkeleton(::inputmins,::inputmaxs)
+      }
+      
+    }
+
+    #-----------------------------------------------
+    proc ::CreateSkeleton() \
+    {
+      ::SK_obj.Execute()
+    }
+
+    #-----------------------------------------------
+    proc ::SmoothSkeleton() \
+    {
+      ::SK_obj.Smooth_Lines()
+    }
+
+    #-----------------------------------------------
+    proc ::DisplaySkeleton() \
+    {
+      ::SK_obj.Display()
+      ################################################
+        del ::vtksurf
+       ::vtksurf = vtktools.ToVtkPolyData( &::SK_obj.res)
+       ::mapper = vtk.vtkPolyDataMapper.New()
+       ::mapper.SetInputConnection( &::vtksurf.GetProducerPort() )
+       actor = vtk.vtkActor.New()
+       actor.SetMapper( &::mapper )
+      
+       vol0 = &::volren.volVector[0]
+       vol0.renderer.AddActor( &actor)
+      ######################################################  
+    }
+
+   
+    #--------------------------------------------------------------------------
+
+    proc ::reload_input() {
+      ::image_name = "::SectionQuantif_obj.input"
+      #::input_name = "::input"
+      ::ML_obj.set_input(::input)    
+      ::volren.set_input(::input)
+     # ::volren.ResetView() #cada vez que carga una imagen resetea la vista
+      #necesitamos el input_size para poner en pantalla
+      ::volren.UpdateImageInfo(&::input,&::input_size)      
+      ::win.SetLabelValue(::input_size_id,::input_size)
+      ::win.Update(-1)
+      
+      ::load_intensity_multilines()
+      del ::lines_draw
+    }
+      
+   #---------------------------------------------------------------------------
+    proc ::load_lines_filename() {
+      del ::lines
+      ::lines = Surface(::lines_filename)
+      ::lines._info()
+      ::win.IntegerConstraints(::ln_id,0,::lines.GetNumberOfLines()-1,0)
+      ::win.Update(::ln_id)
+    }
+
+
+
+   #---------------------------------------------------------------------------
+    proc ::load_lines() {
+      del ::lines
+      eval "::lines = "+::lines_varname+";"
+      ::lines._info()
+      ::win.IntegerConstraints(::ln_id,0,::lines.GetNumberOfLines()-1,0)
+      ::win.Update(::ln_id)
+    }
+    Comments( ::load_lines, "Copies the lines polydata in a local member named 'lines'")
+
+    #---------------------------------------------------------------------------
+    proc ::Resize_Vol() \
+    {
+      if (!exists(::input)) {
+        InfoDialog "Load input image first"
+      } else {
+          ::resizevol1=1
+          SetStatusText("Resizing ...")
+          aux = MeanHalfSize(::input)
+          SetStatusText("Resizing done")
+          del ::input
+          ::input=aux
+          ::reload_input()
+             
+        }
+      
+    }
+    Comments(::Resize_Vol,"Resize Volume 1 by half")
+ 
+   #---------------------------------------------------------------------------
+   #---------------------------------------------------------------------------
+    proc ::Quantification() {
+   
+      #lines = Surface "/tmp/lines.vtk"
+      #lines._info()
+      if (!exists(::lines)) {
+        InfoDialog "Load line first"
+      } else {
+          center_line = ::lines.GetLine(::line_number)
+          n = center_line.tx
+          print "n es: "; printn n
+          print "line_number es: "; printn ::line_number
+          ::VectorClass Punto 
+          ::VectorClass vec
+    
+          vector1  = VarVector()
+          vector2  = VarVector()
+          vector3  = VarVector()
+      
+          vec.v[0]= 1;  
+
+          for i=0 to n-2 {
+            SetProgress((FLOAT)i/n*100)
+            if (i < (n-1)) {
+              Punto[0] = center_line(i+1;0)- center_line(i;0)
+              Punto[1] = center_line(i+1;1)- center_line(i;1)
+              Punto[2] = center_line(i+1;2)- center_line(i;2)
+              Punto = Punto.Normalize()
+              vector1.push_back(Punto.__copy__())
+            }
+
+            if (i==0) {
+              if (vec.Parallel(vector1[0])) {
+                vec[0]=0; vec[1]=1; vec[2]=0           
+              }
+              del aux
+              aux = vector1[i].ProdVect(vec)
+              aux = aux.Normalize()
+              vector2.push_back(aux.__copy__())
+
+              del aux
+              aux = vector1[i].ProdVect(vector2[i])
+              # if aux.Norm() == 0 : to check
+              aux = aux.Normalize()
+              vector3.push_back(aux.__copy__())
+            }
+
+            if (i>0) {
+              if (vector1[i].Parallel(vector3[i-1])) { 
+                vector2.push_back(vector2[i-1].__copy__())
+              }
+
+              del aux
+              aux = vector3[i-1].ProdVect(vector1[i])
+              #if ( abs(aux.Norm())<1E-5) {
+              #InfoDialog "The centerline have a abrupt change of 90 degrees to v3, you should better smooth it !!!"
+              del v1; del v2; del v3
+              ::VectorClass v1
+              ::VectorClass v2
+              ::VectorClass v3
+              v1[0] = (vector1[i][0]+vector3[i-1][0])/2
+              v1[1] = (vector1[i][1]+vector3[i-1][1])/2
+              v1[2] = (vector1[i][2]+vector3[i-1][2])/2
+              v1.Normalize()
+              v2 = vector3[i-1].ProdVect(v1)
+              v2.Normalize()
+              v3 = v1.ProdVect(v2)
+              v3.Normalize()
+              del aux
+              aux = v3.ProdVect(vector1[i])
+              #}
+              aux = aux.Normalize()
+              vector2.push_back(aux.__copy__())
+      
+              del aux
+              aux = vector1[i].ProdVect(vector2[i])
+              # if aux.Norm() == 0 : to check
+              aux = aux.Normalize()
+              vector3.push_back(aux.__copy__())
+            } 
+          }
+          SetProgress(0)
+    
+          del ::w1
+          ::w1 = &vector1
+          del ::w2
+          ::w2 = &vector2
+          del ::w3
+          ::w3 = &vector3
+          printn "ya termine"
+        }
+    }
+
+
+   #---------------------------------------------------------------------------
+    proc ::CreateSurfVect() \
+    {
+      s = Surface()
+      ptid = 0
+      center_line = ::lines.GetLine(::line_number)
+      n = center_line.tx
+      for i=0 to n-2 {
+        SetProgress((FLOAT)i/n*100)
+        s.AddPoint(center_line(i;0),center_line(i;1),center_line(i;2))
+        ptid++
+        s.AddPoint(center_line(i;0)+::w1[i][0],\
+                   center_line(i;1)+::w1[i][1],\
+                   center_line(i;2)+::w1[i][2])
+        ptid++
+        
+        s.AddPoint(center_line(i;0)+::w2[i][0],\
+                   center_line(i;1)+::w2[i][1],\
+                   center_line(i;2)+::w2[i][2])
+        ptid++
+        
+        s.NewLine()
+          s.LineAddPointNumber(ptid-3)
+          s.LineAddPointNumber(ptid-2)
+        s.EndLine()
+        s.NewLine()
+          s.LineAddPointNumber(ptid-3)
+          s.LineAddPointNumber(ptid-1)
+        s.EndLine()
+             
+      }
+
+      return = &s
+    }
+
+
+   #---------------------------------------------------------------------------
+    proc ::Display() {
+         
+     if (exists(::w1)) {
+       show ::lines
+       del ::w1_poly
+       # del ::lines_draw
+       ::w1_poly = ::CreateSurfVect()
+       ::lines_draw += ::w1_poly
+     
+       del ::vtksurf
+       ::vtksurf = vtktools.ToVtkPolyData( &::w1_poly)
+       ::mapper = vtk.vtkPolyDataMapper.New()
+       ::mapper.SetInputConnection( &::vtksurf.GetProducerPort() )
+       actor = vtk.vtkActor.New()
+       actor.SetMapper( &::mapper )
+       vol0 = &::volren.volVector[0]
+       vol0.renderer.AddActor( &actor)
+     # ::renwin_interact.GetRenderWindow().Render()
+      
+     } else {
+          InfoDialog "Run Filter first"
+       }
+     
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Reslice() {
+      if (!exists(::input)) {
+        InfoDialog "Load input image first"
+      } else {
+        ::VectorClass Punto 
+        ::VectorClass x
+        ::VectorClass y
+        ::VectorClass z
+        center_line = ::lines.GetLine(::line_number)
+        n = center_line.tx
+        ::n_points = n-2
+         # print "n esss: "; printn n
+          
+        #::dimx = 50 # en mm
+        #::dimy = 50
+        #::spacingx = 1
+        #::spacingy = 1
+        px = ::dimx/::spacingx
+        py = ::dimy/::spacingy
+        ::imres <<= Image(FLOAT,px,py,n-1)
+        del ::vtk_input
+        ::vtk_input = vtktools.ToVtkImageData( ::input)
+        del ::ir
+        ::ir = vtk.vtkImageReslice.New()
+        ::ir.SetInputConnection(&::vtk_input.GetProducerPort())
+
+        for i=0 to n-2 { 
+          SetProgress((FLOAT)i/(n-1)*100)
+          Punto[0] = center_line(i;0)
+          Punto[1] = center_line(i;1)
+          Punto[2] = center_line(i;2)
+          ::ir.SetResliceAxesOrigin(Punto[0],Punto[1],Punto[2])
+          ::ir.SetResliceAxesDirectionCosines(::w2[i][0],::w2[i][1],::w2[i][2],\
+                                            ::w3[i][0],::w3[i][1],::w3[i][2],\
+                                            ::w1[i][0],::w1[i][1],::w1[i][2])
+          ::ir.SetOutputExtent(0,1.0*::dimx/::spacingx-1,0,1.0*::dimy/::spacingy-1,0,0)
+          ::ir.SetOutputOrigin(-1.0*::dimx/2,-1.0*::dimy/2,0)
+          ::ir.SetInterpolationModeToCubic()
+          ::ir.SetOutputDimensionality(2)
+          ::ir.Update()
+          del ::res
+          ::res = ::ir.GetOutput()
+          sliceres = vtktools.FromVtkImageData(&::res)
+          ::imres.putimage(sliceres,0,0,i)
+          #printn ::res.GetDataDimension()
+        }
+        SetProgress(0)
+        del ::imres_draw
+        show ::imres
+    
+      }
+    }
+    
+ 
+    #---------------------------------------------------------------------------
+    proc ::CB_LinePos() \
+    {
+      if (exists(::planew)) {
+        i = ::line_pos
+        center_line = ::lines.GetLine(::line_number)
+       
+        ::VectorClass Punto
+        Punto[0] = center_line(i;0)
+        Punto[1] = center_line(i;1)
+        Punto[2] = center_line(i;2)
+        #d = 10
+        po = Punto-(::w2[i]+::w3[i])*::d
+        ::planew.SetOrigin( po[0],po[1],po[2])
+        p1 = po+::w2[i]*(2*::d)
+        ::planew.SetPoint1( p1[0],p1[1],p1[2])
+        p2 = po+::w3[i]*(2*::d)
+        ::planew.SetPoint2( p2[0],p2[1],p2[2])
+        ::planew.UpdatePlacement()
+
+        ::volren.renwin_interact.Render()
+      }
+
+    }
+
+   #---------------------------------------------------------------------------
+    
+    proc ::PlaneSourceWidget() { 
+    
+      if (!exists(::vtk_input)) {
+         InfoDialog "Run Reslice first"
+      }else {
+         center_line = ::lines.GetLine(::line_number)
+         n = center_line.tx
+         n_points = n-2
+         printn "centerline.tx"; printn n_points
+         ::win.IntegerConstraints(::ln_pos,0,n_points,0)
+         ::win.Update(::ln_pos)
+  
+         del ::shiterw
+         ::shifterw = VesselQuantification.vtkImageShiftScale.New()
+         ::shifterw.SetInput(::vtk_input)
+         ::shifterw.SetOutputScalarTypeToUnsignedChar()
+         ::shifterw.ClampOverflowOn()
+         ::shifterw.Update()
+
+         picker = vtk.vtkCellPicker.New()
+         picker.SetTolerance(0.005)
+
+         ::planew = vtk.vtkImagePlaneWidget.New()
+         ::planew.SetInput(::shifterw.GetOutput())
+         ::planew.SetPicker(picker)
+         ::planew.DisplayTextOn()
+
+    
+         i=0
+         ::VectorClass Punto
+         Punto[0] = center_line(i;0)
+         Punto[1] = center_line(i;1)
+         Punto[2] = center_line(i;2)
+         #d = 10
+         po = Punto-(::w2[i]+::w3[i])*::d
+         ::planew.SetOrigin( po[0],po[1],po[2])
+         p1 = po+::w2[i]*(2*::d)
+         ::planew.SetPoint1( p1[0],p1[1],p1[2])
+         p2 = po+::w3[i]*(2*::d)
+
+         ::planew.SetPoint2( p2[0],p2[1],p2[2])
+         ::planew.UpdatePlacement()
+        
+         ::planew.SetInteractor(::volren.renwin_interact)
+         ::planew.On()
+       }     
+    }
+
+
+   #---------------------------------------------------------------------------
+    proc ::CreateRenderer() \
+    { 
+      if (!exists(::renderer)) {
+        ::renderer = vtk.vtkRenderer.New()
+        ::renderer.ResetCamera()
+        #::renderer.TwoSidedLightingOn()
+        ::renderer.SetTexturedBackground(1)
+        ::renderer.SetBackground(0.5,0.3,0.4)
+        interact = vtk.vtkInteractorStyleTrackballCamera.New()
+        ::renwin_interact.SetInteractorStyle( &interact )
+        ::renwin_interact.GetRenderWindow().AddRenderer( &::renderer )
+      } else {
+        printn "Renderer already exists"
+      }
+    }
+
+
+#--------------------------------------------------
+    proc ::DisplayParametricSpline() {
+      s = Surface()
+      center_line = ::lines.GetLine(::line_number)
+      n = center_line.tx
+      points = vtk.vtkPoints.New()
+      
+      for i=0 to n-1 {
+        SetProgress((FLOAT)i/n*100)
+        s.AddPoint(center_line(i;0),center_line(i;1),center_line(i;2))
+        points.InsertNextPoint(center_line(i;0),center_line(i;1),center_line(i;2))
+
+      }
+      ::spline = vtkParametricSpline.New()
+      ::spline.SetPoints(&points)
+      
+      ::funcion = vtkParametricFunctionSource.New()
+      ::funcion.SetParametricFunction(&::spline)
+      ::funcion.Update()
+      
+      
+     
+      #---------------------------------
+      #::vtksurf = vtktools.ToVtkPolyData( &::w1_poly)
+      ::mapper = vtk.vtkPolyDataMapper.New()
+      ::mapper.SetInputConnection( &::funcion.GetOutputPort() )
+      ::actor = vtk.vtkActor.New()
+      ::actor.SetMapper( &::mapper )
+      #::renderer = vtk.vtkRenderer.New()
+      #::renderer.ResetCamera()
+      #::renderer.TwoSidedLightingOn()
+      #::renderer.SetTexturedBackground(1)
+      #::renderer.SetBackground(0.5,0.2,0.4)
+      #::prop = vtk.vtkProperty.New()
+      #::prop.SetOpacity(0.9)
+      #::prop.SetAmbient(0.9)
+      #::prop.SetDiffuse(0.9)
+      #::prop.SetSpecular(1.0)
+      #::prop.SetSpecularPower(10.0)
+      #::actor.SetProperty( &::prop)
+      #::renderer.SetAutomaticLightCreation(1)
+      #::renwin_interact.GetRenderWindow().AddRenderer( &::renderer )
+      #interact = vtk.vtkInteractorStyleTrackballCamera.New()
+      #::renwin_interact.SetInteractorStyle( &interact )
+      #::renderer.AddActor( &::actor)
+     # vol0 = &::volren.volVector[0]
+     # vol0.renderer.AddActor( &actor)
+      #::volren.renwin_interact.Render()
+      #::renwin_interact.GetRenderWindow().Render()
+      #----------------------------------
+    
+    }
+
+   
+      
+    #-----------------------------------------------
+   
+    
+    proc ::MainBook_AddVolRenTab()  \
+    {
+       mb = ami.MainFrame.GetMainBook()
+
+      ::panel = wx.wxPanel(&ami.MainFrame)
+      ::panel.SetName("Quantization panel")
+
+      ::panel_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+      ::panel.SetSizer(&::panel_sizer)
+
+      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+
+      ::panel_sizer.Add(&::renwin_interact,1,wx.wxEXPAND )
+      #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+      ::renwin_interact.UseCaptureMouseOn()
+      ::renwin_interact.Enable(true)
+      ::renwin_interact.Initialize()
+
+      ::icons.LoadIconPNG("Units")
+      mb.AddPage( &::panel,  "Quantization",1, \
+        wx.wxBitmap(&::icons._Units.Scale(16,16)))
+      ::pageindex = mb.GetPageIndex(&::panel)
+      
+      # initialize the renderer, camera, renderwindow in volvVctor[0]
+      #::renwin_interact.Hide()
+      # NEED TO CALL SHOW AND UPDATE TO MAKE IT WORK ON WINDOWS !!!
+      ::renwin_interact.Show()
+      ::panel.Show()
+      ::renwin_interact.Update()
+      ::panel.Update()
+      ## now can create the renderer
+      #::volVector[0].CreateRenderer(&::renwin_interact)
+      #::volVector[0].AddAnnotatedCube() 
+      #::SetRendererBg()
+      
+    }
+
+  #-----------------------------------------------
+   
+    
+    proc ::MainBook_AddVolRenTab1()  \
+    {
+       mb = ami.MainFrame.GetMainBook()
+
+      ::panel = wx.wxPanel(&ami.MainFrame)
+      ::panel.SetName("Quantization panel")
+
+      ::panel_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+      ::panel.SetSizer(&::panel_sizer)
+
+      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel,wx.wxID_ANY)
+
+      ::panel_sizer.Add(&::renwin_interact,1,wx.wxEXPAND )
+      #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+      ::renwin_interact.UseCaptureMouseOn()
+      ::renwin_interact.Enable(true)
+      ::renwin_interact.Initialize()
+
+      ::icons.LoadIconPNG("Units")
+      mb.AddPage( &::panel,  "Quantization",1, \
+        wx.wxBitmap(&::icons._Units.Scale(16,16)))
+      ::pageindex = mb.GetPageIndex(&::panel)
+      
+      # initialize the renderer, camera, renderwindow in volvVctor[0]
+      #::renwin_interact.Hide()
+      # NEED TO CALL SHOW AND UPDATE TO MAKE IT WORK ON WINDOWS !!!
+      ::renwin_interact.Show()
+      ::panel.Show()
+      ::renwin_interact.Update()
+      ::panel.Update()
+      ## now can create the renderer
+      #::volVector[0].CreateRenderer(&::renwin_interact)
+      #::volVector[0].AddAnnotatedCube() 
+      #::SetRendererBg()
+      
+    }
+
+    #----------------------------------------------
+    proc ::MainBook_CloseTab()  \
+    {
+      if (exists(::pageindex)){
+        mb = ami.MainFrame.GetMainBook()
+        mb.DeletePage(::pageindex)
+      }
+    }
+
+
+    #-----------------------------------------------
+     # Redefinition of Close to close the panel tab in main_book
+    #
+    proc ::Close() \
+    {
+      ::volren.Close()
+      #::MainBook_CloseTab()
+      ::win.HidePanel()
+
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close,  "Will close the interface and delete the "+\
+                        "corresponding "+\
+                        "object named '"+GetObjectName(::Close)+"'.")
+    #-----------------------------------------------
+
+
+    proc ::Run() \
+    {
+      #if (!exists(::input)) {
+        #InfoDialog "First load the input image !"
+      #} else {
+        ::Quantification()
+        #InfoDialog "Filtro fantastico :) !!!"
+      #}
+    }
+ #-----------------------------------------------
+    proc ::CB_pageML() {
+        printn "Multine page number = %1%" % ::main_book.GetPageIndex(::ML_obj.win)   
+      if(!::advancedML){
+        number_pageML = ::main_book.GetPageIndex(::ML_obj.win)
+        ::main_book.RemovePage(number_pageML)
+       
+      } else {
+         ::main_book.AddPage(::ML_obj.win,"MultiLines")
+      }
+    }
+
+ #-----------------------------------------------
+    proc ::CB_pageVR() {
+      if(!::advancedVR){
+        number_pageVR = ::main_book.GetPageIndex(::volren.win)
+        ::main_book.RemovePage(number_pageVR)
+       
+      } else {
+         ::main_book.AddPage(::volren.win,"VolRen")
+      }
+    }
+
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("SectionQuantif",&::parent_panel)
+      } else {
+        ::win = ParamPanel("SectionQuantif")
+      }
+      
+      ::win.BeginBook()
+        ::main_book = ::win.GetBookCtrl()
+      
+        ::win.AddPage("Init")
+          ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::load_input)
+              #::AddBitmapButton16(&::win, &::volren.icons._Show, "::volren.StartNew")
+            ::win.EndHorizontal()
+            ::input_size_id = ::win.AddLabel("Size:",::input_size)
+            ::win.AddButton("Resize", ::Resize_Vol)
+            ::win.AddString( ::image_name,"varname")  
+            ::win.AddButton("Display", ::volren.StartNew)  
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Input Lines")
+            ::win.BeginBoxPanel("From disk")
+              ::win.BeginHorizontal()
+                ::win.AddFilename(&::lines_filename,"select","/Documentos/","*.vtk")
+                ::win.AddButton("Load",::load_lines_filename)
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("From variable")
+              ::win.BeginHorizontal()
+                ::win.AddAMIObjectChoice(&::lines_varname,"","SurfacePoly")
+                ::win.AddButton("Load",::load_lines)
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel()
+            ::ln_id = ::win.AddInt(&::line_number,"Line number",0,200)
+          ::win.EndBoxPanel()
+
+        ::win.AddPage("Param")
+          #::win.AddLabel("Info:","Set your parameters here")
+          ##Se añade los parametros del script MultiLines
+          ::win.BeginBook()
+            ::win.AddPage("MultiLines")
+              ::win.BeginBoxPanel("Mask")
+                maskmode_id = ::win.AddEnum(::ML_obj.mask_mode, "Mode")
+                ::win.AddEnumChoice(maskmode_id,"Threshold from input")
+                ::win.AddEnumChoice(maskmode_id,"Mask image")
+
+                # set the mask threshold
+                ::mask_threshold_id = ::win.AddFloat(::ML_obj.mask_threshold,"Threshold",0,100)
+
+                # set the mask image
+                ::win.AddImageChoice( ::ML_obj.mask_name, "Mask")
+                ::win.AddButton("Update",::ML_obj.update_mask)
+              ::win.EndBoxPanel()
+
+              ::win.BeginBoxPanel("Radii (or scales)")
+                ::win.AddFloat( ::ML_obj.radmin,"min.",0.5,10)
+                ::win.AddFloat( ::ML_obj.radmax,"max.",0.5,10)
+                ::win.AddInt( ::ML_obj.numrad,"number",1,20)
+              ::win.EndBoxPanel()
+              ::localmax_id = ::win.AddBoolean( ::ML_obj.local_maxima,"Local maxima")
+              ::win.SetCallback(::ML_obj.OnLocalMaxima)
+          
+              ::win.BeginBoxPanel("Controls")
+                ::win.AddButton("Run new",    ::ML_obj.MultiLines_new)
+                ::outputname_id = ::win.AddString( ::ML_obj.output_name, "Output")
+              ::win.EndBoxPanel()
+            #::win.EndBook()
+            
+              ::win.AddPage("Skeleton")
+                # set the input image
+                ::win.BeginBoxPanel("Input Image")
+                  ::win.BeginHorizontal()
+                    ::win.AddImageChoice( ::SK_obj.input_name, "Input")
+                     ::win.AddButton("Load",::load_input_Skeleton)
+                     #::AddBitmapButton(::win, ::SK_obj.icons._Copy,   32, "load_input_Skeleton")
+                     #::win.SetPositionProp(-1,0)
+                  ::win.EndHorizontal()
+                ::win.EndBoxPanel()
+               
+                ::win.BeginBoxPanel("Threshold") 
+                  ::win.AddBoolean( ::SK_obj.UseZoom,"Use Zoom")
+                                    
+                  # TODO: set the limits after reading the input image
+                  ::Threshold_Upper_id = ::win.AddFloat( ::SK_obj.Threshold_Upper,  \
+                              "Threshold Upper", -1000,1000)
+                  ::Threshold_Lower_id = ::win.AddFloat( ::SK_obj.Threshold_Lower,  \
+                              "Threshold Lower", -1000,1000)
+                ::win.EndBoxPanel()
+
+                ::win.BeginBoxPanel("Run")  
+                  ::win.BeginHorizontal()
+                    ::AddBitmapButton(::win, ::SK_obj.icons._Apply,     32, "CreateSkeleton")
+                    ::win.SetPositionProp(-1,0)
+                    ::AddBitmapButton(::win, ::SK_obj.icons._Show,      32, "DisplaySkeleton")
+                    ::win.SetPositionProp(-1,0)
+                    ::win.AddButton("Smooth", ::SmoothSkeleton)
+                  ::win.EndHorizontal()
+                ::win.EndBoxPanel()
+           
+          ::win.EndBook()   
+          
+         # ::win.EndBoxPanel()
+
+        ::win.AddPage("Run")
+          ::win.BeginBoxPanel("Primer Metodo") 
+            ::win.AddButton("Run Filter",::Run)
+            ::win.AddButton("Display",    ::Display)
+          ::win.EndBoxPanel()
+
+          ::win.BeginBoxPanel("Reslice")
+            ::win.AddInt( &::dimx,  "::dimx", 1,50)
+            ::win.AddInt( &::dimy,  "::dimy", 1,50)
+            ::win.AddInt( &::spacingx,  "::spacingx", 1,10)
+            ::win.AddInt( &::spacingy,  "::spacingy", 1,10)
+            ::win.AddButton("Run Reslice",    ::Reslice)
+          ::win.EndBoxPanel()
+            
+          ::win.BeginBoxPanel("Plane")
+            ::win.AddInt( &::d,  "::size plane", 5,100)
+            ::win.AddButton("Plane Source", ::PlaneSourceWidget)
+            ::ln_pos = ::win.AddInt(&::line_pos,"Line Pos",0,200)
+            ::win.SetCallback(&::CB_LinePos)
+          ::win.EndBoxPanel()
+          ::win.AddButton("Display ParametricSpline", ::DisplayParametricSpline)
+        #Se añade página de Volren y MultiLines
+        ::volren.SetParentPanel(&::win)
+        ::volren.Gui()
+        ::win.AddPage("VolRen",&::volren.win)
+            
+        ::ML_obj.local_maxima = true
+        ::ML_obj.SetParentPanel(&::win)
+        ::ML_obj.Gui()
+        ::win.AddPage("MultiLines",&::ML_obj.win)  
+        
+       
+
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+       
+    ::win.EndBook()
+
+      ::win.BeginHorizontal()
+        ::win.AddBoolean(&::advancedML,"Advanced Multiline")
+        ::win.SetCallback(&::CB_pageML)
+        ::win.AddBoolean(&::advancedVR,"Advanced Volume Rendering")
+        ::win.SetCallback(&::CB_pageVR)
+      ::win.EndHorizontal()
+
+      ::AddStandardButtons(&::win)
+      
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      
+      ::win.Update(-1)
+      #::MainBook_AddVolRenTab1() 
+      #::CreateRenderer()
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

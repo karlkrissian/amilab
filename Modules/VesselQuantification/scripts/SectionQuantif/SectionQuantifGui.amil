@@ -1,0 +1,11 @@
+
+func "SectionQuantifClass"
+
+if (!exists(SectionQuantif_obj)) {
+  SectionQuantifClass SectionQuantif_obj
+  SectionQuantif_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
