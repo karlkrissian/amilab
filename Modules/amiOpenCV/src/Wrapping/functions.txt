@@ -1,4 +1,7 @@
 
+# simple functions
+cvRound
+
 # IO
 
 #Mat imread(const string& filename, int flags=1)
@@ -12,3 +15,19 @@ cv::imwrite
 cv::namedWindow
 cv::imshow
 cv::waitKey
+
+# drawing
+cv::circle
+
+# some processing
+
+# void HoughCircles(Mat& image, 
+#                   vector<Vec3f>& circles, 
+#                   int method, double dp, double minDist, 
+#                   double param1=100, double param2=100, 
+#                   int minRadius=0, int maxRadius=0)
+cv::HoughCircles
+
+cv::cvtColor
+cv::GaussianBlur
+

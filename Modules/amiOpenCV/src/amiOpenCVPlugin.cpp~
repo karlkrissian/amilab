@@ -10,6 +10,7 @@
 //
 
 #include "amiOpenCVPlugin.h"
+#include "../build/release/Wrapping/Generated/addwrap_amiOpenCV.h"
 #include "VarContexts.hpp"
 #include "ami_object.h"
 #include "LanguageBaseConfigure.h"
@@ -45,6 +46,8 @@ bool amiOpenCVPlugin::Execute(void)
   // Add manually wrapped classes here
     // Putting amiOpenCV and SubVoxel classes here in Algorithms
      wrap_amiOpenCV_classes(  amiobject->GetContext());
+
+     wrap_amiOpenCV_functions(  amiobject->GetContext());
 
 
   // Set as default
