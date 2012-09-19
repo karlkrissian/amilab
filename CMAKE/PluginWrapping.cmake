@@ -113,6 +113,8 @@ ENDIF(EXISTS ${ANCESTORS_FILE})
 # Checking for existing and missing files
 #-------------------------------------------------------------------------------
 
+MESSAGE("functions_list = ${functions_list}")
+
 UPDATE_OUTPUT_LIST( "${ancestors_list}"     )
 UPDATE_OUTPUT_LIST( "${functions_list}"     )
 UPDATE_OUTPUT_LIST( "${methodpointers_list}")

@@ -14,6 +14,7 @@ endif(POLICY CMP0017)
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
+ 
 #-------------------------------------------------------------
 #  CONFIGURE OUTPUT DIRECTORIES FOR WINDOWS BECAUSE OF DLL
 #-------------------------------------------------------------
@@ -549,6 +550,13 @@ include(amilab_macros)
 include(PCH_GCC4_v2)
 
 InitPrintSources()
+
+IF (CMAKE_COMPILER_IS_GNUCXX)
+  # expand macros with debug info
+  SET(CMAKE_CXX_FLAGS_DEBUG "-g3")
+  MESSAGE("CMAKE_CXX_FLAGS_DEBUG = ${CMAKE_CXX_FLAGS_DEBUG}")
+ENDIF (CMAKE_COMPILER_IS_GNUCXX)
+
 
 #-------------------------------------------------------------------------------
 # Indepedent libraries and Plugins

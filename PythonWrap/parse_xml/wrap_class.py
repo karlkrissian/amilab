@@ -1017,30 +1017,36 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, \
   res += "    wrap_{0}::CallMember( ParamList* _p)\n".format(wrapmethod_name) 
   res += "{\n"
   res += "  BasicVariable::ptr res;\n"
-  for n in range(1,nummethods+1):
-    usedname= "{0}_{1}".format(method.usedname,n)
-    utils.WarningMessage(" wrapping of {0}".format(usedname))
-    # find corresponding method and check if it is implemented
-    pos=0
-    # Set False as default ...
-    is_implemented=False
-    for m in methods:
-      #print "method name {0} usedname {1}".format(m.name,m.usedname)
-      if m.usedname==usedname:
-        #print " found method {0}".format(usedname)
-        #print " Is implemented = {0}".format(not methods[pos].missingtypes)
-        is_implemented = not methods[pos].missingtypes
-        utils.WarningMessage(" Duplicated Method {0} is implemented: {1}".format(usedname,is_implemented))
-      pos = pos+1
-    if is_implemented:
-      if m.static=="1":
-        usedname = "static_"+usedname
-      if constructor or (m.static=="1"):
-        res += "  {0}::wrap_{1} m{2};\n".format(wrapclass_name,usedname,n)
-      else:
-        res += "  {0}::wrap_{1} m{2}(this->_objectptr);\n".format(wrapclass_name,usedname,n)
-      res += "  res = m{0}.CallMember(_p);\n".format(n)
-      res += "  if (!m{0}.Get_arg_failure()) return res;\n".format(n)
+  # do it first without call to constructors ...
+  for c in [True,False]:
+    for n in range(1,nummethods+1):
+      usedname= "{0}_{1}".format(method.usedname,n)
+      utils.WarningMessage(" wrapping of {0}".format(usedname))
+      # find corresponding method and check if it is implemented
+      pos=0
+      # Set False as default ...
+      is_implemented=False
+      for m in methods:
+        #print "method name {0} usedname {1}".format(m.name,m.usedname)
+        if m.usedname==usedname:
+          #print " found method {0}".format(usedname)
+          #print " Is implemented = {0}".format(not methods[pos].missingtypes)
+          is_implemented = not methods[pos].missingtypes
+          utils.WarningMessage(" Duplicated Method {0} is implemented: {1}".format(usedname,is_implemented))
+        pos = pos+1
+      if is_implemented:
+        if m.static=="1":
+          usedname = "static_"+usedname
+        if c:
+          if constructor or (m.static=="1"):
+            res += "  {0}::wrap_{1} m{2};\n".format(wrapclass_name,usedname,n)
+          else:
+            res += "  {0}::wrap_{1} m{2}(this->_objectptr);\n".format(wrapclass_name,usedname,n)
+          res += "  m{0}.Set_noconstr(true);\n".format(n)
+        else:
+          res += "  m{0}.Set_noconstr(false);\n".format(n)
+        res += "  res = m{0}.CallMember(_p);\n".format(n)
+        res += "  if (!m{0}.Get_arg_failure()) return res;\n".format(n)
   res += "  if (!quiet)\n"
   res += "    ClassHelpAndReturn\n"
   res += "  else\n"

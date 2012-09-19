@@ -53,6 +53,14 @@
         objname = wrapped_obj->GetObj(); \
     }
 
+#define GET_WRAPPED_OBJECT_QUIET(type,var,objname) \
+  boost::shared_ptr<Variable<AMIObject> > tmp( boost::dynamic_pointer_cast<Variable<AMIObject> >(var)); \
+  boost::shared_ptr<type> objname; \
+  if (tmp.get()) {\
+    WrapClassBase::ptr object( tmp->Pointer()->GetWrappedObject()); \
+    boost::shared_ptr<WrapClass<type> > wc( boost::dynamic_pointer_cast<WrapClass<type> >(object));\
+    if (wc.get())  objname = wc->GetObj(); \
+  }\
 
 class ParamList;
 
@@ -338,9 +346,37 @@ class AMILabType {
         FILE_ERROR("Variable not found");\
         return boost::shared_ptr<type>();\
       }\
+      GET_WRAPPED_OBJECT_QUIET(type,var,res) \
+      if (res.get()) return res;\
+      if (!noconstr) {\
+        /* Try with the constructor */ \
+        ParamList::ptr param(new ParamList()); \
+        param->AddParam(var); \
+        BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get(),quiet);\
+        GET_WRAPPED_OBJECT_QUIET(type,constr_res,res) \
+        if (res.get()) return res;\
+      }\
+      /*FILE_ERROR("Parameter conversion failed");*/ \
+      return boost::shared_ptr<type>();\
+    } \
+    \
+    \
+    \
+    AMI_DEFINE_GETVALSMTPTRPARAM(type)
+
+
+/* Previous GetValue
+ * 
+ *    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr,bool quiet)  \
+    { \
+      if (!var.get()) \
+      {\
+        FILE_ERROR("Variable not found");\
+        return boost::shared_ptr<type>();\
+      }\
       boost::shared_ptr<Variable<AMIObject> > tmp( boost::dynamic_pointer_cast<Variable<AMIObject> >(var)); \
       if ((!tmp.get()) && (!noconstr)) {\
-        /* Try with the constructor */ \
+        // Try with the constructor  \
         ParamList::ptr param(new ParamList()); \
         param->AddParam(var); \
         BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get(),quiet);\
@@ -352,19 +388,16 @@ class AMILabType {
         if (wc.get()) { \
           return wc->GetObj(); \
         } else { \
-          /*FILE_ERROR("Could not cast dynamically the variable.")*/;\
+          ((FILE_ERROR("Could not cast dynamically the variable.");\
         } \
       }  else { \
-        /*FILE_ERROR("Need a wrapped object or compatible variable as parameter.")*/; \
+        //FILE_ERROR("Need a wrapped object or compatible variable as parameter."); \
       } \
       return boost::shared_ptr<type>();\
     } \
-    \
-    AMI_DEFINE_GETVALSMTPTRPARAM(type)
+  */  
 
-
-#define AMI_DEFINE_WRAPPEDTYPE_COMMON_SPECIALIZED(type) \
-    \
+/* previous GetValue for specialized
     template<> boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr,bool quiet)  \
     { \
       if (!var.get()) \
@@ -374,7 +407,7 @@ class AMILabType {
       }\
       boost::shared_ptr<Variable<AMIObject> > tmp( boost::dynamic_pointer_cast<Variable<AMIObject> >(var)); \
       if ((!tmp.get()) && (!noconstr)) {\
-        /* Try with the constructor */ \
+        // Try with the constructor  \
         ParamList::ptr param(new ParamList()); \
         param->AddParam(var); \
         BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get(),quiet);\
@@ -391,6 +424,31 @@ class AMILabType {
       }  else { \
         FILE_MESSAGE("Need a wrapped object or compatible variable as parameter.") \
       } \
+      return boost::shared_ptr<type>();\
+    } \
+*/
+
+
+#define AMI_DEFINE_WRAPPEDTYPE_COMMON_SPECIALIZED(type) \
+    \
+    template<> boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr,bool quiet)  \
+    { \
+      if (!var.get()) \
+      {\
+        FILE_ERROR("Variable not found");\
+        return boost::shared_ptr<type>();\
+      }\
+      GET_WRAPPED_OBJECT_QUIET(type,var,res) \
+      if (res.get()) return res;\
+      if (!noconstr) {\
+        /* Try with the constructor */ \
+        ParamList::ptr param(new ParamList()); \
+        param->AddParam(var); \
+        BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get(),quiet);\
+        GET_WRAPPED_OBJECT_QUIET(type,constr_res,res) \
+        if (res.get()) return res;\
+      }\
+      /*FILE_ERROR("Parameter conversion failed");*/ \
       return boost::shared_ptr<type>();\
     } \
     \

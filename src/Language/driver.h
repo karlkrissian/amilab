@@ -15,6 +15,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <set>
 
 #include "ami_function.h"
 #include "Timing.hpp"
@@ -83,6 +84,9 @@ protected:
      **/
     bool nomessagedialog;
 
+    /// Set of error messages to skip
+    std::set<std::string> error_messages_to_skip;
+
 public:
 
     //ImageStack        im_stack;
@@ -107,6 +111,19 @@ public:
     void init_debug_stream();
     void close_debug_stream();
 
+    void AddSkipMessage(std::string mess) {
+      error_messages_to_skip.insert(mess);
+    }
+    
+    bool SkipMessage(std::string mess)  {
+      return 
+        (error_messages_to_skip.find(mess) != error_messages_to_skip.end());
+    }
+    
+    void ClearSkipMessages() {
+      error_messages_to_skip.clear();
+    }
+    
     void init_err_output();
     int  err_print(const char* st, const class location& l);
     int  err_print(const char* st);
@@ -153,6 +170,7 @@ public:
     /// when declaring the parameters of a function
     /// not thread-safe for the language ...
     bool  procedure_declaration;
+    
 
 public:
 

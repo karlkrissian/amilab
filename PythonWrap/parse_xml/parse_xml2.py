@@ -41,6 +41,14 @@ import wrap_function
 import generate_html #HTML generate file functions
 import pickle
   
+  
+if args.val.enum_filter!='':
+  #print "-------- args.val.classes_includes -------------"
+  import imp
+  enum_filter = imp.load_source("enum_filter_module",args.val.enum_filter)
+  print "*** Importing enum_filter"
+
+  
 def FindAvailableClasses():
   for dir in args.val.wrap_includes:
     utils.WarningMessage( "looking for classes in {0}".format(dir))
@@ -717,8 +725,21 @@ if __name__ == '__main__':
       for t in config.types.keys():
         if config.types[t].GetType()=="Enumeration":
           enumkeys=config.types[t]._values.keys()
-          # check if values starts with libname to avoid adding everything (valid for wxWidgets I think), but must be changed
-          if enumkeys[0].startswith(args.val.libname):
+          context=config.types[t].GetContext()
+          context_name = config.types[context].GetString()
+          enum_name = config.types[t].GetName()
+          #rint "Enumeration enumkeys[0] = {0}, context = {1}, name  = {2}". \
+          #   format(enumkeys[0],context_name,enum_name)
+          # check if values starts with libname to avoid adding everything 
+          #valid for wxWidgets I think), but must be changed
+
+          try:
+            wrap_enum = enum_filter.CheckEnum(enum_name,context_name,enumkeys)
+          except:
+            print "CheckEnum did not work ..."
+            wrap_enum = enumkeys[0].startswith(args.val.libname)
+          
+          if wrap_enum:
             # 1. add the context
             # 2. add the values
             # 3. set as default

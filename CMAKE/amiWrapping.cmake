@@ -149,8 +149,10 @@ ENDMACRO( READ_CLASSES2 )
 # output: functions_txt functions_list HAS_FUNCTIONS
 #
 MACRO( READ_FUNCTIONS filename)
+MESSAGE("READ_FUNCTIONS ${filename}")
   # Read list of functions to wrap
   IF(EXISTS ${filename})
+  MESSAGE("filename exists")
     FILE(READ "${filename}" functions_txt)
     # skip comments
     STRING(REGEX REPLACE "#[^\n]*\n" "\n"  functions_list_cleaned ${functions_txt} )
@@ -158,6 +160,7 @@ MACRO( READ_FUNCTIONS filename)
     #STRING(REGEX REPLACE "\n#[^\n]*\n" "\n" functions_list_cleaned ${functions_list_cleaned} )
     STRING(REGEX REPLACE "[\r\n]" ";" functions_list ${functions_list_cleaned} )
     WRAP_MESSAGE("functions_list = ${functions_list}")
+  MESSAGE("found = ${functions_list}")
     SET(HAS_FUNCTIONS "1")
   ENDIF(EXISTS ${filename})
 ENDMACRO( READ_FUNCTIONS )
@@ -439,6 +442,10 @@ MACRO( WRAP_CODE )
     SET(WRAP_CMD ${WRAP_CMD} "--members_blacklist" 
           ${WRAPPING_DIR}/members_blacklist.py)
   ENDIF(EXISTS ${WRAPPING_DIR}/members_blacklist.py)
+  IF(EXISTS ${WRAPPING_DIR}/enum_filter.py)
+    SET(WRAP_CMD ${WRAP_CMD} "--enum_filter" 
+          ${WRAPPING_DIR}/enum_filter.py)
+  ENDIF(EXISTS ${WRAPPING_DIR}/enum_filter.py)
 
 
   # Write the command to the standard output for information

@@ -91,7 +91,7 @@ class ArgInfo:
       if noconstructor_call:
         noconstr="true"
       else:
-        noconstr="false"
+        noconstr="false | Get_noconstr()"
       if shared_type==None:
         res += "  if (!AMILabType<{0} >::get_val_param({1},_p,_n,{3},{4},{5})) {2};\n".format(\
           self.typename,self.name,self.returnstring,required,noconstr,self.quiet)
@@ -159,7 +159,7 @@ class ArgInfo:
       if noconstructor_call:
         addparams+=',true'
       else:
-        addparams+=',false'
+        addparams+=',false | Get_noconstr()'
       res += "    boost::shared_ptr<{0} > {1}_smtptr;\n".format(self.typename,self.name)
       res += "    if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n{2},{4})) {3};\n".format(\
           self.typename,self.name,addparams,self.returnstring,self.quiet)
@@ -189,7 +189,7 @@ class ArgInfo:
       if noconstructor_call:
         addparams+=',true'
       else:
-        addparams+=',false'
+        addparams+=',false | Get_noconstr()'
       res += "    boost::shared_ptr<{0} > {1}_smtptr;\n".format(self.typename,self.name)
       res += "    if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n{2},{4})) {3};\n".format(\
           self.typename,self.name,addparams,self.returnstring,self.quiet)
@@ -210,7 +210,7 @@ class ArgInfo:
     if noconstructor_call:
       noconst=',true'
     else:
-      noconst=',false'
+      noconst=',false | Get_noconstr()'
     #if self.default==None or not(self.implement_default):
     # no default value
     # special case of BasicVariable::ptr, TODO: hack,  need to be improved

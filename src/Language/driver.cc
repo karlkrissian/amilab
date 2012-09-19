@@ -519,6 +519,10 @@ int Driver::err_print(const char* st)
   else 
     mess = mess + " Abort current parsing and open file?";
 
+  // check if the message should be skipped
+  if (SkipMessage(mess))
+    return wxID_NO;
+    
   if ((!nomessagedialog)&&(GB_main_wxFrame)) {
     wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR | wxSTAY_ON_TOP );
     int res = err_msg->ShowModal();
@@ -539,6 +543,19 @@ int Driver::err_print(const char* st)
       editor->ShowLineNumbers(true);
       editor->GotoLine(this->yyiplineno-1);
     }
+    
+    wxMessageDialog* errskip_msg = 
+      new wxMessageDialog(GB_main_wxFrame,
+                          _T("Skip the next occurences of this message assuming 'NO'"),
+                          GetwxStr("Skip"),
+                          wxYES_NO | wxNO_DEFAULT  | 
+                          wxICON_ERROR | wxSTAY_ON_TOP );
+    int res1 = errskip_msg->ShowModal();
+    errskip_msg->Destroy();
+    if (res1==wxID_YES) {
+      AddSkipMessage(mess);
+    }
+    
     return res;
   }
 
@@ -558,6 +575,10 @@ int Driver::err_print(const char* st, const class location& l)
     mess = mess + " Abort current parsing ?";
   else 
     mess = mess + " Abort current parsing and open file?";
+
+  // check if the message should be skipped
+  if (SkipMessage(mess))
+    return wxID_NO;
 
   if ((!nomessagedialog)&&(GB_main_wxFrame)) {
     wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR | wxSTAY_ON_TOP );
@@ -583,6 +604,19 @@ int Driver::err_print(const char* st, const class location& l)
       editor->SetSelectionStart(pos1);
       editor->SetSelectionEnd(pos2);
     }
+    
+    wxMessageDialog* errskip_msg = 
+      new wxMessageDialog(GB_main_wxFrame,
+                          _T("Skip the next occurences of this message assuming 'NO'"),
+                          GetwxStr("Skip"),
+                          wxYES_NO | wxNO_DEFAULT  | 
+                          wxICON_ERROR | wxSTAY_ON_TOP );
+    int res1 = errskip_msg->ShowModal();
+    errskip_msg->Destroy();
+    if (res1==wxID_YES) {
+      AddSkipMessage(mess);
+    }
+
     return res;
   }
 

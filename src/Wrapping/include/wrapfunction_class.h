@@ -249,7 +249,7 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 */
 // TODO:mettre un message plus explicite avec le numero et le nom du paramete ...
 #define ClassHelpAndReturn { \
-    this->ShowHelp();\
+    if (!quiet) this->ShowHelp();\
     return BasicVariable::ptr();\
   }
 
@@ -440,8 +440,11 @@ class WrapCommon_DECLARE WrapClassMember {
   protected:
     bool arg_failure;
     bool quiet;
+    // disable the call of constructors to fit arguments
+    bool noconstr;
 
   public:
+    WrapClassMember(): noconstr(false) {}
     virtual ~WrapClassMember() {}
     virtual void SetParametersComments()          {};
     virtual BasicVariable::ptr CallMember(ParamList*)  
@@ -456,7 +459,10 @@ class WrapCommon_DECLARE WrapClassMember {
     bool Get_arg_failure() { return arg_failure;}
 
     void Set_quiet(bool const & q) { quiet=q;}
+    bool Get_quiet() { return quiet; }
 
+    void Set_noconstr(bool const& nc) { noconstr=nc; }
+    bool Get_noconstr() { return noconstr; }
 };
  
 
