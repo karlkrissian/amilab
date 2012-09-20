@@ -1,0 +1,11 @@
+
+func "HoughTransformsClass"
+
+if (!exists(HoughTransforms_obj)) {
+  HoughTransformsClass HoughTransforms_obj
+  HoughTransforms_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
