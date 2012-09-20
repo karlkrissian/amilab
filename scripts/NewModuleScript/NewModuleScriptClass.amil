@@ -1,0 +1,96 @@
+
+func "Common/ScriptGui"
+
+if (!exists(NewModuleScriptClass)) {
+
+  Class NewModuleScriptClass : public ScriptGui \
+  {
+    func "Utils/CopyDirAndReplace/CopyDirAndReplaceClass.amil"
+    CopyDirAndReplaceClass ::cdr
+    
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      
+      ::module_path         = GetScriptsDir+"/../Modules", "Path to the module"
+      ::new_script_name     = "","Name of the new script"
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+\
+                        "/NewModuleScript/Doc/NewModuleScript/index.html"
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::Create() \
+    {
+      ::cdr._from = GetScriptsDir + "../Modules/ModuleScriptExample"
+      ::cdr._to   = ::module_path+"/scripts"
+      ::cdr._newdirname = ::new_script_name
+      ::cdr.repl_in     = "ModuleScriptExample"
+      ::cdr.repl_out    = ::new_script_name
+      ::cdr.Run()
+
+      ::cdr.repl_in     = "MODULENAME"
+      # get the module name from the last directory in the module path
+      module_name = wx.FromWxString(wx.wxFileName(::module_path+"/").GetDirs().Last())
+      ::cdr.repl_out    = module_name
+      filename=::module_path+"/scripts/%1%/Add2Menu.amil" % ::new_script_name
+      ::cdr.CopyFileAndReplace(filename,filename)
+      filename=::module_path+"/scripts/%1%/%1%Class.amil" % ::new_script_name
+      ::cdr.CopyFileAndReplace(filename,filename)
+      # check for Add2Menu.amil in destination directory
+      
+      InfoDialog "The directory %1% has been created based from the template" % \
+        (::module_path+"/scripts/"+::new_script_name)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("NewModuleScript",&::parent_panel)
+      } else {
+        ::win = ParamPanel("NewModuleScript")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Params")
+
+         dir_id = ::win.AddDirname(&::module_path,"Module Path")
+         ::win.AddString(&::new_script_name,"Script Filename")
+         ::win.AddButton("Create", &::Create)
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+      
+      # strange behavior TODO: check this problem
+      ::module_path += "/"
+      ::win.Update(dir_id)
+      ::module_path -= "/"
+      ::win.Update(dir_id)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If
