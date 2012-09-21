@@ -25,7 +25,7 @@ if (!exists(NewModuleScriptClass)) {
     #---------------------------------------------------------------------------
     proc ::Create() \
     {
-      ::cdr._from = GetScriptsDir + "../Modules/ModuleScriptExample"
+      ::cdr._from = GetScriptsDir + "/../Modules/ModuleScriptExample"
       ::cdr._to   = ::module_path+"/scripts"
       ::cdr._newdirname = ::new_script_name
       ::cdr.repl_in     = "ModuleScriptExample"
@@ -34,8 +34,15 @@ if (!exists(NewModuleScriptClass)) {
 
       ::cdr.repl_in     = "MODULENAME"
       # get the module name from the last directory in the module path
-      module_name = wx.FromWxString(wx.wxFileName(::module_path+"/").GetDirs().Last())
-      ::cdr.repl_out    = module_name
+      dirs = wx.wxFileName(::module_path+"/").GetDirs()
+      if !dirs.IsEmpty() {
+        ::module_name = wx.FromWxString(dirs.Last())
+        printn "Module name is %1%" % ::module_name
+      } else {
+        InfoDialog "module name not found from the directory path, using X"
+        ::module_name = "X"
+      }
+      ::cdr.repl_out    = ::module_name
       filename=::module_path+"/scripts/%1%/Add2Menu.amil" % ::new_script_name
       ::cdr.CopyFileAndReplace(filename,filename)
       filename=::module_path+"/scripts/%1%/%1%Class.amil" % ::new_script_name

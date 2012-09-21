@@ -15,6 +15,11 @@ cv::MatExpr
 cv::_OutputArray
 cv::_InputArray
 cv::Point_<int>
+
+cv::Point3_<int>
+cv::Point3_<float>
+cv::Point3_<double>
+
 _IplImage
 CvMat
 
@@ -27,3 +32,8 @@ std::vector<int, std::allocator<int> >
 # need for HoughCircles, unfortunately, need to write it down here ...
 std::vector<cv::Vec<float, 3>, std::allocator<cv::Vec<float, 3> > >
 
+std::vector<cv::Point_<double>, std::allocator<cv::Point_<double> > >
+std::vector<cv::Point_<float>, std::allocator<cv::Point_<float> > >
+
+#
+cv::RotatedRect

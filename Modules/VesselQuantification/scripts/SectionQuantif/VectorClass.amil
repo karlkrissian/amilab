@@ -3,67 +3,65 @@ del global::g_VectorClass
 
 Class VectorClass {
 
-#=======================================
-#===========Procedure Init==============
-#======================================= 
-   proc ::Init() {
-	::v = vector_double(3,0)
-   }
+  #=======================================
+  #===========Procedure Init==============
+  #======================================= 
+  proc ::Init() {
+    ::v = vector_double(3,0)
+  }
 
-#=======================================
-#===========Procedure Copy==============
-#=======================================
-   proc ::__copy__() {
-	#printn "_copy_"
-	global::g_VectorClass newvect
-	newvect.v = ::v
-	return = &newvect
-   }
+  #=======================================
+  #===========Procedure Copy==============
+  #=======================================
+  proc ::__copy__() {
+    #printn "_copy_"
+    global::g_VectorClass newvect
+    newvect.v = ::v
+    return = &newvect
+  }
 
-#=======================================
-#===========Procedure Assign============
-#=======================================
-   proc ::__assign__(OBJECT v1) {
-	#printn "_assign_"
-	::v = v1.v
-   }
+  #=======================================
+  #===========Procedure Assign============
+  #=======================================
+  proc ::__assign__(OBJECT v1) {
+    #printn "_assign_"
+    ::v = v1.v
+  }
 
-#=======================================
-#===========Procedure At================
-#=======================================
-   proc ::__at__(NUM n) {
-	#print "_at_"
-	return = &::v[n]
-   }
+  #=======================================
+  #===========Procedure At================
+  #=======================================
+  proc ::__at__(NUM n) {
+    #print "_at_"
+    return = &::v[n]
+  }
 
-#=======================================
-#===========Procedure Postinc===========
-#=======================================
-   proc ::__postinc__() {
+  #=======================================
+  #===========Procedure Postinc===========
+  #=======================================
+  proc ::__postinc__() {
     #printn "_postinc_"
     for n=0 to ::v.size()-1 {
       ::v[n]++
     }
    }
 
-#=======================================
-#=======Procedure Addition of vectors===
-#=======================================
-
-   proc ::__add__( OBJECT v2) {
+  #=======================================
+  #=======Procedure Addition of vectors===
+  #=======================================
+  proc ::__add__( OBJECT v2) {
     global::g_VectorClass newvect
     #printn "_postinc_"
     for n=0 to newvect.v.size()-1 {
       newvect.v[n] = ::v[n]+v2.v[n]
     }
     return=&newvect
-   }
+  }
 
-#=======================================
-#======Procedure Substract of vectors===
-#=======================================
-  
-   proc ::__substract__( OBJECT v2) {
+  #=======================================
+  #======Procedure Substract of vectors===
+  #=======================================
+  proc ::__substract__( OBJECT v2) {
     global::g_VectorClass newvect
     #printn "_postinc_"
     for n=0 to newvect.v.size()-1 {
@@ -72,126 +70,120 @@ Class VectorClass {
     return=&newvect
    }
 
-#=======================================
-#==Procedure Product vector and number==
-#=======================================
-  
-   proc ::__mult__( NUM x) {
+  #=======================================
+  #==Procedure Product vector and number==
+  #=======================================
+  proc ::__mult__( NUM x) {
     global::g_VectorClass newvect
     #printn "_postinc_"
     for n=0 to newvect.v.size()-1 {
       newvect.v[n] = ::v[n]*x
     }
     return=&newvect
-   }
+  }
 
-#=======================================
-#==Procedure Product vector and number==
-#=======================================
-  
-   proc ::__div__( NUM x) {
+  #=======================================
+  #==Procedure Product vector and number==
+  #=======================================
+  proc ::__div__( NUM x) {
     global::g_VectorClass newvect
     #printn "_postinc_"
     for n=0 to newvect.v.size()-1 {
       newvect.v[n] = ::v[n]/x
     }
     return=&newvect
+  }
+
+  #=======================================
+  #===========Procedure Prodvect==========
+  #=======================================
+  proc ::ProdVect(OBJECT v2) {
+    #printn "ProdVect"
+    global::g_VectorClass newvect
+    newvect.v[0] = ::v[1]*v2.v[2]-::v[2]*v2.v[1]
+    newvect.v[1] = ::v[2]*v2.v[0]-::v[0]*v2.v[2]
+    newvect.v[2] = ::v[0]*v2.v[1]-::v[1]*v2.v[0]
+    return= &newvect
+  }
+
+  #=======================================
+  #===========Procedure Prodvect==========
+  #=======================================
+  proc ::ProdEsc(OBJECT v2) {
+    #printn "ProdEsc"
+    
+    return = ::v[0]*v2[0]+::v[1]*v2[1]+::v[2]*v2[2]
+  }
+
+  #=======================================
+  #===========Procedure Norma=============
+  #=======================================
+  proc ::Norm() {
+    #printn "Norma"
+    return = sqrt(::v[0]*::v[0]\
+          +::v[1]*::v[1]\
+          +::v[2]*::v[2])
+  }
+
+  #=======================================
+  #===========Procedure Normalize=========
+  #=======================================
+  proc ::Normalize() {
+    #printn "Normalize"
+    global::g_VectorClass newvect
+    newvect.v = ::v
+    n = ::Norm()
+    newvect.v[0] /=n
+    newvect.v[1] /=n
+    newvect.v[2] /=n
+    return = &newvect
+    #printn "Normalize end"
+  }
+
+  #=======================================
+  #===========Procedure Parallel==========
+  #=======================================
+  proc ::Parallel(OBJECT v2) {
+    #printn "Parallel"
+    x = ::ProdEsc(v2)	
+    mod_v = ::Norm()
+    mod_v2 = v2.Norm()
+      cosA = x/(mod_v*mod_v2)
+    
+    if (cosA) {
+      return = 1
+    } \
+    else \
+      {
+      return = 0
+    }
    }
 
-#=======================================
-#===========Procedure Prodvect==========
-#=======================================
-   proc ::ProdVect(OBJECT v2) {
-	#printn "ProdVect"
-	global::g_VectorClass newvect
-	newvect.v[0] = ::v[1]*v2.v[2]-::v[2]*v2.v[1]
-	newvect.v[1] = ::v[2]*v2.v[0]-::v[0]*v2.v[2]
-	newvect.v[2] = ::v[0]*v2.v[1]-::v[1]*v2.v[0]
-	return= &newvect
-   }
+  #=======================================
+  #===========Procedure Angle=============
+  #=======================================
+  proc ::Angle(OBJECT v2) {
+    #printn "Angle"
+    x = ::ProdEsc(v2)	
+    mod_v = ::Norm()
+    mod_v2 = v2.Norm()
+          cosA = x/(mod_v*mod_v2)
+    
+    return = cosA
+  }
 
-#=======================================
-#===========Procedure Prodvect==========
-#=======================================
-   proc ::ProdEsc(OBJECT v2) {
-	#printn "ProdEsc"
-	
-	return = ::v[0]*v2[0]+::v[1]*v2[1]+::v[2]*v2[2]
-   }
-
-#=======================================
-#===========Procedure Norma=============
-#=======================================
-   proc ::Norm() {
-	#printn "Norma"
-	return = sqrt(::v[0]*::v[0]\
-		     +::v[1]*::v[1]\
-		     +::v[2]*::v[2])
-   }
-
-#=======================================
-#===========Procedure Normalize=========
-#=======================================
-   proc ::Normalize() {
-	#printn "Normalize"
-	global::g_VectorClass newvect
-	newvect.v = ::v
-	n = ::Norm()
-	newvect.v[0] /=n
-	newvect.v[1] /=n
-	newvect.v[2] /=n
-	return = &newvect
-	#printn "Normalize end"
-   }
-
-#=======================================
-#===========Procedure Parallel==========
-#=======================================
-
-   proc ::Parallel(OBJECT v2) {
-	#printn "Parallel"
-	x = ::ProdEsc(v2)	
-	mod_v = ::Norm()
-	mod_v2 = v2.Norm()
-    cosA = x/(mod_v*mod_v2)
-	
-	if (cosA) {
-	   return = 1
-	} \
-	else \
-    {
-	   return = 0
-	}
-   }
-
-#=======================================
-#===========Procedure Angle=============
-#=======================================
-
-   proc ::Angle(OBJECT v2) {
-	#printn "Angle"
-	x = ::ProdEsc(v2)	
-	mod_v = ::Norm()
-	mod_v2 = v2.Norm()
-        cosA = x/(mod_v*mod_v2)
-	
-	return = cosA
-	
-   }
-
-#=======================================
-#===========Procedure Print=============
-#=======================================
-   proc ::Print() {
-	#printn "Print"
-	for n=0 to ::v.size()-1 {
-	   printn "%1%, " % ::v[n]
-	}
-	printn ""
+  #=======================================
+  #===========Procedure Print=============
+  #=======================================
+  proc ::Print() {
+    #printn "Print"
+    for n=0 to ::v.size()-1 {
+      printn "%1%, " % ::v[n]
+    }
+    printn ""
    }
 
    ::Init()
 }
 
 global::g_VectorClass = &VectorClass
-		
