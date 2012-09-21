@@ -1,17 +1,7 @@
 #!/usr/bin/amilab
 
-#
-# Adding main Gui scripts to the menu
-#
+ami.MainFrame.AddToMenu("&New",\
+                        "&Script",\
+                        "&NewModuleScript",  \
+                        "NewModuleScript/NewModuleScriptGui")
 
-proc AddMenuNewModuleScript() \
-{
-  category = "&PDI"
-  script = "PDI/NewModuleScript/NewModuleScriptGui.amil"
-
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&NewModuleScript",script)
-}
-
-AddMenuNewModuleScript()
-del AddMenuNewModuleScript

@@ -24,8 +24,10 @@ if (!exists(TimerClass)) {
     #------------------------------------
     proc ::Start() {
       ::inittime = wx.wxDateTime.UNow()
-      ::win.SetLabelValue(::startdate_id,::inittime.FormatISODate().c_str())
-      ::win.SetLabelValue(::starttime_id,::inittime.FormatISOTime().c_str())
+      ::win.SetLabelValue(::startdate_id,\
+                          wx.FromWxString(::inittime.FormatISODate()))
+      ::win.SetLabelValue(::starttime_id,\
+                          wx.FromWxString(::inittime.FormatISOTime()))
       ::timer.Start(::interval*1000)
     }
 
@@ -39,7 +41,8 @@ if (!exists(TimerClass)) {
     proc ::CB_timer() {
       currenttime = wx.wxDateTime.UNow()
       diff=currenttime-::inittime
-      ::win.SetLabelValue(::label_id,diff.Format("%M min %S s %l ms").c_str())
+      ::win.SetLabelValue(::label_id,\
+             wx.FromWxString(diff.Format("%M min %S s %l ms")))
     }
 
     #----------------------------
