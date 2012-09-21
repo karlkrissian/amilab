@@ -1,0 +1,11 @@
+
+func "ComputeCrossSectionsClass"
+
+if (!exists(ComputeCrossSections_obj)) {
+  ComputeCrossSectionsClass ComputeCrossSections_obj
+  ComputeCrossSections_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+
