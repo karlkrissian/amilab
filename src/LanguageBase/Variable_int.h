@@ -9,6 +9,17 @@
 //------- Variable<int>
 //------------------------------------------------------
 
+template<>  LanguageBase_EXPORT 
+  Variable<int>::Variable(const boost::shared_ptr<int>& p);
+
+template<>  LanguageBase_EXPORT 
+  Variable<int>::Variable(const std::string& name, 
+                                const boost::shared_ptr<int>& p);
+
+template<>  LanguageBase_EXPORT bool 
+  Variable<int>::Equal( BasicVariable::ptr v);
+
+
 /// Copy contents to new variable
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<int>::NewCopy() const;
 

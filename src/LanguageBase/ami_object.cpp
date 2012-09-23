@@ -3,6 +3,13 @@
 //#include "wrapfunction_class.h"
 #include <iostream>
 
+
+AMIObject::AMIObject()
+{
+  // _name     = "";
+  _vars     = boost::shared_ptr<Variables>(new Variables);
+}
+
 /**
   * Destructor : empties the list of variables
   */

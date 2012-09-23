@@ -72,6 +72,39 @@ LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
     } \
   }
 
+//------------------------------------------------------------------------------
+template<>  AMI_DLLEXPORT 
+  Variable<AMIObject>::Variable(const boost::shared_ptr<AMIObject>& p)
+{
+  _type    = GetVarType<AMIObject>();
+  _name    = "tmpvar";
+  _pointer = boost::shared_ptr<AMIObject>(p);
+}
+
+//------------------------------------------------------------------------------
+template<>  AMI_DLLEXPORT 
+  Variable<AMIObject>::Variable(const std::string& name, 
+           const boost::shared_ptr<AMIObject>& p)
+{
+  _type    = GetVarType<AMIObject>();
+  _name    = name;
+  _pointer = boost::shared_ptr<AMIObject>(p);
+}
+
+//------------------------------------------------------------------------------
+template<>  AMI_DLLEXPORT bool Variable<AMIObject>::Equal( BasicVariable::ptr v)
+{
+  if (_type == v->Type()) {
+    // convert pointer
+    ptr newvar (boost::dynamic_pointer_cast<Variable<AMIObject> >(v));
+    return ((_name     == newvar->_name) &&
+            (_comments == newvar->_comments) &&
+            (_pointer.get()  == newvar->_pointer.get()));
+
+  }
+  else return false;
+}
+
 
 //------------------------------------------------------
 //------- Variable<AMIObject>
@@ -101,7 +134,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::NewCopy() const
     APPLY_MEMBER_NOPARAM("copy", varres)
     if (varres.get()) return varres;
   }
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 
@@ -125,20 +158,23 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::NewReference() 
 
 // Arithmetic operators
 
-/*
 /// +a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +()
 {
-  return NewReference();
+  APPLY_MEMBER_NOPARAM("__plus__", varres)
+  if (varres.get()) return varres;
+  return BasicVariable::ptr();
 }
-
-
 
 /// -a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -()
 {
-  UNARYOP_IMAGE(this->Pointer(), -); 
+  APPLY_MEMBER_NOPARAM("__minus__", varres)
+  if (varres.get()) return varres;
+  return BasicVariable::empty_variable;
 }
+
+/*
 
 /// prefix -- operator --a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --()
@@ -152,7 +188,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator *()
 {
   APPLY_MEMBER_NOPARAM("__indirection__", varres)
   if (varres.get()) return varres;
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// prefix ++ operator ++a
@@ -160,7 +196,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ++()
 {
   APPLY_MEMBER_NOPARAM("__preinc__", varres)
   if (varres.get()) return varres;
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// postfix ++ operator a++
@@ -168,7 +204,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ++(int
 {
   APPLY_MEMBER_NOPARAM("__postinc__", varres)
   if (varres.get()) return varres;
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// prefix -- operator --a
@@ -176,7 +212,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --()
 {
   APPLY_MEMBER_NOPARAM("__predec__", varres)
   if (varres.get()) return varres;
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// postfix -- operator a--
@@ -184,7 +220,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --(int
 {
   APPLY_MEMBER_NOPARAM("__postdec__", varres)
   if (varres.get()) return varres;
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// a+b
@@ -197,7 +233,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +(cons
     APPLY_MEMBER_PARAM1("add", b, varres)
     if (varres.get()) return varres;
   }
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 
@@ -211,7 +247,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +=(con
     APPLY_MEMBER_PARAM1("add_assign", b, varres)
     if (varres.get()) return varres;
   }
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// a-b
@@ -224,7 +260,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -(cons
     APPLY_MEMBER_PARAM1("substract", b, varres)
     if (varres.get()) return varres;
   }
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// a-=b
@@ -237,7 +273,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -=(con
     APPLY_MEMBER_PARAM1("sub_assign", b, varres)
     if (varres.get()) return varres;
   }
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// a*b
@@ -245,7 +281,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator *(cons
 {
   APPLY_MEMBER_PARAM1("__mult__", b, varres)
   if (varres.get()) return varres;
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// a*=b
@@ -253,7 +289,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator *=(con
 { 
   APPLY_MEMBER_PARAM1("__mult_assign__", b, varres)
   if (varres.get()) return varres;
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// a/b
@@ -261,7 +297,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator /(cons
 {
   APPLY_MEMBER_PARAM1("__div__", b, varres)
   if (varres.get()) return varres;
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// a/=b
@@ -269,7 +305,24 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator /=(con
 { 
   APPLY_MEMBER_PARAM1("__div_assign__", b, varres)
   if (varres.get()) return varres;
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
+}
+
+
+/// a%b
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator %(const BasicVariable::ptr& b)
+{
+  APPLY_MEMBER_PARAM1("__mod__", b, varres)
+  if (varres.get()) return varres;
+  return BasicVariable::empty_variable;
+}
+
+/// a%=b
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator %=(const BasicVariable::ptr& b)
+{ 
+  APPLY_MEMBER_PARAM1("__mod_assign__", b, varres)
+  if (varres.get()) return varres;
+  return BasicVariable::empty_variable;
 }
 
 /*
@@ -294,104 +347,48 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator /=(con
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
-
-/// a%b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator %(const BasicVariable::ptr& b)
-{
-  if (b->IsNumeric()) {
-    RETURN_VARPTR(AMIObject, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
-  } else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
-}
-
-/// a%=b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator %=(const BasicVariable::ptr& b)
-{ 
-  if (b->IsNumeric()) {
-    RefValue() =  ((int) round(Value())) % ((int) round(b->GetValueAsDouble()));
-  } else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
-}
+*/
 
 //  Comparison Operators
 
 /// a<b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator <(const BasicVariable::ptr& b)
 { 
-  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),<,b->GetValueAsDouble());
-  } 
-  else
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),<);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  APPLY_MEMBER_PARAM1("__lowerthan__", b, varres)
+  if (varres.get()) return varres;
+  return BasicVariable::empty_variable;
 }
 
 /// a<=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator <=(const BasicVariable::ptr& b)
 { 
-  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),<=,b->GetValueAsDouble());
-  }
-  else
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),<=);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  APPLY_MEMBER_PARAM1("__lowerorequalthan__", b, varres)
+  if (varres.get()) return varres;
+  return BasicVariable::empty_variable;
 }
 
 /// a>b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator >(const BasicVariable::ptr& b)
 { 
-  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),>,b->GetValueAsDouble());
-  }
-  else
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),>);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  APPLY_MEMBER_PARAM1("__greaterthan__", b, varres)
+  if (varres.get()) return varres;
+  return BasicVariable::empty_variable;
 }
 
 /// a>=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator >=(const BasicVariable::ptr& b)
 { 
-  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),>=,b->GetValueAsDouble());
-  }
-  else
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE(Pointer(),var_im2->Pointer(),>=);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  APPLY_MEMBER_PARAM1("__greaterorequalthan__", b, varres)
+  if (varres.get()) return varres;
+  return BasicVariable::empty_variable;
 }
-*/
+
 /// a!=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator !=(const BasicVariable::ptr& b)
 { 
-  APPLY_MEMBER_PARAM1("__not_equal__", b, varres)
+  APPLY_MEMBER_PARAM1("__notequal__", b, varres)
   if (varres.get()) return varres;
-  {
-    // for compatibility only
-    APPLY_MEMBER_PARAM1("not_equal", b, varres)
-    if (varres.get()) return varres;
-  }
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 /// a==b
@@ -399,52 +396,80 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ==(con
 { 
   APPLY_MEMBER_PARAM1("__equal__", b, varres)
   if (varres.get()) return varres;
-  {
-    // for compatibility only
-    APPLY_MEMBER_PARAM1("equal", b, varres)
-    if (varres.get()) return varres;
-  }
-  return BasicVariable::ptr();
+  return BasicVariable::empty_variable;
 }
 
 
 // Logical operators
 
-/*
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator !() 
 {
-  RETURN_VARPTR(AMIObject,!(Value()>0.5));
+  // TODO
+  return BasicVariable::empty_variable;
 }
 
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator &&(const BasicVariable::ptr& b) 
 {
-  if (b->IsNumeric()) {
-    IMAGE_OP_EXPR(Pointer(),==,b->GetValueAsDouble());
-    RETURN_VARPTR(AMIObject,Value()&& (bool) (b->GetValueAsDouble()>0.5));
-  } else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  // TODO
+  return BasicVariable::empty_variable;
 }
 
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ||(const BasicVariable::ptr& b) 
 {
-  if (b->IsNumeric()) {
-    RETURN_VARPTR(AMIObject,Value() || (bool) (b->GetValueAsDouble()>0.5));
-  } else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  // TODO
+  return BasicVariable::empty_variable;
 }
 
 /// a^b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ^(const BasicVariable::ptr& b)
 { 
-  if (b->Type()==type_image) {
-    DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
-    IMAGE_OP_IMAGE_2(Pointer(),var_im2->Pointer(),^);
-  } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  // TODO
+  return BasicVariable::empty_variable;
+}
+
+/// a&b
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator &(const BasicVariable::ptr& b)
+{ 
+  // TODO
+  return BasicVariable::empty_variable;
+}
+
+/// a|b
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator |(const BasicVariable::ptr& b)
+{ 
+  // TODO
+  return BasicVariable::empty_variable;
+}
+
+///  norm(image)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::m_norm() 
+{ 
+  // TODO
+  return BasicVariable::empty_variable;
+}
+//VAR_IMPL_FUNC(AMIObject,  norm, fabs)
+
+
+// Image Pixel Type Cast
+template<> LanguageBase_EXPORT 
+  BasicVariable::ptr 
+    Variable<AMIObject>::BasicCast(const int& type)
+{
+  return BasicVariable::empty_variable; 
+}
+
+template<> LanguageBase_EXPORT  
+  BasicVariable::ptr 
+    Variable<AMIObject>::PointWiseMult(const BasicVariable::ptr& b)
+{
+  return BasicVariable::empty_variable; 
+}
+
+template<> LanguageBase_EXPORT 
+  BasicVariable::ptr 
+    Variable<AMIObject>::Transpose()
+{
+  return BasicVariable::empty_variable; 
 }
 
 // Mathematical functions
@@ -452,7 +477,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ^(cons
 #define VAR_IMPL_FUNC(type,fname,func) \
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<type>::m_##fname() \
 { \
-  UNARYOP_IMAGE(this->Pointer(), func); \
+  return BasicVariable::empty_variable; \
 }
 
 VAR_IMPL_FUNC(AMIObject,  sin,  sin)
@@ -465,28 +490,10 @@ VAR_IMPL_FUNC(AMIObject,  fabs, fabs)
 VAR_IMPL_FUNC(AMIObject,  round,round)
 VAR_IMPL_FUNC(AMIObject,  floor,floor)
 VAR_IMPL_FUNC(AMIObject,  exp,  exp)
-VAR_IMPL_FUNC(AMIObject,  log,  1.0/log(10.0)*log)
+VAR_IMPL_FUNC(AMIObject,  log,  log)
 VAR_IMPL_FUNC(AMIObject,  ln,   log)
 VAR_IMPL_FUNC(AMIObject,  sqrt, sqrt)
 
-//  norm(image)
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::m_norm() 
-{ 
-  AMIObject::ptr res ( Norm(*Pointer()));
-  if (!res.get())
-    fprintf(stderr,"Error computing the norm |image| \n");
-  return Variable<AMIObject>::ptr( new Variable<AMIObject>(res)); 
-}
-//VAR_IMPL_FUNC(AMIObject,  norm, fabs)
-
-// Image Pixel Type Cast
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::BasicCast(const int& type)
-{
-  AMIObject::ptr res  ( new AMIObject( (WORDTYPE) type, "castimage.ami.gz", Pointer().get()));
-  (*res) = (*Pointer());
-  return Variable<AMIObject>::ptr( new Variable<AMIObject>(res)); 
-}
-*/
 
 /**
  * Array subscript operator
@@ -589,22 +596,17 @@ template<>  BasicVariable::ptr Variable<AMIObject>::operator[](const BasicVariab
 }
 
 
-/*
 //
-template<>
-BasicVariable::ptr Variable<AMIObject>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
+template<> LanguageBase_EXPORT
+  BasicVariable::ptr 
+    Variable<AMIObject>::TernaryCondition(const BasicVariable::ptr& v1, 
+                                          const BasicVariable::ptr&v2)
 {
-
-  if (IsNumeric()) {
-    if (GetValueAsDouble()>0.5) {
-      return v1->NewReference();
-    } else {
-      return v2->NewReference();
-    }
-  } else
-    CLASS_ERROR("operation not defined");
-  return NewReference();
+  CLASS_ERROR("operation not defined");
+  return BasicVariable::empty_variable;
 }
+
+/*
 
 /// Other operators
 /// a=b

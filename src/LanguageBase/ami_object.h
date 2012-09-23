@@ -77,14 +77,11 @@ private:
   /**
    * Constructor: creates a smart pointer to the list of variables
    */
-  AMIObject()
-    {
-     // _name     = "";
-      _vars     = boost::shared_ptr<Variables>(new Variables);
-/*
-      _vars->SetName("object");
-*/
-    }
+  AMIObject();
+//     {
+//      // _name     = "";
+//       _vars     = boost::shared_ptr<Variables>(new Variables);
+//     }
 
   /**
    * Destructor : empties the list of variables

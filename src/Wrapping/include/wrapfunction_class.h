@@ -28,9 +28,6 @@
 /** Macro for adding a class that wraps a method.
   */
 #define ADD_METHOD(classname,methodname,description_str) \
-/**\
- * description_str\
- **/\
 class wrap_##classname##methodname : public WrapClassMemberWithDoc { \
   protected:\
     classname::ptr _objectptr; \
@@ -57,14 +54,11 @@ class wrap_##classname##methodname : public WrapClassMemberWithDoc { \
   * and a AMIObject:ptr amiobject member pointing to the corresponding wrapped object class
   */
 #define ADD_CLASS_METHOD(methodname,description_str) \
-/**\
- * description_str\
- **/\
 class wrap_##methodname : public WrapClassMemberWithDoc { \
   protected:\
     _parentclass_ptr _objectptr; \
   public: \
-    wrap_##methodname(_parentclass_ptr& pp) : \
+    wrap_##methodname(const _parentclass_ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
       Set_quiet(false);\
@@ -79,21 +73,20 @@ class wrap_##methodname : public WrapClassMemberWithDoc { \
     STATIC_HELP\
 }; \
 \
-void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #methodname) {\
-  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname(pc));\
-  AMIObject::ptr tmpobj(amiobject.lock()); \
-  tmpobj->GetContext()->AddVar<WrapClassMember>(newname, tmp,tmpobj->GetContext()); \
-}
+void AddVar_##methodname(  const _parentclass_ptr& pc, const std::string& newname = #methodname) \
+  {\
+    boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_##methodname(pc));\
+    AMIObject::ptr tmpobj(amiobject.lock()); \
+    boost::shared_ptr<BasicVariable> newvar( (BasicVariable*) new Variable<WrapClassMember>(tmp));\
+    tmpobj->GetContext()->AddVar(newname, newvar, tmpobj->GetContext()); \
+  }
 
 #define ADD_CLASS_METHOD_LIGHT(methodname,description_str) \
-/**\
- * description_str\
- **/\
 class wrap_##methodname : public WrapClassMember { \
   protected:\
     _parentclass_ptr _objectptr; \
   public: \
-    wrap_##methodname(_parentclass_ptr& pp) : \
+    wrap_##methodname(const _parentclass_ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
       Set_quiet(false);\
@@ -101,26 +94,50 @@ class wrap_##methodname : public WrapClassMember { \
     BasicVariable::ptr CallMember(ParamList*); \
 }; \
 \
-void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #methodname) {\
-  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname(pc));\
+void AddVar_##methodname(  const _parentclass_ptr& pc, const std::string& newname = #methodname) {\
+  boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_##methodname(pc));\
   AMIObject::ptr tmpobj(amiobject.lock()); \
-  tmpobj->GetContext()->AddVar<WrapClassMember>(newname, tmp,tmpobj->GetContext()); \
+  boost::shared_ptr<BasicVariable> newvar( (BasicVariable*) new Variable<WrapClassMember>(tmp));\
+  tmpobj->GetContext()->AddVar(newname, newvar, tmpobj->GetContext()); \
 }
 //    const boost::shared_ptr<ObjectType>& GetObj() const { return _objectptr->GetObj(); }  
 
+///
+#define DECLARE_CLASS_METHOD_LIGHT(methodname,description_str) \
+class wrap_##methodname : public WrapClassMember { \
+  protected:\
+    _parentclass_ptr _objectptr; \
+  public: \
+    wrap_##methodname(const _parentclass_ptr& pp);\
+    BasicVariable::ptr CallMember(ParamList*); \
+}; \
+\
+void AddVar_##methodname(  const _parentclass_ptr& pc, const std::string& newname = #methodname);
+
+///
+#define DEFINE_CLASS_METHOD_LIGHT(classname,methodname) \
+WrapClass_##classname::wrap_##methodname::wrap_##methodname(const _parentclass_ptr& pp) : \
+  _objectptr(pp) { \
+  Set_arg_failure(false);\
+  Set_quiet(false);\
+} \
+\
+void WrapClass_##classname::AddVar_##methodname( const _parentclass_ptr& pc, const std::string& newname ) {\
+  WrapClassMember* tmp = (WrapClassMember*) new wrap_##methodname(pc);\
+  AMIObject::ptr tmpobj(amiobject.lock()); \
+  boost::shared_ptr<BasicVariable> newvar( (BasicVariable*) new Variable<WrapClassMember>(tmp));\
+  tmpobj->GetContext()->AddVar(newname, newvar, tmpobj->GetContext()); \
+}
 
 /**
   Macro to wrap Set/Get methods
   */
 #define ADD_CLASS_SETGET(type,varname,description_str) \
-/**\
- * Sets the variable varname, description_str\
- **/\
 class wrap_Set##varname : public WrapClassMemberWithDoc { \
   protected:\
     _parentclass_ptr _objectptr; \
   public: \
-    wrap_Set##varname(_parentclass_ptr& pp) : \
+    wrap_Set##varname(const _parentclass_ptr& pp) : \
      _objectptr(pp) { \
       Set_arg_failure(false);\
       Set_quiet(false);\
@@ -141,9 +158,6 @@ class wrap_Set##varname : public WrapClassMemberWithDoc { \
     STATIC_HELP\
 }; \
 \
-/**\
- * Gets the variable varname, description_str\
- **/\
 class wrap_Get##varname : public WrapClassMemberWithDoc { \
   protected:\
     _parentclass_ptr _objectptr; \
@@ -170,10 +184,10 @@ class wrap_Get##varname : public WrapClassMemberWithDoc { \
 void AddVar_SetGet##varname(  _parentclass_ptr& pc) {\
   boost::shared_ptr<WrapClassMember> tmp; \
   AMIObject::ptr tmpobj(amiobject.lock()); \
-  tmp = boost::shared_ptr<WrapClassMember>( new wrap_Set##varname(pc));\
+  tmp = boost::shared_ptr<WrapClassMember>( (WrapClassMember*) new wrap_Set##varname(pc));\
   tmpobj->GetContext()->AddVar<WrapClassMember>(\
     std::string("Set")+#varname, tmp,tmpobj->GetContext()); \
-  tmp = boost::shared_ptr<WrapClassMember>( new wrap_Get##varname(pc));\
+  tmp = boost::shared_ptr<WrapClassMember>( (WrapClassMember*) new wrap_Get##varname(pc));\
   tmpobj->GetContext()->AddVar<WrapClassMember>(\
     std::string("Get")+#varname, tmp,tmpobj->GetContext()); \
 } \
@@ -182,9 +196,6 @@ void AddVar_SetGet##varname(  _parentclass_ptr& pc) {\
   to create the variable
   */
 #define ADD_CLASS_CONSTRUCTOR(methodname,description_str) \
-/**\
- * description_str\
- **/\
 class wrap_##methodname : public WrapClassMemberWithDoc { \
   public: \
     wrap_##methodname() { \
@@ -202,8 +213,49 @@ class wrap_##methodname : public WrapClassMemberWithDoc { \
 }; \
 \
 static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
-  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
+  boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_##methodname());\
   _context->AddVar<WrapClassMember>(newname, tmp, _context); \
+}
+
+
+/** Macro for adding the class constructor with a static function
+  to create the variable
+  */
+#define DECLARE_CLASS_CONSTRUCTOR(methodname) \
+class wrap_##methodname : public WrapClassMemberWithDoc { \
+  public: \
+    wrap_##methodname();\
+    void SetParametersComments(); \
+    BasicVariable::ptr CallMember(ParamList* p); \
+    static const std::string StaticDescription();\
+    static const std::string StaticFunctionName();\
+    STATIC_HELP\
+}; \
+\
+static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname);
+
+/** Macro for adding the class constructor with a static function
+  to create the variable
+  */
+#define DEFINE_CLASS_CONSTRUCTOR(classname,methodname,description_str) \
+WrapClass_##classname::wrap_##methodname::wrap_##methodname() { \
+      Set_arg_failure(false);\
+      Set_quiet(false);\
+      SetParametersComments(); \
+} \
+\
+const std::string WrapClass_##classname::wrap_##methodname::StaticDescription() \
+{ return description_str; }\
+\
+const std::string WrapClass_##classname::wrap_##methodname::StaticFunctionName() \
+{ std::string classname(AMILabType<ObjectType>::name_as_string());\
+  return classname+"::"+#methodname; }\
+\
+void WrapClass_##classname::AddVar_##methodname(  Variables::ptr& _context, \
+                                  const std::string& newname ) {\
+  boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_##methodname());\
+  boost::shared_ptr<BasicVariable> newvar( (BasicVariable*) new Variable<WrapClassMember>(tmp));\
+  _context->AddVar(newname, newvar, _context); \
 }
 
 /** Macro for adding the class static method with a static function
@@ -229,8 +281,9 @@ class wrap_static_##methodname : public WrapClassMemberWithDoc { \
 }; \
 \
 static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
-  boost::shared_ptr<WrapClassMember> tmp( new wrap_static_##methodname());\
-  _context->AddVar<WrapClassMember>(newname, tmp, _context); \
+  boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_static_##methodname());\
+  BasicVariable::ptr newvar(new Variable<WrapClassMember>(tmp));\
+  _context->AddVar(newname, newvar, _context); \
 }
 
 /**
@@ -238,7 +291,7 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
  */
 #define ADDMEMBER(str_name,classname,proc_name) \
   {\
-    boost::shared_ptr<WrapClassMember> tmp( new wrap_##classname##proc_name(objectptr));\
+    boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_##classname##proc_name(objectptr));\
     Vars.AddVar<WrapClassMember>(str_name,  \
                 tmp, \
                 OBJECT_CONTEXT_NUMBER); \

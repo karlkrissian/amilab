@@ -37,6 +37,7 @@ SET(LanguageBase_SRCS
     Variable_long.cpp
     Variable_string.cpp
     Variable_uchar.cpp
+    Variable_WrapClassMember.cpp
     Variables.cpp
 
 #    VarContexts.cpp
@@ -73,6 +74,7 @@ SET(LanguageBase_HDRS
   Variable_long.h
   Variable_string.h
   Variable_uchar.h
+  Variable_WrapClassMember.h
   Variables.hpp
   vartype.h
 #    language_global_import.h

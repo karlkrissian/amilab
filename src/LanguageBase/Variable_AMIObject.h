@@ -7,6 +7,16 @@
 class AMIObject;
 #include "LanguageBaseConfigure.h"
 
+template<>  LanguageBase_EXPORT 
+  Variable<AMIObject>::Variable(const boost::shared_ptr<AMIObject>& p);
+
+template<>  LanguageBase_EXPORT 
+  Variable<AMIObject>::Variable(const std::string& name, 
+                                const boost::shared_ptr<AMIObject>& p);
+
+template<>  LanguageBase_EXPORT bool 
+  Variable<AMIObject>::Equal( BasicVariable::ptr v);
+
 //------------------------------------------------------
 //------- Variable<AMIObject>
 //------------------------------------------------------
@@ -20,18 +30,14 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::NewCopy()
 
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::NewReference() const;
 
-/*
 // Arithmetic operators
 
 /// +a
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator +();
 
-
 /// -a
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator -();
 
-
-*/
 
 /// prefix ++ operator *a
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator *();
@@ -55,10 +61,9 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator 
 
 /// a-b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariable::ptr& b);
-/*
+
 /// a-=b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b);
-*/
 
 /// a*b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator *(const BasicVariable::ptr& b);
@@ -72,13 +77,12 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator 
 /// a/=b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator /=(const BasicVariable::ptr& b);
 
-/*
-
 /// a%b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator %(const BasicVariable::ptr& b);
 
 /// a%=b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator %=(const BasicVariable::ptr& b);
+
 
 //  Comparison Operators
 
@@ -100,21 +104,38 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator 
 /// a==b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator ==(const BasicVariable::ptr& b);
 
-// Logical operators
+/// Logical operators
+/// !a
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator !();
 
+/// a&&b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator &&(const BasicVariable::ptr& b);
 
+/// a||b
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator ||(const BasicVariable::ptr& b);
 
 // Bitwise operators
-/// in this case, for vectorial images, used for pointwise cross-product.
+/// a^b.
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator ^(const BasicVariable::ptr& b);
+
+/// a&b.
+template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator &(const BasicVariable::ptr& b);
+
+/// a|b.
+template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator |(const BasicVariable::ptr& b);
+
+template<> LanguageBase_EXPORT 
+  BasicVariable::ptr Variable<AMIObject>::BasicCast(const int& type);
+
+template<> LanguageBase_EXPORT 
+  BasicVariable::ptr Variable<AMIObject>::PointWiseMult(
+    const BasicVariable::ptr& b);
+
+template<> LanguageBase_EXPORT 
+  BasicVariable::ptr Variable<AMIObject>::Transpose();
 
 
 // Mathematical functions
-#define VAR_DECL_FUNC(type,fname) 
-template<> LanguageBase_EXPORT BasicVariable::ptr Variable<type>::m_##fname();
 
 VAR_DECL_FUNC(AMIObject,sin)
 VAR_DECL_FUNC(AMIObject,cos)
@@ -131,9 +152,6 @@ VAR_DECL_FUNC(AMIObject,ln)
 VAR_DECL_FUNC(AMIObject,norm)
 VAR_DECL_FUNC(AMIObject,sqrt)
 
-//
-template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::BasicCast(const int& type);
-*/
 
 /**
  * Array subscript operator,
@@ -142,11 +160,8 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::BasicCast
 template<> LanguageBase_EXPORT  BasicVariable::ptr Variable<AMIObject>::operator[](const BasicVariable::ptr& v);
 
 
-/*
 /// (cond?a:b)
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2);
-*
-*/
 
 /// Other operators
 /// a=b

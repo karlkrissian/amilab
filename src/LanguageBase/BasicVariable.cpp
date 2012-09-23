@@ -16,13 +16,79 @@
 #include <iostream>
 
 
+BasicVariable::~BasicVariable()
+{
+}
 
+#define DEFINE_BASICVAR_UNARYOP(op) \
+  BasicVariable::ptr BasicVariable::operator op() \
+  { \
+    return this->NewReference(); \
+  }
+
+  /// *T
+  DEFINE_BASICVAR_UNARYOP(*)
+
+  /// +T
+  DEFINE_BASICVAR_UNARYOP(+)
+
+  /// prefix ++ operator ++T 
+  DEFINE_BASICVAR_UNARYOP(++)
+
+  /// -T
+  DEFINE_BASICVAR_UNARYOP(-)
+
+  /// prefix -- operator --T 
+  DEFINE_BASICVAR_UNARYOP(--)
+
+#define DEFINE_BASICVAR_OP_VAR(op) \
+  BasicVariable::ptr BasicVariable::operator op(const BasicVariable::ptr& b) \
+  { \
+    return this->NewReference(); \
+  }
+
+  DEFINE_BASICVAR_OP_VAR(+);
+  DEFINE_BASICVAR_OP_VAR(+=);
+  DEFINE_BASICVAR_OP_VAR(-);
+  DEFINE_BASICVAR_OP_VAR(-=);
+  DEFINE_BASICVAR_OP_VAR(*);
+  DEFINE_BASICVAR_OP_VAR(*=);
+  DEFINE_BASICVAR_OP_VAR(/);
+  DEFINE_BASICVAR_OP_VAR(/=);
+  DEFINE_BASICVAR_OP_VAR(%);
+  DEFINE_BASICVAR_OP_VAR(%=);
+  DEFINE_BASICVAR_OP_VAR(=);
+
+#define DEFINE_BASICVAR_COMP_OP_VAR(op) \
+  BasicVariable::ptr BasicVariable::operator op(const BasicVariable::ptr& b) \
+  { \
+    return this->NewReference(); \
+  }
+  
+  DEFINE_BASICVAR_COMP_OP_VAR(<);
+  DEFINE_BASICVAR_COMP_OP_VAR(<=);
+  DEFINE_BASICVAR_COMP_OP_VAR(>);
+  DEFINE_BASICVAR_COMP_OP_VAR(>=);
+  DEFINE_BASICVAR_COMP_OP_VAR(!=);
+  DEFINE_BASICVAR_COMP_OP_VAR(==);
+  
 BasicVariable::ptr BasicVariable::empty_variable;
 
 BasicVariable::BasicVariable() : _type(type_void), _name(""), _comments("") 
 {
     _vars     = boost::shared_ptr<Variables>(new Variables);
     _vars->SetName("variable own context");
+}
+
+
+bool BasicVariable::IsNumeric() const
+{
+  return  (_type==type_float)||
+          (_type==type_double)|| /// New (added: 24/05/2010)
+          (_type==type_long)||   /// New (added: 27/05/2010)
+          (_type==type_int)||
+          (_type==type_uchar)||
+          (_type==type_bool);
 }
 
 /*

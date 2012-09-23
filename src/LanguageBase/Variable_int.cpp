@@ -52,6 +52,40 @@
 //------- Variable<int>
 //------------------------------------------------------
 
+//------------------------------------------------------------------------------
+template<>  AMI_DLLEXPORT 
+  Variable<int>::Variable(const boost::shared_ptr<int>& p)
+{
+  _type    = GetVarType<int>();
+  _name    = "tmpvar";
+  _pointer = boost::shared_ptr<int>(p);
+}
+
+//------------------------------------------------------------------------------
+template<>  AMI_DLLEXPORT 
+  Variable<int>::Variable(const std::string& name, 
+           const boost::shared_ptr<int>& p)
+{
+  _type    = GetVarType<int>();
+  _name    = name;
+  _pointer = boost::shared_ptr<int>(p);
+}
+
+//------------------------------------------------------------------------------
+template<>  AMI_DLLEXPORT bool Variable<int>::Equal( BasicVariable::ptr v)
+{
+  if (_type == v->Type()) {
+    // convert pointer
+    ptr newvar (boost::dynamic_pointer_cast<Variable<int> >(v));
+    return ((_name     == newvar->_name) &&
+            (_comments == newvar->_comments) &&
+            (_pointer.get()  == newvar->_pointer.get()));
+
+  }
+  else return false;
+}
+
+
 /// Copy contents to new variable
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<int>::NewCopy() const
 {

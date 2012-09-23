@@ -47,19 +47,23 @@
     boost::shared_ptr<type> objname; \
     if (varobj.get()) { \
       WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject()); \
-      WrapClass_##type::ptr wrapped_obj( \
-        boost::dynamic_pointer_cast<WrapClass_##type>(wrapped_base)); \
+      WrapClass_##type* wrapped_obj = dynamic_cast<WrapClass_##type*>(wrapped_base.get()); \
+      if (wrapped_obj!=NULL)  objname = wrapped_obj->GetObj(); \
+    }
+
+/*       wrapped_obj( \
+         boost::dynamic_pointer_cast<WrapClass_##type>(wrapped_base)); \
       if (wrapped_obj.get()) \
         objname = wrapped_obj->GetObj(); \
-    }
+        */
 
 #define GET_WRAPPED_OBJECT_QUIET(type,var,objname) \
   boost::shared_ptr<Variable<AMIObject> > tmp( boost::dynamic_pointer_cast<Variable<AMIObject> >(var)); \
   boost::shared_ptr<type> objname; \
   if (tmp.get()) {\
     WrapClassBase::ptr object( tmp->Pointer()->GetWrappedObject()); \
-    boost::shared_ptr<WrapClass<type> > wc( boost::dynamic_pointer_cast<WrapClass<type> >(object));\
-    if (wc.get())  objname = wc->GetObj(); \
+    WrapClass<type>* wc = dynamic_cast<WrapClass<type>* >(object.get()); \
+    if (wc!=NULL)  objname = wc->GetObj(); \
   }\
 
 class ParamList;
@@ -700,6 +704,13 @@ public:
     _pointer = boost::shared_ptr<T>(p);
   }
 
+  Variable( T* p)
+  {
+    _type    = GetVarType<T>();
+    _name    = "tmpvar";
+    _pointer = boost::shared_ptr<T>(p);
+  }
+
   Variable(const std::string& name, 
            const boost::shared_ptr<T>& p)
   {
@@ -893,9 +904,7 @@ public:
 #define VAR_UNARYOP(op) \
   BasicVariable::ptr operator op() \
   { \
-    ami::format f(" %1%::operator %2% not defined.");\
-    PrintWarning( f % get_name() % __func__ ); \
-    return this->NewReference(); \
+    return BasicVariable::empty_variable; \
   }
 
 /*
@@ -907,10 +916,9 @@ public:
 
 #define VAR_OP_BASICVAR(op) \
   BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  {  \
-    ami::format f(" %1%::operator %2% not defined.");\
-    PrintWarning( f % get_name() % __func__ ); \
-    return this->NewReference(); }
+  { \
+    return BasicVariable::empty_variable; \
+  }
 
 /*
 #define VAR_OP_VAR2(op) \
@@ -924,23 +932,20 @@ public:
 #define VAR_COMP_OP_BASICVAR(op) \
   BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
   { \
-    ami::format f(" %1%::operator %2% not defined.");\
-    PrintWarning( f % get_name() % __func__ ); \
-    return this->NewReference(); }
+    return BasicVariable::empty_variable; \
+  }
 
 #define VAR_LOGIC_OP(op) \
   BasicVariable::ptr operator op() \
   { \
-    ami::format f(" %1%::operator %2% not defined.");\
-    PrintWarning( f % get_name() % __func__ ); \
-    return this->NewReference(); }
+    return BasicVariable::empty_variable; \
+  }
 
 #define VAR_LOGIC_OP_VAR(op) \
   BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
   { \
-    ami::format f(" %1%::operator %2% not defined.");\
-    PrintWarning( f % get_name() % __func__ ); \
-    return this->NewReference(); }
+    return BasicVariable::empty_variable; \
+  }
 
   /** @name ArithmeticOperators
    *  Variable Arithmetic Operators.
@@ -958,9 +963,7 @@ public:
   /// postfix ++ operator T++ 
   BasicVariable::ptr operator ++(int)
   {
-    ami::format f(" %1%::operator %2% not defined.");
-    PrintWarning( f % get_name() % __func__ ); 
-    return this->NewReference(); 
+    return BasicVariable::empty_variable; 
   }
 
   /// -T
@@ -970,9 +973,7 @@ public:
   /// postfix -- operator T-- 
   BasicVariable::ptr operator --(int)
   {
-    ami::format f(" %1%::operator %2% not defined.");
-    PrintWarning( f % get_name() % __func__ );
-    return this->NewReference(); 
+    return BasicVariable::empty_variable; 
   }
 
   /// a+b
@@ -1036,35 +1037,28 @@ public:
     */
     BasicVariable::ptr left_assign(const BasicVariable::ptr& b) 
     { 
-      ami::format f(" %1%, %2% not defined.");
-      PrintWarning( f % get_name() % __func__ );
-      return this->NewReference(); 
+    return BasicVariable::empty_variable; 
     }
 
 
     /// Transpose
     BasicVariable::ptr Transpose()
     {
-      ami::format f(" %1%::operator %2% not defined.");
-      PrintWarning( f % get_name() % __func__ ); 
-      return this->NewReference();
+    return BasicVariable::empty_variable; 
     }
 
     /// Pointwise multiplication 
     BasicVariable::ptr PointWiseMult(const BasicVariable::ptr& b)
     {
-      ami::format f(" %1%::operator %2% not defined.");
-      PrintWarning( f % get_name() % __func__ );
-      return this->NewReference();
+    return BasicVariable::empty_variable; 
     }
   //@}
 
 #define VAR_FUNC(func) \
   BasicVariable::ptr m_##func() \
   { \
-    ami::format f(" %1%, %2% not defined.");\
-    PrintWarning( f % get_name() % __func__ ); \
-    return this->NewReference(); }
+    return BasicVariable::empty_variable; \
+  }
 
   /** @name Mathematical functions
    *  Mathematical functions.
@@ -1088,26 +1082,23 @@ public:
   //@}
 
 
-  BasicVariable::ptr BasicCast(const int& type) 
+  BasicVariable::ptr BasicCast(const int& type)
   {
-    ami::format f(" %1% %2% not defined.");
+/*    ami::format f(" %1% %2% not defined.");
     PrintWarning( f % get_name() % __func__ );
-    return this->NewReference(); 
+    return this->NewReference(); */
+    return BasicVariable::empty_variable; 
   }
 
   BasicVariable::ptr operator[](const BasicVariable::ptr& v)
   {
-    ami::format f(" %1%::operator %2% not defined.");
-    PrintWarning( f % get_name() % __func__ );
     return BasicVariable::empty_variable; 
   }
 
 
   BasicVariable::ptr TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2) 
   {
-    ami::format f(" %1%, %2% not defined.");
-    PrintWarning( f % get_name() % __func__ );
-    return this->NewReference(); 
+    return BasicVariable::empty_variable; 
   }
 
 }; // class Variable
@@ -1163,7 +1154,7 @@ class VarArray;
 
 // Mathematical functions, 
 #define VAR_DECL_FUNC(type,fname) \
-template<> BasicVariable::ptr Variable<type>::m_##fname();
+template<> LanguageBase_EXPORT BasicVariable::ptr Variable<type>::m_##fname();
 
 // Cannot wrap those lines in GCCXML: internal compiler error
 #ifndef __GCCXML__ 
@@ -1177,6 +1168,7 @@ template<> BasicVariable::ptr Variable<type>::m_##fname();
   #include "Variable_string.h"
   #include "Variable_FloatMatrix.h"
   #include "Variable_AMIObject.h"
+  #include "Variable_WrapClassMember.h"
 #endif //__GCCXML__
 
 template<> std::string Variable<WrapClassMember>::TreeCtrlInfo() const;

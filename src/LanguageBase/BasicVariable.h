@@ -66,7 +66,7 @@ public:
     _vars     = boost::shared_ptr<Variables>(new Variables);
   }
 */
-  virtual ~BasicVariable() {};
+  virtual ~BasicVariable();
 
   /**
     * Virtual Method that creates a new smart pointer to a basic variable with the same type
@@ -161,15 +161,7 @@ public:
   //
   virtual void display(std::ostream& o) const = 0;
 
-  virtual bool IsNumeric() const
-  {
-    return  (_type==type_float)||
-            (_type==type_double)|| /// New (added: 24/05/2010)
-            (_type==type_long)||   /// New (added: 27/05/2010)
-            (_type==type_int)||
-            (_type==type_uchar)||
-            (_type==type_bool);
-  }
+  virtual bool IsNumeric() const;
 
   virtual double GetValueAsDouble() const = 0;
 
@@ -187,44 +179,28 @@ public:
 
 
 
-#define BASICVAR_UNARYOP(op) \
-  virtual BasicVariable::ptr operator op() \
-  { \
-    ami::format f(" %1%::operator %2% not defined."); \
-    PrintWarning( (f % get_name() % __func__).GetString() ); \
-    return this->NewReference(); \
-  }
+//     ami::format f(" %1%::operator %2% not defined."); \
+//     PrintWarning( (f % get_name() % __func__).GetString() ); \
 
-#define BASICVAR_OP_VAR(op) \
-  virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { \
-    ami::format f(" %1%::operator %2% not defined."); \
-    PrintWarning( (f % get_name() % __func__).GetString() ); \
-    return this->NewReference(); \
-  }
+#define DECLARE_BASICVAR_UNARYOP(op) \
+  virtual BasicVariable::ptr operator op(); 
+
+#define DECLARE_BASICVAR_OP_VAR(op) \
+  virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b);
 
 
-#define BASICVAR_COMP_OP_VAR(op) \
-  virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
-  { \
-    ami::format f(" %1%::operator %2% not defined."); \
-    PrintWarning( (f % get_name() % __func__).GetString() ); \
-    return this->NewReference(); \
-  }
+#define DECLARE_BASICVAR_COMP_OP_VAR(op) \
+  virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b);
 
 #define BASICVAR_LOGIC_OP(op) \
   virtual BasicVariable::ptr operator op() \
   {\
-    ami::format f(" %1%::operator %2% not defined."); \
-    PrintWarning( (f % get_name() % __func__).GetString() ); \
     return this->NewReference();  \
   }
 
 #define BASICVAR_LOGIC_OP_VAR(op) \
   virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
   {\
-    ami::format f(" %1%::operator %2% not defined."); \
-    PrintWarning( (f % get_name() % __func__).GetString() ); \
     return this->NewReference(); \
   }
 
@@ -235,13 +211,13 @@ public:
   // -------- Operators ---
 
   /// *T
-  BASICVAR_UNARYOP(*)
+  DECLARE_BASICVAR_UNARYOP(*)
 
   /// +T
-  BASICVAR_UNARYOP(+)
+  DECLARE_BASICVAR_UNARYOP(+)
 
   /// prefix ++ operator ++T 
-  BASICVAR_UNARYOP(++)
+  DECLARE_BASICVAR_UNARYOP(++)
 
   /// prefix ++ operator T++ 
   virtual BasicVariable::ptr operator ++(int)
@@ -254,29 +230,29 @@ public:
   // question, should we create a new variable ????
   // in this case yes, and the rule should take care of choosing a+b or a+=b to avoid 
   // a new allocation
-  BASICVAR_OP_VAR(+);
-  BASICVAR_OP_VAR(+=);
+  DECLARE_BASICVAR_OP_VAR(+);
+  DECLARE_BASICVAR_OP_VAR(+=);
 
   /// -T
-  BASICVAR_UNARYOP(-)
+  DECLARE_BASICVAR_UNARYOP(-)
 
   /// a-b
-  BASICVAR_OP_VAR(-);
+  DECLARE_BASICVAR_OP_VAR(-);
 
   /// prefix -- operator --T 
-  BASICVAR_UNARYOP(--)
+  DECLARE_BASICVAR_UNARYOP(--)
 
   /// prefix -- operator T-- 
   virtual BasicVariable::ptr operator --(int)
   { return this->NewReference(); }
 
-  BASICVAR_OP_VAR(-=);
-  BASICVAR_OP_VAR(*);
-  BASICVAR_OP_VAR(*=);
-  BASICVAR_OP_VAR(/);
-  BASICVAR_OP_VAR(/=);
-  BASICVAR_OP_VAR(%);
-  BASICVAR_OP_VAR(%=);
+  DECLARE_BASICVAR_OP_VAR(-=);
+  DECLARE_BASICVAR_OP_VAR(*);
+  DECLARE_BASICVAR_OP_VAR(*=);
+  DECLARE_BASICVAR_OP_VAR(/);
+  DECLARE_BASICVAR_OP_VAR(/=);
+  DECLARE_BASICVAR_OP_VAR(%);
+  DECLARE_BASICVAR_OP_VAR(%=);
 
   //@}
 
@@ -284,12 +260,12 @@ public:
    *  Variable Comparison operators/Relational operators.
    */
   //@{
-    BASICVAR_COMP_OP_VAR(<);
-    BASICVAR_COMP_OP_VAR(<=);
-    BASICVAR_COMP_OP_VAR(>);
-    BASICVAR_COMP_OP_VAR(>=);
-    BASICVAR_COMP_OP_VAR(!=);
-    BASICVAR_COMP_OP_VAR(==);
+    DECLARE_BASICVAR_COMP_OP_VAR(<);
+    DECLARE_BASICVAR_COMP_OP_VAR(<=);
+    DECLARE_BASICVAR_COMP_OP_VAR(>);
+    DECLARE_BASICVAR_COMP_OP_VAR(>=);
+    DECLARE_BASICVAR_COMP_OP_VAR(!=);
+    DECLARE_BASICVAR_COMP_OP_VAR(==);
   //@}
 
   /** @name LogicalOperators
@@ -315,7 +291,7 @@ public:
    */
   //@{
     /// basic assignment operator
-    BASICVAR_OP_VAR(=);
+    DECLARE_BASICVAR_OP_VAR(=);
 
     /**
      * Forces the copy, even if a new object needs to be created.
@@ -339,12 +315,13 @@ public:
 
 
 #define BASICVAR_FUNC(func) \
-  virtual BasicVariable::ptr m_##func() \
-  { \
-    ami::format f(" %1%, %2% not defined."); \
-    PrintWarning( (f % get_name() % __func__).GetString() ); \
-    return this->NewReference(); \
-  }
+  virtual BasicVariable::ptr m_##func() = 0;
+
+// { \
+//     ami::format f(" %1%, %2% not defined."); \
+//     PrintWarning( (f % get_name() % __func__).GetString() ); \
+//     return this->NewReference(); \
+//   }
 
   /** @name Mathematical functions
    *  Mathematical functions.

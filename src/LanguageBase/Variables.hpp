@@ -102,7 +102,9 @@ class LanguageBase_EXPORT Variables{
    * @param context 
    * @return a smart pointer to the new variable (base class)
    */
-  BasicVariable::ptr AddVar( const std::string& name, BasicVariable::ptr& val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
+  BasicVariable::ptr AddVar( const std::string& name, 
+                             BasicVariable::ptr& val, 
+                             const boost::shared_ptr<Variables>& context = boost::shared_ptr<Variables>() );
 
   /**
    *  Add a new variable based on its type, name, pointer to the object information, and context.
@@ -116,7 +118,7 @@ class LanguageBase_EXPORT Variables{
   boost::shared_ptr<Variable<T> > AddVar(
         const std::string& name,
         boost::shared_ptr<Variable<T> >& val,
-        boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() )
+        const boost::shared_ptr<Variables>& context = boost::shared_ptr<Variables>() )
 {
   {
     ami::format f(" %1%, in %2% ");
@@ -145,7 +147,7 @@ class LanguageBase_EXPORT Variables{
   boost::shared_ptr<Variable<T> > AddVar(
         const std::string& name,
         boost::shared_ptr<T >& val,
-        boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() )
+        const boost::shared_ptr<Variables>& context = boost::shared_ptr<Variables>() )
   {
 /*    CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());*/
   
@@ -166,7 +168,7 @@ class LanguageBase_EXPORT Variables{
    * @param context 
    * @return 
    */
-  BasicVariable::ptr AddVar(BasicVariable::ptr& var, Variables::ptr context = Variables::ptr());
+  BasicVariable::ptr AddVar(BasicVariable::ptr& var, const Variables::ptr& context = Variables::ptr());
 
   /**
    *  Adds a new variable to the context based on a smart pointer to a variable
@@ -240,5 +242,13 @@ boost::shared_ptr<Variable<T> > Variables::AddVar(
   return newvar;
 }
 */
+
+// extern template
+// boost::shared_ptr<Variable<AMIObject> > Variables::AddVar(
+//         const std::string& name,
+//         boost::shared_ptr<AMIObject >& val,
+//         boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
+
+
 
 #endif

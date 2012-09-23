@@ -113,7 +113,7 @@ class FindFunction(handler.ContentHandler):
       if demangled==None: 
         return
       else:
-        if (not (self.search_funcname in demangled)):
+        if (not (self.search_funcname+"(" in demangled)):
           return
     print "found name = {0}, demangled = {1}".format(funcname,demangled)
     self.found=True

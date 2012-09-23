@@ -72,6 +72,13 @@ unsigned char Variables::deleteVar(int i)
 // PUBLIC METHODS
 //======================================================================
 
+// template
+// boost::shared_ptr<Variable<AMIObject> > Variables::AddVar(
+//         const std::string& name,
+//         boost::shared_ptr<AMIObject >& val,
+//         boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
+
+
 //--------------------------------------------------
 Variables::~Variables()
 {
@@ -129,7 +136,7 @@ std::string Variables::CheckVarName(const char* name)
 BasicVariable::ptr Variables::AddVar( 
           const std::string& name, 
           BasicVariable::ptr& val, 
-          boost::shared_ptr<Variables> context)
+          const boost::shared_ptr<Variables>& context)
 {
   CLASS_MESSAGE((boost::format(" %1%, in %2% ") % name % GetName()).str().c_str());
 
@@ -147,7 +154,7 @@ BasicVariable::ptr Variables::AddVar(
 
 
 //--------------------------------------------------
-BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr context )
+BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, const Variables::ptr& context )
 {
 
   CLASS_MESSAGE((boost::format(" %s ") % var->Name()).str().c_str());

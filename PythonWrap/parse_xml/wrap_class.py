@@ -905,7 +905,9 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1,\
   if not light:
     res += ImplementMethodDescription(classname,method,constructor)
   else:
-    res += ''
+    res+='// Adding class definition\n'
+    res+="DEFINE_CLASS_METHOD_LIGHT("+config.ClassUsedName(classname)+\
+                ','+method.usedname+');\n'
   
   # don't return help in case of duplicated method
   if methodcount>1:
@@ -1010,6 +1012,10 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, \
     res += "void {0}::\n".format(wrapclass_name)
     res += "    wrap_{0}::SetParametersComments()\n".format(wrapmethod_name) 
     res += "{}\n"
+  else:
+    res+='// Adding class definition\n'
+    res+="DEFINE_CLASS_METHOD_LIGHT("+config.ClassUsedName(classname)+\
+                ','+method.usedname+');\n'
   #   Execution part
   res += "\n"
   res += "//---------------------------------------------------\n"
@@ -1072,6 +1078,10 @@ def ImplementCopyMethodWrap(classname, method, light=False):
     res += "{\n"
     res += '  return_comments="A copy of the {0} object within a new variable.";\n'.format(classname)
     res += "}\n"
+  else:
+    res+='// Adding class definition\n'
+    res+="DEFINE_CLASS_METHOD_LIGHT("+config.ClassUsedName(classname)+\
+                                      ',__copy__);\n'
   #   Execution part
   res += "\n"
   res += "//---------------------------------------------------\n"
@@ -1351,10 +1361,11 @@ def WrapClass(classname,include_file,inputfile):
           constructors_decl+=  indent+"/* The following types are missing: "+missingtypes+"\n"
           fm.Constructors[pos].missingtypes=True
         constructors_decl += indent+"/// Wrapping of the constructor\n"
-        constructors_decl+=indent+'ADD_CLASS_CONSTRUCTOR('+\
-                m.usedname+',"{0} ({1}).");\n'.format(\
-                                m.GetDescription(classname,True),\
-                                WxHelpLink(classname,m))
+        constructors_decl+=indent+'DECLARE_CLASS_CONSTRUCTOR('+m.usedname+');\n'
+        #constructors_decl+=indent+'ADD_CLASS_CONSTRUCTOR('+\
+                #m.usedname+',"{0} ({1}).");\n'.format(\
+                                #m.GetDescription(classname,True),\
+                                #WxHelpLink(classname,m))
         if missingtypes!="":
           constructors_decl +=  indent+"*/\n"
         else:
@@ -1386,7 +1397,7 @@ def WrapClass(classname,include_file,inputfile):
     staticmethods_decl+='\n'
 
     if args.val.light:
-      method_macro="ADD_CLASS_METHOD_LIGHT"
+      method_macro="DECLARE_CLASS_METHOD_LIGHT"
     else:
       method_macro="ADD_CLASS_METHOD"
 
@@ -1756,12 +1767,18 @@ def WrapClass(classname,include_file,inputfile):
         if missingtypes!="":
           impl += "/* The following types are missing: "+missingtypes+"\n"
         methodcount=fm.ConstructorNames.count(m.name)
+        impl += 'DEFINE_CLASS_CONSTRUCTOR('+\
+                                config.ClassUsedName(classname)+','+\
+                                m.usedname+',"{0} ({1}).");\n'.format(\
+                                m.GetDescription(classname,True),\
+                                WxHelpLink(classname,m))
         if m.duplicated:
           impl += ImplementDuplicatedMethodWrap(classname,m,methodcount,fm.Constructors,True)
         else:
           impl += ImplementMethodWrap(classname,m,True,methodcount)
         if missingtypes!="":
           impl += "*/\n"
+
 
     # Destructor??
     

@@ -736,7 +736,7 @@ if __name__ == '__main__':
           try:
             wrap_enum = enum_filter.CheckEnum(enum_name,context_name,enumkeys)
           except:
-            print "CheckEnum did not work ..."
+            #print "CheckEnum did not work ..."
             wrap_enum = enumkeys[0].startswith(args.val.libname)
           
           if wrap_enum:
