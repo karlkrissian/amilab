@@ -1165,7 +1165,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_SetDragCallback::CallMember( Param
   if ((paramid>=0)&&(paramid<nbp))
     this->_objectptr->GetObj()->SetDragCallback(paramid,activate);
   else
-    FILE_ERROR((boost::format("bad parameter number %1%") % paramid).str().c_str());
+    FILE_ERROR((boost::format("ParamPanel::SetDragCallback bad parameter value id= %1%") % paramid).str().c_str());
 
   return BasicVariable::ptr();
 }
@@ -1194,7 +1194,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_EnablePanel::CallMember( ParamList
   if ((id>=0)&&(id<nbp))
     this->_objectptr->GetObj()->EnablePanel(id,enable);
   else
-    FILE_ERROR((boost::format(" bad parameter number %1% ")%id).str().c_str());
+    FILE_ERROR((boost::format(" ParamPanel::EnablePanel() bad parameter value id = %1% ")%id).str().c_str());
 
   return BasicVariable::ptr();
 }
@@ -1289,7 +1289,7 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_Enable::CallMember( ParamList* p)
   if ((id>=0)&&(id<nb))
     this->_objectptr->GetObj()->Enable(id,enable);
   else
-    FILE_ERROR((boost::format(" %d  \t bad parameter number ")%id).str().c_str());
+    FILE_ERROR((boost::format(" %d  \t ParamPanel::Enable() bad parameter value id = ")%id).str().c_str());
 
   return BasicVariable::ptr();
 }

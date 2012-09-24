@@ -9,6 +9,8 @@
 #include "ShortestPathClass.h"
 #include "Curvatures.h"
 
+#include "amiComputePositiveArea.hpp"
+
 #include "amiImageAddScalar.h"
 #include "amiGrayscaleMorpho.h"
 #include "amiIntensityBasedRegionGrowing.h"

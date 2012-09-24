@@ -17,6 +17,11 @@ def FunctionUsedName(funcname):
   res = res.replace('>','_')
   res = res.replace(',','_')
   res = res.replace('::','_')
+  #res = res.replace('(','')
+  #res = res.replace(')','')
+  # get rid of function parameters
+  m=re.search('([^(]+)\s*(\(.*\))?',res)
+  res = m.group(1)
   return res
 
 #------------------------------
@@ -113,7 +118,8 @@ class FindFunction(handler.ContentHandler):
       if demangled==None: 
         return
       else:
-        if (not (self.search_funcname+"(" in demangled)):
+        if  (self.search_funcname != demangled) and \
+            (not (self.search_funcname+"(" in demangled)):
           return
     print "found name = {0}, demangled = {1}".format(funcname,demangled)
     self.found=True

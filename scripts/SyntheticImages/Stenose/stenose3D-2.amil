@@ -75,7 +75,7 @@ print "\n Initial image \n"
 for z=0 to i.tz-1 {
 si = subimage(i,0,0,z,i.tx-1,i.ty-1,z);
 sjp = si-50
-surf=posarea(sjp)
+surf=algorithms.ami_ComputePositiveArea(sjp)
 print z;  print "\t"; print sqrt(surf/Pi); print "\n"
 }
 
@@ -86,7 +86,7 @@ print "\n Noisy image \n"
 for z=0 to i.tz-1 {
 si = subimage(in2,0,0,z,i.tx-1,i.ty-1,z);
 sjp = si-50
-surf=posarea(sjp)
+surf=algorithms.ami_ComputePositiveArea(sjp)
 print z;  print "\t"; print sqrt(surf/Pi); print "\n"
 }
 
@@ -95,7 +95,7 @@ print "\n Restored image \n"
 for z=0 to I.tz-1 {
 si = subimage(inr,0,0,z,i.tx-1,i.ty-1,z);
 sjp = si-50
-surf=posarea(sjp)
+surf=algorithms.ami_ComputePositiveArea(sjp)
 print z;  print "\t"; print sqrt(surf/Pi); print "\n"
 }
 
@@ -104,7 +104,7 @@ print "\n Restored image 2 \n"
 for z=15 to 35 {
 si = subimage(in2r,0,0,in.tz-1-z,i.tx-1,i.ty-1,in.tz-1-z);
 sjp = si-50
-surf=posarea(sjp)
+surf=algorithms.ami_ComputePositiveArea(sjp)
 print z;  print "\t"; print sqrt(surf/Pi); print "\n"
 }
 

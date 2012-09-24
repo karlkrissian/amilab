@@ -579,8 +579,9 @@ MainFrame::MainFrame( const wxString& title,
   
 #if wxCHECK_VERSION(2,9,0)
   CreateVarDataViewPanel(this);
-#endif
+#else
   CreateVarTreePanel(this);
+#endif
   CreateVarDirCtrl(this);
 
   /// @endcond
@@ -2844,9 +2845,10 @@ void MainFrame::UpdateDataViewVarDisplay()
 //--------------------------------------------------
 void MainFrame::UpdateVars( )
 {
-  UpdateVarsDisplay();
 #if wxCHECK_VERSION(2,9,0)
   UpdateDataViewVarDisplay();
+#else
+  UpdateVarsDisplay();
 #endif
 }
 

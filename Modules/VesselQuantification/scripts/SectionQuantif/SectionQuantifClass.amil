@@ -19,16 +19,15 @@ if (!exists(SectionQuantifClass)) {
     func "../scripts/Visualization/VolRen/VolRenClass"
     #func "../VolRenClass.amil"
     VolRenClass ::volren
-  #  ::volren.Gui()
+    #  ::volren.Gui()
     func "Centerlines/MultiLines/MultiLinesClass"
     MultiLinesClass ::ML_obj
     
-    func "Centerlines/Skeleton/SkeletonClass"
-    SkeletonClass ::SK_obj
-   # ::SK_obj = &::ML_obj.skeleton_obj
+    #func "Centerlines/Skeleton/SkeletonClass"
+    #SkeletonClass ::SK_obj
+    ::SK_obj = &::ML_obj.skeleton_obj
 
-    //---------------------------------------------------
-    
+    #---------------------------------------------------------------------------
     proc ::Init() {
       
         ::input_name   = "","Name of the input image variable"
@@ -36,19 +35,25 @@ if (!exists(SectionQuantifClass)) {
          ::image_name = " ", "Name of the resulting image variable after resize"
         ::lines_filename = ""
         ::lines_varname = "Surface", "Name of the input lines"
+        ::line_length = "0 mm"
         ::dimx = INT(50), "Image dimension in X (in mm)"
         ::dimy = INT(50), "Image dimension in Y (in mm)"
         ::spacingx = 1, "Espacio en x (in mm)"
         ::spacingy = 1, "Espacio en y (in mm)"
         ::planesource_size = INT(10), "Plane dimension"
         ::line_number = INT(0), "Selected line number"
-        ::advancedML = UCHAR(1), "Select for Advanced users"
-        ::advancedVR = UCHAR(1), "Select for Advanced users"
+        ::advancedML = UCHAR(0), "Select for Advanced users"
+        ::advancedVR = UCHAR(0), "Select for Advanced users"
         #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
 
+        ::volren_shading = UCHAR(0), "disable shading of volren to better see the lines"
         ::volren_attenuation = 0.1, "make volume rendering transparent to see the lines"
 
         ::line_pos = INT(10), "Centerline position"
+        
+        ::seg_threshold = 0, "Segmentation threshold to compute areas"
+        ::AreaWithLinearInterpolation = UCHAR(1), "Use linear interpolation to "+\
+                                            "compute cross-sections'areas"
 
         ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/SectionQuantif/index.html"
     }
@@ -65,7 +70,10 @@ if (!exists(SectionQuantifClass)) {
       ::volren.input_name = ::input_name
       ::volren.load_input()
       ::volren.StartNew()
+      ::CB_VolRenShading()
       ::CB_VolRenAttenuation()
+      ::volren.vol0.AutoAdjustSampleDistances=false
+      ::volren.vol0.OnSampleDistance()
       
       if (::input_name=="BrowseImage") {
         ::input_name = "::input"
@@ -106,6 +114,15 @@ if (!exists(SectionQuantifClass)) {
     }
       
     #---------------------------------------------------------------------------
+    proc ::CB_VolRenShading() {
+      if exists(::volren) {
+        # make transparent
+        ::volren.vol0.use_shade=::volren_shading
+        ::volren.vol0.OnRender()
+      }
+    }
+
+    #---------------------------------------------------------------------------
     proc ::CB_VolRenAttenuation() {
       if exists(::volren) {
         # make transparent
@@ -118,6 +135,7 @@ if (!exists(SectionQuantifClass)) {
     proc ::load_lines_filename() {
       del ::lines
       ::lines = Surface(::lines_filename)
+      ::lines_length <<= ::lines.GetLinesLength()
       ::lines._info()
       ::win.IntegerConstraints(::ln_id,0,::lines.GetNumberOfLines()-1,0)
       ::win.Update(::ln_id)
@@ -128,6 +146,7 @@ if (!exists(SectionQuantifClass)) {
     proc ::load_lines() {
       del ::lines
       eval "::lines = "+::lines_varname+";"
+      ::lines_length <<= ::lines.GetLinesLength()
       ::lines._info()
       ::win.IntegerConstraints(::ln_id,0,::lines.GetNumberOfLines()-1,0)
       ::win.Update(::ln_id)
@@ -184,33 +203,55 @@ if (!exists(SectionQuantifClass)) {
       
     }
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::CreateSkeleton() \
     {
       ::SK_obj.Execute()
     }
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::SmoothSkeleton() \
     {
       ::SK_obj.Smooth_Lines()
     }
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::DisplaySkeleton() \
     {
-      ::SK_obj.Display()
-      ################################################
-        del ::vtksurf
-       ::vtksurf = vtktools.ToVtkPolyData( &::SK_obj.res)
-       ::mapper = vtk.vtkPolyDataMapper.New()
-       ::mapper.SetInputConnection( &::vtksurf.GetProducerPort() )
-       actor = vtk.vtkActor.New()
-       actor.SetMapper( &::mapper )
+      #::SK_obj.Display()
+
+      # show original lines
       
-       vol0 = &::volren.volVector[0]
-       vol0.renderer.AddActor( &actor)
-      ######################################################  
+      vol0 = &::volren.volVector[0]
+      if exists(::vtk_lines) {
+        # remove actor if it is displayed
+        vol0.renderer.RemoveActor( &::vtk_lines_actor)
+        del ::vtk_lines
+        del ::vtk_lines_actor
+      }
+      ::vtk_lines = vtktools.ToVtkPolyData( &::SK_obj.lines)
+      mapper = vtk.vtkPolyDataMapper.New()
+      mapper.SetInputConnection( &::vtk_lines.GetProducerPort() )
+      ::vtk_lines_actor = vtk.vtkActor.New()
+      ::vtk_lines_actor.SetMapper( &mapper )
+      vol0.renderer.AddActor( ::vtk_lines_actor)
+
+      # show final (maybe smoothed) lines
+      if exists(::vtk_linesres) {
+        # remove actor if it is displayed
+        vol0.renderer.RemoveActor( &::vtk_linesres_actor)
+        del ::vtk_slinesres
+        del ::vtk_slinesres_actor
+      }
+      ::vtk_linesres = vtktools.ToVtkPolyData( &::SK_obj.res)
+      del mapper
+      mapper = vtk.vtkPolyDataMapper.New()
+      mapper.SetInputConnection( &::vtk_linesres.GetProducerPort() )
+      ::vtk_linesres_actor = vtk.vtkActor.New()
+      ::vtk_linesres_actor.SetMapper( &mapper )
+      vol0.renderer.AddActor( ::vtk_linesres_actor)
+      
+      vol0.OnRender()
     }
 
     #---------------------------------------------------------------------------
@@ -231,9 +272,8 @@ if (!exists(SectionQuantifClass)) {
     }
     Comments(::Resize_Vol,"Resize input volume by half in each dimension")
  
-   #---------------------------------------------------------------------------
-   #---------------------------------------------------------------------------
-    proc ::Quantification() {
+    #---------------------------------------------------------------------------
+    proc ::ComputeSections() {
    
       #lines = Surface "/tmp/lines.vtk"
       #lines._info()
@@ -356,6 +396,7 @@ if (!exists(SectionQuantifClass)) {
         s.EndLine()
              
       }
+      SetProgress(0)
 
       return = &s
     }
@@ -395,7 +436,8 @@ if (!exists(SectionQuantifClass)) {
     }
 
     #---------------------------------------------------------------------------
-    proc ::Reslice() {
+    proc ::Reslice() \
+    {
       if (!exists(::input)) {
         InfoDialog "Load input image first"
       } else {
@@ -417,7 +459,7 @@ if (!exists(SectionQuantifClass)) {
         ::PCR <<= Image(FLOAT,px,py,n-1)
         Comments(::PCR,"Planar Curve Reformation of the volume")
         del ::vtk_input
-        ::vtk_input = vtktools.ToVtkImageData( ::input)
+        ::vtk_input = vtktools.ToVtkImageData( (FLOAT)::input)
         del ::ir
         ::ir = vtk.vtkImageReslice.New()
         ::ir.SetInputConnection(&::vtk_input.GetProducerPort())
@@ -448,6 +490,9 @@ if (!exists(SectionQuantifClass)) {
         SetProgress(0)
         del ::PCR_draw
         show ::PCR
+
+        ::seg_threshold = (max(::PCR)+min(::PCR))/2
+        ::win.Update(::seg_threshold_id)
     
       }
     }
@@ -455,19 +500,34 @@ if (!exists(SectionQuantifClass)) {
     #---------------------------------------------------------------------------
     proc ::ComputeSize() \
     {
-      if exists(::PCR) {
+      if exists(::PCR) \
+      {
         SetStatusText("Computing section sizes")
         # get intensity threshold
-        th = (max(::PCR)+min(::PCR))/2
+        #th = (max(::PCR)+min(::PCR))/2
+        th = ::seg_threshold
         # store results in a 1D image
         ::SectionSizes <<= Image(DOUBLE,::PCR.tz,1,1)
         SetProgress(0)
         for n=0 to ::PCR.tz-1 {
           imsec = (FLOAT)::PCR[:,:,n:n]
           imsec = imsec-th
+          # Get the connected component at the center
+          imsec_cc = CC(imsec)
+          # component at the central pixel
+          comp = (imsec_cc ==imsec_cc(imsec.tx/2,imsec.ty/2))
+          # dilate this component a little bit (1.5 pixels)
+          func "Utils/alMathMorphoUtilsClass"
+          comp = alMathMorpho.Dilate(comp,1.5)
+          # keep only original values within computed region, -10 otherwise
+          imsec = imsec*(comp>0.5)+(comp<=0.5)*-10
           # problem with positive area ...
-          #area = posarea(imsec)
-          area = count(imsec>0)*::PCR.vx*::PCR.vy
+          if ::AreaWithLinearInterpolation {
+            area = algorithms.ami_ComputePositiveArea(imsec)
+          } else {
+            area = count(imsec>0)
+          }
+          area *= ::PCR.vx*::PCR.vy
           ::SectionSizes.setpos(n,0,0)
           ::SectionSizes.set(area)
           SetProgress(100.0*(n+1)/(::PCR.tz))
@@ -478,14 +538,61 @@ if (!exists(SectionQuantifClass)) {
         if exists(::vesselquantifplot_obj) {
           ::vesselquantifplot_obj.CloseAll()
         }
-        vtkXYPlotClass global::vesselquantifplot_obj
-        global::vesselquantifplot_obj.Gui()
-        global::vesselquantifplot_obj.set_input(::SectionSizes)
-        global::vesselquantifplot_obj.RunImage()
-        
+        del ::vesselquantifplot_obj
+        vtkXYPlotClass ::vesselquantifplot_obj
+        ::vesselquantifplot_obj.Gui()
+        ::vesselquantifplot_obj.set_input(::SectionSizes)
+        ::vesselquantifplot_obj.RunImage()
       }
     }
     
+    #---------------------------------------------------------------------------
+    proc ::SaveSectionSize() \
+    {
+      if exists(::SectionSizes) \
+      {
+        filename  = wx.wxFileSelector( "Select file to save the computed areas",\
+                                wx.wxFileName.GetHomeDir(),"","","",\
+                                wx.wxFD_SAVE|wx.wxFD_OVERWRITE_PROMPT)
+        if !filename.empty() {
+          center_line = ::lines.GetLine(::line_number)
+          # Create a text file
+          tf = wx.wxTextFile()
+          tf.Create(filename)
+          # create line string
+          line = "--------------------------"
+          tf.AddLine(line)
+          line =  "%-8s  " % "center X"+\
+                  "%-8s  " % "Y"+\
+                  "%-8s  " % "Z"+\
+                  "%-8s  " % "Area (mm^2)"
+          #printn line
+          tf.AddLine(line)
+          line = "--------------------------"
+          tf.AddLine(line)
+          # loop over the points
+          for n=0 to ::SectionSizes.tx-1 {
+            SetProgress(100.0*n/::SectionSizes.tx)
+            # get the center point
+            cx = center_line(n;0)
+            cy = center_line(n;1)
+            cz = center_line(n;2)
+            size = ::SectionSizes(n,0,0)
+            # create line string
+            line =  "%-8f  " % cx+\
+                    "%-8f  " % cy+\
+                    "%-8f  " % cz+\
+                    "%-8f  " % size
+            #printn line
+            tf.AddLine(line)
+          }
+          tf.Write()
+          tf.Close()
+          SetProgress(0)
+        }
+      }
+    }
+
     #---------------------------------------------------------------------------
     proc ::CB_LinePos() \
     {
@@ -590,6 +697,7 @@ if (!exists(SectionQuantifClass)) {
         points.InsertNextPoint(center_line(i;0),center_line(i;1),center_line(i;2))
 
       }
+      SetProgress(0)
       ::spline = vtkParametricSpline.New()
       ::spline.SetPoints(&points)
       
@@ -628,7 +736,7 @@ if (!exists(SectionQuantifClass)) {
     
     }
       
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::MainBook_AddVolRenTab()  \
     {
        mb = ami.MainFrame.GetMainBook()
@@ -666,7 +774,7 @@ if (!exists(SectionQuantifClass)) {
       
     }
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::MainBook_AddVolRenTab1()  \
     {
        mb = ami.MainFrame.GetMainBook()
@@ -704,7 +812,7 @@ if (!exists(SectionQuantifClass)) {
       
     }
 
-    #----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::MainBook_CloseTab()  \
     {
       if (exists(::pageindex)){
@@ -713,7 +821,7 @@ if (!exists(SectionQuantifClass)) {
       }
     }
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     # Redefinition of Close to close the panel tab in main_book
     #
     proc ::Close() \
@@ -721,6 +829,9 @@ if (!exists(SectionQuantifClass)) {
       ::volren.Close()
       #::MainBook_CloseTab()
       ::win.HidePanel()
+      if exists(::vesselquantifplot_obj) {
+        ::vesselquantifplot_obj.CloseAll()
+      }
 
       delvars GetObjectName(::Close)
     }
@@ -729,18 +840,14 @@ if (!exists(SectionQuantifClass)) {
                         "object named '"+GetObjectName(::Close)+"'.")
 
 
-    #-----------------------------------------------
-    proc ::Run() \
-    {
-      #if (!exists(::input)) {
-        #InfoDialog "First load the input image !"
-      #} else {
-        ::Quantification()
-        #InfoDialog "Filtro fantastico :) !!!"
-      #}
-    }
     
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
+    proc ::CB_RunMultiLines() \
+    {
+      ::ML_obj.MultiLines_new()
+    }
+
+    #---------------------------------------------------------------------------
     proc ::CB_pageML() {
         printn "Multine page number = %1%" % ::main_book.GetPageIndex(::ML_obj.win)   
       if(!::advancedML){
@@ -752,7 +859,7 @@ if (!exists(SectionQuantifClass)) {
       }
     }
 
-    #-----------------------------------------------
+    #---------------------------------------------------------------------------
     proc ::CB_pageVR() {
       if(!::advancedVR){
         number_pageVR = ::main_book.GetPageIndex(::volren.win)
@@ -764,7 +871,15 @@ if (!exists(SectionQuantifClass)) {
     }
 
 
-    #---------------------------------------------------
+    #---------------------------------------------------------------------------
+    proc ::CB_LineNumber() {
+      
+      length = ::lines_length(::line_number,0,0)
+      ::line_length = "%1% mm" % length
+      ::win.SetLabelValue(::line_length_id,::line_length)
+    }
+
+    #---------------------------------------------------------------------------
     proc ::Gui() {
     
       if (exists(::parent_panel)) {
@@ -776,7 +891,7 @@ if (!exists(SectionQuantifClass)) {
       ::win.BeginBook()
         ::main_book = ::win.GetBookCtrl()
       
-        ::win.AddPage("Init")
+        ::win.AddPage("Vol")
           ::win.BeginBoxPanel("Input Image")
             # set the input image
             ::win.BeginHorizontal()
@@ -793,29 +908,35 @@ if (!exists(SectionQuantifClass)) {
             #::win.AddButton("Display", ::volren.StartNew)  
           ::win.EndBoxPanel()
           
+          ::win.AddBoolean( ::volren_shading, "Volren shading")
+          ::win.SetCallback(::CB_VolRenShading)
           ::win.AddFloat( ::volren_attenuation, "Volren att.", 0.01,1)
           ::win.SetCallback(::CB_VolRenAttenuation)
 
-          ::win.BeginBoxPanel("Input Lines")
-            ::win.BeginBoxPanel("From disk")
-              ::win.BeginHorizontal()
-                ::win.AddFilename(&::lines_filename,"select","/Documentos/","*.vtk")
-                ::win.AddButton("Load",::load_lines_filename)
-              ::win.EndHorizontal()
-            ::win.EndBoxPanel()
-            ::win.BeginBoxPanel("From variable")
-              ::win.BeginHorizontal()
-                ::win.AddAMIObjectChoice(&::lines_varname,"","SurfacePoly")
-                ::win.AddButton("Load",::load_lines)
-              ::win.EndHorizontal()
-            ::win.EndBoxPanel()
-            ::ln_id = ::win.AddInt(&::line_number,"Line number",0,200)
-          ::win.EndBoxPanel()
 
-        ::win.AddPage("Param")
+        ::win.AddPage("Lines")
           #::win.AddLabel("Info:","Set your parameters here")
           ##Se añade los parametros del script MultiLines
           ::win.BeginBook()
+            ::win.AddPage("Read")
+              ::win.BeginBoxPanel("Input Lines")
+                ::win.BeginBoxPanel("From disk")
+                  ::win.BeginHorizontal()
+                    ::win.AddFilename(&::lines_filename,"select","/Documentos/","*.vtk")
+                    ::win.AddButton("Load",::load_lines_filename)
+                  ::win.EndHorizontal()
+                ::win.EndBoxPanel()
+                ::win.BeginBoxPanel("From variable")
+                  ::win.BeginHorizontal()
+                    ::win.AddAMIObjectChoice(&::lines_varname,"","SurfacePoly")
+                    ::win.AddButton("Load",::load_lines)
+                  ::win.EndHorizontal()
+                ::win.EndBoxPanel()
+                ::ln_id = ::win.AddInt(&::line_number,"Line number",0,200)
+                ::win.SetCallback(::CB_LineNumber)
+                ::line_length_id = ::win.AddLabel("Length:",::line_length)
+              ::win.EndBoxPanel()
+            
             ::win.AddPage("MultiLines")
               ::win.BeginBoxPanel("Mask")
                 maskmode_id = ::win.AddEnum(::ML_obj.mask_mode, "Mode")
@@ -839,7 +960,7 @@ if (!exists(SectionQuantifClass)) {
               ::win.SetCallback(::ML_obj.OnLocalMaxima)
           
               ::win.BeginBoxPanel("Controls")
-                ::win.AddButton("Run new",    ::ML_obj.MultiLines_new)
+                ::win.AddButton("Run new",    ::CB_RunMultiLines)
                 ::outputname_id = ::win.AddString( ::ML_obj.output_name, "Output")
               ::win.EndBoxPanel()
             #::win.EndBook()
@@ -871,8 +992,9 @@ if (!exists(SectionQuantifClass)) {
                     ::win.SetPositionProp(-1,0)
                     ::AddBitmapButton(::win, ::SK_obj.icons._Show,      32, "DisplaySkeleton")
                     ::win.SetPositionProp(-1,0)
-                    ::win.AddButton("Smooth", ::SmoothSkeleton)
                   ::win.EndHorizontal()
+                  ::win.AddInt(::SK_obj.smooth_it,"Smoothing iterations",1,100)
+                  ::win.AddButton("Smooth", ::SmoothSkeleton)
                 ::win.EndBoxPanel()
            
           ::win.EndBook()   
@@ -881,21 +1003,28 @@ if (!exists(SectionQuantifClass)) {
 
         ::win.AddPage("Run")
           ::win.BeginBoxPanel("Primer Metodo") 
-            ::win.AddButton("Run Filter",::Run)
-            ::win.AddButton("Display",    ::Display)
+            ::win.AddButton("Compute Sections",::ComputeSections)
+            ::win.AddButton("Display",         ::Display)
           ::win.EndBoxPanel()
 
-          ::win.BeginBoxPanel("Reslice")
+          ::win.BeginBoxPanel("Curve Planar Reformation")
             ::win.AddInt( &::dimx,  "::dimx", 1,50)
             ::win.AddInt( &::dimy,  "::dimy", 1,50)
             ::win.AddFloat( &::spacingx,  "::spacingx", 0.1,10)
             ::win.AddFloat( &::spacingy,  "::spacingy", 0.1,10)
-            ::win.BeginHorizontal()
-              ::win.AddButton("Run Reslice",    ::Reslice)
-              ::win.SetPositionProp(1)
-              ::win.AddButton("Compute size",   ::ComputeSize)
-              ::win.SetPositionProp(1)
-            ::win.EndHorizontal()
+            ::win.AddButton("Reslice",    ::Reslice)
+            ::win.BeginBoxPanel("Cross-section sizes")
+              ::seg_threshold_id = \
+                ::win.AddFloat(&::seg_threshold,"Seg. threshold",0,100)
+              ::win.AddBoolean( ::AreaWithLinearInterpolation, \
+                                "Area with linear interp.")
+              ::win.BeginHorizontal()
+                ::win.AddButton("Compute",   ::ComputeSize)
+                ::win.SetPositionProp(1)
+                ::win.AddButton("Save",      ::SaveSectionSize)
+                ::win.SetPositionProp(1)
+              ::win.EndHorizontal()
+             ::win.EndBoxPanel()
           ::win.EndBoxPanel()
             
           ::win.BeginBoxPanel("Plane")
@@ -924,9 +1053,9 @@ if (!exists(SectionQuantifClass)) {
     ::win.EndBook()
 
       ::win.BeginHorizontal()
-        ::win.AddBoolean(&::advancedML,"Advanced Multiline")
+        ::win.AddBoolean(&::advancedML,"Adv. Multiline")
         ::win.SetCallback(&::CB_pageML)
-        ::win.AddBoolean(&::advancedVR,"Advanced Volume Rendering")
+        ::win.AddBoolean(&::advancedVR,"Adv. Vol. Rend.")
         ::win.SetCallback(&::CB_pageVR)
       ::win.EndHorizontal()
 
@@ -939,6 +1068,9 @@ if (!exists(SectionQuantifClass)) {
       }
       
       ::win.Update(-1)
+      ::CB_pageML()
+      ::CB_pageVR()
+
       #::MainBook_AddVolRenTab1() 
       #::CreateRenderer()
 

@@ -646,7 +646,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_ProcessXEvents
 %token T_ProcessEvents
 
-%token T_isoarea2D T_posarea
+%token T_isoarea2D
 
 %token T_isosurf T_isosurf_inv T_isosurf_ijk T_isosurf_ras
 %token T_vtkDecimate T_vtkMarchingCubes T_vtkSmooth 
@@ -4721,27 +4721,6 @@ float_variable:
       delete compute_area;
 
     }
-    |
-    T_posarea T_OP_PAR var_image T_CL_PAR
-    {
-
-      GET_VARSTACK_VALUE(InrImage, im);
-      float val=Func_ComputePositiveArea( im.get() );
-      ADD_VARSTACK_FLOAT(val);
-    }
-    |
-    T_posarea T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      float val[4];
-
-      val[0] = $3;
-      val[1] = $5;
-      val[2] = $7;
-      val[3] = $9;
-      float res=Func_PositiveArea(val);
-      ADD_VARSTACK_FLOAT(res);
-    }
-    |
     T_COUNT T_OP_PAR expr_image  T_CL_PAR
     {
     /**

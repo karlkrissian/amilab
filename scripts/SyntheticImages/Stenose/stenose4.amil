@@ -77,7 +77,7 @@ f = open("initial4.dat","w")
 for z=0 to i.tz-1 {
 si = subimage(i,0,0,z,i.tx-1,i.ty-1,z);
 sjp = si-50
-surf=posarea(sjp)
+surf=algorithms.ami_ComputePositiveArea(sjp)
 f.print z;  f.print "\t"; f.print sqrt(surf/Pi); f.print "\n"
 }
 del f
@@ -91,7 +91,7 @@ f = open("noisy4.dat","w")
 for z=0 to i.tz-1 {
 si = subimage(in2,0,0,z,i.tx-1,i.ty-1,z);
 sjp = si-50
-surf=posarea(sjp)
+surf=algorithms.ami_ComputePositiveArea(sjp)
 f.print z;  f.print "\t"; f.print sqrt(surf/Pi); f.print "\n"
 }
 del f
@@ -103,7 +103,7 @@ f = open("smoothinit4.dat","w")
 for z=0 to i.tz-1 {
 si = subimage(is,0,0,z,i.tx-1,i.ty-1,z);
 sjp = si-50
-surf=posarea(sjp)
+surf=algorithms.ami_ComputePositiveArea(sjp)
 f.print z;  f.print "\t"; 
 f.print sqrt(surf/Pi); f.print "\n"
 }

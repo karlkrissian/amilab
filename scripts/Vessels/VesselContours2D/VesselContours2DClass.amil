@@ -78,7 +78,7 @@ if (!exists(VesselContours2DClass)) {
         {
           cont = -secdergrad(input_image,s)
           ::results.putimage(cont,0,0,k)
-          cont_area = posarea(cont)
+          cont_area = algorithms.ami_ComputePositiveArea(cont)
 
           cont_cc    = CC(cont)
           component = (FLOAT) (cont_cc==(cont_cc(cont.tx/2,cont.ty/2)))
@@ -90,7 +90,7 @@ if (!exists(VesselContours2DClass)) {
           ::results2.putimage(component,0,0,k)
 
           #cont_area2 = count(component)
-          cont_area2 = posarea(component)
+          cont_area2 = algorithms.ami_ComputePositiveArea(component)
 
           # First curve
           cont_rad = sqrt(cont_area/Pi)

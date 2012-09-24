@@ -168,6 +168,7 @@ wxTextAttr
 wxString
 wxStyledTextCtrl
 wxSysColourChangedEvent
+wxTextFile
 wxThread
 wxTimeSpan
 wxTimer

@@ -27,9 +27,9 @@ proc CrossSectionsArea( IMAGE _sec, STRING st, NUM center_cc ) {
       _sec2 = sec1*(sec1_cc1d>0.5)
 
       # Compute the area and save it to file7
-      area = posarea(_sec2)*voxarea
+      area = algorithms.ami_ComputePositiveArea(_sec2)*voxarea
     } else {
-      area = posarea(sec1)*voxarea
+      area = algorithms.ami_ComputePositiveArea(sec1)*voxarea
     }
     file_area._print(sprint("%0.0f\t",_n))
     file_area._print(sprint("%0.2f\n",area))

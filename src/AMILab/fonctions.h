@@ -151,9 +151,6 @@ InrImage*    Func_LocalExtrema( InrImage* im,
                 InrImage* mask,
                 int samples=16);
 
-float         Func_PositiveArea(float val[4]);
-float         Func_ComputePositiveArea( InrImage* im);
-
 // Connected Components
 InrImage*    Func_CC(InrImage* im,  float background_threshold=0, int topology=1);
 

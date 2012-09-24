@@ -61,8 +61,19 @@ BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeListCtrl)
 
 END_EVENT_TABLE()
 
-myTreeCtrl::myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size , long style , const wxValidator& validator , const wxString& name ) : //wxTreeCtrl(parent,id,pos,size,style,validator,name)
-wxTreeListCtrl(parent,id,pos,size,style,validator,name)
+myTreeCtrl::myTreeCtrl(wxWindow* parent, 
+                       wxWindowID id, 
+                       const wxPoint& pos, 
+                       const wxSize& size , 
+                       long style , 
+                       const wxValidator& validator , 
+                       const wxString& name ) : //wxTreeCtrl(parent,id,pos,size,style,validator,name)
+#if wxCHECK_VERSION(2,9,0)
+//      wxTreeListCtrl(parent,id,pos,size,style,name)
+      wxTreeListCtrl(parent,id,pos,size,style,validator,name)
+#else
+      wxTreeListCtrl(parent,id,pos,size,style,validator,name)
+#endif
 {
   Connect(wxEVT_COMMAND_TREE_ITEM_MENU,wxTreeEventHandler(myTreeCtrl::OnItemMenu));
 

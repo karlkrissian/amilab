@@ -512,7 +512,6 @@ eccentricity      return(token::T_eccentricity); /*{eccentricity,T_eccentricity}
 
 
 isoarea2D         return(token::T_isoarea2D); /*{isoarea2D,T_isoarea2D}*/
-posarea           return(token::T_posarea); /*{posarea,T_posarea}*/
 
 ReadCTALine      return(token::T_ReadCTALine); /*{ReadCTALine,T_ReadCTALine}*/
 ReadCTALineRadii return(token::T_ReadCTALineRadii); /*{ReadCTALineRadii,T_ReadCTALineRadii}*/

@@ -172,11 +172,15 @@ private:
 
   std::vector<ParamInfo>    _tab_param;
   std::vector<wxStaticBox*> _tab_boxes;
+
+  /// list of all created panels
   std::vector<wxWindow*>    _tab_panels;
 
   std::vector<NotebookClass*>  _tab_books;
 
   std::stack<wxBoxSizer*>  _current_sizer;
+  
+  /// current stack of panels
   std::stack<wxWindow*>    _panels;
   std::stack<NotebookClass*>  _current_book;
 

@@ -298,7 +298,6 @@ int ParamPanel::BeginPanel(const std::string& panel_name)
 //  panel->SetScrollbars(3,3,10,10);
 //  panel->EnableScrolling(true,true);
   _tab_panels.push_back(panel);
-
   _panels.push( panel);
 
   LastPanel()->SetToolTip(wxString::FromAscii(panel_name.c_str()));
@@ -319,9 +318,16 @@ int ParamPanel::BeginPanel(const std::string& panel_name)
 void ParamPanel::EndPanel()
 {
 //  LastPanelSizer()->SetSizeHints(LastPanel());
-  LastPanelSizer()->Fit(LastPanel());
-  _current_sizer.pop();
-  _panels.pop();
+  if (!_panels.empty()) {
+    LastPanelSizer()->Fit(LastPanel());
+    _current_sizer.pop();
+    _panels.pop();
+  } else {
+    std::cerr  << __func__ << " " 
+          << this->GetName().mb_str() << "\t" 
+          <<  "Error \t EndPanel() called without panel" 
+          << std::endl; 
+  }
 
 } // ParamPanel::EndPanel()
 
@@ -1268,6 +1274,7 @@ int ParamPanel::BeginBox( const char* boxname)
 
 #if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
   _panels.push( sb);
+  _tab_panels.push_back(sb);
 #endif
 
   wxStaticBoxSizer* sizer  = new wxStaticBoxSizer( sb, wxVERTICAL );
@@ -1275,7 +1282,11 @@ int ParamPanel::BeginBox( const char* boxname)
   _current_sizer.push(sizer);
   
 
+#if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
+  return (int)_tab_panels.size()-1;
+#else
   return (int)_tab_boxes.size()-1;
+#endif
 } // BeginBox
 
 

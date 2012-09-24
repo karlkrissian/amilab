@@ -71,6 +71,8 @@ SET(Algorithms_SRCS
   Chamfer.cpp
   DistanceTransforms.cpp
   func_globalstats.cpp
+  
+  amiComputePositiveArea.cpp
 
   amiLineRecons.cpp
 
@@ -172,6 +174,8 @@ SET(Algorithms_HDRS
   include/Chamfer.h
   include/DistanceTransforms.h
   include/func_globalstats.h
+  
+  include/amiComputePositiveArea.hpp
 
   # files coming from previous Filtering directory
   include/AddImageNoise.h

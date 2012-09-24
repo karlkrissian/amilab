@@ -25,7 +25,13 @@
 #endif
 
 #include "wx/treectrl.h"
-#include "treelistctrl.h"
+
+#if wxCHECK_VERSION(2,9,0)
+  #include "treelistctrl.h"
+//  #include <wx/treelist.h>
+#else
+  #include "treelistctrl.h"
+#endif
 
 #include <boost/weak_ptr.hpp>
 #include <string>
@@ -56,7 +62,12 @@ private:
 class myTreeCtrl: public wxTreeListCtrl
 {
 public: 
-  myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTR_HAS_BUTTONS, const wxValidator& validator = wxDefaultValidator, const wxString& name = _T("treeCtrl"));
+  myTreeCtrl(wxWindow* parent, wxWindowID id, 
+             const wxPoint& pos = wxDefaultPosition, 
+             const wxSize& size = wxDefaultSize, 
+             long style = wxTR_HAS_BUTTONS, 
+             const wxValidator& validator = wxDefaultValidator, 
+             const wxString& name = _T("treeCtrl"));
 
 protected:
   void OnItemMenu(wxTreeEvent& event);

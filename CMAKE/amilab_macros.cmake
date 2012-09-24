@@ -226,6 +226,9 @@ MACRO( ClassUsedName input_name output_name )
   STRING(REGEX REPLACE "short int"      "short" ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE " " ""                   ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE "itk_"           ""      ${output_name} ${${output_name}} )
+  # get rid of function parameters in case of a function
+  STRING(REGEX REPLACE "\\(.*\\)"         ""      ${output_name} ${${output_name}} )
+  
 
 ENDMACRO( ClassUsedName)
 #-------------------------------------------------------------------------------

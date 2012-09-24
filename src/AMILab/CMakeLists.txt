@@ -40,7 +40,6 @@ SET(AMILab_SRCS
     LineCC.cpp
     #LineRecons.cpp
     NormalSmoothField.cpp
-    PositiveArea.cpp
     ReSlice.cpp
     ResampleLines.cpp
     Resize.cpp
