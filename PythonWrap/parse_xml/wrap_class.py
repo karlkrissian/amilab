@@ -1051,6 +1051,7 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, \
           res += "  m{0}.Set_noconstr(true);\n".format(n)
         else:
           res += "  m{0}.Set_noconstr(false);\n".format(n)
+          res += "  m{0}.Set_arg_failure(false);\n".format(n)
         res += "  res = m{0}.CallMember(_p);\n".format(n)
         res += "  if (!m{0}.Get_arg_failure()) return res;\n".format(n)
   res += "  if (!quiet)\n"
