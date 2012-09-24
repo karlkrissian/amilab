@@ -106,6 +106,17 @@ class LanguageBase_EXPORT Variables{
                              BasicVariable::ptr& val, 
                              const boost::shared_ptr<Variables>& context = boost::shared_ptr<Variables>() );
 
+  
+  /**
+   *  Add a new variable based on its type, name, pointer to the object information, and context.
+   * @param name 
+   * @param val 
+   * @param context 
+   * @return a smart pointer to the new variable (base class)
+   */
+  BasicVariable::ptr AddVar( const std::string& name, 
+                             BasicVariable* val, 
+                             const boost::shared_ptr<Variables>& context = boost::shared_ptr<Variables>() );
   /**
    *  Add a new variable based on its type, name, pointer to the object information, and context.
    * @param type 

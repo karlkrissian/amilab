@@ -22,8 +22,8 @@
 #include "Variable.hpp"
 
 #define STATIC_HELP \
-    const std::string GetDescription()  { return StaticDescription();  }\
-    const std::string GetFunctionName() { return StaticFunctionName(); }\
+    const std::string GetDescription() const { return StaticDescription();  }\
+    const std::string GetFunctionName() const { return StaticFunctionName(); }\
 
 /** Macro for adding a class that wraps a method.
   */
@@ -95,9 +95,9 @@ class wrap_##methodname : public WrapClassMember { \
 }; \
 \
 void AddVar_##methodname(  const _parentclass_ptr& pc, const std::string& newname = #methodname) {\
-  boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_##methodname(pc));\
   AMIObject::ptr tmpobj(amiobject.lock()); \
-  boost::shared_ptr<BasicVariable> newvar( (BasicVariable*) new Variable<WrapClassMember>(tmp));\
+  WrapClassMember* tmp = new wrap_##methodname(pc);\
+  BasicVariable* newvar = new Variable<WrapClassMember>(tmp);\
   tmpobj->GetContext()->AddVar(newname, newvar, tmpobj->GetContext()); \
 }
 //    const boost::shared_ptr<ObjectType>& GetObj() const { return _objectptr->GetObj(); }  
@@ -112,7 +112,13 @@ class wrap_##methodname : public WrapClassMember { \
     BasicVariable::ptr CallMember(ParamList*); \
 }; \
 \
-void AddVar_##methodname(  const _parentclass_ptr& pc, const std::string& newname = #methodname);
+void AddVar_##methodname(  const _parentclass_ptr& pc, const std::string& newname = #methodname)\
+{\
+  AMIObject::ptr tmpobj(amiobject.lock()); \
+  WrapClassMember* tmp = new wrap_##methodname(pc);\
+  BasicVariable* newvar =  new Variable<WrapClassMember>(tmp);\
+  tmpobj->GetContext()->AddVar(newname, newvar, tmpobj->GetContext()); \
+}
 
 ///
 #define DEFINE_CLASS_METHOD_LIGHT(classname,methodname) \
@@ -120,14 +126,17 @@ WrapClass_##classname::wrap_##methodname::wrap_##methodname(const _parentclass_p
   _objectptr(pp) { \
   Set_arg_failure(false);\
   Set_quiet(false);\
-} \
-\
-void WrapClass_##classname::AddVar_##methodname( const _parentclass_ptr& pc, const std::string& newname ) {\
-  WrapClassMember* tmp = (WrapClassMember*) new wrap_##methodname(pc);\
+} 
+
+/*\
+void WrapClass_##classname::AddVar_##methodname( const _parentclass_ptr& pc, const std::string& newname ) \
+{\
   AMIObject::ptr tmpobj(amiobject.lock()); \
-  boost::shared_ptr<BasicVariable> newvar( (BasicVariable*) new Variable<WrapClassMember>(tmp));\
+  WrapClassMember* tmp = new wrap_##methodname(pc);\
+  BasicVariable* newvar =  new Variable<WrapClassMember>(tmp);\
   tmpobj->GetContext()->AddVar(newname, newvar, tmpobj->GetContext()); \
 }
+*/
 
 /**
   Macro to wrap Set/Get methods
@@ -253,8 +262,8 @@ const std::string WrapClass_##classname::wrap_##methodname::StaticFunctionName()
 \
 void WrapClass_##classname::AddVar_##methodname(  Variables::ptr& _context, \
                                   const std::string& newname ) {\
-  boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_##methodname());\
-  boost::shared_ptr<BasicVariable> newvar( (BasicVariable*) new Variable<WrapClassMember>(tmp));\
+  WrapClassMember* tmp = new wrap_##methodname();\
+  BasicVariable* newvar = new Variable<WrapClassMember>(tmp);\
   _context->AddVar(newname, newvar, _context); \
 }
 
@@ -281,8 +290,8 @@ class wrap_static_##methodname : public WrapClassMemberWithDoc { \
 }; \
 \
 static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
-  boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_static_##methodname());\
-  BasicVariable::ptr newvar(new Variable<WrapClassMember>(tmp));\
+  WrapClassMember* tmp = new wrap_static_##methodname();\
+  BasicVariable* newvar = new Variable<WrapClassMember>(tmp);\
   _context->AddVar(newname, newvar, _context); \
 }
 
@@ -509,13 +518,13 @@ class WrapCommon_DECLARE WrapClassMember {
     virtual void ShowHelp() {}
 
     void Set_arg_failure(bool const & f) { arg_failure=f;}
-    bool Get_arg_failure() { return arg_failure;}
+    bool Get_arg_failure() const { return arg_failure;}
 
     void Set_quiet(bool const & q) { quiet=q;}
-    bool Get_quiet() { return quiet; }
+    bool Get_quiet() const { return quiet; } 
 
     void Set_noconstr(bool const& nc) { noconstr=nc; }
-    bool Get_noconstr() { return noconstr; }
+    bool Get_noconstr() const { return noconstr; } 
 };
  
 
@@ -542,14 +551,14 @@ class WrapCommon_DECLARE WrapClassMemberWithDoc : public WrapClassMember {
     void ShowHelp();
     
     // for access in scripting language
-    std::string get_return_comments() { return return_comments; }
-    std::string get_return_type() { return return_type;}
+    std::string get_return_comments() const { return return_comments; }
+    std::string get_return_type() const { return return_type;}
     size_t get_parameters_comments_size() const { return parameters_comments.size(); }
-    std::string get_parameters_comments( int n) { return parameters_comments[n]; }
-    std::string get_paramtypes( int n) { return paramtypes[n]; }
+    std::string get_parameters_comments( int n) const { return parameters_comments[n]; }
+    std::string get_paramtypes( int n)  const { return paramtypes[n]; }
 
-    virtual const std::string GetDescription()  { return std::string();};
-    virtual const std::string GetFunctionName() { return std::string();};
+    virtual const std::string GetDescription() const { return std::string();};
+    virtual const std::string GetFunctionName() const { return std::string();};
 };
 
 

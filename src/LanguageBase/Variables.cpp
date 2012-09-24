@@ -151,6 +151,25 @@ BasicVariable::ptr Variables::AddVar(
   return newvar;
 }
 
+//--------------------------------------------------
+BasicVariable::ptr Variables::AddVar( 
+          const std::string& name, 
+          BasicVariable* val, 
+          const boost::shared_ptr<Variables>& context)
+{
+  CLASS_MESSAGE((boost::format(" %1%, in %2% ") % name % GetName()).str().c_str());
+
+  std::string resname = this->CheckVarName(name.c_str());
+  BasicVariable::ptr newvar(val);
+  //std::cout << "  **  newvar =  " << newvar << std::endl;
+
+  newvar->Rename(resname.c_str());
+  newvar->SetContext(context);
+  _vars.push_back(newvar);
+
+  return newvar;
+}
+
 
 
 //--------------------------------------------------
