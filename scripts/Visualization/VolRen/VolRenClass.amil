@@ -9,12 +9,12 @@ comments="VolRen: VTK GPU RayCasting."
 func "Common/ScriptGui"
 
 if (!exists(global::vtkAmiVolRenPlugin_obj)) {
-  #func "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen"
-  func "Common/ModulePlugin"
-  ModulePlugin global::vtkAmiVolRenPlugin_obj
-  global::vtkAmiVolRenPlugin_obj.SetModuleName("vtkAmiVolRen")
-  global::vtkAmiVolRenPlugin_obj.SetQuiet(true)
-  global::vtkAmiVolRenPlugin_obj.Load()
+  func "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen"
+  #func "Common/ModulePlugin"
+  #ModulePlugin global::vtkAmiVolRenPlugin_obj
+  #global::vtkAmiVolRenPlugin_obj.SetModuleName("vtkAmiVolRen")
+  #global::vtkAmiVolRenPlugin_obj.SetQuiet(true)
+  #global::vtkAmiVolRenPlugin_obj.Load()
 
 } else {
   func "../Modules/vtkAmiVolRen/scripts/ReLoad_vtkAmiVolRen"

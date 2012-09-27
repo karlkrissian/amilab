@@ -7,11 +7,13 @@ def get_include_file(classname,filename):
   #print "including class {0} from file {1}".format(classname,incfile)
   if classname.startswith("itk::DefaultConvertPixelTraits"):
     incfile = '#include "itkMatrix.h"\n'+incfile
+  if classname.startswith("std::set"):
+    incfile = '#include <set>\n'+incfile
   return incfile
   #return "{0}.h".format(classname)
   
 def get_var_filter():
-  return "(itk::|vnl_|itkAmi).*"
+  return "(itk::|vnl_|itkAmi|gdcm::|std::).*"
   
 def wrap_public_fields(classname):
   return False

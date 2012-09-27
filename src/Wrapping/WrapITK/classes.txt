@@ -84,3 +84,22 @@ itk::SmartPointer<itk::CannyEdgeDetectionImageFilter<itk::Image<float, 3u>, itk:
 #-------------------------------------------------------------------------------
 itk::amiConvert
 #
+
+
+#-------------------------------------------------------------------------------
+# DICOM classes
+#-------------------------------------------------------------------------------
+
+gdcm::Global
+gdcm::Image
+gdcm::ImageReader
+gdcm::Reader
+gdcm::File
+gdcm::FileMetaInformation
+gdcm::Tag
+gdcm::DataElement
+gdcm::DataSet
+gdcm::StringFilter
+
+# need set of data elements
+std::set<gdcm::DataElement, std::less<gdcm::DataElement>, std::allocator<gdcm::DataElement> >

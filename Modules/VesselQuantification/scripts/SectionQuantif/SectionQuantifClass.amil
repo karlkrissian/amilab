@@ -75,6 +75,12 @@ if (!exists(SectionQuantifClass)) {
       ::volren.vol0.AutoAdjustSampleDistances=false
       ::volren.vol0.OnSampleDistance()
       
+      # update reslice spacing
+      spacing = min(min(::input.vx,::input.vy),::input.vz)
+      ::spacingx = spacing
+      ::spacingy = spacing
+      ::win.Update(-1)
+      
       if (::input_name=="BrowseImage") {
         ::input_name = "::input"
         ::win.Update(-1)
@@ -457,6 +463,7 @@ if (!exists(SectionQuantifClass)) {
         px = ::dimx/::spacingx
         py = ::dimy/::spacingy
         ::PCR <<= Image(FLOAT,px,py,n-1)
+        ::PCR.setvoxelsize(::spacingx,::spacingy,1)
         Comments(::PCR,"Planar Curve Reformation of the volume")
         del ::vtk_input
         ::vtk_input = vtktools.ToVtkImageData( (FLOAT)::input)

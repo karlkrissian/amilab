@@ -194,3 +194,27 @@ typedef itk::Image<unsigned char, 3u>  ImageUC3;
                cannyedgedetectionfilter_f3_f3)
 #endif // __GCCXML__
   
+// DICOM
+  
+#include "itkGDCMImageIO.h"
+#include "itkMetaDataObject.h"
+#include <gdcmGlobal.h>
+#include <gdcmImage.h>
+#include <gdcmImageReader.h>
+#include <gdcmReader.h>
+#include <gdcmFile.h>
+#include <gdcmFileMetaInformation.h>
+#include <gdcmTag.h>
+#include <gdcmDataElement.h>
+#include <gdcmDataSet.h>
+#include <gdcmStringFilter.h>
+
+#if GDCM_MAJOR_VERSION < 2
+#include "gdcmDictSet.h"
+#endif
+
+#include <set>
+#ifdef __GCCXML__
+  template class std::set<gdcm::DataElement>;
+#endif
+  
