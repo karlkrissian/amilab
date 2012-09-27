@@ -27,6 +27,24 @@ itk::SmartPointer<itkAmiCommand>
 
 itk::MetaDataDictionary
 
+itk::Matrix<double, 2u, 2u>
+itk::Matrix<double, 3u, 3u>
+
+itk::Vector<double, 2u>
+itk::Vector<double, 3u>
+
+itk::Point<double, 2u>
+itk::Point<double, 3u>
+
+itk::ImageRegion<2u>
+itk::ImageRegion<3u>
+
+itk::Index<2u>
+itk::Index<3u>
+
+itk::Size<2u>
+itk::Size<3u>
+
 # Image related classes
 #
 itk::SmartPointer<itk::Image<float, 2u> >
@@ -35,9 +53,6 @@ itk::SmartPointer<itk::Image<float, 3u> >
 itk::SmartPointer<itk::Image<unsigned char, 3u> >
 itk::SmartPointer<itk::Image<short, 3u> >
 itk::SmartPointer<itk::Image<unsigned short, 3u> >
-itk::ImageRegion<2u>
-itk::Size<2u>
-itk::Index<2u>
 itk::DefaultPixelAccessor<float>
 
 # IO classes
