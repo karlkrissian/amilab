@@ -12,7 +12,17 @@ if (!exists(SyntheticPVEImagesClass)) {
   #---------------------------------------------
   proc ::Init() \
   {
-    ::ImageDim   = INT(0), "0: 2D, 1: 3D"
+    func "WxUtils/alEnum"
+
+    # ----- Image Dimension
+    alEnum ::dimensions
+    ::dimensions.SetTitle("Image Dimension")
+    ::dimensions.SetHelp("Choose the synthetic image dimensionº")
+    ::dimensions.AddValue( "2D","2D image")
+    ::dimensions.AddValue( "3D","3D image")
+    ::ImageDim = INT(0), ::dimensions.GetHelpMessage()
+    ::dimensions.SetVariable(&::ImageDim)
+
     ::type2D     = INT(0), "Analytic 2D function type"
     ::type3D     = INT(0), "Analytic 3D function type"
     #::pv_type    = INT(0), "Compute partial effect function"
@@ -119,7 +129,9 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::page_vec2D.push_back(::page_vessel2D)
     ::page_vec2D.push_back(::page_ring2D)
 
+    printn "::NewType2D"
     for n=0 to 3 {
+      printn "EnablePanel %1%" % n
       ::win.EnablePanel(::page_vec2D[n], ::type2D==n)
     }
     ::win.SelectPage(::book2D,::type2D)
@@ -134,7 +146,9 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::page_vec3D.push_back(::page_torus)
     ::page_vec3D.push_back(::page_helix)
     
+    printn "::NewType3D"
     for n=0 to 4 {
+      printn "EnablePanel %1%" % n
       ::win.EnablePanel(::page_vec3D[n], ::type3D==n)
     }
     ::win.SelectPage(::book3D,::type3D)
@@ -256,6 +270,7 @@ if (!exists(SyntheticPVEImagesClass)) {
           }
       }
       #Enable the save box
+      printn "EnablePanel ::save_box"
       ::win.EnablePanel(::save_box, 1)
       ::win.Update(::save_box)
       if (::autodisplay) { ::Display(); }
@@ -633,7 +648,9 @@ if (!exists(SyntheticPVEImagesClass)) {
   proc ::OnImageDim(){
     ::win.Enable(::dimz_id, (::ImageDim==1))
     #::win.Update(::dimz_id)
+    printn "EnablePanle ::functions_2D"
     ::win.EnablePanel(::functions_2D, ::ImageDim==0)
+    printn "EnablePanle ::functions_3D"
     ::win.EnablePanel(::functions_3D, ::ImageDim==1)
   }
   
@@ -642,9 +659,32 @@ if (!exists(SyntheticPVEImagesClass)) {
   
     ::win = ParamPanel("Synth.Im.")
 
+    ::win.BeginHorizontal()
+        #Configure input image
+        ::dimensions.SetGuiMode(1)
+        ::dimensions.AddGui(&::win)
+        ::dimensions.SetCallback(&::OnImageDim)
+      ::icons.LoadIconPNG("Play")
+      ::AddBitmapButton(&::win, &::icons._Play, 16, "Compute")
+      ::AddBitmapButton(&::win, &::icons._Show, 16, "Display")
+    ::win.EndHorizontal()
+    ::save_box = ::win.BeginBoxPanel("Save output")
+      ::win.BeginHorizontal()
+        ::win.AddString(&::output_name, "Name")
+        ::AddBitmapButton(&::win, &::icons._Save, 16, "Save")
+      ::win.EndHorizontal()
+    ::win.EndBoxPanel()
+    #printn "EnablePanel ::save_box ..."
+    ::win.EnablePanel(::save_box, 0)
+
     ::win.BeginBook()
       #Main tab
       ::win.AddPage("Main")
+
+        ::win.BeginBoxPanel("Intensity")
+          ::win.AddFloat(&::A, "A", 0, 255)
+          ::win.AddFloat(&::B, "B", 0, 255)
+        ::win.EndBoxPanel()
 
         ::win.BeginBoxPanel("Input image")
           ::win.BeginBoxPanel("Size")
@@ -668,18 +708,10 @@ if (!exists(SyntheticPVEImagesClass)) {
         ::win.EndBoxPanel()
         
         ::win.AddBoolean(&::autodisplay,"Auto Display")
-        ::save_box = ::win.BeginBoxPanel("Save output")
-          ::win.BeginHorizontal()
-            ::win.AddString(&::output_name, "Name")
-            ::AddBitmapButton(&::win, &::icons._Save, 16, "Save")
-          ::win.EndHorizontal()
-          ::win.EnablePanel(::save_box, false)
-        ::win.EndBoxPanel()
       
       #Function tab
-      ::functions_page = ::win.AddPage("Func")
-        ::win.BeginBook()
-          printn "2D"
+      #::functions_page = ::win.AddPage("Func")
+        #::win.BeginBook()
           ::functions_2D = ::win.AddPage("2D")
             ::type_id2D = ::win.AddEnum(&::type2D, "Function type")
               ::win.AddEnumChoice(::type_id2D, "Line")
@@ -876,43 +908,29 @@ if (!exists(SyntheticPVEImagesClass)) {
                     ::win.AddFloat(&::helix_cz, "z", 0, 100)
                     #::win.SetCallback(&::RecomputeHelix)
                   ::win.EndBoxPanel()
-                    ::win.AddFloat(&::helix_r, "rad", 1, 100)
-                    #::win.SetCallback(&::RecomputeHelix)
-                    ::win.AddFloat(&::helix_t, "thick", 1, 100)
-                    #::win.SetCallback(&::RecomputeHelix)
-                    ::win.AddFloat(&::helix_coeff, "coeff", 1, 10)
-                    #::win.SetCallback(&::RecomputeHelix)
+                  ::win.AddFloat(&::helix_r, "rad", 1, 100)
+                  #::win.SetCallback(&::RecomputeHelix)
+                  ::win.AddFloat(&::helix_t, "thick", 1, 100)
+                  #::win.SetCallback(&::RecomputeHelix)
+                  ::win.AddFloat(&::helix_coeff, "coeff", 1, 10)
+                  #::win.SetCallback(&::RecomputeHelix)
                 ::win.EndBoxPanel()
                 ::win.BeginHorizontal()
                   ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateHelix")
                   ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetHelix")
                   #::win.AddBoolean(&::reloadHelix, "Reload")
                 ::win.EndHorizontal()
-
-            ::win.EndBook()
+              ::win.EndBook()
           #::win.EndBoxPanel()
+        
           #::win.EnablePanel(::functions_page, 0)
-        ::win.EndBook()
-        ::win.BeginBoxPanel("Intensity")
-          ::win.AddFloat(&::A, "A", 0, 255)
-          ::win.AddFloat(&::B, "B", 0, 255)
-        ::win.EndBoxPanel()
+        #::win.EndBook()
       
       #Help tab
       ::AddHelpPage(&::win)
       
     ::win.EndBook()
 
-    ::win.BeginHorizontal()
-        #Configure input image
-        ::ImageDim_id = ::win.AddEnum(&::ImageDim, "dim")
-          ::win.AddEnumChoice(::ImageDim_id, "2D")
-          ::win.AddEnumChoice(::ImageDim_id, "3D")
-        ::win.SetCallback(&::OnImageDim)
-      ::icons.LoadIconPNG("Play")
-      ::AddBitmapButton(&::win, &::icons._Play, 16, "Compute")
-      ::AddBitmapButton(&::win, &::icons._Show, 16, "Display")
-    ::win.EndHorizontal()
 
     # Update Image dim
     ::OnImageDim()
