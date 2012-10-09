@@ -29,6 +29,7 @@
 #include <vtkCoordinate.h>
 #include <vtkCoordinate.h>
 #include <vtkCornerAnnotation.h>
+#include <vtkDICOMImageReader.h>
 #include <vtkDirectory.h>
 #include <vtkDoubleArray.h>
 #include <vtkFieldData.h>

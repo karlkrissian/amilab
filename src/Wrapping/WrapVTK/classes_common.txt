@@ -39,6 +39,7 @@ vtkCornerAnnotation
 vtkDataArray
 vtkDataObject
 vtkDataSet
+vtkDICOMImageReader
 vtkDirectory
 vtkDoubleArray
 vtkFieldData
