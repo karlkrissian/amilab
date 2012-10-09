@@ -52,8 +52,9 @@ void wxPluginManager::Detach (void)
 bool wxPluginManager::Unload (void)
 {
   if(m_dll.IsLoaded()) {
-    m_Detach = m_dll.Detach();
-    m_dll.Unload(m_Detach);
+    //m_Detach = m_dll.Detach();
+    //m_dll.Unload(m_Detach);
+    m_dll.Unload();
     return true;
   }
   return false;
