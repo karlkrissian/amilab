@@ -65,6 +65,9 @@ private:
   std::string     _name;
 */
 
+  // Set the constructor variable
+  BasicVariable::ptr _constructor_var;
+
   // What happens with references here???
   /// Pointer to the language variable containing the object
   BasicVariable::ptr _var;
@@ -137,6 +140,16 @@ private:
   { 
 //    _name = fname; 
     _vars->SetName(fname);
+  }
+
+  const BasicVariable::ptr& GetConstructorVar() const 
+  { 
+    return _constructor_var;
+  }
+
+  void SetConstructorVar( const BasicVariable::ptr& cvar) 
+  { 
+    _constructor_var = cvar;
   }
 
   /**
