@@ -325,7 +325,11 @@ if __name__ == '__main__':
           classes_dict[f] = config.types[f].GetFullString()
         if config.types[f].GetType()=="Typedef":
           typedef_dict[f] = config.types[f].GetFullString()
-        #print "typedef : {0}".format(typedef_dict[f])
+          maintypeid = config.types[f].GetMainTypeId()
+          print "typedef : Type {0} String {1} main type {2}".\
+              format( config.types[f].GetType(),\
+                      config.types[f].GetString(),\
+                      config.types[maintypeid].GetString())
       #print typedef_dict
       
       #print "--------------------"
@@ -358,17 +362,23 @@ if __name__ == '__main__':
                 #print "    not in classes_dict.values()"
       #print "New ancestors list = ",ancestors_templates
       ancestors = ancestors_templates[:]
-      for b in ancestors:
-        #print "b=",b
-        # find the class corresponding to typedefs
+      # Deal with typedefs
+      #for b in ancestors:
+        ##print "b=",b
+        ## find the class corresponding to typedefs
         #for k in typedef_dict.keys():
-          #if typedef_dict[k].replace(' ','')==b.replace(' ',''):
+          #if typedef_dict[k]==b:
             #print "Found typedef {0}".format(b)
             #tid = config.types[k].GetRefTypeId()
-            #print "with type {0}, {1}: {2}".format(config.types[tid].GetFullString(),config.types[tid].GetString(),config.types[k].GetFullString())
+            #print "with type {0}, {1}: {2}".\
+                #format( config.types[tid].GetFullString(),\
+                        #config.types[tid].GetString(),\
+                        #config.types[k].GetFullString())
             #newclass=config.types[tid].GetFullString()
             #ancestors.append(newclass)
             ##newlist.append(newclass)
+      # Deal with inheritence
+      for b in ancestors:
         # find the id of the class
         for f in classes_dict.keys():
           if classes_dict[f] == b:

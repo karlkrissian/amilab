@@ -28,10 +28,10 @@ class FindTypesAndVariables(handler.ContentHandler):
     self.inenum  = False
     self.inclass = False
     self.number_of_files=0 # classes that match the current library filter
+    print "FindTypesAndVariables"
 
   #---------------------------------------------
   def ParseClass(self, name, attrs):
-    #print "ParseClass", name
     # If it's not a comic element, ignore it
     if (self.inclass)and(name=='Base'):
       baseaccess  = attrs.get('access', None)
@@ -49,7 +49,8 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # Name
     classname = attrs.get('name', None)
-    #print "Classname='{0}'".format(classname)
+    if name=='Typedef':
+      print "typedef='{0}'".format(classname)
     self.argtype.SetName(classname)
     
     if classname!=None:
@@ -154,7 +155,8 @@ class FindTypesAndVariables(handler.ContentHandler):
       # ignore elements that cannot be argument types
       if not (name in typelist): return
     else:
-      if not (name in config.class_types): return
+      # accept classes or typedefs ...
+      if (not (name in config.class_types)) and (name != "Typedef"): return
 
     # first check for variable
     if name =="Enumeration": self.inenum = True

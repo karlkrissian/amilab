@@ -1649,16 +1649,27 @@ def WrapClass(classname,include_file,inputfile):
          
 
     # Adding constructor to the user given context:
-    add_constructor=''
+    add_constructor='\n'
     if wrapped_constructors>0:
-      indent ="  "
+      #indent ="  "
       if dh.abstract!='1':
         pos=0
         for m in fm.Constructors:
           if fm.Constructors[pos].missingtypes:
             add_constructor+=  indent+"/* Types are missing\n"
-          add_constructor+=indent+'WrapClass_{0}::AddVar_{1}(amiobject->GetContext());\n'.format(\
-            config.ClassUsedName(classname),m.usedname)
+          if m.name == m.usedname:
+            ## main constructor, add it to the amiobject information
+            #add_constructor+=indent+'amiobject->SetConstructorName("{0}");\n'.\
+                #format(m.name)
+            add_constructor+=indent+\
+                'BasicVariable::ptr constr_var = '+\
+                'WrapClass_{0}::AddVar_{1}(amiobject->GetContext());\n'\
+                .format(config.ClassUsedName(classname),m.usedname)
+            add_constructor+=indent+'amiobject->SetConstructorVar(constr_var);\n'
+          else:
+            add_constructor+=indent+\
+                'WrapClass_{0}::AddVar_{1}(amiobject->GetContext());\n'\
+                .format(config.ClassUsedName(classname),m.usedname)
           if fm.Constructors[pos].missingtypes:
             add_constructor +=  indent+"*/\n"
           pos=pos+1
