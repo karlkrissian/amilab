@@ -241,7 +241,9 @@ class wrap_##methodname : public WrapClassMemberWithDoc { \
     STATIC_HELP\
 }; \
 \
-static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname);
+static const BasicVariable::ptr AddVar_##methodname(  \
+                              Variables::ptr& _context, \
+                              const std::string& newname = #methodname);
 
 /** Macro for adding the class constructor with a static function
   to create the variable
@@ -260,11 +262,12 @@ const std::string WrapClass_##classname::wrap_##methodname::StaticFunctionName()
 { std::string classname(AMILabType<ObjectType>::name_as_string());\
   return classname+"::"+#methodname; }\
 \
-void WrapClass_##classname::AddVar_##methodname(  Variables::ptr& _context, \
+const BasicVariable::ptr WrapClass_##classname::AddVar_##methodname(  \
+                                  Variables::ptr& _context, \
                                   const std::string& newname ) {\
   WrapClassMember* tmp = new wrap_##methodname();\
   BasicVariable* newvar = new Variable<WrapClassMember>(tmp);\
-  _context->AddVar(newname, newvar, _context); \
+  return _context->AddVar(newname, newvar, _context); \
 }
 
 /** Macro for adding the class static method with a static function
