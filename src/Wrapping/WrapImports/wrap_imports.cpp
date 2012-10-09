@@ -20,6 +20,7 @@
   #include "addwrap_us.h"
 #endif
 
+
 #include "paramlist.h"
 #include "wrapfunctions.hpp"
 
@@ -39,6 +40,7 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 #include "wrap_MainFrame.h"
 #include "wrap_wxDrawingWindow.h"
 
+#include "addwrap_common.h"
 
 #include "wrapSystem.h"
 #include "wrapITK.h"
@@ -530,7 +532,10 @@ void AddWrapBasicTypes(AMIObject::ptr& obj)
 
   WrapClass_StdVector<int>::AddVar_StdVector( obj->GetContext(), "vector_int");
   WrapClass_StdVector<float>::AddVar_StdVector( obj->GetContext(), "vector_float");
-  WrapClass_StdVector<double>::AddVar_StdVector( obj->GetContext(), "vector_double");
+  
+  wrap_common_classes(obj->GetContext());
+  
+  //WrapClass_StdVector<double>::AddVar_StdVector( obj->GetContext(), "vector_double");
 
   WrapClass_File::AddVar_File( obj->GetContext());
 //  AddVar_VarList( Vars.GetBuiltinContext());

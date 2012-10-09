@@ -22,6 +22,7 @@ include_directories (
   ${AMILab_BINARY_DIR}/Wrapping/WrapLanguage/Generated
   ${AMILab_BINARY_DIR}/Wrapping/WrapExamples/Generated
   ${AMILab_BINARY_DIR}/Wrapping/WrapLanguage/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapCommon/Generated
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
