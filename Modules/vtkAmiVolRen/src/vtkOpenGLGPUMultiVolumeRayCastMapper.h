@@ -173,6 +173,7 @@ protected:
   int LoadScalarField(vtkImageData *input,
                       vtkImageData *input2,
                       int textureExtent[6],
+                      int textureExtent2[6],
                       vtkVolume *volume);
 
   // Description:
@@ -293,6 +294,7 @@ protected:
   // Return abort status (true==abort)
   int RenderSubVolume(vtkRenderer *ren,
                       double bounds[6],
+                      double bounds2[6],
                       vtkVolume *vol);
 
   void LoadProjectionParameters(vtkRenderer *ren,
@@ -315,6 +317,10 @@ protected:
                          int componentSize);
 
   void SlabsFromDatasetToIndex(double slabsDataSet[6],
+                               double slabsPoints[6]);
+
+  // For second volume
+  void SlabsFromDatasetToIndex2(double slabsDataSet[6],
                                double slabsPoints[6]);
 
   void SlabsFromIndexToDataset(double slabsPoints[6],

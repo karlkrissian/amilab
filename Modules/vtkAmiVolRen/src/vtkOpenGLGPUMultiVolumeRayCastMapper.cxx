@@ -95,6 +95,13 @@
 #include "vtkOpenGLRenderWindow.h"
 #include <vtkSmartPointer.h>
 
+#define DISPLAY_ARRAY(tab,size) \
+    std::cout << #tab << " = ";\
+    for(int n=0;n<size;n++) {\
+      std::cout << tab[n] << ", ";\
+    }\
+    std::cout << std::endl;
+
 // Uncomment the following line to debug Snow Leopard
 //#define APPLE_SNOW_LEOPARD_BUG
 
@@ -3216,6 +3223,7 @@ bool vtkOpenGLGPUMultiVolumeRayCastMapper::TestLoadingScalar(
 int vtkOpenGLGPUMultiVolumeRayCastMapper::LoadScalarField(vtkImageData *input,
                                                           vtkImageData *input2,
                                                           int textureExtent[6],
+                                                          int textureExtent2[6],
                                                           vtkVolume *volume)
 {
 
@@ -3228,6 +3236,14 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::LoadScalarField(vtkImageData *input,
                                       (textureExtent[0]<=textureExtent[1] &&
                                        textureExtent[2]<=textureExtent[3] &&
                                        textureExtent[4]<=textureExtent[5])));
+  assert("pre: valid_point_extent" && (this->CellFlag ||
+                                       (textureExtent2[0]<textureExtent2[1] &&
+                                        textureExtent2[2]<textureExtent2[3] &&
+                                        textureExtent2[4]<textureExtent2[5])));
+  assert("pre: valid_cell_extent" && (!this->CellFlag ||
+                                      (textureExtent2[0]<=textureExtent2[1] &&
+                                       textureExtent2[2]<=textureExtent2[3] &&
+                                       textureExtent2[4]<=textureExtent2[5])));
   
   int result=1; // succeeded
 
@@ -3286,15 +3302,19 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::LoadScalarField(vtkImageData *input,
       texture2=(*it2).second;
       }
 
-    texture2->Update(input2,
-                    this->CellFlag,textureExtent,this->ScalarMode,
-                    this->ArrayAccessMode,
-                    this->ArrayId,
-                    this->ArrayName,
-                    this->GetProperty2()->GetInterpolationType()
-                    ==VTK_LINEAR_INTERPOLATION,
-                    this->TableRange,
-                    static_cast<int>(static_cast<float>(this->MaxMemoryInBytes)*this->MaxMemoryFraction));
+    texture2->Update( input2,
+                      this->CellFlag,
+                      textureExtent2,
+                      this->ScalarMode,
+                      this->ArrayAccessMode,
+                      this->ArrayId,
+                      this->ArrayName,
+                      this->GetProperty2()->GetInterpolationType()
+                      ==VTK_LINEAR_INTERPOLATION,
+                      this->TableRange,
+                      static_cast<int>(
+                        static_cast<float>(
+                          this->MaxMemoryInBytes)*this->MaxMemoryFraction));
 
     result=result && texture2->IsLoaded();
     this->CurrentScalar2=texture2;
@@ -3743,12 +3763,16 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderClippedBoundingBox(
   vtkIdType *loadedExtent2=0;
 
   if ( tcoordFlag )
-    {
+  {
     loadedBounds=this->CurrentScalar->GetLoadedBounds();
+    DISPLAY_ARRAY(loadedBounds,6)
     loadedExtent=this->CurrentScalar->GetLoadedExtent();
+    DISPLAY_ARRAY(loadedExtent,6)
     loadedBounds2=this->CurrentScalar2->GetLoadedBounds();
+    DISPLAY_ARRAY(loadedBounds2,6)
     loadedExtent2=this->CurrentScalar2->GetLoadedExtent();
-    }
+    DISPLAY_ARRAY(loadedExtent2,6)
+  }
 
   double *spacing=this->GetInput(0)->GetSpacing();
   double spacingSign[3];
@@ -5336,8 +5360,12 @@ void vtkOpenGLGPUMultiVolumeRayCastMapper::GPURender(vtkRenderer *ren,
 void vtkOpenGLGPUMultiVolumeRayCastMapper::RenderWholeVolume(vtkRenderer *ren,
                                                           vtkVolume *vol)
 {
+  std::cout << "RenderWholeVolume" << std::endl;
   double volBounds[6];
   this->GetTransformedInput()->GetBounds(volBounds);
+
+  double volBounds2[6];
+  this->GetTransformedInput2()->GetBounds(volBounds2);
   
 //   for (int i=0;i<6;i++)
 //     std::cout<< "RenderWhole volBounds["<<i<<"]= "<< volBounds[i]<<std::endl;
@@ -5354,7 +5382,7 @@ void vtkOpenGLGPUMultiVolumeRayCastMapper::RenderWholeVolume(vtkRenderer *ren,
 //     if (bounds2[i]>volBounds[i]) volBounds[i]=bounds2[i];
 //
     
-  this->RenderSubVolume(ren,volBounds,vol);
+  this->RenderSubVolume(ren,volBounds,volBounds2,vol);
 }
 
 
@@ -5501,7 +5529,11 @@ void vtkOpenGLGPUMultiVolumeRayCastMapper::RenderRegions(vtkRenderer *ren,
   while(!abort && i < numRegions)
     {
 //    cout<<"i="<<i<<" regions[i].Id="<<regions[i].Id<<endl;
-    abort=this->RenderSubVolume(ren,bounds[regions[i].Id],vol);
+    // TODO: deal with bounds for second volume
+    abort=this->RenderSubVolume(ren,
+                                bounds[regions[i].Id],
+                                bounds[regions[i].Id],
+                                vol);
     ++i;
     }
 
@@ -5565,6 +5597,30 @@ void vtkOpenGLGPUMultiVolumeRayCastMapper::SlabsFromDatasetToIndex(
 }
 
 //-----------------------------------------------------------------------------
+// Same for second volume
+//-----------------------------------------------------------------------------
+void vtkOpenGLGPUMultiVolumeRayCastMapper::SlabsFromDatasetToIndex2(
+  double slabsDataSet[6],
+  double slabsPoints[6])
+{
+  double *spacing=this->GetInput(1)->GetSpacing();
+  double origin[3];
+
+  // take spacing sign into account
+  double *bds = this->GetInput(1)->GetBounds();
+  origin[0] = bds[0];
+  origin[1] = bds[2];
+  origin[2] = bds[4];
+
+  int i=0;
+  while(i<6)
+    {
+    slabsPoints[i]=(slabsDataSet[i] - origin[i/2]) / spacing[i/2];
+    ++i;
+    }
+}
+
+//-----------------------------------------------------------------------------
 // slabsDataSet are position of the slabs in dataset coordinates.
 // slabsPoints are position of the slabs in points coordinates.
 // For instance, slabsDataSet[0] is the position of the plane bounding the slab
@@ -5611,12 +5667,19 @@ public:
 //-----------------------------------------------------------------------------
 int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
                                                        double bounds[6],
+                                                       double bounds2[6],
                                                        vtkVolume *volume)
 {
+  std::cout << "RenderSubVolume with bounds "  << std::endl;
+  DISPLAY_ARRAY(bounds,6)
+  DISPLAY_ARRAY(bounds2,6)
   // Time to load scalar field
   size_t i;
   int wholeTextureExtent[6];
   this->GetTransformedInput()->GetExtent(wholeTextureExtent);
+
+  int wholeTextureExtent2[6];
+  this->GetTransformedInput2()->GetExtent(wholeTextureExtent2);
 
   if(this->CellFlag)
     {
@@ -5624,15 +5687,20 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
     while(i<6)
       {
       wholeTextureExtent[i]--;
+      // not sure what this decrement is for
+      wholeTextureExtent2[i]--;
       i+=2;
       }
     }
 
   // 1. Found out the extent of the subvolume
   double realExtent[6];
+  double realExtent2[6];
   int subvolumeTextureExtent[6];
+  int subvolumeTextureExtent2[6];
 
-  this->SlabsFromDatasetToIndex(bounds,realExtent);
+  this->SlabsFromDatasetToIndex( bounds,realExtent);
+  this->SlabsFromDatasetToIndex2(bounds2,realExtent2);
   
   if(this->CellFlag) // 3D texture are celldata
     {
@@ -5641,8 +5709,10 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
     while(i<6)
       {
       subvolumeTextureExtent[i]=vtkMath::Floor(realExtent[i]-0.5);
+      subvolumeTextureExtent2[i]=vtkMath::Floor(realExtent2[i]-0.5);
       ++i;
       subvolumeTextureExtent[i]=vtkMath::Floor(realExtent[i]-0.5)+1;
+      subvolumeTextureExtent2[i]=vtkMath::Floor(realExtent2[i]-0.5)+1;
       ++i;
       }
     }
@@ -5653,8 +5723,10 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
     while(i<6)
       {
       subvolumeTextureExtent[i]=vtkMath::Floor(realExtent[i]);
+      subvolumeTextureExtent2[i]=vtkMath::Floor(realExtent2[i]);
       ++i;
       subvolumeTextureExtent[i]=vtkMath::Floor(realExtent[i])+1; // used to not have +1
+      subvolumeTextureExtent2[i]=vtkMath::Floor(realExtent2[i])+1; // used to not have +1
       ++i;
       }
     }
@@ -5664,14 +5736,14 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
     {
     assert("check: wholeTextureExtent" && wholeTextureExtent[i]==0);
     if(subvolumeTextureExtent[i]<wholeTextureExtent[i])
-      {
       subvolumeTextureExtent[i]=wholeTextureExtent[i];
-      }
+    if(subvolumeTextureExtent2[i]<wholeTextureExtent2[i])
+      subvolumeTextureExtent2[i]=wholeTextureExtent2[i];
     ++i;
     if(subvolumeTextureExtent[i]>wholeTextureExtent[i])
-      {
       subvolumeTextureExtent[i]=wholeTextureExtent[i];
-      }
+    if(subvolumeTextureExtent2[i]>wholeTextureExtent2[i])
+      subvolumeTextureExtent2[i]=wholeTextureExtent2[i];
     ++i;
     }
 
@@ -5682,6 +5754,14 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
          && subvolumeTextureExtent[3]<=wholeTextureExtent[3]
          && subvolumeTextureExtent[4]>=wholeTextureExtent[4]
          && subvolumeTextureExtent[5]<=wholeTextureExtent[5]);
+
+  assert("check: subvolume2_inside_wholevolume" &&
+         subvolumeTextureExtent2[0]>=wholeTextureExtent2[0]
+         && subvolumeTextureExtent2[1]<=wholeTextureExtent2[1]
+         && subvolumeTextureExtent2[2]>=wholeTextureExtent2[2]
+         && subvolumeTextureExtent2[3]<=wholeTextureExtent2[3]
+         && subvolumeTextureExtent2[4]>=wholeTextureExtent2[4]
+         && subvolumeTextureExtent2[5]<=wholeTextureExtent2[5]);
 
   // 2. Is this subvolume already on the GPU?
   //    ie are the extent of the subvolume inside the loaded extent?
@@ -5753,8 +5833,10 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
     while(loaded && i<6)
       {
       loaded=loaded && loadedExtent[i]<=subvolumeTextureExtent[i];
+      loaded=loaded && loadedExtent2[i]<=subvolumeTextureExtent2[i];
       ++i;
       loaded=loaded && loadedExtent[i]>=subvolumeTextureExtent[i];
+      loaded=loaded && loadedExtent2[i]>=subvolumeTextureExtent2[i];
       ++i;
       }
     }
@@ -5784,13 +5866,17 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
     //if(!this->LoadScalarField(this->GetTransformedInput(),this->MaskInput,wholeTextureExtent,volume))
     if(!this->LoadScalarField(this->GetTransformedInput(),
                               this->GetTransformedInput2(),
-                              wholeTextureExtent,volume))
+                              wholeTextureExtent,
+                              wholeTextureExtent2,
+                              volume))
       {
       // 4. loading the whole dataset failed: try to load the subvolume
       //if(!this->LoadScalarField(this->GetTransformedInput(),this->MaskInput, subvolumeTextureExtent,volume))
       if(!this->LoadScalarField(this->GetTransformedInput(),
                                 this->GetTransformedInput2(), 
-                                subvolumeTextureExtent,volume))
+                                subvolumeTextureExtent,
+                                subvolumeTextureExtent2,
+                                volume))
         {
         // 5. loading the subvolume failed: stream the subvolume
         // 5.1 do zslabs first, if too large then cut with x or y with the
@@ -6166,6 +6252,8 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
           if(!this->LoadScalarField(this->GetInput(0),
                                     this->GetInput(1), 
                                     blockTextureExtent,
+                                    // TODO: fix this part with a blockTextureExtent2
+                                    blockTextureExtent,
                                     volume))
             {
             cout<<"Loading the streamed block FAILED!!!!!"<<endl;
@@ -6269,10 +6357,16 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
           assert("check: high_bounds2_less_than1" && highBounds2[2]<=1.0);
 
           vtkUniformVariables *v=this->Program->GetUniformVariables();
+
+          DISPLAY_ARRAY(lowBounds,3)
           v->SetUniformf("lowBounds",3,lowBounds);
+          DISPLAY_ARRAY(highBounds,3)
           v->SetUniformf("highBounds",3,highBounds);
 
+          
+          DISPLAY_ARRAY(lowBounds2,3)
           v->SetUniformf("lowBounds2",3,lowBounds2);
+          DISPLAY_ARRAY(highBounds2,3)
           v->SetUniformf("highBounds2",3,highBounds2);
 
           this->PrintError("uniform low/high bounds block");
@@ -6283,14 +6377,19 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
           // Adds texture coordinate transform to shader
           vtkMatrix4x4* mat = TextureCoord_1to2->GetMatrix();
           mat->Transpose();
+          std::cout << "matrix_TextureCoord_1to2:" << std::endl;
           // prepare matrix for shader
           GLfloat matrix_TextureCoord_1to2[16];   
           for(int c=0;c<4;c++) {
             for(int r=0;r<4;r++) {
+              
               matrix_TextureCoord_1to2[c*4+r]=
                 static_cast<GLfloat>(mat->Element[c][r]);
+              std::cout << matrix_TextureCoord_1to2[c*4+r] << ", ";
             }
+            std::cout << std::endl;
           }
+          
           //vtkUniformVariables *v=this->Program->GetUniformVariables();
           v->SetUniformMatrix("P1toP2",4,4,matrix_TextureCoord_1to2);
 
@@ -6298,13 +6397,16 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
           mat = TextureCoord_1to2->GetMatrix();
           mat->Invert();
           mat->Transpose();
+          std::cout << "matrix_TextureCoord_2to1:" << std::endl;
           // prepare matrix for shader
           GLfloat matrix_TextureCoord_2to1[16];   
           for(int c=0;c<4;c++) {
             for(int r=0;r<4;r++) {
               matrix_TextureCoord_2to1[c*4+r]=
                 static_cast<GLfloat>(mat->Element[c][r]);
+              std::cout << matrix_TextureCoord_2to1[c*4+r] << ", ";
             }
+            std::cout << std::endl;
           }
           //vtkUniformVariables *v=this->Program->GetUniformVariables();
           v->SetUniformMatrix("P2toP1",4,4,matrix_TextureCoord_2to1);
@@ -6391,23 +6493,29 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
   // now check for second input volume
   float lowBounds2[3];
   float highBounds2[3];
+  DISPLAY_ARRAY(loadedExtent2,6)
+  DISPLAY_ARRAY(realExtent2,6)
   if(!this->CurrentScalar2->GetLoadedCellFlag()) // points
-    {
+  {
+    std::cout << "!this->CurrentScalar2->GetLoadedCellFlag(): points" << std::endl;
     i=0;
     while(i<3)
       {
       double delta=
         static_cast<double>(loadedExtent2[i*2+1]-loadedExtent2[i*2]+1);
-      lowBounds2[i]=static_cast<float>((realExtent[i*2]+0.5-static_cast<double>(loadedExtent2[i*2]))/delta);
-      highBounds2[i]=static_cast<float>((realExtent[i*2+1]+0.5-static_cast<double>(loadedExtent2[i*2]))/delta);
+      lowBounds2[i]=  static_cast<float>((realExtent2[i*2]+0.5- 
+                      static_cast<double>(loadedExtent2[i*2]))/delta);
+      highBounds2[i]= static_cast<float>((realExtent2[i*2+1]+0.5-
+                      static_cast<double>(loadedExtent2[i*2]))/delta);
       ++i;
       }
-    }
+  }
   else // cells
-    {
+  {
+    std::cout << "this->CurrentScalar2->GetLoadedCellFlag(): cells" << std::endl;
     i=0;
     while(i<3)
-      {
+    {
       double delta=
         static_cast<double>(loadedExtent2[i*2+1]-loadedExtent2[i*2]+1);
 
@@ -6418,11 +6526,15 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
       // N is the number of texels in the loadedtexture not the number of
       // texels in the whole texture.
 
-      lowBounds2[i]=static_cast<float>((realExtent[i*2]-static_cast<double>(loadedExtent2[i*2]))/delta);
-      highBounds2[i]=static_cast<float>((realExtent[i*2+1]-static_cast<double>(loadedExtent2[i*2]))/delta);
+      lowBounds2[i] = static_cast<float>((realExtent2[i*2]-
+                                          static_cast<double>(
+                                            loadedExtent2[i*2]))/delta);
+      highBounds2[i]= static_cast<float>((realExtent2[i*2+1]-
+                                           static_cast<double>(
+                                             loadedExtent2[i*2]))/delta);
       ++i;
-      }
     }
+  }
 
   assert("check: positive_low_bounds0" && lowBounds2[0]>=0.0);
   assert("check: positive_low_bounds1" && lowBounds2[1]>=0.0);
@@ -6435,6 +6547,14 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
   assert("check: high_bounds1_less_than1" && highBounds2[1]<=1.0);
   assert("check: high_bounds2_less_than1" && highBounds2[2]<=1.0);
 
+  std::cout << "*** ";
+  DISPLAY_ARRAY(lowBounds,3)
+  std::cout << "*** ";
+  DISPLAY_ARRAY(highBounds,3)
+  std::cout << "*** ";
+  DISPLAY_ARRAY(lowBounds2,3)
+  std::cout << "*** ";
+  DISPLAY_ARRAY(highBounds2,3)
 
   vtkUniformVariables *v=this->Program->GetUniformVariables();
   v->SetUniformf("lowBounds",3,lowBounds);
@@ -6450,13 +6570,16 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
     // Adds texture coordinate transform to shader
     vtkMatrix4x4* mat = TextureCoord_1to2->GetMatrix();
     mat->Transpose();
+    std::cout << "matrix_TextureCoord_1to2:" << std::endl;
     // prepare matrix for shader
     GLfloat matrix_TextureCoord_1to2[16];   
     for(int c=0;c<4;c++) {
       for(int r=0;r<4;r++) {
         matrix_TextureCoord_1to2[c*4+r]=
           static_cast<GLfloat>(mat->Element[c][r]);
+        std::cout << matrix_TextureCoord_1to2[c*4+r] << ", ";
       }
+      std::cout << std::endl;
     }
     //vtkUniformVariables *v=this->Program->GetUniformVariables();
     v->SetUniformMatrix("P1toP2",4,4,matrix_TextureCoord_1to2);
@@ -6467,11 +6590,14 @@ int vtkOpenGLGPUMultiVolumeRayCastMapper::RenderSubVolume(vtkRenderer *ren,
     mat->Transpose();
     // prepare matrix for shader
     GLfloat matrix_TextureCoord_2to1[16];   
+    std::cout << "matrix_TextureCoord_2to1:" << std::endl;
     for(int c=0;c<4;c++) {
       for(int r=0;r<4;r++) {
         matrix_TextureCoord_2to1[c*4+r]=
           static_cast<GLfloat>(mat->Element[c][r]);
+        std::cout << matrix_TextureCoord_2to1[c*4+r] << ", ";
       }
+      std::cout << std::endl;
     }
     //vtkUniformVariables *v=this->Program->GetUniformVariables();
     v->SetUniformMatrix("P2toP1",4,4,matrix_TextureCoord_2to1);

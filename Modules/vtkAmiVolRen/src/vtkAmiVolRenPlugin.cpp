@@ -29,6 +29,7 @@ vtkAmiVolRenPlugin::vtkAmiVolRenPlugin()
 
 bool vtkAmiVolRenPlugin::Execute(void)
 {
+  std::cout << "----- vtkAmiVolRenPlugin::Execute() " << std::endl;
   // Create a new context (or namespace)
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName(this->GetName().c_str());
