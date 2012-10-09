@@ -564,7 +564,7 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
     SurfacePoly*  surf;
 
     float         translation[3];
-    float         transfmat[4][4];
+    amiDirectionMatrix transfmat;
 
   image->GetTranslation( translation[0], translation[1], translation[2]);
   image->GetTransfMatrix(transfmat);
@@ -616,9 +616,9 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
         pt.y += translation[1];
         pt.z += translation[2];
 
-        pt1.x = pt.x*transfmat[0][0]+pt.y*transfmat[0][1]+pt.z*transfmat[0][2]+transfmat[0][3];
-        pt1.y = pt.x*transfmat[1][0]+pt.y*transfmat[1][1]+pt.z*transfmat[1][2]+transfmat[1][3];
-        pt1.z = pt.x*transfmat[2][0]+pt.y*transfmat[2][1]+pt.z*transfmat[2][2]+transfmat[2][3];
+        pt1.x = pt.x*transfmat(0,0)+pt.y*transfmat(0,1)+pt.z*transfmat(0,2);
+        pt1.y = pt.x*transfmat(1,0)+pt.y*transfmat(1,1)+pt.z*transfmat(1,2);
+        pt1.z = pt.x*transfmat(2,0)+pt.y*transfmat(2,1)+pt.z*transfmat(2,2);
 
         // Apply the transformation matrix
         surf->AddPoint( pt1.x, pt1.y, pt1.z);
