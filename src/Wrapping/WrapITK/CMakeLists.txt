@@ -123,6 +123,12 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
   # Generating and reading ancestors
   #------------------------------------------------------------
 
+  # Read WrapCommon ancestors list
+  SET( WRAPCOMMON_OUTDIR ${AMILab_BINARY_DIR}/Wrapping/WrapCommon/Generated)
+  FILE(READ "${WRAPCOMMON_OUTDIR}/ancestors.txt" wrapcommon_ancestors_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" wrapcommon_ancestors_list ${wrapcommon_ancestors_txt} )
+  SET(AVAILABLE_EXTERNAL_CLASSES ${wrapcommon_ancestors_list})
+
   CREATE_ANCESTORS()
 
   FILE(READ "${ANCESTORS_FILE}" ancestors_txt)

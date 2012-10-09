@@ -122,6 +122,19 @@ typedef itk::Image<unsigned char, 3u>  ImageUC3;
   INSTANTIATE(itk::ImageFileReader<ImageF2>,image_filter_reader_F2)
   INSTANTIATE(itk::ImageFileWriter<ImageF2>,image_filter_writer_F2)
 #endif
+
+#include <itkOrientImageFilter.h>
+  
+#ifdef __GCCXML__
+  typedef itk::OrientImageFilter<ImageUS3,ImageUS3>
+    OrientImageFilter_US3_US3;
+  INSTANTIATE(OrientImageFilter_US3_US3,orient_image_filter_US3)
+
+  typedef itk::OrientImageFilter<ImageS3,ImageS3>
+    OrientImageFilter_S3_S3;
+  INSTANTIATE(OrientImageFilter_S3_S3,orient_image_filter_S3)
+#endif // __GCCXML__
+  
   
   
 #include "itkDICOMImageIO2.h"

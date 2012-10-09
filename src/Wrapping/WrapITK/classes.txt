@@ -79,6 +79,14 @@ itk::Vector<double, 2u>
 itk::SmartPointer<itk::TranslationTransform<double, 2u> >
 itk::SmartPointer<itk::ResampleImageFilter<itk::Image<unsigned char, 2u>, itk::Image<unsigned char, 2u>, double> >
 
+
+#-------------------------------------------------------------------------------
+# OrientFilter
+#-------------------------------------------------------------------------------
+itk::SmartPointer<itk::OrientImageFilter<itk::Image<unsigned short, 3u>, itk::Image<unsigned short, 3u> > >
+itk::SmartPointer<itk::OrientImageFilter<itk::Image<short, 3u>, itk::Image<short, 3u> > >
+
+
 # Anisotropic diffusion
 #-------------------------------------------------------------------------------
 # Gradient AD float,float 2D and 3D

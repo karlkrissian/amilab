@@ -231,6 +231,15 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
         std::cout << "  Number of Dimensions = "<< image_io->GetNumberOfDimensions() << std::endl;
         int vdim = image_io->GetNumberOfComponents();
         std::cout << "  Number of Components = "<< vdim << std::endl;
+        std::vector<double> dir;
+        for(int n=0; n<image_io->GetNumberOfDimensions(); n++) {
+          dir = image_io->GetDirection(n);
+          std::cout   << "direction " 
+                      << n << ": " ;
+          for(int i=0; i<dir.size(); i++)
+            std::cout << dir[i] << ", " ;
+          std::cout << std::endl;
+        }
       }
     } else
     {
