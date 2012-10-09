@@ -8196,7 +8196,7 @@ postfix_var:
             Variables::ptr objcontext = obj->Pointer()->GetContext();
             //objcontext->display();
             parop = objcontext->GetVar("__parenthesis__");
-            constr = objcontext->GetVar(var->Name().c_str());
+            constr = obj->Pointer()->GetConstructorVar();
           }
           if (parop.get()) {
             // Call the () operator with the given parameters
