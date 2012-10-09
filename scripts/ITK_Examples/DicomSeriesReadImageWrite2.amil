@@ -1,7 +1,7 @@
 
-del DicomSeriesReadImageWrite2
+del DicomSeriesReadImage
 
-Class DicomSeriesReadImageWrite2 \
+Class DicomSeriesReadImage \
 {
   proc ::Init() \
   {
@@ -46,6 +46,10 @@ Class DicomSeriesReadImageWrite2 \
             itk.ImageIOBase.GetPixelTypeAsString(image_pixel_type)
     printn "  Number of Dimensions = %1%" % ::image_io.GetNumberOfDimensions()
     printn "  Number of Components = %1%" % numcomp
+    printn "  Spacing = " + \
+            "%1%, " % ::image_io.GetSpacing(0)+\
+            "%1%, " % ::image_io.GetSpacing(1)+\
+            "%1%, " % ::image_io.GetSpacing(2)
   }
   
   proc ::OnProgress() {
@@ -104,11 +108,12 @@ Class DicomSeriesReadImageWrite2 \
       ::reader.AddObserver(&itk.ProgressEvent(), &::progress_cmd);
        printn "2"
       ::reader.Update()
-      ::reader.GenerateOutputInformation()
+      #::reader.GenerateOutputInformation()
       SetProgress(0)
 
-      ::res_itk = itk.SmartPointer_Image_short_3u.SmartPointer(&::reader.GetOutput())
-      ::res = itk.amiConvert.FromITK_short3(&::res_itk)
+      ::res_itk_ptr = itk.SmartPointer_Image_short_3u.SmartPointer(&::reader.GetOutput())
+      ::res_itk = ::res_itk_ptr.GetPointer()
+      ::res = itk.amiConvert.FromITK_short3(&::res_itk_ptr)
       show ::res
 
       # now need to convert it to amilab image type
