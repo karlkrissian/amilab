@@ -67,6 +67,7 @@ public:
     if (_callback==NULL) return;
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
+    event.Skip();
   }
 
 

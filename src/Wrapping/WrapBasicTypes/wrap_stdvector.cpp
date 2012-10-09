@@ -14,6 +14,7 @@
 
 #include "wrap_stdvector.h"
 
+/*
 //
 // static member for creating a variable from a ParamList
 // need to instanciate for each type ...
@@ -32,7 +33,6 @@ BasicVariable::ptr WrapClass<std::vector<float> >::CreateVar( ParamList* p, bool
   return construct.CallMember(p);
 }
 
-/*
  * template <> AMI_DLLEXPORT
 BasicVariable::ptr WrapClass<std::vector<double> >::CreateVar( ParamList* p, bool quiet )
 {

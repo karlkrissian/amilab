@@ -11,7 +11,6 @@
 //
 
 #include "paramlist.h"
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "wrapVTK.h"
 #include "vtk_common.h"

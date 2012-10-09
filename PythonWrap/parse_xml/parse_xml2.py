@@ -326,8 +326,8 @@ if __name__ == '__main__':
         if config.types[f].GetType()=="Typedef":
           typedef_dict[f] = config.types[f].GetFullString()
           maintypeid = config.types[f].GetMainTypeId()
-          print "typedef : Type {0} String {1} main type {2}".\
-              format( config.types[f].GetType(),\
+          print "typedef : Name: [{0}] String: [{1}] Main type: [{2}]".\
+              format( config.types[f].GetName(),\
                       config.types[f].GetString(),\
                       config.types[maintypeid].GetString())
       #print typedef_dict
@@ -680,6 +680,12 @@ if __name__ == '__main__':
         #f.write('extern void WrapClass{0}_AddStaticMethods( Variables::ptr&);\n'.format(config.ClassUsedName(cl)))
       f.write("\n")
 
+      f.write('#include "LanguageBaseConfigure.h"\n')
+      f.write('LanguageBase_VAR_IMPORT\n')
+      f.write('  BasicVariable::wptr GetClassVar(std::string classname);\n')
+      f.write("\n")
+      
+      
       # Add an enumeration value
       f.write("/* Adding an enumeration value */\n")
       f.write("static void AddEnumVal( AMIObject::ptr& obj, const char* name, int val)\n")
@@ -706,6 +712,38 @@ if __name__ == '__main__':
       f.write("\n")
       for cl in lib_classes:
         f.write("  WrapClass{0}_AddStaticMethods( context);\n".format(config.ClassUsedName(cl)))
+        
+      f.write("\n")
+      f.write("  // Adding typedefs\n")
+      f.write("  BasicVariable::wptr tdwvar;\n")
+      f.write("  BasicVariable::ptr  tdvar;\n")
+      f.write("  BasicVariable::ptr  newvar;\n")
+      # check for typedefs
+      for td_name in config.typedefs.keys():
+        td_id = config.typedefs[td_name]
+        # check if it points to a wrapped classe
+        td = config.types[td_id]
+        maintypeid  = td.GetMainTypeId()
+        contextid   = td.GetContext()
+        typedefname = td.GetName()
+        if config.types[contextid].GetType()=="Namespace":
+          classname = config.types[maintypeid].GetFullString()
+          if classname in lib_classes:
+            print "Adding typedef {0} --> {1} ( {2} )".format(\
+              typedefname,\
+              classname,\
+              config.types[td_id].GetString(),\
+              )
+            # Get the demangled class name
+            demangled_name = config.types[maintypeid].GetDemangled()
+            f.write("  // adding typedef {0}\n".format(typedefname))
+            f.write('  tdwvar = GetClassVar("{0}");\n'.format(demangled_name))
+            f.write("  if (!tdwvar.expired()) {\n")
+            f.write("    tdvar = tdwvar.lock();\n")
+            f.write("    newvar =  tdvar->NewReference();\n")
+            f.write('    context->AddVar("{0}",newvar);\n'.format(typedefname))
+            f.write("  }\n")
+          
         
       f.write("\n")
       f.write("  wrap_enums (context);\n")

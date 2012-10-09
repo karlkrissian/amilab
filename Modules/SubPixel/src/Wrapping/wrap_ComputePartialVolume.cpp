@@ -6,7 +6,6 @@
 #include "wrap_ComputePartialVolume.h"
 //#include "wrap_AnalyticFunctionBase.h"
 
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"

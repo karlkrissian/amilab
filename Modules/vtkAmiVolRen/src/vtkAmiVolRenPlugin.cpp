@@ -24,12 +24,12 @@ vtkAmiVolRenPlugin::vtkAmiVolRenPlugin()
   SetName("vtkAmiVolRen");
   SetDescription("Plugin of ExamplePlugin class.");
   SetAuthor("Karl Krissian");
-  SetVersion("1.0.0");
+  SetVersion("1.2.0");
 }
 
 bool vtkAmiVolRenPlugin::Execute(void)
 {
-  std::cout << "----- vtkAmiVolRenPlugin::Execute() " << std::endl;
+  std::cout << "vtkAmiVolRenPlugin::Execute() " << GetVersion() << std::endl;
   // Create a new context (or namespace)
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName(this->GetName().c_str());
@@ -47,5 +47,6 @@ bool vtkAmiVolRenPlugin::Execute(void)
 
 void vtkAmiVolRenPlugin::Destroy()
 {
+  std::cout << "vtkAmiVolRenPlugin::Destroy()" << std::endl;
   Vars.GetBuiltinContext()->deleteVar(this->GetName().c_str());
 }

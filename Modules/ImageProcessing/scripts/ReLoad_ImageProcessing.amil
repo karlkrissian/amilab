@@ -1,4 +1,5 @@
 
 if exists(ImageProcessing_obj) {
-  ImageProcessing_obj.ReLoad()
+  del ImageProcessing_obj
 }
+func "Load_ImageProcessing"

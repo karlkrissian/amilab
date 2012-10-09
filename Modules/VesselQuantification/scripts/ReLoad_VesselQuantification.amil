@@ -1,4 +1,5 @@
 
 if exists(VesselQuantification_obj) {
-  VesselQuantification_obj.ReLoad()
+  del VesselQuantification_obj
 }
+func "Load_VesselQuantification"

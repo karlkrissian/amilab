@@ -1,4 +1,5 @@
 
 if exists(Ultrasonix_obj) {
-  Ultrasonix_obj.ReLoad()
+  del Ultrasonix_obj
 }
+func "Load_Ultrasonix"

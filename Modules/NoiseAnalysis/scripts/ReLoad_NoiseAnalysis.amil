@@ -1,4 +1,5 @@
 
 if exists(NoiseAnalysis_obj) {
-  NoiseAnalysis_obj.ReLoad()
+  del NoiseAnalysis_obj
 }
+func "Load_NoiseAnalysis"

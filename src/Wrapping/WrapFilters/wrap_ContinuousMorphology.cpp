@@ -12,17 +12,12 @@
 
 #include "wrap_ContinuousMorphology.h"
 
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
 #include "wrapfunction_class.h"
 
-//#include "vtkwrap.h"
-//#include "FluidProject.h"
-//#include "Func_ReadCTALine.h"
-//#include "fonctions.h"
 
 
 //-------------------------------------------------------------------------

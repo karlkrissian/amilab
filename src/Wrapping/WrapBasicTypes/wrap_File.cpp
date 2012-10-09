@@ -12,7 +12,6 @@
 
 #include "wrap_File.h"
 
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "wrapfunction_class.h"
 #include "ami_class.h"

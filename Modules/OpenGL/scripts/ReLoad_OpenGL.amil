@@ -1,4 +1,6 @@
 
 if exists(OpenGL_obj) {
-  OpenGL_obj.ReLoad()
+  del OpenGL_obj
 }
+func "Load_OpenGL"
+

@@ -22,7 +22,7 @@ if (!exists(DICOMClass)) {
       ::html_filename = GetScriptsDir+"/IO/itkDICOM/doc/dicom/index.html"
       ::scan_level = INT(3), "level of recursivity in scanning the subdirectories"
 
-      ::file_spec = "*.dcm", "file filter"
+      ::file_spec = "*", "file filter"
       ::max_scan = INT(10000), "maximum number of scanned files"
       ::list_files = UCHAR(0), "list (in the control text) the files found"
 

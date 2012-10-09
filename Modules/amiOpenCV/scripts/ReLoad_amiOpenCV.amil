@@ -1,4 +1,5 @@
 
 if exists(amiOpenCV_obj) {
-  amiOpenCV_obj.ReLoad()
+  del amiOpenCV_obj
 }
+func "Load_amiOpenCV"

@@ -10,12 +10,6 @@ func "Common/ScriptGui"
 
 if (!exists(global::vtkAmiVolRenPlugin_obj)) {
   func "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen"
-  #func "Common/ModulePlugin"
-  #ModulePlugin global::vtkAmiVolRenPlugin_obj
-  #global::vtkAmiVolRenPlugin_obj.SetModuleName("vtkAmiVolRen")
-  #global::vtkAmiVolRenPlugin_obj.SetQuiet(true)
-  #global::vtkAmiVolRenPlugin_obj.Load()
-
 } else {
   func "../Modules/vtkAmiVolRen/scripts/ReLoad_vtkAmiVolRen"
 }
@@ -549,7 +543,7 @@ if (!exists(VolRenClass)) {
         ::UpdateVolPages()
 
         # update input origin
-        origin = global::vector_double(3)
+        origin = vector_double(3)
         ::vol0.vtkinput.GetOrigin(&origin[0])
         ::firstvolorig_x = origin[0]
         ::firstvolorig_y = origin[1]

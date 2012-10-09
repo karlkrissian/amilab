@@ -23,6 +23,12 @@
 
 #include "wrap_${TEMPLATENAME}.h"
 
+
+#include "LanguageBaseConfigure.h"
+LanguageBase_VAR_IMPORT 
+void AddClassMap(std::string classname, BasicVariable::wptr classvar);
+
+
 // get all the required includes
 // #include "..."
 ${INCLUDES}
@@ -100,8 +106,11 @@ void WrapClass${TEMPLATENAME}_AddStaticMethods( Variables::ptr& context)
   ${AddPublicTypedefs}
 
   //  add it to the given context
-  context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
-  
+  BasicVariable::ptr classvar = 
+    context->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+                                amiobject, 
+                                context);
+  AddClassMap("${TEMPLATE_DEMANGLED}",classvar);
 }
 
 //----------------------------------------------------------------------

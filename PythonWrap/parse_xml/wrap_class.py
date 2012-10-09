@@ -1872,6 +1872,7 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${TEMPLATE}",                config.ClassTypeDef(classname))
       line = line.replace("${TEMPLATENAME}",            config.ClassUsedName(classname))
       line = line.replace("${TEMPLATESHORTNAME}",       config.ClassShortName(classname,args.val.libname))
+      line = line.replace("${TEMPLATE_DEMANGLED}",      dh.GetDemangled())
       line = line.replace("${METHODS_BASES}",           methods_bases)
       line = line.replace("${AddVar_method_all}",       add_var_all)
       line = line.replace("${AddPublicFields}",         add_public_fields)

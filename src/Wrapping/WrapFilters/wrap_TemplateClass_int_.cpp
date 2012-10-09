@@ -12,7 +12,6 @@
 
 #include "wrap_TemplateClass_int_.h"
 
-//#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"

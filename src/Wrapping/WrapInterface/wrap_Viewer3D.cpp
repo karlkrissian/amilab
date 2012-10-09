@@ -12,7 +12,6 @@
 
 #include "wrap_Viewer3D.h"
 
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"

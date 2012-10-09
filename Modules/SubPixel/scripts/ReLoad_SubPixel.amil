@@ -1,4 +1,5 @@
 
 if exists(SubPixel_obj) {
-  SubPixel_obj.ReLoad()
+  del SubPixel_obj
 }
+func "Load_SubPixel"

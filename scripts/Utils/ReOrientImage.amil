@@ -15,12 +15,12 @@ proc ReOrientImage(IMAGE input, NUM axis1, NUM axis2, NUM axis3, NUM flip1, NUM 
   sz[1] = input.ty
   sz[2] = input.tz
   # --- Translation
-  tr = global::vector_double(3)
+  tr = vector_double(3)
   if flip[0] { tr[0] = input.trx+input.tx*input.vx; } else {tr[0] = input.trx; }
   if flip[1] { tr[1] = input.try+input.ty*input.vy; } else {tr[1] = input.try; }
   if flip[2] { tr[2] = input.trz+input.tz*input.vz; } else {tr[2] = input.trz; }
   # --- Spacing
-  sp = global::vector_double(3)
+  sp = vector_double(3)
   sp[0] = input.vx
   sp[1] = input.vy
   sp[2] = input.vz

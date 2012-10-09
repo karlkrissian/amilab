@@ -1,4 +1,5 @@
 
 if exists(DownloadData_obj) {
-  DownloadData_obj.ReLoad()
+  del DownloadData_obj
 }
+func "Load_DownloadData"

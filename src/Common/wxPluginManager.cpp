@@ -10,7 +10,7 @@
 //
 
 #include "wxPluginManager.h"
-//#include <iostream>
+#include <iostream>
 
 //=======================================================
 wxPluginManager::~wxPluginManager()
@@ -26,6 +26,7 @@ wxPluginManager::~wxPluginManager()
 bool wxPluginManager::Load (const char* LibName)
 {
   m_dll.Load(wxString(LibName, wxConvUTF8));
+  std::cout << "calling m_dll.Load(" << LibName << ")" << std::endl;
   if(m_dll.IsLoaded())
   {
     //Create a valid function pointer using the function pointer type in PluginBase.h
@@ -44,8 +45,10 @@ bool wxPluginManager::Load (const char* LibName)
 //=======================================================
 void wxPluginManager::Detach (void)
 {
-  if(m_dll.IsLoaded())
+  if(m_dll.IsLoaded()) {
     m_Detach = m_dll.Detach();
+    std::cout << "calling m_dll.Detach()" << std::endl;
+  }
 } //Detach definition.
 
 //=======================================================
@@ -55,6 +58,7 @@ bool wxPluginManager::Unload (void)
     //m_Detach = m_dll.Detach();
     //m_dll.Unload(m_Detach);
     m_dll.Unload();
+    std::cout << "calling m_dll.Unload()" << std::endl;
     return true;
   }
   return false;

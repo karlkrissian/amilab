@@ -11,6 +11,7 @@
 #define _AMI_VARCONTEXTS_HPP
 
 #include <stack>
+#include <map>
 #include "Variables.hpp"
 #include "IdentifierInfo.h"
 
@@ -41,6 +42,9 @@ private:
 
   /// points to the current object context
   Variables::ptr _object_context;
+  
+  /// map types with the variable containing their constructors
+  std::map<std::string,BasicVariable::wptr> classes_map;
 
 public:
 
@@ -50,6 +54,15 @@ public:
   /// Destructor
   virtual ~VarContexts();
 
+  /// mapping class names with their contexts for typedef wrapping
+  void AddClassMap(std::string classname, BasicVariable::wptr classvar);
+
+  /// find the variable that contains a class constructor
+  BasicVariable::wptr GetClassVar(std::string classname);
+
+  /// print the list of classes to standard ouput
+  void ListClassMap();
+  
   /// Remove all the variables
   void EmptyVariables();
 

@@ -1,4 +1,5 @@
 
 if exists(global::vtkAmiVolRenPlugin_obj) {
-  global::vtkAmiVolRenPlugin_obj.ReLoad()
+  del global::vtkAmiVolRenPlugin_obj
 }
+func "Load_vtkAmiVolRen"

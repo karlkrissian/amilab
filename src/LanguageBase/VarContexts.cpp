@@ -65,10 +65,52 @@ VarContexts::~VarContexts() {
 }
 
 //--------------------------------------------------
+// mapping class names with their contexts for typedef wrapping
+void VarContexts::AddClassMap(std::string classname, 
+                              BasicVariable::wptr classvar)
+{
+  std::map<std::string,BasicVariable::wptr>::iterator 
+    it = classes_map.find(classname);
+  if (it!=classes_map.end()) {
+    BasicVariable::wptr var = it->second;
+    if (!var.expired()) {
+      std::cerr << "Adding twice the class " << classname << "!!!" << std::endl;
+    }
+    classes_map.erase(classname);
+  }
+  
+  classes_map.insert(std::pair<std::string, BasicVariable::wptr>(classname,classvar));
+}
+
+
+//--------------------------------------------------
+BasicVariable::wptr VarContexts::GetClassVar(std::string classname)
+{
+  std::map<std::string,BasicVariable::wptr>::iterator 
+    it = classes_map.find(classname);
+  if (it!=classes_map.end()) {
+    return it->second;
+  } else
+    return BasicVariable::wptr();
+}
+
+//--------------------------------------------------
+void VarContexts::ListClassMap()
+{
+  std::map<std::string,BasicVariable::wptr>::iterator it;
+  for( it = classes_map.begin(); it!=classes_map.end(); it++)
+  {
+    std::cout << " class: " << it->first << std::endl;
+  }
+}
+
+
+//--------------------------------------------------
 void VarContexts::EmptyVariables() {
   //CLASS_MESSAGE("");
   for (int i=_context.size()-1; i>=0; i--)
     _context[i]->EmptyVariables();
+  classes_map.clear();
 }
 
 //--------------------------------------------------
@@ -437,3 +479,5 @@ void VarContexts::SetGlobalContext() {
 void VarContexts::SetLastContext() {
   _current_context = _context.size()-1;
 }
+
+

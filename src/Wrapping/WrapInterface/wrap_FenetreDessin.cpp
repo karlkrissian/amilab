@@ -13,7 +13,6 @@
 #include "wrap_FenetreDessin.h"
 #include "wrap_wxWindow.h"
 
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"

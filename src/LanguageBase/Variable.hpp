@@ -78,7 +78,7 @@ class AMILabType {
     static boost::shared_ptr<T> GetValue(BasicVariable::ptr var, bool noconstr=false, bool quiet=false)
     { return boost::shared_ptr<T>(); }
 
-    static BasicVariable::ptr CreateVarFromSmtPtr(boost::shared_ptr<T>& val);
+    static BasicVariable::ptr CreateVarFromSmtPtr(const boost::shared_ptr<T>& val);
 
     static BasicVariable::ptr CreateVar(const T& val)
     { return BasicVariable::ptr(); }
@@ -131,7 +131,7 @@ class AMILabType {
     public: \
 	    static std::string name_as_string();\
       static boost::shared_ptr<type> GetValue(BasicVariable::ptr var, bool noconstr=false, bool quiet=false);\
-      static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
+      static BasicVariable::ptr CreateVarFromSmtPtr(const boost::shared_ptr<type>& val);\
       static BasicVariable::ptr CreateVar(type* val, bool nodeleter=false);\
       static BasicVariable::ptr CreateVar(const type& val);\
       static BasicVariable::ptr CreateVar(type** val, bool nodeleter=false);\
@@ -153,7 +153,7 @@ class AMILabType {
 
 #define AMI_DECLARE_WRAPPED_LIMITED_TYPE(type) \
   template<> boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var, bool noconstr, bool quiet);\
-  template<> BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
+  template<> BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr(const boost::shared_ptr<type>& val);\
   template<> BasicVariable::ptr AMILabType<type>::CreateVar(type* val, bool nodeleter);\
   template<> BasicVariable::ptr AMILabType<type>::CreateVar(const type& val);\
   template<> BasicVariable::ptr AMILabType<type>::CreateVar(type** val, bool nodeleter);\
@@ -180,7 +180,7 @@ class AMILabType {
     public: \
 	    static std::string name_as_string();\
       static boost::shared_ptr<type> GetValue(BasicVariable::ptr var, bool noconstr=false, bool quiet=false);\
-      static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
+      static BasicVariable::ptr CreateVarFromSmtPtr(const boost::shared_ptr<type>& val);\
       static BasicVariable::ptr CreateVar(type* val, bool nodeleter=false);\
       static BasicVariable::ptr CreateVar(const type& val);\
       static BasicVariable::ptr CreateVar(type** val);\
@@ -207,7 +207,7 @@ class AMILabType {
     public: \
       static std::string name_as_string();\
       static boost::shared_ptr<type> GetValue(BasicVariable::ptr var, bool noconstr=false, bool quiet=false);\
-      static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
+      static BasicVariable::ptr CreateVarFromSmtPtr(const boost::shared_ptr<type>& val);\
       static BasicVariable::ptr CreateVar(type* val, bool nodeleter=false);\
       static BasicVariable::ptr CreateVar(const type& val);\
       static BasicVariable::ptr CreateVar(type** val);\
@@ -314,7 +314,7 @@ class AMILabType {
       }\
     } \
     \
-    BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr( boost::shared_ptr<type>& valptr)\
+    BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr(const boost::shared_ptr<type>& valptr)\
     {\
       return Variable<type>::ptr( new Variable<type>(valptr));\
     }\
@@ -549,7 +549,7 @@ class AMILabType {
     } 
 
 #define AMI_DEFINE_VARFROMSMTPTR(type) \
-  BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr(boost::shared_ptr<type>& obj_ptr) \
+  BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr(const boost::shared_ptr<type>& obj_ptr) \
   { \
     return \
       WrapClass<type>::CreateVar( \
@@ -560,7 +560,7 @@ class AMILabType {
   template<> AMI_DEFINE_VARFROMSMTPTR(type)
 
 #define AMI_DEFINE_VARFROMSMTPTR_TEMPLATE(type1,name1,type2) \
-  BasicVariable::ptr AMILabType<type1<type2> >::CreateVarFromSmtPtr(boost::shared_ptr<type1<type2> >& obj_ptr) \
+  BasicVariable::ptr AMILabType<type1<type2> >::CreateVarFromSmtPtr(const boost::shared_ptr<type1<type2> >& obj_ptr) \
   { \
     return \
       WrapClass<type1<type2> >::CreateVar( \
@@ -568,7 +568,7 @@ class AMILabType {
   } 
 
 #define AMI_DEFINE_VARFROMSMTPTR_TEMPLATE2(type1,type2) \
-  BasicVariable::ptr AMILabType<type1 >::CreateVarFromSmtPtr(boost::shared_ptr<type1 >& obj_ptr) \
+  BasicVariable::ptr AMILabType<type1 >::CreateVarFromSmtPtr(const boost::shared_ptr<type1 >& obj_ptr) \
   { \
     return \
       WrapClass<type1 >::CreateVar( \

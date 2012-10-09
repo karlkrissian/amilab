@@ -13,7 +13,6 @@
 #include "wrap_MainFrame.h"
 #include "wrap_wxStcFrame.h"
 
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_class.h"
 #include "ami_object.h"

@@ -12,7 +12,6 @@
 
 #include "paramlist.h"
 
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 //#include "wrapfunctions_draw.h"
 #include "ami_class.h"

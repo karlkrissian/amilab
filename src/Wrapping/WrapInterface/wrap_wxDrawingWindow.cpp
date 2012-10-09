@@ -12,7 +12,6 @@
 
 #include "wrap_wxDrawingWindow.h"
 
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_object.h"
 #include "ami_function.h"

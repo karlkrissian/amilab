@@ -17,7 +17,6 @@
 #ifdef AMI_USE_PRECOM_HEADERS
   #include "WrapInterface_header.h"
 #else
-  #include "VarContexts.hpp"
   #include "wrapfunctions.hpp"
   #include "ami_class.h"
   #include "ami_object.h"

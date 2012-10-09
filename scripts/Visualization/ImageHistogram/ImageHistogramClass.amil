@@ -613,7 +613,8 @@ if (!exists(ImageHistogramClass)) {
       # parameters window
       # parameters window
       if (exists(::parent_panel)) {
-        print "Creating window with panel '%1%'" % ::parent_panel.GetName().c_str()
+        #print "ImageHistogramClass::Gui() \tCreating window with panel '%1%'" % \
+        #  wx.FromWxString(::parent_panel.GetName())
         ::win = ParamPanel("ImHist",&::parent_panel)
       } else {
         ::win = ParamPanel("ImHist")

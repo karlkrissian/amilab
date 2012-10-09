@@ -10,4 +10,10 @@
 LanguageBase_VAR_IMPORT DriverBase::ptr GB_DriverBase;
 LanguageBase_VAR_IMPORT VarContexts Vars;
 
+LanguageBase_VAR_IMPORT 
+void AddClassMap(std::string classname, BasicVariable::wptr classvar);
+
+LanguageBase_VAR_IMPORT 
+BasicVariable::wptr GetClassVar(std::string classname);
+
 #endif // define _language_global_import_h_
