@@ -2,3 +2,6 @@
 # Image Extent
 ami::ImageExtent<float>
 
+# trying std::vector<double>
+std::vector<double, std::allocator<double> >
+
