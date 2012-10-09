@@ -1,0 +1,41 @@
+
+proc ReOrientImage(IMAGE input, NUM axis1, NUM axis2, NUM axis3, NUM flip1, NUM flip2, NUM flip3) \
+{
+  # deal with flips
+  flip = vector_int(3)
+  flip[0] = flip1;
+  flip[1] = flip2;
+  flip[2] = flip3;
+  
+  p = SpacePos(input)
+  # 1. should check that axis1, axis2, and axis3 are in [0,2] and are different
+  # --- size
+  sz = vector_int(3)
+  sz[0] = input.tx
+  sz[1] = input.ty
+  sz[2] = input.tz
+  # --- Translation
+  tr = global::vector_double(3)
+  if flip[0] { tr[0] = input.trx+input.tx*input.vx; } else {tr[0] = input.trx; }
+  if flip[1] { tr[1] = input.try+input.ty*input.vy; } else {tr[1] = input.try; }
+  if flip[2] { tr[2] = input.trz+input.tz*input.vz; } else {tr[2] = input.trz; }
+  # --- Spacing
+  sp = global::vector_double(3)
+  sp[0] = input.vx
+  sp[1] = input.vy
+  sp[2] = input.vz
+  #printn "%1%" % input.vx + " %1%" % input.vy + " %1%" % input.vz 
+  #printn "%1%" % sp[0] + " %1%" % sp[1] + " %1%" % sp[2] 
+  p1 = Image(FLOAT, sz[axis1],sz[axis2],sz[axis3],3)
+  p1.settranslation(tr[axis1],tr[axis2],tr[axis3])
+  p1.setvoxelsize(  sp[axis1],sp[axis2],sp[axis3])
+  #printn "%1%" % p1.vx + " %1%" % p1.vy + " %1%" % p1.vz 
+  p1.info
+  p1_pos = SpacePos(p1)
+  # todo: flip ...
+  p1.SetComponent(axis1,p1_pos[0])
+  p1.SetComponent(axis2,p1_pos[1])
+  p1.SetComponent(axis3,p1_pos[2])
+  global::p1 = p1
+  return = input(p1)
+}

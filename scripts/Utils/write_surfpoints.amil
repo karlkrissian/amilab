@@ -1,0 +1,12 @@
+
+
+proc WriteSurfacePoints( OBJECT s, STRING filename) {
+
+  s_vtk = vtktools.ToVtkPolyData(&s)
+  f = File(filename,"w")
+  p = vector_double(3)
+  for n=0 to  s_vtk.GetNumberOfPoints()-1 {
+    s_vtk.GetPoint(n,&p[0])
+    f._print("%1%\t" % p[0] +"%1%\t" % p[1] + "%1%\n" % p[2])
+  }
+}
