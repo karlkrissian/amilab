@@ -160,6 +160,32 @@ typedef enum {
 } FILE_MODE;
 
 
+/**
+ * 3x3 double matrix to store the direction cosines
+ */
+class amiDirectionMatrix {
+private:
+  double mat[3][3];
+public:
+  amiDirectionMatrix() {
+    for(int i=0;i<3;i++)
+      for(int j=0;j<3;j++)
+        mat[i][j] = 0;
+  }
+  
+  void SetValue(int i, int j, double val) {
+    mat[i][j] = val;
+  }
+  
+  double GetValue(int i, int j) {
+    return mat[i][j];
+  }
+  
+  double& operator()(int i, int j) {
+    return mat[i][j];
+  }
+};
+
 /*//----------------------------------------------------------------------
 // Write an image in amimage format
 // if type is AMI_SCALAR uses only the 'r' information
@@ -235,7 +261,7 @@ public:
   unsigned char data_allocated;
 
   // Will have to be an independent object class
-  float         TransfMatrix[4][4];
+  amiDirectionMatrix  TransfMatrix;
 
   amimage();
 
@@ -354,14 +380,13 @@ public:
 
 #ifndef __GCCXML__
   unsigned char CheckGenesisHeader(char* ptr, int slice, float corner[4][3]);
-
-  void          GetTransfMatrix(float m[4][4])
-  {
-    for(int i=0;i<4;i++)
-      for(int j=0;j<4;j++)
-        m[i][j] = TransfMatrix[i][j];
-  }
 #endif
+  void          GetTransfMatrix(amiDirectionMatrix& m)
+  {
+    for(int i=0;i<3;i++)
+      for(int j=0;j<3;j++)
+        m.SetValue(i,j,TransfMatrix.GetValue(i,j));
+  }
 
   unsigned char readheader(const char* filename);
 
