@@ -7,6 +7,7 @@
 #include "DefineClass.hpp"
 #include "Variable.hpp"
 #include <math.h>
+#include <iostream>
 
 #define NEW_SMARTPTR(type, var, value) \
   boost::shared_ptr<type> var(new type(value));
@@ -419,6 +420,23 @@ BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v
   return NewReference();
 }
 
+#if !defined(ARRAY_SIZE)
+    #define ARRAY_SIZE(x) (sizeof((x)) / sizeof((x)[0]))
+#endif
+
+template<> AMI_DLLEXPORT
+  BasicVariable::ptr Variable<float>::operator[](const BasicVariable::ptr& v)
+{
+  if (v->IsNumeric()) {
+    float* pointer = this->Pointer().get();
+    //std::cout << "Size of array " << ARRAY_SIZE(pointer) << std::endl;
+    // at the user own risk
+    float res = pointer[(int)(v->GetValueAsDouble()+0.5)];
+    return AMILabType<float>::CreateVar(res);
+  } else
+    CLASS_ERROR("operator[] only takes a numerical parameter");
+  return NewReference();
+}
 
 template<> AMI_DLLEXPORT 
 BasicVariable::ptr Variable<float>::operator =(const BasicVariable::ptr& b)
