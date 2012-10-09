@@ -549,7 +549,7 @@ if (!exists(VolRenClass)) {
         ::UpdateVolPages()
 
         # update input origin
-        origin = vector_double(3)
+        origin = global::vector_double(3)
         ::vol0.vtkinput.GetOrigin(&origin[0])
         ::firstvolorig_x = origin[0]
         ::firstvolorig_y = origin[1]
@@ -983,14 +983,11 @@ if (!exists(VolRenClass)) {
       #::win.AddBoolean(::keep_curve,"Keep Curve")
 
       ::volrentype_id = ::win.AddEnum(&::volrenmapper_type,"VolRen Mapper")
-        ::win.AddEnumChoice(::volrentype_id,"GPU mapper")
-        ::win.AddEnumChoice(::volrentype_id,"FixedPoint mapper")
-        ::win.AddEnumChoice(::volrentype_id,"Standard mapper")
-        //if (::AmiVol) {
-        ::win.AddEnumChoice(::volrentype_id,"AMILab mapper")
-        ::win.AddEnumChoice(::volrentype_id,"Smart mapper")
-        //}
-
+        ::win.AddEnumChoice(::volrentype_id,"GPU")
+        ::win.AddEnumChoice(::volrentype_id,"FixedPoint")
+        ::win.AddEnumChoice(::volrentype_id,"Standard")
+        ::win.AddEnumChoice(::volrentype_id,"AMILab")
+        ::win.AddEnumChoice(::volrentype_id,"Smart")
 
       ::win.BeginBook()
         ::nb = ::win.GetBookCtrl()
