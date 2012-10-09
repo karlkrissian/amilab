@@ -82,21 +82,21 @@ Class vtkCameraClass \
     ::last_cam.DeepCopy(&::vtkcam)
     # get the camera parameters: position, focal point and view up vector
     # position
-    ::position = vector_double(3)
+    ::position = global::vector_double(3)
     ::vtkcam.GetPosition(&::position[0])
     printn "Position "+ \
             "%1%, " % ::position[0] +\
             "%1%, " % ::position[1] +\
             "%1% "  % ::position[2] 
     # focal point
-    ::focalpoint = vector_double(3)
+    ::focalpoint = global::vector_double(3)
     ::vtkcam.GetFocalPoint(&::focalpoint[0])
     printn "Focal Point "+ \
             "%1%, " % ::focalpoint[0] +\
             "%1%, " % ::focalpoint[1] +\
             "%1% "  % ::focalpoint[2] 
     # view up
-    ::viewup = vector_double(3)
+    ::viewup = global::vector_double(3)
     ::vtkcam.GetViewUp(&::viewup[0])
     printn "View up "+ \
             "%1%, " % ::viewup[0] +\
