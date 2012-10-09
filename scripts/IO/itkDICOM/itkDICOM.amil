@@ -25,6 +25,20 @@ if (!exists(DICOMClass)) {
       ::file_spec = "*.dcm", "file filter"
       ::max_scan = INT(10000), "maximum number of scanned files"
       ::list_files = UCHAR(0), "list (in the control text) the files found"
+
+      func "WxUtils/alEnum"
+
+      # ----- Dicom Reader library
+      alEnum ::readerlibs
+      ::readerlibs.SetTitle("Reader lib")
+      ::readerlibs.SetHelp("Choose the DICOM reader library")
+      ::readerlibs.AddValue( "VTK",\
+                                "Visualization Toolkit")
+      ::readerlibs.AddValue( "ITK",\
+                                "Insight Toolkit")
+      ::reader_lib = INT(1), ::readerlibs.GetHelpMessage()
+      ::readerlibs.SetVariable(&::reader_lib)
+
       ::Gui()
     }
     
@@ -148,9 +162,33 @@ if (!exists(DICOMClass)) {
     }
     
     #---------------------------
+    proc ::ReadDir( STRING ddir) \
+    {
+      if (::readerlibs.OptionName(::reader_lib)=="VTK") {
+          v = vtk.vtkDICOMImageReader.New()
+          v.SetDirectoryName( ddir)
+          # use vtk progress ...
+          v.Update()
+          p = v.GetImagePositionPatient()
+          printn "Position:"
+          for n=0 to 2 { print "%1%, " % p[n]; }
+          d = v.GetImageOrientationPatient()
+          printn "Orientation:"
+          for n=0 to 5 { print "%1%, " % d[n]; }
+          printn ""
+          del ::res_vtk
+          ::res_vtk = v.GetOutput()
+          return = vtktools.FromVtkImageData(::res_vtk)
+      }
+      if (::readerlibs.OptionName(::reader_lib)=="ITK") {
+        return = itk.DICOMRead( ddir)
+      }
+    }
+    
+    #---------------------------
     proc ::Run() \
-    {   
-      ::out <<= itk.DICOMRead(::dicom_folder+"/")
+    {
+      ::out <<= ::ReadDir(::dicom_folder+"/")
     }
     
     #---------------------------
@@ -210,7 +248,7 @@ if (!exists(DICOMClass)) {
         ::win.Update(-1)
         sub_path = wx.FromWxString(list_item.GetText())
         full_path = ::dicom_folder+sub_path
-        cmd =  "::%1% <<= itk.DICOMRead(" % im_name + "\"%1%\");" % full_path
+        cmd =  "::%1% <<= ::ReadDir(" % im_name + "\"%1%\");" % full_path
         printn "running '%1%'" % cmd
         eval cmd
 
@@ -247,6 +285,8 @@ if (!exists(DICOMClass)) {
 
           ::win.EndBoxPanel()
           
+          ::readerlibs.SetGuiMode(1)
+          ::readerlibs.AddGui(&::win)
           ::win.BeginHorizontal()
             ::win.AddButton("Run",&::Run)
             ::win.AddButton("Copy to global",&::Copy)
