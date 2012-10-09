@@ -1188,22 +1188,22 @@ void ParamPanel::Enable( int id, bool enable) {
   }
 }
 
-//---------------------------------------------------------------------
-void ParamPanel::EnableBox( int id, bool enable) {
-
-  if (id<(int)_tab_boxes.size()) {
-    wxStaticBox* box = _tab_boxes[id];
-    if (enable!=box->IsEnabled())
-      box->Enable(enable);
-  } else {
-    cerr  << __func__ << " " \
-          << this->GetName().mb_str() << "\t" \
-          <<  "Error \t wrong box id" \
-          << id << " " << _tab_boxes.size() << "\n" \
-          << endl; \
-    return;
-  }
-}
+// //---------------------------------------------------------------------
+// void ParamPanel::EnableBox( int id, bool enable) {
+// 
+//   if (id<(int)_tab_boxes.size()) {
+//     wxStaticBox* box = _tab_boxes[id];
+//     if (enable!=box->IsEnabled())
+//       box->Enable(enable);
+//   } else {
+//     std::cerr  << __func__ << " " 
+//           << this->GetName().mb_str() << "\t" 
+//           <<  "Error \t wrong box id" 
+//           << id << " " << _tab_boxes.size() << "\n" 
+//           << std::endl; 
+//     return;
+//   }
+// }
 
 //------------------------------------------------------------
 void ParamPanel::EnablePanel( int id, bool enable) {
@@ -1213,11 +1213,11 @@ void ParamPanel::EnablePanel( int id, bool enable) {
     if (enable!=panel->IsEnabled())
       panel->Enable(enable);
   } else {
-    cerr  << __func__ << " " \
-          << this->GetName().mb_str() << "\t" \
-          <<  "Error \t wrong box id" \
-          << id << " " << _tab_panels.size() << "\n" \
-          << endl; \
+    std::cerr  << __func__ << " " 
+          << this->GetName().mb_str() << "\t" 
+          <<  "Error \t wrong box id" 
+          << id << " " << _tab_panels.size() << "\n" 
+          << std::endl; 
     return;
   }
 }

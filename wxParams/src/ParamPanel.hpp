@@ -242,7 +242,7 @@ public:
   wxWindow* LastPanel()
   {
     if (_panels.empty()) {
-      BeginPanel("main panel");
+      return NULL;
     }
     return _panels.top();
   }
@@ -661,7 +661,7 @@ public:
   void SetDragCallback( int id, bool dcb);
 
   void Enable(      int id,bool enable=true);
-  void EnableBox(   int id,bool enable=true);
+//  void EnableBox(   int id,bool enable=true);
   void EnablePanel( int id,bool enable=true);
 
   void SelectPage( int book_id, int panel_nb);
