@@ -4,8 +4,10 @@
 
 #include "inrimage.hpp"
 
+
 class PruebaClass;
-typedef PruebaClass PruebaClasstd;
+
+typedef PruebaClass PruebaClassDef;
 
 // deal with EXPORT...
 
