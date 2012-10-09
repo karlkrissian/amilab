@@ -1419,10 +1419,10 @@ void InrImage :: InitParams()
   _positions_allocated = false;
 
   // Identity Matrix
-  for(i=0;i<4;i++) 
-  for(j=0;j<4;j++)
-    _transf_matrix[i][j] = 0;
-  for(i=0;i<3;i++) _transf_matrix[i][i] = 1;
+  for(i=0;i<3;i++) 
+  for(j=0;j<3;j++)
+    _transf_matrix.SetValue(i,j,0);
+  for(i=0;i<3;i++) _transf_matrix.SetValue(i,i,1);
 
 
 } // InitParams()

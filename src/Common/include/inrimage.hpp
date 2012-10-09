@@ -468,7 +468,7 @@ public:
 
 
   // Transformation matrix
-  float  _transf_matrix[4][4];
+  amiDirectionMatrix  _transf_matrix;
 
 //@}
 
@@ -734,11 +734,11 @@ public:
       tz = _translation_z;
     }
 
-    void          GetTransfMatrix(float m[4][4])
+    void          GetTransfMatrix(amiDirectionMatrix& m)
     {
-      for(int i=0;i<4;i++)
-        for(int j=0;j<4;j++)
-      m[i][j] = _transf_matrix[i][j];
+      for(int i=0;i<3;i++)
+        for(int j=0;j<3;j++)
+          m.SetValue(i,j,_transf_matrix.GetValue(i,j));
     }
 
 /*
