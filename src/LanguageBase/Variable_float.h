@@ -123,6 +123,8 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<float>::BasicCast(con
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2);
 
 
+template<>  LanguageBase_EXPORT BasicVariable::ptr Variable<float>::operator[](const BasicVariable::ptr& v);
+
 /// Other operators
 /// a=b
 /**
