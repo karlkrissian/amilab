@@ -12,7 +12,7 @@ INCLUDE(${wxWidgets_USE_FILE})
 
 SET(  wxParams_SRCS
     MyToolBar.cpp
-    ParamBox.cpp
+    #ParamBox.cpp
     widget.cpp
     wxEnumerationParameter.cpp
     palette.cpp
@@ -23,7 +23,6 @@ SET(  wxParams_SRCS
     mySlider.cpp
     mySpinButton.cpp
     wxParamTypes.cpp
-    wxBooleanParameter.cpp
     wxStringParameter.cpp
     wxIntegerParameter.cpp
     wxFloatParameter.cpp
@@ -38,7 +37,7 @@ SET(  wxParams_SRCS
 SET(  wxParams_HDRS
   CallBackBase.h
   MyToolBar.h
-  ParamBox.hpp
+  #ParamBox.hpp
   widget.hpp
   wxEnumerationParameter.h
   ParamPanel.hpp
@@ -49,6 +48,7 @@ SET(  wxParams_HDRS
   mySpinButton.h
   wxParamTypes.hpp
   wxBooleanParameter.h
+  wxBooleanParameter.tpp
   wxStringParameter.h
   wxIntegerParameter.h
   wxFloatParameter.h

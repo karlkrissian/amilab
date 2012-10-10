@@ -303,10 +303,15 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_BeginPanel::CallMember( ParamList*
 {
   std::string* label = NULL;
   int n = 0;
+  bool collapse=false;
   if (!get_val_ptr_param<std::string>( label,  p, n)) 
     ClassHelpAndReturn;
+  // Check the number of parameters here for default arguments
+  if (p->GetNumParam()>1)
+    if (!AMILabType<bool >::get_val_param(collapse,p,n,true,false ,false)) 
+      ClassHelpAndReturn;
 
-  int id = this->_objectptr->GetObj()->BeginPanel( label->c_str());
+  int id = this->_objectptr->GetObj()->BeginPanel( label->c_str(),collapse);
 
   // create integer variable to return
   RETURN_VARINT(id,label->c_str());
@@ -979,35 +984,54 @@ void WrapClass_ParamPanel::wrap_AddBoolean::SetParametersComments()
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_ParamPanel::wrap_AddBoolean::CallMember( ParamList* p)
 {
-  Variable<unsigned char>::ptr var;
   std::string* label = NULL;
   int  n = 0;
-  int  var_id;
+  int  var_id = -1;
 
-  if (!get_var_param<unsigned char>(var, p, n))     ClassHelpAndReturn;
-  if (!get_val_ptr_param<std::string>( label, p, n,false))   ClassHelpAndReturn;
+  if (p->GetParam(0)->Type()==GetVarType<unsigned char>()) 
+  {
+    Variable<unsigned char>::ptr var;
+    if (!get_var_param<unsigned char>(var, p, n)) ClassHelpAndReturn;
+    if (!get_val_ptr_param<std::string>( label, p, n,false)) ClassHelpAndReturn;
 
-  // take care of default label value
-  std::string label_val;
-  if (label==NULL)
-    label_val = var->Name();
-  else
-    label_val = *label;
+    // take care of default label value
+    std::string label_val;
+    if (label==NULL) label_val = var->Name(); else label_val = *label;
+    std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
+    unsigned char* valptr = var->Pointer().get();
 
-  std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
+    //cout << " button pointer  = "<<  ((AMIFunction::ptr*) var->Pointer())->get() << std::endl;
+    this->_objectptr->GetObj()->AddBoolean( &var_id,
+                                            valptr,
+                                            label_val.c_str(),
+                                            CaractereToggle,
+                                            tooltip);
+    this->_objectptr->GetObj()->BooleanDefault( var_id, *valptr);
+    // create integer variable to return
+    RETURN_VARINT(var_id,var->Name());
+  } else
+  if (p->GetParam(0)->Type()==GetVarType<bool>()) {
+    Variable<bool>::ptr var;
+    if (!get_var_param<bool>(var, p, n)) ClassHelpAndReturn;
+    if (!get_val_ptr_param<std::string>( label, p, n,false)) ClassHelpAndReturn;
 
-  unsigned char* valptr = var->Pointer().get();
+    // take care of default label value
+    std::string label_val;
+    if (label==NULL) label_val = var->Name(); else label_val = *label;
+    std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
+    bool* valptr = var->Pointer().get();
 
-  //cout << " button pointer  = "<<  ((AMIFunction::ptr*) var->Pointer())->get() << std::endl;
-  this->_objectptr->GetObj()->AddBoolean( &var_id,
-                valptr,
-                label_val.c_str(),
-                CaractereToggle,
-                tooltip);
-  this->_objectptr->GetObj()->BooleanDefault( var_id, *valptr);
-
-  // create integer variable to return
-  RETURN_VARINT(var_id,var->Name());
+    //cout << " button pointer  = "<<  ((AMIFunction::ptr*) var->Pointer())->get() << std::endl;
+    this->_objectptr->GetObj()->AddBoolean( &var_id,
+                                            valptr,
+                                            label_val.c_str(),
+                                            CaractereToggle,
+                                            tooltip);
+    this->_objectptr->GetObj()->BooleanDefault( var_id, *valptr);
+    // create integer variable to return
+    RETURN_VARINT(var_id,var->Name());
+  }
+  return BasicVariable::ptr();
 }
 
 

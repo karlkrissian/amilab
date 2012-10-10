@@ -22,42 +22,33 @@
 /*!
   \brief wxBooleanParameter: GUI for a boolean parameter
 */
+template <class T>
 class wxBooleanParameter : public wxCheckBox, public wxGenericWidget
 //    ==================
 {
-  unsigned char*  parametre;
-  unsigned char val_defaut;
+  T*  parametre;
+  T val_defaut;
   std::string   _libelle;
   type_booleen  _type;
 
 public:
 
-  wxBooleanParameter( wxWindow* parent, unsigned char* param,
-  //----------
-         const char* libelle);
+  wxBooleanParameter( wxWindow* parent, T* param, const char* libelle);
 
   ~wxBooleanParameter();
-  //---------
 
-  void FixeDefaut( unsigned char defaut);
-  //   ----------
+  void FixeDefaut( T defaut);
 
   void FixeAccelerateur( std::string accelerateur, std::string texte);
-  //   ----------------
-
 
   void UpdateValue();
-  //   --------------
 
   unsigned char VerifieContraintes();
-  //      ------------------
 
   /** Cette methode permet de remettre a jour la
       valeur du parametre dans le widget
   */
   void Update();
-  //   ------
-
 
   virtual void OnCheck( wxCommandEvent& );
 
@@ -68,5 +59,6 @@ public:
 
 }; // wxBooleanParameter
 
+#include "wxBooleanParameter.tpp"
 
 #endif // _wxBooleanParameter_h_

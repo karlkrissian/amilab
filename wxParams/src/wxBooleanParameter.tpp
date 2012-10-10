@@ -17,16 +17,20 @@
 //==============================================================================
 
    
-BEGIN_EVENT_TABLE(wxBooleanParameter, wxCheckBox)
-    EVT_CHECKBOX(  wxID_ANY, wxBooleanParameter::OnCheck)
-END_EVENT_TABLE();
-
+BEGIN_EVENT_TABLE_TEMPLATE1(wxBooleanParameter, wxCheckBox,T1)
+  EVT_CHECKBOX(  wxID_ANY, wxBooleanParameter::OnCheck)
+END_EVENT_TABLE()
 
 //------------------------------------------------------------------------------
 //
-wxBooleanParameter ::  wxBooleanParameter(  wxWindow* parent,
-//                           ------------
-        unsigned char* param, const char* libelle) : wxCheckBox( parent, wxID_ANY, wxString::FromAscii( libelle) )
+template <class T>
+wxBooleanParameter<T>::wxBooleanParameter(  
+                                          wxWindow* parent,
+                                          T* param, 
+                                          const char* libelle) : 
+                      wxCheckBox( parent, 
+                                  wxID_ANY, 
+                                  wxString::FromAscii( libelle) )
 {
   parametre  = param;
   val_defaut = false;
@@ -37,7 +41,8 @@ wxBooleanParameter ::  wxBooleanParameter(  wxWindow* parent,
 
 
 //------------------------------------------------------------------------------
-wxBooleanParameter :: ~ wxBooleanParameter()
+template <class T>
+wxBooleanParameter<T>::~wxBooleanParameter()
 //                           -----------
 {
 
@@ -45,7 +50,8 @@ wxBooleanParameter :: ~ wxBooleanParameter()
 
 
 //------------------------------------------------------------------------------
-void wxBooleanParameter :: FixeDefaut( unsigned char defaut)
+template <class T>
+void wxBooleanParameter<T>::FixeDefaut( T defaut)
 //                                 ----------
 {
   val_defaut = defaut;
@@ -67,25 +73,23 @@ void wxBooleanParameter :: FixeDefaut( unsigned char defaut)
 
 
 //----------------------------------------------------------------------
-///
-void wxBooleanParameter ::  FixeAccelerateur( std::string accelerateur, 
-                              std::string texte)
-//
+template <class T>
+void wxBooleanParameter<T>::FixeAccelerateur(  std::string accelerateur, 
+                                            std::string texte)
 {
-
-  /*
-  */
 } // FixeAccelerateur()
 
 
 //----------------------------------------------------------------------
-void wxBooleanParameter::UpdateValue()
+template <class T>
+void wxBooleanParameter<T>::UpdateValue()
 {
   *this->parametre = (this->IsChecked());
 }
 
 //------------------------------------------------------------------------------
-void wxBooleanParameter :: Update()
+template <class T>
+void wxBooleanParameter<T>:: Update()
 //                         ------
 {
   this->SetValue(*this->parametre);
@@ -93,14 +97,16 @@ void wxBooleanParameter :: Update()
 
 
 //------------------------------------------------------------------------------
-void wxBooleanParameter::OnCheck(wxCommandEvent& event)
+template <class T>
+void wxBooleanParameter<T>::OnCheck(wxCommandEvent& event)
 {
   this->UpdateValue();
   this->Callback();
 }
 
 //------------------------------------------------------------------------------
-void wxBooleanParameter::EnableWidget(bool enable)
+template <class T>
+void wxBooleanParameter<T>::EnableWidget(bool enable)
 {
   if (enable!=_enabled) {
     this->Enable(enable);

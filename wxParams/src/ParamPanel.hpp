@@ -229,7 +229,7 @@ public:
   int AddPage(const std::string& panel_name);
   //   -------
 
-  int  BeginPanel(const std::string& panel_name);
+  int  BeginPanel(const std::string& panel_name, bool collapsible=false);
   //   --------
 
   void EndPanel();
@@ -320,6 +320,22 @@ public:
   //   -------------
 //@}
 
+
+/** @name Type bool */
+//@{
+
+  ///
+  unsigned char AddBoolean( 
+  //      -------------
+    int* id,
+    bool* param,
+    const char* libelle,
+    type_booleen type=CaractereToggle,
+    const std::string& tt=""
+    );
+
+//@}
+  
 /** @name Type int */
 //@{
   ///

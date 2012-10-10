@@ -12,11 +12,11 @@
 
 #define AddSetGetVar( name, type) \
   type  name; \
-  void Set##name( type _arg) \
+  void set##name( type _arg) \
   { \
     this->name = _arg; \
   };  \
-  type Get##name() \
+  type get##name() \
   { \
     return this->name; \
   };
@@ -33,14 +33,7 @@ class AnalyticCylinder : public AnalyticFunctionBase {
   DEFINE_CLASS(AnalyticCylinder);
   
 private:
-  //Cylinder radius
-  float radius;
-  //Cylinder X direction
-  float Xdir;
-  //Cylinder Y direction
-  float Ydir;
-  //Cylinder Z direction
-  float Zdir;
+
   
   
 public:
@@ -56,6 +49,37 @@ public:
   
   ~AnalyticCylinder();
   
+  /// X coordinate of the center 
+  AddSetGetVar(Center_x,float)
+  /// Y coordinate of the center 
+  AddSetGetVar(Center_y,float)
+  /// Z coordinate of the center 
+  AddSetGetVar(Center_z,float)
+
+  /// Cylinder radius
+  AddSetGetVar(Radius,float)
+
+  /// Cylinder axis direction in X
+  AddSetGetVar(Xdir,float)
+  /// Cylinder axis direction in Y
+  AddSetGetVar(Ydir,float)
+  /// Cylinder axis direction in Z
+  AddSetGetVar(Zdir,float)
+
+  /// Elliptic sections
+  AddSetGetVar(Elliptic,bool)
+  
+  /// if elliptic section: 2nd axis and radius
+  /// Ellipse main axis direction in X
+  AddSetGetVar(EllipseXdir,float)
+  /// Ellipse main axis direction in Y
+  AddSetGetVar(EllipseYdir,float)
+  /// Ellipse main axis direction in Z
+  AddSetGetVar(EllipseZdir,float)
+
+  /// Ellipse radius ratio (small rad)/(big rad)
+  AddSetGetVar(RadiusRatio,float)
+
   /**
    *  Operator () redefinition. Evaluates if a point is inside the cylinder.
    *  @param x Component of the point.
@@ -65,62 +89,7 @@ public:
    *  the cylinder image.
    */
   double operator () (const double& x, const double& y, const double& z) const;
-  
-  /**
-   *  Set the radius of the cylinder.
-   *  @para r The new value for the radius of the cylinder.
-   */
-  void setRadius(float r);
-  
-  /**
-   *  Get the radius of the cylinder.
-   *  @return float The radius value. 
-   */
-  float getRadius();
-  
-  /**
-   *  Set the x direction of the cylinder.
-   *  @param xd The new value for the x direction.
-   */
-  void setXdir(float xd);
-  
-  /**
-   *  Get the x direction of the cylinder.
-   *  @return float The x direction value.
-   */
-  float getXdir();
-  
-  /**
-   *  Set the y direction of the cylinder.
-   *  @param yd The new value for the y direction.
-   */
-  void setYdir(float yd);
-  
-  /**
-   *  Get the y direction of the cylinder.
-   *  @return float The y direction value.
-   */
-  float getYdir();
-  
-  /**
-   *  Set the z direction of the cylinder.
-   *  @param zd The new value for the z direction.
-   */
-  void setZdir(float zd);
-  
-  /**
-   *  Get the z direction of the cylinder.
-   *  @return float The z direction value.
-   */
-  float getZdir();
-
-  /// X coordinate of the center 
-  AddSetGetVar(center_x,float)
-  /// Y coordinate of the center 
-  AddSetGetVar(center_y,float)
-  /// Z coordinate of the center 
-  AddSetGetVar(center_z,float)
-  
+    
 };
 
 #endif

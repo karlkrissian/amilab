@@ -51,6 +51,7 @@
 #include "wxFilenameParameter.h"
 #include "wxDirnameParameter.h"
 
+#include <wx/collpane.h>
 #include <wx/scrolbar.h>
 #include <wx/scrolwin.h>
 #include <iostream>
@@ -284,17 +285,25 @@ int ParamPanel::AddPage(const std::string& panel_name)
 
 
 //---------------------------------------------------------
-int ParamPanel::BeginPanel(const std::string& panel_name)
+int ParamPanel::BeginPanel(const std::string& panel_name, bool collapsible)
 //             --------
 {
   wxBoxSizer* panelsizer;
 
-  wxScrolledWindow* panel = new wxScrolledWindow(CurrentParent(),
-                            wxID_ANY, 
-                            wxDefaultPosition, 
-                            wxDefaultSize, 
-                            wxTAB_TRAVERSAL  | wxVSCROLL
-                          );
+  wxWindow* panel;
+  if (!collapsible)
+    panel = new wxScrolledWindow( CurrentParent(),
+                                  wxID_ANY, 
+                                  wxDefaultPosition, 
+                                  wxDefaultSize, 
+                                  wxTAB_TRAVERSAL  | wxVSCROLL
+                                  );
+  else
+    panel = new wxCollapsiblePane(  CurrentParent(),
+                                    wxID_ANY,
+                                    wxString::FromAscii(panel_name.c_str())
+                                    );
+    
 //  panel->SetScrollbars(3,3,10,10);
 //  panel->EnableScrolling(true,true);
   _tab_panels.push_back(panel);
@@ -307,7 +316,12 @@ int ParamPanel::BeginPanel(const std::string& panel_name)
   LastPanel()->SetSizer(panelsizer);
 
   // add new panel to the current sizer
-  _current_sizer.top()->Add(LastPanel(), 0, wxEXPAND, 0);
+  if (!collapsible)
+    _current_sizer.top()->Add(LastPanel(), 0, wxEXPAND, 0);
+  else {
+    _current_sizer.top()->Add(LastPanel(), 1, wxGROW|wxALL, 2);
+    _current_sizer.top()->SetSizeHints(LastPanel());
+  }
   _current_sizer.push(panelsizer);
 
   return (int)_tab_panels.size()-1;
@@ -407,11 +421,12 @@ unsigned char ParamPanel::AddBoolean(
     const std::string& tt
     )
 {
-  wxBooleanParameter* wxbp = new wxBooleanParameter(
+  wxBooleanParameter<unsigned char>* wxbp = 
+    new wxBooleanParameter<unsigned char>(
       CurrentParent(), param, libelle);
   if (tt!="") wxbp->SetToolTip(GetwxStr(tt.c_str()));
 
-  ParamInfo pi(  TYPE_PARAMETER_BOOLEEN,
+  ParamInfo pi(  TYPE_PARAMETER_BOOLEEN_UCHAR,
                  wxbp,
                  AddWidget(wxbp));
 
@@ -428,15 +443,46 @@ void ParamPanel::BooleanDefault( int id, unsigned char defaut)
 {
   macro_CheckParameterId(id,return)
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETER_BOOLEEN) {
+  if ((_tab_param[id].GetType() != TYPE_PARAMETER_BOOLEEN_UCHAR)&&
+      (_tab_param[id].GetType() != TYPE_PARAMETER_BOOLEEN_BOOL)){
     printf("ParamPanel::BooleanDefault \t Erreur, identificateur non valide\n");
     return;
   } // end if
   
   if (_tab_param[id].GetWidget()!=NULL) 
-    ((wxBooleanParameter*) _tab_param[id].GetWidget())->FixeDefaut( defaut);
+    if (_tab_param[id].GetType() == TYPE_PARAMETER_BOOLEEN_UCHAR)
+        ((wxBooleanParameter<unsigned char>*) _tab_param[id].GetWidget())
+          ->FixeDefaut( defaut);
+    else
+      if (_tab_param[id].GetType() == TYPE_PARAMETER_BOOLEEN_BOOL)
+          ((wxBooleanParameter<bool>*) _tab_param[id].GetWidget())
+            ->FixeDefaut( defaut);
 
 } // BooleanDefault()
+
+
+//--------------------------------------------------------------
+unsigned char ParamPanel::AddBoolean(
+                                      int* id, bool* param, 
+                                      const char* libelle,
+                                      type_booleen type,
+                                      const std::string& tt
+                                      )
+{
+  wxBooleanParameter<bool>* wxbp = 
+    new wxBooleanParameter<bool>(
+      CurrentParent(), param, libelle);
+  if (tt!="") wxbp->SetToolTip(GetwxStr(tt.c_str()));
+
+  ParamInfo pi(  TYPE_PARAMETER_BOOLEEN_BOOL,
+                 wxbp,
+                 AddWidget(wxbp));
+
+  _tab_param.push_back(pi);
+  *id = (int)_tab_param.size()-1;
+
+  return( true);
+} // AddBoolean()
 
 
 //--------------------------------------------------------------

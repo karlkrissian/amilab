@@ -676,7 +676,7 @@ protected:
 /** @name     Param�res de traitement des MIP en stereo
 */
 //@{
-   ParamBox* _param_MIP_stereo;
+   ParamPanel* _param_MIP_stereo;
 
    int _etat_MIP_stereo;
 

@@ -1228,7 +1228,7 @@ void DessinImage::CreeParametresMIP_stereo()
 {
 
   //=============
-  _param_MIP_stereo = new ParamBox( this,  FrAn("Param�res MIP St��",
+  _param_MIP_stereo = new ParamPanel( this,  FrAn("Paramètres MIP Stéréo",
                                                         "Stereo MIP parameters"));
 
 //  printf("_distance_yeux %f\n",_distance_yeux);
@@ -1241,7 +1241,7 @@ void DessinImage::CreeParametresMIP_stereo()
                                    (void*) this);
 
 //  printf("_distance_oeil_ecran %f\n",_distance_oeil_ecran);
-  //-------------- Distance oeil �ran
+  //-------------- Distance oeil écran
   _param_MIP_stereo->AddFloat( &_id_distance_oeil_ecran, &_distance_oeil_ecran,
                                   FrAn("Dist oeil-ecran","Dist eye-screen"));
   _param_MIP_stereo->FloatConstraints( _id_distance_oeil_ecran, 10.0, 60.0, _distance_oeil_ecran);
@@ -1250,7 +1250,7 @@ void DessinImage::CreeParametresMIP_stereo()
                                    (void*) this);
 
 //  printf("_distance_ecran_objet %f\n",_distance_ecran_objet);
-  //-------------- Distance �ran objet
+  //-------------- Distance écran objet
   _param_MIP_stereo->AddFloat( &_id_distance_ecran_objet, &_distance_ecran_objet,
                                   FrAn("Dist ecran-objet","Dist screen-objet"));
   _param_MIP_stereo->FloatConstraints( _id_distance_ecran_objet, 3.0, 60.0, _distance_ecran_objet);

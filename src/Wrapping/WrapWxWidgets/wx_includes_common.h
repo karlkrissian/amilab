@@ -18,3 +18,4 @@
 #include <wx/stattext.h>
 #include <wx/tipdlg.h>
 #include <wx/utils.h>
+#include <wx/collpane.h>

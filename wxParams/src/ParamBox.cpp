@@ -270,10 +270,10 @@ unsigned char ParamBox::AddBoolean( int* id, unsigned char* param,
 //                   -------------
                 const char* libelle, type_booleen type)
 {
-  wxBooleanParameter* wxbp = new wxBooleanParameter(
+  wxBooleanParameter<unsigned char>* wxbp = new wxBooleanParameter<unsigned char>(
       CurrentParent(), param, libelle);
 
-  ParamInfo pi(  TYPE_PARAMETER_BOOLEEN,
+  ParamInfo pi(  TYPE_PARAMETER_BOOLEEN_UCHAR,
                  wxbp,
                  AddWidget(wxbp));
 
@@ -294,14 +294,21 @@ void ParamBox::BooleanDefault( int id, unsigned char defaut)
     return;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETER_BOOLEEN) {
+  if ((_tab_param[id].GetType() != TYPE_PARAMETER_BOOLEEN_UCHAR)&&
+      (_tab_param[id].GetType() != TYPE_PARAMETER_BOOLEEN_BOOL))
+  {
     printf("ParamBox::BooleanDefault \t Erreur, identificateur non valide\n");
     return;
   } // end if
   
   if (_tab_param[id].GetWidget()!=NULL) 
-    ((wxBooleanParameter*) _tab_param[id].GetWidget())->FixeDefaut( defaut);
-
+    if (_tab_param[id].GetType() == TYPE_PARAMETER_BOOLEEN_UCHAR)
+      ((wxBooleanParameter<unsigned char>*) _tab_param[id].GetWidget())
+        ->FixeDefaut( defaut);
+    else 
+      if (_tab_param[id].GetType() == TYPE_PARAMETER_BOOLEEN_BOOL)
+        ((wxBooleanParameter<bool>*) _tab_param[id].GetWidget())
+          ->FixeDefaut( defaut);
 } // BooleanDefault()
 
 
