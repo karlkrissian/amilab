@@ -34,7 +34,8 @@ wxClientDataContainer
 wxClientDC
 wxCmdLineParser
 wxCloseEvent
-wxCollapsiblePane
+# can be a macro on Macos ...
+#wxCollapsiblePane
 wxColour
 wxCommandEvent
 wxComboBox
