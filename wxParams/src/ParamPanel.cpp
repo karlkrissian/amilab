@@ -1313,26 +1313,34 @@ int ParamPanel::BeginBox( const char* boxname)
 {
   int BoxBorder=2;
 
+// #if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
+//   wxStaticBoxSizer* sizer  = new wxStaticBoxSizer( 
+//                                             wxVERTICAL , 
+//                                             CurrentParent(),
+//                                             wxString::FromAscii(boxname));
+//   wxStaticBox* sb = sizer->GetStaticBox();
+// #else
   wxStaticBox* sb = new wxStaticBox(CurrentParent(),
                                     wxID_ANY,
                                     wxString::FromAscii(boxname));
+  wxStaticBoxSizer* sizer  = new wxStaticBoxSizer( sb, wxVERTICAL );
+// #endif
   _tab_boxes.push_back(sb);
 
-#if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
-  _panels.push( sb);
-  _tab_panels.push_back(sb);
-#endif
+// #if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
+//   _panels.push( sb);
+//   _tab_panels.push_back(sb);
+// #endif
 
-  wxStaticBoxSizer* sizer  = new wxStaticBoxSizer( sb, wxVERTICAL );
   _current_sizer.top()->Add(sizer, 0,wxEXPAND | wxALL, BoxBorder);
   _current_sizer.push(sizer);
   
 
-#if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
-  return (int)_tab_panels.size()-1;
-#else
+// #if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
+//   return (int)_tab_panels.size()-1;
+// #else
   return (int)_tab_boxes.size()-1;
-#endif
+// #endif
 } // BeginBox
 
 
@@ -1340,9 +1348,9 @@ int ParamPanel::BeginBox( const char* boxname)
 void ParamPanel::EndBox()
 {
   _current_sizer.pop();
-#if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
-  _panels.pop();
-#endif
+// #if wxCHECK_VERSION(2,9,0) && !(__APPLE__)
+//   _panels.pop();
+// #endif
 }
   
 //-----------------------------------------------------------
