@@ -2,7 +2,9 @@
 # The extension is already found.  Any number of sources could be listed here.
 
 
-add_subdirectory (wxCode/wxTreeListCtrl)
+IF (${AMI_WXWIDGETS_VERSION} STREQUAL "2.8")
+  add_subdirectory (wxCode/wxTreeListCtrl)
+ENDIF (${AMI_WXWIDGETS_VERSION} STREQUAL "2.8")
 add_subdirectory (wxSamples/penguin)
 add_subdirectory (wxStcFrame)
 add_subdirectory (wxVTK)

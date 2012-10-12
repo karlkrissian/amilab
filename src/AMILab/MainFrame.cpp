@@ -894,9 +894,9 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
       ++p)
   {
     if (p!=formats.begin())
-      format_choices << wxString::FromAscii("|");
-    format_choices << wxString::FromAscii(str(boost::format(" %1% (%2%) |%2%") 
-      % p->first % p->second).c_str());
+      format_choices << wxString("|", wxConvUTF8);
+    format_choices << wxString(str(boost::format(" %1% (%2%) |%2%") 
+      % p->first % p->second).c_str(), wxConvUTF8);
   }
 
 // @cond wxCHECK
@@ -951,7 +951,7 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
 //--------------------------------------------------------
 void MainFrame::CreateVarTreePanel ( wxWindow* parent)
 {
-#ifndef AMI_USE_DATAVIEW
+#if (!wxCHECK_VERSION(2,9,0))
 //  CreateDrawingPanel(this);
 //  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
 
@@ -1020,7 +1020,8 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
 
   _var_book->AddPage(_var_tree,wxT("Tree"));
 
-#endif
+#endif // #if (!wxCHECK_VERSION(2,9,0))
+
   
 } // CreateVarTreePanel()
 
@@ -1690,6 +1691,7 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
                                 Variables::ptr context, int rec_level, 
                                 std::string varpath)
 {
+#if (!wxCHECK_VERSION(2,9,0))
   if (rec_level>MAX_VARTREE_LEVEL) return;  
     // delete children of root
   TREE_VAR->DeleteChildren(rootbranch);
@@ -1886,6 +1888,8 @@ void MainFrame::UpdateVarTree(  const TREE_ITEM_TYPE& rootbranch,
   }
 
   //_var_list->Show();
+#endif // (!wxCHECK_VERSION(2,9,0))
+
 }
 
 ///@cond wxCHECK
@@ -2725,6 +2729,7 @@ void MainFrame::ConsoleClear( wxCommandEvent& event)
 //------------------------------------------------------------------------------
 void MainFrame::UpdateVarsDisplay()
 {
+#if (!wxCHECK_VERSION(2,9,0))
   std::cout << "UpdateVarsDisplay()" << std::endl;
   // get list of expanded items
   wxTreeItemId itemid;
@@ -2766,6 +2771,7 @@ void MainFrame::UpdateVarsDisplay()
 
   UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext(),0);
   _var_tree->Expand(  _vartree_builtin);
+#endif // #if (!wxCHECK_VERSION(2,9,0))
 
 }
 

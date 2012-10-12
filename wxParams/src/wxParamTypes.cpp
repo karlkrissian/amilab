@@ -26,11 +26,11 @@ return floor( d + 0.5 );
 
 
 wxString GetwxStr(const char* str) {
-  return wxString::FromAscii(str);
+  return wxString(str, wxConvUTF8);
 }
 
-wxString GetwxStr(const string& str) {
-  return wxString::FromAscii(str.c_str());
+wxString GetwxStr(const std::string& str) {
+  return GetwxStr((const char*) str.c_str());
 }
 
 

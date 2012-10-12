@@ -4,6 +4,8 @@
 #include "amiImageExtent.h"
 
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 #ifdef __GCCXML__
   template class ami::ImageExtent<float>;
@@ -14,6 +16,8 @@
   typedef std::vector<double> vector_double;
   typedef std::vector<float>  vector_float;
   typedef std::vector<int>    vector_int;
+  
+  //std::ostream std_ostream_obj;
 #endif // __GCCXML__
 
 // // trying iostream maybe should be moved from Algorithms to here ...

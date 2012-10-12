@@ -747,10 +747,17 @@ SET(amilab_ownlibs
 # wrapped wxwidgets samples
   penguin
   wxStcFrame
-  wxTreeListCtrl
   wxVTKSamples
   wxVTK
 )
+
+IF (${AMI_WXWIDGETS_VERSION} STREQUAL "2.8")
+  SET(amilab_ownlibs
+    ${amilab_ownlibs}
+    wxTreeListCtrl
+  )
+ENDIF (${AMI_WXWIDGETS_VERSION} STREQUAL "2.8")
+
 
 IF (AMI_WRAP_MICRONTRACKER)
   SET(amilab_ownlibs

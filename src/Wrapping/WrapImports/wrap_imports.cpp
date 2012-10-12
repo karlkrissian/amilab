@@ -529,11 +529,22 @@ void AddWrapBasicTypes(AMIObject::ptr& obj)
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
   WrapClass_VarVector::AddVar_VarVector( obj->GetContext());
-
-  
   wrap_common_classes(obj->GetContext());
   
- // WrapClass_StdVector<int>::AddVar_StdVector( obj->GetContext(), "vector_int");
+
+  BasicVariable::ptr std_cout_var = 
+    AMILabType<std::ostream>::CreateVar(&std::cout,true);
+  obj->GetContext()->AddVar("cout", std_cout_var, obj->GetContext());
+
+  BasicVariable::ptr std_cerr_var = 
+    AMILabType<std::ostream>::CreateVar(&std::cerr,true);
+  obj->GetContext()->AddVar("cerr", std_cerr_var, obj->GetContext());
+  
+  BasicVariable::ptr std_clog_var = 
+    AMILabType<std::ostream>::CreateVar(&std::clog,true);
+  obj->GetContext()->AddVar("clog", std_clog_var, obj->GetContext());
+  
+  // WrapClass_StdVector<int>::AddVar_StdVector( obj->GetContext(), "vector_int");
  // WrapClass_StdVector<float>::AddVar_StdVector( obj->GetContext(), "vector_float");
  //WrapClass_StdVector<double>::AddVar_StdVector( obj->GetContext(), "vector_double");
 

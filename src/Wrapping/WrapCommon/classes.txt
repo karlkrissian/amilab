@@ -6,3 +6,6 @@ ami::ImageExtent<float>
 std::vector<double, std::allocator<double> >
 std::vector<float, std::allocator<float> >
 std::vector<int, std::allocator<int> >
+
+# iostream
+std::ostream

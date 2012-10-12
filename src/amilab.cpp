@@ -220,7 +220,7 @@ class MyApp: public wxApp
   }
 
 
-  wxConfig* GetConfig() { return config; }
+  //wxConfig* GetConfig() { return config; }
 
 private:
   //MainFrame::ptr mainframe;
@@ -531,10 +531,12 @@ bool MyApp::OnInit()
 
 int MyApp::OnExit()
 {
- // mainframe->Close();
-  Vars.EmptyVariables();
   std::cout << "MyApp::OnExit()" << std::endl;
+  std::cout << "Emptying variables" << std::endl;
+  //Vars.EmptyVariables();
+  std::cout << "deleting config" << std::endl;
   delete config;
+  std::cout << "returning 0" << std::endl;
   return 0;
 }
 
