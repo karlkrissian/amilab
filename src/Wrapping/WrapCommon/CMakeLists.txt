@@ -28,6 +28,7 @@ IF(AMI_ENABLE_WRAPPING)
   #-----------------------------------------------------------------------------
   INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapping.cmake)
   SET(GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/Generated)
+  SET(WRAPPING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
   CreateDirectory( ${GENERATED_DIR})
   SET(LIBNAME "common")
   WRAP_INIT(" Common")
