@@ -10,7 +10,8 @@
 // wxDataViewTreeListStore
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_ADV wxDataViewTreeListStoreNode
+class //WXDLLIMPEXP_ADV 
+    wxDataViewTreeListStoreNode
 {
 public:
     wxDataViewTreeListStoreNode( wxDataViewTreeListStoreNode *parent,
@@ -59,9 +60,12 @@ private:
 };
 
 WX_DECLARE_LIST_WITH_DECL(wxDataViewTreeListStoreNode, wxDataViewTreeListStoreNodeList,
-                          class WXDLLIMPEXP_ADV);
+                          class //WXDLLIMPEXP_ADV
+                              );
 
-class WXDLLIMPEXP_ADV wxDataViewTreeListStoreContainerNode: public wxDataViewTreeListStoreNode
+class 
+    //WXDLLIMPEXP_ADV 
+wxDataViewTreeListStoreContainerNode: public wxDataViewTreeListStoreNode
 {
 public:
     wxDataViewTreeListStoreContainerNode( wxDataViewTreeListStoreNode *parent,
@@ -95,7 +99,8 @@ private:
 
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_ADV wxDataViewTreeListStore: public wxDataViewModel
+class //WXDLLIMPEXP_ADV 
+wxDataViewTreeListStore: public wxDataViewModel
 {
 public:
     wxDataViewTreeListStore();
@@ -205,7 +210,8 @@ public:
 
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_ADV wxDataViewTreeListCtrl: public wxDataViewCtrl,
+class //WXDLLIMPEXP_ADV 
+    wxDataViewTreeListCtrl: public wxDataViewCtrl,
                                           public wxWithImages
 {
 public:

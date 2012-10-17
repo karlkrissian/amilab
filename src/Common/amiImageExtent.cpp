@@ -3,7 +3,7 @@
 
 namespace ami {
   
-  template <> ImageExtent<int>::ImageExtent(InrImage* im)
+  template<> AMI_DLLEXPORT ImageExtent<int>::ImageExtent(InrImage* im)
   {
     //printf("ImageExtent<int>(InrImage* im)\n");
     extent[0][0] = 0;

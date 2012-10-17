@@ -12,9 +12,10 @@ include_directories (
   ${AMILab_BINARY_DIR}
 )
 
-INCLUDE( ${USE_VTK_FILE} )
-INCLUDE( ${USE_ITK_FILE} )
-#INCLUDE( ${VTK_USE_FILE} )
+#INCLUDE( ${USE_VTK_FILE} )
+#INCLUDE( ${USE_ITK_FILE} )
+INCLUDE( ${VTK_USE_FILE} )
+INCLUDE( ${ITK_USE_FILE} )
 #INCLUDE( ${wxWidgets_USE_FILE})
 
 
@@ -236,6 +237,12 @@ SET(amilab_ownlibs
   CommonBase
   WrapCommon
 )
+
+if(VTK_LIBRARIES)
+  SET(LINK_VTK
+    ${VTK_LIBRARIES}
+   )
+else()
   SET(LINK_VTK
     vtkGraphics
     vtkImaging
@@ -249,6 +256,7 @@ SET(amilab_ownlibs
     vtkViews
     vtkCharts
   )
+endif()
 
 target_link_libraries( WrapVTK
   ${amilab_ownlibs}

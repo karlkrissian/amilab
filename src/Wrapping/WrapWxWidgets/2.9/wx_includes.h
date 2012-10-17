@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <wx/aboutdlg.h>
 
 #include "wx_includes_common.h"
 
@@ -12,6 +11,7 @@
 #include "ami_object.h"
 
 #include <wx/wx.h>
+#include <wx/aboutdlg.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/html/htmlwin.h>

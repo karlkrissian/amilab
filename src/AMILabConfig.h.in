@@ -49,7 +49,7 @@
   // warning 4661  'BasicVariable::ptr WrapClass<T>::CreateVar(ParamList *,bool)
   //    no se ha proporcionado una definición adecuada para la solicitud de creación de instancias de plantillas explícitas
   // warning 4267: conversión de 'size_t' a 'int'; posible pérdida de datos
-  #pragma warning( disable : 4244 4996 4800 4180 4305 4275 4661 4267)
+  #pragma warning( disable : 4244 4996 4800 4180 4305 4275 4661 4267 4996)
 
 #endif
 

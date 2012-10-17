@@ -31,6 +31,12 @@ MACRO( GCCXML_USE_WXWIDGETS )
       MESSAGE("GCCXML_WX_FLAGS=${GCCXML_WX_FLAGS}")
     ENDIF(wxWidgets_CXX_FLAGS)
 
+    IF(WIN32)
+      # fix a problem with wxWidgets 2.9.4 and unichar ...
+      SET(GCCXML_DEFS ${GCCXML_DEFS} -D_NATIVE_WCHAR_T_DEFINED)
+      SET(GCCXML_DEFS ${GCCXML_DEFS} -D__multiple_inheritance=)
+    ENDIF(WIN32)
+
     # Update GCCXML variables
     SET( GCCXML_INCLUDES ${GCCXML_INCLUDES}  ${GCCXML_WX_INCLUDES})
     SET( GCCXML_DEFS     ${GCCXML_DEFS}      ${GCCXML_WX_DEFS}    )

@@ -125,4 +125,5 @@ gdcm::DataSet
 gdcm::StringFilter
 
 # need set of data elements
-std::set<gdcm::DataElement, std::less<gdcm::DataElement>, std::allocator<gdcm::DataElement> >
+# problems on windows
+#std::set<gdcm::DataElement, std::less<gdcm::DataElement>, std::allocator<gdcm::DataElement> >

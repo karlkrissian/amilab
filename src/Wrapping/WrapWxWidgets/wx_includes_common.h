@@ -1,6 +1,8 @@
 
 #pragma once
 
+
+
 #include "wxAmiEventHandler.h"
 
 #include <wx/aboutdlg.h>

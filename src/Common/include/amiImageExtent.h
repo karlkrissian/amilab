@@ -285,7 +285,7 @@ public:
 
 
 
-template <> ImageExtent<int>::ImageExtent(InrImage* im);
+template<> COMMON_EXPORT ImageExtent<int>::ImageExtent(InrImage* im);
 // {
 //   printf("ImageExtent<int>(InrImage* im)\n");
 //   extent[0][0] = 0;

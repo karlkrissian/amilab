@@ -428,6 +428,12 @@ void wxDrawingWindow::DrawCurve( dwCurve& curve )
   std::vector<dwPoint2D>::iterator it;
   wxCoord x1=0,y1=0,x2=0,y2=0;
 
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
   wxCoord mincoord = std::numeric_limits< short >::min();
   wxCoord maxcoord = std::numeric_limits< short >::max();
 
