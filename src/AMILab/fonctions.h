@@ -90,14 +90,40 @@ int AskScript  (  std::string& name);
 
 //------- Weickert
 
+
+/**
+  * @brief Anisotropic Diffusion using Weickert AOS scheme 
+  * use Func_IterateWeickert and Func_EndWeickert
+  *
+  * @param in input image
+  * @param p_sigma Gaussian kernel standard deviation for smoothing
+  * @param p_k gradient parameter 
+  * @param p_dt evolution step
+  * @return InrImage* image that will contain the result
+  **/
 InrImage* Func_InitWeickert(InrImage* in,
-                float p_sigma,
-                float p_k,
-                float p_dt
-                );
+                            float p_sigma,
+                            float p_k,
+                            float p_dt
+                            );
+
 void      Func_IterateWeickert();
 int       Func_EndWeickert();
 
+
+/**
+ * @brief Weickert Coherence diffusion
+ * use Func_IterateWeickert and Func_EndWeickert
+ *
+ * @param in input image
+ * @param p_sigma first Gaussian convolution
+ * @param p_rho second Gaussian convolution
+ * @param p_C threshold for the coherence
+ * @param p_alpha lowest diffusion coefficient
+ * @param p_dt evolution step
+ * @return InrImage*
+ *
+ **/
 InrImage* Func_InitWeickertCoherence(InrImage* in,
                      float p_sigma,
                      float p_rho,
