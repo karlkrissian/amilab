@@ -1,0 +1,35 @@
+
+
+proc WriteVtkTransform( OBJECT t, STRING filename) \
+{
+  m = t.GetMatrix()
+  tf = wx.wxTextFile()
+  tf.Create(filename)
+  for i=0 to 3 { 
+    line = ""
+    for j=0 to 3 { 
+      line +=  " %+20f " % m.GetElement(i,j)
+    }
+    tf.AddLine(line)
+  }
+  tf.Write()
+  tf.Close()
+}
+
+
+proc ReadVtkTransform(  STRING filename) \
+{
+  t = vtk.vtkTransform.New()
+  m = t.GetMatrix()
+  tf = File(filename,"r")
+  for i=0 to 3 { 
+    for j=0 to 3 { 
+      v = tf.read_float()
+      m.SetElement(i,j,v)
+    }
+  }
+  return = &t
+}
+
+
+ 
