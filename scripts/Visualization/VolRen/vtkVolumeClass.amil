@@ -1029,7 +1029,7 @@ if (!exists(vtkVolumeClass)) {
           ::win.EndBoxPanel()
           ::volmapper_classname_id = ::win.AddLabel("VTK Class:","")
           ::GPU_page = ::win.BeginBoxPanel("3D texture memory")
-            ::win.AddInt(&::maxmemory,"max",50,1000)
+            ::maxmemory_id = ::win.AddInt(&::maxmemory,"max",50,2000)
             ::win.SetCallback( &::OnTextureMemory)
             ::win.AddFloat(&::maxmemoryfraction,"fraction",0.05,1)
             ::win.SetCallback( &::OnTextureMemory)

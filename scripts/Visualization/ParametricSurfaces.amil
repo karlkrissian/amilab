@@ -44,6 +44,8 @@ if (!exists(ParametricSurfaceClass)) {
     ::Y = "sin(U)*cos(V)"
     ::Z = "sin(V)"
 
+    ::AutoUpdateEquation = false, "Automatically update the equation and the text changes"
+
     ::eq_filename = "user_equation1.amil"
 
     # temporal evolution of the equation
@@ -249,6 +251,14 @@ if (!exists(ParametricSurfaceClass)) {
   }
 
   #--------------------------------------------------------------
+  proc ::UpdateEquation() \
+  {
+    if (::AutoUpdateEquation) {
+      ::Update()
+    }
+  }
+
+  #--------------------------------------------------------------
   proc ::Start() \
   {
     ::evolve_state = 0
@@ -379,6 +389,7 @@ if (!exists(ParametricSurfaceClass)) {
           ::win.SetCallback( &::Update)
           ::Z_id = ::win.AddString( &::Z,"Z=")
           ::win.SetCallback( &::Update)
+          ::win.AddBoolean(::AutoUpdateEquation, "Auto-update")
         ::win.EndBoxPanel()
         ::win.BeginBoxPanel("Time evolution:")
           ::win.AddInt( &::kmax,  "kmax", 0,100)

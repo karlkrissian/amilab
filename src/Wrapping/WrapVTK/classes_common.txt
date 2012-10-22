@@ -46,6 +46,8 @@ vtkFieldData
 vtkFixedPointVolumeRayCastMapper
 vtkFloatArray
 vtkGlyph3D
+vtkGPUInfo
+vtkGPUInfoList
 vtkGPUVolumeRayCastMapper
 vtkHomogeneousTransform
 vtkImageAlgorithm

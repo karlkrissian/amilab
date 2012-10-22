@@ -36,6 +36,8 @@
 #include <vtkFixedPointVolumeRayCastMapper.h>
 #include <vtkFloatArray.h>
 #include <vtkGlyph3D.h>
+#include <vtkGPUInfo.h>
+#include <vtkGPUInfoList.h>
 #include <vtkGPUVolumeRayCastMapper.h>
 #include <vtkImageData.h>
 #include <vtkImageFFT.h>

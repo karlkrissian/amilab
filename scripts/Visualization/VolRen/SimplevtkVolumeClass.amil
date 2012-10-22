@@ -40,7 +40,7 @@ if (!exists(SimplevtkVolumeClass)) {
       #::opacity_attenuation = 1, "Attenuation factor for the opacity"
 
       ::maxmemory = INT(512), "Max. 3D texture GPU memory in Mb (2^8 bytes)"
-      ::maxmemoryfraction = 1, "Maximal fraction of 3D max. 3D texture memory to use."
+      ::maxmemoryfraction = 1, "Maximal fraction of 3D max. 3D texture memory to use (Mb)."
 
       ::SampleDistance = 1, "distance between samples used for rendering"
       ::ImageSampleDistance = 1, "Sampling distance in the XY image dimensions. Default value of 1 meaning 1 ray cast per pixel. If set to 0.5, 4 rays will be cast per pixel. If set to 2.0, 1 ray will be cast for every 4 (2 by 2) pixels. This value will be adjusted to meet a desired frame rate when AutoAdjustSampleDistances is on. "
@@ -709,6 +709,23 @@ if (!exists(SimplevtkVolumeClass)) {
             (::volmapper.GetClassName()=="vtkSmartVolumeMapper") \
         {
           printn "Texture =  %1%" %::volmapper.GetClassName()
+          # Check if VTK can give the information
+          il = vtk.vtkGPUInfoList.New()
+          il.Probe()
+          if (il.GetNumberOfGPUs()>0) {
+            for n=0 to il.GetNumberOfGPUs()-1 {
+              printn "GPU number %1%:" % n
+              printn "Video Memory: %1% Mb" % (il.GetGPUInfo(n).GetDedicatedVideoMemory()/1048576)
+            }
+            ::maxmemory = il.GetGPUInfo(0).GetDedicatedVideoMemory()/1048576
+            if exists(::win) {
+              ::win.Enable(::maxmemory_id,false)
+            }
+          } else {
+            if exists(::win) {
+              ::win.Enable(::maxmemory_id,true)
+            }
+          }
           # update volmapper GPU settings
           ::volmapper.SetMaxMemoryInBytes(::maxmemory*1024*1024)
           ::volmapper.SetMaxMemoryFraction(::maxmemoryfraction)

@@ -49,11 +49,11 @@ if (!exists(AnisoGS_NRADClass)) {
                                 "local volume: either the sum, or the maximum "+\
                                 "(default is sum)"
 
-        ::use_linearinterp = UCHAR(0), "Use linear interpolation"
+        ::use_linearinterp = false, "Use linear interpolation"
   
         # Scheme, 0: semi-implicit 1: explicit 
         ::scheme = INT(0),        "Numerical scheme: explicit or semi-implicit"
-        ::run_on_roi = UCHAR(0),  "Run only on the selected region-of-interest"
+        ::run_on_roi = false,  "Run only on the selected region-of-interest"
 
         ::noise_models = VarVector()
           ::noise_models.push_back("Rician")
@@ -64,11 +64,11 @@ if (!exists(AnisoGS_NRADClass)) {
         }
         ::noise_model = INT(0), "Statistical model of the noise (%1%)" % mess
 
-        ::remove_bias = UCHAR(1), "Remove bias due to Rician noise model"
+        ::remove_bias = true, "Remove bias due to Rician noise model"
 
-        ::use_new_convolution_filter = UCHAR(0), "Use new faster convolution"
+        ::use_new_convolution_filter = true, "Use new faster convolution"
 
-        ::speedup            = UCHAR(1), "Allow speedup based on diffusion "+ \
+        ::speedup            = true, "Allow speedup based on diffusion "+ \
                                           "coefficients"
         ::speedup_lowerbound = 0.5, "Lower bound to enable speedup"
         
@@ -79,14 +79,14 @@ if (!exists(AnisoGS_NRADClass)) {
         for n=0 to ::eigendecomp_modes.size()-1 { 
           mess += "'%1%' " % ::eigendecomp_modes[n]; 
         }
-        ::eigendecomp_mode = INT(0), "Eigen decomposition mode for the structure"+\
+        ::eigendecomp_mode = INT(1), "Eigen decomposition mode for the structure"+\
                                      "tensor (%1%)" % mess
-        ::eigen_onfly = UCHAR(0), "Compute eigenvalues on the fly"
+        ::eigen_onfly = false, "Compute eigenvalues on the fly"
 
         ::nb_threads = INT(wx.wxThread.GetCPUCount()), "Number of threads"
 
-        ::display_evolution = UCHAR(1), "Display evolution"
-        ::show_timing       = UCHAR(1), "Show timing"
+        ::display_evolution = true, "Display evolution"
+        ::show_timing       = true, "Show timing"
 
         #-----------------------------------------------------------------------
         proc ::__assign__( OBJECT p) {
