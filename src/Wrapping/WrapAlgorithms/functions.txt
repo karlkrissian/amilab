@@ -7,3 +7,10 @@ ami::PositiveArea
 ami::ComputePositiveArea
 
 ami::count
+
+
+# Weickert AD
+Func_InitWeickert
+Func_IterateWeickert
+Func_EndWeickert
+Func_InitWeickertCoherence
