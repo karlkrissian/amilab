@@ -93,14 +93,14 @@ if (!exists(ScriptDisplayClass)) \
       mb = ami.MainFrame.GetMenuBar()
       menu_id = mb.FindMenu(::in_menu)
       menu = mb.GetMenu(menu_id)
-      submenu_id = menu.FindItem_1(::in_submenu)
+      submenu_id = menu.FindItem(::in_submenu)
       if (submenu_id==-1) {
         printn "Adding submenu %1%" % ::in_submenu
         newsubmenu = wx.wxMenu()
-        menu.AppendSubMenu( &newsubmenu, ::in_submenu);
-        submenu_id = menu.FindItem_1(::in_submenu)
+        menu.AppendSubMenu( newsubmenu, ::in_submenu);
+        submenu_id = menu.FindItem(::in_submenu)
       }
-      submenu_menuitem = menu.FindItem_2(submenu_id,&NULL)
+      submenu_menuitem = menu.FindItem(submenu_id,&NULL)
       
       if (submenu_menuitem.IsSubMenu()) {
         submenu = submenu_menuitem.GetSubMenu()
@@ -121,9 +121,9 @@ if (!exists(ScriptDisplayClass)) \
       ## version 2: pb??? segfault ???
       # ok fixed by setting new_mi as object member to prevent it 
       # from beeing deleted
-      ::new_mi = wx.wxMenuItem.wxMenuItem(&submenu,new_mi_id,::menu_name,::menu_help)
-      ::new_mi.SetBitmap(&::bm)
-      submenu.Append_2(&::new_mi)
+      ::new_mi = wx.wxMenuItem.wxMenuItem(submenu,new_mi_id,::menu_name,::menu_help)
+      ::new_mi.SetBitmap(::bm)
+      submenu.Append(::new_mi)
 
       # create event
       ::evh = wx.wxAmiEventHandler(&::CB_Menu)
