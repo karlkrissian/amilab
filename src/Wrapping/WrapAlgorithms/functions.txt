@@ -6,3 +6,4 @@ GetAMImage
 ami::PositiveArea
 ami::ComputePositiveArea
 
+ami::count

@@ -153,6 +153,7 @@ typedef boost::shared_ptr<std::string>     string_ptr;
 #include <wx/toolbook.h>
 #include <wx/propdlg.h>
 #include <wx/generic/propdlg.h>
+#include <wx/collpane.h>
 
 /*!
   \brief ParamPanel: a wxPanel to include parameters
@@ -228,6 +229,8 @@ public:
 
   int AddPage(const std::string& panel_name);
   //   -------
+
+  void CB_CollapsiblePaneChanged(wxCollapsiblePaneEvent& event);
 
   int  BeginPanel(const std::string& panel_name, bool collapsible=false);
   //   --------

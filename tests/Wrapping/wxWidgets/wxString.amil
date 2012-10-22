@@ -19,7 +19,7 @@ OK = 1 # The test was successful
 proc Summary(OBJECT obj) {
   printn "Summary:"
   printn " Contain:"
-  printn "  c_str: %1%" % obj.c_str()
+  printn "  FromWxString: %1%" % wx.FromWxString(obj)
   printn " Length:" 
   printn "  Len: %1%" % obj.Len()
   printn "  Length: %1%" % obj.Length()

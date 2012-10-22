@@ -45,9 +45,9 @@ Class vtktest_TPlaneClass : public ScriptGui \
     ::vtkdir = vtk.vtkDirectory.New()
     printn " inputdir_name = %1%" % ::inputdir_name
     wxf = wx.wxFileName(::inputdir_name)
-    volume = wxf.GetVolume().c_str()
+    volume = wx.FromWxString(wxf.GetVolume())
     if volume!="" { volume +=":"; } 
-    dirname=volume+wxf.GetFullPath(wx.wxPATH_UNIX).c_str()+"/"
+    dirname=volume+wx.FromWxString(wxf.GetFullPath(wx.wxPATH_UNIX))+"/"
     printn "dirname '%1%'" % dirname
     res = ::vtkdir.Open(dirname)
     ::vtkreaderfactory = vtk.vtkImageReader2Factory.New()

@@ -159,7 +159,7 @@ if (!exists(ImageDifferencesClass)) {
             n = floor(max(::regions))
             for i=0 to n {
               mask1 = mask*(::regions==i)
-              if count(mask)>0 {
+              if ami_count(mask)>0 {
                 del ri
                 ::RegionInfo ri
                 ri.MSE = mean[mask1]((::input-::gt)*(::input-::gt))

@@ -29,8 +29,8 @@ proc PrattFOM(IMAGE _i1, IMAGE _i2) {
 
   print "3. OK \n"
 
-  card1 = count(_i1)
-  card2 = count(_i2)
+  card1 = ami_count(_i1)
+  card2 = ami_count(_i2)
   if (card1>card2) { cmax = card1;} else {cmax=card2;}
   res =  1.0/cmax *(_m*card2)
 

@@ -185,7 +185,7 @@ Class VariablesUtilsClass {
   {
     res = wx.wxString()
     ok = wx.wxString(s).StartsWith("wrap_",&res)
-    if ok { return=res.c_str(); } else { return=s; }
+    if ok { return=wx.FromWxString(res); } else { return=s; }
   }
 
   #----------------------------------------------------------
@@ -193,7 +193,7 @@ Class VariablesUtilsClass {
   {
     res = wx.wxString()
     ok = wx.wxString(s).StartsWith(startst,&res)
-    if ok { return=res.c_str(); } else { return=s; }
+    if ok { return=wx.FromWxString(res); } else { return=s; }
   }
 
   #----------------------------------------------------------

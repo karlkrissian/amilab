@@ -84,8 +84,8 @@ if (!exists(ROCClass)){
         # Pre-calculations on the ground truth
         ::gt_in  = ::gt>0
         ::gt_out = ::gt==0
-        ::gt_in_count  = count(::gt_in)
-        ::gt_out_count = count(::gt_out)
+        ::gt_in_count  = ami_count(::gt_in)
+        ::gt_out_count = ami_count(::gt_out)
         # flag to check if the GT image has been reloaded
         ::gt_reloaded=0
       }
@@ -95,9 +95,9 @@ if (!exists(ROCClass)){
       #}
       segim=::input>=s
       # True Positive
-      tp= count(segim*::gt_in)/::gt_in_count; 
+      tp= ami_count(segim*::gt_in)/::gt_in_count; 
       # False Positive
-      fp= count(segim*::gt_out)/::gt_out_count; 
+      fp= ami_count(segim*::gt_out)/::gt_out_count; 
     }
 
 

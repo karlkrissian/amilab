@@ -347,7 +347,7 @@ if (!exists(LevelSetsClass)){
   proc ::ComputeIntensityStats() {
   
     if (exists(::inls)) {
-      if (count(::inls>0)>0) {
+      if (ami_count(::inls>0)>0) {
         ::Imean= mean[::inls>0](::input)
         ::Isd  = mean[::inls>0] ( (::input-::Imean)*(::input-::Imean))
         ::Isd  = sqrt(::Isd)
@@ -372,7 +372,7 @@ if (!exists(LevelSetsClass)){
   proc ::ComputeIntensityStatsMedian() {
   
     if (exists(::inls)) {
-      if (count(::inls>0)>0) {
+      if (ami_count(::inls>0)>0) {
         ::Imean= median[::inls>0](::input)
         tmp = (::input-::Imean)*(::input-::Imean)
         ::Isd  = median[::inls>0] ( tmp)
@@ -515,7 +515,7 @@ if (!exists(LevelSetsClass)){
               # check for convergence
               ::levelset.UpdateResult()
               lres = ::levelset.GetOutputImage()
-              stillmoving = count((previous_ls*lres)<0)
+              stillmoving = ami_count((previous_ls*lres)<0)
               print "*** Convergence test = "; printn stillmoving
               if (stillmoving==0) { ::stop=1; }
               previous_ls = lres

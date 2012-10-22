@@ -31,16 +31,34 @@
 
 #include "inrimage.hpp"
 
-// count the number of positive points of the image
-int         Func_count( InrImage* im);
-double        Func_mean( InrImage* im);
-double        Func_max(  InrImage* im, InrImage* mask);
+double      Func_mean( InrImage* im);
+double      Func_mean( InrImage* im, InrImage* mask);
+
+double      Func_max(  InrImage* im, InrImage* mask);
 int         Func_argmax(  InrImage* im, InrImage* mask=NULL);
-double        Func_min(  InrImage* im, InrImage* mask);
+double      Func_min(  InrImage* im, InrImage* mask);
 // Median value of the image
-double        Func_med(  InrImage* im, float percent=50, InrImage* mask=NULL);
-double        Func_mean( InrImage* im, InrImage* mask);
+double      Func_med(  InrImage* im, float percent=50, InrImage* mask=NULL);
 InrImage*   Func_Histogram( InrImage* im, float min, float max, int ninterv);
+
+// count the number of positive points of the image
+namespace ami {
+int         count( InrImage* im);
+
+class MeanClass
+{
+private:
+  InrImage::ptr mask;
+public:
+  MeanClass()   { }
+  
+  boost::shared_ptr<MeanClass> operator[](InrImage::ptr m);
+  
+  double operator()(InrImage::ptr im, InrImage::ptr m=InrImage::ptr());
+};
+
+}
+
 
 
 #endif // FUNC_GLOBALSTATS_H

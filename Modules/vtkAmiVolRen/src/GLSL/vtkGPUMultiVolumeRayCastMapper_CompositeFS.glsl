@@ -79,9 +79,9 @@ void trace(void)
   // limitation about the maximum number of loops.
 
   while(inside)
-    {  
+  {  
     while(inside)
-      {
+    {
       pos2 = vec3(P1toP2*vec4(pos,1));
 
       //float intensity,af;
@@ -95,16 +95,16 @@ void trace(void)
       opacity=texture1D(opacityTexture,scalar);
 
       if(opacity.a>0.0)
-        {
+      {
         text1=true;
         color=shade(value);
-        color=color*opacity.a;
-        destColor=destColor+color*remainOpacity;
-        remainOpacity=remainOpacity*(1.0-opacity.a);
-        }
+        //color=color*opacity.a;
+        //destColor=destColor+color*remainOpacity;
+        //remainOpacity=remainOpacity*(1.0-opacity.a);
+      }
 
-    //Texture2 (dataSetTexture2)
-    if (all(greaterThanEqual(pos2,lowBounds2))
+      //Texture2 (dataSetTexture2)
+      if (all(greaterThanEqual(pos2,lowBounds2))
          && all(lessThanEqual(pos2,highBounds2)))
       {
         vec4 value2=texture3D(dataSetTexture2,pos2);
@@ -116,10 +116,34 @@ void trace(void)
         {
           text2=true;
           color2=shade2(value2);
-          color2=color2*opacity2.a;
-          destColor=destColor+color2*remainOpacity;
-          remainOpacity=remainOpacity*(1.0-opacity2.a);
+
+          float minop = min(opacity.a,opacity2.a);
+          float maxop = max(opacity.a,opacity2.a);
+          // equivalent to mix color up to minop and keep the rest
+          // ((color+color2)/2*minop + color*(op-minop)+color2*(op2-minop))/(...)
+          if (maxop>0.00001) {
+            color =   ( color *(opacity.a -minop/2.0)+
+                        color2*(opacity2.a-minop/2.0)
+                      )/(opacity.a+opacity2.a-minop);
+            color = color*maxop;
+            destColor=destColor+color*remainOpacity;
+            remainOpacity=remainOpacity*(1.0-maxop);
+          }
+          else {
+            color = color*opacity.a;
+            destColor=destColor+color*remainOpacity;
+            remainOpacity=remainOpacity*(1.0-opacity.a);
+          }
+
+        } else {
+          color=color*opacity.a;
+          destColor=destColor+color*remainOpacity;
+          remainOpacity=remainOpacity*(1.0-opacity.a);
         }
+      } else {
+        color=color*opacity.a;
+        destColor=destColor+color*remainOpacity;
+        remainOpacity=remainOpacity*(1.0-opacity.a);
       }
 
       pos=pos+rayDir;

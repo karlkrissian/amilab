@@ -532,7 +532,7 @@ if (!exists(SectionQuantifClass)) {
           if ::AreaWithLinearInterpolation {
             area = algorithms.ami_ComputePositiveArea(imsec)
           } else {
-            area = count(imsec>0)
+            area = ami_count(imsec>0)
           }
           area *= ::PCR.vx*::PCR.vy
           ::SectionSizes.setpos(n,0,0)

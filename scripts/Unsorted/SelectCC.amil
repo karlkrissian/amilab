@@ -44,10 +44,10 @@ for i=0 to 200 {
 #    imname=sprint("ccsk%05.0f.ami.gz",i)
 #    cci1sk.save imname
 
-  c1 = count(cci1bin0>0)
-  c2 = count(cci1sk>0)
+  c1 = ami_count(cci1bin0>0)
+  c2 = ami_count(cci1sk>0)
   ratio=c1/c2
-  nb_junc = count(cci1sk==127) 
+  nb_junc = ami_count(cci1sk==127) 
 
   imc1._setpos(i,0,0)
   imc1.set(c1)

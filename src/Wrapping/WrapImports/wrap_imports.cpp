@@ -295,6 +295,8 @@ void AddWrapAlgorithms(AMIObject::ptr& obj)
   obj->GetContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
       amiobject,obj->GetContext());
 
+  obj->GetContext()->AddDefault(amiobject->GetContext());
+  
 }
 
 

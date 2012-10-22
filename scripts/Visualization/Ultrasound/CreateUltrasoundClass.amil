@@ -246,8 +246,8 @@ if (!exists(CreateUltrasoundClass)) {
        
       
       ::inittime = wx.wxDateTime.UNow()
-      ::win.SetLabelValue(::startdate_id,::inittime.FormatISODate().c_str())
-      ::win.SetLabelValue(::starttime_id,::inittime.FormatISOTime().c_str())
+      ::win.SetLabelValue(::startdate_id,wx.FromWxString(::inittime.FormatISODate()))
+      ::win.SetLabelValue(::starttime_id,wx.FromWxString(::inittime.FormatISOTime()))
       ::timer.Start(::interval*1000)
       
       #desactivar el control selección de frame a visualizar
@@ -283,12 +283,14 @@ if (!exists(CreateUltrasoundClass)) {
         ::processing_timer = true
         currenttime = wx.wxDateTime.UNow()
         diff=currenttime-::inittime
-        ::win.SetLabelValue(::label_id,diff.Format("%M min %S s %l ms").c_str())
+        ::win.SetLabelValue(::label_id,\
+                            wx.FromWxString(diff.Format("%M min %S s %l ms")))
         ::ReadData()
         ::processing_timer =false
         currenttime = wx.wxDateTime.UNow()
         diff=currenttime-inittime
-        ::win.SetLabelValue(::TimerTime_id,diff.Format("%M min %S s %l ms").c_str())
+        ::win.SetLabelValue(::TimerTime_id,\
+                            wx.FromWxString(diff.Format("%M min %S s %l ms")))
         ::win.Update(::TimerTime_id)
       } 
     }
@@ -489,7 +491,8 @@ if (!exists(CreateUltrasoundClass)) {
     }
     currenttime = wx.wxDateTime.UNow()
     diff=currenttime-inittime
-    ::win.SetLabelValue(::ReadCameraTime_id,diff.Format("%M min %S s %l ms").c_str())
+    ::win.SetLabelValue(::ReadCameraTime_id,\
+                        wx.FromWxString(diff.Format("%M min %S s %l ms")))
     ::win.Update(::ReadCameraTime_id)
   }
   
@@ -777,7 +780,8 @@ if (!exists(CreateUltrasoundClass)) {
             }
             currenttime = wx.wxDateTime.UNow()
             diff=currenttime-::inittime_readus
-            ::win.SetLabelValue(::readusTime_id,diff.Format("%M min %S s %l ms").c_str())
+            ::win.SetLabelValue(::readusTime_id,\
+                                wx.FromWxString(diff.Format("%M min %S s %l ms")))
             ::win.Update(::readusTime_id)
             
         }

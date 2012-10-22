@@ -148,7 +148,7 @@ if (!exists(alGraphVizClass)) {
       f = wx.wxFileName(::graphviz_file)
       f.SetPath(wx.wxFileName.GetTempDir())
       f.SetExt(::output_formats[::output_format])
-      ::output_file = f.GetFullPath().c_str()
+      ::output_file = wx.FromWxString(f.GetFullPath())
       ::win.Update(-1)
     }
     
@@ -377,7 +377,7 @@ if (!exists(alGraphVizClass)) {
       f = wx.wxFileName("shadow")
       f.SetPath(wx.wxFileName.GetTempDir())
       f.SetExt(::output_formats[::output_format])
-      shadow_filename = f.GetFullPath().c_str()
+      shadow_filename = wx.FromWxString(f.GetFullPath())
       ::res_shadow.save shadow_filename
       ::ShowShadow(shadow_filename)
 

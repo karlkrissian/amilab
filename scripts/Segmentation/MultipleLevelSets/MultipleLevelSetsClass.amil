@@ -93,8 +93,8 @@ if (!exists(MultipleLevelSetsClass)) {
     //   -----
 
       tmp = (::levelset1.lsres<1)*(::levelset2.lsres<1)
-      if count(tmp>0) {
-        printn "overlapping area = %1% pixels" % count(tmp>0)
+      if ami_count(tmp>0) {
+        printn "overlapping area = %1% pixels" % ami_count(tmp>0)
       }
       ::lexpansion1 = ::expansion1-::expansion2*tmp
       ::lexpansion2 = ::expansion2-::expansion1*tmp
@@ -152,14 +152,14 @@ if (!exists(MultipleLevelSetsClass)) {
               # check for convergence for level1
               ::levelset1.levelset.UpdateResult()
               ::levelset1.lsres = ::levelset1.levelset.GetOutputImage()
-              stillmoving1 = count((previous_ls1*::levelset1.lsres)<0)
+              stillmoving1 = ami_count((previous_ls1*::levelset1.lsres)<0)
               print "*** LS1 Convergence test = "; printn stillmoving1
               previous_ls1 = ::levelset1.lsres
 
               # check for convergence for level2
               ::levelset2.levelset.UpdateResult()
               ::levelset2.lsres = ::levelset2.levelset.GetOutputImage()
-              stillmoving2 = count((previous_ls2*::levelset2.lsres)<0)
+              stillmoving2 = ami_count((previous_ls2*::levelset2.lsres)<0)
               print "*** LS2 Convergence test = "; printn stillmoving2
               previous_ls2 = ::levelset2.lsres
 

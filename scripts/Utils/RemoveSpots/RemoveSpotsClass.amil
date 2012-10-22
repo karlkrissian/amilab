@@ -101,7 +101,7 @@ if (!exists(GreyMorphoClass)) {
       tmp_cc = CC(tmp)
 
       cc_ok = (cc_sign==1)*(cc_size>=::minsize)*(cc_size<=::maxsize)
-      nb_components= count(cc_ok)
+      nb_components= ami_count(cc_ok)
 
       n = 1
       for i=0 to cc_sign.tx-1 {

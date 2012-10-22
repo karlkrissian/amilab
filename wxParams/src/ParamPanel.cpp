@@ -283,6 +283,16 @@ int ParamPanel::AddPage(const std::string& panel_name)
   return (int)_tab_panels.size()-1;
 } // AddPage()
 
+//---------------------------------------------------------
+void ParamPanel::CB_CollapsiblePaneChanged(wxCollapsiblePaneEvent& event) 
+{
+  //std::cout << "CB_CollapsiblePaneChanged" << std::endl;
+  wxCollapsiblePane* cpane = dynamic_cast<wxCollapsiblePane*>(event.GetEventObject());
+  if (cpane!=NULL) {
+    //std::cout << "Layout()" << std::endl;
+    cpane->GetParent()->Layout();
+  }
+}
 
 //---------------------------------------------------------
 int ParamPanel::BeginPanel(const std::string& panel_name, bool collapsible)
@@ -290,6 +300,7 @@ int ParamPanel::BeginPanel(const std::string& panel_name, bool collapsible)
 {
   wxBoxSizer* panelsizer;
 
+  wxCollapsiblePane* cpane;
   wxWindow* panel;
   if (!collapsible)
     panel = new wxScrolledWindow( CurrentParent(),
@@ -298,11 +309,20 @@ int ParamPanel::BeginPanel(const std::string& panel_name, bool collapsible)
                                   wxDefaultSize, 
                                   wxTAB_TRAVERSAL  | wxVSCROLL
                                   );
-  else
-    panel = new wxCollapsiblePane(  CurrentParent(),
+  else {
+    cpane = new wxCollapsiblePane(  CurrentParent(),
                                     wxID_ANY,
-                                    wxString::FromAscii(panel_name.c_str())
+                                    wxString::FromAscii(panel_name.c_str()),
+                                    wxDefaultPosition, 
+                                    wxDefaultSize, 
+                                    wxTAB_TRAVERSAL |
+                                    wxNO_BORDER | 
+                                    wxCP_NO_TLW_RESIZE
                                     );
+    cpane->Connect(wxEVT_COMMAND_COLLPANE_CHANGED,
+                   (wxObjectEventFunction) &ParamPanel::CB_CollapsiblePaneChanged);
+    panel = cpane->GetPane();
+  }
     
 //  panel->SetScrollbars(3,3,10,10);
 //  panel->EnableScrolling(true,true);
@@ -319,8 +339,9 @@ int ParamPanel::BeginPanel(const std::string& panel_name, bool collapsible)
   if (!collapsible)
     _current_sizer.top()->Add(LastPanel(), 0, wxEXPAND, 0);
   else {
-    _current_sizer.top()->Add(LastPanel(), 1, wxGROW|wxALL, 2);
-    _current_sizer.top()->SetSizeHints(LastPanel());
+    _current_sizer.top()->Add(cpane, 0, wxGROW|wxALL, 2);
+    //_current_sizer.top()->Add(LastPanel(), 1, wxGROW|wxALL, 2);
+    //_current_sizer.top()->SetSizeHints(LastPanel());
   }
   _current_sizer.push(panelsizer);
 

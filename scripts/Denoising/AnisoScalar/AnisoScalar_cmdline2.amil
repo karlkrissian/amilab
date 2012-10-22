@@ -48,18 +48,18 @@ res =  cmdlineparser.Parse()
 
 if (res!=0) { quit; }
 
-input_name    = cmdlineparser.GetParam(0).c_str()
+input_name    = wx.FromWxString(cmdlineparser.GetParam(0))
 inputim = Image(input_name)
 
-output_name   = cmdlineparser.GetParam(1).c_str()
+output_name   = wx.FromWxString(cmdlineparser.GetParam(1))
 
 roi = wx.wxString(); 
 if cmdlineparser.Found("r",&roi) {
-  subimage_name = roi.c_str()
+  subimage_name = wx.FromWxString(roi)
   roiimage = Image(subimage_name)
 } else {
   if cmdlineparser.Found("rv",&roi) {
-    cmd = "roiimage = inputim[%1%];" % roi.c_str()
+    cmd = "roiimage = inputim[%1%];" % wx.FromWxString(roi)
     printn "evaluating '%1%'" % cmd
     eval cmd
   }
@@ -68,7 +68,7 @@ if cmdlineparser.Found("r",&roi) {
 
 nsd = wx.wxString()
 if cmdlineparser.Found("nsd",&nsd) {
-  noise_sd = atof(nsd.c_str())
+  noise_sd = atof(wx.FromWxString(nsd))
   # we could multiply the STD by 2.55 if it is in percentage like in BrainWeb 
   # application
 }

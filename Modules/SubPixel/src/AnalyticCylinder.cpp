@@ -79,9 +79,9 @@ double AnalyticCylinder::operator () (const double& x, const double& y,
     ellipsedir2y /=norm;
     ellipsedir2z /=norm;
     
-    double ellipsedir1x = ellipsedir2y*Zdir-ellipsedir2z*EllipseYdir;
-    double ellipsedir1y = ellipsedir2z*Xdir-ellipsedir2x*EllipseZdir;
-    double ellipsedir1z = ellipsedir2x*Ydir-ellipsedir2y*EllipseXdir;
+    double ellipsedir1x = ellipsedir2y*Zdir-ellipsedir2z*Ydir;
+    double ellipsedir1y = ellipsedir2z*Xdir-ellipsedir2x*Zdir;
+    double ellipsedir1z = ellipsedir2x*Ydir-ellipsedir2y*Xdir;
     // normalize
     norm = sqrt(  ellipsedir1x*ellipsedir1x+
                   ellipsedir1y*ellipsedir1y+

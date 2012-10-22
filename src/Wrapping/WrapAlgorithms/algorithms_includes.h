@@ -32,6 +32,8 @@
 
 #include "ImageLinearInterpolator.h"
 
+#include "func_globalstats.h"
+
 #ifdef __GCCXML__
   template class ami::ImageExtent<float>;
 #endif // __GCCXML__

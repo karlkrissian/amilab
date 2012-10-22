@@ -30,7 +30,7 @@
 
 //--------------------------------------------------
 // count the number of positive points of the image
-int   Func_count( InrImage* im)
+int   ami::count( InrImage* im)
 {
   int num;
 
@@ -47,6 +47,25 @@ int   Func_count( InrImage* im)
   return num;
 }
 
+boost::shared_ptr<ami::MeanClass> ami::MeanClass::operator[](InrImage::ptr m)
+{
+  boost::shared_ptr<MeanClass> res(new MeanClass());
+  res->mask = m;
+  return res;
+}
+
+double ami::MeanClass::operator()(InrImage::ptr im, InrImage::ptr m) {
+  if (im.get())
+    if (m.get())
+      return Func_mean(im.get(),m.get());
+    else
+      if (mask.get())
+        return Func_mean(im.get(),mask.get());
+      else
+        return Func_mean(im.get());
+  else
+    return 0.0;
+}
 
 //--------------------------------------------------
 double     Func_mean( InrImage* im)

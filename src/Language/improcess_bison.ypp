@@ -510,13 +510,14 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token TRANSPOSE_OP POINTWISE_MULT
 %token ASSIGN_OP
 
-%token T_COUNT
+//%token T_COUNT
 %token T_MAX
 %token T_argmax
 %token T_MIN
 %token T_MEDIAN
 
-%token OpImage  FILTER NormGrad T_DiscNormGrad T_gradient
+//%token OpImage 
+%token FILTER NormGrad T_DiscNormGrad T_gradient
 %token SecDerGrad SecDerGrad2 SubImage 
 %token T_point_putimage
 %token T_AutoCrop
@@ -4721,6 +4722,8 @@ float_variable:
       delete compute_area;
 
     }
+    /*
+    |
     T_COUNT T_OP_PAR expr_image  T_CL_PAR
     {
     /**
@@ -4735,11 +4738,11 @@ float_variable:
         See also:
             max, mean, min, median
 
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage,im);
-      float val=Func_count( im.get() );
+      float val=ami::count( im.get() );
       ADD_VARSTACK_FLOAT(val);
-    }
+    }*/
     |
     T_mean T_OP_PAR expr_image  T_CL_PAR
     {
@@ -5509,6 +5512,7 @@ image:
       InrImage::ptr res(Func_localSD2( im.get(), mean.get(), (int) $7));
       ADD_VARSTACK_PTR(InrImage,res);
     }
+    /*
       |
       OpImage T_OP_PAR var_image T_COMMA ASTRING T_CL_PAR
       {
@@ -5613,6 +5617,7 @@ image:
         FinSi
         ADD_VARSTACK_PTR(InrImage,res);
       }
+      */
       |
       FILTER
       T_OP_PAR expr_image

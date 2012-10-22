@@ -412,7 +412,7 @@ proc GenerateVectors( ) {
     } else {
       mask1 = (c48m>0)
     }
-    if count(mask)>0  {
+    if ami_count(mask)>0  {
       print sprint(" min = %3.3f \t",   min[mask]   (alt48))
       print sprint(" max = %3.3f \n",   max[mask]   (alt48))
       print sprint(" mean = %3.3f \t",  mean[mask]  (alt48))

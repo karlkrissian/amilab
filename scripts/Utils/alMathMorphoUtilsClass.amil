@@ -31,7 +31,7 @@ Class alMathMorphoUtilsClass \
     inittime = wx.wxDateTime.UNow()
     m.Run()
     diff=wx.wxDateTime.UNow()-inittime
-    time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+    time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
     printn "Duration \tDone (%1%)" % time_elapsed
     return = m.GetOutput()
   }
@@ -51,7 +51,7 @@ Class alMathMorphoUtilsClass \
     inittime = wx.wxDateTime.UNow()
     m.Run()
     diff=wx.wxDateTime.UNow()-inittime
-    time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+    time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
     printn "Duration \tDone (%1%)" % time_elapsed
     return = m.GetOutput()
   }

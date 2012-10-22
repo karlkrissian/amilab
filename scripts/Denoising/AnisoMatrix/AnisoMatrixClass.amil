@@ -338,10 +338,10 @@ if (!exists(AnisoMatrixClass)) {
       fn = wx.wxFileName(::result_filename+"_noise.txt")
       if !(fn.IsDirWritable()) {
         fn.Assign(wx.wxFileName.GetTempDir(),fn.GetFullName())
-      printn "Set File as %1%" % fn.GetFullPath().c_str()
+      printn "Set File as %1%" % wx.FromWxString(fn.GetFullPath())
       }
       if fn.IsDirWritable() {
-        noisefile = File(fn.GetFullPath().c_str(),"w")
+        noisefile = File(wx.FromWxString(fn.GetFullPath()),"w")
         noisefile._print( "noise SD = %1% \n" % sqrt(noise_variance))
       
         if (exists(::exact_noise_sd)) {
@@ -406,7 +406,7 @@ if (!exists(AnisoMatrixClass)) {
       ::FilterFlux()
 
       diff=wx.wxDateTime.UNow()-inittime
-      time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       SetStatusText("Denoising \tDone (%1%)" % time_elapsed)
     }
     Comments( ::Filter, "Run the denoising algorithm, using the following "   +\
@@ -510,11 +510,13 @@ if (!exists(AnisoMatrixClass)) {
       ::win.BeginBook()
         ::win.AddPage("Main")
           ::win.BeginPanel("Input")
+            ::input_parent = ::win.CurrentParent()
+            ::input_sizer = ::win..GetCurrentSizer()
             ::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,220,200))
             ::win.AddImageChoice( &::input_name, "Input")
           ::win.EndPanel()
 
-          ::win.BeginBoxPanel("PDE parameters")
+          ::win.BeginPanel("PDE parameters",true)
             ::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,210,230))
             
             ::win.BeginHorizontal()
@@ -526,7 +528,7 @@ if (!exists(AnisoMatrixClass)) {
 
             ::params.scheme_modes.SetGuiMode(1)
             ::params.scheme_modes.AddGui(&::win)
-          ::win.EndBoxPanel()
+          ::win.EndPanel()
 
 
           #------------ Matrix diffusion ----------------
@@ -541,7 +543,7 @@ if (!exists(AnisoMatrixClass)) {
             ::sigma_id = ::win.AddFloat( &::params.sigma,"sigma",0.5,5)
             ::win.ShowSlider(::sigma_id,false)
 
-            ::win.BeginHorizontal()
+            #::win.BeginHorizontal()
               ::params.contour_modes.SetGuiMode(1)
               ::params.contour_modes.AddGui(&::win)
               ::params.contour_modes.SetCallback(&::CB_ContourMode)
@@ -554,7 +556,7 @@ if (!exists(AnisoMatrixClass)) {
               ::params.eigen_modes.SetGuiMode(1)
               ::params.eigen_modes.AddGui(&::win)
               #s.GetItem(3).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
-            ::win.EndHorizontal()
+            #::win.EndHorizontal()
 
           ::win.EndBoxPanel()
           
@@ -593,9 +595,11 @@ if (!exists(AnisoMatrixClass)) {
               ::win.SetPositionProp(-1,0)
             ::win.EndHorizontal()
             s.GetItem(0).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
-            ::win.AddBoolean( &::params.run_on_roi,"Run on ROI")
+            ::win.BeginHorizontal()
+              ::win.AddBoolean( &::params.run_on_roi,"Run on ROI")
+              ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
+            ::win.EndHorizontal()
             s.GetItem(1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
-            ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
           ::win.EndPanel()
           
         ::win.AddPage("Save")

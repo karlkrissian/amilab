@@ -480,10 +480,10 @@ printn "3.1"
         fn = wx.wxFileName(::result_filename+"_noise.txt")
         if !(fn.IsDirWritable()) {
           fn.Assign(wx.wxFileName.GetTempDir(),fn.GetFullName())
-        printn "Set File as %1%" % fn.GetFullPath().c_str()
+        printn "Set File as %1%" % wx.FromWxString(fn.GetFullPath())
         }
         if fn.IsDirWritable() {
-          noisefile = File(fn.GetFullPath().c_str(),"w")
+          noisefile = File(wx.FromWxString(fn.GetFullPath()),"w")
           noisefile._print( "noise SD = %1% \n" % sqrt(noise_variance))
         
           if (exists(::exact_noise_sd)) {
@@ -525,7 +525,7 @@ print "::Filter()"
   
       ::FilterNRAD()
       diff=wx.wxDateTime.UNow()-inittime
-      time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+      time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       SetStatusText("Denoising \tDone (%1%)" % time_elapsed)
     }
     Comments( ::Filter, "Run the denoising algorithm.")

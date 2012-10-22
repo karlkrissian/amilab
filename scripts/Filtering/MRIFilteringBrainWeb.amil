@@ -106,7 +106,7 @@ proc CB_BW_Stats_mask( IMAGE _mask, IMAGE _ref, NUM _useref) {
     tmp = NRAD_res-output_mean
     output_sd = sqrt(mean[_mask](tmp*tmp))
     print sprint("Mean intensity %03.0f, ",mean[_mask](_ref))
-    print sprint("class size %02.1f %, ",count(_mask)/(_mask.tx*_mask.ty*_mask.tz)*100)
+    print sprint("class size %02.1f %, ",ami_count(_mask)/(_mask.tx*_mask.ty*_mask.tz)*100)
 
     print sprint("ref: %03.3f $\\pm$ ",ref_mean)   +sprint(" %03.3f\t",ref_sd)
     print sprint("in:  %03.3f $\\pm$ ",input_mean) +sprint(" %03.3f\t",input_sd)

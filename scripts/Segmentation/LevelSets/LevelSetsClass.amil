@@ -247,7 +247,7 @@ if (!exists(LevelSetsClass)) {
         }
 
         diff=wx.wxDateTime.UNow()-inittime
-        time_elapsed = diff.Format("%M min %S s %l ms").c_str()
+        time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
         SetStatusText("Geodesic Weights \tDone (%1%)" % time_elapsed)
       } else \
       {
@@ -581,7 +581,7 @@ if (!exists(LevelSetsClass)) {
     proc ::ComputeIntensityStats() {
     
       if (exists(::inls)) {
-        if (count(::inls>0)>0) {
+        if (ami_count(::inls>0)>0) {
           ::params.Imean= mean[::inls>0](::input)
           ::params.Isd  = mean[::inls>0] ( (::input-::params.Imean)*(::input-::params.Imean))
           ::params.Isd  = sqrt(::params.Isd)
@@ -606,7 +606,7 @@ if (!exists(LevelSetsClass)) {
     proc ::ComputeIntensityStatsMedian() {
     
       if (exists(::inls)) {
-        if (count(::inls>0)>0) {
+        if (ami_count(::inls>0)>0) {
           ::params.Imean= median[::inls>0](::input)
           tmp = (::input-::params.Imean)*(::input-::params.Imean)
           ::params.Isd  = median[::inls>0] ( tmp)
@@ -793,7 +793,7 @@ if (!exists(LevelSetsClass)) {
               # check for convergence
               ::levelset.UpdateResult()
               ::lsres = ::levelset.GetOutputImage()
-              stillmoving = count((previous_ls*::lsres)<0)
+              stillmoving = ami_count((previous_ls*::lsres)<0)
               print "*** Convergence test = "; printn stillmoving
               if (stillmoving==0) { ::stop=1; }
               previous_ls = ::lsres

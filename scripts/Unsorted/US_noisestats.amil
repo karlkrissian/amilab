@@ -64,7 +64,7 @@ proc SpeckleStats(IMAGE input, STRING name, NUM size, NUM samples, NUM noisetype
 	selection = (_i1>n1min)*(_i1<=n1max)*(_ing<0.5)
       }
 
-      if (count(selection)>10) {
+      if (ami_count(selection)>10) {
 
         noise_data._print("\n");
         noise_data._print(n1); 
@@ -87,7 +87,7 @@ proc SpeckleStats(IMAGE input, STRING name, NUM size, NUM samples, NUM noisetype
         noise_datamed._print( _m1)
       }
 
-      histo_data._print(count((input>n1min)*(input<=n1max)))
+      histo_data._print(ami_count((input>n1min)*(input<=n1max)))
 
 
     }

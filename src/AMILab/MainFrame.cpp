@@ -31,7 +31,9 @@
 #include <wx/gauge.h>
 #include <iostream>
 #include <cstring>
-#include "myTreeCtrl.h"
+#ifndef AMI_USE_DATAVIEW
+  #include "myTreeCtrl.h"
+#endif
 #include <sys/stat.h>
 #ifndef WIN32
 #include <unistd.h>

@@ -40,6 +40,8 @@ ami::AddImageNoise
 # Reconstruction of tubes around lines
 ami::LineRecons
 
+ami::MeanClass
+
 # linear interpolator
 amimage
 ImageLinearInterpolator

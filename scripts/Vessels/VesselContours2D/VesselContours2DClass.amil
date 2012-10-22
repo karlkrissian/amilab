@@ -89,7 +89,7 @@ if (!exists(VesselContours2DClass)) {
           
           ::results2.putimage(component,0,0,k)
 
-          #cont_area2 = count(component)
+          #cont_area2 = ami_count(component)
           cont_area2 = algorithms.ami_ComputePositiveArea(component)
 
           # First curve

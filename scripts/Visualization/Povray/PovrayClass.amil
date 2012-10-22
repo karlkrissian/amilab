@@ -29,7 +29,7 @@ if (!exists(PovrayClass)) {
       f = wx.wxFileName(::scene_file)
       f.SetPath("/tmp")
       f.SetExt("png")
-      ::output_file = f.GetFullPath().c_str()
+      ::output_file = wx.FromWxString(f.GetFullPath())
       ::win.Update(-1)
     }
 
