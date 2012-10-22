@@ -50,6 +50,9 @@ class ${EXPORT_MACRO} WrapClass_${TEMPLATENAME} : public WrapClass<${TEMPLATE} >
     const boost::shared_ptr<${TEMPLATE} >& GetObj() const { return WrapClass<${TEMPLATE} >::GetObj(); }
     std::string ObjPointerAsString() { return "${TEMPLATENAME}"; }
 
+    /// Provide a default constructor
+    WrapClass_${TEMPLATENAME}() {}
+
     /// Constructor
     WrapClass_${TEMPLATENAME}(boost::shared_ptr<${TEMPLATE} > si): 
     WrapClass<${TEMPLATE} >(si)
