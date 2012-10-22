@@ -3,9 +3,18 @@
 ami::ImageExtent<float>
 
 # trying std::vector<...>
+
 std::vector<double, std::allocator<double> >
+std::vector<double, std::allocator<double> >::iterator
+
 std::vector<float, std::allocator<float> >
+std::vector<float, std::allocator<float> >::iterator
+
 std::vector<int, std::allocator<int> >
+std::vector<int, std::allocator<int> >::iterator
 
 # iostream
 std::ostream
+
+# stringstream
+std::stringstream
