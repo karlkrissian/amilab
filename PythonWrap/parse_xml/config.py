@@ -145,7 +145,13 @@ builtin_classes = ['AMIObject','WrapClassMember']
 #available_pointertypes= ['int','float','double','unsigned char','long','long int','std::string','bool']
 
 available_operators={ \
-  '!=' : '__not_equal__', \
+  '>'  : '__greaterthan__', \
+  '<'  : '__lowerthan__', \
+  '>>' : '__rightshift__', \
+  '<<' : '__leftshift__', \
+  '>=' : '__greaterorequalthan__', \
+  '<=' : '__lowerorequalthan__', \
+  '!=' : '__notequal__', \
   '==' : '__equal__', \
   '[]' : '__at__', \
   '()' : '__parenthesis__', \
@@ -175,6 +181,7 @@ def ClassUsedName(classname):
   res = res.replace('>','_G_')
   res = res.replace(',','_')
   res = res.replace('::','_')
+  res = res.replace('*','_ptr')
   res = res.replace('unsigned char', 'UC')
   res = res.replace('unsigned short','US')
   res = res.replace('unsigned int',  'UI')
@@ -196,6 +203,7 @@ def ClassShortName(classname,libnamespace=""):
   res = res.replace('>','')
   res = res.replace(',','_')
   res = res.replace('::','_')
+  res = res.replace('*','_ptr')
   res = res.replace('unsigned char', 'UC')
   res = res.replace('unsigned short','US')
   res = res.replace('unsigned int',  'UI')

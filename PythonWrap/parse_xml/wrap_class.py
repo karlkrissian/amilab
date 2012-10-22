@@ -367,9 +367,14 @@ class ParsePublicMembers:
     self.class_list = class_list
     self.found=False
     self.inmethod=0
-    self.available_methods=['Method','Constructor','Destructor',\
-                            'OperatorMethod','Converter']
+    if args.val.ancestors == []:
+      self.available_methods=['Method','Constructor','Destructor',\
+                              'OperatorMethod','Converter']
+    else:
+      # if in ancestors, not method needed
+      self.available_methods=[]
     self.inenum=False
+    self.demangled_typedefs=dict()
 
   #---------------------------------------------
   def CheckMethodName(self,methodlist,methods,mname):
@@ -425,6 +430,7 @@ class ParsePublicMembers:
         if mname in config.available_operators.keys():
           method.usedname=config.available_operators[mname]
         else:
+          print "Operator {0} not available".format(mname)
           method.usedname="operator not available"
         method.duplicated=True
         self.public_members.OperatorMethods.insert(\
@@ -536,6 +542,7 @@ class ParsePublicMembers:
       #print "Name = {0}, context {1} not yet included in types".format(name,context)
       return False
 
+    #print "*"
     if (contextname not in self.class_list) or (access!="public"): return False
     
     # Context should be of class or struct type, and have a PublicMembers instance
@@ -580,10 +587,13 @@ class ParsePublicMembers:
     if name=='Typedef':
       tname=attrs.get('name',None)
       ttype=attrs.get('type',None)
-      print "Found Typedef '{0}' in class".format(tname)
+      #print "Found Typedef '{0}' in class {1}".format(tname,\
+                                     #config.types[context].GetDemangled())
       typedef = TypedefInfo()
       typedef.name=tname
       typedef._reftypeid = ttype
+      typedef.demangled  = config.types[context].GetDemangled()+"::"+tname
+      self.demangled_typedefs[typedef.demangled] = typedef
       self.public_members.Typedefs.append(typedef)
       
     # If it's not a method element, ignore it
@@ -862,17 +872,34 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
           else:
             shared_type = config.IsSharedPtr(typename)
             if shared_type==None:
-              if config.types[method.returntype].GetType() == "ReferenceType" and not(config.types[method.returntype].GetFullString().endswith('const &')) and not(config.types[method.returntype].GetFullString().endswith('* &')):
-                if (method.static!="1") and (config.types[method.returntype].GetString()==classname):
+              rettype = config.types[method.returntype]
+              if rettype.GetType() == "ReferenceType" and \
+                  not(rettype.GetFullString().endswith('const &')) and \
+                  not(rettype.GetFullString().endswith('* &')):
+                if (method.static!="1") and (rettype.GetString()==classname):
                   res += ident+'  if (&res==this->_objectptr->GetObj().get())\n'
                   res += ident+'    return AMILabType<{0} >::CreateVarFromSmtPtr(this->_objectptr->_obj);\n'.format(typename)
                 # return a pointer that will not be deleted
                 res += ident+'  return AMILabType<{0} >::CreateVar(&res,true);\n'.format(typename)
               else:
-                if config.types[method.returntype].GetFullString().endswith('* &'):
-                  res += ident+'  return AMILabType<{0} >::CreateVar(res,true);\n'.format(typename)
-                else:
-                  res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
+                 if rettype.GetFullString().endswith('* &'):
+                 #if config.types[method.returntype].GetFullString().endswith('&'):
+                   res += ident+'  return AMILabType<{0} >::CreateVar(res,true);\n'.format(typename)
+                 else:
+                   # Here complicate, but we can't call new constructor if 
+                   # return type is T const &
+                   rettype_mainid = rettype.GetMainTypeId()
+                   if rettype.GetFullString().endswith('const &') and \
+                      not(rettype.GetFullString().endswith('* const &')) and \
+                      rettype_mainid in config.types.keys() and\
+                      config.types[rettype_mainid].GetType()=="Class" and \
+                      False:
+                     print "Warning: risky cast, in return type, from (T const &) to (T*), but needed ... ({0})".\
+                        format(config.types[method.returntype].GetFullString())
+                     res += ident+'  return AMILabType<{0} >::'.format(typename)\
+                                 +'CreateVar(({0}*)&res,true);\n'.format(config.types[method.returntype].GetFullString()[:-7])
+                   else:
+                     res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
             else:
               res += ident+'  return AMILabType<{0} >::CreateVarFromSmtPtr(res);\n'.format(shared_type)
   return res
@@ -1297,7 +1324,8 @@ def WrapClass(classname,include_file,inputfile):
     #print "number of bases:",len(dh.bases)
     #print dh.bases
     for (base,virtual) in dh.bases:
-      basename=config.types[base].GetString()
+      # trying with GetFullString, that will take the demangled version ...
+      basename=config.types[base].GetFullString()
       #print "base:",base," name:",basename
       virtualstring=''
       baseusedname=config.ClassUsedName(basename)
@@ -1707,7 +1735,7 @@ def WrapClass(classname,include_file,inputfile):
       config.templatetypes(m.group(2),template_params)
       for template_param in template_params:
         template_param = template_param.strip(' ')
-        #print "To check for include: {0}".format(template_param)
+        print "To check for include: '{0}'".format(template_param)
         if template_param in config.classes.keys():
           fileid = config.types[config.classes[template_param]].fileid
           filetoadd = FindIncludeFile(template_param,fileid)

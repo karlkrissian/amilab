@@ -299,7 +299,10 @@ if __name__ == '__main__':
     print "*** Find types and variables end"
 
     print "*** Find public members"
-    fpm = findtypesvars.FindPublicMembers(config.parsed_classes)
+    if args.val.ancestors != []:
+      fpm = findtypesvars.FindPublicMembers(args.val.ancestors[:])
+    else:
+      fpm = findtypesvars.FindPublicMembers(config.parsed_classes)
     parser.setContentHandler(fpm)
     # Parse the input
     inputfile.seek(0)
@@ -316,20 +319,49 @@ if __name__ == '__main__':
 
     if args.val.ancestors != []:
 
+      typedefs_global = dict()
+      typedefs_namespace = dict()
       # 1 create dictionnary of classes to speed-up ...
       print "Creating classes dict"
       classes_dict = dict()
       typedef_dict = dict()
       for f in config.types.keys():
-        if config.types[f].GetType()=="Class":
+        if config.types[f].GetType() in ["Class","Struct"] :
           classes_dict[f] = config.types[f].GetFullString()
         if config.types[f].GetType()=="Typedef":
           typedef_dict[f] = config.types[f].GetFullString()
           maintypeid = config.types[f].GetMainTypeId()
-          print "typedef : Name: [{0}] String: [{1}] Main type: [{2}]".\
-              format( config.types[f].GetName(),\
-                      config.types[f].GetString(),\
-                      config.types[maintypeid].GetString())
+          name = config.types[f].GetName()
+          
+          context = config.types[f].GetContext()
+          ok=False
+          if context=="_1":
+            typedef_name  = name
+            typedefs_global[name] = f
+            ok=True
+          else:
+            if context in config.types.keys():
+              #print context, " ", config.types[context].GetType()
+              if config.types[context].GetType()=="Namespace":
+                contextname = config.types[context].GetFullString()
+                typedef_name  = contextname+"::"+name
+                ok=True
+                typedefs_namespace[typedef_name] = f
+          #if ok:
+            #print "typedef : Name: [{0}] Typedef name: [{1}] Main type: [{2}]".\
+                #format( config.types[f].GetName(),\
+                        #typedef_name,\
+                        #config.types[maintypeid].GetString())
+      #print "==================="
+      #print "Global typedefs:"
+      #print "==================="
+      #for n in typedefs_global.keys():
+        #print n
+      #print "==================="
+      #print "Namespace typedefs:"
+      #print "==================="
+      #for n in typedefs_namespace.keys():
+        #print n
       #print typedef_dict
       
       #print "--------------------"
@@ -339,6 +371,53 @@ if __name__ == '__main__':
       print "Creating ancestors"
       # 2. create list of classes
       ancestors = args.val.ancestors[:]
+      ancestors_toremove=[]
+      ancestors_toadd=[]
+      
+      #print "ancestors:", ancestors
+      #print "demanged_typefs:", fpm.parse_public_members.demangled_typedefs
+      # check for possible typedefs
+      for a in ancestors:
+        #print "Checking '{0}'".format(a)
+        if a in fpm.parse_public_members.demangled_typedefs.keys():
+          #print "Processing {0}".format(a)
+          ancestors_toremove.append(a)
+          # replace it with its referenced type
+          # find referenced type
+          t = fpm.parse_public_members.demangled_typedefs[a]
+          refid = t.GetMainTypeId()
+          #print "refid = {0}".format(refid)
+          if refid in config.types.keys():
+            print "adding '{0}' ".format(config.types[refid].GetFullString())
+            ancestors_toadd.append(config.types[refid].GetFullString())
+        if a in typedefs_global.keys():
+          #print "Processing {0}".format(a)
+          ancestors_toremove.append(a)
+          # replace it with its referenced type
+          # find referenced type
+          t = typedefs_global[a]
+          refid = t
+          #print "refid = {0}".format(refid)
+          if refid in config.types.keys():
+            print "adding '{0}' ".format(config.types[refid].GetFullString())
+            ancestors_toadd.append(config.types[refid].GetFullString())
+        if a in typedefs_namespace.keys():
+          #print "Processing {0}".format(a)
+          ancestors_toremove.append(a)
+          # replace it with its referenced type
+          # find referenced type
+          t = typedefs_namespace[a]
+          refid = t
+          #print "refid = {0}".format(refid)
+          if refid in config.types.keys():
+            print "adding '{0}' ".format(config.types[refid].GetFullString())
+            ancestors_toadd.append(config.types[refid].GetFullString())
+      
+      # remove processed typedefs
+      ancestors[:]=[x for x in ancestors if x not in ancestors_toremove]
+      # remove duplicates
+      ancestors = list(set(ancestors+ancestors_toadd))
+
       # 3. expand ancestor to classes within templates
       ancestors_templates = ancestors[:]
       for b in ancestors:
@@ -379,9 +458,13 @@ if __name__ == '__main__':
             ##newlist.append(newclass)
       # Deal with inheritence
       for b in ancestors:
+        if b.find("stream") != -1:
+          print "Check for {0}".format(b)
         # find the id of the class
         for f in classes_dict.keys():
           if classes_dict[f] == b:
+            if b.find("stream") != -1:
+              print "in classes_dict.keys()"
             #print "ancestors to add?"
             # recursively add the ancestors to the list
             bases=config.types[f].bases
@@ -394,10 +477,12 @@ if __name__ == '__main__':
             newlist=[]
             while f_anc != []:
               anc_id = f_anc.pop()[0]
+              if b.find("stream") != -1:
+                print "processing base {0}".format(config.types[anc_id].GetFullString())
               #if b=="wxTopLevelWindow":
               #print anc_id
               if not(anc_id in classes_dict.keys()):
-                print "not in classes_dict.keys() ..."
+                print "{0} not in classes_dict.keys() ...".format(anc_id)
               if anc_id in classes_dict.keys():
                 #if b=="wxTopLevelWindow":
                 #print classes_dict[anc_id]," args.val.templates=",args.val.templates
@@ -415,8 +500,15 @@ if __name__ == '__main__':
                   #print "Check ancestor {0} to match filter".format(classes_dict[anc_id])
                   if m != None:
                     #print "OK"
+                    main_anc_id = config.types[anc_id].GetMainTypeId()
+                    if b.find("stream") != -1:
+                      print config.types[anc_id].GetType()
+                    if main_anc_id != anc_id:
+                      if b.find("stream") != -1:
+                        print "anc_id {0}, main_anc_id {1}".format(anc_id,main_anc_id)
+                      if main_anc_id in classes_dict.keys():
+                        anc_id = main_anc_id
                     ancestors.append(classes_dict[anc_id])
-                    #print "adding {0}".format(classes_dict[anc_id])
                     newlist.append(classes_dict[anc_id])
                     bases=config.types[anc_id].bases
                     #if b.startswith("itk"):
@@ -431,11 +523,12 @@ if __name__ == '__main__':
       #print "All ancestors are   {0} ".format(ancestors)
       # write ancestors file
       print args.val.ancestors_file
-      print "ancestors={0}".format(ancestors)
+      #print "ancestors={0}".format(ancestors)
       f = open (args.val.ancestors_file, "w")
       # ancestors dependencies
       ancestors_depfile = os.path.splitext(args.val.ancestors_file)[0]+\
                           "_depfile.txt"
+      print "Writing ancestors dependencies file"
       f1 = open(ancestors_depfile,"w")
       # first sort
       ancestors.sort()
@@ -444,7 +537,7 @@ if __name__ == '__main__':
           f.write(a+"\n")
         else:
           print "Rejecting {0} from ancestors\n".format(a)
-        print a
+        #print a
         #print config.types.values()
         if a in classes_dict.values():
           #print "*"
@@ -452,7 +545,7 @@ if __name__ == '__main__':
           #print pos
           fid = config.types[classes_dict.keys()[pos]].fileid
           #print fid
-          print config.files[fid]
+          #print config.files[fid]
           f1.write(a+" | "+config.files[fid]+"\n")
       
       if(args.val.generate_html):

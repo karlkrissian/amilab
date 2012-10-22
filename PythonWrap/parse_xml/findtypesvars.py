@@ -42,7 +42,9 @@ class FindTypesAndVariables(handler.ContentHandler):
         self.argtype.bases.append((basetype,basevirtual))
       return True
       
-    if (name not in config.class_types): return False
+    # allow namespaces
+    if (name!="Namespace"):
+      if (name not in config.class_types): return False
 
     # create the corresponding structure
     self.argtype = eval("argtypes."+name+"Info()")
@@ -166,10 +168,6 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # Look for the title and number attributes (see text)
     id = attrs.get('id', None)
-    if id=="_3252c":
-      print "*** Found"
-    #if name=="CvQualifiedType":
-      #print "id = {0}".format(id)
     self.argtype.SetId(id)
     config.types[id] = self.argtype
 
@@ -223,13 +221,13 @@ class FindPublicMembers(handler.ContentHandler):
   #---------------------------------------------
   def startElement(self, name, attrs):
     # don't parse public members if only looking at the class hierarchy
-    if args.val.ancestors == []:
-      # Check for public members of user-given classes
-      if self.parse_public_members.startElement(name,attrs):
-        # if parsing has found the right contexts, and there is nothing 
-        # else to process
-        return
+    #if args.val.ancestors == []:
+    # Check for public members of user-given classes
+    if self.parse_public_members.startElement(name,attrs):
+      # if parsing has found the right contexts, and there is nothing 
+      # else to process
+      return
   #-------------------------------------------------------
   def endElement(self, name):
-    if args.val.ancestors == []:
-      self.parse_public_members.endElement(name)
+    #if args.val.ancestors == []:
+    self.parse_public_members.endElement(name)

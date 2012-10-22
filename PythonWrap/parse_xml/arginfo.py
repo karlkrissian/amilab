@@ -202,6 +202,11 @@ class ArgInfo:
     fulltype=config.types[self.typeid].GetFullString()
     shared_type = config.IsSharedPtr(self.typename)
     if shared_type==None:
+      # more complicate to deal with type substitution here ...
+      #if self.typename in typesubst.type_substitute.keys():
+        #smtptr_type = typesubst.type_substitute[self.typename]
+        #substvar = self.GetSubstName()
+      #else:
       smtptr_type = self.typename
     else:
       smtptr_type = shared_type
@@ -226,53 +231,6 @@ class ArgInfo:
         res += "  {0} {1} = *{1}_smtptr;\n".format(fulltype,self.name)
       else:
         res += "  {0} {1} = {1}_smtptr;\n".format(fulltype,self.name)
-    #else:
-      ##
-      ## Is it still needed ??? default values ...
-      ##
-      #res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n,false{2},{4})) {3};\n".format(\
-        #smtptr_type,self.name,noconst,self.returnstring,self.quiet)
-      ## deal with default value
-      #res += "  // Setting default value if no value is returned\n"
-      ## treat abstract classes separately since default argument cannot be a value 
-      ## and the standard way can fail because of lack of constructor
-      #if config.types[self.typeid].GetAbstract()=="1":
-        #res += "  {0}* {1}_ptr = {1}_smtptr.get();\n".format(self.typename,self.name)
-        #if ispointer:
-          #res += "  if (!{0}_ptr) {0}_ptr={1};\n".format(self.name,self.default)
-          #res += "  {0} {1} = {1}_ptr;\n".format(fulltype,self.name)
-        #else:
-          #res += "  if (!{0}_ptr) {0}_ptr=&{1};\n".format(self.name,self.default)
-          #res += "  {0} {1} = *{1}_ptr;\n".format(fulltype,self.name)
-      #else:
-        #res += "  {0} {1} = ( {1}_smtptr.get() ? ".format(fulltype,self.name)
-        ##res += "    ({0}) (*{1}_smtptr):\n".format(fulltype,self.name)
-        ##res += "    ({0}) {1});\n".format(fulltype,self.default)
-        #if ispointer:
-          #res += "{0}_smtptr.get() : ".format(self.name)
-        #else:
-          #res += "(*{0}_smtptr) : ".format(self.name)
-        #if fulltype.endswith("const &") and not fulltype.endswith("* const &"):
-          ## this operation is not always available:
-          ## we should check the type of self.default to see if it is really necessary
-          ##if self.default=="wxDefaultValidator":
-            ##print " {0} : {1} {2} {3} ".format(self.default,self.default in config.variables.keys(),config.types[config.variables[self.default]].GetString(),config.types[self.typeid].GetString())
-          #convertdefault=True
-          #if  self.default in config.variables.keys():
-            #if config.types[config.variables[self.default]].GetDemangled() == config.types[self.typeid].GetDemangled():
-              #convertdefault=False
-          #if not convertdefault:
-            ## no need to convert, same type
-            #res += "{0} );\n".format(self.default)
-          #else:
-            ## doing case specific convertion: any other better option???
-            #if self.typename=="wxString" and self.default[0]=='"':
-              #default=self.default.replace('\\000','')
-              #res += "{0}(L{1}) );\n".format(self.typename,default)
-            #else:
-              #res += "{0}({1}) );\n".format(self.typename,self.default)
-        #else:
-          #res += "({0}) );\n".format(self.default)
     return res
   
   def WrapGetParam(self,noconstructor_call,returnstring,quiet):
