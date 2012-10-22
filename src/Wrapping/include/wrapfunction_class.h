@@ -442,6 +442,9 @@ class WrapClass: public virtual WrapClassBase
       return GetPointerAsString((void*)_obj.get());
     }
 
+    /// Constructor without parameters, needed for special case of multiple inheritance??
+    WrapClass<T>() {}
+
     /// Constructor
     WrapClass<T>(boost::shared_ptr<T> si):  _obj(si)
     {}
