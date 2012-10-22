@@ -137,6 +137,7 @@ varid {identifier}(<{identifier}(,{identifier})*>)?
 "^="                    {  return(token::XOR_ASSIGN); } /*{ ^=,XOR_ASSIGN}*/
 "|="                    {  return(token::OR_ASSIGN); } /*{|=,OR_ASSIGN}*/
 ">>"                    {  return(token::RIGHT_OP); } /*{>>,RIGHT_OP}*/
+"<<"                    {  return(token::LEFT_OP); } /*{<<,LEFT_OP}*/
 "++"                    {  return(token::INC_OP); } /*{++,INC_OP}*/
 "--"                    {  return(token::DEC_OP); } /*{--,DEC_OP}*/
 "->"                    {  return(token::PTR_OP); } /*{->,PTR_OP}*/
@@ -231,15 +232,6 @@ varid {identifier}(<{identifier}(,{identifier})*>)?
   return(token::T_point_SetImageName); 
 } /*{.SetImageName,T_point_SetImageName}*/
 
-<point>end {
-  BEGIN(0);
-  return(token::T_point_end); 
-} /*{.end,T_point_end}*/
-
-<point>iterate {
-  BEGIN(0);
-  return(token::T_point_iterate); 
-} /*{.iterate,T_point_iterate}*/
 
 <point>save {
   BEGIN(0);
@@ -498,9 +490,6 @@ del               return(token::T_del); /*{del,T_del}*/
 delvars           return(token::T_delvars); /*{delvars,T_delvars}*/
 
 vtkAnisoGS        return(token::T_vtkAnisoGS); /*{vtkAnisoGS,T_vtkAnisoGS}*/
-
-AnisoWeickert     return(token::T_AnisoWeickert); /*{AnisoWeickert,T_AnisoWeickert}*/
-AnisoCW           return(token::T_AnisoCW); /*{AnisoCW,T_AnisoCW}*/
 
 AnisoRudinMult    return(token::T_AnisoRudinMult); /*{AnisoRudinMult,T_AnisoRudinMult}*/
 

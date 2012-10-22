@@ -504,7 +504,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token RIGHT_ASSIGN LEFT_ASSIGN ADD_ASSIGN
 %token SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN
 %token MOD_ASSIGN AND_ASSIGN XOR_ASSIGN
-%token OR_ASSIGN RIGHT_OP  INC_OP
+%token OR_ASSIGN RIGHT_OP LEFT_OP INC_OP
 %token DEC_OP PTR_OP AND_OP OR_OP LE_OP
 %token GE_OP EQ_OP NE_OP
 %token TRANSPOSE_OP POINTWISE_MULT
@@ -541,7 +541,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 //%token T_vtkFastMarchingTarget
 
 //%token T_FluxDiffusion
-%token T_AnisoWeickert T_AnisoCW
+//%token T_AnisoWeickert T_AnisoCW
 // %token T_AnisoSRAD   deprecated
 // %token T_AnisoSRAD2     "
 // %token T_AnisoDPAD      "
@@ -550,7 +550,8 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 // %token T_AnisoLeeAdd2   "
 %token T_AnisoRudinMult
 %token T_point_Init 
-%token T_point_iterate T_point_end 
+//%token T_point_iterate 
+//%T_point_end 
 %token T_SNR
 %token T_info
 %token T_point_info
@@ -3081,6 +3082,7 @@ command:
       GET_VARSTACK_VALUE(InrImage, im);
       im->FixeNom( name.get());
     }
+    /*
     |
     T_AnisoWeickert T_point_iterate
     {
@@ -3101,6 +3103,7 @@ command:
     {
       Func_EndWeickert();
     }
+    */
     | var_image T_point_save expr_string
     {
         /**
@@ -6437,7 +6440,8 @@ image:
 
     }
     */
-        |
+/*
+    |
         T_AnisoWeickert T_point_Init
         T_OP_PAR var_image
         T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -6465,6 +6469,7 @@ image:
       FinSi
       ADD_VARSTACK_PTR(InrImage,res);
     }
+    */
 /* Deprecated
    |
     T_AnisoSRAD
@@ -8469,6 +8474,20 @@ additive_var:
 
 shift_var:
   additive_var %prec SHIFT_THERE
+  |
+  shift_var LEFT_OP additive_var
+  {
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
+    driver.var_stack.AddVar((*var1)<<var2);
+  }
+  |
+  shift_var RIGHT_OP additive_var
+  {
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
+    driver.var_stack.AddVar((*var1)>>var2);
+  }
   ;
 
 relational_var:
