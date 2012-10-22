@@ -7,6 +7,8 @@
 
 // std classes: should not be here ...
 #include <vector>
+#include <set>
+
 // string should be recognized as builtin type
 #include <string>
 
@@ -212,22 +214,49 @@ typedef itk::Image<unsigned char, 3u>  ImageUC3;
 #include "itkGDCMImageIO.h"
 #include "itkMetaDataObject.h"
 #include <gdcmGlobal.h>
+#include <gdcmDicts.h>
+#include <gdcmDictEntry.h>
+#include <gdcmDict.h>
 #include <gdcmImage.h>
 #include <gdcmImageReader.h>
 #include <gdcmReader.h>
 #include <gdcmFile.h>
 #include <gdcmFileMetaInformation.h>
 #include <gdcmTag.h>
+#include <gdcmPrivateTag.h>
 #include <gdcmDataElement.h>
 #include <gdcmDataSet.h>
 #include <gdcmStringFilter.h>
+#include <gdcmValue.h>
+#include <gdcmByteValue.h>
+#include <gdcmVL.h>
 
+#include <gdcmDirectory.h>
+#include <gdcmScanner.h>
+#include <gdcmSimpleSubjectWatcher.h>
+#include <gdcmVersion.h>
+  
 #if GDCM_MAJOR_VERSION < 2
 #include "gdcmDictSet.h"
 #endif
 
 #include <set>
+#include <utility>
 #ifdef __GCCXML__
   template class std::set<gdcm::DataElement>;
+
+  // instanciate typedefs
+  gdcm::DataSet::Iterator dsi;
+  
+  //template class std::set<std::string>;
+  //std::set<std::string>::iterator it;
+  gdcm::Scanner::ValuesType scanner_vt;
+  gdcm::Scanner::ValuesType::iterator scanner_vt_it;
+  
+  template class std::map<gdcm::Tag, char const*>;
+  
+  template class std::pair<gdcm::Tag const, char const*>;
+  gdcm::Dict::MapDictEntry mde;
+  gdcm::Dict::MapDictEntry::iterator  mde_iterator;
 #endif
   

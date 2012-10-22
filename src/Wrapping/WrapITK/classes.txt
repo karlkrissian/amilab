@@ -114,16 +114,54 @@ itk::amiConvert
 #-------------------------------------------------------------------------------
 
 gdcm::Global
+gdcm::Dicts
+gdcm::DictEntry
+
+gdcm::Dict
+gdcm::Dict::ConstIterator
+# Needed here for the moment, TODO: improve this
+std::pair<gdcm::Tag const, gdcm::DictEntry>
+
+# typedef here
+gdcm::Dict::MapDictEntry
+
+gdcm::PrivateDict
 gdcm::Image
 gdcm::ImageReader
 gdcm::Reader
 gdcm::File
 gdcm::FileMetaInformation
 gdcm::Tag
+gdcm::PrivateTag
 gdcm::DataElement
-gdcm::DataSet
-gdcm::StringFilter
 
-# need set of data elements
-# problems on windows
-#std::set<gdcm::DataElement, std::less<gdcm::DataElement>, std::allocator<gdcm::DataElement> >
+gdcm::DataSet
+gdcm::DataSet::DataElementSet
+gdcm::DataSet::Iterator
+gdcm::DataSet::ConstIterator
+
+
+gdcm::StringFilter
+gdcm::Value
+gdcm::ByteValue
+# Value Length
+gdcm::VL
+# Value Representation
+gdcm::VR
+# Value Multicity
+gdcm::VM
+
+gdcm::Scanner
+#gdcm::Scanner::ValuesType
+# this one cannot work for the moment
+#gdcm::Scanner::ValuesTypes::iterator scanner_vt_it;
+std::set<std::string, std::less<std::string>, std::allocator<std::string> >
+std::set<std::string, std::less<std::string>, std::allocator<std::string> >::iterator
+
+gdcm::Directory
+gdcm::SimpleSubjectWatcher
+gdcm::Version
+
+
+#std::map<gdcm::Tag, char const*, std::less<gdcm::Tag>, std::allocator<std::pair<gdcm::Tag const, char const*> > >
+#std::pair<gdcm::Tag const, char const*>
