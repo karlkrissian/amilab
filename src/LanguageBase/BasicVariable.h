@@ -292,6 +292,8 @@ public:
   //@{
     /// basic assignment operator
     DECLARE_BASICVAR_OP_VAR(=);
+    DECLARE_BASICVAR_OP_VAR(<<);
+    DECLARE_BASICVAR_OP_VAR(>>);
 
     /**
      * Forces the copy, even if a new object needs to be created.

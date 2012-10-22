@@ -1030,6 +1030,9 @@ public:
   //@{
     VAR_OP_BASICVAR(=);
 
+    VAR_OP_BASICVAR(<<);
+    VAR_OP_BASICVAR(>>);
+
     /**
     * left_assign is operator <<=, force assignation of new variable, even if a new pointer to the object needs to be created
     * @param b 

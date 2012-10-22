@@ -173,6 +173,18 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::TernaryCo
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b);
 
 /**
+ * << operator
+ * @return 
+ **/
+template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator <<(const BasicVariable::ptr& b);
+
+/**
+ * >> operator
+ * @return 
+ **/
+template<> LanguageBase_EXPORT BasicVariable::ptr Variable<AMIObject>::operator >>(const BasicVariable::ptr& b);
+
+/**
  * Defines operator <<= for each object type, normally, it tries to force the assignation.
  * @param b 
  * @return 

@@ -645,6 +645,20 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator =(cons
   return BasicVariable::ptr();
 }
 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator <<(const BasicVariable::ptr& b)
+{
+  APPLY_MEMBER_PARAM1("__leftshift__", b, varres)
+  if (varres.get()) return varres;
+  return BasicVariable::ptr();
+}
+
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator >>(const BasicVariable::ptr& b)
+{
+  APPLY_MEMBER_PARAM1("__rightshift__", b, varres)
+  if (varres.get()) return varres;
+  return BasicVariable::ptr();
+}
+
 
 // TODO: put this code within a macro???
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::left_assign(const BasicVariable::ptr& b)

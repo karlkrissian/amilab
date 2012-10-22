@@ -58,6 +58,8 @@ BasicVariable::~BasicVariable()
   DEFINE_BASICVAR_OP_VAR(%);
   DEFINE_BASICVAR_OP_VAR(%=);
   DEFINE_BASICVAR_OP_VAR(=);
+  DEFINE_BASICVAR_OP_VAR(>>);
+  DEFINE_BASICVAR_OP_VAR(<<);
 
 #define DEFINE_BASICVAR_COMP_OP_VAR(op) \
   BasicVariable::ptr BasicVariable::operator op(const BasicVariable::ptr& b) \
