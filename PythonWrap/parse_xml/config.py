@@ -18,6 +18,11 @@ classes_blacklist=[
   'wxHtmlWindowMouseHelper', # pb: no public constructor, destructor: can't be used with boost smart pointers
   'std::_Container_base_aux', # pb: wrapping std::vector with VC++
   'std::_Container_base_aux_alloc_real<std::allocator<std::string> >', # idem
+  # TODO: find a solution for this problem ...
+  # the classes in Release and Debug mode are not the same, but the configuration is done before
+  'std::_Container_base_aux_alloc_real<std::allocator<double> >', # idem
+  'std::_Container_base_aux_alloc_real<std::allocator<float> >', # idem
+  'std::_Container_base_aux_alloc_real<std::allocator<int> >', # idem
   'wxTrackable', # problem protected destructor: to fix (wx2.9.3)
   #'wxConfigBase', # problems in 2.9.3 also
  ]
@@ -25,29 +30,13 @@ classes_blacklist=[
 # ignore specific members
 members_blacklist=[
   'wxCreateObject',
-  #'wxRect::Inside',
-  #'wxString::Strip', 
-  #'wxString::CompareTo',
-  #'wxAuiManager::SetFrame', deprecated
-  #'wxAuiManager::GetFrame', deprecated
-  #'wxWindowBase::GetHelpTextAtPoint', 
-  'wxCmdLineParser::SetCmdLine(int, wchar_t**)', # pb with wchar_t** ...
   'wxCmdLineParser::wxCmdLineParser(wxCmdLineEntryDesc const*, int, wchar_t**)', # idem
   'wxCmdLineParser::wxCmdLineParser(int, wchar_t**)', # idem
   'wxWindowBase::GetToolTipText', # not implemented ...
   'wxStringBase::copy',
-#  'wxFileName::GetHumanReadableSize', #invalid cast
   'wxString::FormatV', 
   'wxString::PrintfV', 
-  #'wxString::mb_str', # default const reference to abstract class 
-  #'wxWindow::ScrollDirFromOrient',
-  #'wxWindow::OrientFromScrollDir',
-  #'wxSizerItem::SetOption',
-  #'wxSizerItem::GetOption', 
-  #'wxSizer::Remove(wxWindow*)',
-  #'wxBitmapButtonBase::SetLabel(const wxBitmap&)',
   'wxFont::Unshare', 
-  #'wxControlBase::GetLabelText', # problem with static and non-static methods
   'wxStatusBar::SetBorderX', # not implemented ... 
   'wxStatusBar::SetBorderY', # not implemented ...
   'wxMenuBase::New',

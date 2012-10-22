@@ -9,7 +9,9 @@ include_directories (
 
 INCLUDE( ${wxWidgets_USE_FILE})
 INCLUDE( ${VTK_USE_FILE} )
-INCLUDE( ${USE_ITK_FILE} )
+MESSAGE( "ITK_USE_FILE = ${ITK_USE_FILE}")
+MESSAGE( "USE_ITK_FILE = ${USE_ITK_FILE}")
+INCLUDE( ${ITK_USE_FILE} )
 
 SET(Common_SRCS
   common_global_export.cpp

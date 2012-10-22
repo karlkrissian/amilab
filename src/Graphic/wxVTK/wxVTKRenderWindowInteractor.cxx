@@ -251,6 +251,11 @@ wxVTKRenderWindowInteractor::wxVTKRenderWindowInteractor(wxWindow *parent,
   // so we update the size information of the interactor/renderwindow here
   this->UpdateSize(size.x, size.y);
 #endif
+  // Karl : added this part since problem on windows 7
+#if defined(__WXMSW__)
+      this->Refresh();
+#endif //__WXMSW__
+
 }
 //---------------------------------------------------------------------------
 wxVTKRenderWindowInteractor::~wxVTKRenderWindowInteractor()
