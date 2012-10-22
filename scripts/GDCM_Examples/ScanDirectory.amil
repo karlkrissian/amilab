@@ -1,0 +1,142 @@
+
+del ScanDirectoryClass
+Class ScanDirectoryClass \
+{
+  ::TagValues = VarVector()
+  ::TagNames  = VarVector()
+
+  #-----------------------------------------------------------------------------
+  proc ::AddTag(NUM val1, NUM val2, STRING name) \
+  {
+    ::TagValues.push_back(itk.gdcm_Tag(val1,val2))
+    ::TagNames.push_back(name)
+  }
+
+  # Patient module
+  ::AddTag( 0x0010, 0x0010, "patient.PatientsName")
+  ::AddTag( 0x0010, 0x0020, "patient.PatientID")
+  ::AddTag( 0x0010, 0x0030, "patient.PatientsBirthDate")
+  ::AddTag( 0x0010, 0x0040, "patient.PatientsSex")
+  ::AddTag( 0x0010, 0x0032, "patient.PatientsBirthTime")
+  ::AddTag( 0x0010, 0x1000, "patient.OtherPatientIDs")
+  ::AddTag( 0x0010, 0x1001, "patient.OtherPatientNames")
+  ::AddTag( 0x0010, 0x2160, "patient.EthnicGroup")
+  ::AddTag( 0x0010, 0x4000, "patient.PatientComments")
+  ::AddTag( 0x0012, 0x0062, "patient.PatientIdentityRemoved")
+  ::AddTag( 0x0012, 0x0063, "patient.DeIdentificationMethod")
+ 
+  # General Study module
+  ::AddTag( 0x0020, 0x000d, "study.StudyInstanceUID")
+  ::AddTag( 0x0008, 0x0020, "study.StudyDate")
+  ::AddTag( 0x0008, 0x0030, "study.StudyTime")
+  ::AddTag( 0x0008, 0x0090, "study.ReferringPhysiciansName")
+  ::AddTag( 0x0020, 0x0010, "study.StudyID")
+  ::AddTag( 0x0008, 0x0050, "study.AccessionNumber")
+  ::AddTag( 0x0008, 0x1030, "study.StudyDescription")
+  ::AddTag( 0x0008, 0x1048, "study.PhysiciansOfRecord")
+  ::AddTag( 0x0008, 0x1060, "study.NameOfPhysicianReadingStudy")
+ 
+  # General Series module
+  ::AddTag( 0x0008, 0x0060, "series.Modality")
+  ::AddTag( 0x0020, 0x000e, "series.SeriesInstanceUID")
+  ::AddTag( 0x0020, 0x0011, "series.SeriesNumber")
+  ::AddTag( 0x0020, 0x0060, "series.Laterality")
+  ::AddTag( 0x0008, 0x0021, "series.SeriesDate")
+  ::AddTag( 0x0008, 0x0031, "series.SeriesTime")
+  ::AddTag( 0x0008, 0x1050, "series.PerformingPhysiciansName")
+  ::AddTag( 0x0018, 0x1030, "series.ProtocolName")
+  ::AddTag( 0x0008, 0x103e, "series.SeriesDescription")
+  ::AddTag( 0x0008, 0x1070, "series.OperatorsName")
+  ::AddTag( 0x0018, 0x0015, "series.BodyPartExamined")
+  ::AddTag( 0x0018, 0x5100, "series.PatientPosition")
+  ::AddTag( 0x0028, 0x0108, "series.SmallestPixelValueInSeries")
+  ::AddTag( 0x0028, 0x0109, "series.LargestPixelValueInSeries")
+ 
+  # VOI LUT module
+  ::AddTag( 0x0028, 0x1050, "voilut.WindowCenter")
+  ::AddTag( 0x0028, 0x1051, "voilut.WindowWidth")
+  ::AddTag( 0x0028, 0x1055, "voilut.WindowCenterAndWidthExplanation")
+
+  #-----------------------------------------------------------------------------
+  proc ::Scan(STRING directory) \
+  {
+
+    d = itk.gdcm_Directory()
+    nfiles = d.Load( directory )
+    if (nfiles == 0) { 
+      return=false; 
+    } else {
+      printn "Number of files %1%" % nfiles
+      del ::s
+      ::s = itk.gdcm_Scanner()
+      watcher = itk.gdcm_SimpleSubjectWatcher(::s, "MySimple");
+      for n=0 to ::TagValues.size()-1 {
+        ::s.AddTag( ::TagValues[n] );
+      }
+      b = ::s.Scan( d.GetFilenames() )
+      return = b
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::PrintFilenames() {
+    fns = ::s.GetFileNames()
+    for n=0 to fns.size()-1 {
+      printn fns[n]
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::PrintKeys() {
+    keys = ::s.GetKeys()
+    for n=0 to keys.size()-1 {
+      printn keys[n]
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::PrintValues() {
+    vals = ::s.GetValues()
+    b = vals.begin()
+    ok = (b!=vals.end())
+    while ok {
+      printn "value: %1%" % *b++
+      ok = (b!=vals.end())
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::PrintValuesForTag( OBJECT tag) {
+    vals = ::s.GetValues(tag)
+    b = vals.begin()
+    ok = (b!=vals.end())
+    while ok {
+      printn "value: %1%" % *b++
+      ok = (b!=vals.end())
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::GetValuesForTag( OBJECT tag) {
+    res = ""
+    vals = ::s.GetValues(tag)
+    b = vals.begin()
+    ok = (b!=vals.end())
+    while ok {
+      res += " %1% ," % *b++
+      ok = (b!=vals.end())
+    }
+   return = res
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::PrintValuesForAllTags( ) {
+    for n=0 to ::TagValues.size()-1 {
+      printn "'%1%': " % ::TagNames[n] +\
+              " %1%" % ::GetValuesForTag(::TagValues[n])
+    }
+  }
+}
+
+del ScanDir
+ScanDirectoryClass ScanDir 

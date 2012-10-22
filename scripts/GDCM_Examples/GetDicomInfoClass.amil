@@ -1,0 +1,159 @@
+
+del GetDicomInfoClass
+Class GetDicomInfoClass \
+{
+
+  proc ::SetFileName(STRING filename) \
+  {
+    ::filename = filename
+  }
+
+  proc ::ReadFile() \
+  {
+    reader = itk.gdcm_Reader()
+    reader.SetFileName(::filename)
+    ::read_ok = reader.Read()
+    if (::read_ok) {
+      ::file = reader.GetFile()
+    }
+    return = ::read_ok
+  }
+
+  proc ::PatientName() \
+  {
+    #TagSetType tst = new TagSetType();
+    #tst.Add( new Tag(0x7fe0,0x10) );
+    #bool ret = reader.ReadUpToTag( new Tag(0x88,0x200), tst );
+    if ::read_ok {
+      sfilter = itk.gdcm_StringFilter()
+      # Memory management trick: ::file has now a deleter associated
+      # because it comes from GetFile() ...
+      # but StringFilter creates its own smartpointer, so
+      # give it a copy without deleter
+      sfilter.SetFile(itk.gdcm_File(::file))
+      t = itk.gdcm_Tag(0x0010, 0x0010)
+      value = sfilter.ToString(t)
+      return=value
+    } else {
+      return="failed"
+    }
+  }
+
+  proc ::GetTag( NUM val1, NUM val2) \
+  {
+    #TagSetType tst = new TagSetType();
+    #tst.Add( new Tag(0x7fe0,0x10) );
+    #bool ret = reader.ReadUpToTag( new Tag(0x88,0x200), tst );
+    if ::read_ok {
+      sfilter = itk.gdcm_StringFilter()
+      sfilter.SetFile(itk.gdcm_File(::file))
+      t = itk.gdcm_Tag(val1, val2)
+      value = sfilter.ToString(t)
+      return=value
+    } else {
+      return="failed"
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::PrintDataElement( OBJECT de, OBJECT ds) \
+  {
+    # simplify code 
+    VR=&itk.gdcm_VR
+
+    # now print the DataElement ...
+    # - Get Tag
+    tag = de.GetTag()
+    # - check owner: is it really necessary, since GetDictEntry
+    # if has several definitions for Tag and PrivateTag: to check
+    owner=""
+    # todo
+    if ( tag.IsPrivate() && !tag.IsPrivateCreator() ) \
+    {
+      owner = ds.GetPrivateCreator(tag)
+    }
+    
+    # Print Tag and Value Representation
+    res =  ("( %X, " % tag.GetGroup()) + ("%X )" % tag.GetElement())
+
+    vr = de.GetVR()
+    res += " [%1%] " % VR.GetVRString(vr.convert_int()) 
+
+    # here should compute refvr ...
+    refvr = vr
+
+
+    # - find dict entry
+    entry = ::dicts.GetDictEntry(tag,owner)
+    name = entry.GetName()
+    if name=="" { name = "UNKNOWN"; }
+    # sequence of items
+    if( entry.GetVR().convert_int() == VR.SQ ) \
+    {
+      res += " Entry is a Sequence ..."
+      #SmartPointer<SequenceOfItems> sqi = de.GetValueAsSQ();
+      #if( sqi )
+        #{
+        #SequenceOfItems::ItemVector::const_iterator it = sqi->Items.begin();
+        #for(; it != sqi->Items.end(); ++it)
+          #{
+          #const Item &item = *it;
+          #const DataSet &ds1 = item.GetNestedDataSet();
+          #//const DataElement &deitem = item;
+          #PrintDataSet2(os, ds1);
+          #}
+    } else {
+      # if ASCII
+      if (refvr.convert_int()|VR.VRASCII) {
+        if (name == "Pixel Data") {
+          res += " Value = [pixel data ...]"
+        } else {
+          # Check byte value
+          bv = de.GetByteValue()
+          wbv = language.WrapVariable(bv)
+          if wbv.GetTypeName()=="AMIObject" {
+            del ss
+            ss = stringstream()
+            l = bv.GetLength()
+            res += " Length= %1%" % l.convert_long()
+            l1 = max(l.convert_long(),100)
+            bv.PrintASCII(ss,l1)
+            res += " Value = [%.100s]" % ss.str()
+            #if (bv!=NULL) {
+              # should print value here
+            #}
+          } else {
+            res += " (no value)"
+          }
+        }
+      }
+    }
+    res += " # %1%" % name
+    # if tag is private and elt > 0x0100 ... todo
+    return=res
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::DictPrint() \
+  {
+    ::gdcm_global = itk.gdcm_Global()
+    ::dicts = ::gdcm_global.GetDicts()
+
+    if ::read_ok {
+      ds = ::file.GetDataSet()
+      b = ds.Begin()
+      ok = b!=ds.End()
+      output = ""
+      while ok {
+        output += ::PrintDataElement(*b,ds)
+        output += "\n"
+        b++
+        ok = b!=ds.End()
+      }
+      printn output
+    }
+  }
+}
+
+del dicom_info
+GetDicomInfoClass dicom_info
