@@ -100,8 +100,15 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator -=(const 
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator %(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    std::string res = (boost::format(Value())%b->GetValueAsDouble()).str();
-    RETURN_VARPTR(std::string,res);
+    // Should not always cast to double
+    if (b->Type()==type_int) {
+      DYNAMIC_CAST_VARIABLE(int,b,var_int);
+      std::string res = (boost::format(Value())% (*var_int->Pointer())).str();
+      RETURN_VARPTR(std::string,res);
+    } else {
+      std::string res = (boost::format(Value())%b->GetValueAsDouble()).str();
+      RETURN_VARPTR(std::string,res);
+    }
   } else
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
