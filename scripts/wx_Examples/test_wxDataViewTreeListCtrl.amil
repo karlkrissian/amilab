@@ -56,6 +56,10 @@ Class DVTreeListTestClass {
   #----------------------------------------------------------------------------
   proc ::ShowEntries( OBJECT entries) \
   {
+    # Add root container
+    ::root_item = wx.wxDataViewItem(0)
+    ::root      = ::tl.AppendContainer( ::root_item,"Root")
+    
     for n=0 to entries.size()-1 {
     
     }
