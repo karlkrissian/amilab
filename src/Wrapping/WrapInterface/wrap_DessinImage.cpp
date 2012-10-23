@@ -49,6 +49,7 @@ BasicVariable::ptr WrapClass<DessinImage>::CreateVar( ParamList* p, bool quiet )
 }
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(DessinImage);
+AMI_DEFINE_VARFROMSMTPTR(DessinImage);
 
 //
 // static member for creating a variable from a pointer to DessinImage

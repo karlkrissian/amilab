@@ -44,6 +44,12 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxSc
     WrapClass_ParamPanel(boost::shared_ptr<ParamPanel> pp):  WrapClass<ParamPanel>(pp), WrapClass_wxScrolledWindow(pp)
     {}
 
+    /// Constructor const
+    WrapClass_ParamPanel(boost::shared_ptr<ParamPanel const> pp, bool):  
+      WrapClass<ParamPanel>(pp,true), 
+      WrapClass_wxScrolledWindow(pp,true)
+    {}
+
     std::string ObjPointerAsString() { return "ParamPanel"; }
 
     /// Create a variable from a standard pointer

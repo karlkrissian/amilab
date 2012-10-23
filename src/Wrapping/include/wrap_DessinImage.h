@@ -46,6 +46,13 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public  WrapClass_F
     WrapClass_DessinImage(boost::shared_ptr<DessinImage > si):  WrapClass<DessinImage>(si), WrapClass_FenetreDessin(si), WrapClass_ImageViewerBase(si)
     {}
 
+    /// Constructor const
+    WrapClass_DessinImage(boost::shared_ptr<DessinImage const> si, bool):  
+      WrapClass<DessinImage>(si,true), 
+      WrapClass_FenetreDessin(si,true), 
+      WrapClass_ImageViewerBase(si,true)
+    {}
+
     /// Destructor
     ~WrapClass_DessinImage()
     {

@@ -40,6 +40,12 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxFram
     WrapClass_MainFrame(boost::shared_ptr<MainFrame> si): WrapClass<MainFrame>(si), WrapClass_wxFrame(si)
     {}
 
+    /// Constructor const
+    WrapClass_MainFrame(boost::shared_ptr<MainFrame const> si, bool): 
+      WrapClass<MainFrame>(si,true), 
+      WrapClass_wxFrame(si, true)
+    {}
+
     std::string ObjPointerAsString() { return "MainFrame"; }
 
     /// Wrapping of the constructor

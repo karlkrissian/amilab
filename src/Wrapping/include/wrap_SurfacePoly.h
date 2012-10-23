@@ -43,6 +43,10 @@ class WrapClass_SurfacePoly : public WrapClass<SurfacePoly>
     WrapClass_SurfacePoly(boost::shared_ptr<SurfacePoly> sp): 
       WrapClass<SurfacePoly>(sp) { }
 
+    /// Constructor const
+    WrapClass_SurfacePoly(boost::shared_ptr<SurfacePoly const> sp,bool): 
+      WrapClass<SurfacePoly>(sp,true) { }
+
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( SurfacePoly* sp);
 

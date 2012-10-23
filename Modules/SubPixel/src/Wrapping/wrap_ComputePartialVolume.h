@@ -32,6 +32,11 @@ public:
                         WrapClass<ComputePartialVolume>(si)
   {}
   
+  //Constructor const
+  WrapClass_ComputePartialVolume(boost::shared_ptr<ComputePartialVolume const> si,bool):
+                        WrapClass<ComputePartialVolume>(si,true)
+  {}
+  
   std::string ObjPointerAsString() { return "ComputePartialVolume"; }
   
   ADD_CLASS_CONSTRUCTOR(ComputePartialVolume, "Wrapping of ComputePartialVolume");

@@ -76,6 +76,7 @@ BasicVariable::ptr AMILabType<vtkLevelSets>::CreateVar(vtkLevelSets* val, bool n
 } 
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(vtkLevelSets);
+AMI_DEFINE_VARFROMSMTPTR(vtkLevelSets);
 
 
 /*

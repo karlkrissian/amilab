@@ -31,6 +31,7 @@ BasicVariable::ptr WrapClass<wxStcFrame>::CreateVar( ParamList* p, bool quiet )
 }
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxStcFrame);
+AMI_DEFINE_VARFROMSMTPTR(wxStcFrame);
 
 //
 // static member for creating a variable from a pointer to wxStcFrame

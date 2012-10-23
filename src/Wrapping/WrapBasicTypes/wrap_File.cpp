@@ -39,6 +39,16 @@ BasicVariable::ptr WrapClass<FILE>::CreateVar( ParamList* p, bool quiet )
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(FILE);
 
+BasicVariable::ptr AMILabType<FILE>::CreateVarFromSmtPtr(const boost::shared_ptr<FILE>& obj_ptr) 
+{ 
+  return  WrapClass<FILE>::CreateVar(  new WrapClass_File(obj_ptr));
+} 
+  
+BasicVariable::ptr AMILabType<FILE>::CreateVarFromSmtConstPtr(const boost::shared_ptr<FILE const>& obj_ptr) 
+{ 
+  return  WrapClass<FILE>::CreateVar( new WrapClass_File(obj_ptr,true));
+} 
+
 /*
  * readline.h
  *

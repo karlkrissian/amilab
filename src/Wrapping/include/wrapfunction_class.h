@@ -426,8 +426,12 @@ class WrapClass: public virtual WrapClassBase
 
 
     /// Return the pointer to the wrapped object
-    boost::shared_ptr<T> _obj;
-    const boost::shared_ptr<T>& GetObj() const { return _obj; }
+    boost::shared_ptr<T>      _obj;
+    /// have a const pointer too to deal with const objects ...
+    boost::shared_ptr<T const> _const_obj;
+    
+    const boost::shared_ptr<T>&       GetObj()      const { return _obj; }
+    const boost::shared_ptr<T const>& GetConstObj() const { return _const_obj; }
 
 // ambiguity pb
 //    virtual GenericPointer GetGenericPointer() { return GenericPointer((void*)GetObj().get()); }
@@ -447,6 +451,10 @@ class WrapClass: public virtual WrapClassBase
 
     /// Constructor
     WrapClass<T>(boost::shared_ptr<T> si):  _obj(si)
+    {}
+
+    /// Constructor from const
+    WrapClass<T>(boost::shared_ptr<T const> si, bool constant=true):  _const_obj(si)
     {}
 
     // import to declare virtual destructor here !!!

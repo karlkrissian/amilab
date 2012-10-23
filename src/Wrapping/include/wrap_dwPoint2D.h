@@ -37,6 +37,10 @@ class WrapClass_dwPoint2D: public WrapClass<dwPoint2D>
     /// Constructor
     WrapClass_dwPoint2D(dwPoint2D::ptr si): WrapClass<dwPoint2D>(si) { }
 
+    /// Constructor const
+    WrapClass_dwPoint2D( boost::shared_ptr<dwPoint2D const> si, bool): 
+      WrapClass<dwPoint2D>(si,true) { }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( dwPoint2D, "Wrapping of dwPoint2D." );
 

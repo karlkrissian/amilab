@@ -45,6 +45,12 @@ class WrapClass_RGBTransformHSV: public WrapClass<RGBTransformHSV>, public WrapC
     /// Constructor
     WrapClass_RGBTransformHSV(RGBTransformHSV::ptr si): WrapClass<RGBTransformHSV>(si),WrapClass_RGBTransformBase(si) { }
 
+    /// Constructor const
+    WrapClass_RGBTransformHSV(boost::shared_ptr<RGBTransformHSV const> si, bool): 
+      WrapClass<RGBTransformHSV>(si, true),
+      WrapClass_RGBTransformBase(si, true) 
+    { }
+
     std::string ObjPointerAsString() { return "RGBTransformHSV"; }
 
     /// Wrapping of the constructor

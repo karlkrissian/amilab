@@ -50,6 +50,10 @@ class WrapClass_dwCurve: public WrapClass<dwCurve>
     /// Constructor
     WrapClass_dwCurve(dwCurve::ptr si): WrapClass<dwCurve>(si) { }
 
+    /// Constructor const
+    WrapClass_dwCurve(boost::shared_ptr<dwCurve const> si,bool): 
+      WrapClass<dwCurve>(si,true) { }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( dwCurve, "Wrapping of dwCurve." );
 

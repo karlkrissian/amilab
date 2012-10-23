@@ -37,6 +37,12 @@ public:
                             WrapClass_AnalyticFunctionBase(si)
   {}
   
+  //Constructor const
+  WrapClass_AnalyticTorus(boost::shared_ptr<AnalyticTorus const> si,bool):
+                            WrapClass<AnalyticTorus>(si,true), 
+                            WrapClass_AnalyticFunctionBase(si,true)
+  {}
+  
   std::string ObjPointerAsString() { return "AnalyticTorus"; }
   
   ADD_CLASS_CONSTRUCTOR(AnalyticTorus, "Wrapping of AnalyticTorus");

@@ -39,6 +39,12 @@ class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxFr
     WrapClass_wxStcFrame(boost::shared_ptr<wxStcFrame> si):  WrapClass<wxStcFrame>(si), WrapClass_wxFrame(si)
     {}
 
+    /// Constructor const
+    WrapClass_wxStcFrame(boost::shared_ptr<wxStcFrame const> si, bool):  
+      WrapClass<wxStcFrame>(si, true), 
+      WrapClass_wxFrame(si, true)
+    {}
+
     std::string ObjPointerAsString() { return "wxStcFrame"; }
 
     /// Wrapping of the constructor

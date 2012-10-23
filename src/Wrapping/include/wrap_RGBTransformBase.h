@@ -37,6 +37,10 @@ class WrapClass_RGBTransformBase: public WrapClass<RGBTransformBase>
     /// Constructor
     WrapClass_RGBTransformBase(RGBTransformBase::ptr si): WrapClass<RGBTransformBase>(si) { }
 
+    /// Constructor const
+    WrapClass_RGBTransformBase(boost::shared_ptr<RGBTransformBase const> si, bool): 
+      WrapClass<RGBTransformBase>(si,true) { }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( RGBTransformBase, "Wrapping of RGBTransformBase." );
 

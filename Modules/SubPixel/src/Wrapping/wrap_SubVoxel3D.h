@@ -33,6 +33,11 @@ public:
                         WrapClass<SubVoxel3D>(si)
   {}
   
+  //Constructor const
+  WrapClass_SubVoxel3D(boost::shared_ptr<SubVoxel3D const> si, bool):
+                        WrapClass<SubVoxel3D>(si,true)
+  {}
+  
   ADD_CLASS_CONSTRUCTOR(SubVoxel3D, "Wrapping of SubVoxel3D." )
 
   std::string ObjPointerAsString() { return "SubVoxel3D"; }

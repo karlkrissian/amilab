@@ -53,8 +53,14 @@ class ${EXPORT_MACRO} WrapClass_${TEMPLATE} : public WrapClass<${TEMPLATE}>
 
     /// Constructor
     WrapClass_${TEMPLATE}(boost::shared_ptr<${TEMPLATE} > si): 
-    WrapClass<${TEMPLATE}>(si)
-    ${CONSTRUCTOR_BASES}
+      WrapClass<${TEMPLATE}>(si)
+      ${CONSTRUCTOR_BASES}
+    {}
+
+    /// Constructor from const
+    WrapClass_${TEMPLATE}(boost::shared_ptr<${TEMPLATE} const> si, bool constant): 
+      WrapClass<${TEMPLATE}>(si,true)
+      ${CONSTRUCTOR_BASES_CONST}
     {}
 
     /// Destructor

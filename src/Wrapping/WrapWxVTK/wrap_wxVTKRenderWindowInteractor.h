@@ -51,6 +51,13 @@ class WrapClass_wxVTKRenderWindowInteractor : public WrapClass<wxVTKRenderWindow
     , WrapClass_wxWindow(si), WrapClass_vtkRenderWindowInteractor(si)
     {}
 
+    /// Constructor const
+    WrapClass_wxVTKRenderWindowInteractor(boost::shared_ptr<wxVTKRenderWindowInteractor const> si, bool): 
+      WrapClass<wxVTKRenderWindowInteractor>(si,true), 
+      WrapClass_wxWindow(si, true), 
+      WrapClass_vtkRenderWindowInteractor(si, true)
+    {}
+
     /// Destructor
     ~WrapClass_wxVTKRenderWindowInteractor()
     {

@@ -37,6 +37,12 @@ public:
                           WrapClass_AnalyticFunctionBase(si)
   {}
   
+  //Constructor const
+  WrapClass_AnalyticLine(boost::shared_ptr<AnalyticLine const> si, bool):
+                          WrapClass<AnalyticLine>(si,true), 
+                          WrapClass_AnalyticFunctionBase(si,true)
+  {}
+
   std::string ObjPointerAsString() { return "AnalyticLine"; }
 
   ADD_CLASS_CONSTRUCTOR(AnalyticLine, "Wrapping of AnalyticLine.");

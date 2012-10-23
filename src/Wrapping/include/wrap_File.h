@@ -32,6 +32,11 @@ class WrapClass_File: public WrapClass<FILE>
     /// Constructor
     WrapClass_File(FILE_ptr si): WrapClass<FILE>(si) { }
 
+    /// Constructor const
+    WrapClass_File(boost::shared_ptr<FILE const> si, bool): 
+      WrapClass<FILE>(si,true) 
+    { }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( File, "Wrapping of File." );
 

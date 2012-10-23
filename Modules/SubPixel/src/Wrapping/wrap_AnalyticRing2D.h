@@ -37,6 +37,12 @@ public:
                               WrapClass_AnalyticFunctionBase(si)
   {}
   
+  //Constructor const
+  WrapClass_AnalyticRing2D(boost::shared_ptr<AnalyticRing2D const> si,bool):
+                              WrapClass<AnalyticRing2D>(si,true), 
+                              WrapClass_AnalyticFunctionBase(si,true)
+  {}
+  
   std::string ObjPointerAsString() { return "AnalyticRing2D"; }
   
   ADD_CLASS_CONSTRUCTOR(AnalyticRing2D, "Wrapping of AnalyticRing2D");

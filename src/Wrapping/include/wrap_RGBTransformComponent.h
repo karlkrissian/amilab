@@ -49,6 +49,12 @@ class WrapClass_RGBTransformComponent:  public WrapClass<RGBTransformComponent>,
       WrapClass<RGBTransformComponent>(si),WrapClass_RGBTransformBase(si) 
     { }
 
+    /// Constructor const
+    WrapClass_RGBTransformComponent(boost::shared_ptr<RGBTransformComponent const> si, bool): 
+      WrapClass<RGBTransformComponent>(si, true),
+      WrapClass_RGBTransformBase(si, true) 
+    { }
+
     std::string ObjPointerAsString() { return "RGBTransformComponent"; }
 
     /// Wrapping of the constructor

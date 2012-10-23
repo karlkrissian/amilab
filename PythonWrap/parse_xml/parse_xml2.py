@@ -135,6 +135,7 @@ def WrapMethodTypePointer(typedefname,include_file):
     line = line.replace("${DECLARE_TYPE}",      declare_type)
     line = line.replace("${INHERIT_BASES}",     "")
     line = line.replace("${CONSTRUCTOR_BASES}", "")
+    line = line.replace("${CONSTRUCTOR_BASES_CONST}", "")
     line = line.replace("${TEMPLATE}",          typedefname)
     line = line.replace("${INCLUDEFILES}",      includefiles)
     line = line.replace("${ADD_CLASS_CONSTRUCTORS}","")

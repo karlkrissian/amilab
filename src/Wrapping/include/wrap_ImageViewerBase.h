@@ -42,6 +42,10 @@ class WrapClass_ImageViewerBase: public WrapClass<ImageViewerBase>
     /// Constructor
     WrapClass_ImageViewerBase(ImageViewerBase::ptr si): WrapClass<ImageViewerBase>(si) { }
 
+    /// Constructor const
+    WrapClass_ImageViewerBase(boost::shared_ptr<ImageViewerBase const> si, bool v): 
+      WrapClass<ImageViewerBase>(si,true) { }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( ImageViewerBase, "Wrapping of ImageViewerBase." );
 

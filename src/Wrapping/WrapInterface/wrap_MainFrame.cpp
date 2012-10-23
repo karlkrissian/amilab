@@ -37,6 +37,7 @@ BasicVariable::ptr WrapClass<MainFrame>::CreateVar( ParamList* p, bool quiet )
 }
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(MainFrame);
+AMI_DEFINE_VARFROMSMTPTR(MainFrame);
 
 //
 // static member for creating a variable from a pointer to MainFrame

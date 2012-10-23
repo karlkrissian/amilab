@@ -29,6 +29,7 @@ BasicVariable::ptr WrapClass<wxEditor>::CreateVar( ParamList* p, bool quiet )
 }
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxEditor);
+AMI_DEFINE_VARFROMSMTPTR(wxEditor);
 
 //
 // static member for creating a variable from a pointer to wxEditor

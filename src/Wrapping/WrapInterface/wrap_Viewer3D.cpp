@@ -53,6 +53,7 @@ BasicVariable::ptr WrapClass<Viewer3D>::CreateVar( ParamList* p, bool quiet )
 }
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(Viewer3D);
+AMI_DEFINE_VARFROMSMTPTR(Viewer3D);
 
 //
 // static member for creating a variable from a pointer to Viewer3D

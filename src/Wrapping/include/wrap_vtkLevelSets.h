@@ -43,6 +43,11 @@ class WrapClass_vtkLevelSets : public WrapClass<vtkLevelSets>
     WrapClass_vtkLevelSets(boost::shared_ptr<vtkLevelSets> w):WrapClass<vtkLevelSets>(w)
     {}
 
+    /// Constructor const
+    WrapClass_vtkLevelSets(boost::shared_ptr<vtkLevelSets const> w, bool):
+      WrapClass<vtkLevelSets>(w, true)
+    {}
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR(vtkLevelSets, "Wrapping of vtkLevelSets." );
 

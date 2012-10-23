@@ -38,6 +38,12 @@ class WrapClass_wxEditor : public WrapClass<wxEditor>, public WrapClass_wxStyled
     WrapClass_wxEditor(boost::shared_ptr<wxEditor> si):  WrapClass<wxEditor>(si), WrapClass_wxStyledTextCtrl(si)
     {}
 
+    /// Constructor const
+    WrapClass_wxEditor(boost::shared_ptr<wxEditor const> si,bool):  
+      WrapClass<wxEditor>(si,true), 
+      WrapClass_wxStyledTextCtrl(si,true)
+    {}
+
     std::string ObjPointerAsString() { return "wxEditor"; }
 
     /// Wrapping of the constructor

@@ -45,7 +45,11 @@ class WrapClass_TemplateClass_int_ : public WrapClass<TemplateClass<int> >
     /// Constructor
     WrapClass_TemplateClass_int_(boost::shared_ptr<TemplateClass<int> > si): 
     WrapClass<TemplateClass<int> >(si)
-    
+    {}
+
+    /// Constructor const
+    WrapClass_TemplateClass_int_(boost::shared_ptr<TemplateClass<int> const> si, bool): 
+    WrapClass<TemplateClass<int> >(si, true)
     {}
 
     /// Destructor

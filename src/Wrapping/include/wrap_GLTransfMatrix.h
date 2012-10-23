@@ -35,6 +35,11 @@ class WrapClass_GLTransfMatrix: public WrapClass<GLTransfMatrix>
     WrapClass_GLTransfMatrix(boost::shared_ptr<GLTransfMatrix > si):  WrapClass<GLTransfMatrix>(si)
     {}
 
+    /// Constructor const
+    WrapClass_GLTransfMatrix(boost::shared_ptr<GLTransfMatrix const> si, bool):  
+      WrapClass<GLTransfMatrix>(si,true)
+    {}
+
 /*
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( GLTransfMatrix* sp);

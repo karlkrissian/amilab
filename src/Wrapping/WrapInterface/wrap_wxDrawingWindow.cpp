@@ -33,6 +33,7 @@ BasicVariable::ptr WrapClass<wxDrawingWindow>::CreateVar( ParamList* p, bool qui
 }
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxDrawingWindow);
+AMI_DEFINE_VARFROMSMTPTR(wxDrawingWindow);
 
 //
 // static member for creating a variable from a pointer to wxDrawingWindow

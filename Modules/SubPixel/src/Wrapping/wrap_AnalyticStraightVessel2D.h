@@ -37,6 +37,12 @@ public:
                                         WrapClass_AnalyticFunctionBase(si)
   {}
   
+  //Constructor const
+  WrapClass_AnalyticStraightVessel2D(boost::shared_ptr<AnalyticStraightVessel2D const> si, bool):
+                                        WrapClass<AnalyticStraightVessel2D>(si,true), 
+                                        WrapClass_AnalyticFunctionBase(si,true)
+  {}
+  
   std::string ObjPointerAsString() { return "AnalyticStraightVessel"; }
   
   ADD_CLASS_CONSTRUCTOR(AnalyticStraightVessel2D, "Wrapping of AnalyticStraightVessel");

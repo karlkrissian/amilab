@@ -231,6 +231,7 @@ class MethodInfo:
     self.missingtypes=False
     self.is_copyconstr=False
     self.static="0"
+    self.const=False
     self.deprecated=False
     self.demangled=""
     self.converter=False
@@ -259,6 +260,8 @@ class MethodInfo:
     if len(self.args)>0:
       res = res[:-2]
     res += ')'
+    if self.const:
+      res += " const"
     return res
 
   def GetHTMLDescription(self,classname,url):
@@ -607,6 +610,7 @@ class ParsePublicMembers:
     access=attrs.get('access',None)
     demangled=attrs.get('demangled',None)
     static=attrs.get('static',"0")
+    const=attrs.get('const',"0")
     attributes=attrs.get('attributes',None)
     
     #print context
@@ -623,6 +627,7 @@ class ParsePublicMembers:
     self.method = MethodInfo()
     self.method.name=mname
     self.method.static=static
+    self.method.const = (const=="1")
     self.method.demangled=demangled
     # adapt names in case of multiple member with the same function name
     if name=='Constructor':
@@ -785,10 +790,14 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
   else:
     
     # Define the string containing the method call
-    obj_ptr='this->_objectptr->GetObj()'
+    if method.const:
+      obj_ptr='this->_objectptr->GetConstObj()'
+    else:
+      obj_ptr='this->_objectptr->GetObj()'
     # check for null object
     if method.static!="1" and classname!="":
       res += ident+"  if (!{0}.get()) return BasicVariable::ptr();\n".format(obj_ptr)
+      
     if method.name in config.available_operators.keys():
       if len(method.args)>0:
         if method.name=='[]':
@@ -886,18 +895,12 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
                  #if config.types[method.returntype].GetFullString().endswith('&'):
                    res += ident+'  return AMILabType<{0} >::CreateVar(res,true);\n'.format(typename)
                  else:
-                   # Here complicate, but we can't call new constructor if 
-                   # return type is T const &
+                   # rely on AMILabType to deal with "T const &" creation
                    rettype_mainid = rettype.GetMainTypeId()
                    if rettype.GetFullString().endswith('const &') and \
-                      not(rettype.GetFullString().endswith('* const &')) and \
-                      rettype_mainid in config.types.keys() and\
-                      config.types[rettype_mainid].GetType()=="Class" and \
-                      False:
-                     print "Warning: risky cast, in return type, from (T const &) to (T*), but needed ... ({0})".\
-                        format(config.types[method.returntype].GetFullString())
+                      not(rettype.GetFullString().endswith('* const &')):
                      res += ident+'  return AMILabType<{0} >::'.format(typename)\
-                                 +'CreateVar(({0}*)&res,true);\n'.format(config.types[method.returntype].GetFullString()[:-7])
+                                 +'CreateVar(res);\n'
                    else:
                      res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
             else:
@@ -1312,6 +1315,7 @@ def WrapClass(classname,include_file,inputfile):
     include_bases='\n'
     inherit_bases=''
     constructor_bases=''
+    constructor_bases_const=''
     methods_bases='// Adding Bases\n'
     #if len(fm.Fields)==0 and len(fm.Enumerations)==0\
        #and len(dh.bases)>0:
@@ -1343,7 +1347,8 @@ def WrapClass(classname,include_file,inputfile):
         include_bases+='#include "wrap_{0}.h"\n'.format(baseusedname)
         inherit_bases+=', public {0}  {1}'.format(\
             virtualstring, wrapped_base)
-        constructor_bases+=', {0}(si)'.format(wrapped_base)
+        constructor_bases      +=', {0}(si)'.format(wrapped_base)
+        constructor_bases_const+=', {0}(si,true)'.format(wrapped_base)
       else:
         #print "basename = ", basename
         #print "baseusedname = ", baseusedname
@@ -1352,7 +1357,8 @@ def WrapClass(classname,include_file,inputfile):
         config.new_needed_classes.append(basename)
         include_bases+='//#include "wrap_{0}.h"\n'.format(baseusedname)
         inherit_bases+='//, public {0} {1}'.format(virtualstring,wrapped_base)
-        constructor_bases+='//, WrapClass_{0}(si)'.format(baseusedname)
+        constructor_bases      +='//, WrapClass_{0}(si)'.format(baseusedname)
+        constructor_bases_const+='//, WrapClass_{0}(si,true)'.format(baseusedname)
       #
       # Add lines needed to include parents methods in object context
       #
@@ -1757,6 +1763,7 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${INCLUDE_TYPEDEF}",   include_typedef)
       line = line.replace("${INHERIT_BASES}",     inherit_bases)
       line = line.replace("${CONSTRUCTOR_BASES}", constructor_bases)
+      line = line.replace("${CONSTRUCTOR_BASES_CONST}", constructor_bases_const)
       line = line.replace("${TEMPLATE}",          config.ClassTypeDef(classname))
       line = line.replace("${TEMPLATENAME}",      config.ClassUsedName(classname))
       line = line.replace("${INCLUDEFILES}",      local_include_file)

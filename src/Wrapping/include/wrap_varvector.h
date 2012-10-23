@@ -38,6 +38,11 @@ class WrapClass_VarVector : public WrapClass<VarVector>
     WrapClass_VarVector( const boost::shared_ptr<VarVector>& vv): WrapClass<VarVector>(vv)
     {}
 
+    /// Constructor const
+    WrapClass_VarVector( const boost::shared_ptr<VarVector const>& vv, bool): 
+      WrapClass<VarVector>(vv, true)
+    {}
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( VarVector, "Wrapping of VarVector (std::vector<BasicVariable::ptr>)." );
 

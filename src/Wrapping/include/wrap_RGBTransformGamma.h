@@ -47,6 +47,12 @@ class WrapClass_RGBTransformGamma: public WrapClass<RGBTransformGamma>, public W
     WrapClass_RGBTransformGamma(RGBTransformGamma::ptr si): 
       WrapClass<RGBTransformGamma>(si),WrapClass_RGBTransformBase(si) { }
 
+    /// Constructor const
+    WrapClass_RGBTransformGamma(boost::shared_ptr<RGBTransformGamma const> si, bool): 
+      WrapClass<RGBTransformGamma>(si, true),
+      WrapClass_RGBTransformBase(si, true) 
+    { }
+
     std::string ObjPointerAsString() { return "RGBTransformGamma"; }
 
     /// Wrapping of the constructor

@@ -38,6 +38,12 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
     WrapClass_wxDrawingWindow(boost::shared_ptr<wxDrawingWindow> w): WrapClass<wxDrawingWindow>(w), WrapClass_wxWindow(w)
     {}
 
+    /// Constructor const
+    WrapClass_wxDrawingWindow(boost::shared_ptr<wxDrawingWindow const> w, bool): 
+      WrapClass<wxDrawingWindow>(w,true), 
+      WrapClass_wxWindow(w,true)
+    {}
+
     std::string ObjPointerAsString() { return "wxDrawingWindow"; }
 
     /// Wrapping of the constructor

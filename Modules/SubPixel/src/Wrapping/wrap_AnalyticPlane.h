@@ -37,6 +37,12 @@ public:
                             WrapClass_AnalyticFunctionBase(si)
   {}
   
+  //Constructor const
+  WrapClass_AnalyticPlane(boost::shared_ptr<AnalyticPlane const> si, bool):
+                            WrapClass<AnalyticPlane>(si,true), 
+                            WrapClass_AnalyticFunctionBase(si,true)
+  {}
+  
   std::string ObjPointerAsString() { return "AnalyticPlane"; }
 
   

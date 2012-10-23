@@ -49,6 +49,10 @@ class WrapClass_dwControlPoint: public WrapClass<dwControlPoint>
     /// Constructor
     WrapClass_dwControlPoint(dwControlPoint::ptr si): WrapClass<dwControlPoint>(si) { }
 
+    /// Constructor
+    WrapClass_dwControlPoint(boost::shared_ptr<dwControlPoint const> si, bool): 
+      WrapClass<dwControlPoint>(si,true) { }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( dwControlPoint, "Wrapping of dwControlPoint." );
 

@@ -66,6 +66,7 @@ BasicVariable::ptr WrapClass<ParamPanel>::CreateVar( ParamList* p, bool quiet )
 }
 
 AMI_DEFINE_WRAPPEDTYPE_NOCOPY(ParamPanel);
+AMI_DEFINE_VARFROMSMTPTR(ParamPanel);
 
 //
 // static member for creating a variable from a pointer to wxHtmlWindow
