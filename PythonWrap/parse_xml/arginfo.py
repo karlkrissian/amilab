@@ -225,7 +225,11 @@ class ArgInfo:
       res += "  if (!AMILabType<{0} >::get_val_smtptr_param({1}_smtptr,_p,_n,true{2},{4})) {3};\n".format(\
         smtptr_type,self.name,noconst,self.returnstring,self.quiet)
     if ispointer:
-      res += "  {0} {1} = {1}_smtptr.get();\n".format(fulltype,self.name)
+      print "------------   getting parameter * & : fulltype = {0} -------".\
+          format(fulltype)
+      #res += "  {0} {1} = {1}_smtptr.get();\n".format(fulltype,self.name)
+      res += "  {0} * {1}_ptr = {1}_smtptr.get();\n".format(self.typename,self.name)
+      res += "  {0} {1} = {1}_ptr;\n".format(fulltype,self.name)
     else:
       if shared_type==None:
         res += "  {0} {1} = *{1}_smtptr;\n".format(fulltype,self.name)

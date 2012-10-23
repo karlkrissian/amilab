@@ -235,6 +235,7 @@ class MethodInfo:
     self.deprecated=False
     self.demangled=""
     self.converter=False
+    self.virtual=False
 
   def GetDescription(self,classname,constructor=False):
     res=''
@@ -604,6 +605,7 @@ class ParsePublicMembers:
 
     # skip pure virtual methods, why??
     pure_virtual=attrs.get('pure_virtual',None)
+    virtual=attrs.get('virtual',"0")
     #if (pure_virtual=='1'): return False
 
     # Look for the title and number attributes (see text)
@@ -629,6 +631,7 @@ class ParsePublicMembers:
     self.method.static=static
     self.method.const = (const=="1")
     self.method.demangled=demangled
+    self.method.virtual = (virtual=="1")
     # adapt names in case of multiple member with the same function name
     if name=='Constructor':
       # problem: for structure, the constructor name is something like '._12': not a valid nor usefull name:
@@ -814,7 +817,7 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
         methodcall = '{0} (*{1})'.format(method.name,obj_ptr)
     else:
       if method.converter:
-        methodcall = '({0}) *{1}'.format(\
+        methodcall = '(*{1}).operator {0}()'.format(\
                       config.types[method.returntype].GetFullString(),\
                       obj_ptr)
       else:
@@ -1188,7 +1191,9 @@ def WrapClass(classname,include_file,inputfile):
     # Smart Pointer Deleter
     failed = False
     implement_smart_pointer=''
-    if config.libmodule != None:
+    
+    # Checking for public destructor and libmodule ...
+    if dh.public_members.destructor!=None and config.libmodule != None:
       #implement_smart_pointer = config.libmodule.\
       #  CreateSmartPointer(config.ClassTypeDef(classname),'sp','res','  ')
       try:

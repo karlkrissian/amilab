@@ -25,6 +25,7 @@ classes_blacklist=[
   'std::_Container_base_aux_alloc_real<std::allocator<int> >', # idem
   'wxTrackable', # problem protected destructor: to fix (wx2.9.3)
   #'wxConfigBase', # problems in 2.9.3 also
+  'wxRefCounter', # protected destructor not compatible with smart pointers
  ]
 
 # ignore specific members

@@ -92,6 +92,7 @@ def CreateMacros(inputfile,outputfile):
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"statusbr")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"listbase")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"slider")
+  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"dataview")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextctrl")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextformatdlg")
   wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextindentpage")

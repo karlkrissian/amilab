@@ -47,6 +47,7 @@ class FindFunction(handler.ContentHandler):
     self.args         = []
     self.missingtypes = False
     self.converter    = False
+    self.const        = False
 
   #---------------------------------------------
   def CheckEnumDefault(self, default):
