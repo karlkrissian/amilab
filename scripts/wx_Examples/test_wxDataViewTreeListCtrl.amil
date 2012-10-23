@@ -1,0 +1,80 @@
+
+del DVTreeListTestClass 
+
+Class DVTreeListTestClass {
+
+  #----------------------------------------------------------------------------
+  proc ::CreateDV() {
+    ::fr = wx.wxFrame( ami.MainFrame, wx.wxID_ANY, "DICOM Tags Viewer",\
+                        wx.wxPoint(100,100), wx.wxSize(400,600))
+    ::fr.Show()
+    ::topsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+    ::fr.SetSizer( ::topsizer )      # use the sizer for layout
+    ::tl = wx.wxDataViewTreeListCtrl( ::fr,\
+                                      wx.wxID_ANY,\
+                                      wx.wxPoint(-1,-1),\
+                                      wx.wxSize(-1,-1),\
+                                      wx.wxDV_ROW_LINES | \
+                                      wx.wxDV_HORIZ_RULES |\
+                                      wx.wxDV_VERT_RULES\
+                                    )
+    ::topsizer.Add( ::tl ,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 10))
+    ::fr.Layout()
+  }
+  
+  #----------------------------------------------------------------------------
+  proc ::CreateColumns() \
+  {
+    # Tag Column
+    c0 = ::tl.GetColumn(0)
+    c0.SetTitle("Tag")
+
+    # Value Column
+    ::tl.AppendTextColumn("Value",\
+                          wx.wxDATAVIEW_CELL_INERT,\
+                          -1,\
+                          wx.wxALIGN_NOT, \
+                          wx.wxDATAVIEW_COL_RESIZABLE)
+    
+    # Value Representation Column
+    ::tl.AppendTextColumn("VR",\
+                          wx.wxDATAVIEW_CELL_INERT,\
+                          -1,\
+                          wx.wxALIGN_NOT, \
+                          wx.wxDATAVIEW_COL_RESIZABLE)
+    
+    # Description Column
+    ::tl.AppendTextColumn("Description",\
+                          wx.wxDATAVIEW_CELL_INERT,\
+                          -1,\
+                          wx.wxALIGN_NOT, \
+                          wx.wxDATAVIEW_COL_RESIZABLE)
+   ::tl.SetIndent(2)
+    
+  }
+  
+  #----------------------------------------------------------------------------
+  proc ::ShowEntries( OBJECT entries) \
+  {
+    for n=0 to entries.size()-1 {
+    
+    }
+  }
+
+  ::CreateDV()
+  ::CreateColumns()
+}
+
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
+del DVTreeListTest_obj
+DVTreeListTestClass DVTreeListTest_obj
+
+Class DictEntryInfo {
+  ::tag="(,)"
+  ::vr=""
+  ::value=""
+  ::description=""
+}
+

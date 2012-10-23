@@ -1,9 +1,8 @@
 
 #pragma once
 
-
-
 #include "wxAmiEventHandler.h"
+#include <amiDataViewTreeList.h>
 
 #include <wx/aboutdlg.h>
 #include <wx/app.h>
@@ -20,6 +19,7 @@
 #include <wx/stattext.h>
 #include <wx/tipdlg.h>
 #include <wx/utils.h>
+#include <wx/variant.h>
 #include <wx/collpane.h>
 #ifdef __GCCXML__
   // Instanciate for the case it depends on a template

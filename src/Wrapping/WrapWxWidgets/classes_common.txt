@@ -1,3 +1,17 @@
+
+# Classes from AMILab
+# only for wx > 2.9
+wxDataViewTreeListCtrl
+wxDataViewItem
+wxDataViewTreeListStore
+wxDataViewTreeListStoreNode
+wxDataViewColumn
+wxDataViewItemAttr
+
+wxVariant
+#problems with ambiguities for convertions
+
+# Classes from wxWidgets
 wxAboutDialogInfo
 wxAcceleratorEntry
 wxAcceleratorTable
