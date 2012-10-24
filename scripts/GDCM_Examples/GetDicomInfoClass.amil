@@ -1,13 +1,24 @@
 
+
 del GetDicomInfoClass
 Class GetDicomInfoClass \
 {
 
+  func "DicomDataViewWindow"
+  DicomDataViewWindow ::display_win
+  
+  # simplify code 
+  ::VR=&itk.gdcm_VR
+  ::VM=&itk.gdcm_VM
+
+  #-----------------------------------------------------------------------------
   proc ::SetFileName(STRING filename) \
   {
     ::filename = filename
+    ::ReadFile()
   }
 
+  #-----------------------------------------------------------------------------
   proc ::ReadFile() \
   {
     reader = itk.gdcm_Reader()
@@ -19,6 +30,7 @@ Class GetDicomInfoClass \
     return = ::read_ok
   }
 
+  #-----------------------------------------------------------------------------
   proc ::PatientName() \
   {
     #TagSetType tst = new TagSetType();
@@ -56,41 +68,49 @@ Class GetDicomInfoClass \
   }
 
   #-----------------------------------------------------------------------------
-  proc ::PrintDataElement( OBJECT de, OBJECT ds) \
+  proc ::GetEntryValue( OBJECT tag) \
   {
-    # simplify code 
-    VR=&itk.gdcm_VR
+    return = ::string_filter.ToString(tag)
+  }
 
+  #-----------------------------------------------------------------------------
+  proc ::GetEntryFromDataElement( OBJECT de, OBJECT ds) \
+  {
+    ::display_win->DictEntryInfo entry_info
+  
     # now print the DataElement ...
     # - Get Tag
     tag = de.GetTag()
     # - check owner: is it really necessary, since GetDictEntry
     # if has several definitions for Tag and PrivateTag: to check
-    owner=""
-    # todo
     if ( tag.IsPrivate() && !tag.IsPrivateCreator() ) \
     {
       owner = ds.GetPrivateCreator(tag)
+      entry = ::dicts.GetDictEntry(tag,owner)
+    } else {
+      entry = ::dicts.GetDictEntry(tag)
     }
     
     # Print Tag and Value Representation
-    res =  ("( %X, " % tag.GetGroup()) + ("%X )" % tag.GetElement())
+    entry_info.tag_group   = tag.GetGroup()
+    entry_info.tag_element = tag.GetElement()
 
     vr = de.GetVR()
-    res += " [%1%] " % VR.GetVRString(vr.convert_int()) 
+    entry_info.vr = "%1%" % ::VR.GetVRString(vr.convert_int()) 
 
     # here should compute refvr ...
     refvr = vr
-
-
-    # - find dict entry
-    entry = ::dicts.GetDictEntry(tag,owner)
+    
+    # --- check the value multiplicity
+    vm = entry.GetVM()
+    entry_info.vm = "%1%" % ::VM.GetVMString(vm.convert_int()) 
+    
     name = entry.GetName()
     if name=="" { name = "UNKNOWN"; }
     # sequence of items
-    if( entry.GetVR().convert_int() == VR.SQ ) \
+    if( entry.GetVR().convert_int() == ::VR.SQ ) \
     {
-      res += " Entry is a Sequence ..."
+      entry_info.value = " Entry is a Sequence ..."
       #SmartPointer<SequenceOfItems> sqi = de.GetValueAsSQ();
       #if( sqi )
         #{
@@ -104,54 +124,74 @@ Class GetDicomInfoClass \
           #}
     } else {
       # if ASCII
-      if (refvr.convert_int()|VR.VRASCII) {
-        if (name == "Pixel Data") {
-          res += " Value = [pixel data ...]"
+      if (refvr.convert_int()&::VR.VRASCII) {
+        # Check byte value
+        bv = de.GetByteValue()
+        wbv = language.WrapVariable(bv)
+        if wbv.GetTypeName()=="AMIObject" {
+          del ss
+          ss = stringstream()
+          l = bv.GetLength()
+          l1 = max(l.convert_long(),100)
+          bv.PrintASCII(ss,l1)
+          entry_info.value        = "%.100s" % ss.str()
+          entry_info.value_length = "%1%"    % l.convert_long()
+          #if (bv!=NULL) {
+            # should print value here
+          #}
         } else {
-          # Check byte value
-          bv = de.GetByteValue()
-          wbv = language.WrapVariable(bv)
-          if wbv.GetTypeName()=="AMIObject" {
-            del ss
-            ss = stringstream()
-            l = bv.GetLength()
-            res += " Length= %1%" % l.convert_long()
-            l1 = max(l.convert_long(),100)
-            bv.PrintASCII(ss,l1)
-            res += " Value = [%.100s]" % ss.str()
-            #if (bv!=NULL) {
-              # should print value here
-            #}
-          } else {
-            res += " (no value)"
-          }
+          entry_info.value = ::GetEntryValue(tag)
+        }
+      } else {
+        if (name == "Pixel Data") {
+          entry_info.value =  "[pixel data ...]"
+        } else {
+          entry_info.value = ::GetEntryValue(tag)
         }
       }
     }
-    res += " # %1%" % name
+    entry_info.description = name
+
     # if tag is private and elt > 0x0100 ... todo
-    return=res
+    return=&entry_info
   }
 
   #-----------------------------------------------------------------------------
-  proc ::DictPrint() \
+  proc ::GetEntries() \
   {
     ::gdcm_global = itk.gdcm_Global()
     ::dicts = ::gdcm_global.GetDicts()
+    
+    
+    ::string_filter = itk.gdcm_StringFilter()
+    ::string_filter.SetFile(itk.gdcm_File(::file))
+
+    entries = VarVector()
 
     if ::read_ok {
       ds = ::file.GetDataSet()
       b = ds.Begin()
       ok = b!=ds.End()
-      output = ""
       while ok {
-        output += ::PrintDataElement(*b,ds)
-        output += "\n"
+        del entry
+        entry = ::GetEntryFromDataElement(*b,ds)
+        entries.push_back(entry)
         b++
         ok = b!=ds.End()
       }
-      printn output
     }
+    
+    return=&entries
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::DisplayEntries() \
+  {
+    if (!exists(::display_win->fr)) {
+      ::display_win.CreateWindow()
+    }
+    entries = ::GetEntries()
+    ::display_win.ShowEntries(entries, ::filename)
   }
 }
 

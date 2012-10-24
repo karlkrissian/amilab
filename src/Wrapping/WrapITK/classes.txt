@@ -2,9 +2,6 @@
 # ITK/VNL Wrapping in AMILab
 #
 
-# should not be here, but I needed at the moment
-std::vector<std::string, std::allocator<std::string> >
-
 #-----------------
 # VNL Classes
 #-----------------
@@ -116,6 +113,7 @@ itk::amiConvert
 gdcm::Global
 gdcm::Dicts
 gdcm::DictEntry
+gdcm::GroupDict
 
 gdcm::Dict
 gdcm::Dict::ConstIterator
@@ -155,8 +153,9 @@ gdcm::Scanner
 #gdcm::Scanner::ValuesType
 # this one cannot work for the moment
 #gdcm::Scanner::ValuesTypes::iterator scanner_vt_it;
-std::set<std::string, std::less<std::string>, std::allocator<std::string> >
-std::set<std::string, std::less<std::string>, std::allocator<std::string> >::iterator
+# now in WrapCommon
+#std::set<std::string, std::less<std::string>, std::allocator<std::string> >
+#std::set<std::string, std::less<std::string>, std::allocator<std::string> >::iterator
 
 gdcm::Directory
 gdcm::SimpleSubjectWatcher

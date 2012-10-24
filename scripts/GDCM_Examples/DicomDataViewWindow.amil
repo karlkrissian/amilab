@@ -1,0 +1,280 @@
+
+del DicomDataViewWindow 
+
+Class DicomDataViewWindow {
+
+  #----------------------------------------------------------------------------
+  Class ::DictEntryInfo {
+
+    #------------------------------------------
+    proc ::Init() {
+      ::tag_group = INT(0)
+      ::tag_element = INT(0)
+      ::vr=""
+      ::vm=""
+      ::value=""
+      ::value_length=""
+      ::description=""
+    }
+    
+    #------------------------------------------
+    proc ::Set(NUM gr, NUM elt, STRING vr,STRING value, STRING description) {
+      ::tag_group=gr
+      ::tag_elt=elt
+      ::vr=vr
+      ::value=value
+      ::description=description
+    }
+    
+    #------------------------------------------
+    proc ::__assign__( VAR p) {
+      ::tag_group             = p.tag_group
+      ::tag_element           = p.tag_element
+      ::vr                    = p.vr
+      ::vm                    = p.vm
+      ::value                 = p.value
+      ::value_length          = p.value_length
+      ::description           = p.description
+    }
+    
+    ::Init()
+  }
+
+
+  #----------------------------------------------------------------------------
+  proc ::CreateWindow() {
+    ::fr = wx.wxFrame( ami.MainFrame, wx.wxID_ANY, "DICOM Tags Viewer",\
+                        wx.wxPoint(100,100), wx.wxSize(800,800))
+    ::fr.Show()
+    ::topsizer = wx.wxBoxSizer(wx.wxVERTICAL)
+    ::fr.SetSizer( ::topsizer )      # use the sizer for layout
+    ::tl = wx.wxDataViewTreeListCtrl( ::fr,\
+                                      wx.wxID_ANY,\
+                                      wx.wxPoint(-1,-1),\
+                                      wx.wxSize(-1,-1),\
+                                      wx.wxDV_ROW_LINES | \
+                                      wx.wxDV_HORIZ_RULES |\
+                                      wx.wxDV_VERT_RULES\
+                                    )
+    ::CreateColumns()
+
+    ::topsizer.Add( ::tl ,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 10))
+    
+    #::topsizer.Fit(::fr)
+    ::fr.Layout()
+  }
+  
+  #----------------------------------------------------------------------------
+  proc ::CreateColumns() \
+  {
+    # Tag Column
+    c0 = ::tl.GetColumn(0)
+    c0.SetWidth(130)
+    c0.SetTitle("Tag")
+
+    # Description Column
+    ::col_description = ::tl.AppendTextColumn("Description",\
+                          wx.wxDATAVIEW_CELL_INERT,\
+                          230,\
+                          wx.wxALIGN_NOT, \
+                          wx.wxDATAVIEW_COL_RESIZABLE)
+
+    # Value Representation Column
+    ::col_vr = ::tl.AppendTextColumn("VR",\
+                          wx.wxDATAVIEW_CELL_INERT,\
+                          30,\
+                          wx.wxALIGN_NOT, \
+                          wx.wxDATAVIEW_COL_RESIZABLE)
+
+    # Value Multiplicity Column
+    ::col_vm = ::tl.AppendTextColumn("VM",\
+                          wx.wxDATAVIEW_CELL_INERT,\
+                          30,\
+                          wx.wxALIGN_NOT, \
+                          wx.wxDATAVIEW_COL_RESIZABLE)
+
+    # Value Length
+    ::col_value_length = ::tl.AppendTextColumn("Len",\
+                                wx.wxDATAVIEW_CELL_INERT,\
+                                30,\
+                                wx.wxALIGN_NOT, \
+                                wx.wxDATAVIEW_COL_RESIZABLE)
+    # Value Column
+    ::col_value = ::tl.AppendTextColumn("Value",\
+                                wx.wxDATAVIEW_CELL_INERT,\
+                                150,\
+                                wx.wxALIGN_NOT, \
+                                wx.wxDATAVIEW_COL_RESIZABLE)
+    
+   ::tl.SetIndent(1)
+    
+  }
+  
+  #----------------------------------------------------------------------------
+  # Creates a list of enhanced tag to be shown in bold,
+  # using a std::set of strings
+  #
+  proc ::CreateEnhancedTags() \
+  {
+ 
+    del ::enhanced_tags
+    ::enhanced_tags = set_string()
+
+    ::enhanced_tags.insert("0010, 0010") # patient.PatientsName
+    ::enhanced_tags.insert("0010, 0030") # patient.PatientID
+    ::enhanced_tags.insert("0010, 0040") # patient.PatientsSex
+    ::enhanced_tags.insert("0010, 1010") # patient.PatientsAge
+    ::enhanced_tags.insert("0010, 0062") # patient.PatientIdentityRemoved
+    ::enhanced_tags.insert("0010, 0063") # patient.DeIdentificationMethod
+
+    ::enhanced_tags.insert("0020, 0020") # study.StudyDate
+    ::enhanced_tags.insert("0020, 1030") # study.StudyDescription
+
+    ## General Series module
+    ::enhanced_tags.insert("0008, 0060") # series.Modality
+    ::enhanced_tags.insert("0008, 0021") # series date
+    ::enhanced_tags.insert("0020, 0011") # series.SeriesNumber
+    ::enhanced_tags.insert("0020, 0021") # series.SeriesDate
+    ::enhanced_tags.insert("0018, 1030") # series.ProtocolName
+    ::enhanced_tags.insert("0008, 103E") # series.SeriesDescription
+    ::enhanced_tags.insert("0018, 0015") # series.BodyPartExamined
+    ::enhanced_tags.insert("0018, 5100") # series.PatientPosition
+
+    ## Acquisition
+    ::enhanced_tags.insert("0018, 0023") # MR Acquisition type 
+    ::enhanced_tags.insert("0018, 0050") # Slice Thickness
+    ::enhanced_tags.insert("0018, 0081") # Echo Time 
+    ::enhanced_tags.insert("0018, 0083") # Number of averages
+    ::enhanced_tags.insert("0018, 0087") # Magnetic Strength Field
+    ::enhanced_tags.insert("0018, 0088") # Spacing between the slices 
+
+    ## Image
+    ::enhanced_tags.insert("0020, 0032") # Image | Image Position
+    ::enhanced_tags.insert("0020, 0037") # Image | Image Orientation
+    ::enhanced_tags.insert("0020, 1002") # Image | Images in acquisition
+    ::enhanced_tags.insert("0020, 1041") # Image | Slice Location
+    
+    ## Image Representation
+    ::enhanced_tags.insert("0028, 0010") # Image Rep | Rows
+    ::enhanced_tags.insert("0028, 0011") # Image Rep | Columns
+    ::enhanced_tags.insert("0028, 0030") # Image Rep | Pixel spacing
+    ::enhanced_tags.insert("0028, 0102") # Image Rep | High bit
+    ::enhanced_tags.insert("0028, ") # Image Rep | 
+    ::enhanced_tags.insert("0028, ") # Image Rep | 
+    ::enhanced_tags.insert("0028, ") # Image Rep | 
+    ::enhanced_tags.insert("0028, ") # Image Rep | 
+    
+    
+    ## VOI LUT module
+    ::enhanced_tags.insert("0028, 1050") # voilut.WindowCenter
+    ::enhanced_tags.insert("0028, 1051") # voilut.WindowWidth
+    ::enhanced_tags.insert("0028, 1055") # voilut.WindowCenterAndWidthExplanation
+   
+  }
+  
+  #----------------------------------------------------------------------------
+  proc ::ShowEntries( OBJECT entries, STRING filename) \
+  {
+    ::CreateEnhancedTags()
+    
+    # Special formatting attributes
+    enhanced_format = wx.wxDataViewItemAttr()
+    enhanced_format.SetBold(true)
+    #SetColour(*wxBLUE);
+
+    # Special formatting attributes
+    group_format = wx.wxDataViewItemAttr()
+    group_format.SetBold(true)
+    group_format.SetColour(wx.wxColour(0,0,255))
+    
+    numcols = ::tl.GetColumnCount()
+
+    # Add root container
+    # can't use wxDataViewItem(0) like in C++, see Mantis Bug Tracker report
+    # 0000008
+    ::fr.SetTitle("Dicom file: %1%" % filename)
+    #::root_item  = ::tl.AppendContainer( wx.wxDataViewItem(),"Dicom File")
+    
+    printn "entries.size() = %1%" % entries.size()
+    current_group=INT(-1)
+    group=INT(-1)
+    group_dict = itk.gdcm_GroupDict()
+
+    colid_vr           = ::col_vr          .GetModelColumn()
+    colid_vm           = ::col_vm          .GetModelColumn()
+    colid_descr        = ::col_description .GetModelColumn()
+    colid_value        = ::col_value       .GetModelColumn()
+    colid_vallen       = ::col_value_length.GetModelColumn()
+    
+    for n=0 to entries.size()-1 {
+      del entry
+      entry = &entries[n]
+      group = entry.tag_group
+      if (current_group!=group) {
+        # Create a new branch for the group
+        current_group = group
+        del group_item
+        group_item  = ::tl.AppendContainer( wx.wxDataViewItem(),\
+                                            "Grp %04X" % current_group)
+        if (!exists(first_group_item)) {
+          first_group_item = group_item
+        }
+        ::tl.SetValue(wx.wxVariant(group_dict.GetName(current_group)),\
+                      group_item, colid_descr)
+        for c=0 to numcols-1 {
+          ::tl.SetAttr(group_item,c,group_format)
+        }
+      }
+      
+      tag_string = "%04X" % entry.tag_element
+      entry_item = ::tl.AppendItem(group_item,tag_string)
+
+      ::tl.SetValue(wx.wxVariant(entry.vr),           entry_item, colid_vr)
+      ::tl.SetValue(wx.wxVariant(entry.vm),           entry_item, colid_vm)
+      ::tl.SetValue(wx.wxVariant(entry.description),  entry_item, colid_descr)
+      ::tl.SetValue(wx.wxVariant(entry.value_length), entry_item, colid_vallen)
+      ::tl.SetValue(wx.wxVariant(entry.value),        entry_item, colid_value)
+      
+      # check if special
+      tag_string = ("%04X, " % entry.tag_group) + ("%04X" % entry.tag_element)
+      if ::enhanced_tags.find(tag_string) != ::enhanced_tags.end() {
+        special_item = ::tl.InsertItem( wx.wxDataViewItem(),\
+                                        first_group_item, tag_string)
+        ::tl.SetValue(wx.wxVariant(entry.description),special_item, colid_descr)
+        ::tl.SetValue(wx.wxVariant(entry.value),      special_item, colid_value)
+        for c=0 to numcols-1 {
+          ::tl.SetAttr(entry_item  ,c,enhanced_format)
+          ::tl.SetAttr(special_item,c,enhanced_format)
+        }
+      }
+      
+    }
+    #::tl.Expand(::root_item)
+  }
+
+  #::CreateWindow()
+  #::CreateColumns()
+}
+
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
+#del DVTreeListTest_obj
+#DicomDataViewWindow DVTreeListTest_obj
+
+#del DictEntryInfo
+
+# Example
+#
+#entries=VarVector()
+#del entry  
+#DictEntryInfo entry
+#entry.Set("(0x00,0x00)","VR","value1","value 1")
+#entries.push_back(entry)
+
+#del entry  
+#DictEntryInfo entry
+#entry.Set("(0x00,0x01)","VR","value2","value 2")
+#entries.push_back(entry)
+
+#DVTreeListTest_obj.ShowEntries(entries)

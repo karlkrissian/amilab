@@ -9,7 +9,6 @@ wxDataViewColumn
 wxDataViewItemAttr
 
 wxVariant
-#problems with ambiguities for convertions
 
 # Classes from wxWidgets
 wxAboutDialogInfo

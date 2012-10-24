@@ -561,6 +561,7 @@ wxDataViewTreeListStoreContainerNode *wxDataViewTreeListStore::FindContainerNode
 
     wxDataViewTreeListStoreNode* node = (wxDataViewTreeListStoreNode*) item.GetID();
 
+    if (!node) return NULL;
     if (!node->IsContainer())
         return NULL;
 

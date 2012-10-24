@@ -2,7 +2,7 @@
 # Image Extent
 ami::ImageExtent<float>
 
-# trying std::vector<...>
+# ----- std::vector<...> -----
 
 std::vector<double, std::allocator<double> >
 std::vector<double, std::allocator<double> >::iterator
@@ -13,8 +13,16 @@ std::vector<float, std::allocator<float> >::iterator
 std::vector<int, std::allocator<int> >
 std::vector<int, std::allocator<int> >::iterator
 
-# iostream
-std::ostream
+std::vector<std::string, std::allocator<std::string> >
+std::vector<std::string, std::allocator<std::string> >::iterator
 
-# stringstream
+# ----- std::set<...> -----
+
+set_string
+set_string_iterator
+set_string_pair_iterator_bool
+
+# ----- iostream -----
+
+std::ostream
 std::stringstream

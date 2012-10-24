@@ -820,6 +820,7 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
         methodcall = '(*{1}).operator {0}()'.format(\
                       config.types[method.returntype].GetFullString(),\
                       obj_ptr)
+        print "method call in converter ", methodcall
       else:
         if method.static=="1":
           methodcall = "{0}::{1}".format(classname,method.name)

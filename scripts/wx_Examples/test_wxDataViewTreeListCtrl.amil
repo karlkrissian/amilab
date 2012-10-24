@@ -18,7 +18,11 @@ Class DVTreeListTestClass {
                                       wx.wxDV_HORIZ_RULES |\
                                       wx.wxDV_VERT_RULES\
                                     )
+    ::CreateColumns()
+
     ::topsizer.Add( ::tl ,wx.wxSizerFlags(1).Expand().Border(wx.wxALL, 10))
+    
+    #::topsizer.Fit(::fr)
     ::fr.Layout()
   }
   
@@ -57,16 +61,20 @@ Class DVTreeListTestClass {
   proc ::ShowEntries( OBJECT entries) \
   {
     # Add root container
-    ::root_item = wx.wxDataViewItem(0)
-    ::root      = ::tl.AppendContainer( ::root_item,"Root")
+    # can't use wxDataViewItem(0) like in C++, see Mantis Bug Tracker report
+    # 0000008
+    ::root_item  = ::tl.AppendContainer( wx.wxDataViewItem(),"Dicom File")
     
     for n=0 to entries.size()-1 {
-    
+      entry_item = ::tl.AppendItem(::root_item,entries[n].tag)
+      ::tl.SetValue(wx.wxVariant(entries[n].vr)         ,entry_item,1)
+      ::tl.SetValue(wx.wxVariant(entries[n].value)      ,entry_item,2)
+      ::tl.SetValue(wx.wxVariant(entries[n].description),entry_item,3)
     }
   }
 
   ::CreateDV()
-  ::CreateColumns()
+  #::CreateColumns()
 }
 
 #------------------------------------------------------------------------------
@@ -75,10 +83,38 @@ Class DVTreeListTestClass {
 del DVTreeListTest_obj
 DVTreeListTestClass DVTreeListTest_obj
 
+del DictEntryInfo
 Class DictEntryInfo {
-  ::tag="(,)"
-  ::vr=""
-  ::value=""
-  ::description=""
+
+  proc ::Init() {
+    ::tag="(,)"
+    ::vr=""
+    ::value=""
+    ::description=""
+  }
+  
+  #
+  proc ::Set(STRING tag, STRING vr,STRING value, STRING description) {
+    ::tag=tag
+    ::vr=vr
+    ::value=value
+    ::description=description
+  }
+  
+  ::Init()
 }
 
+# Example
+#
+entries=VarVector()
+del entry  
+DictEntryInfo entry
+entry.Set("(0x00,0x00)","VR","value1","value 1")
+entries.push_back(entry)
+
+del entry  
+DictEntryInfo entry
+entry.Set("(0x00,0x01)","VR","value2","value 2")
+entries.push_back(entry)
+
+DVTreeListTest_obj.ShowEntries(entries)

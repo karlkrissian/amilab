@@ -12,7 +12,6 @@
 // string should be recognized as builtin type
 #include <string>
 
-template class std::vector<std::string>;
 
 // VNL CLASSES
 #include "vnl/vnl_matrix.h"
@@ -215,6 +214,7 @@ typedef itk::Image<unsigned char, 3u>  ImageUC3;
 #include "itkMetaDataObject.h"
 #include <gdcmGlobal.h>
 #include <gdcmDicts.h>
+#include <gdcmGroupDict.h>
 #include <gdcmDictEntry.h>
 #include <gdcmDict.h>
 #include <gdcmImage.h>
