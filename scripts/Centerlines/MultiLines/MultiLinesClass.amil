@@ -717,6 +717,18 @@ if (!exists(MultiLinesClass)) {
         ::radii  <<= radius
       }
 
+      # check for NaN
+      nan_count_rep = ami_count(::result!=::result)
+      if (nan_count_rep) {
+        InfoDialog "Nan values found in response : %1% !" % nan_count_rep
+      }
+      if (::local_maxima) {
+        nan_count_lmax = ami_count(::maxima!=::maxima)
+        if (nan_count_lmax) {
+          InfoDialog "Nan values found in local maxima : %1% !" % nan_count_lmax
+        }
+      }
+
       SetProgress(0)
       SetStatusText( "Finished MultiLines_new" )
       EndTime
