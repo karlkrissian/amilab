@@ -91,32 +91,16 @@ if (!exists(ScriptGui)) \
         varexists = language.Vars.GetGlobalContext().ExistVar(new_name)
       }
       
-      # Create a function because its runs on global context
-      proc NewInstance( STRING new_name, \
-                        STRING cname, \
-                        STRING cfilename)  \
-      {
-        # need to create command before moving to global context ...
-        cmd =  "global; "
-        cmd += "func \"%1%\";" % cfilename
-        cmd += ("%1% " % cname) + new_name+";"
-        cmd += new_name+".Gui();"
-        eval cmd
-      }
-      
-      NewInstance(new_name,::classname,::classfilename)
+      func ::classfilename
+      cmd  = ::classname + " global::"+new_name+";"
+      cmd += "global::"+new_name+".Gui();"
+      eval cmd
 
       ## change the title of the new instance
       pb = ami.MainFrame.GetParamBook()
-      ##printn "* --"
-      ##printn "* ---"
       cmd = "pos = pb.GetPageIndex(global::%1%.win);" % new_name
-      #printn "-- cmd = [%1%]" % cmd
       eval cmd
-      ##printn "2"
-      #printn pos
       pb.SetPageText(pos,new_name)
-      ##printn "3"
     }
     Comments( ::CreateNewInstance, "Creates a new instance of the same class")
       
