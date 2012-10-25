@@ -11,6 +11,9 @@ Class alHysteresisThresholdingClass \
     rg = Algorithms.algorithms.ami_IntensityBasedRegionGrowing\
         .IntensityBasedRegionGrowing(&input,&initmask)
     rg.SetMin(low_th)
+    # here should be the maximal image value ...
+    # otherwise, bug? the points higher than max in the initial image
+    # change status ...
     rg.SetMax(high_th*2)
     rg.Evolve()
     #return = initmask
@@ -22,4 +25,5 @@ Class alHysteresisThresholdingClass \
 
 del alHysteresis
 alHysteresisThresholdingClass alHysteresis
+del alHysteresisThresholdingClass
 

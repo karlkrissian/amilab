@@ -5,9 +5,9 @@
 # that can be automatically loaded with the function ReadFile(filename)
 #
 
-del WriteAmiObject
+del WriteAmiObjectClass
 
-Class WriteAmiObject {
+Class WriteAmiObjectClass {
 
   proc ::Init() \
   {
@@ -87,5 +87,6 @@ Class WriteAmiObject {
 }
 
 # Create an instance of the class 
-del objwriter
-WriteAmiObject objwriter
+del WriteAmiObject
+WriteAmiObjectClass WriteAmiObject
+del WriteAmiObjectClass

@@ -554,11 +554,11 @@ MainFrame::MainFrame( const wxString& title,
   m_mgr.SetFlags( 
                   wxAUI_MGR_ALLOW_FLOATING |
                   // Avoid problem with KDE desktop composing effect
-                  #ifdef __WXGTK__ 
-                   wxAUI_MGR_VENETIAN_BLINDS_HINT |
-                    //wxAUI_MGR_RECTANGLE_HINT |
+                  #if defined(__WXGTK__) && !(wxCHECK_VERSION(2,9,4))
+                    wxAUI_MGR_VENETIAN_BLINDS_HINT |
+                      //wxAUI_MGR_RECTANGLE_HINT |
                   #else
-                   wxAUI_MGR_TRANSPARENT_HINT |
+                    wxAUI_MGR_TRANSPARENT_HINT |
                   #endif
                   wxAUI_MGR_HINT_FADE |
                   wxAUI_MGR_NO_VENETIAN_BLINDS_FADE |
@@ -682,8 +682,8 @@ void MainFrame::CreateMainBook(wxWindow* parent)
                                     wxPoint(client_size.x, client_size.y),
                                     wxDefaultSize,
                                     wxAUI_NB_TOP          
-                                    #ifndef __WXGTK__ 
-                                      |wxAUI_NB_TAB_SPLIT    
+                                    #if !defined(__WXGTK__) || (wxCHECK_VERSION(2,9,4))
+                                      |wxAUI_NB_TAB_SPLIT
                                     #endif
                                     |wxAUI_NB_TAB_MOVE     
                                     |wxAUI_NB_WINDOWLIST_BUTTON
@@ -714,9 +714,9 @@ void MainFrame::CreateParamBook(wxWindow* parent)
    _param_book = new wxAuiNotebook(this, wxID_ANY,
                                     wxPoint(client_size.x, client_size.y),
                                     wxDefaultSize,
-                                     wxAUI_NB_TOP          
-                                    #ifndef __WXGTK__ 
-                                      |wxAUI_NB_TAB_SPLIT    
+                                     wxAUI_NB_TOP
+                                    #if !defined(__WXGTK__) || (wxCHECK_VERSION(2,9,4))
+                                      |wxAUI_NB_TAB_SPLIT
                                     #endif
                                     |wxAUI_NB_TAB_MOVE     
                                     |wxAUI_NB_SCROLL_BUTTONS
@@ -854,9 +854,13 @@ void MainFrame::CreateVarBook ( wxWindow* parent)
                                     wxPoint(client_size.x, client_size.y),
                                                 //wxDefaultPosition,
                                     wxDefaultSize,
-                                    wxAUI_NB_TOP          
-                                    #ifndef __WXGTK__ 
-                                      |wxAUI_NB_TAB_SPLIT    
+                                    wxAUI_NB_TOP
+                                    #ifndef __WXGTK__
+                                      |wxAUI_NB_TAB_SPLIT
+                                    #else
+                                      #if wxCHECK_VERSION(2,9,4)
+                                        |wxAUI_NB_TAB_SPLIT
+                                      #endif
                                     #endif
                                     |wxAUI_NB_TAB_MOVE     
                                     |wxAUI_NB_WINDOWLIST_BUTTON

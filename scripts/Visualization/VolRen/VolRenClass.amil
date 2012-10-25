@@ -139,36 +139,41 @@ if (!exists(VolRenClass)) {
       tb_id = 20000+::tb.GetToolCount()
       id=0
 
+      obj_name = GetObjectName(::Init)
+      
       icon_32=GetScriptsDir+"/Icons/png/32x32/Chart xy.png"
       wxim = wx.wxImage(icon_32)
       bm = wx.wxBitmap(&wxim.Rescale(16,16))
       ::tb.AddTool( tb_id+id, "Histogram", &bm,\
-                    "Histogram of the current volume")
+                    "Histogram of the current volume (%1%)" % obj_name)
 
       id=id+1
       icon_32=GetScriptsDir+"/Icons/png/32x32/Preview.png"
       wxim = wx.wxImage(icon_32)
       bm = wx.wxBitmap(&wxim.Rescale(16,16))
-      ::tb.AddTool( tb_id+id, "Preview", &bm,"Preview of the current volume")
+      ::tb.AddTool( tb_id+id, "Preview", &bm,\
+                    "Preview of the current volume (%1%)" % obj_name )
 
       id=id+1
       icon_32=GetScriptsDir+"/Icons/png/32x32/Camera.png"
       wxim = wx.wxImage(icon_32)
       bm = wx.wxBitmap(&wxim.Rescale(16,16))
-      ::tb.AddTool( tb_id+id, "Snapshot", &bm,"Snapshot")
+      ::tb.AddTool( tb_id+id, "Snapshot", &bm,\
+                    "Snapshot (%1%)" % obj_name)
 
       id=id+1
       icon_32=GetScriptsDir+"/Icons/png/32x32/Curve.png"
       wxim = wx.wxImage(icon_32)
       bm = wx.wxBitmap(&wxim.Rescale(16,16))
       ::tb.AddTool( tb_id+id, "Load curve", &bm, \
-          "Set a new curve in the current volume")
+          "Set a new curve in the current volume (%1%)" % obj_name)
 
       id=id+1
       icon_32=GetScriptsDir+"/Icons/png/32x32/Save Curve.png"
       wxim = wx.wxImage(icon_32)
       bm = wx.wxBitmap(&wxim.Rescale(16,16))
-      ::tb.AddTool( tb_id+id, "Save curve", &bm,"Save the current curve")
+      ::tb.AddTool( tb_id+id, "Save curve", &bm,\
+                    "Save the current curve (%1%)" % obj_name)
 
       ::tb.Realize()
 

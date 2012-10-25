@@ -284,9 +284,9 @@ wxStcFrame::wxStcFrame (wxWindow* parent,const wxString &title)
                                  wxID_NOTEBOOK, 
                                  wxDefaultPosition, 
                                  wxDefaultSize, 
-                                  wxAUI_NB_TOP          
-                                  #ifndef __WXGTK__ 
-                                    |wxAUI_NB_TAB_SPLIT    
+                                  wxAUI_NB_TOP
+                                  #if !defined(__WXGTK__) || wxcheck_2_9_4
+                                    |wxAUI_NB_TAB_SPLIT
                                   #endif
                                   |wxAUI_NB_TAB_MOVE     
                                   |wxAUI_NB_WINDOWLIST_BUTTON
