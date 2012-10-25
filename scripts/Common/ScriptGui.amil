@@ -76,6 +76,51 @@ if (!exists(ScriptGui)) \
     Comments( ::ReloadScript, "Reloads the script from disk.")
       
     #---------------------------------------------------------------------------
+    # Creates a new instance of the class 
+    #
+    proc ::CreateNewInstance() \
+    {
+      # find a name for the new instance
+      current_name = GetObjectName(::CreateNewInstance)
+      n=2
+      new_name = current_name+"_%1%" % n
+      varexists = language.Vars.GetGlobalContext().ExistVar(new_name)
+      while varexists {
+        n++
+        new_name = current_name+"_%1%" % n
+        varexists = language.Vars.GetGlobalContext().ExistVar(new_name)
+      }
+      
+      # Create a function because its runs on global context
+      proc NewInstance( STRING new_name, \
+                        STRING cname, \
+                        STRING cfilename)  \
+      {
+        # need to create command before moving to global context ...
+        cmd =  "global; "
+        cmd += "func \"%1%\";" % cfilename
+        cmd += ("%1% " % cname) + new_name+";"
+        cmd += new_name+".Gui();"
+        eval cmd
+      }
+      
+      NewInstance(new_name,::classname,::classfilename)
+
+      ## change the title of the new instance
+      pb = ami.MainFrame.GetParamBook()
+      ##printn "* --"
+      ##printn "* ---"
+      cmd = "pos = pb.GetPageIndex(global::%1%.win);" % new_name
+      #printn "-- cmd = [%1%]" % cmd
+      eval cmd
+      ##printn "2"
+      #printn pos
+      pb.SetPageText(pos,new_name)
+      ##printn "3"
+    }
+    Comments( ::CreateNewInstance, "Creates a new instance of the same class")
+      
+    #---------------------------------------------------------------------------
     proc ::EditScript() {
       # add wxEditor widget
       ed = ami->MainFrame.GetAmilabEditor()
@@ -171,6 +216,8 @@ if (!exists(ScriptGui)) \
         win.SetPositionProp(-1,2)
         if (!exists(::parent_panel)) {
           ::AddBitmapButton16(&win, &::icons._Refresh, "ReloadScript")
+          win.SetPositionProp(-1,2)
+          ::AddBitmapButton16(&win, &::icons._Copy,    "CreateNewInstance")
           win.SetPositionProp(-1,2)
           #::AddBitmapButton16(&win, &::icons._Close,   "Close")
           #win.SetPositionProp(-1,2)

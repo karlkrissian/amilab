@@ -257,7 +257,6 @@ public:
 
   wxAuiNotebook* _param_book;
   wxPanel*       GetPromptPanel() { return _prompt_panel; }
-  wxAuiNotebook* GetParamBook() { return _param_book; }
 
   void SetProgress(   int val);
   void SetStatusText( const std::string& text);
@@ -283,6 +282,8 @@ public:
 
 
   wxAuiNotebook* GetMainBook() { return _main_book; }
+
+  wxAuiNotebook* GetParamBook() { return _param_book; }
 
 protected:
 

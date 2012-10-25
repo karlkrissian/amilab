@@ -883,7 +883,7 @@ void MainFrame::CreateVarDirCtrl ( wxWindow* parent)
   formats.insert(file_format( "VTK Files",
                               "*.vtk"));
   formats.insert(file_format( "Standard images",
-                              "*.jpg;*.JPG;*.jpeg;*.JPEG;*.png;*.PNG;*.bmp;*.BMP;*.tif;*.TIF;*.tiff;*.TIFF"));
+                              "*.jpg;*.JPG;*.jpeg;*.JPEG;*.png;*.PNG;*.bmp;*.BMP;*.tif;*.TIF;*.tiff;*.TIFF;*.nhdr"));
   formats.insert(file_format( "ITK",
                               "*.mhd"));
   formats.insert(file_format( "All",

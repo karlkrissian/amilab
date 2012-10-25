@@ -168,6 +168,21 @@ BasicVariable::ptr WrapClass_MainFrame::
 }
 
 //---------------------------------------------------
+//  GetParamBook
+//---------------------------------------------------
+void WrapClass_MainFrame::
+      wrap_GetParamBook::SetParametersComments() 
+{
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_MainFrame::
+      wrap_GetParamBook::CallMember( ParamList* p)
+{
+  wxAuiNotebook* nb =   this->_objectptr->_obj->GetParamBook();
+  return AMILabType<wxAuiNotebook>::CreateVar(nb,true);
+}
+
+//---------------------------------------------------
 //  GetConsole
 //---------------------------------------------------
 void WrapClass_MainFrame::

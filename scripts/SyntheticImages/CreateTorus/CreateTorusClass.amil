@@ -101,7 +101,6 @@ if (!exists(CreateTorusClass)) {
       b = ::win.GetBookCtrl()
       b_classname =  b.GetClassInfo().GetClassName()
       if b_classname=="wxAuiNotebook" {
-        printn "*"
         b.SetWindowStyle(wx.wxAUI_NB_BOTTOM)
       }
       ::win.AddPage("Param")

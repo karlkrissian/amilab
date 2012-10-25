@@ -92,6 +92,14 @@ public:
   }
 
   /**
+   * @return The global context
+   */
+  Variables::ptr& GetGlobalContext() 
+  { 
+    return _context[0];
+  }
+
+  /**
    * Activate/Desactivate the creation of new variables as global
    * @param gn 
    */

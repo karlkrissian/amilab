@@ -61,6 +61,7 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxFram
 
     ADD_CLASS_METHOD(GetAuiManager, "Gets the wxAuiManager");
     ADD_CLASS_METHOD(GetMainBook,   "Gets the main notebook as wxAuiNotebook");
+    ADD_CLASS_METHOD(GetParamBook,   "Gets the param (scripts) notebook as wxAuiNotebook");
     ADD_CLASS_METHOD(GetConsole,   "Gets the main console as wxRichTextCtrl");
 
     ADD_CLASS_METHOD(GetAuiPaneInfo, "Gets ....");
@@ -73,6 +74,7 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxFram
       AddVar_AddToMenu(        this_ptr);
       AddVar_GetAuiManager(    this_ptr);
       AddVar_GetMainBook(      this_ptr);
+      AddVar_GetParamBook(      this_ptr);
       AddVar_GetAuiPaneInfo(   this_ptr);
       AddVar_GetConsole(       this_ptr);
 

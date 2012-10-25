@@ -67,6 +67,12 @@ extern bool CheckNullVar(ParamList* _p, int _n);
   AMI_DECLARE_TYPE(VarContexts);
 #endif
 
+typedef std::ostream std_ostream;
+#ifndef std_ostream_declared
+  #define std_ostream_declared
+  AMI_DECLARE_TYPE(std_ostream);
+#endif
+
 #ifdef AMI_WRAP_MICRONTRACKER
   #include "addwrap_mt.h"
   #include "wrapMT.h"
