@@ -76,16 +76,19 @@ namespace ami {
     y0 = point.Y();
     z0 = point.Z();
     stateit->BufferPos(x0,y0,z0);
-    bool accept = AcceptPoint(point);
-    if (!include_border)
-      accept = accept && _input->CoordOK(x0,y0,z0);
+    bool accept = (stateit->GetValue()==RegionGrowingBase::INSIDE);
+    if (!accept) {
+      accept = AcceptPoint(point);
+      if (!include_border)
+        accept = accept && _input->CoordOK(x0,y0,z0);
 
-    if (accept) 
-      // set the point inside
-      // should avoid to use buffer pos
-      stateit->SetValue(RegionGrowingBase::INSIDE);
-    else
-      stateit->SetValue(RegionGrowingBase::PROCESSED);
+      if (accept) 
+        // set the point inside
+        // should avoid to use buffer pos
+        stateit->SetValue(RegionGrowingBase::INSIDE);
+      else
+        stateit->SetValue(RegionGrowingBase::PROCESSED);
+    }
     // 2. potentionally add the neighboors to the growing list
       
     int maxx = _input->DimX()-1;
