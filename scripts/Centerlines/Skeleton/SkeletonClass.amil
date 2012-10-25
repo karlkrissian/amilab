@@ -128,7 +128,6 @@ if (!exists(SkeletonClass)) {
         ::load_input()
       }
 
-      print "Entering Skel_Execute\n"
       if ((::UseZoom)&&(exists(::input_draw))) {
         _i <<= ::input[::input_draw]
       } else {
@@ -139,8 +138,11 @@ if (!exists(SkeletonClass)) {
         _i   = _i-::Threshold_Upper
       } else {
         func "Utils/alHysteresisThresholding.amil"
-        _i <<= alHysteresis.Run( &_i, ::Threshold_Upper,::Threshold_Lower)
+        _i <<= alHysteresis.Run( _i, ::Threshold_Upper,::Threshold_Lower)
+        _i <<= ((FLOAT) _i) -0.5
       }
+
+      printn "FillHoles"
 
       if (::FillHoles) {
         _res = _i
@@ -150,6 +152,8 @@ if (!exists(SkeletonClass)) {
         del _res
       }
     
+      printn "Binary"
+
       ::i <<= _i
       ::bin <<= (UCHAR) (_i>0)*255
     
