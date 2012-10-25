@@ -61,6 +61,7 @@ if (!exists(SaveAsClass)) {
       if (::ext == 7) {  filename += ".bmp";    }
       if (::ext == 8) {  filename += ".tif";    }
       if (::ext == 9) {  filename += ".tiff";   }
+      if (::ext == 10) {  filename += ".nhdr";   }
       if (::convert_uchar) {
         input = (UCHAR) ::input
       } else {
@@ -113,6 +114,7 @@ if (!exists(SaveAsClass)) {
             ::win.AddEnumChoice(ext_id, "*.bmp") #7
             ::win.AddEnumChoice(ext_id, "*.tif") #8
             ::win.AddEnumChoice(ext_id, "*.tiff") #9
+            ::win.AddEnumChoice(ext_id, "*.nhdr") #10
           ::win.SetCallback(&::OnExtension)
         ::win.EndBoxPanel()
         
