@@ -1,22 +1,33 @@
 
-if (!exists(ImageUtilitiesClass)) {
-  Class ImageUtilitiesClass \
-  {
-  
-    #
-    proc ::ClampLow(IMAGE im, NUM v) {
-      return = (im>v)*im+(im<=v)*v
-    }
-    
-    #
-    proc ::ClampHigh(IMAGE im, NUM v) {
-      return = (im<v)*im+(im>=v)*v
-    }
-    
-    #
-    proc ::Clamp(IMAGE im, NUM vmin, NUM vmax) {
-      return = (im<vmin)*vmin+(im>vmax)*vmax+(im>=vmin)*(im<=vmax)*im
-    }
-    
+del ImageUtilitiesClass
+Class ImageUtilitiesClass \
+{
+
+  #
+  proc ::ClampLow(IMAGE im, NUM v) {
+    return = (im>v)*im+(im<=v)*v
   }
+  
+  #
+  proc ::ClampHigh(IMAGE im, NUM v) {
+    return = (im<v)*im+(im>=v)*v
+  }
+  
+  #
+  proc ::Clamp(IMAGE im, NUM vmin, NUM vmax) {
+    return = (im<vmin)*vmin+(im>vmax)*vmax+(im>=vmin)*(im<=vmax)*im
+  }
+
+  proc ::ClampLowAndCrop(IMAGE im, NUM th, NUM margin) \
+  {
+    res = (FLOAT) ::ClampLow( im, th)
+    res = res-th
+    res <<= autocrop(res,margin)
+    res = res+th
+    return=&res
+  }
+  
 }
+
+del ImUtils
+ImageUtilitiesClass ImUtils
