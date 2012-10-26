@@ -1759,13 +1759,13 @@ InrImage ::  InrImage(  WORDTYPE format, int vdim,
   _txy = _tx*_ty;
   _taille = (unsigned long) _tx * _ty * _tz;
  
-  SetVoxelSize( image->_size_x,
-                image->_size_y,
-                image->_size_z);
+  _size_x = image->_size_x;
+  _size_y = image->_size_y;
+  _size_z = image->_size_z;
 
-  SetTranslation( image->_translation_x,
-                  image->_translation_y,
-                  image->_translation_z);
+  _translation_x = image->_translation_x;
+  _translation_y = image->_translation_y;
+  _translation_z = image->_translation_z;
   
   _format = (WORDTYPE) format;
   Alloue();
