@@ -39,7 +39,7 @@ if (!exists(GreyMorphoClass)) {
         for n=1 to ::algorithm_types.size()-1 { 
           mess += ", %1%" % ::algorithm_types[n]; 
         }
-        ::algorithm_type = INT(0), "type of algorithm used (%1%)" % mess
+        ::algorithm_type = INT(1), "type of algorithm used (%1%)" % mess
   
         #  
         ::Imin = 0, "Minimal intensity"

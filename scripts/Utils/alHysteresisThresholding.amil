@@ -21,6 +21,52 @@ Class alHysteresisThresholdingClass \
     return = (st==2)
   }
 
+  proc ::RunMask( IMAGE input, IMAGE mask, NUM high_th, NUM low_th ) \
+  {
+    initmask = (UCHAR) (mask>0.5)
+    rg = Algorithms.algorithms.ami_IntensityBasedRegionGrowing\
+        .IntensityBasedRegionGrowing(&input,&initmask)
+    rg.SetMin(low_th)
+    # here should be the maximal image value ...
+    # otherwise, bug? the points higher than max in the initial image
+    # change status ...
+    rg.SetMax(high_th)
+    rg.Evolve()
+    #return = initmask
+    st = rg.ami_RegionGrowingBase.GetStateImage()
+    return = (st==2)
+  }
+
+  #
+  # Evolve from a mask image within a range of intensities
+  # and up to a given distance from the mask
+  #
+  proc ::RunMaskDist( IMAGE input, IMAGE mask, \
+                      NUM low_th, NUM high_th, \
+                      NUM maskdist ) \
+  {
+    initmask = (UCHAR) (mask>0.5)
+    # Compute the dilated mask
+    func "Utils/alMathMorphoUtilsClass"
+
+    # Compute the input for the RG algorithm
+    initmask_dilated = alMathMorpho.Dilate(initmask,maskdist)
+    rg_input = initmask_dilated*(input>=low_th)*(input<=high_th)
+    del initmask_dilated
+
+    rg = Algorithms.algorithms.ami_IntensityBasedRegionGrowing\
+        .IntensityBasedRegionGrowing(rg_input,initmask)
+    rg.SetMin(0.5)
+    # here should be the maximal image value ...
+    # otherwise, bug? the points higher than max in the initial image
+    # change status ...
+    rg.SetMax(1.001)
+    rg.Evolve()
+    #return = initmask
+    st = rg.ami_RegionGrowingBase.GetStateImage()
+    return = (st==2)
+  }
+
 }
 
 del alHysteresis
