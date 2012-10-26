@@ -1,0 +1,5 @@
+ 
+# ITK
+ami.MainFrame.AddToMenu("&Scripts","&IO","&itk DICOM","IO/itkDICOM/itkDICOM.amil")
+
+ami.MainFrame.AddToMenu("&ITK","&IO","&DICOM","IO/itkDICOM/itkDICOM.amil")
