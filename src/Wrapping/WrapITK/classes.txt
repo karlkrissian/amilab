@@ -6,6 +6,7 @@
 # VNL Classes
 #-----------------
 vnl_matrix<double>
+vnl_diag_matrix<double>
 vnl_vector<double>
 vnl_symmetric_eigensystem<double>
 vnl_vector_fixed<double, 3u>

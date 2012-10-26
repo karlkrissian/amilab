@@ -1,0 +1,34 @@
+ 
+## Scripts-->IO-->ReadDICOM
+#ami.MainFrame.AddToMenu(  "&Scripts","&IO","&ReadDICOM",\
+                          #"IO/ReadDICOM/ReadDICOMGui.amil")
+
+# ITK-->IO-->ReadDICOM
+ami.MainFrame.AddToMenu(  "&ITK",    "&IO","&ReadDICOM",\
+                          "IO/ReadDICOM/ReadDICOMGui.amil")
+
+
+if !exists(global::ReadDICOM_display) {
+
+  proc AddScript() {
+    global
+    func "Common/ScriptDisplayClass"
+
+    ScriptDisplayClass ReadDICOM_display
+
+    ReadDICOM_display.SetScript("IO/ReadDICOM/ReadDICOMGui.amil")
+    ReadDICOM_display.SetScriptObjName("global::ReadDICOM_obj")
+
+    ReadDICOM_display.SetDisplayedName("&DICOM Reader")
+    ReadDICOM_display.SetHelp("Read and Parse DICOM files/directories.")
+    ReadDICOM_display.SetInMenus("Scripts","IO")
+
+    ReadDICOM_display.SetIcon16( op_system.GetCurrentScriptDir()+"/ReadDICOM_icon16.png")
+    ReadDICOM_display.SetIcon32( op_system.GetCurrentScriptDir()+"/ReadDICOM_icon32.png")
+
+    ReadDICOM_display.Add2Menu()
+    ReadDICOM_display.Add2Toolbar()
+  }
+  AddScript()
+  del AddScript
+}

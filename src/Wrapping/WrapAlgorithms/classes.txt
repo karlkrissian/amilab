@@ -44,6 +44,7 @@ ami::MeanClass
 
 # linear interpolator
 amimage
+amiDirectionMatrix
 ImageLinearInterpolator
 
 # try some graphics (should not be here ...)

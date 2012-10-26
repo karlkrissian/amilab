@@ -187,11 +187,15 @@ Class GetDicomInfoClass \
   #-----------------------------------------------------------------------------
   proc ::DisplayEntries() \
   {
-    if (!exists(::display_win->fr)) {
-      ::display_win.CreateWindow()
+    if (::read_ok) {
+      if (!exists(::display_win->fr)) {
+        ::display_win.CreateWindow()
+      }
+      entries = ::GetEntries()
+      ::display_win.ShowEntries(entries, ::filename)
+    } else {
+      InfoDialog "Failed in reading file %1%" % ::filename
     }
-    entries = ::GetEntries()
-    ::display_win.ShowEntries(entries, ::filename)
   }
 }
 

@@ -734,11 +734,20 @@ public:
       tz = _translation_z;
     }
 
-    void          GetTransfMatrix(amiDirectionMatrix& m)
+    const amiDirectionMatrix& GetTransfMatrix() const
     {
-      for(int i=0;i<3;i++)
-        for(int j=0;j<3;j++)
-          m.SetValue(i,j,_transf_matrix.GetValue(i,j));
+      return _transf_matrix;
+    }
+
+    void GetTransfMatrix(amiDirectionMatrix& m)
+    {
+      m = _transf_matrix;
+    }
+
+    void          SetTransfMatrix(amiDirectionMatrix const & m)
+    {
+      _transf_matrix = m;
+      _amimage->TransfMatrix = m;
     }
 
 /*

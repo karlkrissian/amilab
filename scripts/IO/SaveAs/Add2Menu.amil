@@ -4,14 +4,4 @@
 # Adding main Gui scripts to the menu
 #
 
-proc AddMenuSaveAs() \
-{
-  category = "&PDI"
-  script = "PDI/SaveAs/SaveAsGui.amil"
-
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&SaveAs",script)
-}
-
-AddMenuSaveAs()
-del AddMenuSaveAs
+ami.MainFrame.AddToMenu("&Scripts","&IO","&SaveAs",  "IO/SaveAs/SaveAsGui")

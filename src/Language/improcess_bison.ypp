@@ -1058,6 +1058,10 @@ cond_inst :
 
 
 proc_decl:
+    /**
+      Description:
+        Declare a new function
+     **/
     T_PROC  identifier
     {
       GB_driver.procedure_declaration = true;
@@ -1089,6 +1093,10 @@ proc_decl:
       GB_driver.procedure_declaration = false;
     } 
     |
+    /**
+      Description:
+        Change the body of an existing function
+     **/
     T_PROC  VAR_AMI_FUNCTION
     {
       // allow overriding current functions
@@ -1135,6 +1143,10 @@ proc_decl:
 
 
 class_decl:
+    /**
+      Description:
+        Declare a new class
+     **/
     T_Class  identifier
         instr_block end_instr
     {
@@ -1151,7 +1163,29 @@ class_decl:
       Vars.AddVar<AMIClass>(ident, amiclass);
 
     }
+/*  Create many shift/reduce conflicts: to check ...
+  |
+    //
+      Description:
+        Change the body of existing class
+    //
+    T_Class VAR_AMI_CLASS
+        instr_block end_instr
+    {
+      AmiInstructionBlock::ptr body($3);
+
+      Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
+      AMIClass::ptr ac = var->Pointer();
+
+      ac->SetFileName(driver.current_file);
+      ac->SetBody(     body);
+      if (GB_debug) printf("%s body = %s\n", ac->GetName().c_str(),body->GetBody().c_str());
+    };
+    */
     |
+    /**
+     *  Declare a new class with inheritance
+     */
     T_Class  identifier T_COLON T_public var_ami_class_list
         instr_block end_instr
     {

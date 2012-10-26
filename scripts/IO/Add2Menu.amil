@@ -6,9 +6,9 @@
 
 #InfoDialog "Including scripts/OI/..."
 ami.MainFrame.AddToMenu("&Scripts","&IO","Read &Raw data","IO/Raw2Ami_gui.amil")
-ami.MainFrame.AddToMenu("&Scripts","&IO","&itk DICOM","IO/itkDICOM/itkDICOM.amil")
 
-# ITK
-ami.MainFrame.AddToMenu("&ITK","&IO","&DICOM","IO/itkDICOM/itkDICOM.amil")
- ami.MainFrame.AddToMenu("&Scripts","&IO","&SaveAs",  "IO/SaveAs/SaveAsGui")
 
+#
+# Adding main GUI scripts to the menu interface
+#
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())

@@ -1,0 +1,10 @@
+ 
+func "ReadDICOMClass"
+
+if (!exists(ReadDICOM_obj)) {
+  ReadDICOMClass ReadDICOM_obj
+  ReadDICOM_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+

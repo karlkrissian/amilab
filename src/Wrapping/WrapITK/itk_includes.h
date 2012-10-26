@@ -18,9 +18,11 @@
 #include "vnl/vnl_vector.h"
 #include "vnl/algo/vnl_symmetric_eigensystem.h"
 #include "vnl/vnl_vector_fixed.h"
+#include <vnl/vnl_diag_matrix.h>
 
 #ifdef __GCCXML__
   template class vnl_matrix<double>;
+  template class vnl_diag_matrix<double>;
   template class vnl_vector<double>;
   template class vnl_symmetric_eigensystem<double>;
   template class vnl_vector_fixed<double,3>;
