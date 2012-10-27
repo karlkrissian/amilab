@@ -1,0 +1,11 @@
+
+func "vtkTransformClass"
+
+if (!exists(vtkTransform_obj)) {
+  vtkTransformClass vtkTransform_obj
+  vtkTransform_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

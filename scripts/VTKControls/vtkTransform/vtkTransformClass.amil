@@ -1,0 +1,290 @@
+
+func "Common/ScriptGui"
+
+if (!exists(vtkTransformClass)) {
+
+  Class vtkTransformClass : public ScriptGui \
+  {
+    
+    func "Variable/ObjectIO"
+    #===========================================================================
+    # Set parameters here
+    Class ::ParamClass : public ObjectIO {
+
+        func "WxUtils/alEnum"
+        ::description = "vtkTransform parameters", \
+                        "Description of the set of parameters"
+
+        ::pos_x        = 0,        "Position X"
+        ::pos_y        = 0,        "Position Y"
+        ::pos_z        = 0,        "position Z"
+
+        ::scale_x      = 1,      "Scale X"
+        ::scale_y      = 1,      "Scale Y"
+        ::scale_z      = 1,      "Scale Z"
+
+        ::orient_x     = 0,      "Orientation X"
+        ::orient_y     = 0,      "Orientation Y"
+        ::orient_z     = 0,      "Orientation Z"
+
+        #-----------------------------------------------------------------------
+        # copy parameters
+        proc ::__assign__( VAR p) {
+          ::pos_x        = p.pos_x
+          ::pos_y        = p.pos_y
+          ::pos_z        = p.pos_z
+
+          ::scale_x        = p.scale_x
+          ::scale_y        = p.scale_y
+          ::scale_z        = p.scale_z
+
+          ::orient_x        = p.orient_x
+          ::orient_y        = p.orient_y
+          ::orient_z        = p.orient_z
+        }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Init() \
+    {
+      ::ParamClass ::params
+      ::transform_name = ""
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+      ::html_filename = GetScriptsDir+\
+                        "/vtkTransform/Doc/vtkTransform/index.html"
+    }
+
+
+    #-----------------------------------------------------------------------------
+    proc ::Update() \
+    {
+      pos = vector_double(3)
+      ::vtktransf.GetPosition(pos[0])
+      ::params.pos_x = pos[0]
+      ::params.pos_y = pos[1]
+      ::params.pos_z = pos[2]
+
+      scale = vector_double(3)
+      ::vtktransf.GetScale(scale[0])
+      ::params.scale_x = scale[0]
+      ::params.scale_y = scale[1]
+      ::params.scale_z = scale[2]
+
+      orient = vector_double(3)
+      ::vtktransf.GetOrientation(orient[0])
+      ::params.orient_x = orient[0]
+      ::params.orient_y = orient[1]
+      ::params.orient_z = orient[2]
+
+      ::win.Update(-1)
+
+      ::DisplayMatrix()
+
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SetChangedCallback( VAR ccb ) \
+    {
+      ::changed_cb = &ccb
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Modified() \
+    {
+      if (exists(::changed_cb)) {
+        ::changed_cb()
+      }
+    }
+
+    ##---------------------------------------------------------------------------
+    #proc ::CB_Title( ) \
+    #{
+      #if (exists(::vtktransf)) {
+        #::vtktransf.SetTitle(::params.title)
+        #::Modified()
+      #}
+    #}
+
+    ##---------------------------------------------------------------------------
+    #proc ::CB_Grid( ) \
+    #{
+      #if (exists(::vtktransf)) {
+        #::vtktransf.SetGridVisible(::params.gridvisible)
+        #::Modified()
+      #}
+    #}
+
+    ##---------------------------------------------------------------------------
+    #proc ::CB_Labels( ) \
+    #{
+      #if (exists(::vtktransf)) {
+        #::vtktransf.SetLabelsVisible(::params.labelsvisible)
+        #::Modified()
+      #}
+    #}
+
+    #---------------------------------------------------------------------------
+    # Print Matrix
+    proc ::DisplayMatrix() \
+    {
+      m = ::vtktransf.GetMatrix()
+      for i=0 to 3 {
+        for j=0 to 3 {
+          ::matrix_grid.SetCellValue(i+1,j, "%10.5g" % m.GetElement(i,j))
+        }
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    # Print Matrix
+    proc ::CB_PrintMatrix() \
+    {
+      ss = stringstream()
+      ::vtktransf.GetMatrix().Print(ss)
+      printn ss.str()
+    }
+
+    #---------------------------------------------------------------------------
+    # Print
+    proc ::CB_PrintFull() \
+    {
+      ss = stringstream()
+      ::vtktransf.Print(ss)
+      printn ss.str()
+    }
+
+
+    proc ::Add_XYZ_Vector_Gui(STRING label, STRING name, OBJECT win) \
+    {
+      win.BeginBoxPanel(label)
+        win.BeginHorizontal()
+          for pos in "x","y","z" {
+            currentname = name+"_"+pos
+            cmd =  "::%1%_id = win.AddFloat(::params.%1%," % currentname 
+            cmd += "\"%1%\",-1024,1024);" % pos
+            eval cmd
+            eval "win.ShowSlider(::%1%_id,false); " % currentname
+            ##win.SetCallback(::CB_PosX)
+          }
+        win.EndHorizontal()
+      win.EndBoxPanel()
+    }
+
+    #---------------------------------------------------------------------------
+    # create the gui on a ParamPanel
+    proc ::AddGui( OBJECT win) \
+    {
+      if (!exists(::win)) {
+        ::win = &win
+      }
+
+
+      win.BeginBoxPanel("vtkTransform control")
+        ::Add_XYZ_Vector_Gui("Position",   "pos"  , win)
+        ::Add_XYZ_Vector_Gui("Scale",      "scale", win)
+        ::Add_XYZ_Vector_Gui("Orientation","orient",win)
+
+        win.BeginBoxPanel("vtkMatrix4x4")
+          # Display matrix in grid
+          d = win.CurrentParent()
+          ::matrix_grid = wx.wxGrid(d,wx.wxID_ANY)
+          # create a 5x4 grid
+          ::matrix_grid.CreateGrid(5,4)
+          # hide labels
+          ::matrix_grid.HideColLabels()
+          ::matrix_grid.HideRowLabels()
+
+          # span the first row to the full size
+          ::matrix_grid.SetCellSize(0,0,1,4)
+          # Set the title as Bold
+          ::matrix_grid.SetCellFont(0,0,::matrix_grid.GetCellFont(0,0).Bold())
+          # Center it
+          ::matrix_grid.SetCellAlignment(0,0,wx.wxALIGN_CENTRE, wx.wxALIGN_CENTRE)
+          # put the title in the first row
+          ::matrix_grid.SetCellValue(0,0,"Matrix values:")
+
+          # Set the last columns as blue
+          blue = wx.wxColour(20,20,230)
+          for i=1 to 4 {
+            ::matrix_grid.SetCellTextColour(i,3,blue)
+          }
+
+          # sets minimal size here
+          #::matrix_grid.SetMinSize(&wx.wxSize(80,70));
+          #::matrix_grix.SetBackgroundColour(wx.wxColour(255,255,255))
+          ::sizer_item = win.AddWidget(&::matrix_grid,0)
+          s = ::win.GetCurrentSizer()
+          s.GetItem(s.GetItemCount()-1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
+        win.EndBoxPanel()
+
+        #win.BeginHorizontal()
+        #  win.AddButton("PrintMatrix",::CB_PrintMatrix)
+          win.AddButton("Print to stdout",  ::CB_PrintFull)
+        #win.EndHorizontal()
+      win.EndBoxPanel()
+
+    }
+
+
+    #---------------------------------------------------------------------------
+    proc ::SetTransform( OBJECT obj) \
+    {
+      if obj.IsA("vtkTransform") {
+        del ::vtktransf
+        ::vtktransf = &obj
+      } else {
+        InfoDialog "vtkTransformClass.SetTransform(obj): wrong object type"
+      }
+
+      ::Update()
+    }
+
+    #-----------------------------------------------------------------------------
+    proc ::CB_Transform( ) \
+    {
+      eval "::SetTransform(%1%);" % ::transform_name
+      ::Update()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() \
+    {
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("vtkTransform",&::parent_panel)
+      } else {
+        ::win = ParamPanel("vtkTransform")
+      }
+      
+      ::win.BeginBook()
+        ::win.AddPage("Main")
+          # Select Transform
+          ::win.AddAMIObjectChoice( &::transform_name, "", "vtkTransform")
+          ::win.SetCallback(::CB_Transform)
+          # add gui
+          ::AddGui(::win)
+        # add page for saving/loading parameters
+        ::AddParamPage(&::win)
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+      ::win.EndBook()
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+    }
+
+    #---------------------------------------------------------------------------
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If
