@@ -283,9 +283,6 @@ unsigned char InrImage :: ReadAMI( ) throw (ErreurLecture)
     _translation_y = im->GetTY();
     _translation_z = im->GetTZ();
 
-    // Get the transformation matrix
-    im->GetTransfMatrix(_transf_matrix);
-
     if ( res ) {
         _tx     = im->GetXDim();
         _ty     = im->GetYDim();
@@ -1418,13 +1415,6 @@ void InrImage :: InitParams()
 //  _amimage_allocated   = false;
   _positions_allocated = false;
 
-  // Identity Matrix
-  for(i=0;i<3;i++) 
-  for(j=0;j<3;j++)
-    _transf_matrix.SetValue(i,j,0);
-  for(i=0;i<3;i++) _transf_matrix.SetValue(i,i,1);
-
-
 } // InitParams()
 
 
@@ -1771,7 +1761,7 @@ InrImage ::  InrImage(  WORDTYPE format, int vdim,
   Alloue();
   InitPositions();
 
-  SetTransfMatrix(image->GetTransfMatrix());
+  _amimage->TransfMatrix = image->_amimage->TransfMatrix;
 
   _Iterator = CreateIterator();
   _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
@@ -2005,9 +1995,6 @@ void InrImage :: SetAMImage( const amimage::ptr& amim)
    if (GB_debug) fprintf(stderr,"SetAMImage() set translation %f %f %f\n",
     amim->GetTX(),amim->GetTY(),amim->GetTZ());
   this->SetTranslation(amim->GetTX(),amim->GetTY(),amim->GetTZ());
-  // Get the transformation matrix
-   if (GB_debug) fprintf(stderr,"SetAMImage() set transf matrix\n");
-  amim->GetTransfMatrix(this->_transf_matrix);
        
   if (GB_debug) fprintf(stderr,"SetAMImage() set params\n");
 

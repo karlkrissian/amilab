@@ -199,7 +199,7 @@ Class ReadDICOMClass : public ScriptGui {
         dj.Init_ptr2(3,5,orient_ptr)
         PrintVector(dj,"Second orientation:")
         dk = di.vect(dj)
-        PrintVector(dj,"Third orientation:")
+        PrintVector(dk,"Third orientation:")
         
         # --- Get Volume dimensions ---
         dim_int = vector_int(3)
@@ -225,12 +225,15 @@ Class ReadDICOMClass : public ScriptGui {
         imres.settranslation(pos[0],pos[1],pos[2])
         
         # Set the matrix
-        for j=0 to 2 {
-          amimage_res.TransfMatrix(0,j) = di[j]
-          amimage_res.TransfMatrix(1,j) = dj[j]
-          amimage_res.TransfMatrix(2,j) = dk[j]
+        for i=0 to 2 {
+          amimage_res.TransfMatrix(i,0) = di[i]
+          amimage_res.TransfMatrix(i,1) = dj[i]
+          amimage_res.TransfMatrix(i,2) = dk[i]
         }
         
+        func "Utils/AMImageUtils"
+        PrintMatrix(imres)
+
         return = &imres
     }
     if (::readerlibs.OptionName(::reader_lib)=="ITK") {

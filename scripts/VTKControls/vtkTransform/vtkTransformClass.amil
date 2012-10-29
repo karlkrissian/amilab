@@ -95,34 +95,62 @@ if (!exists(vtkTransformClass)) {
       if (exists(::changed_cb)) {
         ::changed_cb()
       }
+      ::DisplayMatrix()
     }
 
     ##---------------------------------------------------------------------------
-    #proc ::CB_Title( ) \
-    #{
-      #if (exists(::vtktransf)) {
-        #::vtktransf.SetTitle(::params.title)
-        #::Modified()
-      #}
-    #}
+    proc ::RecomputeMatrix( ) \
+    {
+      if (exists(::vtktransf)) {
+        ::vtktransf.Identity()
+
+        v = vector_double(3)
+
+        v[0] = ::params.pos_x
+        v[1] = ::params.pos_y
+        v[2] = ::params.pos_z
+        ::vtktransf.Translate(v[0])
+
+        v[0] = ::params.scale_x
+        v[1] = ::params.scale_y
+        v[2] = ::params.scale_z
+        ::vtktransf.Scale(v[0])
+
+        ::vtktransf.RotateX( ::params.orient_x)
+        ::vtktransf.RotateY( ::params.orient_y)
+        ::vtktransf.RotateZ( ::params.orient_z)
+
+
+      }
+    }
+  
 
     ##---------------------------------------------------------------------------
-    #proc ::CB_Grid( ) \
-    #{
-      #if (exists(::vtktransf)) {
-        #::vtktransf.SetGridVisible(::params.gridvisible)
-        #::Modified()
-      #}
-    #}
+    proc ::CB_Pos( ) \
+    {
+      if (exists(::vtktransf)) {
+        ::RecomputeMatrix()
+        ::Modified()
+      }
+    }
 
     ##---------------------------------------------------------------------------
-    #proc ::CB_Labels( ) \
-    #{
-      #if (exists(::vtktransf)) {
-        #::vtktransf.SetLabelsVisible(::params.labelsvisible)
-        #::Modified()
-      #}
-    #}
+    proc ::CB_Scale( ) \
+    {
+      if (exists(::vtktransf)) {
+        ::RecomputeMatrix()
+        ::Modified()
+      }
+    }
+
+    ##---------------------------------------------------------------------------
+    proc ::CB_Orient( ) \
+    {
+      if (exists(::vtktransf)) {
+        ::RecomputeMatrix()
+        ::Modified()
+      }
+    }
 
     #---------------------------------------------------------------------------
     # Print Matrix
@@ -155,20 +183,25 @@ if (!exists(vtkTransformClass)) {
     }
 
 
-    proc ::Add_XYZ_Vector_Gui(STRING label, STRING name, OBJECT win) \
+    proc ::Add_XYZ_Vector_Gui(STRING label, STRING name, OBJECT win, VAR CB) \
     {
-      win.BeginBoxPanel(label)
+      #win.BeginBoxPanel(label)
         win.BeginHorizontal()
           for pos in "x","y","z" {
             currentname = name+"_"+pos
             cmd =  "::%1%_id = win.AddFloat(::params.%1%," % currentname 
-            cmd += "\"%1%\",-1024,1024);" % pos
+            if pos=="x" {
+              cmd += "\"%1%\"" % label
+            } else {
+              cmd += "\"\""
+            }
+            cmd += ",-1024,1024);" #% pos
             eval cmd
             eval "win.ShowSlider(::%1%_id,false); " % currentname
-            ##win.SetCallback(::CB_PosX)
+            win.SetCallback(CB)
           }
         win.EndHorizontal()
-      win.EndBoxPanel()
+      #win.EndBoxPanel()
     }
 
     #---------------------------------------------------------------------------
@@ -181,9 +214,9 @@ if (!exists(vtkTransformClass)) {
 
 
       win.BeginBoxPanel("vtkTransform control")
-        ::Add_XYZ_Vector_Gui("Position",   "pos"  , win)
-        ::Add_XYZ_Vector_Gui("Scale",      "scale", win)
-        ::Add_XYZ_Vector_Gui("Orientation","orient",win)
+        ::Add_XYZ_Vector_Gui("Pos",   "pos"  , win, ::CB_Pos)
+        ::Add_XYZ_Vector_Gui("Sc.",   "scale", win, ::CB_Scale)
+        ::Add_XYZ_Vector_Gui("Or.",   "orient",win, ::CB_Orient)
 
         win.BeginBoxPanel("vtkMatrix4x4")
           # Display matrix in grid

@@ -36,6 +36,7 @@ vtkContextScene
 vtkContextView
 vtkCoordinate
 vtkCornerAnnotation
+vtkCubeAxesActor
 vtkDataArray
 vtkDataObject
 vtkDataSet

@@ -104,11 +104,14 @@ if (!exists(alGraphVizClass)) {
       ami.AMILabConfig.SetPath(::config_path)
 
       if ::platform=="Windows"   { 
-        ::graphviz_bindir = wx.FromWxString(ami.AMILabConfig.\
-          Read_11("GRAPHVIZ_BINDIR","C:/Program Files/"))
+        res = wx.wxString()
+        ami.AMILabConfig.Read("GRAPHVIZ_BINDIR",res,"C:/Program Files/")
+        ::graphviz_bindir = wx.FromWxString(res)
+          # with wx2.9 Read_11 ...
       } else {
-        ::graphviz_bindir = wx.FromWxString(ami.AMILabConfig.\
-          Read_11("GRAPHVIZ_BINDIR","/usr/bin"))
+        res = wx.wxString()
+        ami.AMILabConfig.Read("GRAPHVIZ_BINDIR",res,"/usr/bin")
+        ::graphviz_bindir = wx.FromWxString(res)
       }
 
       # Set/Create the directory of the graph files
@@ -122,8 +125,9 @@ if (!exists(alGraphVizClass)) {
         wx.wxFileName.Mkdir(::graphviz_dotdir)
       }
 
-      ::graphviz_dotdir = wx.FromWxString(ami.AMILabConfig.\
-        Read_11("GRAPHVIZ_DOTDIR",::graphviz_dotdir))
+      res = wx.wxString()
+      ami.AMILabConfig.Read("GRAPHVIZ_DOTDIR",res,::graphviz_dotdir)
+      ::graphviz_dordir = wx.FromWxString(res)
       #, "GraphViz binary path"
 
         

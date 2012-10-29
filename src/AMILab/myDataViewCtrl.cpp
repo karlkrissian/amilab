@@ -84,7 +84,7 @@ void myDataViewTreeListCtrl::OnActivated( wxDataViewEvent &event )
 void myDataViewTreeListCtrl::OnExpanding(  wxDataViewEvent& event)
 {
   wxDataViewItem item(event.GetItem());
-  std::cout << " *** Expanding Item " << GetItemText(item) << std::endl;
+  //std::cout << " *** Expanding Item " << GetItemText(item) << std::endl;
   
   // only apply when not within an update to avoid recursion
   if (!GB_main_wxFrame->GetUpdatingDataView()) {
@@ -109,7 +109,7 @@ void myDataViewTreeListCtrl::OnExpanding(  wxDataViewEvent& event)
       }
     }
   } else {
-    std::cout << "discarded " << std::endl;
+    //std::cout << "discarded " << std::endl;
   }
   event.Skip();
 }

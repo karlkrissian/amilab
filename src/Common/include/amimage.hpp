@@ -170,7 +170,10 @@ public:
   amiDirectionMatrix() {
     for(int i=0;i<3;i++)
       for(int j=0;j<3;j++)
-        mat[i][j] = 0;
+        if (i!=j)
+          mat[i][j] = 0.0;
+        else
+          mat[i][j] = 1.0;
   }
   
   void SetValue(int i, int j, double val) {

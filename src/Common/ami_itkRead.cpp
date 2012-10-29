@@ -203,8 +203,9 @@ InrImage* itkRead(const std::string& fname)
     std::cout << "  Number of Dimensions = "<< image_io->GetNumberOfDimensions() << std::endl;
     int vdim = image_io->GetNumberOfComponents();
     std::cout << "  Number of Components = "<< vdim << std::endl;
+/*
     std::vector<double> dir;
-    for(int n=0; n<vdim; n++) {
+     for(int n=0; n<vdim; n++) {
       dir = image_io->GetDirection(n);
       std::cout   << "direction " 
                   << n << ": " ;
@@ -212,6 +213,7 @@ InrImage* itkRead(const std::string& fname)
         std::cout << dir[i] << ", " ;
       std::cout << std::endl;
     }
+    */
 //->PrintSelf(cout,itk::Indent(2));
 
   } catch( itk::ExceptionObject & err ) {

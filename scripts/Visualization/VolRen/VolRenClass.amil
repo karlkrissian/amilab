@@ -73,8 +73,8 @@ if (!exists(VolRenClass)) {
       ::volrenmapper_type = INT(0), "Choose volume rendering mapper type, 0: GPU 1: Fixed Point 2: Standard 3: AMILab type 4: Smart"
       ::volVector = VarVector()
       ::volPageVector = VarVector()
-      ::resizevol1 = 0
-      ::resizevol2 = 0
+      ::resizevol1 = false
+      ::resizevol2 = false
       ::d          = INT(0), "Background"
 
       #::keep_curve = UCHAR(0), "Keep transfer curve while changing the volume"
@@ -438,7 +438,7 @@ if (!exists(VolRenClass)) {
         ::load_input()
       }
       if (exists(::input)){
-        ::resizevol1=1
+        ::resizevol1=true
         SetStatusText("Resizing ...")
         aux = Resize(::input, ::input.tx/2, ::input.ty/2, ::input.tz/2,1)
         SetStatusText("Resizing done")
@@ -461,7 +461,7 @@ if (!exists(VolRenClass)) {
         ::load_input2()
       }
       if (exists(::input2)){
-        ::resizevol2=1
+        ::resizevol2=true
         SetStatusText("Resizing ...")
         aux = Resize(::input2, ::input2.tx/2, ::input2.ty/2, ::input2.tz/2,1)
         SetStatusText("Resizing done")
@@ -497,10 +497,17 @@ if (!exists(VolRenClass)) {
     proc ::StartNew() \
     {
       if ::trace { eval ::trace_begin; }
-      if (::volrenmapper_type!=3){
-        if (::resizevol1==0){
+      if (::volrenmapper_type != 3){
+        if (!::resizevol1){
           ::load_input()
         }
+      } else {
+        # try to load image first
+        if (!exists(::input))  { ::load_input();  }
+        if (!exists(::input2)) { ::load_input2(); }
+        # useful to save data related to inputs
+        ::vol0.SetInput1Name(::input_name)
+        ::vol0.SetInput2Name(::input2_name)
       }
       ::azimuthAnt=0
       ::elevationAnt=0
@@ -508,7 +515,7 @@ if (!exists(VolRenClass)) {
       ::azimuth=0
       ::elevation=0
       ::zoom=0
-      ::resizevol1=0
+      ::resizevol1=false
 
       if (exists(::input)){
         if (!::volVector[0].initialized){
@@ -603,10 +610,10 @@ if (!exists(VolRenClass)) {
     {
       if ::trace { eval ::trace_begin; }
     
-      if (::resizevol2==0){
+      if (!::resizevol2){
         ::load_input2()
       }
-     ::resizevol2=0
+     ::resizevol2=false
       if (exists(::input2)) {
         ::volVector[1].cpManager(&::volVector[0])
         ::volVector[1].DelVTK()
@@ -642,12 +649,12 @@ if (!exists(VolRenClass)) {
       if ::trace { eval ::trace_begin; }
        mb = ami.MainFrame.GetMainBook()
 
-      ::panel = wx.wxPanel(&ami.MainFrame)
+      ::panel = wx.wxPanel(ami.MainFrame)
       ::panel.SetName("VolRen panel")
 
       # StaticBox gives problems on XP ..., avoid it ...
       sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
-      ::panel.SetSizer(&sbox_sizer)
+      ::panel.SetSizer(sbox_sizer)
       ::splitter =wx.wxSplitterWindow(&::panel,-1)
 
       sbox_sizer.Add( &::splitter, 1, wx.wxALL | wx.wxEXPAND,2)
@@ -656,12 +663,13 @@ if (!exists(VolRenClass)) {
       #::panel1.SetBackgroundColour(wx.wxColour(0,0,50))
       ::panel1_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel1.SetSizer(&::panel1_sizer)   
-      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel1,wx.wxID_ANY)
-      ::panel1_sizer.Add(&::renwin_interact,1,wx.wxEXPAND )
+      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(::panel1,wx.wxID_ANY)
+      ::panel1_sizer.Add(::renwin_interact,1,wx.wxEXPAND )
       #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
       ::renwin_interact.UseCaptureMouseOn()
       ::renwin_interact.Enable(true)
       ::renwin_interact.Initialize()
+
       # Still drawing problem (missed exposed events???)
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
       ::panel2 = wx.wxPanel(&::splitter)
@@ -703,7 +711,8 @@ if (!exists(VolRenClass)) {
       # Add to main book
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
       title = GetObjectName(::Init)
-      mb.AddPage( &::panel,  title,1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+      mb.AddPage( ::panel,  title,1, \
+                  wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
       ::volren_pageindex = mb.GetPageIndex(&::panel)
       
       # initialize the renderer, camera, renderwindow in volvVctor[0]

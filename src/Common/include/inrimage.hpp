@@ -333,7 +333,6 @@ protected:
 
   /// pointer to the data
   boost::shared_ptr<amimage>           _amimage;
-  //unsigned char    _amimage_allocated;
 
   ///
   int     _vdim; // image scalar (1), vectorial (2,3,etc...)
@@ -467,8 +466,6 @@ public:
   WORDTYPE     _format;
 
 
-  // Transformation matrix
-  amiDirectionMatrix  _transf_matrix;
 
 //@}
 
@@ -734,20 +731,10 @@ public:
       tz = _translation_z;
     }
 
-    const amiDirectionMatrix& GetTransfMatrix() const
-    {
-      return _transf_matrix;
-    }
-
     void GetTransfMatrix(amiDirectionMatrix& m)
     {
-      m = _transf_matrix;
-    }
-
-    void          SetTransfMatrix(amiDirectionMatrix const & m)
-    {
-      _transf_matrix = m;
-      _amimage->TransfMatrix = m;
+      if (_amimage.get())
+        _amimage->GetTransfMatrix(m);
     }
 
 /*

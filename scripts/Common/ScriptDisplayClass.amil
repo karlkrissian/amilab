@@ -146,24 +146,24 @@ if (!exists(ScriptDisplayClass)) \
                     wx.wxAUI_TB_DEFAULT_STYLE |  wx.wxAUI_TB_OVERFLOW | wx.wxAUI_TB_VERTICAL )
         tb=&global::scripts_toolbar
         tb.SetToolBitmapSize(wx.wxSize(32,32))
-        mgr.AddPane(&tb, &::paneinfo )
+        mgr.AddPane(tb, ::paneinfo )
       } else {
         tb=&global::scripts_toolbar
       }
       ::tb_id = 20000+tb.GetToolCount()
       wxim = wx.wxImage(::icon_32)
-      bm = wx.wxBitmap(&wxim.Rescale(32,32))
-      mgr.DetachPane(&tb)
-      tb.AddTool( ::tb_id, ::menu_name, &bm,::menu_help, wx.wxITEM_CHECK)
+      bm = wx.wxBitmap(wxim.Rescale(32,32))
+      mgr.DetachPane(tb)
+      tb.AddTool( ::tb_id, ::menu_name, bm,::menu_help, wx.wxITEM_CHECK)
       tb.Realize()
-      mgr.AddPane(&tb, &::paneinfo)
+      mgr.AddPane(tb, ::paneinfo)
       mgr.Update()
       # Add Callback
       ::evh_tb = wx.wxAmiEventHandler(&::CB_Toolbar)
       # wxEVT_COMMAND_TOOL_CLICKED event (a synonym for wxEVT_COMMAND_MENU_SELECTED)
       tb.Connect( ::tb_id, wx.wxEVT_COMMAND_MENU_SELECTED \
-                  ,&::evh_tb.GetEventFunction(),\
-                  &NULL,&::evh_tb)
+                  ,::evh_tb.GetEventFunction(),\
+                  NULL,::evh_tb)
     }
 
     ::Init()

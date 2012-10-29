@@ -191,23 +191,13 @@ if (!exists(vtkIsoSurfaceClass)) {
       if (!exists(::input)) {
         ::load_input()
       }
-      if (exists(::renderer)) {
-        InfoDialog "Rendering already started, we don't allow restart ..."
+      if (!exists(::renderer)) {
+        InfoDialog "Missing renderer ..."
       } else {
         #if (exists(::renwin_interact)) { del ::renwin_interact; }
         if (!exists(::renwin_interact)) {
           ::renwin_interact = wxvtk.wxVTKFrame()
         }
-        ::renwin   = ::renwin_interact.GetRenderWindow()
-        ::renderer = vtk.vtkRenderer.New()
-        ::renwin.AddRenderer(&::renderer)
-        interact = vtk.vtkInteractorStyleTrackballCamera.New()
-        ::renwin_interact.SetInteractorStyle(&interact)
-
-        ::vtk_renderer_gui.SetRenderer(&::renderer)
-
-        ::vtk_camera_gui.SetCamera(::renderer.GetActiveCamera())
-        ::vtk_camera_gui.SetCallback(&::CameraCallback)
 
         ::StartVolume1()
 
@@ -225,9 +215,12 @@ if (!exists(vtkIsoSurfaceClass)) {
 
       # Create isosurface and vtkPolyData 
       vol1_isosurf = isosurf(::input,::vol1_threshold)
+      del ::vol1_polydata
       ::vol1_polydata = vtktools.ToVtkPolyData(&vol1_isosurf)
 
       # compute normals
+      ::SetRendererBg()
+      ::renderer.ResetCamera()
       ::vol1_normals = vtk.vtkPolyDataNormals.New()
       ::vol1_normals.SetInput(&::vol1_polydata)
       ::vol1_normals.SetFeatureAngle(60.0)
@@ -262,16 +255,30 @@ if (!exists(vtkIsoSurfaceClass)) {
         ::renwin_interact.Render()
       } else {
         vol1_isosurf = isosurf(::input,::vol1_threshold)
-        if exists(::vol1_polydata) {
-          del ::vol1_polydata
-        }
+        del ::vol1_polydata
         ::vol1_polydata = vtktools.ToVtkPolyData(&vol1_isosurf)
+        ::vol1_normals.SetInput(&::vol1_polydata)
 
-        # need a vtkPolyDataMapper here ...
-        if (!exists(::vol1_mapper)) {
-          ::vol1_mapper = vtk.vtkPolyDataMapper.New()
-        }
-        ::vol1_mapper.SetInput(&::vol1_polydata)
+        ## compute normals
+        #::SetRendererBg()
+        #::renderer.ResetCamera()
+        #::vol1_normals = vtk.vtkPolyDataNormals.New()
+        #::vol1_normals.SetInput(&::vol1_polydata)
+        #::vol1_normals.SetFeatureAngle(60.0)
+
+        ## need a vtkPolyDataMapper here ...
+        #::vol1_mapper = vtk.vtkPolyDataMapper.New()
+        #::vol1_mapper.SetInputConnection(&::vol1_normals.GetOutputPort())
+        #::vol1_mapper.ScalarVisibilityOff()
+        ##::vol1_mapper.ImmediateModeRenderingOn()
+        ## use display list to display faster ...
+        #::vol1_mapper.ImmediateModeRenderingOff()
+
+        ## create actor
+        #::vol1_actor = vtk.vtkActor.New()
+        #::vol1_actor.SetMapper(&::vol1_mapper)
+        ## need a vtkPolyDataMapper here ...
+
         ::renderer.ResetCamera()
         ::renwin.Render()
         ::renwin_interact.Render()
@@ -330,41 +337,85 @@ if (!exists(vtkIsoSurfaceClass)) {
     }
     Comments(::AddVolume2,"Adds rendering of second volume.")
 
+    #----------------------------
+     proc ::InitCamera() {
+      ::camera=::renderer.GetActiveCamera()
+      ::camera.SetPosition(0,-100,0)
+      ::camera.SetViewUp(0,0,1) # change orientation
+      #::camera.SetParallelProjection(true)
+    }
+
+    #----------------------------
+    #Initialize Interactor,Renderer, RendererWindow and variables
+    proc ::CreateRenderer( OBJECT inter ) \
+    {
+      inter.Show()
+      inter.Update()
+      ::renderer = vtk.vtkRenderer.New()
+      ::renderer.ResetCamera()   # carlos
+      inter.GetRenderWindow().AddRenderer(&::renderer)
+      interact = vtk.vtkInteractorStyleTrackballCamera.New()
+      inter.SetInteractorStyle(interact)
+      ::renwin = inter.GetRenderWindow()
+      ::InitCamera()
+    }
 
     #----------------------------
     proc ::MainBook_AddvtkIsoSurfaceTab()  \
     {
       mb = ami.MainFrame.GetMainBook()
 
-      ::panel = wx.wxPanel(&ami.MainFrame)
+      ::panel = wx.wxPanel(ami.MainFrame)
       #sbox = wx.wxStaticBox(&::panel,-1,"VTK-based isosurface visualization.")
       ::sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
-      ::panel.SetSizer(&::sbox_sizer)
+      ::panel.SetSizer(::sbox_sizer)
       # create widget here
 
-      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(&::panel,-1)
+      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(::panel,wx.wxID_ANY)
+      ::sbox_sizer.Add( ::renwin_interact, \
+                        wx.wxSizerFlags().Expand().Proportion(1) )
+
       #::renwin_interact = wxvtk.wxVTKFrame(&panel,-1)
 
       ::renwin_interact.UseCaptureMouseOn()
+      ::renwin_interact.Enable(true)
+      ::renwin_interact.Initialize()
+
       ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
       # Still drawing problem (missed exposed events???)
-      ::renwin_interact.SetBackgroundColour(wx.wxColour(0,0,0))
-      ::AttachRenWinInt()
+      ::renwin_interact.SetBackgroundColour(wx.wxColour(255,255,255))
+      #::AttachRenWinInt()
 
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
 
       # Add to main book
-      mb.AddPage( &::panel,  "vtkIsoSurface",1, wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+      mb.AddPage( ::panel,  "vtkIsoSurface",1, \
+                  wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
       ::volren_pageindex = mb.GetPageIndex(&::panel)
       #mb.SetSelection(::volren_pageindex)
+
+      ::renwin_interact.Show()
+      ::panel.Show()
+      ::renwin_interact.Update()
+      ::panel.Update()
+
+      # Create renderer 
+      ::CreateRenderer(&::renwin_interact)
+      ::SetRendererBg()
+      ::renderer.ResetCamera()
+
+      # Set gui info
+      ::vtk_renderer_gui.SetRenderer(::renderer)
+
+      ::vtk_camera_gui.SetCamera(::renderer.GetActiveCamera())
+      ::vtk_camera_gui.SetCallback(::CameraCallback)
     }
 
-    #----------------------------
-    proc ::AttachRenWinInt()  \
-    {
-      ::renwin_interact.Reparent(&::panel)
-      ::sbox_sizer.Add(&::renwin_interact, wx.wxSizerFlags().Expand().Proportion(1) )
-    }
+    ##----------------------------
+    #proc ::AttachRenWinInt()  \
+    #{
+      #::renwin_interact.Reparent(&::panel)
+    #}
 
     #----------------------------
     proc ::DetachRenWinInt()  \
@@ -520,13 +571,13 @@ if (!exists(vtkIsoSurfaceClass)) {
 
           ::win.BeginBook()
             ::vol1_page = ::win.AddPage("Vol1")
-              ::vol1threshold_id = ::win.AddFloat(&::vol1_threshold,"Th",0,255)
-              ::win.AddButton("Apply",&::ApplyVol1)
-              ::vtk_property1_gui.AddGui(&::win)
+              ::vol1threshold_id = ::win.AddFloat(::vol1_threshold,"Th",0,255)
+              ::win.AddButton("Apply",::ApplyVol1)
+              ::vtk_property1_gui.AddGui(::win)
 
             ::vol2_page = ::win.AddPage("Vol2")
-              ::vol2threshold_id = ::win.AddFloat(&::vol2_threshold,"Th",0,255)
-              ::win.AddButton("Apply",&::ApplyVol2)
+              ::vol2threshold_id = ::win.AddFloat(::vol2_threshold,"Th",0,255)
+              ::win.AddButton("Apply",::ApplyVol2)
           ::win.EndBook()
 
         ::win.AddPage("Scene")

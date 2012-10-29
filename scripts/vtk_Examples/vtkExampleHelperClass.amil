@@ -1,0 +1,26 @@
+
+del vtkExampleHelperClass
+
+Class vtkExampleHelperClass {
+
+  proc ::Create_wxElts(STRING title) \
+  {
+    #--- Create frame, sizer and interactor
+    ::frame = wx.wxFrame( ami.MainFrame,wx.wxID_ANY,title)
+    ::frame.Show(); ::frame.Update()
+    ::frame.SetSizer(wx.wxBoxSizer(wx.wxVERTICAL))
+    ::renwinint = wxvtk.wxVTKRenderWindowInteractor(&::frame,wx.wxID_ANY)
+    ::renwinint.UseCaptureMouseOn()
+    ::renwinint.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera.New())
+    ::frame.GetSizer().Add(::renwinint, wx.wxSizerFlags()\
+      .Expand().Proportion(1))
+  }
+
+
+  proc ::AddRenderer( OBJECT ren) \
+  {
+    ::renwinint.GetRenderWindow().AddRenderer(ren)
+    ::frame.SetSize(wx.wxSize(400,400))
+    ::frame.Layout()
+  }
+}

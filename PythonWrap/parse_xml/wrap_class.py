@@ -190,7 +190,7 @@ def MissingTypes(classname,method,check_includes=False):
     ispointer= config.types[a.typeid].GetType()=="PointerType"
     isconstpointer = typefullname.endswith("const *")
     if typename=='void' and ispointer:
-      print "need to deal with 'void pointer' here"
+      print "\t\tneed to deal with 'void pointer' here"
     else:
       #
       # discard triple pointers or double pointers with const (TODO: improve this part)
@@ -1146,7 +1146,7 @@ def WrapClass(classname,include_file,inputfile):
   if (args.val.profile):
     t0 = time.clock()
     #print "\n**************"
-    print "\n   Wrapping: {0}".format(classname)
+    print "\tWrapping: {0}\t".format(classname),
     #print "             **************"
     #print "WrapClass({0},{1},{2})".format(classname,include_file,inputfile)
   parser = make_parser()
@@ -1780,7 +1780,7 @@ def WrapClass(classname,include_file,inputfile):
           
 
     # Implement CreateVar
-    print "Implement CreateVar"
+    #print "Implement CreateVar"
     implement_createvar=''
     if dh.abstract=='1':
       implement_createvar += "  // No variable creation for an abstract class ...\n"

@@ -2785,7 +2785,7 @@ void MainFrame::UpdateVarsDisplay()
 void MainFrame::UpdateDataViewVarDisplay()
 {
   
-  std::cout << "UpdateDataViewVarDisplay" << std::endl;
+  //std::cout << "UpdateDataViewVarDisplay" << std::endl;
   // get list of expanded items
   amiDataViewClientData *item_data;
   std::string text;
@@ -2815,7 +2815,7 @@ void MainFrame::UpdateDataViewVarDisplay()
         text = item_data->GetName();
         current_item_name += "->";
         current_item_name += text;
-        std::cout << " expanded item: '" << current_item_name << "'"<< std::endl;
+        //std::cout << " expanded item: '" << current_item_name << "'"<< std::endl;
         dv_expanded_items.insert(current_item_name);
       }
       else {

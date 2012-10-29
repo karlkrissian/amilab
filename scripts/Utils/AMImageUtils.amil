@@ -1,0 +1,28 @@
+
+proc PrintMatrix(IMAGE im) \
+{
+  amim = GetAMImage(im)
+  printn "Image Matrix is:"
+  for i=0 to 2 {
+    for j=0 to 2 {
+      print "%10g" % amim.TransfMatrix(i,j)
+    }
+    printn ""
+  }
+}
+
+proc ImageMatrix2vtkTransform(IMAGE im) \
+{
+  global::PrintMatrix(im)
+  amim = GetAMImage(im)
+  m = vtk.vtkMatrix4x4.New()
+  for i=0 to 2 {
+    for j=0 to 2 {
+      m.SetElement(i,j,amim.TransfMatrix(i,j))
+      printn "%1%" % m.GetElement(i,j)
+    }
+  }
+  t = vtk.vtkTransform.New()
+  t.SetMatrix(m)
+  return = &t
+}

@@ -1,0 +1,39 @@
+
+# C++ CubeAxesActor translated to amilab
+
+func "vtkExampleHelperClass"
+
+del CubeAxesActorClass 
+Class CubeAxesActorClass : public vtkExampleHelperClass {
+
+  ::Create_wxElts("CubeAxesActor example")
+
+  ::sphereSource=vtk.vtkSphereSource.New()
+  ::sphereSource.Update()
+ 
+  ::renderer = vtk.vtkRenderer.New()
+ 
+  ::mapper = vtk.vtkPolyDataMapper.New()
+  ::mapper.SetInputConnection(::sphereSource.GetOutputPort())
+ 
+  ::sphereActor = vtk.vtkActor.New()
+  ::sphereActor.SetMapper(::mapper)
+ 
+  ::cubeAxesActor = vtk.vtkCubeAxesActor.New()
+  ::cubeAxesActor.SetBounds(::sphereSource.GetOutput().GetBounds())
+  ::cubeAxesActor.SetCamera(::renderer.GetActiveCamera())
+ 
+  ::renderer.AddActor(::cubeAxesActor)
+  ::renderer.AddActor(::sphereActor)
+  ::renderer.ResetCamera()
+  ::renderer.SetBackground(0.3, 0.6, 0.3) # Background color green
+
+  ::AddRenderer(::renderer)
+
+}
+
+del CubeAxesActor_obj
+CubeAxesActorClass CubeAxesActor_obj
+
+# seems better ...
+CubeAxesActor_obj.cubeAxesActor.SetInertia(10000)

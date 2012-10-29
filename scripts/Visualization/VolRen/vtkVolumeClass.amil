@@ -57,27 +57,37 @@ if (!exists(vtkVolumeClass)) {
 
       ::opacity_attenuation  = 1, "Attenuation factor for the opacity"
       ::opacity_attenuation2 = 1, "Attenuation factor for the second volume"
+      ::opacity_weight_one   = false, "force total weight to 1"
 
       # plane widget
-      ::planeX = UCHAR(0), "Use ImagePlaneWidget X"
-      ::planeY = UCHAR(0), "Use ImagePlaneWidget Y"
-      ::planeZ = UCHAR(0), "Use ImagePlaneWidget Z"
+      ::planeX = false, "Use ImagePlaneWidget X"
+      ::planeY = false, "Use ImagePlaneWidget Y"
+      ::planeZ = false, "Use ImagePlaneWidget Z"
 
-      ::clip = UCHAR(0), "Enable/Disable clipping box"
-      ::clip_enable_rotation = UCHAR(0), "Enable clip rotation"
-      ::clip_interactive = UCHAR(1), "Interactive clipping"
+      ::clip = false, "Enable/Disable clipping box"
+      ::clip_enable_rotation = false, "Enable clip rotation"
+      ::clip_interactive = true, "Interactive clipping"
 
-      ::enable_transf_box = UCHAR(0), "Enable/Disable 2nd volume "+\
+      ::enable_transf_box = false, "Enable/Disable 2nd volume "+\
                                       "transformation box widget"
-      ::transfbox_interactive     = UCHAR(1), "Interactive transformation box"
-      ::transfbox_enable_rotation    = UCHAR(1),  "Enable rotation "+\
+      ::transfbox_interactive        = true, "Interactive transformation box"
+      ::transfbox_enable_rotation    = true,  "Enable rotation "+\
                                                   "(from selected plane)"
-      ::transfbox_enable_scaling     = UCHAR(1),  "Enable scaling "+\
+      ::transfbox_enable_scaling     = true,  "Enable scaling "+\
                                                   "(right mouse button)"
-      ::transfbox_enable_translation = UCHAR(1),  "Enable translation "+ \
+      ::transfbox_enable_translation = true,  "Enable translation "+ \
                                                   "(middle mouse button)"
 
       if ::trace { eval ::trace_end; }
+    }
+
+    #----------------------------
+    proc ::SetInput1Name(STRING input1_name) {
+      ::input1_name = input1_name
+    }
+    #----------------------------
+    proc ::SetInput2Name(STRING input2_name) {
+      ::input2_name = input2_name
     }
 
     #----------------------------
@@ -231,7 +241,7 @@ if (!exists(vtkVolumeClass)) {
       }
     }
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::ApplyTransfBox() \
     {
       #printn "ApplyTransfBox"
@@ -243,9 +253,121 @@ if (!exists(vtkVolumeClass)) {
         #printn "*"
         t = vtk.vtkTransform.New()
         ::transf_box.GetTransform(&t)
+        if (!exists(::current_vol2_transf)) {
+          ::current_vol2_transf = vtk.vtkTransform.New()
+        }
+        ::current_vol2_transf.DeepCopy(t)
         ::volmapper.SetSecondInputUserTransform(t)
         ::renwininter.Render()
       }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SaveTransf() \
+    {
+      printn "SaveTransf ..."
+      t = vtk.vtkTransform.New()
+      ::transf_box.GetTransform(&t)
+      del ::secondvol_transf_bak
+      ::secondvol_transf_bak = t.NewInstance()
+      ::secondvol_transf_bak.DeepCopy(t)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::RestoreTransf() \
+    {
+    printn "RestoreTransf()"
+      if (exists(::secondvol_transf_bak)) {
+        # Get the current transform to put it in backup ...
+        t = vtk.vtkTransform.New()
+        ::transf_box.GetTransform(&t)
+        # apply backup transform
+        ::transf_box.SetTransform(::secondvol_transf_bak)
+        ::ApplyTransfBox()
+        # set the previous transform in backup
+        ::secondvol_transf_bak.DeepCopy(t)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ResetTransf() \
+    {
+      ::SaveTransf()
+      t = vtk.vtkTransform.New()
+      t.Identity()
+      ::transf_box.SetTransform(t)
+      ::ApplyTransfBox()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SaveTransfDisk() \
+    {
+      if exists(::current_vol2_transf) {
+        # Get the scrip directory
+        ::InitUserScriptData()
+        # using ::scriptdata_path
+        default_name = "SecondVolumeTransform.ami.gz"
+        if exists(::input1_name) && exists(::input2_name) {
+          default_name = "%1%" % ::input1_name + "__%1%.ami.gz" % ::input2_name
+        }
+        # Ask the filename
+        filename = wx.wxFileSelector( "Save Matrix: select the filename",\
+                                      ::scriptdata_path, \
+                                      default_name, \
+                                      ".ami.gz", \
+                                      "*.*", \
+                                      wx.wxFD_SAVE | wx.wxFD_OVERWRITE_PROMPT)
+        # Go save the filename
+        immat = Image(DOUBLE,4,4,1)
+        m = ::current_vol2_transf.GetMatrix()
+        for i=0 to 3 {
+          for j=0 to 3 {
+            immat.setpos(i,j,0)
+            immat.set( m.GetElement(i,j))
+          }
+        }
+        immat.save(filename.ToStdString())
+      }
+      
+
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ReadTransfDisk() \
+    {
+      # Get the scrip directory
+      ::InitUserScriptData()
+      # using ::scriptdata_path
+      # Ask the filename
+      default_name = "SecondVolumeTransform.ami.gz"
+      if exists(::input1_name) && exists(::input2_name) {
+        default_name = "%1%" % ::input1_name + "__%1%.ami.gz" % ::input2_name
+      }
+      filename = wx.wxFileSelector( "Read Matrix: select the filename",\
+                                    ::scriptdata_path, \
+                                    default_name, \
+                                    ".ami.gz", \
+                                    "*.*", \
+                                    wx.wxFD_OPEN)
+      immat = Image(filename.ToStdString())
+      m = vtk.vtkMatrix4x4.New()
+      for i=0 to 3 {
+        for j=0 to 3 {
+          m.SetElement(i,j,immat(i,j))
+        }
+      }
+      t = vtk.vtkTransform.New()
+      t.SetMatrix(m)
+      ::enable_transf_box = true
+      ::OnTransfBox()
+
+      # Backup current transform
+      del ::secondvol_transf_bak
+      ::secondvol_transf_bak = t.NewInstance()
+      ::transf_box.GetTransform(::secondvol_transf_bak)
+      # set and apply new transform
+      ::transf_box.SetTransform(t)
+      ::ApplyTransfBox()
     }
 
     #----------------------------
@@ -758,7 +880,7 @@ if (!exists(vtkVolumeClass)) {
       #      if ::move_2 {
       if (exists(::property2) && ::volrenmapper_type==3){
         ::volmapper.SetProperty2( &::property2 )
-        printn "::volmapper.SetProperty2( &::property2 )"
+        #printn "::volmapper.SetProperty2( &::property2 )"
       }
       #      }
 
@@ -893,6 +1015,27 @@ if (!exists(vtkVolumeClass)) {
       ::OnRender()
       ::Draw_Functions()
     }
+
+    #----------------------------
+    proc ::OnOpacity1() \
+    {
+      if (::opacity_weight_one) {
+        ::opacity_attenuation2 = 1 - ::opacity_attenuation
+        ::win.Update(::opacity_attenuation2_id)
+      }
+      ::OnWindow()
+    }
+
+    #----------------------------
+    proc ::OnOpacity2() \
+    {
+      if (::opacity_weight_one) {
+        ::opacity_attenuation = 1 - ::opacity_attenuation2
+        ::win.Update(::opacity_attenuation_id)
+      }
+      ::OnWindow()
+    }
+
     #----------------------------
     proc ::UpdateHistogram() \
     {
@@ -988,7 +1131,8 @@ if (!exists(vtkVolumeClass)) {
       ::win.BeginBook()
 
 
-         ::win.AddPage("Clip")
+        #-------------------- Clip page --------------------------------------
+        ::win.AddPage("Clip")
           ::win.AddBoolean(&::clip, "Clip")
           ::win.SetCallback( &::OnClip)
           ::win.AddBoolean(&::clip_enable_rotation,"Rotation")
@@ -996,6 +1140,99 @@ if (!exists(vtkVolumeClass)) {
           ::win.SetCallback( &::OnClip)
           ::win.AddButton( "Apply Clip",&::ApplyClip)
 
+        #-------------------- Plane page --------------------------------------
+        ::Plane_page = ::win.AddPage("Plane")
+          ::win.AddBoolean(&::planeX, "PlaneX")
+          ::win.SetCallback( &::OnPlane)
+          ::win.AddBoolean(&::planeY, "PlaneY")
+          ::win.SetCallback( &::OnPlane)
+          ::win.AddBoolean(&::planeZ, "PlaneZ")
+          ::win.SetCallback( &::OnPlane)
+
+        #-------------------- Rend page --------------------------------------
+        #::win.AddPage("GPU")
+        ::win.AddPage("Rend")
+          ::win.BeginBoxPanel("Sample distances")
+            ::win.AddBoolean(&::AutoAdjustSampleDistances,"Auto")
+            #::win.SetCallback( &::OnSampleDistance)
+            ::win.AddFloat(&::SampleDistance,"Dist",0.2,2)
+            #::win.SetCallback( &::OnSampleDistance)
+            ::win.AddFloat(&::ImageSampleDistance,"Im Dist",0.2,2)
+            ::win.AddButton("Apply",&::OnSampleDistance)
+          ::win.EndBoxPanel()
+          ::volmapper_classname_id = ::win.AddLabel("VTK Class:","")
+          ::GPU_page = ::win.BeginBoxPanel("3D texture memory")
+            ::maxmemory_id = ::win.AddInt(&::maxmemory,"max",50,2000)
+            ::win.SetCallback( &::OnTextureMemory)
+            ::win.AddFloat(&::maxmemoryfraction,"fraction",0.05,1)
+            ::win.SetCallback( &::OnTextureMemory)
+          ::win.EndBoxPanel()
+
+        #-------------------- Transf page --------------------------------------
+        ::win.AddPage("Transf")
+          # Control Opacity of each volume
+          ::win.BeginBoxPanel("Volume Attenuation (Opacity)")
+            ::opacity_attenuation_id = \
+              ::win.AddFloat(&::opacity_attenuation,"First Volume",0,1)
+            ::win.SetCallback( &::OnOpacity1)
+            ::opacity_attenuation2_id = \
+              ::win.AddFloat(&::opacity_attenuation2,"Second Volume",0,1)
+            ::win.SetCallback( &::OnOpacity2)
+            ::win.AddBoolean(::opacity_weight_one,"Sum = 1")
+            ::win.SetCallback( &::OnOpacity1)
+          ::win.EndBoxPanel()
+
+
+          ::win.BeginBoxPanel("Second Volume Transform")
+
+            # Parameters of the box
+            #::win.BeginHorizontal()
+            #::win.EndHorizontal()
+            #del s;s = ::win.GetCurrentSizer()
+            #s.GetItem(s.GetItemCount()-1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
+
+            ::win.BeginHorizontal()
+              ::win.AddBoolean(&::enable_transf_box, "Enable")
+              ::win.SetCallback( &::OnTransfBox)
+              ::win.AddBoolean(&::transfbox_enable_translation,"Trans")
+              ::win.SetCallback( &::OnTransfBox)
+              ::win.AddBoolean(&::transfbox_enable_rotation,   "Rot")
+              ::win.SetCallback( &::OnTransfBox)
+              ::win.AddBoolean(&::transfbox_enable_scaling,    "Scal")
+              ::win.SetCallback( &::OnTransfBox)
+            ::win.EndHorizontal()
+            del s;s = ::win.GetCurrentSizer()
+            s.GetItem(s.GetItemCount()-1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
+
+            # Apply transformation from the BoxWidget
+            ::win.BeginHorizontal()
+              ::win.AddBoolean(&::transfbox_interactive,"Interactive")
+              ::win.SetCallback( &::OnTransfBox)
+              ::win.AddButton( "Apply",    &::ApplyTransfBox)
+            ::win.EndHorizontal()
+            del s;s = ::win.GetCurrentSizer()
+            s.GetItem(s.GetItemCount()-1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
+
+            # Deal with undo ...
+            ::win.BeginHorizontal()
+              ::win.AddButton( "Save",     &::SaveTransf)
+              ::win.AddButton( "Restore",  &::RestoreTransf)
+              ::win.AddButton( "Reset",    &::ResetTransf)
+            ::win.EndHorizontal()
+            del s;s = ::win.GetCurrentSizer()
+            s.GetItem(s.GetItemCount()-1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
+
+            # Save/Read disk
+            ::win.BeginHorizontal()
+              ::win.AddButton( "Save File",  &::SaveTransfDisk)
+              ::win.AddButton( "Read File",  &::ReadTransfDisk)
+            ::win.EndHorizontal()
+            del s;s = ::win.GetCurrentSizer()
+            s.GetItem(s.GetItemCount()-1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
+
+          ::win.EndBoxPanel()
+
+        #-------------------- Shade page --------------------------------------
         ::win.AddPage("Shade")
           ::win.BeginBoxPanel("Global opacity")
             ::win.AddFloat(&::opacity_attenuation,"Opacity factor",0,1)
@@ -1017,60 +1254,11 @@ if (!exists(vtkVolumeClass)) {
             ::win.SetCallback( &::OnRender)
           ::win.EndBoxPanel()
 
-         #::win.AddPage("GPU")
-         ::win.AddPage("Rend")
-          ::win.BeginBoxPanel("Sample distances")
-            ::win.AddBoolean(&::AutoAdjustSampleDistances,"Auto")
-            #::win.SetCallback( &::OnSampleDistance)
-            ::win.AddFloat(&::SampleDistance,"Dist",0.2,2)
-            #::win.SetCallback( &::OnSampleDistance)
-            ::win.AddFloat(&::ImageSampleDistance,"Im Dist",0.2,2)
-            ::win.AddButton("Apply",&::OnSampleDistance)
-          ::win.EndBoxPanel()
-          ::volmapper_classname_id = ::win.AddLabel("VTK Class:","")
-          ::GPU_page = ::win.BeginBoxPanel("3D texture memory")
-            ::maxmemory_id = ::win.AddInt(&::maxmemory,"max",50,2000)
-            ::win.SetCallback( &::OnTextureMemory)
-            ::win.AddFloat(&::maxmemoryfraction,"fraction",0.05,1)
-            ::win.SetCallback( &::OnTextureMemory)
-          ::win.EndBoxPanel()
-          
-         ::win.AddPage("Transf")
-          ::win.AddBoolean(&::enable_transf_box, "Transf.Box")
-          ::win.SetCallback( &::OnTransfBox)
-          ::win.BeginHorizontal()
-            ::win.AddBoolean(&::transfbox_enable_translation,"Trans")
-            ::win.SetCallback( &::OnTransfBox)
-            ::win.AddBoolean(&::transfbox_enable_rotation,   "Rot")
-            ::win.SetCallback( &::OnTransfBox)
-            ::win.AddBoolean(&::transfbox_enable_scaling,    "Scal")
-            ::win.SetCallback( &::OnTransfBox)
-          ::win.EndHorizontal()
-          ::win.AddBoolean(&::transfbox_interactive,"Interactive")
-          ::win.SetCallback( &::OnTransfBox)
-          ::win.AddButton( "Apply",&::ApplyTransfBox)
-
-          ::win.BeginBoxPanel("Volume Attenuation (Opacity)")
-            ::win.AddFloat(&::opacity_attenuation,"First Volume",0,1)
-            ::win.SetCallback( &::OnWindow)
-            ::win.AddFloat(&::opacity_attenuation2,"Second Volume",0,1)
-            ::win.SetCallback( &::OnWindow)
-          ::win.EndBoxPanel()
-
-        ::Plane_page = ::win.AddPage("Plane")
-          ::win.AddBoolean(&::planeX, "PlaneX")
-          ::win.SetCallback( &::OnPlane)
-          ::win.AddBoolean(&::planeY, "PlaneY")
-          ::win.SetCallback( &::OnPlane)
-          ::win.AddBoolean(&::planeZ, "PlaneZ")
-          ::win.SetCallback( &::OnPlane)
-
+        #-------------------- Blend page --------------------------------------
         ::imhisto1.SetParentPanel(&::win)
         ::imhisto1.log10=true
         ::imhisto1.Gui()
-
         #::win.AddBoolean(&::move_2,"move_2")
-
         ::win.AddPage("Blend", &::imhisto1->win)
           ::win.BeginHorizontal()
             ::icons.LoadIconPNG2("Chart xy","Chart_xy")
@@ -1083,7 +1271,7 @@ if (!exists(vtkVolumeClass)) {
               ::win.AddEnumChoice(::blend_mode_id,"Additive.")
          ::win.EndHorizontal()
 
-
+        #-------------------- Blend2 page --------------------------------------
         ::imhisto2.SetParentPanel(&::win)
         ::imhisto2.log10=true
         ::imhisto2.Gui()
