@@ -10,8 +10,9 @@
 #
 func "Common/ScriptGui"
 
-if (!exists(ParametricSurfaceClass)) {
-  Class ParametricSurfaceClass  : public ScriptGui{
+del ParametricSurfaceClass
+
+Class ParametricSurfaceClass  : public ScriptGui{
 
   #---------------------------------------------
   proc ::Init() \
@@ -67,7 +68,6 @@ if (!exists(ParametricSurfaceClass)) {
 
     
   #------------------------------------
-
   proc ::UpdateResolution() \
   {
     #printn "UpdateResolution()"

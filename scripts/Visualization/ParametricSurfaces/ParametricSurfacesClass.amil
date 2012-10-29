@@ -1,0 +1,530 @@
+
+func "Common/ScriptGui"
+
+del ParametricSurfacesClass
+
+Class ParametricSurfacesClass : public ScriptGui \
+{
+  
+  func "Variable/ObjectIO"
+  #===========================================================================
+  # Set parameters here
+  Class ::ParamClass : public ObjectIO {
+
+    ::description = "Default parameters", \
+                    "Description of the set of parameters"
+
+    # resolution
+    ::theta_dim = INT(100), "Resolution of theta"
+    ::phi_dim   = INT(100), "Resolution of phi"
+
+    # coefficients
+    ::cx = 1, "Scaling factor in X"
+    ::cy = 1, "Scaling factor in Y"
+    ::cz = 1, "Scaling factor in Z"
+
+    ::e_x = 1, "Superquadric coefficient in X"
+    ::e_y = 1, "Superquadric coefficient in Y"
+    ::e_z = 1, "Superquadric coefficient in Z"
+
+    # 0: superquadric
+    # 1: torus
+    # 2: user
+    ::type = INT(0), "Equation type 0: superquadric, 1: torus, 2: user"
+
+    # torus param
+    ::R = 1,    "Torus big radius"
+    ::r = 0.1,  "Torus small radius"
+
+    # range
+    ::min1    = "0",    "Minimal value of the first parameter"
+    ::max1    = "2*Pi", "Maximal value of the first parameter"
+    ::min2    = "-Pi/2","Minimal value of the second parameter"
+    ::max2    = "Pi/2", "Maximal value of the second parameter"
+    
+    # expressions as string
+    ::X = "cos(U)*cos(V)", "Equation of X coordinates"
+    ::Y = "sin(U)*cos(V)", "Equation of Y coordinates"
+    ::Z = "sin(V)",        "Equation of Z coordinates"
+
+    ::AutoUpdateEquation = false, "Automatically update the equation and the text changes"
+
+    # temporal evolution of the equation
+    # 
+    ::evolve_state = INT(0), "evolution state 0:stopped, 1:running, 2:stopping"
+    ::k        = INT(0), "Parameter for the set of curves"
+    ::kmax     = INT(0), "maximal value of k"
+    # 
+    ::timestep = INT(100), "timestep in milliseconds"
+                    
+    #-----------------------------------------------------------------------
+    # copy parameters
+    proc ::__assign__( VAR p) \
+    {
+      ::theta_dim = p.theta_dim
+      ::phi_dim   = p.phi_dim
+      ::cx    = p.cx
+      ::cy    = p.cy
+      ::cz    = p.cz
+      ::e_x   = p.e_x
+      ::e_y   = p.e_y
+      ::e_z   = p.e_z
+      ::type  = p.type
+      ::R     = p.R
+      ::r     = p.r
+      ::X     = p.X
+      ::Y     = p.Y
+      ::Z     = p.Z
+      ::min1  = p.min1
+      ::max1  = p.max1
+      ::min2  = p.min2
+      ::max2  = p.max2
+      ::AutoUpdateEquation  = p.AutoUpdateEquation
+      ::evolve_state        = p.evolve_state
+      ::k                   = p.k
+      ::kmax                = p.kmax
+      ::timestep            = p.timestep
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ReadEquation(STRING filename, OBJECT win) {
+      # need to allow ::win.Update(-1)
+      del ::win
+      ::win = &win
+      # call func to read a script ...
+      func filename
+    }
+    
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::Init() {
+    
+    ::ParamClass ::params
+    ::updating    = 0
+    ::in_evolve   = false
+    ::eq_filename = "user_equation1.amil", "Equation file in previous format"
+
+    #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+    # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+    ::html_filename = GetScriptsDir+\
+                      "/ParametricSurfaces/Doc/ParametricSurfaces/index.html"
+  }
+
+  #------------------------------------
+  proc ::UpdateResolutionOld() \
+  {
+    #printn "UpdateResolution()"
+    # 3D position image
+    ::pos <<= Image(DOUBLE,::theta_dim,::phi_dim,1,3)
+
+    # Parameters
+    ::theta <<= (DOUBLE)Xpos(::pos)
+    ::phi   <<= (DOUBLE)Ypos(::pos)
+
+    if (::type==0)||(::type==2) {
+      #printn "type in {0,2}"
+      # limits of the parameters
+      ::theta = ::theta/(::theta.tx-1)*2*Pi
+      ::phi   = (::phi/(::phi.ty-1)-0.5)*Pi
+    }
+    if (::type==1) {
+      #printn "type is 1"
+      # limits of the parameters
+      ::theta = ::theta/(::theta.tx-1)*2*Pi
+      ::phi   = ::phi/(::phi.ty-1)*2*Pi
+    }
+
+  } // ::UpdateResolution()
+
+  #---------------------------------------------------------------------------
+  proc ::UpdateResolution() \
+  {
+    #printn "UpdateResolution()"
+    # 3D position image
+    ::pos <<= Image(DOUBLE,::params.theta_dim,::params.phi_dim,1,3)
+
+    # Parameters
+    ::theta <<= ((DOUBLE)Xpos(::pos))/(::pos.tx-1)
+    ::phi   <<= ((DOUBLE)Ypos(::pos))/(::pos.ty-1)
+
+    if (::params.type==0) {
+      min1 = 0
+      max1 = 2*Pi
+      min2 = -Pi/2
+      max2 = Pi/2
+    }
+    if (::params.type==1) {
+      #printn "type is 1"
+      # limits of the parameters
+      min1 = 0
+      max1 = 2*Pi
+      min2 = 0
+      max2 = 2*Pi
+    }
+    
+    if (::params.type==2) {
+      eval "min1=%1%;" % ::params.min1
+      eval "max1=%1%;" % ::params.max1
+      eval "min2=%1%;" % ::params.min2
+      eval "max2=%1%;" % ::params.max2
+    }
+    
+    ::theta = ::theta*(max1-min1)+min1
+    ::phi   = ::phi  *(max2-min2)+min2
+
+  } // ::UpdateResolution()
+
+  #---------------------------------------------------------------------------
+  proc ::NewType() {
+    if (exists(::page_vec)) { del ::page_vec; }
+    ::page_vec = VarVector();
+    ::page_vec.push_back(::page_superquad)
+    ::page_vec.push_back(::page_torus)
+    ::page_vec.push_back(::page_expr)
+
+    for n=0 to 2 {
+      ::win.EnablePanel(::page_vec[n], ::params.type==n)
+    }
+    ::win.SelectPage(::book,::params.type+1)
+
+    ::UpdateResolution()
+    ::Update()
+  }
+
+
+  #---------------------------------------------------------------------------
+  proc ::SetMeshColors( IMAGE mc) {
+    ::mesh_colors <<= mc
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::UpdateRanges() \
+  {
+    printn "::UpdateRanges"
+    ::UpdateResolution()
+    ::Update()
+  }
+  
+  #---------------------------------------------------------------------------
+  proc ::Update() \
+  {
+  
+    if (::updating==0) {
+      ::updating = 1
+      if (!exists(::pos)) {
+        ::UpdateResolution()
+      }else {
+        if ((::params.theta_dim!=::pos.tx)||(::params.phi_dim!=::pos.ty)) {
+          ::UpdateResolution()
+        }
+      }
+      # 0: superquadric
+      if (::params.type==0) {
+        ::pos.SetComponent(0, cos(::theta)*cos(::phi))
+        ::pos.SetComponent(1, sin(::theta)*cos(::phi))
+        ::pos.SetComponent(2, sin(::phi))
+
+        # compute the signs
+        spos0 = (::pos[0]>0) - (::pos[0]<0)
+        spos1 = (::pos[1]>0) - (::pos[1]<0)
+        spos2 = (::pos[2]>0) - (::pos[2]<0)
+
+        ::pos.SetComponent( 0,\
+                      exp(ln(abs(::pos[0]))/::params.e_x)*spos0*::params.cx)
+
+        ::pos.SetComponent(1,\
+                      exp(ln(abs(::pos[1]))/::params.e_y)*spos1*::params.cy)
+                      
+        ::pos.SetComponent(2,\
+                      exp(ln(abs(::pos[2]))/::params.e_z)*spos2*::params.cz)
+      }
+
+      # 1: torus
+      if (::params.type==1) {
+        ::pos.SetComponent(0, (cos(::phi)*::params.r+::params.R)*cos(::theta))
+        ::pos.SetComponent(1, (cos(::phi)*::params.r+::params.R)*sin(::theta))
+        ::pos.SetComponent(2, sin(::phi)*::params.r)
+      }
+
+      # 2: User´s equation
+      if (::params.type==2) {
+        #printn "max(::theta) = %1%" % max(::theta)
+        #printn "exists U = %1%" % exists(U) 
+        TraceParsing 1
+        U = ::theta
+        TraceParsing 0
+        #printn "max(::theta) = %1%" % max(::theta)
+        V = ::phi
+        k = ::params.k
+        eval "::pos.SetComponent(0, "+::params.X+");"
+        X = ::pos[0]
+        eval "::pos.SetComponent(1, "+::params.Y+");"
+        Y = ::pos[1]
+        eval "::pos.SetComponent(2, "+::params.Z+");"
+      }
+
+      if (exists(::s_draw)) {
+        ::s_draw.Remove(&::s)
+        del ::s
+      }
+
+      # parameter 0 invert normals
+      #printn max(::theta)
+      ::s = \
+        CreateFlatMesh\
+        (\
+          ::theta>-1,\
+          0\
+          )
+      if (exists(::mesh_colors)) {
+        #printn "Set Mesh Colors"
+        ::s.SetColors(::mesh_colors)
+        ::s.SetColorMaterial(1)
+      }
+      ::s.ElevateMesh(::pos)
+      # need to show the surface before computing any opengl operation!!!
+
+      if (exists(::s_draw)) {
+        ::s_draw += ::s
+      } else {
+        show ::s
+        #::s_draw = Viewer3D("3D Surface Viewer")
+        #::s_draw += ::s
+      }
+      ::s.Normals()
+      ::s.Recompute()
+      ::s_draw.Paint()
+      ::updating = 0
+    }
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::Evolve() \
+  {
+    if (::in_evolve==0) {
+      ::in_evolve = 1
+      if (::evolve_state==0) {
+        if (::params.kmax>0) {
+          ::k = 0
+          # starts
+          ::evolve_state=1
+        }
+      }
+      if (::evolve_state==1) {
+        # first update the equation
+        ::Update()
+        # second: increment ::k and schedule new update
+        ::k = ::k + 1
+        if (::k==::params.kmax) { 
+          ::k = 0; 
+        }
+        schedule(::params.timestep,::Evolve)
+      }
+    }
+    ::in_evolve = 0
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::UpdateEquation() \
+  {
+    if (::params.AutoUpdateEquation) {
+      ::Update()
+    }
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::Start() \
+  {
+    ::evolve_state = 0
+    ::Evolve
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::Stop() \
+  {
+    ::evolve_state = 2
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::ResetScale() \
+  {
+    ::params.cx = 1
+    ::params.cy = 1
+    ::params.cz = 1
+    ::win.Update(-1)
+    ::Update()
+  } # ::ResetScale()
+
+  #---------------------------------------------------------------------------
+  proc ::SetEllipsoid() \
+  {
+    ::params.type=0
+    ::params.e_x = 1
+    ::params.e_y = 1
+    ::params.e_z = 1
+    ::win.Update(-1)
+    ::Update()
+  } 
+  # ::SetEllipsoid()
+
+  #---------------------------------------------------------------------------
+  # Deprecated
+  #
+  proc ::SaveEquation() {
+    eq_file = File(::eq_filename,"w")
+
+    eq_file._print("//-- Saving equation \n")
+
+    eq_file._print("//---- Main Parameters\n")
+
+    eq_file._print("::theta_dim = %1%\n" % ::params.theta_dim)
+    eq_file._print("::phi_dim = %1%\n" %   ::params.phi_dim)
+
+    eq_file._print("//---- Parametric equation expression \n")
+
+    eq_file._printn("::X = \" %1% \" "  % ::params.X )
+    eq_file._printn("::Y = \"" +::params.Y +"\"")
+    eq_file._printn("::Z = \"" +::params.Z +"\"")
+
+    eq_file._printn("::kmax = %1% " %   ::params.kmax )  
+    eq_file._printn("::timestep = %1% " % ::params.timestep )
+
+    eq_file._print("// Update interface\n")
+    eq_file._print("::win.Update(-1)\n")
+
+  }
+
+
+  #---------------------------------------------------------------------------
+  proc ::ReadEquation() {
+    # call func to read a script ...
+    ::params.ReadEquation(::eq_filename, ::win)
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::Gui(){
+
+    if (exists(::parent_panel)) {
+      ::win = ParamPanel("ParamSurf",&::parent_panel)
+    } else {
+      ::win = ParamPanel("ParamSurf")
+    }
+
+    ::win.AddString(::params.description, "Description")
+    
+    ::type_id  = ::win.AddEnum( &::params.type)
+      ::win.AddEnumChoice(::type_id,"SuperQuadric")
+      ::win.AddEnumChoice(::type_id,"Torus")
+      ::win.AddEnumChoice(::type_id,"Expression")
+    ::win.SetCallback( &::NewType)
+
+    ::book = ::win.BeginBook()
+      # Main Page
+      ::page_main = ::win.AddPage("Main")
+        ::win.BeginBoxPanel("Resolution")
+            ::thetadim_id = ::win.AddInt( ::params.theta_dim,  "theta", 4,500)
+            ::win.SetCallback( ::Update)
+            ::phidim_id   = ::win.AddInt( ::params.phi_dim,  "phi",   4,500)
+            ::win.SetCallback( ::Update)
+        ::win.EndBoxPanel()
+        ::win.BeginBoxPanel("Scaling Coeff.")
+            ::cx_id = ::win.AddFloat( ::params.cx,  "x", 0.1,5)
+            ::win.SetCallback( ::Update)
+            ::cy_id = ::win.AddFloat( ::params.cy,  "y", 0.1,5)
+            ::win.SetCallback( ::Update)
+            ::cz_id = ::win.AddFloat( ::params.cz,  "z", 0.1,5)
+            ::win.SetCallback( ::Update)
+            ::win.AddButton("Reset",   ::ResetScale)
+        ::win.EndBoxPanel()
+
+
+      # SuperQuadric Page
+      ::page_superquad = ::win.AddPage("SuperQu.")
+        ::win.BeginBoxPanel("Exponential Coeff.")
+            ::ex_id = ::win.AddFloat( ::params.e_x,  "e_x", 0.1,5)
+            ::win.SetCallback( ::Update)
+            ::ey_id = ::win.AddFloat( ::params.e_y,  "e_y", 0.1,5)
+            ::win.SetCallback( ::Update)
+            ::ez_id = ::win.AddFloat( ::params.e_z,  "e_z", 0.1,5)
+            ::win.SetCallback( ::Update)
+            ::win.AddButton("Set Ellipsoid",   ::SetEllipsoid)
+        ::win.EndBoxPanel()
+
+      # SuperQuadric Torus
+      ::page_torus = ::win.AddPage("Torus")
+        ::win.BeginBoxPanel("Radii")
+            ::R_id = ::win.AddFloat( ::params.R,  "R", 0.1,5)
+            ::win.SetCallback( ::Update)
+            ::r_id = ::win.AddFloat( ::params.r,  "r", 0.1,5)
+            ::win.SetCallback( ::Update)
+        ::win.EndBoxPanel()
+
+      # User Equation Page
+      ::page_expr = ::win.AddPage("Expr")
+        ::win.BeginBoxPanel("Ranges:")
+          ::win.BeginHorizontal()
+            ::min1_id = ::win.AddString(::params.min1,"U min=")
+            ::win.SetCallback( ::UpdateRanges)
+            ::max1_id = ::win.AddString(::params.max1,"max=")
+            ::win.SetCallback( ::UpdateRanges)
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
+            ::min2_id = ::win.AddString(::params.min2,"V min=")
+            ::win.SetCallback( ::UpdateRanges)
+            ::max2_id = ::win.AddString(::params.max2,"max=")
+            ::win.SetCallback( ::UpdateRanges)
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        ::win.BeginBoxPanel("Equation (U,V):")
+          ::X_id = ::win.AddString( ::params.X,"X=")
+          ::win.SetCallback( ::Update)
+          ::Y_id = ::win.AddString( ::params.Y,"Y=")
+          ::win.SetCallback( ::Update)
+          ::Z_id = ::win.AddString( ::params.Z,"Z=")
+          ::win.SetCallback( ::Update)
+          ::win.AddBoolean(::params.AutoUpdateEquation, "Auto-update")
+        ::win.EndBoxPanel()
+        ::win.BeginBoxPanel("Time evolution:")
+          ::win.AddInt( ::params.kmax,  "kmax", 0,100)
+          ::win.AddInt( ::params.timestep,  "timestep", 0,1000)
+          ::win.BeginHorizontal()
+            ::win.AddButton("Start", ::Start)
+            ::win.AddButton("Stop",  ::Stop)
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        
+        ::win.AddFilename( ::eq_filename,"Eq. filename", ".", "*.amil" )
+        #::win.BeginHorizontal()
+        #::win.AddButton("Save", ::SaveEquation)
+        ::win.AddButton("Read", ::ReadEquation)
+        #::win.EndHorizontal()
+
+        # add page for saving/loading parameters
+        ::AddParamPage(::win)
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(::win)
+        }
+    ::win.EndBook()
+
+    ::win.AddButton("Update Surface", ::Update)
+    ::AddStandardButtons(::win)
+
+    if (exists(::parent_panel)) {
+      ::win.ShowPanel()
+    } else {
+      ::win.Display()
+    }
+    ::win.Update(-1)
+  }
+
+  ::Init()
+  
+}
+# End of class
+  

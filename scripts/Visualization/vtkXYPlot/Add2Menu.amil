@@ -4,14 +4,8 @@
 # Adding main Gui scripts to the menu
 #
 
-proc AddMenuvtkXYPlot() \
-{
-  category = "&PDI"
-  script = "PDI/vtkXYPlot/vtkXYPlotGui.amil"
+ami.MainFrame.AddToMenu(    "&Scripts",\
+                            "&Visualization",\
+                            "&vtkXYPlot", \
+                            "Visualization/vtkXYPlot/vtkXYPlotGui")
 
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&vtkXYPlot",script)
-}
-
-AddMenuvtkXYPlot()
-del AddMenuvtkXYPlot

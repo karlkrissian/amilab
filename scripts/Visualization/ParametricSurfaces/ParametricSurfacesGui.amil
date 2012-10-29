@@ -1,0 +1,11 @@
+
+func "ParametricSurfacesClass"
+
+if (!exists(ParametricSurfaces_obj)) {
+  ParametricSurfacesClass ParametricSurfaces_obj
+  ParametricSurfaces_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

@@ -5,52 +5,19 @@
 #
 
 
-proc AddSegMenu() {
-
-  category = "&Visualization"
-  dir      = "Visualization/"
-
-  ami.MainFrame.AddToMenu("&Scripts",category,"&Parametric Surfaces",  dir+"ParametricSurfaces")
-  ami.MainFrame.AddToMenu("&Scripts",category,"2D &Function plot",  dir+"Functions2D")
-  ami.MainFrame.AddToMenu("&Scripts",category,"Image &Grid",  dir+"ImageGrid")
+ami.MainFrame.AddToMenu(  "&Scripts","&Visualization","2D &Function plot",  \
+                          "Visualization/Functions2D")
+                        
+ami.MainFrame.AddToMenu(  "&Scripts","&Visualization","Image &Grid", \
+                          "Visualization/ImageGrid")
   
-  
-  for subdir in  "RGBScale","VolRen","ImageHistogram", "vtkIsoSurface", "Loupe", "SurfaceColor", "GraphViz" \
-  {
-    curfile=GetScriptsDir+"/Visualization/"+subdir+"/Add2Menu.amil"
-    if wx.wxFileName(curfile).FileExists() {
-      func curfile
-    } else {
-      InfoDialog curfile+" does not exists"
-    }
-  }
-}
-
-AddSegMenu()
-del AddSegMenu
-
-# Load Ultrasound only if mt (MicronTracker) exists
-if exists(mt) {
-  func GetScriptsDir+"/Visualization/Ultrasound/Add2Menu.amil"
-}
-
 
 if exists(global::scripts_toolbar) {
   global::scripts_toolbar.AddSeparator()
 }
- ami.MainFrame.AddToMenu("&Scripts","&Visualization","&vtkXYPlot",  "Visualization/vtkXYPlot/vtkXYPlotGui")
 
- ami.MainFrame.AddToMenu("&Scripts","&Visualization","&TextureMappingExample",  "Visualization/TextureMappingExample/TextureMappingExampleGui")
 
 #
-# ami.MainFrame.AddToMenu("&Scripts","&Visualization","&vtkImageViewer", \
-#              "Visualization/vtkImageViewer/vtkImageViewerGui")
-
- ami.MainFrame.AddToMenu("&Scripts","&Visualization","&ViewerColorTransform",  \
-              "Visualization/ViewerColorTransform/ViewerColorTransformGui")
-
-# ami.MainFrame.AddToMenu("&Scripts","&Visualization","&GraphViz",  "Visualization/GraphViz/alGraphVizGui")
-
-#global::RunAdd2Menus(op_system.GetCurrentScriptDir())
-ami.MainFrame.AddToMenu("&Scripts","&Visualization","&DistancePolyData",\
-    op_system.GetCurrentScriptDir()+"/DistancePolyData/DistancePolyDataGui.amil")
+# Adding main GUI scripts to the menu interface
+#
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())

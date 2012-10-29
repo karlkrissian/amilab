@@ -39,7 +39,65 @@ Class WriteAmiObjectClass {
   #{
     #func filename
   #}
+  
+  
+  # Filter variables based on their comments
+  proc ::SetCommentsFilter(STRING _filter) \
+  {
+    re = wx.wxRegEx(_filter,wx.wxRE_ADVANCED)
+    if (!re.IsValid()) {
+      InfoDialog "WriteAmiObject::SetCommentFilter(%1%) filter not valid" \
+              % _filter
+    } else {
+      del ::comments_filter
+      ::comments_filter = &re
+    }
+  }
+  
 
+  # Writes a context
+  proc ::WriteFileContext( OBJECT oc, STRING filename) \
+  {
+    f = File(filename,"w")
+    f._printn("#")
+    f._printn("# Saving structure %1%" % ::classname)
+    f._printn("#")
+    # list variables in the context
+    for n=0 to oc.GetSize()-1 {
+      comments = oc[n].GetComments()
+      filter_passed = true
+      if exists(::comments_filter) {
+        filter_passed = ::comments_filter.Matches(comments)
+      }
+      if filter_passed {
+        name  = oc[n].Name()
+        type  = oc[n].GetTypeName()
+        value = oc[n].GetValueAsString()
+        printn "name: %1%" % name + "\ttype: %1%" % type + "\tvalue: %1%" % value
+        name_ok = true
+        for k=0 to ::ignore.size()-1 {
+          name_ok = name_ok && (name!=::ignore[k])
+        }
+        type_ok = false
+        for k=0 to ::accept.size()-1 {
+          accept = (type==::accept[k])
+          if accept { type_id = k; }
+          type_ok = type_ok || accept
+        }
+        if name_ok && type_ok {
+          printn "format='%1%'" % ::writeformat[type_id]
+          res = "# %1%" % comments
+          f._printn("  "+res)
+          res = "::%1%" % name + " = "+ \
+                  ::writeformat[type_id] % value
+          printn "****  '%1%'" % res 
+          f._printn("  "+res)
+        }
+      }
+    }
+  }
+
+  # Write a amiobject variable
   proc ::WriteFile( OBJECT var, STRING filename) \
   {
     # 1. wrap the variable
@@ -50,37 +108,7 @@ Class WriteAmiObjectClass {
     oc = ov.Pointer().GetContext()
 
     #oc = language.Vars.GetObjectContext()
-    f = File(filename,"w")
-    f._printn("#")
-    f._printn("# Saving structure %1%" % ::classname)
-    f._printn("#")
-    # list variables in the context
-    for n=0 to oc.GetSize()-1 {
-      name  = oc[n].Name()
-      type  = oc[n].GetTypeName()
-      value = oc[n].GetValueAsString()
-      comments = oc[n].GetComments()
-      printn "name: %1%" % name + "\ttype: %1%" % type + "\tvalue: %1%" % value
-      name_ok = true
-      for k=0 to ::ignore.size()-1 {
-        name_ok = name_ok && (name!=::ignore[k])
-      }
-      type_ok = false
-      for k=0 to ::accept.size()-1 {
-        accept = (type==::accept[k])
-        if accept { type_id = k; }
-        type_ok = type_ok || accept
-      }
-      if name_ok && type_ok {
-        printn "format='%1%'" % ::writeformat[type_id]
-        res = "# %1%" % comments
-        f._printn("  "+res)
-        res = "::%1%" % name + " = "+ \
-                ::writeformat[type_id] % value
-        printn "****  '%1%'" % res 
-        f._printn("  "+res)
-      }
-    }
+    ::WriteFileContext(oc,filename)
   }
   
   ::Init()

@@ -1,29 +1,31 @@
 
 # new way of doing it
 
+if exists(mt) {
 
-if (!exists(ultrasound_display)) {
+  if (!exists(ultrasound_display)) {
 
-  proc AddScript() {
-    global
-    func "Common/ScriptDisplayClass"
+    proc AddScript() {
+      global
+      func "Common/ScriptDisplayClass"
 
-    ScriptDisplayClass ultrasound_display
+      ScriptDisplayClass ultrasound_display
 
-    ultrasound_display.SetScript("Visualization/Ultrasound/CreateUltrasoundGui.amil")
-    ultrasound_display.SetScriptObjName("global::ultrasound_obj")
+      ultrasound_display.SetScript("Visualization/Ultrasound/CreateUltrasoundGui.amil")
+      ultrasound_display.SetScriptObjName("global::ultrasound_obj")
 
-    ultrasound_display.SetInMenus("Scripts","Visualization")
-    ultrasound_display.SetDisplayedName("&Ultrasound")
-    ultrasound_display.SetHelp("Gets ultrasound images and position")
+      ultrasound_display.SetInMenus("Scripts","Visualization")
+      ultrasound_display.SetDisplayedName("&Ultrasound")
+      ultrasound_display.SetHelp("Gets ultrasound images and position")
 
-    ultrasound_display.SetIcon16( op_system.GetCurrentScriptDir()+"/ultrasonix_icon16.png")
-    ultrasound_display.SetIcon32( op_system.GetCurrentScriptDir()+"/ultrasonix_icon32.png")
+      ultrasound_display.SetIcon16( op_system.GetCurrentScriptDir()+"/ultrasonix_icon16.png")
+      ultrasound_display.SetIcon32( op_system.GetCurrentScriptDir()+"/ultrasonix_icon32.png")
 
-    ultrasound_display.Add2Menu()
-    ultrasound_display.Add2Toolbar()
+      ultrasound_display.Add2Menu()
+      ultrasound_display.Add2Toolbar()
+    }
+    AddScript()
+    del AddScript
+
   }
-  AddScript()
-  del AddScript
-
 }

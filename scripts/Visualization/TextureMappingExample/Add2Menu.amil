@@ -3,15 +3,8 @@
 #
 # Adding main Gui scripts to the menu
 #
+ami.MainFrame.AddToMenu(  "&Scripts",\
+                          "&Visualization",\
+                          "&TextureMappingExample",\
+                          "Visualization/TextureMappingExample/TextureMappingExampleGui")
 
-proc AddMenuTextureMappingExample() \
-{
-  category = "&PDI"
-  script = "PDI/TextureMappingExample/TextureMappingExampleGui.amil"
-
-  # Scripts Menu
-  ami.MainFrame.AddToMenu("&Scripts",category,"&TextureMappingExample",script)
-}
-
-AddMenuTextureMappingExample()
-del AddMenuTextureMappingExample

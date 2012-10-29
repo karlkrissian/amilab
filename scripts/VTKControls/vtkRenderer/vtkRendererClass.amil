@@ -99,9 +99,9 @@ Class vtkRendererClass : public ScriptGui \
     polymapper = vtk.vtkPolyDataMapper.New()
     polymapper.SetInputConnection(&polynormals.GetOutputPort())
     polymapper.ScalarVisibilityOff()
-    polyactor = vtk.vtkActor.New()
-    polyactor.SetMapper(&polymapper)
-    ::vtkrenderer.AddActor(polyactor)
+    ::polyactor = vtk.vtkActor.New()
+    ::polyactor.SetMapper(&polymapper)
+    ::vtkrenderer.AddActor(::polyactor)
     ::vtkrenderer.GetRenderWindow().Render()
   }
 
