@@ -89,6 +89,9 @@ public:
   vtkSetMacro(InitThreshold,float);
   vtkGetMacro(InitThreshold,float);
 
+  vtkSetMacro(SquaredGradientEpsilon,double);
+  vtkGetMacro(SquaredGradientEpsilon,double);
+
   //
   vtkSetMacro(UseLowThreshold,int);
   vtkGetMacro(UseLowThreshold,int);
@@ -567,6 +570,7 @@ protected:
   // Initialization Parameters
   vtkImageData* initImage;
   float         InitThreshold;
+  double        SquaredGradientEpsilon;
   enum TInitIntensity { Bright, Dark };
   TInitIntensity InitIntensity;
 

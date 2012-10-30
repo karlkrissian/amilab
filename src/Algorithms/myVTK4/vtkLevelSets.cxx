@@ -134,6 +134,8 @@ vtkLevelSets::vtkLevelSets()
   ShapeMinDist   = -20;
   Band           = 4;
   Tube           = 2;
+  
+  SquaredGradientEpsilon = 1E-8;
 
   // rescaling to [0,255] parameters
   RescaleImage   = 1;
@@ -1824,12 +1826,12 @@ void vtkLevelSets::Evolve2D()
     //--------------------------------------------------
 
     //    if (delta0!=0)
-    if (delta0>.1) {
+    if (delta0>SquaredGradientEpsilon) {
       meancurv = (Dpmy*dxsq +Dpmx*dysq-dxy2*D0xy)/delta0/sqrtdelta0;
 
-    //--------------------------------------------------
-    // Data Attachment Term
-    //--------------------------------------------------
+      //--------------------------------------------------
+      // Data Attachment Term
+      //--------------------------------------------------
 
       i0x=(im[p+px]-im[p+mx])*(doubxspacing);
       i0y=(im[p+py]-im[p+my])*(doubyspacing);
@@ -1837,106 +1839,106 @@ void vtkLevelSets::Evolve2D()
       normcompsq = i0x*i0x+i0y*i0y;
 
       if (normcompsq==0)
-        {
-          imcomp = 0;
-          vel    = 0;
-        }
-      else
-        {
-          // BELOW IS WHAT WAS USED FOR IPMI PAPER
-      if (UseCosTerm)
-        costerm = -(D0x*i0x+D0y*i0y)/(sqrtdelta0*sqrt(normcompsq));
-      else
-        costerm = 1;
-
-      // recall that image is rescaled to 0-255 when loaded.
-      //
-      // Where does the 'costerm' comes from ?
-      // it should be: - H.DI.Du / |Du| / |DI|
-      //
-
-      if (fabs(AdvectionCoeff)>1E-10) {
-    switch (advection_scheme) {
-    case ADVECTION_UPWIND_VECTORS:
-          // Use upwind differences for advection term :
-      imx = data_attach_x[p];
-      imy = data_attach_y[p];
-          adv = 0;
-
-	  printf("imx imy = %f %f \n",imx,imy);
-
-      if (costerm>0) {
-        if (imx>0) adv += imx*D_x;  else   adv += imx*Dx;
-        if (imy>0) adv += imy*D_y;  else   adv += imy*Dy;
-      } else {
-        if (imx>0) adv += imx*Dx;  else   adv += imx*D_x;
-        if (imy>0) adv += imy*Dy;  else   adv += imy*D_y;
+      {
+        imcomp = 0;
+        vel    = 0;
       }
-      imcomp = adv*AdvectionCoeff*costerm;
-      break;
-    case ADVECTION_CENTRAL_VECTORS:
-      imx = data_attach_x[p];
-      imy = data_attach_y[p];
-          adv =  D0x*imx+D0y*imy;
-      imcomp = adv*AdvectionCoeff*costerm;
-      break;
-    case ADVECTION_MORPHO:
-      if (secdergrad[p]*AdvectionCoeff<0) {
-            Gx = Gy = 0;
+      else
+      {
+        // BELOW IS WHAT WAS USED FOR IPMI PAPER
+        if (UseCosTerm)
+          costerm = -(D0x*i0x+D0y*i0y)/(sqrtdelta0*sqrt(normcompsq));
+        else
+          costerm = 1;
+
+        // recall that image is rescaled to 0-255 when loaded.
+        //
+        // Where does the 'costerm' comes from ?
+        // it should be: - H.DI.Du / |Du| / |DI|
+        //
+
+        if (fabs(AdvectionCoeff)>1E-10) {
+          switch (advection_scheme) {
+          case ADVECTION_UPWIND_VECTORS:
+            // Use upwind differences for advection term :
+            imx = data_attach_x[p];
+            imy = data_attach_y[p];
+            adv = 0;
+
+            printf("imx imy = %f %f \n",imx,imy);
+
+            if (costerm>0) {
+              if (imx>0) adv += imx*D_x;  else   adv += imx*Dx;
+              if (imy>0) adv += imy*D_y;  else   adv += imy*Dy;
+            } else {
+              if (imx>0) adv += imx*Dx;  else   adv += imx*D_x;
+              if (imy>0) adv += imy*Dy;  else   adv += imy*D_y;
+            }
+            imcomp = adv*AdvectionCoeff*costerm;
+          break;
+          case ADVECTION_CENTRAL_VECTORS:
+            imx = data_attach_x[p];
+            imy = data_attach_y[p];
+            adv =  D0x*imx+D0y*imy;
+            imcomp = adv*AdvectionCoeff*costerm;
+          break;
+          case ADVECTION_MORPHO:
+            if (secdergrad[p]*AdvectionCoeff<0) {
+                  Gx = Gy = 0;
+              if (D_x>=0) Gx = D_x;
+              if ((Dx<0)&&(-Dx>Gx)) Gx = Dx;
+                if (D_y>=0) Gy = D_y;
+              if ((Dy<0)&&(-Dy>Gy)) Gy = Dy;
+                }
+                else {
+              Gx = Gy = 0;
+              if (D_x<=0) Gx = D_x;
+              if ((Dx>0)&&(Dx>-Gx)) Gx = Dx;
+              if (D_y<=0) Gy = D_y;
+              if ((Dy>0)&&(Dy>-Gy)) Gy = Dy;
+            }
+            Gnorm = sqrt(Gx*Gx+Gy*Gy);
+            imcomp = -Gnorm*secdergrad[p];
+            imcomp *= AdvectionCoeff;
+          break;
+          } // end switch
+        } // end if
+      }
+
+      //      g = exp(-sqrt(normcompq)/0.3);
+
+      //--------------------------------------------------
+      // Balloon expansion Term
+      //--------------------------------------------------
+
+      balloonterm = 0.0;
+      if (fabs(balloon_coeff)>1E-10) {
+        if (balloon_image != NULL)
+          balloonterm = balloon_coeff*((float*)balloon_image->GetScalarPointer())[p];
+        else
+          balloonterm = balloon_coeff* this->ExpansionMap(im[p]);
+      }
+
+      if (balloonterm>0) {
+        Gx = Gy = 0;
         if (D_x>=0) Gx = D_x;
         if ((Dx<0)&&(-Dx>Gx)) Gx = Dx;
-          if (D_y>=0) Gy = D_y;
+        if (D_y>=0) Gy = D_y;
         if ((Dy<0)&&(-Dy>Gy)) Gy = Dy;
-           }
-          else {
+      }
+      else {
         Gx = Gy = 0;
         if (D_x<=0) Gx = D_x;
         if ((Dx>0)&&(Dx>-Gx)) Gx = Dx;
         if (D_y<=0) Gy = D_y;
         if ((Dy>0)&&(Dy>-Gy)) Gy = Dy;
       }
-          Gnorm = sqrt(Gx*Gx+Gy*Gy);
-          imcomp = -Gnorm*secdergrad[p];
-          imcomp *= AdvectionCoeff;
-          break;
-    } // end switch
-      }
-    }
+      Gnorm = sqrt(Gx*Gx+Gy*Gy);
+      balloonterm *= Gnorm;
 
-      //      g = exp(-sqrt(normcompq)/0.3);
-
-    //--------------------------------------------------
-    // Balloon expansion Term
-    //--------------------------------------------------
-
-    balloonterm = 0.0;
-    if (fabs(balloon_coeff)>1E-10) {
-      if (balloon_image != NULL)
-    balloonterm = balloon_coeff*((float*)balloon_image->GetScalarPointer())[p];
-      else
-    balloonterm = balloon_coeff* this->ExpansionMap(im[p]);
-    }
-
-    if (balloonterm>0) {
-      Gx = Gy = 0;
-      if (D_x>=0) Gx = D_x;
-      if ((Dx<0)&&(-Dx>Gx)) Gx = Dx;
-      if (D_y>=0) Gy = D_y;
-      if ((Dy<0)&&(-Dy>Gy)) Gy = Dy;
-    }
-    else {
-      Gx = Gy = 0;
-      if (D_x<=0) Gx = D_x;
-      if ((Dx>0)&&(Dx>-Gx)) Gx = Dx;
-      if (D_y<=0) Gy = D_y;
-      if ((Dy>0)&&(Dy>-Gy)) Gy = Dy;
-    }
-    Gnorm = sqrt(Gx*Gx+Gy*Gy);
-    balloonterm *= Gnorm;
-
-    //--------------------------------------------------
-    // Velocity Term
-    //--------------------------------------------------
+      //--------------------------------------------------
+      // Velocity Term
+      //--------------------------------------------------
 
       vel = 0;
       // Compute the velocity term
@@ -2299,15 +2301,15 @@ void vtkLevelSets::Evolve3D( int first_band, int last_band)
       D0z=(upz-umz)*(doubzspacing);
 
       if (coeff_curvature>0) {
-    // Second order derivatives
-    Dpmx=(upx-u0-u0+umx)*sqxspacing;
-    Dpmy=(upy-u0-u0+umy)*sqyspacing;
-    Dpmz=(upz-u0-u0+umz)*sqzspacing;
+        // Second order derivatives
+        Dpmx=(upx-u0-u0+umx)*sqxspacing;
+        Dpmy=(upy-u0-u0+umy)*sqyspacing;
+        Dpmz=(upz-u0-u0+umz)*sqzspacing;
 
-    // Crossed derivatives
-    D0xy=(Up[px+py]+Up[mx+my]-Up[px+my]-Up[mx+py])*xyspacing;
-    D0yz=(Up[py+pz]+Up[my+mz]-Up[py+mz]-Up[my+pz])*yzspacing;
-    D0zx=(Up[pz+px]+Up[mz+mx]-Up[pz+mx]-Up[mz+px])*xzspacing;
+        // Crossed derivatives
+        D0xy=(Up[px+py]+Up[mx+my]-Up[px+my]-Up[mx+py])*xyspacing;
+        D0yz=(Up[py+pz]+Up[my+mz]-Up[py+mz]-Up[my+pz])*yzspacing;
+        D0zx=(Up[pz+px]+Up[mz+mx]-Up[pz+mx]-Up[mz+px])*xzspacing;
       }
 
       //
@@ -2376,18 +2378,18 @@ void vtkLevelSets::Evolve3D( int first_band, int last_band)
     if (coeff_curvature>0) {
 
       //    if (delta0!=0)
-      if (delta0>.1) {
+      if (delta0>SquaredGradientEpsilon) {
         meancurv_grad =  ( 0.5*(  (Dpmy+Dpmz)*dxsq
-                    +(Dpmx+Dpmz)*dysq
-                    +(Dpmx+Dpmy)*dzsq
-                    )
-                 -( dxy*D0xy
-                    +dxz*D0zx
-                    +dyz*D0yz)
-                 ) /delta0;
+                                  +(Dpmx+Dpmz)*dysq
+                                  +(Dpmx+Dpmy)*dzsq
+                                  )
+                              -( dxy*D0xy
+                                  +dxz*D0zx
+                                  +dyz*D0yz)
+                              ) /delta0;
 
         if (!DoMean) {
-        gausscurv_grad2 = (2*(dxy*(D0zx*D0yz-D0xy*Dpmz) +
+          gausscurv_grad2 = (2*(dxy*(D0zx*D0yz-D0xy*Dpmz) +
                   dyz*(D0zx*D0xy-D0yz*Dpmx) +
                   dxz*(D0yz*D0xy-D0zx*Dpmy)
                   ) +
@@ -2402,17 +2404,26 @@ void vtkLevelSets::Evolve3D( int first_band, int last_band)
           biggercurv_grad   = meancurv_grad+discriminant;
         }
 
-      if (DoMean) curvterm = meancurv_grad   ;
-      // should it be the minimal in absolute value ???
-      else        curvterm = smallercurv_grad;
+        if (DoMean) curvterm = meancurv_grad   ;
+        // should it be the minimal in absolute value ???
+        else        curvterm = smallercurv_grad;
 
       // limit the curvature in high values
 #define MAX_CURV_ABS 3
-      if (curvterm> MAX_CURV_ABS) curvterm= MAX_CURV_ABS;
-      if (curvterm<-MAX_CURV_ABS) curvterm=-MAX_CURV_ABS;
-      curvterm *= coeff_curvature;
+        if (curvterm> MAX_CURV_ABS) curvterm= MAX_CURV_ABS;
+        if (curvterm<-MAX_CURV_ABS) curvterm=-MAX_CURV_ABS;
+        curvterm *= coeff_curvature;
 
-      this->mean_curv      += curvterm;
+        this->mean_curv      += curvterm;
+      } else {
+        if (GetDebug()) {
+          ExtractCoords(p,i,j,k);
+          std::cerr << "*** Squared gradient too low: " 
+                    << delta0
+                    << ", at position "
+                    << "( " << i << ", " << j << ", " << k << " ) "
+                    << std::endl;
+        }
       }
     } // coeff_curvature >0
     if (curvature_weight != NULL) curvterm *= curvature_weight[p];
@@ -2523,7 +2534,7 @@ void vtkLevelSets::Evolve3D( int first_band, int last_band)
     // bug fixed, replaced balloon_coeff by balloonterm:
     //  in case of an balloon_image, the balloon_coeff is 0 ...
 
-// try another scheme ...
+    // try another scheme ...
     switch (this->balloon_scheme) {
     case BALLOON_BROCKETT_MARAGOS:
       if (fabs(balloonterm)>1E-10) {
@@ -2551,102 +2562,102 @@ void vtkLevelSets::Evolve3D( int first_band, int last_band)
       break;
     case BALLOON_VESSELS:
       if (fabs(balloonterm)>1E-10) {
-    if (balloonterm>0) {
-      // get the minimum of the neighborhood
-      val = u0;
-      if (Up[px]<val) val=Up[px];
-      if (Up[mx]<val) val=Up[mx];
-      if (Up[py]<val) val=Up[py];
-      if (Up[my]<val) val=Up[my];
-      if (Up[pz]<val) val=Up[pz];
-      if (Up[mz]<val) val=Up[mz];
-      val1 = u0-val;
+        if (balloonterm>0) {
+          // get the minimum of the neighborhood
+          val = u0;
+          if (Up[px]<val) val=Up[px];
+          if (Up[mx]<val) val=Up[mx];
+          if (Up[py]<val) val=Up[py];
+          if (Up[my]<val) val=Up[my];
+          if (Up[pz]<val) val=Up[pz];
+          if (Up[mz]<val) val=Up[mz];
+          val1 = u0-val;
 
-      // 2D diagonals
-      val = u0;
-      if (Up[px+py]<val) val=Up[px+py];
-      if (Up[px+my]<val) val=Up[px+my];
-      if (Up[mx+py]<val) val=Up[mx+py];
-      if (Up[mx+my]<val) val=Up[mx+my];
+          // 2D diagonals
+          val = u0;
+          if (Up[px+py]<val) val=Up[px+py];
+          if (Up[px+my]<val) val=Up[px+my];
+          if (Up[mx+py]<val) val=Up[mx+py];
+          if (Up[mx+my]<val) val=Up[mx+my];
 
-      if (Up[px+pz]<val) val=Up[px+pz];
-      if (Up[px+mz]<val) val=Up[px+mz];
-      if (Up[mx+pz]<val) val=Up[mx+pz];
-      if (Up[mx+mz]<val) val=Up[mx+pz];
+          if (Up[px+pz]<val) val=Up[px+pz];
+          if (Up[px+mz]<val) val=Up[px+mz];
+          if (Up[mx+pz]<val) val=Up[mx+pz];
+          if (Up[mx+mz]<val) val=Up[mx+pz];
 
-      if (Up[py+pz]<val) val=Up[py+pz];
-      if (Up[py+mz]<val) val=Up[py+mz];
-      if (Up[my+pz]<val) val=Up[my+pz];
-      if (Up[my+mz]<val) val=Up[my+pz];
-      val2 = (u0-val)/sqrt(2.0);
+          if (Up[py+pz]<val) val=Up[py+pz];
+          if (Up[py+mz]<val) val=Up[py+mz];
+          if (Up[my+pz]<val) val=Up[my+pz];
+          if (Up[my+mz]<val) val=Up[my+pz];
+          val2 = (u0-val)/sqrt(2.0);
 
-      // 3D diagonals
-      val = u0;
-      if (Up[px+py+pz]<val) val=Up[px+py+pz];
-      if (Up[px+py+mz]<val) val=Up[px+py+mz];
-      if (Up[px+my+pz]<val) val=Up[px+my+pz];
-      if (Up[px+my+mz]<val) val=Up[px+my+mz];
+          // 3D diagonals
+          val = u0;
+          if (Up[px+py+pz]<val) val=Up[px+py+pz];
+          if (Up[px+py+mz]<val) val=Up[px+py+mz];
+          if (Up[px+my+pz]<val) val=Up[px+my+pz];
+          if (Up[px+my+mz]<val) val=Up[px+my+mz];
 
-      if (Up[mx+py+pz]<val) val=Up[mx+py+pz];
-      if (Up[mx+py+mz]<val) val=Up[mx+py+mz];
-      if (Up[mx+my+pz]<val) val=Up[mx+my+pz];
-      if (Up[mx+my+mz]<val) val=Up[mx+my+mz];
-      val3 = (u0-val)/sqrt(3.0);
+          if (Up[mx+py+pz]<val) val=Up[mx+py+pz];
+          if (Up[mx+py+mz]<val) val=Up[mx+py+mz];
+          if (Up[mx+my+pz]<val) val=Up[mx+my+pz];
+          if (Up[mx+my+mz]<val) val=Up[mx+my+mz];
+          val3 = (u0-val)/sqrt(3.0);
 
-      val=val1;
-      if (val2>val) val=val2;
-      if (val3>val) val=val3;
-      balloonterm *= val;
+          val=val1;
+          if (val2>val) val=val2;
+          if (val3>val) val=val3;
+          balloonterm *= val;
         }
         else {
-      // get the maximum of the neighborhood
-      val = u0;
-      if (Up[px]>val) val=Up[px];
-      if (Up[mx]>val) val=Up[mx];
-      if (Up[py]>val) val=Up[py];
-      if (Up[my]>val) val=Up[my];
-      if (Up[pz]>val) val=Up[pz];
-      if (Up[mz]>val) val=Up[mz];
-      val1 = val-u0;
+          // get the maximum of the neighborhood
+          val = u0;
+          if (Up[px]>val) val=Up[px];
+          if (Up[mx]>val) val=Up[mx];
+          if (Up[py]>val) val=Up[py];
+          if (Up[my]>val) val=Up[my];
+          if (Up[pz]>val) val=Up[pz];
+          if (Up[mz]>val) val=Up[mz];
+          val1 = val-u0;
 
-      // 2D diagonals
-      val = u0;
-      if (Up[px+py]>val) val=Up[px+py];
-      if (Up[px+my]>val) val=Up[px+my];
-      if (Up[mx+py]>val) val=Up[mx+py];
-      if (Up[mx+my]>val) val=Up[mx+my];
+          // 2D diagonals
+          val = u0;
+          if (Up[px+py]>val) val=Up[px+py];
+          if (Up[px+my]>val) val=Up[px+my];
+          if (Up[mx+py]>val) val=Up[mx+py];
+          if (Up[mx+my]>val) val=Up[mx+my];
 
-      if (Up[px+pz]>val) val=Up[px+pz];
-      if (Up[px+mz]>val) val=Up[px+mz];
-      if (Up[mx+pz]>val) val=Up[mx+pz];
-      if (Up[mx+mz]>val) val=Up[mx+pz];
+          if (Up[px+pz]>val) val=Up[px+pz];
+          if (Up[px+mz]>val) val=Up[px+mz];
+          if (Up[mx+pz]>val) val=Up[mx+pz];
+          if (Up[mx+mz]>val) val=Up[mx+pz];
 
-      if (Up[py+pz]>val) val=Up[py+pz];
-      if (Up[py+mz]>val) val=Up[py+mz];
-      if (Up[my+pz]>val) val=Up[my+pz];
-      if (Up[my+mz]>val) val=Up[my+pz];
-      val2 = (val-u0)/sqrt(2.0);
+          if (Up[py+pz]>val) val=Up[py+pz];
+          if (Up[py+mz]>val) val=Up[py+mz];
+          if (Up[my+pz]>val) val=Up[my+pz];
+          if (Up[my+mz]>val) val=Up[my+pz];
+          val2 = (val-u0)/sqrt(2.0);
 
-      // 3D diagonals
-      val = u0;
-      if (Up[px+py+pz]>val) val=Up[px+py+pz];
-      if (Up[px+py+mz]>val) val=Up[px+py+mz];
-      if (Up[px+my+pz]>val) val=Up[px+my+pz];
-      if (Up[px+my+mz]>val) val=Up[px+my+mz];
+          // 3D diagonals
+          val = u0;
+          if (Up[px+py+pz]>val) val=Up[px+py+pz];
+          if (Up[px+py+mz]>val) val=Up[px+py+mz];
+          if (Up[px+my+pz]>val) val=Up[px+my+pz];
+          if (Up[px+my+mz]>val) val=Up[px+my+mz];
 
-      if (Up[mx+py+pz]>val) val=Up[mx+py+pz];
-      if (Up[mx+py+mz]>val) val=Up[mx+py+mz];
-      if (Up[mx+my+pz]>val) val=Up[mx+my+pz];
-      if (Up[mx+my+mz]>val) val=Up[mx+my+mz];
-      val3 = (val-u0)/sqrt(3.0);
+          if (Up[mx+py+pz]>val) val=Up[mx+py+pz];
+          if (Up[mx+py+mz]>val) val=Up[mx+py+mz];
+          if (Up[mx+my+pz]>val) val=Up[mx+my+pz];
+          if (Up[mx+my+mz]>val) val=Up[mx+my+mz];
+          val3 = (val-u0)/sqrt(3.0);
 
-      val=val1;
-      if (val2>val) val=val2;
-      if (val3>val) val=val3;
-      balloonterm *= val;
+          val=val1;
+          if (val2>val) val=val2;
+          if (val3>val) val=val3;
+          balloonterm *= val;
         }
-    this->mean_balloon   += balloonterm;
-    break;
+        this->mean_balloon   += balloonterm;
+        break;
       }
     }
     ut -= balloonterm;

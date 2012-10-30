@@ -391,6 +391,7 @@ class Cube
 {
 
   float*           _valeurs;
+  bool*            _in_mask;
 
   PointIntersection  tabInters[12];
 
@@ -410,7 +411,7 @@ public:
 
 
   //--------------------------------------------------
-  void InitVoxel( int x, int y, int z, float* valeurs);
+  void InitVoxel( int x, int y, int z, float* valeurs, bool* in_mask);
   
 
   //--------------------------------------------------

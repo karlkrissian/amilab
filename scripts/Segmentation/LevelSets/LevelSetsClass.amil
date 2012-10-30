@@ -21,6 +21,8 @@ if (!exists(LevelSetsClass)) {
     #===========================================================================
     Class ::ParamClass : public ObjectIO {
 
+        ::debug = false, "Enable Debugging information"
+
         ::description = "Default parameters", \
                         "Description of the set of parameters"
 
@@ -173,6 +175,12 @@ if (!exists(LevelSetsClass)) {
         ::isocontour_index = 1, "isocontour number to show the evolving level set"
     }
 
+
+    #---------------------------------------------------------------------------
+    proc ::SetDebug(NUM d) \
+    {
+      ::params.debug = d
+    }
 
     #---------------------------------------------------------------------------
     proc  ::InitGeodesicWeightImage( IMAGE w)\
@@ -657,6 +665,7 @@ if (!exists(LevelSetsClass)) {
       # new level set object
       if (exists(::levelset)) { del ::levelset; }
       ::levelset = vtkLevelSets();
+      ::levelset.SetDebug(::params.debug)
       ::levelset.SetParam(0.7,numit,adv_coeff,smo_coeff,::params.dt,::params.NBD_freq)
       ::levelset.SetDistMethod(::params.NBD_method)
       ::levelset.SetThreads(::threads)
@@ -714,16 +723,18 @@ if (!exists(LevelSetsClass)) {
     
       if (graphics) {
         ::UpdateViewer()
-        if (::own_viewer) {
-          # sets the isocontour number 0 to the image 'initial' with threshold 0
-          ::viewer.SetIsoContour(::isocontour_index,&::inls,0)
-          # sets the isocontour number 0 to be active
-          ::viewer.DrawIsoContour(::isocontour_index,1)
-          ::viewer.SetIsoContour(2,&::lsres,0)
-          ::viewer.DrawIsoContour(2,1)
-        } else {
-          ::viewer.SetIsoContour(::isocontour_index,&::lsres,0)
-          ::viewer.DrawIsoContour(::isocontour_index,1)
+        if exists(::viewer) {
+          if (::own_viewer) {
+            # sets the isocontour number 0 to the image 'initial' with threshold 0
+            ::viewer.SetIsoContour(::isocontour_index,&::inls,0)
+             # sets the isocontour number 0 to be active
+            ::viewer.DrawIsoContour(::isocontour_index,1)
+            ::viewer.SetIsoContour(2,&::lsres,0)
+            ::viewer.DrawIsoContour(2,1)
+          } else {
+            ::viewer.SetIsoContour(::isocontour_index,&::lsres,0)
+            ::viewer.DrawIsoContour(::isocontour_index,1)
+          }
         }
       }
 
@@ -1113,6 +1124,7 @@ if (!exists(LevelSetsClass)) {
               ::win.AddButton("Stop",      ::Stop)
               ::win.AddButton("Surface",   ::Surface)
             ::win.EndHorizontal()
+            ::win.AddBoolean(::params.debug, "Enable debug")
           ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("Convergence")

@@ -279,6 +279,26 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_InitWithThreshold::CallMember( P
 }
 
 //---------------------------------------------------
+//  SetDebug
+//---------------------------------------------------
+void WrapClass_vtkLevelSets::wrap_SetDebug::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("boolean: enable/disable debug.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_vtkLevelSets::wrap_SetDebug::CallMember( ParamList* p)
+{
+  bool  debug    = 0;
+  int   n = 0;
+
+  if (!get_val_param<bool>( debug,   p, n))     ClassHelpAndReturn;
+
+  boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->GetObj());
+  curv->SetDebug(debug);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
 //  SetILowTh
 //---------------------------------------------------
 void WrapClass_vtkLevelSets::wrap_SetILowTh::SetParametersComments() 

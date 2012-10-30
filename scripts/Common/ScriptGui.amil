@@ -422,7 +422,7 @@ if (!exists(ScriptGui)) \
       # if the class contains the ::params object
       # use it for IO else read the file directly
       if (exists(::params)&&exists(::ParamClass)) {
-        params.WriteFile(filename)
+        ::params.WriteFile(filename)
       } else {
         func "Variable/WriteAmiObject"
         # need a pointer to the own object here

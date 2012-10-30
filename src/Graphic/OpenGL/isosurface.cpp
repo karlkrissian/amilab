@@ -233,7 +233,9 @@ int ImagePoints :: Point( int x, int y, int z,
 Cube ::  Cube( )
 //
 {
- 
+   _valeurs = NULL;
+   _in_mask = NULL;
+  
     tabSeg[ 0].InitPoints( 0, 1);
     tabSeg[ 1].InitPoints( 0, 2);
     tabSeg[ 2].InitPoints( 0, 4);
@@ -266,14 +268,15 @@ Cube ::  Cube( )
 
 //--------------------------------------------------
 void Cube ::  InitVoxel( int x, int y, int z, 
-                           float* valeurs)
+                           float* valeurs, bool* in_mask)
 //
 {
  
   
     int s,f;
 
-  _valeurs = valeurs;
+  _valeurs = valeurs; // copy of pointers: dangerous ...
+  _in_mask = in_mask;
   _x = x;
   _y = y;
   _z = z;
@@ -306,6 +309,12 @@ int Cube :: CalculIntersection(int seg)
 
   v0 = _valeurs[p0];
   v1 = _valeurs[p1];
+  
+  // discard segment if both points are not in the mask
+  if ((!_in_mask[p0])||(!_in_mask[p1])) {
+    tabSeg[seg].SetState(SEGMENT_VIDE);
+    return tabSeg[seg]._etat;
+  }
 
   Si (v0> EPSILON_ISOSURFACE Et v1> EPSILON_ISOSURFACE) Ou
      (v0<-EPSILON_ISOSURFACE Et v1<-EPSILON_ISOSURFACE) 
@@ -541,8 +550,6 @@ void Cube :: CreePolygones( IsoSurface* isosurface)
 void Cube :: CreateTriangles( IsoSurface* isosurface)
 //
 {
-
-  
     int         face,segment;
     unsigned char        trouve;
     int         p0=0, p1, p2, p3;
@@ -729,6 +736,7 @@ void IsoSurface :: CalculSurface(float seuil,
     int n;//,tx,txy;
     Voxel  voxel;
     float   val[8];
+    bool    in_mask[8];
     Cube   cube;
     Timing  temps_calcul;
     pt3D   pt;
@@ -890,21 +898,28 @@ void IsoSurface :: CalculSurface(float seuil,
       AlorsFait continue;
 
       Pour(n,0,7) 
-        val[n]=(*_image)(x+voxel.PosX(n),
-             y+voxel.PosY(n),
-             z+voxel.PosZ(n))
-               - _seuil;
+        val[n]=(*_image)( x+voxel.PosX(n),
+                          y+voxel.PosY(n),
+                          z+voxel.PosZ(n))
+                          - _seuil;
+        
+        if (masque==NULL) 
+          in_mask[n] = true;
+        else 
+          in_mask[n] = (*masque)( x+voxel.PosX(n),
+                                  y+voxel.PosY(n),
+                                  z+voxel.PosZ(n))>=127;
       FinPour
 
-      cube.InitVoxel( x,y,z, val);
+      cube.InitVoxel( x,y,z, val, in_mask);
       switch (_output_type) {
        case  OUTPUT_TRIANGLES:       
-     cube.CreateTriangles( this); break;
+          cube.CreateTriangles( this); break;
        case OUTPUT_POLYGONS:       
-     cube.CreePolygones( this); break;
+          cube.CreePolygones( this); break;
        default: 
-     fprintf(stderr,"IsoSurface::CalculSurface() \t invalid output type \n");
-     cube.CreateTriangles( this); break;
+          fprintf(stderr,"IsoSurface::CalculSurface() \t invalid output type \n");
+          cube.CreateTriangles( this); break;
       }
 
     FinPour

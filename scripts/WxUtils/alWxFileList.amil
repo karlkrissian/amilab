@@ -268,7 +268,7 @@ Class alWxFileList \
     ::listctrl.SetItem(pos,3,"%1%"%disksize)
     ::listctrl.SetItem(pos,4,"%1%"%modif_time)
     # check if it is a 'deleted' file
-    if wx.wxString(filename).StartsWith("bak.") {
+    if wx.wxString(filename).StartsWith("bak") {
       # change color to grey
       ::listctrl.SetItemTextColour(pos,wx.wxColour(130,130,130))
       ::listctrl.SetItemFont(pos,::listctrl.GetItemFont(pos).Strikethrough())

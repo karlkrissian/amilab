@@ -56,6 +56,7 @@ class WrapClass_vtkLevelSets : public WrapClass<vtkLevelSets>
     ADD_CLASS_METHOD(InitWithThreshold, "Sets the input image and a threshold value as initial contour.");
   
   
+    ADD_CLASS_METHOD(SetDebug,          "");
     ADD_CLASS_METHOD(SetILowTh,         "");
     ADD_CLASS_METHOD(SetIHighTh,        "");
     ADD_CLASS_METHOD(SetNumInitPoints,  "");
@@ -100,6 +101,7 @@ class WrapClass_vtkLevelSets : public WrapClass<vtkLevelSets>
 
     void AddMethods(WrapClass<vtkLevelSets>::ptr this_ptr )
     {
+       AddVar_SetDebug(              this_ptr);
        AddVar_SetParam(           this_ptr);
        AddVar_InitWithImage(      this_ptr);
        AddVar_InitWithThreshold(  this_ptr);
