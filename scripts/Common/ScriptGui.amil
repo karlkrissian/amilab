@@ -543,7 +543,7 @@ if (!exists(ScriptGui)) \
           win.SetPositionProp(1,2)
         win.EndHorizontal()
 
-        win.BeginBoxPanel("Filter")
+        win.BeginBoxPanel("Filter / Scan")
           win.BeginHorizontal()
             win.AddButton("All",::ParamFilterAll)
             win.SetPositionProp(1,2)
@@ -566,10 +566,10 @@ if (!exists(ScriptGui)) \
           }
         }
 
-        ::PARAMfilelistgui.AddGui(&win)
-        ::txtctrl = wx.wxRichTextCtrl(&win.CurrentParent())
-        win.AddWidget(&::txtctrl,1)
-      ::ScanParameters()
+        ::PARAMfilelistgui.AddGui(win)
+        ::txtctrl = wx.wxRichTextCtrl(win.CurrentParent())
+        win.AddWidget(::txtctrl,1)
+      #::ScanParameters()
     }
 
     #---------------------------------------------------------------------------
