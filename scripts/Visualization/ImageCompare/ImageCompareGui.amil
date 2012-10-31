@@ -1,0 +1,11 @@
+
+func "ImageCompareClass"
+
+if (!exists(ImageCompare_obj)) {
+  ImageCompareClass ImageCompare_obj
+  ImageCompare_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

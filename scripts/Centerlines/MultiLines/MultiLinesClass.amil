@@ -43,48 +43,62 @@ if (!exists(MultiLinesClass)) {
 
     #----------------------------
     proc ::Init() {
-      ::input_name   = "", "Input image name"
+      ::param_description = "Default parameters", "Param: Description of the"+\
+                          " parameters set"
+                          
+      ::input_name   = "", "Param: Input image name"
 
-      ::mask_mode      = INT(0), "Mask mode 0: threshold from input image, 1: mask image"
-      ::mask_threshold = 0, "Low threshold for the mask"
-      ::mask_name      = "", "Mask of the pixels to process, this image must be of type UCHAR and the values > 127 are considered part of the mask"
+      ::mask_mode      = INT(0),  "Param: "+\
+              "Mask mode 0: threshold from input image, 1: mask image"
+      ::mask_threshold = 0,       "Param: "+\
+              "Low threshold for the mask"
+      ::mask_name      = "",      "Param: "+\
+              "Mask of the pixels to process, this image must be of "+\
+              "type UCHAR and the values > 127 are considered part of the mask"
 
       # circle integration
       # a value of 0 desactivates the SD feature
       # should better create a boolean variable here for clarity
-      ::use_SD       = UCHAR(0), "Take into account standard deviation of boundary information along the integration circle"
-      ::SD_th        = 2, "Standard Deviation Coefficient to weight the response function"
+      ::use_SD       = UCHAR(0), "Param: "+\
+              "Take into account standard deviation of boundary "+\
+              "information along the integration circle"
+      ::SD_th        = 2, "Param: "+\
+              "Standard Deviation Coefficient to weight the response function"
       # a value of 0 desactivates the EXC feature
-      ::use_EXC      = UCHAR(0), "Take into account the excentricity of the boundary vectors along the integration circle"
-      ::EXC_th       = 5, "Excentricity coefficient to weight the response function"
-      ::pairs_mode   = INT(0)
-      ::keephighest  = 100
+      ::use_EXC      = UCHAR(0), "Param: "+\
+              "Take into account the excentricity of the boundary vectors "+\
+              "along the integration circle"
+      ::EXC_th       = 5, "Param: "+\
+              "Excentricity coefficient to weight the response function"
+      ::pairs_mode   = INT(0), "Param: "
+      ::keephighest  = 100,    "Param: "
 
       # multiscale evolution
-      ::radmin       = 0.5, "minimal radius."
-      ::radmax       = 5, "maximal radius"
-      ::numrad       = INT(5), "number of radii."
+      ::radmin       = 0.5,     "Param: minimal radius."
+      ::radmax       = 5,       "Param: maximal radius"
+      ::numrad       = INT(5),  "Param: number of radii."
 
       # Compute local maxima
-      ::local_maxima      = UCHAR(0), "Compute local maxima"
+      ::local_maxima      = UCHAR(0), "Param: Compute local maxima"
 
-      ::keep_orientations = UCHAR(0), "Keep orientations image"
-      ::keep_eigenratio   = UCHAR(0), "Keep ratio between 2 highest eigenvalues"
-      ::keep_radii        = UCHAR(0), "Keep radii image"
+      ::keep_orientations = UCHAR(0), "Param: Keep orientations image"
+      ::keep_eigenratio   = UCHAR(0), "Param: Keep ratio between 2 highest eigenvalues"
+      ::keep_radii        = UCHAR(0), "Param: Keep radii image"
 
-      ::use_linearinterp  = UCHAR(1), "Use linear interpolation"
+      ::use_linearinterp  = UCHAR(1), "Param: Use linear interpolation"
 
       # 0: Hessian Matrix 1: Structure Tensor
-      ::mode         = INT(0)
+      ::mode         = INT(0), "Param"
 
       # normalization
-      ::gamma           = 1
-      ::theta           = sqrt(3)
+      ::gamma           = 1, "Param: Gamma normalization parameter"
+      ::theta           = sqrt(3), "Param: proportionality coefficient "+\
+                          "between the radius of the circle and the scale"
       # this coefficient is recomputed at each scale
       ::rad2sigma_coeff = 1
 
       # keep all scales
-      ::keep_all_scales = UCHAR(0), "Keep responses at all scales in memory"
+      ::keep_all_scales = UCHAR(0), "Param: Keep responses at all scales in memory"
 
       # Progress information
       ::current_progress = 0;
@@ -92,12 +106,12 @@ if (!exists(MultiLinesClass)) {
 
       ::output_name="Multilines-maxresponse.ami.gz"
 
-      ::normalize_gradient = UCHAR(1), "normalize gradient"
-      ::PSF_stddev = 0, "Standard deviation (in voxels) of the point spread function"
+      ::normalize_gradient = UCHAR(1), "Param: normalize gradient"
+      ::PSF_stddev = 0, "Param: Standard deviation (in voxels) of the point spread function"
 
-      ::upsample_recons = UCHAR(0), "Reconstruct the vessel in an image with double resolution compared to the input image"
+      ::upsample_recons = UCHAR(0), "Param: Reconstruct the vessel in an image with double resolution compared to the input image"
 
-      ::smoothradii_std = 1, "Gaussian standard deviation for smoothing the lines radii"
+      ::smoothradii_std = 1, "Param: Gaussian standard deviation for smoothing the lines radii"
       #::Gui()
       ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/MultiLines/index.html"
       ::wiki_help = "http://www.ctm.ulpgc.es/amilab/doku.php?id=tutorial-mainalgorithms-multilines"
@@ -939,6 +953,8 @@ if (!exists(MultiLinesClass)) {
             ::win.AddEnumChoice(pairmodeid,"Max")
             ::win.AddEnumChoice(pairmodeid,"Mean")
           ::win.AddFloat( &::keephighest,  "Keephighest", 0,100)
+          
+          ::win.AddFloat(::theta,"radius proportion",0.5,10)
 
         ::win.AddPage("Scales")
           ::win.BeginBoxPanel("Radii (or scales)")
@@ -1013,7 +1029,13 @@ if (!exists(MultiLinesClass)) {
             ::win.AddInt(::trackvoxel_z,"Z=",0,1024)
           ::win.EndBoxPanel()
           ::win.AddBoolean(::enable_track,"Enable tracking")
-      ::win.EndBook()
+
+        # add page for saving/loading parameters
+        ::AddParamPage(::win)
+        # only save variables containing 'Param:' in their comments
+        ::SetParamCommentsFilter(".*Param:.*")
+
+       ::win.EndBook()
     
       ::AddStandardButtons(&::win)
 

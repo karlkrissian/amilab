@@ -81,6 +81,23 @@ if (!exists(ImageResampleClass)) {
     }
 
     #-----------------------------------------------
+    proc ::ChangedVoxelSize() \
+    {
+      ::new_dimx = ((FLOAT)::input.tx*::input.vx)/::new_voxsize_x
+      ::new_dimy = ((FLOAT)::input.ty*::input.vy)/::new_voxsize_y
+      ::new_dimz = ((FLOAT)::input.tz*::input.vz)/::new_voxsize_z
+      ::magnification_x = (FLOAT)::new_dimx/::input.tx
+      ::magnification_y = (FLOAT)::new_dimy/::input.ty
+      ::magnification_z = (FLOAT)::new_dimz/::input.tz
+      ::win.Update(::new_dimx_id)
+      ::win.Update(::new_dimy_id)
+      ::win.Update(::new_dimz_id)
+      ::win.Update(::new_voxsize_x_id)
+      ::win.Update(::new_voxsize_y_id)
+      ::win.Update(::new_voxsize_z_id)
+    }
+
+    #-----------------------------------------------
     proc ::AMILabResample() \
     {
       ::output <<= Resize(::input,::new_dimx,::new_dimy,::new_dimz,::interpolation)
@@ -187,8 +204,11 @@ if (!exists(ImageResampleClass)) {
             ::win.EndBoxPanel()
             ::win.BeginBoxPanel("New Voxel Size")
               ::new_voxsize_x_id = ::win.AddFloat(&::new_voxsize_x,"X",0.01,10)
+              ::win.SetCallback( &::ChangedVoxelSize)
               ::new_voxsize_y_id = ::win.AddFloat(&::new_voxsize_y,"Y",0.01,10)
+              ::win.SetCallback( &::ChangedVoxelSize)
               ::new_voxsize_z_id = ::win.AddFloat(&::new_voxsize_z,"Z",0.01,10)
+              ::win.SetCallback( &::ChangedVoxelSize)
             ::win.EndBoxPanel()
             ::win.AddButton("Reset",&::ResetAll)
 

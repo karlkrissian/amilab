@@ -39,6 +39,29 @@ if (!exists(SaveAsClass)) {
 
 
     #-----------------------------------------------
+    proc ::OnInputName() \
+    {
+      # make replacements to have a valid name
+      wx_name = wx.wxString(::input_name)
+      # remove leading "global::"
+      if wx_name.StartsWith("global::") {
+        wx_name = wx_name.Mid(8)
+      }
+      wx_name.Replace("/","_")
+      wx_name.Replace("::","_")
+      wx_name.Replace(" ", "_")
+      wx_name.Replace(".", "_")
+      wx_name.Replace("(", "_")
+      wx_name.Replace(")", "_")
+      wx_name.Replace("[", "_")
+      wx_name.Replace("]", "_")
+      wx_name.Replace("-", "_")
+      wx_name.Replace("+", "_")
+      ::image_save = wx_name.ToStdString()
+      ::win.Update(::image_save_id)
+    }
+    
+    #-----------------------------------------------
     proc ::OnExtension() \
     {
       ::convert_uchar = (::ext==6)
@@ -98,11 +121,12 @@ if (!exists(SaveAsClass)) {
         ::win.BeginBoxPanel("Input Image")
           # set the input image
           ::win.AddImageChoice( &::input_name, "")
+          ::win.SetCallback(::OnInputName)
         ::win.EndBoxPanel()
       
         ::win.BeginBoxPanel("Filename (path,name,extension)")
-          ::win.AddDirname(&::dir_save, "Path")          
-          ::win.AddString( &::image_save,"Output Image Name")
+          ::win.AddDirname(::dir_save, "Path")          
+          ::image_save_id = ::win.AddString( ::image_save,"Output Image Name")
             ext_id = ::win.AddEnum( &::ext,"Extension")
             ::win.AddEnumChoice(ext_id, "*.ami") #0
             ::win.AddEnumChoice(ext_id, "*.ami.gz") #1
@@ -115,13 +139,13 @@ if (!exists(SaveAsClass)) {
             ::win.AddEnumChoice(ext_id, "*.tif") #8
             ::win.AddEnumChoice(ext_id, "*.tiff") #9
             ::win.AddEnumChoice(ext_id, "*.nhdr") #10
-          ::win.SetCallback(&::OnExtension)
+          ::win.SetCallback(::OnExtension)
         ::win.EndBoxPanel()
         
         ::win.BeginBoxPanel("Conversion")
           ::win.BeginHorizontal()
-            ::win.AddBoolean( &::convert_uchar,"Unsigned char")
-            ::win.AddBoolean( &::convert_RGB,"RGB")
+            ::win.AddBoolean( ::convert_uchar,"Unsigned char")
+            ::win.AddBoolean( ::convert_RGB,"RGB")
           ::win.EndHorizontal()
         ::win.EndBoxPanel()
         ::win.AddBoolean( &::overwrite,"Overwrite")

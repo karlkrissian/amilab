@@ -1,0 +1,83 @@
+
+func "Common/ScriptGui"
+
+if (!exists(ImageCompareClass)) {
+
+  Class ImageCompareClass : public ScriptGui \
+  {
+    
+
+    #---------------------------------------------------------------------------
+    proc ::Init() {
+      
+      ::viewer1_name   = "","Name of the first  input image viewer"
+      ::viewer2_name   = "","Name of the second input image viewer"
+      
+      ::bidirectional = true, "Bidirectional comparison"
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+\
+                        "/ImageCompare/Doc/ImageCompare/index.html"
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_Compare() {
+      cmd =  "%1%.compare" % ::viewer1_name + "(%1%);" % ::viewer2_name
+      eval cmd
+      if (::bidirectional) {
+        cmd =  "%1%.compare" % ::viewer2_name + "(%1%);" % ::viewer1_name
+        eval cmd
+      }
+    }  
+
+
+    #---------------------------------------------------------------------------
+    proc ::Gui() {
+    
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("ImageCompare",&::parent_panel)
+      } else {
+        ::win = ParamPanel("ImageCompare")
+      }
+      
+      ::win.BeginBook()
+      
+        ::win.AddPage("Main")
+    
+          # Select Property
+          ::win.AddAMIObjectChoice( ::viewer1_name, "Image Viewer 1", "DessinImage")
+          ::win.AddAMIObjectChoice( ::viewer2_name, "Image Viewer 2", "DessinImage")
+          
+          ::win.AddBoolean(::bidirectional, "Bidirectional")
+          ::win.AddButton("Compare",::CB_Compare)
+
+        # add page for saving/loading parameters
+        #::AddParamPage(&::win)
+
+        # add help page
+        if wx.wxFileName(::html_filename).FileExists() {
+          ::AddHelpPage(&::win)
+        }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If

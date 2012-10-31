@@ -173,22 +173,28 @@ if (!exists(alGraphVizClass)) {
     //---------------------------------------------------
     proc ::Run() \
     {
-      cmd = "\""+::graphviz_bindir+"/"+::graphviz_program+"\""\
-              +" -T%1%" % ::output_formats[::output_format] \
-              +" %1%" % ::graphviz_file \
-              + " -o"+ ::output_file
-      if ::output_formats[::output_format]!="png" {
-        # also produce png output
-        cmd += " -Tpng"
-        output_file_png = wx.wxFileName(::output_file)
-        output_file_png.SetExt("png")
-        cmd += " -o"+wx.FromWxString(output_file_png.GetFullPath())
+      graphvizprogram = ::graphviz_bindir+"/"+::graphviz_program
+      if wx.wxFileExists(graphvizprogram) {
+        cmd = "\""+graphvizprogram+"\""\
+                +" -T%1%" % ::output_formats[::output_format] \
+                +" %1%" % ::graphviz_file \
+                + " -o"+ ::output_file
+        if ::output_formats[::output_format]!="png" {
+          # also produce png output
+          cmd += " -Tpng"
+          output_file_png = wx.wxFileName(::output_file)
+          output_file_png.SetExt("png")
+          cmd += " -o"+wx.FromWxString(output_file_png.GetFullPath())
+        }
+        mess = "GraphViz command : "+cmd
+        printn mess
+        SetStatusText(mess)
+        sh cmd
+        ::Show()
+      } else {
+        InfoDialog "The program to render graphviz was not found (%1%)" \
+          % graphvizprogram
       }
-      mess = "GraphViz command : "+cmd
-      printn mess
-      SetStatusText(mess)
-      sh cmd
-      ::Show();
     }
 
     //---------------------------------------------------

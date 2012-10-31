@@ -515,6 +515,28 @@ if (!exists(ScriptGui)) \
       }
     }
 
+    
+    #---------------------------------------------------------------------------
+    proc ::CheckMoreScriptDataPaths() \
+    {
+      config_path_bak = ami.AMILabConfig.GetPath()
+      ami.AMILabConfig.SetPath("Global configuration")
+
+      res = wx.wxString()
+      ami.AMILabConfig.Read(    "ADDITIONAL_SCRIPTDATA_PATHS",\
+                                res,\
+                                "")
+      # should use wxStringTokenizer to get several paths
+      if (res!="") {
+        scriptdata_path = res + "/%1%" % ::classname
+        if !wx.wxDir.Exists(scriptdata_path) {
+          wx.wxFileName.Mkdir(scriptdata_path)
+        }
+        PARAMfilelistgui.AddPath(scriptdata_path)
+      }
+      ami.AMILabConfig.SetPath(config_path_bak)
+    }
+    
     #---------------------------------------------------------------------------
     #
     proc ::AddParamPage( OBJECT win) \
@@ -531,6 +553,9 @@ if (!exists(ScriptGui)) \
       ::InitUserScriptData()
       printn "::scriptdata_path %1%" % ::scriptdata_path
       ::PARAMfilelistgui.AddPath(::scriptdata_path)
+      # check additional script data paths
+      #::CheckMoreScriptDataPaths()
+      # here put dropbox???
       ::PARAMfilelistgui.SetSelectionCommand(::ReadPARAM)
 
       win.AddPage("ParamIO")

@@ -67,7 +67,9 @@ Class alWxImagePreview \
       if exists(::virtual_size) {
         #printn "current size %1% x " % ::virtual_size.GetWidth() + \
                 #"%1%" % ::virtual_size.GetHeight()
-        diff = (::virtual_size!=virtual_size)
+        # operators == and != are not members ...
+        diff = (::virtual_size.GetWidth()  != virtual_size.GetWidth())||\
+               (::virtual_size.GetHeight() != virtual_size.GetHeight())
       }
       #printn " diff = %1%" % diff
       if diff {
