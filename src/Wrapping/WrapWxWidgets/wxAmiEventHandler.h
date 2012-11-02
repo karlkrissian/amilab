@@ -6,6 +6,7 @@
 #include "ami_function.h"
 #include <wx/listctrl.h>
 #include <wx/html/htmlwin.h>
+#include <wx/dataview.h>
 
 #ifndef wxCommandEvent_declared
   #define wxCommandEvent_declared
@@ -65,6 +66,11 @@
 #ifndef wxMenuEvent_declared
   #define wxMenuEvent_declared
   AMI_DECLARE_TYPE(wxMenuEvent)
+#endif
+
+#ifndef wxDataViewEvent_declared
+  #define wxDataViewEvent_declared
+  AMI_DECLARE_TYPE(wxDataViewEvent)
 #endif
 
 void CB_ParamWin( void* cd );
@@ -297,6 +303,21 @@ class wxAmiEventHandler: public wxEvtHandler
         wxLogMessage(wxT("Callback function not available"));
     }
 
+    void OnDataViewEvent(wxDataViewEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxDataViewEvent>::CreateVar(
+          (wxDataViewEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
+
 //     void OnListEvent(wxListEvent& event)
 //     {
 //       if (callback_function!=NULL)
@@ -390,6 +411,12 @@ class wxAmiEventHandler: public wxEvtHandler
     wxObjectEventFunction* GetMenuEventFunction() {
       // TODO: delete the new allocation
       eventfunc = new wxObjectEventFunction(wxMenuEventHandler(wxAmiEventHandler::OnMenuEvent));
+      return eventfunc;
+    }
+
+    wxObjectEventFunction* GetDataViewEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxDataViewEventHandler(wxAmiEventHandler::OnDataViewEvent));
       return eventfunc;
     }
 };

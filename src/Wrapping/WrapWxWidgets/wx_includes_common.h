@@ -3,6 +3,10 @@
 
 #include "wxAmiEventHandler.h"
 #include <amiDataViewTreeList.h>
+#include <wx/dataview.h>
+#ifdef __GCCXML__
+  template class wxVector<wxVariant>;
+#endif
 
 #include <wx/aboutdlg.h>
 #include <wx/app.h>

@@ -220,15 +220,15 @@ void myDataViewTreeListCtrl::_ShowMenu( const wxDataViewItem &item,
         wxString comments(com.c_str(), wxConvUTF8);
         menu.Append(wxID_ANY, comments);
       }
+      if (var->Type()==type_image) {
+        wxMenuItem* mitem = new wxMenuItem(&menu,
+                                          wxMENU_ID_ShowHideImage,
+                                          wxT("Show/Hide"),
+          wxT("Show/Hide"));
+        menu.Append(mitem );
+      }
     }
 
-    if (var->Type()==type_image) {
-      wxMenuItem* mitem = new wxMenuItem(&menu,
-                                         wxMENU_ID_ShowHideImage,
-                                         wxT("Show/Hide"),
-        wxT("Show/Hide"));
-      menu.Append(mitem );
-    }
       
     // Write in console menu
     wxMenuItem* item1 = new wxMenuItem(&menu,wxMENU_ID_ToConsole,wxT("Write in console"),

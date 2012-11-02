@@ -62,27 +62,32 @@ Class alWxFileList \
   #-----------------------------------------------------------------------------
   proc ::GetFullPath( NUM item) \
   {
-    list_item = wx.wxListItem()
-    # need to set the mask of information to retreive ... especially for windows
-    list_item.SetMask(wx.wxLIST_MASK_TEXT)
-    list_item.SetId(item)
-    # Get subpath
-    list_item.SetColumn(0)
-    ::listctrl.GetItem(&list_item)
-    subpath = wx.FromWxString(list_item.GetText())
-    # Get Filename
-    #list_item.SetId(item)
-    list_item.SetColumn(1)
-    ::listctrl.GetItem(&list_item)
-    filename = wx.FromWxString(list_item.GetText())
-    #printn "filename=%1%" % filename
-    # Get path ID
-    #list_item.SetId(item)
-    list_item.SetColumn(2)
-    ::listctrl.GetItem(&list_item)
-    path_id = atof(wx.FromWxString(list_item.GetText()))
+    if (::use_dvlistctrl) {
+      subpath  = ::list_ctrl.GetTextValue(item,0).ToStdString()
+      filename = ::list_ctrl.GetTextValue(item,1).ToStdString()
+      path_id  = atof(::list_ctrl.GetTextValue(item,2).ToStdString())
+    } else {
+      list_item = wx.wxListItem()
+      # need to set the mask of information to retreive ... especially for windows
+      list_item.SetMask(wx.wxLIST_MASK_TEXT)
+      list_item.SetId(item)
+      # Get subpath
+      list_item.SetColumn(0)
+      ::listctrl.GetItem(&list_item)
+      subpath = wx.FromWxString(list_item.GetText())
+      # Get Filename
+      #list_item.SetId(item)
+      list_item.SetColumn(1)
+      ::listctrl.GetItem(&list_item)
+      filename = wx.FromWxString(list_item.GetText())
+      #printn "filename=%1%" % filename
+      # Get path ID
+      #list_item.SetId(item)
+      list_item.SetColumn(2)
+      ::listctrl.GetItem(&list_item)
+      path_id = atof(wx.FromWxString(list_item.GetText()))
+    }
 
-    #fullname = ::graphviz_dotdir+"/"+subpath+"/"+filename
     fullname = ::paths[path_id]+"/"+subpath+"/"+filename
     #printn "fullname = %1%" % fullname
 
@@ -94,14 +99,18 @@ Class alWxFileList \
   #-----------------------------------------------------------------------------
   proc ::GetFilename( NUM item) \
   {
-    list_item = wx.wxListItem()
-    # need to set the mask of information to retreive ... especially for windows
-    list_item.SetMask(wx.wxLIST_MASK_TEXT)
-    list_item.SetId(item)
-    # Get Filename
-    list_item.SetColumn(1)
-    ::listctrl.GetItem(&list_item)
-    filename = wx.FromWxString(list_item.GetText())
+    if (::use_dvlistctrl) {
+      filename = ::list_ctrl.GetTextValue(item,1).ToStdString()
+    } else {
+      list_item = wx.wxListItem()
+      # need to set the mask of information to retreive ... especially for windows
+      list_item.SetMask(wx.wxLIST_MASK_TEXT)
+      list_item.SetId(item)
+      # Get Filename
+      list_item.SetColumn(1)
+      ::listctrl.GetItem(&list_item)
+      filename = wx.FromWxString(list_item.GetText())
+    }
     return=&filename
   }
 
@@ -112,19 +121,29 @@ Class alWxFileList \
   proc ::GetSelected() \
   {
     return = VarVector()
-    item = ::listctrl.GetNextItem(-1,\
-                                  wx.wxLIST_NEXT_ALL,\
-                                  wx.wxLIST_STATE_SELECTED)
-    ok = (item!=-1)
-    while ok {
-      fullname = ::GetFullPath(&item)
-      return.push_back(fullname)
-      #printn "fullname = %1%" % fullname
 
-      item = ::listctrl.GetNextItem(item,\
+    if (::use_dvlistctrl) {
+      sel = wx.wxDataViewItemArray()
+      ::listctrl.GetSelections(sel)
+      for n=0 to sel.GetCount()-1 {
+        item = sel.Item(n)
+      }
+
+    } else {
+      item = ::listctrl.GetNextItem(-1,\
                                     wx.wxLIST_NEXT_ALL,\
                                     wx.wxLIST_STATE_SELECTED)
       ok = (item!=-1)
+      while ok {
+        fullname = ::GetFullPath(&item)
+        return.push_back(fullname)
+        #printn "fullname = %1%" % fullname
+
+        item = ::listctrl.GetNextItem(item,\
+                                      wx.wxLIST_NEXT_ALL,\
+                                      wx.wxLIST_STATE_SELECTED)
+        ok = (item!=-1)
+      }
     }
 
   }
@@ -245,11 +264,16 @@ Class alWxFileList \
     printn "::CB_PopupMenu"
     del ::listitem
     ::listitem = event.GetItem()
-    ::current_index = event.GetIndex()
-    printn "index = %1%" % event.GetIndex()
+    if (::use_dvlistctrl) {
+      ::current_index = event.GetColumn()
+      pt = event.GetPosition()
+    } else {
+      ::current_index = event.GetIndex()
+      pt = event.GetPoint()
+      printn "index = %1%" % event.GetIndex()
+    }
     #printn "listitem.GetId() %1%" % ::listitem.GetId()
     #printn "listitem.GetText() %1%" % wx.FromWxString(::listitem.GetText())
-    pt = event.GetPoint()
     ::CreatePopupMenu()
     ::listctrl.PopupMenu(&::menu, &pt);
     event.Skip()
@@ -257,21 +281,40 @@ Class alWxFileList \
 
   #-----------------------------------------------------------------------------
   proc ::AddToList( NUM pathid, STRING subpath, STRING disksize, \
-                    STRING modif_time,\
+                    OBJECT modiftime, STRING modiftime_string,\
                     STRING filename) \
   {
     n = ::listctrl.GetItemCount()
-    pos = ::listctrl.InsertItem(n,"%1%"%subpath)
-    ::listctrl.SetItemData(pos,n)
-    ::listctrl.SetItem(pos,1,"%1%"%filename)
-    ::listctrl.SetItem(pos,2,"%1%"%pathid)
-    ::listctrl.SetItem(pos,3,"%1%"%disksize)
-    ::listctrl.SetItem(pos,4,"%1%"%modif_time)
-    # check if it is a 'deleted' file
-    if wx.wxString(filename).StartsWith("bak") {
-      # change color to grey
-      ::listctrl.SetItemTextColour(pos,wx.wxColour(130,130,130))
-      ::listctrl.SetItemFont(pos,::listctrl.GetItemFont(pos).Strikethrough())
+    if (::use_dvlistctrl) {
+      values = wx.wxVector_wxVariant()
+      values.push_back(wx.wxVariant("%1%"%subpath))
+      values.push_back(wx.wxVariant("%1%"%filename))
+      values.push_back(wx.wxVariant("%1%"%pathid))
+      values.push_back(wx.wxVariant("%1%"%disksize))
+      # todo: datetime variant
+      #values.push_back(wx.wxVariant(modiftime, "%1%"%modiftime_string))
+      values.push_back(wx.wxVariant("%1%"%modiftime_string))
+      ::listctrl.AppendItem(values)
+      # todo: special font formats for deleted files ...
+      if wx.wxString(filename).StartsWith("bak") {
+        dvitem = ::listctrl.RowToItem(n)
+        attr = wx.wxDataViewItemAttr()
+        #::listctrl.GetModel().GetAttr()
+      }
+
+    } else {
+      pos = ::listctrl.InsertItem(n,"%1%"%subpath)
+      ::listctrl.SetItemData(pos,n)
+      ::listctrl.SetItem(pos,1,"%1%"%filename)
+      ::listctrl.SetItem(pos,2,"%1%"%pathid)
+      ::listctrl.SetItem(pos,3,"%1%"%disksize)
+      ::listctrl.SetItem(pos,4,"%1%"%modiftime_string)
+      # check if it is a 'deleted' file
+      if wx.wxString(filename).StartsWith("bak") {
+        # change color to grey
+        ::listctrl.SetItemTextColour(pos,wx.wxColour(130,130,130))
+        ::listctrl.SetItemFont(pos,::listctrl.GetItemFont(pos).Strikethrough())
+      }
     }
   }
 
@@ -307,9 +350,11 @@ Class alWxFileList \
           ::scan_count++
           files_info.push_back(indent+"%1%" % nfile + " \t%1%"%fsize)
 
-          modif_date = wxT(wxfile.GetModificationTime().FormatDate())
-          modif_time = wxT(wxfile.GetModificationTime().FormatTime())
-          ::AddToList( pathid, subpath, fsize, modif_date+"; "+modif_time, nfile)
+          modiftime = wxfile.GetModificationTime()
+          modif_fdate = wxT(modiftime.FormatDate())
+          modif_ftime = wxT(modiftime.FormatTime())
+          ::AddToList( pathid, subpath, fsize, \
+                       modiftime, modif_fdate+"; "+modif_ftime, nfile)
           # and get the next file
           process = nextDir.GetNext(&nextFile);
         }
@@ -367,11 +412,18 @@ Class alWxFileList \
       printn "%1%" % pathid + ":%1%" % path
       ::ScanDir( pathid, path+"/",".","",0)
     }
-    ::listctrl.SetColumnWidth(0, wx.wxLIST_AUTOSIZE)
-    ::listctrl.SetColumnWidth(1, wx.wxLIST_AUTOSIZE)
-    ::listctrl.SetColumnWidth(2, wx.wxLIST_AUTOSIZE)
-    ::listctrl.SetColumnWidth(3, wx.wxLIST_AUTOSIZE)
-    ::listctrl.SetColumnWidth(4, wx.wxLIST_AUTOSIZE)
+    if (::use_dvlistctrl) {
+      #for n=0 to ::listctrl.GetColumnCount()-1 {
+        #c = ::listctrl.GetColumn(n)
+      #}
+      # todo
+    } else {
+      ::listctrl.SetColumnWidth(0, wx.wxLIST_AUTOSIZE)
+      ::listctrl.SetColumnWidth(1, wx.wxLIST_AUTOSIZE)
+      ::listctrl.SetColumnWidth(2, wx.wxLIST_AUTOSIZE)
+      ::listctrl.SetColumnWidth(3, wx.wxLIST_AUTOSIZE)
+      ::listctrl.SetColumnWidth(4, wx.wxLIST_AUTOSIZE)
+    }
   }
 
   #-----------------------------------------------------------------------------
@@ -379,27 +431,59 @@ Class alWxFileList \
   {
     win.BeginBook()
       win.AddPage("List")
-        ::listctrl = wx.wxListCtrl(&win.CurrentParent(),wx.wxID_ANY,\
-            wx.wxPoint(-1,-1),wx.wxSize(-1,-1),wx.wxLC_REPORT)
-        win.AddWidget(&::listctrl,1)
-        #::listctrl.SetWindowStyle(wx.wxLC_REPORT)
-        ::listctrl.InsertColumn_2(0,"Sub-path")
-        ::listctrl.InsertColumn_2(1,"File")
-        ::listctrl.InsertColumn_2(2,"Path ID")
-        ::listctrl.InsertColumn_2(3,"Description")
-        ::listctrl.InsertColumn_2(4,"Date")
+        ::use_dvlistctrl=false
+        if (::use_dvlistctrl) {
+          ::listctrl = wx.wxDataViewListCtrl(&win.CurrentParent(),wx.wxID_ANY,\
+              wx.wxPoint(-1,-1),wx.wxSize(-1,-1))
+              #,wx.wxLC_REPORT)
+          win.AddWidget(&::listctrl,1)
+          #::listctrl.SetWindowStyle(wx.wxLC_REPORT)
+          ::listctrl.AppendTextColumn("Sub-path")
+          _cf = ::listctrl.AppendTextColumn("File")
+          _cf.SetSortable(true)
+          ::listctrl.AppendTextColumn("Path ID")
+          ::listctrl.AppendTextColumn("Description")
+          _cd = ::listctrl.AppendTextColumn("Date")
+          _cd.SetSortable(true)
+        } else {
+          ::listctrl = wx.wxListCtrl(&win.CurrentParent(),wx.wxID_ANY,\
+              wx.wxPoint(-1,-1),wx.wxSize(-1,-1),wx.wxLC_REPORT)
+          win.AddWidget(&::listctrl,1)
+          #::listctrl.SetWindowStyle(wx.wxLC_REPORT)
+          ::listctrl.InsertColumn_2(0,"Sub-path")
+          ::listctrl.InsertColumn_2(1,"File")
+          ::listctrl.InsertColumn_2(2,"Path ID")
+          ::listctrl.InsertColumn_2(3,"Description")
+          ::listctrl.InsertColumn_2(4,"Date")
+        }
 
         # connect event
         ::evh_selected = wx.wxAmiEventHandler(&::CB_ListItemSelected)
         ::evh_selected.SetSendListEvent(true)
-        ::listctrl.Connect( wx.wxEVT_COMMAND_LIST_ITEM_SELECTED\
+
+        if (::use_dvlistctrl) {
+          event = wx.wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED 
+        } else {
+          event = wx.wxEVT_COMMAND_LIST_ITEM_SELECTED
+        }
+        ::listctrl.Connect( event\
                             ,&::evh_selected.GetEventFunction(),\
                             &NULL,&::evh_selected)
         # popup menu event
         ::evh_popupmenu = wx.wxAmiEventHandler(&::CB_PopupMenu)
-        ::listctrl.Connect( wx.wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,\
-                            &::evh_popupmenu.GetListEventFunction(),\
-                            &NULL,&::evh_popupmenu)
+
+
+        if (::use_dvlistctrl) {
+          event = wx.wxEVT_COMMAND_DATAVIEW_ITEM_CONTEXT_MENU
+          ::listctrl.Connect( event,\
+                              ::evh_popupmenu.GetDataViewEventFunction(),\
+                              NULL,::evh_popupmenu)
+        } else {
+          event = wx.wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK
+          ::listctrl.Connect( event,\
+                              ::evh_popupmenu.GetListEventFunction(),\
+                              NULL,::evh_popupmenu)
+        }
 
       win.AddPage("Text")
         ::txtctrl = wx.wxRichTextCtrl(&win.CurrentParent())

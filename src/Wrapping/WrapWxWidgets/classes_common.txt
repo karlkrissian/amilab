@@ -1,14 +1,19 @@
 
 # Classes from AMILab
-# only for wx > 2.9
+# only for wx > 2.9 ?
 wxDataViewTreeListCtrl
 wxDataViewItem
 wxDataViewTreeListStore
 wxDataViewTreeListStoreNode
 wxDataViewColumn
 wxDataViewItemAttr
+wxDataViewListCtrl
+wxDataViewListStore
+wxDataViewItemArray
+wxDataViewEvent
 
 wxVariant
+wxVector<wxVariant>
 
 # Classes from wxWidgets
 wxAboutDialogInfo
