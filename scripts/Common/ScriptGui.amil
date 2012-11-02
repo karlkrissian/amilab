@@ -415,7 +415,9 @@ if (!exists(ScriptGui)) \
       filename0 = ::GetParamFilename()
       while fileexists {
         n++
-        filename = ::scriptdata_path+"/"+filename0+".param%1%" % n
+        #::scriptdata_path +
+        filename = ::PARAMfilelistgui.GetSavePath() +\
+                        "/"+filename0+".param%1%" % n
         fileexists=wx.wxFileName.FileExists(filename)
       }
       SetStatusText("Saving %1%" % filename)
@@ -520,19 +522,27 @@ if (!exists(ScriptGui)) \
     proc ::CheckMoreScriptDataPaths() \
     {
       config_path_bak = ami.AMILabConfig.GetPath()
-      ami.AMILabConfig.SetPath("Global configuration")
+      ami.AMILabConfig.SetPath("/Global_configuration")
 
-      res = wx.wxString()
+      paths = wx.wxString()
       ami.AMILabConfig.Read(    "ADDITIONAL_SCRIPTDATA_PATHS",\
-                                res,\
+                                paths,\
                                 "")
       # should use wxStringTokenizer to get several paths
-      if (res!="") {
-        scriptdata_path = res + "/%1%" % ::classname
-        if !wx.wxDir.Exists(scriptdata_path) {
-          wx.wxFileName.Mkdir(scriptdata_path)
+      if (!paths.IsEmpty()) {
+      
+        tkz = wx.wxStringTokenizer(paths,":")
+        hastokens = tkz.HasMoreTokens()
+        while hastokens \
+        {
+          path = tkz.GetNextToken().ToStdString()
+          scriptdata_path = path + "/%1%" % ::classname
+          if !wx.wxDir.Exists(scriptdata_path) {
+            wx.wxFileName.Mkdir(scriptdata_path)
+          }
+          ::PARAMfilelistgui.AddPath(scriptdata_path)
+          hastokens = tkz.HasMoreTokens()
         }
-        PARAMfilelistgui.AddPath(scriptdata_path)
       }
       ami.AMILabConfig.SetPath(config_path_bak)
     }
@@ -554,7 +564,7 @@ if (!exists(ScriptGui)) \
       printn "::scriptdata_path %1%" % ::scriptdata_path
       ::PARAMfilelistgui.AddPath(::scriptdata_path)
       # check additional script data paths
-      #::CheckMoreScriptDataPaths()
+      ::CheckMoreScriptDataPaths()
       # here put dropbox???
       ::PARAMfilelistgui.SetSelectionCommand(::ReadPARAM)
 

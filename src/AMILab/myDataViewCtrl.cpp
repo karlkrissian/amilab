@@ -105,7 +105,7 @@ void myDataViewTreeListCtrl::OnExpanding(  wxDataViewEvent& event)
             GB_main_wxFrame->UpdateVarDataView(item, obj->GetContext(),1,path);
         }
       } else {
-        std::cout << "No variable found ..." << std::endl;
+        //std::cout << "No variable found ..." << std::endl;
       }
     }
   } else {

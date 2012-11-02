@@ -16,10 +16,19 @@ Class alWxFileList \
   {
     ::paths=VarVector()
     ::paths.push_back(".")
+
+    ::save_path = INT(0), "Choose path for saving parameters"
+    
     ::scan_level=3
     ::max_scan=1000
     ::file_specs = VarVector()
     ::list_files=true
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::GetSavePath() \
+  {
+    return = ::paths[::save_path]
   }
 
   #-----------------------------------------------------------------------------
@@ -328,6 +337,7 @@ Class alWxFileList \
                       "(%1%"%level+" | %1%)"%::scan_count)
       printn "scanning %1%" % dirpath + "(%1%"%level+" | %1%)"%::scan_count
       nextDir = wx.wxDir(dirpath)
+      #printn "dir : %1%" % dirpath
       ## create smart pointer to allow deleting the object
       #nextDir_ptr = wx.std_auto_ptr_wxDir.auto_ptr_1(&nextDir)
 
@@ -340,9 +350,11 @@ Class alWxFileList \
 
       for n=0 to ::file_specs.size()-1 \
       {
+        #printn "spec: %1%" % ::file_specs[n]
         process = nextDir.GetFirst(&nextFile, ::file_specs[n], wx.wxDIR_FILES)
         while process {
           nfile = wxT(&nextFile)
+          #printn "file : %1%" % nfile
           del wxfile
           wxfile = wx.wxFileName(dirpath+"/"+nfile)
           sum_size = sum_size + wxfile.GetSize().ToDouble()
@@ -488,6 +500,13 @@ Class alWxFileList \
       win.AddPage("Text")
         ::txtctrl = wx.wxRichTextCtrl(&win.CurrentParent())
         win.AddWidget(&::txtctrl,1)
+
+      win.AddPage("Paths")
+        ::spath_id = win.AddEnum( ::save_path,"Save path")
+          for k=0 to ::paths.size()-1 {
+            win.AddEnumChoice(::spath_id, ::paths[k] )
+          }
+        
     win.EndBook()
   }
 

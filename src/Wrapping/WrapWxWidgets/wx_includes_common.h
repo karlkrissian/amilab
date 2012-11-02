@@ -25,6 +25,7 @@
 #include <wx/utils.h>
 #include <wx/variant.h>
 #include <wx/collpane.h>
+#include <wx/tokenzr.h>
 #ifdef __GCCXML__
   // Instanciate for the case it depends on a template
   wxCollapsiblePane p;

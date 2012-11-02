@@ -186,6 +186,7 @@ wxStatusBar
 wxStdDialogButtonSizer
 wxTextAttr
 wxString
+wxStringTokenizer
 wxStyledTextCtrl
 wxSysColourChangedEvent
 wxTextFile

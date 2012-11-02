@@ -3,21 +3,25 @@ del ImageUtilitiesClass
 Class ImageUtilitiesClass \
 {
 
+  #-----------------------------------------------------------------------------
   #
   proc ::ClampLow(IMAGE im, NUM v) {
     return = (im>v)*im+(im<=v)*v
   }
   
+  #-----------------------------------------------------------------------------
   #
   proc ::ClampHigh(IMAGE im, NUM v) {
     return = (im<v)*im+(im>=v)*v
   }
   
+  #-----------------------------------------------------------------------------
   #
   proc ::Clamp(IMAGE im, NUM vmin, NUM vmax) {
     return = (im<vmin)*vmin+(im>vmax)*vmax+(im>=vmin)*(im<=vmax)*im
   }
 
+  #-----------------------------------------------------------------------------
   proc ::ClampLowAndCrop(IMAGE im, NUM th, NUM margin) \
   {
     res = (FLOAT) ::ClampLow( im, th)
@@ -27,7 +31,37 @@ Class ImageUtilitiesClass \
     return=&res
   }
   
+
+  #-----------------------------------------------------------------------------
+  proc ::IntensityRegionGrowing(  IMAGE input, IMAGE initial, \
+                                  NUM lowth, NUM highth) \
+  {
+    rg = Algorithms.algorithms.ami_IntensityBasedRegionGrowing\
+        .IntensityBasedRegionGrowing( input,\
+                                      initial)
+    rg.SetMin(lowth)
+    rg.SetMax(highth)
+    rg.Evolve()
+    #return = initmask
+    return = (rg.ami_RegionGrowingBase.GetStateImage()==2)
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::GreyDilate( IMAGE input, NUM size) \
+  {
+    func "Utils/alMathMorphoUtilsClass"
+    return = alMathMorpho.Dilate(input,size)
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::GreyErode( IMAGE input, NUM size) \
+  {
+    func "Utils/alMathMorphoUtilsClass"
+    return = alMathMorpho.Erode(input,size)
+  }
+
 }
 
 del ImUtils
 ImageUtilitiesClass ImUtils
+del ImageUtilitiesClass

@@ -695,12 +695,12 @@ void MainFrame::CreateMainBook(wxWindow* parent)
   CreateConsoleText(this);
   _main_book->AddPage( _prompt_panel,  wxT("Console"), false, page_bmp );
 
-  CreateHtmlPanel(this);
-  _main_book->AddPage( _html_panel , wxT("Help") );
+//  CreateHtmlPanel(this);
+//  _main_book->AddPage( _html_panel , wxT("Help") );
   
 
-  CreateSettingsPanel(this);
-  _main_book->AddPage( _settings_panel , wxT("Paths") );
+//  CreateSettingsPanel(this);
+//  _main_book->AddPage( _settings_panel , wxT("Paths") );
   _main_book->Fit();
 
 }
@@ -1908,8 +1908,8 @@ void MainFrame::UpdateVarDataView(  const wxDataViewItem& rootbranch,
   bool previous_updating_state = GetUpdatingDataView();
   SetUpdatingDataView(true);
   
-  std::cout << "UpdateVarDataView  from " << 
-                _var_dataview->GetItemText(rootbranch) << std::endl; 
+//   std::cout << "UpdateVarDataView  from " << 
+//                 _var_dataview->GetItemText(rootbranch) << std::endl; 
   // Create default attributes for category and object items
   wxDataViewItemAttr cat_attr;
   cat_attr.SetItalic(true);
@@ -2736,7 +2736,7 @@ void MainFrame::ConsoleClear( wxCommandEvent& event)
 void MainFrame::UpdateVarsDisplay()
 {
 #if (!wxCHECK_VERSION(2,9,0))
-  std::cout << "UpdateVarsDisplay()" << std::endl;
+//   std::cout << "UpdateVarsDisplay()" << std::endl;
   // get list of expanded items
   wxTreeItemId itemid;
   MyTreeItemData *item;

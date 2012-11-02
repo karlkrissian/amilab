@@ -13,7 +13,7 @@ if (!exists(ImageCompareClass)) {
       ::viewer1_name   = "","Name of the first  input image viewer"
       ::viewer2_name   = "","Name of the second input image viewer"
       
-      ::bidirectional = true, "Bidirectional comparison"
+      ::bidirectional = false, "Bidirectional comparison"
 
       #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
       # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
