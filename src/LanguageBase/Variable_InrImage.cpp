@@ -121,6 +121,7 @@ LanguageBase_VAR_IMPORT DriverBase::ptr  GB_DriverBase;
     InrImage::ptr res( (*im1) operator (*im2));     \
     if (!res.get()){              \
       GB_AmiMessage.Error((boost::format("Error in operation %s \t IMAGE_OP_IMAGE_2 \n") % #operator).str().c_str()); \
+      res = im1;\
     }                             \
     return Variable<InrImage>::ptr( new Variable<InrImage>(res)); \
   }

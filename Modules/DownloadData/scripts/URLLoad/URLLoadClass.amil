@@ -20,7 +20,7 @@ if (!exists(URLLoadClass)) {
       # misc volume
       Var_Vec ::sipi_misc
       ::sipi_misc.SetThis(&::sipi_misc)
-      f = wxTextFile()
+      f = wx.wxTextFile()
       f.Open(op_system.GetCurrentScriptDir()+"/sipi_misc.txt")
       #sipi_exp = "([^\\s]+)\\s+(([^\\s]+\\s)+)\\s+([\\d]+)\\s+(Color|Gray)"
       sipi_exp = "([^[:blank:]]+)[[:blank:]]{2,}(([^[:blank:]]+)([ ][^[:blank:]]+)*)[[:blank:]]{2,}([[:digit:]]+)[[:blank:]]+(Color|Gray)"
@@ -65,7 +65,7 @@ if (!exists(URLLoadClass)) {
       # Examples from Osirix website
       Var_Vec ::osirix_examples
       ::osirix_examples.SetThis(&::osirix_examples)
-      f = wxTextFile()
+      f = wx.wxTextFile()
       f.Open(op_system.GetCurrentScriptDir()+"/osirix_examples.txt")
       name_exp     = "[[:blank:]]*Alias Name: ([A-Z0-9]+)"
       modality_exp = "[[:blank:]]*Modality: (.+)"

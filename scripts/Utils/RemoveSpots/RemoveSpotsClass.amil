@@ -99,9 +99,12 @@ if (!exists(GreyMorphoClass)) {
       tmp = ((FLOAT) ::input)-::threshold
       # CC() computes connected components information, and save it in several new image variables cc_sign, cc_size, inclusion, reorder
       tmp_cc = CC(tmp)
+      ::tmp_cc = tmp_cc
+      ::cc_sign = cc_sign
 
       cc_ok = (cc_sign==1)*(cc_size>=::minsize)*(cc_size<=::maxsize)
       nb_components= ami_count(cc_ok)
+      printn "nb_components = %1%" % nb_components
 
       n = 1
       for i=0 to cc_sign.tx-1 {
