@@ -88,3 +88,7 @@ wxSleep
 wxMilliSleep
 wxMicroSleep
 
+#
+# String functions
+#
+wxStringTokenize

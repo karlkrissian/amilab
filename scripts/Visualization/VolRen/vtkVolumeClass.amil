@@ -1154,7 +1154,7 @@ if (!exists(vtkVolumeClass)) {
         ::win.AddPage("Rend")
           ::win.BeginBoxPanel("Sample distances")
             ::win.AddBoolean(&::AutoAdjustSampleDistances,"Auto")
-            #::win.SetCallback( &::OnSampleDistance)
+            ::win.SetCallback( &::OnSampleDistance)
             ::win.AddFloat(&::SampleDistance,"Dist",0.2,2)
             #::win.SetCallback( &::OnSampleDistance)
             ::win.AddFloat(&::ImageSampleDistance,"Im Dist",0.2,2)

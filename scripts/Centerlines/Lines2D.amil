@@ -51,7 +51,7 @@ Class Lines2D  : public ScriptGui \
     if (!exists(::input)) {
       InfoDialog "Load input image first!"
     } else {
-      morph = filters.ContinuousMorphology()
+      morph = ContinuousMorphology()
       mask = morph.Close(&::input,::close_size,::close_step)
       ::mask <<= (UCHAR) (mask>::mask_threshold)
     }

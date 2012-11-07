@@ -1,83 +1,121 @@
 
 func "Common/ScriptGui"
 
-if (!exists(ImageCompareClass)) {
+del ImageCompareClass
 
-  Class ImageCompareClass : public ScriptGui \
-  {
-    
-
-    #---------------------------------------------------------------------------
-    proc ::Init() {
-      
-      ::viewer1_name   = "","Name of the first  input image viewer"
-      ::viewer2_name   = "","Name of the second input image viewer"
-      
-      ::bidirectional = false, "Bidirectional comparison"
-
-      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
-      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
-
-      ::html_filename = GetScriptsDir+\
-                        "/ImageCompare/Doc/ImageCompare/index.html"
-    }
-
-    #---------------------------------------------------------------------------
-    proc ::CB_Compare() {
-      cmd =  "%1%.compare" % ::viewer1_name + "(%1%);" % ::viewer2_name
-      eval cmd
-      if (::bidirectional) {
-        cmd =  "%1%.compare" % ::viewer2_name + "(%1%);" % ::viewer1_name
-        eval cmd
-      }
-    }  
-
-
-    #---------------------------------------------------------------------------
-    proc ::Gui() {
-    
-      if (exists(::parent_panel)) {
-        ::win = ParamPanel("ImageCompare",&::parent_panel)
-      } else {
-        ::win = ParamPanel("ImageCompare")
-      }
-      
-      ::win.BeginBook()
-      
-        ::win.AddPage("Main")
-    
-          # Select Property
-          ::win.AddAMIObjectChoice( ::viewer1_name, "Image Viewer 1", "DessinImage")
-          ::win.AddAMIObjectChoice( ::viewer2_name, "Image Viewer 2", "DessinImage")
-          
-          ::win.AddBoolean(::bidirectional, "Bidirectional")
-          ::win.AddButton("Compare",::CB_Compare)
-
-        # add page for saving/loading parameters
-        #::AddParamPage(&::win)
-
-        # add help page
-        if wx.wxFileName(::html_filename).FileExists() {
-          ::AddHelpPage(&::win)
-        }
-    
-      ::win.EndBook()
-    
-      ::AddStandardButtons(&::win)
-
-      if (exists(::parent_panel)) {
-        ::win.ShowPanel()
-      } else {
-        ::win.Display()
-      }
-      ::win.Update(-1)
-
-
-    }
-    ::Init()
-    
-  }
-  # End of class
+Class ImageCompareClass : public ScriptGui \
+{
   
-} 
-# End of If
+
+  #---------------------------------------------------------------------------
+  proc ::Init() {
+    
+    ::viewer1_name   = "","Name of the first  input image viewer"
+    ::viewer2_name   = "","Name of the second input image viewer"
+    
+    ::mask_name  = "",   "Name of the mask image"
+    ::use_mask   = false, "Use mask image"
+    ::mask_color = wx.wxColour(255,0,0,127)
+    
+    ::bidirectional = false, "Bidirectional comparison"
+
+    #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+    # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+    ::html_filename = GetScriptsDir+\
+                      "/ImageCompare/Doc/ImageCompare/index.html"
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::CB_Compare() {
+    cmd =  "%1%.compare" % ::viewer1_name + "(%1%);" % ::viewer2_name
+    eval cmd
+    if (::bidirectional) {
+      cmd =  "%1%.compare" % ::viewer2_name + "(%1%);" % ::viewer1_name
+      eval cmd
+    }
+  }  
+
+  #---------------------------------------------------------------------------
+  proc ::CB_MaskApply() {
+    eval "m = &%1%;" % ::mask_name
+    if m.GetFormat != UCHAR.val {
+      # convert to unsigned char
+      ::mask <<= (UCHAR) (m>0.5)*255
+    } else {
+      del ::mask
+      ::mask = &m
+    }
+    ::CB_Mask()
+  }
+  
+  #---------------------------------------------------------------------------
+  proc ::CB_Mask() {
+    cmd =  "%1%.SetMaskImage(::mask);" % ::viewer1_name
+    eval cmd
+    cmd =  "%1%.SetUseMask(::use_mask);" % ::viewer1_name
+    eval cmd
+    cmd =  "%1%.SetMaskColor(::mask_color);" % ::viewer1_name
+    eval cmd
+  }  
+
+
+  #---------------------------------------------------------------------------
+  proc ::Gui() {
+  
+    if (exists(::parent_panel)) {
+      ::win = ParamPanel("ImageCompare",&::parent_panel)
+    } else {
+      ::win = ParamPanel("ImageCompare")
+    }
+    
+    ::win.AddAMIObjectChoice( ::viewer1_name, "Main Image Viewer", "DessinImage")
+    ::win.BeginBook()
+    
+      ::win.AddPage("Compare")
+  
+        # Select Property
+        ::win.AddAMIObjectChoice( ::viewer2_name, "Image Viewer 2", "DessinImage")
+        
+        ::win.AddBoolean(::bidirectional, "Bidirectional")
+        ::win.AddButton("Compare",::CB_Compare)
+
+      ::win.AddPage("Mask")
+        # set the input image
+        ::win.AddImageChoice( ::mask_name, "Mask image")
+        ::win.AddButton("Apply",::CB_MaskApply)
+        #::win.SetCallback(::CB_mask)
+        ::win.AddBoolean(::use_mask,"Use mask")
+        ::win.SetCallback(::CB_Mask)
+        ::win.AddColor( "Mask color", ::mask_color)
+        ::win.SetCallback(::CB_Mask)
+        
+          
+      ::win.AddPage("IsoContour")
+
+      # add page for saving/loading parameters
+      #::AddParamPage(&::win)
+
+      # add help page
+      if wx.wxFileName(::html_filename).FileExists() {
+        ::AddHelpPage(&::win)
+      }
+  
+    ::win.EndBook()
+  
+    ::AddStandardButtons(&::win)
+
+    if (exists(::parent_panel)) {
+      ::win.ShowPanel()
+    } else {
+      ::win.Display()
+    }
+    ::win.Update(-1)
+
+
+  }
+  ::Init()
+  
+}
+# End of class
+  

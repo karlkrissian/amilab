@@ -699,7 +699,8 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator[](const
 
     boost::shared_ptr<ami::ImageExtent<float> > extent;
     
-    extent = AMILabType<ami::ImageExtent<float> >::GetValue(v);
+    // try to convert, but without error messages (quiet=true)
+    extent = AMILabType<ami::ImageExtent<float> >::GetValue(v,false,true);
     // try to get an image extent
     //GET_WRAPPED_TEMPLATE_OBJECT(ImageExtent, float ,v,extent);
 

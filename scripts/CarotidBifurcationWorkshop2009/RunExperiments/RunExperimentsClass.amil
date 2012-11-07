@@ -374,7 +374,7 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Creating paths ...")
       # load the shortest path script
-      morph = filters.ContinuousMorphology()
+      morph = ContinuousMorphology()
       
       ::CIS->CheckInitialPoints(&::ReadPoints,::CroppedInput.input_cropped,::sphereradii)
       if (!::nointeraction) {

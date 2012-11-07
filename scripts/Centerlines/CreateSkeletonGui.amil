@@ -32,6 +32,7 @@ if (!exists(CreateSkeletonClass)) {
     func "Centerlines/Prune"
     func "SyntheticImages/AddSphere"
     
+
     #-----------------------------------------------------------
     proc ReadPoint( STRING st, NUM x, NUM y, NUM z) {
       printn "opening "+st
@@ -561,6 +562,9 @@ if (!exists(CreateSkeletonClass)) {
                                       vessel_number)
     
               printn "FMT done"
+              #func "Centerlines/ShortestPath/ShortestPathUtils"
+              #ShortestPathUtils SPU
+              # TODO: remove rule from improcess
               path = PathFromVectField( res,\
                                         0.1,500,\
                                         Px1,Py1,Pz1,\

@@ -641,7 +641,7 @@ proc CB_Stats() {
     mask1=mask
   }
 
-  morph = filters.ContinuousMorphology()
+  morph = ContinuousMorphology()
 
   // Erode mask
   mask1f = (FLOAT) mask1
@@ -982,7 +982,7 @@ proc CB_RunAlphaTests() {
       mask1=mask
     }
 
-    morph = filters.ContinuousMorphology()
+    morph = ContinuousMorphology()
 
     // Erode mask
     mask1f = (FLOAT) mask1

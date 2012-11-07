@@ -30,7 +30,6 @@ SET(AMILab_SRCS
     amilab_global_export.cpp
     CircleIntegration.cpp
     ConnectLines.cpp
-    ContinuousMorphology.cpp
     EigenDecomp.cpp
     FluidProject.cpp
     Func_ReadCTALine.cpp
@@ -72,7 +71,6 @@ SET(AMILab_SRCS
 
 SET (AMILab_HDRS
     amilab_global_import.h
-    ContinuousMorphology.h
     EigenDecomp.h
     FluidProject.h
     fonctions.h

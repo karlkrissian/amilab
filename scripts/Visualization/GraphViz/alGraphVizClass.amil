@@ -347,7 +347,7 @@ if (!exists(alGraphVizClass)) {
       # Run Closing on each channel
       # size as parameter?
       res = output_image
-      morph = filters.ContinuousMorphology()
+      morph = ContinuousMorphology()
 
       for n=0 to output_image.vdim-1 {
         res.SetComponent(n, morph.Close(output_image[n],\

@@ -33,18 +33,25 @@
 #include "math1.hpp"
 #include "inrimage.hpp"
 
-#define SCHEMA_OS    1 // Osher    & Sethian
-#define SCHEMA_BM    2 // Brockett & Maragos
-#define SCHEMA_AUTRE 3 //
 
-#define ERODE  1
-#define DILATE 2
-#define OUVERTURE 3
-#define FERMETURE 4
 
 class ContinuousMorphology {
 
- private:
+public:
+  enum numerical_scheme {
+    SCHEMA_OS    = 1, // Osher    & Sethian
+    SCHEMA_BM    = 2, // Brockett & Maragos
+    SCHEMA_AUTRE = 3, //
+  };
+  
+  enum operation {
+    ERODE     = 1,
+    DILATE    = 2,
+    OUVERTURE = 3,
+    FERMETURE = 4,
+  };
+
+private:
 
   long tx,ty,tz,txy;
   int     Schema;
@@ -60,7 +67,7 @@ class ContinuousMorphology {
 
   void Iteration( InrImage* image1, InrImage* image2, float dt, int type);
 
- public:
+public:
 
   ContinuousMorphology() : Schema(SCHEMA_BM)
   {
@@ -73,7 +80,7 @@ class ContinuousMorphology {
 
   void SetLimits(float min, float max) { Imin = min; Imax=max; use_limits=1; }
 
-  InrImage* EDP( InrImage* entree, float taille, float step, int type);
+  InrImage* EDP( InrImage* entree, float taille, float step, operation type);
 
   InrImage* Dilate(InrImage* entree, float taille, float step);
   InrImage* Erode( InrImage* entree, float taille, float step);

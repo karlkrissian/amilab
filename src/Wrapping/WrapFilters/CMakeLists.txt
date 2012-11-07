@@ -48,7 +48,7 @@ SET(  WrapFilters_SRCS
   wrap_ImageCos.cpp
   wrapBasicEdgeDetection.cpp
   wrapGenerateRamp.cpp
-  wrap_ContinuousMorphology.cpp
+#  wrap_ContinuousMorphology.cpp
 #   wrap_TestClass.cpp
    wrap_TemplateClass_int_.cpp
 #   wrap_ClassBase1.cpp
@@ -72,7 +72,7 @@ SET(WrapFilters_HDRS
   ../include/wrap_ImageCos.h
   ../include/wrapBasicEdgeDetection.h
   ../include/wrapGenerateRamp.h
-  ../include/wrap_ContinuousMorphology.h
+#  ../include/wrap_ContinuousMorphology.h
 #   ../include/wrap_TestClass.h
    ../include/wrap_TemplateClass_int_.h
 #   ../include/wrap_ClassBase1.h

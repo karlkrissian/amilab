@@ -4,29 +4,33 @@
 # Adding main Gui scripts to the menu
 #
 
+func "Common/ScriptDisplayClass"
+g = &global::scripts_display
 
-if (!exists(timer_display)) {
+if (!exists(g->timer_display)) {
 
-  proc AddScript() {
-    global
-    func "Common/ScriptDisplayClass"
+  func "Common/ScriptDisplayClass"
 
-    ScriptDisplayClass timer_display
+  ScriptDisplayClass timer_display
 
-    timer_display.SetScript("Utils/Timer/TimerGui.amil")
-    timer_display.SetScriptObjName("global::Timer_obj")
+  timer_display.SetScript("Utils/Timer/TimerGui.amil")
+  timer_display.SetScriptObjName("global::Timer_obj")
 
-    timer_display.SetDisplayedName("&Timer")
-    timer_display.SetHelp("Timer: measure elapsed time between two instants.")
-    timer_display.SetInMenus("Scripts","Utils")
+  timer_display.SetDisplayedName("&Timer")
+  timer_display.SetHelp("Timer: measure elapsed time between two instants.")
+  timer_display.SetInMenus("Scripts","Utils")
 
-    timer_display.SetIcon16( op_system.GetCurrentScriptDir()+"/timer_icon16.png")
-    timer_display.SetIcon32( op_system.GetCurrentScriptDir()+"/timer_icon32.png")
+  timer_display.SetIcon16( op_system.GetCurrentScriptDir()+"/timer_icon16.png")
+  timer_display.SetIcon32( op_system.GetCurrentScriptDir()+"/timer_icon32.png")
 
-    timer_display.Add2Menu()
-    timer_display.Add2Toolbar()
-  }
-  AddScript()
-  del AddScript
+  timer_display.Add2Menu()
+  timer_display.Add2Toolbar()
 
+  # add a reference in the global container
+  global::scripts_display.AddVar(timer_display,"timer_display")
+  # we can now delete it
+  del timer_display
+  
 }
+
+del g

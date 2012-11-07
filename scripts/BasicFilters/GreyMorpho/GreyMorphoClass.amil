@@ -74,7 +74,7 @@ if (!exists(GreyMorphoClass)) {
     #---------------------------------------------------------------------------
     proc ::ProcessImagePDE( IMAGE input, NUM component) \
     {
-      morph = filters.ContinuousMorphology()
+      morph = ContinuousMorphology()
       morph.SetLimits(::Imin,::Imax)
       #::txtctrl_cmd += "morph.SetLimits(%1%,"%::Imin+"%1%)\n"%::Imax
 
@@ -113,7 +113,7 @@ if (!exists(GreyMorphoClass)) {
       }
 
       ::txtctrl_cmd =""
-      ::txtctrl_cmd += "morph = filters.ContinuousMorphology()\n"
+      ::txtctrl_cmd += "morph = ContinuousMorphology()\n"
       ::txtctrl.WriteText(::txtctrl_cmd)
       
 

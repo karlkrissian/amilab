@@ -10,12 +10,15 @@
 //
 //
 
-#ifndef _func_shortestpath_h_
-#define _func_shortestpath_h_
+#ifndef _ami_ShortestPathClass_h_
+#define _ami_ShortestPathClass_h_
 
 #include "surface.hpp"
 
 #include "inrimage.hpp"
+
+
+namespace ami {
 
 class ShortestPathClass {
   
@@ -75,8 +78,26 @@ public:
                                           double max_length,
                                           double delta = 0.05);
 
+
+  
+  
+/*
+ *      (3)  input image as a vector field in spatial coordinates
+            or as a scalar potential
+      (5) time step for the evolution
+      (7) maximal Euclidean distance of the path
+      (9)  X coord of the starting point (in spatial coord.)
+      (11)  Y coord ---
+      (13)  Z coord ---
+      (15)  X coord of the expected end point (in spatial coord.)
+      (17)  Y coord  ---
+      (19)  Z coord  ---
+
+    Description:
+  */
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// \brief Find path in 3D+T (4D) images, where the 4th dimension is encoded in the image vectorial components
+  /// \brief Find path in 3D image
   ///    Creates a path starting at a point in spatial coordinates
   ///    and following the displacements given by the input vector field
   ///    image
@@ -86,7 +107,7 @@ public:
   ///      - the maximal distance is reached
   ///      - the closest voxel to the current location has a negative intensity
   ///      - the current gradient is very low
-  /// \param displ      4D speed 
+  /// \param displ       
   /// \param start      initial point for the path 
   /// \param end        final   point for the path 
   /// \param step_size  step size for the evolution 
@@ -143,4 +164,7 @@ public:
       driver.var_stack.AddVar(res);
     }
 */
-#endif // _func_shortestpath_h_
+
+}
+
+#endif // _ami_ShortestPathClass_h_

@@ -8,27 +8,31 @@ ami.MainFrame.AddToMenu(  "&ITK",    "&IO","&ReadDICOM",\
                           "IO/ReadDICOM/ReadDICOMGui.amil")
 
 
-if !exists(global::ReadDICOM_display) {
+func "Common/ScriptDisplayClass"
+g = &global::scripts_display
 
-  proc AddScript() {
-    global
-    func "Common/ScriptDisplayClass"
+if (!exists(g->ReadDICOM_display)) {
 
-    ScriptDisplayClass ReadDICOM_display
+  ScriptDisplayClass ReadDICOM_display
 
-    ReadDICOM_display.SetScript("IO/ReadDICOM/ReadDICOMGui.amil")
-    ReadDICOM_display.SetScriptObjName("global::ReadDICOM_obj")
+  ReadDICOM_display.SetScript("IO/ReadDICOM/ReadDICOMGui.amil")
+  ReadDICOM_display.SetScriptObjName("global::ReadDICOM_obj")
 
-    ReadDICOM_display.SetDisplayedName("&DICOM Reader")
-    ReadDICOM_display.SetHelp("Read and Parse DICOM files/directories.")
-    ReadDICOM_display.SetInMenus("Scripts","IO")
+  ReadDICOM_display.SetDisplayedName("&DICOM Reader")
+  ReadDICOM_display.SetHelp("Read and Parse DICOM files/directories.")
+  ReadDICOM_display.SetInMenus("Scripts","IO")
 
-    ReadDICOM_display.SetIcon16( op_system.GetCurrentScriptDir()+"/ReadDICOM_icon16.png")
-    ReadDICOM_display.SetIcon32( op_system.GetCurrentScriptDir()+"/ReadDICOM_icon32.png")
+  ReadDICOM_display.SetIcon16( op_system.GetCurrentScriptDir()+"/ReadDICOM_icon16.png")
+  ReadDICOM_display.SetIcon32( op_system.GetCurrentScriptDir()+"/ReadDICOM_icon32.png")
 
-    ReadDICOM_display.Add2Menu()
-    ReadDICOM_display.Add2Toolbar()
-  }
-  AddScript()
-  del AddScript
+  ReadDICOM_display.Add2Menu()
+  ReadDICOM_display.Add2Toolbar()
+
+  # add a reference in the global container
+  global::scripts_display.AddVar(ReadDICOM_display,"ReadDICOM_display")
+  # we can now delete it
+  del ReadDICOM_display
+  
 }
+
+del g

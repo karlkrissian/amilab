@@ -8,29 +8,31 @@
 #ami.MainFrame.AddToMenu("&Scripts","&Centerlines","&MultiLines",\
 #                        "Centerlines/MultiLines/MultiLinesGui.amil")
 
+func "Common/ScriptDisplayClass"
+g = &global::scripts_display
 
-if (!exists(multilines_display)) {
+if (!exists(g->multilines_display)) {
 
-  proc AddScript() {
-    global
-    func "Common/ScriptDisplayClass"
+  ScriptDisplayClass multilines_display
 
-    ScriptDisplayClass multilines_display
+  multilines_display.SetScript("Centerlines/MultiLines/MultiLinesGui.amil")
+  multilines_display.SetScriptObjName("global::MultiLines_obj")
 
-    multilines_display.SetScript("Centerlines/MultiLines/MultiLinesGui.amil")
-    multilines_display.SetScriptObjName("global::MultiLines_obj")
+  multilines_display.SetDisplayedName("&Multiscale Tubular Detection")
+  multilines_display.SetHelp("Multiscale detection of tubular structures.")
+  multilines_display.SetInMenus("Scripts","Centerlines")
 
-    multilines_display.SetDisplayedName("&Multiscale Tubular Detection")
-    multilines_display.SetHelp("Multiscale detection of tubular structures.")
-    multilines_display.SetInMenus("Scripts","Centerlines")
+  multilines_display.SetIcon16( op_system.GetCurrentScriptDir()+"/multilines_icon16.png")
+  multilines_display.SetIcon32( op_system.GetCurrentScriptDir()+"/multilines_icon32.png")
 
-    multilines_display.SetIcon16( op_system.GetCurrentScriptDir()+"/multilines_icon16.png")
-    multilines_display.SetIcon32( op_system.GetCurrentScriptDir()+"/multilines_icon32.png")
+  multilines_display.Add2Menu()
+  multilines_display.Add2Toolbar()
 
-    multilines_display.Add2Menu()
-    multilines_display.Add2Toolbar()
-  }
-  AddScript()
-  del AddScript
-
+  # add a reference in the global container
+  global::scripts_display.AddVar(multilines_display,"multilines_display")
+  # we can now delete it
+  del multilines_display
+  
 }
+
+del g

@@ -379,16 +379,20 @@ if (!exists(ScriptGui)) \
       printn "::GetParamFilename begin"
       # Use input image if available
       if exists(::input_name) {
-        # make replacements to have a valid name
-        wx_name = wx.wxString(::input_name)
-        # remove leading "global::"
-        if wx_name.StartsWith("global::") {
-          wx_name = wx_name.Mid(8)
-        }
+        #reduce to the last variable
+        # need to do it in two steps to avoid seg fault ...
+        tokens = wx.wxStringTokenize(::input_name,":.")
+        wx_name = tokens.Last()
+        ## make replacements to have a valid name
+        #wx_name = wx.wxString(::input_name)
+        ## remove leading "global::"
+        #if wx_name.StartsWith("global::") {
+          #wx_name = wx_name.Mid(8)
+        #}
         wx_name.Replace("/","_")
-        wx_name.Replace("::","_")
+        #wx_name.Replace("::","_")
         wx_name.Replace(" ", "_")
-        wx_name.Replace(".", "_")
+        #wx_name.Replace(".", "_")
         wx_name.Replace("(", "_")
         wx_name.Replace(")", "_")
         wx_name.Replace("[", "_")
@@ -467,7 +471,11 @@ if (!exists(ScriptGui)) \
         } else {
           func param_file
         }
-        ::win.Update(-1)
+        if exists(::UpdateGui) {
+          ::UpdateGui()
+        } else {
+          ::win.Update(-1)
+        }
       }
     }
 
@@ -580,9 +588,9 @@ if (!exists(ScriptGui)) \
 
         win.BeginBoxPanel("Filter / Scan")
           win.BeginHorizontal()
-            win.AddButton("All",::ParamFilterAll)
+            win.AddButton("All",    ::ParamFilterAll)
             win.SetPositionProp(1,2)
-            win.AddButton("Current",&::ParamFilterCurrent)
+            win.AddButton("Current",::ParamFilterCurrent)
             win.SetPositionProp(1,2)
           win.EndHorizontal()
         win.EndBoxPanel()

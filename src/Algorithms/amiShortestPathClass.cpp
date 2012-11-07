@@ -19,7 +19,7 @@
 using namespace std;
 
 #include "dijkstra.h"
-#include "ShortestPathClass.h"
+#include "amiShortestPathClass.h"
 #include "inrimage.hpp"
 #include "amilab_messages.h"
 
@@ -31,7 +31,7 @@ using namespace std;
 #undef max
 #endif
 
-amilab::SurfacePoly* ShortestPathClass::Func_shortestpath( 
+amilab::SurfacePoly* ami::ShortestPathClass::Func_shortestpath( 
                                 amilab::SurfacePoly* lines, 
                                 float pt1_x, float pt1_y, float pt1_z,
                                 float pt2_x, float pt2_y, float pt2_z)
@@ -236,7 +236,7 @@ public:
 // looks for shortest path within an image
 // where each voxel has a positive value
 // voxels of intensity value higher that the threshold are not taken into account
-amilab::SurfacePoly* ShortestPathClass::Func_shortestpath_image( 
+amilab::SurfacePoly* ami::ShortestPathClass::Func_shortestpath_image( 
                                       InrImage* imweights,
                                       double threshold,
                                       float pt1_x, float pt1_y, float pt1_z,
@@ -579,7 +579,7 @@ amilab::SurfacePoly* ShortestPathClass::Func_shortestpath_image(
 
 
 //-------------------------------------------------------
-amilab::SurfacePoly* ShortestPathClass::Func_path_from_displ( InrImage* displ,
+amilab::SurfacePoly* ami::ShortestPathClass::Func_path_from_displ( InrImage* displ,
                                    int startx, int starty, int startz)
 {
   int px = startx;
@@ -648,7 +648,7 @@ amilab::SurfacePoly* ShortestPathClass::Func_path_from_displ( InrImage* displ,
 // delta is the small increment used to estimate the derivatives
 // based on linear interpolation
 // only for 3D images
-amilab::SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield(  
+amilab::SurfacePoly::ptr ami::ShortestPathClass::Func_path_from_vectfield(  
                                         InrImage::ptr displ,
                                         double start[3],
                                         double step_size,
@@ -907,7 +907,7 @@ bool CoordOK_4D(InrImage::ptr& im, const int& x, const int& y, const int& z, con
 }
 
 //-------------------------------------------------------
-amilab::SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
+amilab::SurfacePoly* ami::ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
                                                 double start[4],
                                                 double step_size,
                                                 double max_length,
@@ -1147,7 +1147,7 @@ amilab::SurfacePoly* ShortestPathClass::Func_path_4D(   InrImage::ptr speed,
 
 
 //-------------------------------------------------------
-amilab::SurfacePoly* ShortestPathClass::Func_path_4D_2points(   
+amilab::SurfacePoly* ami::ShortestPathClass::Func_path_4D_2points(   
                                                 InrImage::ptr speed,
                                                 double start[4],
                                                 double end[4],
@@ -1158,7 +1158,7 @@ amilab::SurfacePoly* ShortestPathClass::Func_path_4D_2points(
   FILE_MESSAGE((boost::format(" expected endpoint %0.2f %0.2f %0.2f %0.2f ") 
       % end[0] % end[1] % end[2] % end[3] ).str().c_str());
 
-  amilab::SurfacePoly* res(ShortestPathClass::Func_path_4D(speed,start,step_size,max_length,delta));
+  amilab::SurfacePoly* res(ami::ShortestPathClass::Func_path_4D(speed,start,step_size,max_length,delta));
 
   std::cout << "Number of points = "<< res->GetNumberOfPoints() << std::endl;
 
@@ -1202,7 +1202,7 @@ amilab::SurfacePoly* ShortestPathClass::Func_path_4D_2points(
 // delta is the small increment used to estimate the derivatives
 // based on linear interpolation
 // only for 3D images
-amilab::SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield( 
+amilab::SurfacePoly::ptr ami::ShortestPathClass::Func_path_from_vectfield( 
                                       InrImage::ptr displ,
                                       double start[3],
                                       double end[3],
@@ -1214,7 +1214,7 @@ amilab::SurfacePoly::ptr ShortestPathClass::Func_path_from_vectfield(
   FILE_MESSAGE((boost::format(" expected endpoint %0.2f %0.2f %0.2f ") 
                       % end[0] % end[1] % end[2] ).str().c_str());
 
-  amilab::SurfacePoly::ptr res(ShortestPathClass::Func_path_from_vectfield(displ,start,step_size,max_length,delta));
+  amilab::SurfacePoly::ptr res(ami::ShortestPathClass::Func_path_from_vectfield(displ,start,step_size,max_length,delta));
 
   std::cout << "Number of points = "<< res->GetNumberOfPoints() << std::endl;
 

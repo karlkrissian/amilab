@@ -84,6 +84,15 @@ Class alEnum \
   }
 
   #-----------------------------------------------------------------------------
+  proc ::Update() \
+  {
+    ::rb.SetSelection(::var)
+    if exists(::callback) {
+      ::callback()
+    }
+  }
+
+  #-----------------------------------------------------------------------------
   proc ::ShowParam( NUM s) \
   {
     if ::gui_mode == 0 {
@@ -92,6 +101,14 @@ Class alEnum \
       # need to pass through wxControl: pb in wrapping system ???
       ::rb.wxControl.Show(s)
       ::win.Update(-1)
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::OnPaint( OBJECT event ) {
+    printn "alEnum::OnPaint()"
+    if (::var != ::rb.GetSelection()) {
+      ::rb.SetSelection(::var)
     }
   }
 
@@ -126,6 +143,11 @@ Class alEnum \
       ::rb.Connect( wx.wxEVT_COMMAND_RADIOBOX_SELECTED,\
                           &::evh_radio.GetEventFunction(),\
                           &NULL, &::evh_radio)
+      # Paint event, does not seem to work
+      ::evh_paint = wx.wxAmiEventHandler(::OnPaint)
+      ::rb.Connect( wx.wxEVT_PAINT,\
+                    &::evh_paint.GetPaintEventFunction(),\
+                    &NULL, &::evh_paint)
       ::rb.SetSelection(::var)
     }
   }

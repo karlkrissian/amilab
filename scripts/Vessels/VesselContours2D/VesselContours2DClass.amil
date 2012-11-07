@@ -82,7 +82,7 @@ if (!exists(VesselContours2DClass)) {
 
           cont_cc    = CC(cont)
           component = (FLOAT) (cont_cc==(cont_cc(cont.tx/2,cont.ty/2)))
-          morph = filters.ContinuousMorphology()
+          morph = ContinuousMorphology()
           component_d = morph.Dilate(component,1,0.5)
           component_e = morph.Erode(component,1,0.5)
           component = (component_e>0.5)*10+(component_d<0.5)*-10+(component_e<=0.5)*(component_d>=0.5)*cont

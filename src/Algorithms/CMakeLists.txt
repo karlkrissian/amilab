@@ -46,7 +46,7 @@ SET(Algorithms_SRCS
   amiFind.cpp
 
   localstats.cpp
-  ShortestPathClass.cpp
+  amiShortestPathClass.cpp
 
   amiEigenDecomp.cpp
   amiEigenDecomp_NRAD.cpp
@@ -90,6 +90,8 @@ SET(Algorithms_SRCS
   Gradient.cpp
   Curvatures.cpp
 
+  ContinuousMorphology.cpp
+
   # from Contours
   CalculAireSection.cpp
   IsoContour2.cpp
@@ -131,6 +133,10 @@ SET_SOURCE_FILES_PROPERTIES(
   PROPERTIES LANGUAGE CXX )
 
 SET(Algorithms_HDRS
+
+  include/ContinuousMorphology.h
+
+
   include/amiImageToImageFilter.h
   include/amiImageAddScalar.h
   include/amiImageCos.h
@@ -146,7 +152,7 @@ SET(Algorithms_HDRS
   include/amivtkFastMarchingFunctions.h
 
   include/localstats.h
-  include/ShortestPathClass.h
+  include/amiShortestPathClass.h
 
   include/amiEigenDecomp.h
   include/amiEigenDecomp_NRAD.h

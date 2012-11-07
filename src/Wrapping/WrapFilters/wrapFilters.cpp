@@ -44,7 +44,7 @@
 #include "wrapGenerateRamp.h"
 #include "wrap_SurfacePoly.h"
 
-#include "wrap_ContinuousMorphology.h"
+//#include "wrap_ContinuousMorphology.h"
 #include "wrap_TemplateClass_int_.h"
 // #include "wrap_TestClass.h"
 // #include "wrap_ClassBase1.h"
@@ -101,15 +101,15 @@ void AddWrapFilters(AMIObject::ptr& obj)
   ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageAddScalar",wrap_ImageAddScalar);
   ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageCos",wrap_ImageCos);
 
-	//Basic Edge Detection
-	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Roberts",	wrapRoberts);
-	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "PSF",			wrapPSF);
-	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Gradient", wrapGradient);
-	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",	wrapLaplace);
+  //Basic Edge Detection
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Roberts",  wrapRoberts);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "PSF",      wrapPSF);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Gradient", wrapGradient);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",  wrapLaplace);
   
 
-  // Add ContinuousMorphology
-  AddVar_ContinuousMorphology( amiobject->GetContext());
+//   // Add ContinuousMorphology
+//   AddVar_ContinuousMorphology( amiobject->GetContext());
 
 //   // Add TestClass
 //   WrapClass_TestClass::AddVar_TestClass( amiobject->GetContext());

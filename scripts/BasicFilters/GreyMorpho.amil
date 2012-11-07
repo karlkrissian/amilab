@@ -52,7 +52,7 @@ if (!exists(GreyMorphoClass)) {
     #----------------------------
     proc ::ProcessImage( IMAGE input) \
     {
-      morph = filters.ContinuousMorphology()
+      morph = ContinuousMorphology()
       morph.SetLimits(::Imin,::Imax)
 
       if (::operation==0) {

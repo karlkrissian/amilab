@@ -1,29 +1,33 @@
 
-# new way of doing it
-#ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&Level Set","Segmentation/LevelSets/LevelSetsGui.amil")
 
-if (!exists(levelsets_menu)) {
+func "Common/ScriptDisplayClass"
+g = &global::scripts_display
 
-  proc AddScript() {
-    global
-    func "Common/ScriptDisplayClass"
+if (!exists(g->levelsets_display)) {
 
-    ScriptDisplayClass levelsets_display
+  func "Common/ScriptDisplayClass"
 
-    levelsets_display.SetScript("Segmentation/LevelSets/LevelSetsGui.amil")
-    levelsets_display.SetScriptObjName("global::ls_obj")
+  ScriptDisplayClass levelsets_display
 
-    levelsets_display.SetInMenus("Scripts","Segmentation")
-    levelsets_display.SetDisplayedName("&Level Set")
-    levelsets_display.SetHelp("Level-set active contour Segmentation script for 2D or 3D images.")
-    levelsets_display.SetInMenus("Scripts","Segmentation")
+  levelsets_display.SetScript("Segmentation/LevelSets/LevelSetsGui.amil")
+  levelsets_display.SetScriptObjName("global::ls_obj")
 
-    levelsets_display.SetIcon16( op_system.GetCurrentScriptDir()+"/levelset_icon_16x16.png")
-    levelsets_display.SetIcon32( op_system.GetCurrentScriptDir()+"/levelset_icon.png")
+  levelsets_display.SetInMenus("Scripts","Segmentation")
+  levelsets_display.SetDisplayedName("&Level Set")
+  levelsets_display.SetHelp("Level-set active contour Segmentation script for 2D or 3D images.")
+  levelsets_display.SetInMenus("Scripts","Segmentation")
 
-    levelsets_display.Add2Menu()
-    levelsets_display.Add2Toolbar()
-  }
-  AddScript()
-  del AddScript
+  levelsets_display.SetIcon16( op_system.GetCurrentScriptDir()+"/levelset_icon_16x16.png")
+  levelsets_display.SetIcon32( op_system.GetCurrentScriptDir()+"/levelset_icon.png")
+
+  levelsets_display.Add2Menu()
+  levelsets_display.Add2Toolbar()
+
+  # add a reference in the global container
+  global::scripts_display.AddVar(levelsets_display,"levelsets_display")
+  # we can now delete it
+  del levelsets_display
+  
 }
+
+del g

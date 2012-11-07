@@ -1,36 +1,32 @@
 #!/usr/bin/amilab
 
-#
-# Adding main Gui scripts to the menu
-#
+func "Common/ScriptDisplayClass"
+g = &global::scripts_display
 
-# Scripts menu
-#ami.MainFrame.AddToMenu("&Scripts","&Utils","&Calculator",\
-#                        "Utils/Calculator/CalculatorGui.amil")
+if (!exists(g->calculator_display)) {
 
+  func "Common/ScriptDisplayClass"
 
-if (!exists(calculator_display)) {
+  ScriptDisplayClass calculator_display
 
-  proc AddScript() {
-    global
-    func "Common/ScriptDisplayClass"
+  calculator_display.SetScript("Utils/Calculator/CalculatorGui.amil")
+  calculator_display.SetScriptObjName("global::Calc_obj")
 
-    ScriptDisplayClass calculator_display
+  calculator_display.SetDisplayedName("&Calculator")
+  calculator_display.SetHelp("Simple numerical calculator.")
+  calculator_display.SetInMenus("Scripts","Utils")
 
-    calculator_display.SetScript("Utils/Calculator/CalculatorGui.amil")
-    calculator_display.SetScriptObjName("global::Calc_obj")
+  calculator_display.SetIcon16( op_system.GetCurrentScriptDir()+"/calculator_icon16.png")
+  calculator_display.SetIcon32( op_system.GetCurrentScriptDir()+"/calculator_icon32.png")
 
-    calculator_display.SetDisplayedName("&Calculator")
-    calculator_display.SetHelp("Simple numerical calculator.")
-    calculator_display.SetInMenus("Scripts","Utils")
+  calculator_display.Add2Menu()
+  calculator_display.Add2Toolbar()
 
-    calculator_display.SetIcon16( op_system.GetCurrentScriptDir()+"/calculator_icon16.png")
-    calculator_display.SetIcon32( op_system.GetCurrentScriptDir()+"/calculator_icon32.png")
-
-    calculator_display.Add2Menu()
-    calculator_display.Add2Toolbar()
-  }
-  AddScript()
-  del AddScript
-
+  # add a reference in the global container
+  global::scripts_display.AddVar(calculator_display,"calculator_display")
+  # we can now delete it
+  del calculator_display
+  
 }
+
+del g

@@ -122,7 +122,7 @@ proc TC_CreateMask() {
 //   -------------
   InitTime
 
-  morph = filters.ContinuousMorphology()
+  morph = ContinuousMorphology()
 
   local::res=TC_input
   TubeDiv(TC_input,&res,TC_mask,0.6,0)
@@ -144,7 +144,7 @@ proc TC_execute(IMAGE input, IMAGE mask, IMAGE repmax, IMAGE extr) {
   // Compute Structure Tensor
   printn "Structure Tensor"
 
-  morph = filters.ContinuousMorphology()
+  morph = ContinuousMorphology()
 
   if (exists(eig)) { del eig; }
 

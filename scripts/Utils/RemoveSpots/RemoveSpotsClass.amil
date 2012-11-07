@@ -61,7 +61,7 @@ if (!exists(GreyMorphoClass)) {
       m1 = (FLOAT) (_mask>0)
 
       #  m1 = EDPdilate( m1,2,0.5)
-      morph = filters.ContinuousMorphology()
+      morph = ContinuousMorphology()
       m1 = morph.Dilate(m1,::dilation_size,0.5)
 
       test1 = _input

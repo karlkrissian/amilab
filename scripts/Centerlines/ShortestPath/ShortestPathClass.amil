@@ -3,7 +3,8 @@
 # Find Shortest path between 2 points
 # using a speed image
 #
-if (!exists(ShortestPathClass)) {
+
+del ShortestPathClass
 
   func "Common/ScriptGui"
 
@@ -406,9 +407,8 @@ if (!exists(ShortestPathClass)) {
     }
     
     ::init
-    } #End of class
+  } #End of class
   
-} # End of if
 
 #----------------------------
 # Main

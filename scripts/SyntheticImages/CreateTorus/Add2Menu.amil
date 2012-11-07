@@ -1,29 +1,32 @@
 
-# new way of doing it
-#ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&Level Set","Segmentation/torus/torusGui.amil")
+func "Common/ScriptDisplayClass"
+g = &global::scripts_display
 
-if (!exists(torus_display)) {
+if (!exists(g->torus_display)) {
 
-  proc AddScript() {
-    global
-    func "Common/ScriptDisplayClass"
+  func "Common/ScriptDisplayClass"
 
-    ScriptDisplayClass torus_display
+  ScriptDisplayClass torus_display
 
-    torus_display.SetScript("SyntheticImages/CreateTorus/CreateTorusGui.amil")
-    torus_display.SetScriptObjName("global::torus_obj")
+  torus_display.SetScript("SyntheticImages/CreateTorus/CreateTorusGui.amil")
+  torus_display.SetScriptObjName("global::torus_obj")
 
-    torus_display.SetInMenus("Scripts","3D Synthetic Images")
-    torus_display.SetDisplayedName("&Torus")
-    torus_display.SetHelp("Create a synthetic 3D torus volume.")
+  torus_display.SetInMenus("Scripts","3D Synthetic Images")
+  torus_display.SetDisplayedName("&Torus")
+  torus_display.SetHelp("Create a synthetic 3D torus volume.")
 
-    torus_display.SetIcon16( op_system.GetCurrentScriptDir()+"/torus_icon16.png")
-    torus_display.SetIcon32( op_system.GetCurrentScriptDir()+"/torus_icon32.png")
+  torus_display.SetIcon16( op_system.GetCurrentScriptDir()+"/torus_icon16.png")
+  torus_display.SetIcon32( op_system.GetCurrentScriptDir()+"/torus_icon32.png")
 
-    torus_display.Add2Menu()
-    torus_display.Add2Toolbar()
-  }
-  AddScript()
-  del AddScript
+  torus_display.Add2Menu()
+  torus_display.Add2Toolbar()
 
+  
+  # add a reference in the global container
+  global::scripts_display.AddVar(torus_display,"torus_display")
+  # we can now delete it
+  del torus_display
+  
 }
+
+del g

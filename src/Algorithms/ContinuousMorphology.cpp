@@ -331,7 +331,7 @@ void ContinuousMorphology::Iteration( InrImage* image1, InrImage* image2, float 
 //----------------------------------------------------------------------
 InrImage* ContinuousMorphology::EDP( InrImage* entree, 
            float size,  float step,
-           int type)
+           operation type)
 //
 {
 

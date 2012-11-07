@@ -95,6 +95,7 @@
 #include <vtkTexturedSphereSource.h>
 #include <vtkTexture.h>
 #include <vtkTransform.h>
+#include <vtkIdTypeArray.h>
 #include <vtkUnstructuredGridVolumeRayCastMapper.h>
 #include <vtkVersion.h>
 #include <vtkVolume.h>

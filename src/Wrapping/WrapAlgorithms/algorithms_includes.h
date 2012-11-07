@@ -6,7 +6,7 @@
 #include "vtkLevelSetFastMarching.h"
 #include "vtkFastMarching_nD_plus.h"
 #include "Gradient.h"
-#include "ShortestPathClass.h"
+#include "amiShortestPathClass.h"
 #include "Curvatures.h"
 
 #include "amiComputePositiveArea.hpp"
@@ -42,6 +42,8 @@
 #include "amiSRAD.h"
 
 #include "gnuplot.hpp"
+  
+#include "ContinuousMorphology.h"
 
 // why do I need this include ??
 //#include "vcl_config_compiler.h"

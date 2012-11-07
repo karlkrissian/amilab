@@ -44,9 +44,9 @@ if (!exists(SimplevtkVolumeClass)) {
 
       ::SampleDistance = 1, "distance between samples used for rendering"
       ::ImageSampleDistance = 1, "Sampling distance in the XY image dimensions. Default value of 1 meaning 1 ray cast per pixel. If set to 0.5, 4 rays will be cast per pixel. If set to 2.0, 1 ray will be cast for every 4 (2 by 2) pixels. This value will be adjusted to meet a desired frame rate when AutoAdjustSampleDistances is on. "
-      ::AutoAdjustSampleDistances = UCHAR(1), "Auto-adjust sample distances"
+      ::AutoAdjustSampleDistances = false, "Auto-adjust sample distances"
 
-      ::use_shade = UCHAR(1), "use shading"
+      ::use_shade = true, "use shading"
       ::ambient   = 0.15, "ambient coefficient"
       ::diffuse   = 0.9, "diffuse coefficient"
       ::specular  = 0.3, "specular coefficient"
@@ -436,6 +436,7 @@ if (!exists(SimplevtkVolumeClass)) {
           return = true
         }
       }
+      ::OnSampleDistance()
       if ::trace2 { eval ::trace2_end; }
     }
 
@@ -743,10 +744,12 @@ if (!exists(SimplevtkVolumeClass)) {
     #----------------------------
     proc ::OnSampleDistance() \
     {
-      ::volmapper.SetAutoAdjustSampleDistances(::AutoAdjustSampleDistances)
-      ::volmapper.SetSampleDistance(::SampleDistance)
-      ::volmapper.SetImageSampleDistance(::ImageSampleDistance)
-      ::renwininter.Render()
+      if exists(::volmapper) {
+        ::volmapper.SetAutoAdjustSampleDistances(::AutoAdjustSampleDistances)
+        ::volmapper.SetSampleDistance(::SampleDistance)
+        ::volmapper.SetImageSampleDistance(::ImageSampleDistance)
+        ::renwininter.Render()
+      }
     }
 
     #----------------------------

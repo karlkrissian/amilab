@@ -8,7 +8,9 @@ GeneralGaussianFilter
 CircleBoundaries3D
 Gradient
 Curvatures
-ShortestPathClass
+ami::ShortestPathClass
+
+ContinuousMorphology
 
 # new classes within ami namespace
 ami::EigenDecomp

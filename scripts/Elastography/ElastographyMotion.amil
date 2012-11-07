@@ -468,7 +468,7 @@ proc CB_Stats() {
   print "Only pixel with big enough displacement ...\n"
   mask1=mask*0+255
 
-  morph = filters.ContinuousMorphology()
+  morph = ContinuousMorphology()
 
   // Erode mask
   mask1f = (FLOAT) mask1
@@ -788,7 +788,7 @@ proc CB_RunAlphaTests() {
       // full image
       mask1=mask*0+255
 
-    morph = filters.ContinuousMorphology()
+    morph = ContinuousMorphology()
 
     // Erode mask
     mask1f = (FLOAT) mask1

@@ -9,7 +9,7 @@ sv = v[si]
 
 vl_s = Surface "selected_vessels.vtk"
 
-morph = filters.ContinuousMorphology()
+morph = ContinuousMorphology()
 
 sv = sv*-100
 #svd  = EDPdilate(sv,1,0.5)
