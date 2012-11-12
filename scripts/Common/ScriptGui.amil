@@ -480,6 +480,28 @@ if (!exists(ScriptGui)) \
     }
 
     #---------------------------------------------------------------------------
+    proc ::ReadParametersFromFile() \
+    {
+      res = wx.wxFileSelector("Select Parameter Filename",\
+                              ::scriptdata_path,"","",\
+                              "*.param*",wx.wxFD_OPEN)
+      param_file = res.ToStdString()
+      if (exists(::params)&&exists(::ParamClass)) {
+        del ::params_bak
+        ::ParamClass ::params_bak
+        ::params_bak = ::params
+        ::params.ReadFile(param_file)
+      } else {
+        func param_file
+      }
+      if exists(::UpdateGui) {
+        ::UpdateGui()
+      } else {
+        ::win.Update(-1)
+      }
+    }
+
+    #---------------------------------------------------------------------------
     proc ::ReadPARAM() \
     {
       selection = ::PARAMfilelistgui.GetSelected()
@@ -581,6 +603,8 @@ if (!exists(ScriptGui)) \
           win.AddButton("Save",::SaveParameters)
           win.SetPositionProp(1,2)
           win.AddButton("Read",::ReadParameters)
+          win.SetPositionProp(1,2)
+          win.AddButton("File",::ReadParametersFromFile)
           win.SetPositionProp(1,2)
           #win.AddButton("Scan",&::ScanParameters)
           win.SetPositionProp(1,2)

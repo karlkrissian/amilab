@@ -939,6 +939,7 @@ if (!exists(VolRenClass)) {
       ::SetRendererBg()
       ::win.Update(-1)
     }
+
     #---------------------------------------------------------------------------
     # Redefinition of Close to close the panel tab in main_book
     #

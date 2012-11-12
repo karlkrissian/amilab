@@ -33,7 +33,10 @@ Class vtkRendererClass : public ScriptGui \
   # initialize the parameters
   proc ::Init() {
     ::ParamClass ::params
-    ::renderer_name = ""
+    ::renderer_name  = ""
+    ::renderer2_name = ""
+    ::sync_camera  = false, "Allow synchronizing camera with second renderer"
+    ::camera_synced = false
   }
 
   #-----------------------------------------------------------------------------
@@ -74,9 +77,20 @@ Class vtkRendererClass : public ScriptGui \
     } else {
       InfoDialog "vtkRendererClass.SetRenderer(obj): wrong object type"
     }
-
     ::Update()
   }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetRenderer2( OBJECT obj) \
+  {
+    if obj.IsA("vtkRenderer") {
+      del ::vtkrenderer2
+      ::vtkrenderer2 = &obj
+    } else {
+      InfoDialog "vtkRendererClass.SetRenderer2(obj): wrong object type"
+    }
+  }
+
 
   #-----------------------------------------------------------------------------
   proc ::ChangeRenderer( ) \
@@ -196,6 +210,69 @@ Class vtkRendererClass : public ScriptGui \
   }
 
   #-----------------------------------------------------------------------------
+  proc ::CB_Renderer2( ) \
+  {
+    eval "::SetRenderer2(%1%);" % ::renderer2_name
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_CamEvent(OBJECT caller, NUM id ) \
+  {
+    #printn "::CB_CamEvent() Begin"
+    #::vtkrenderer.GetRenderWindow().GetInteractor().Render()
+    ::vtkrenderer2.GetActiveCamera().DeepCopy(::vtkrenderer.GetActiveCamera())
+    #RemoveObserver(::cam_cmd)
+    ::vtkrenderer2.GetRenderWindow().Render()
+    #printn "::CB_CamEvent() End"
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_SyncCamera( ) \
+  {
+    if (exists(::vtkrenderer)&&exists(::vtkrenderer2)) {
+      if (::sync_camera) {
+        # sync active camera
+        #::vtkrenderer2.SetActiveCamera(::vtkrenderer.GetActiveCamera())
+        if (!exists(::cam_cmd)) {
+          ::cam_cmd = vtk.vtkAmiCommand.New()
+          ::cam_cmd.SetAmiFunction(&::CB_CamEvent)
+        }
+        ::vtkrenderer.GetActiveCamera().AddObserver( vtk.vtkCommand.ModifiedEvent,\
+                                                  ::cam_cmd)
+        ::camera_synced = true
+      } else {
+        if (::camera_synced) {
+          ::vtkrenderer.GetActiveCamera().RemoveObserver(::cam_cmd)
+          cam2 = vtk.vtkCamera.New()
+          cam2.DeepCopy(::vtkrenderer.GetActiveCamera())
+          ::vtkrenderer2.SetActiveCamera(cam2)
+          ::camera_synced = false
+        }
+      }
+    }
+  }
+
+    #---------------------------------------------------------------------------
+    # Redefinition of Close to disconnect possible comparison
+    #
+    proc ::Close() \
+    {
+      if (::camera_synced) {
+        ::sync_camera=false
+        ::CB_SyncCamera()
+      }
+      if exists(::helpw) {
+        ::helpw.Destroy()
+      }
+      ::Attach()
+      ::win.HidePanel()
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close,  "Will close the interface and delete the "+\
+                        "corresponding "+\
+                        "object named '"+GetObjectName(::Close)+"'.")
+
+  #-----------------------------------------------------------------------------
   proc ::Gui( ) \
   {
       # parameters window
@@ -206,13 +283,19 @@ Class vtkRendererClass : public ScriptGui \
       }
       ::win.BeginBook()
         ::win.AddPage("Main")
+          # Select Renderer
+          ::win.AddAMIObjectChoice( &::renderer_name, "", "vtkRenderer")
+          ::win.SetCallback(::CB_Renderer)
+          # add gui
+          ::AddGui(::win)
 
-        # Select Renderer
-        ::win.AddAMIObjectChoice( &::renderer_name, "", "vtkRenderer")
-        ::win.SetCallback(::CB_Renderer)
-
-        # add gui
-        ::AddGui(::win)
+        ::win.AddPage("Compare")
+          # Select Renderer
+          ::win.AddAMIObjectChoice( &::renderer2_name, "", "vtkRenderer")
+          ::win.SetCallback(::CB_Renderer2)
+          # Sync camera
+          ::win.AddBoolean(::sync_camera, "Sync Camera 1-->2")
+          ::win.SetCallback(::CB_SyncCamera)
       ::win.EndBook()
   
       ::AddStandardButtons(&::win)
