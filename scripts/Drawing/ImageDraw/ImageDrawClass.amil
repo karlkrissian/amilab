@@ -231,6 +231,7 @@ if (!exists(ImageDrawClass)) {
         }
         ::input_draw.update()
         ::win.Update(::pencil_thickness_id)
+        #event.Skip()
       } else {
         event.Skip()
       }
@@ -635,24 +636,26 @@ if (!exists(ImageDrawClass)) {
     #---------------------------------------------------------------------------
     proc ::GetMaskFilename( ) \
     {
-      # Use input image if available
-      if exists(::input_name) {
-        # make replacements to have a valid name
-        wx_name = wx.wxString(::input_name)
-        wx_name.Replace("/","_")
-        wx_name.Replace("::","_")
-        wx_name.Replace(" ", "_")
-        wx_name.Replace(".", "_")
-        wx_name.Replace("(", "_")
-        wx_name.Replace(")", "_")
-        wx_name.Replace("[", "_")
-        wx_name.Replace("]", "_")
-        wx_name.Replace("-", "_")
-        wx_name.Replace("+", "_")
-        return = wx.FromWxString(wx_name)
-      } else {
-        return = ::classname
-      }
+      return =::GetParamFilename()
+
+      ## Use input image if available
+      #if exists(::input_name) {
+        ## make replacements to have a valid name
+        #wx_name = wx.wxString(::input_name)
+        #wx_name.Replace("/","_")
+        #wx_name.Replace("::","_")
+        #wx_name.Replace(" ", "_")
+        #wx_name.Replace(".", "_")
+        #wx_name.Replace("(", "_")
+        #wx_name.Replace(")", "_")
+        #wx_name.Replace("[", "_")
+        #wx_name.Replace("]", "_")
+        #wx_name.Replace("-", "_")
+        #wx_name.Replace("+", "_")
+        #return = wx.FromWxString(wx_name)
+      #} else {
+        #return = ::classname
+      #}
     }
 
     #---------------------------------------------------------------------------
