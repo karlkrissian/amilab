@@ -30,6 +30,7 @@ vtkCollection
 vtkColorTransferFunction
 vtkCommand
 vtkConeSource
+vtkCursor3D
 # need to fix vtkWeakPointer<> standard deleter??
 #vtkWeakPointer<vtkContext2D>
 vtkContextScene

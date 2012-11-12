@@ -44,6 +44,14 @@ if (!exists(NewScriptClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::CB_ScriptPath() {
+      # set category from the last directory of the path
+      a = wx.wxFileName(::new_script_dir+"/").GetDirs()
+      ::new_script_category = a.Last().ToStdString()
+      ::win.Update(::cat_id)
+    }
+
+    #---------------------------------------------------------------------------
     proc ::Gui() {
     
       if (exists(::parent_panel)) {
@@ -57,8 +65,9 @@ if (!exists(NewScriptClass)) {
         ::win.AddPage("Params")
 
          dir_id = ::win.AddDirname(&::new_script_dir,"Script Path")
+         ::win.SetCallback(::CB_ScriptPath)
          ::win.AddString(&::new_script_name,"Script Filename")
-         ::win.AddString(&::new_script_category,"Script Category")
+         ::cat_id = ::win.AddString(&::new_script_category,"Script Category")
          ::win.AddButton("Create", &::Create)
 
         # add help page

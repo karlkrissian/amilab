@@ -146,6 +146,20 @@ void ImageDraw_PositionParam::CB_PlanX (void* cd)
       Param->_pos._x = img->_tx-1;
       _this->UpdateParameter(_this->_id_planX);
     }
+      
+    // Adapt current zoom to include new position
+    if (Param->_Zoom._xmin>Param->_pos._x) {
+      Param->_Zoom._xmin = Param->_pos._x;
+      Param->_MAJ._planXY = true;
+      Param->_MAJ._planXZ = true;
+    }
+
+    // Adapt current zoom to include new position
+    if (Param->_Zoom._xmax<Param->_pos._x) {
+      Param->_Zoom._xmax = Param->_pos._x;
+      Param->_MAJ._planXY = true;
+      Param->_MAJ._planXZ = true;
+    }
 
     Param->_MAJ._planZY = true;
     di->Paint( );
@@ -179,6 +193,20 @@ void ImageDraw_PositionParam::CB_PlanY (void* cd)
       _this->UpdateParameter(_this->_id_planZ);
     }
 
+    // Adapt current zoom to include new position
+    if (Param->_Zoom._ymin>Param->_pos._y) {
+      Param->_Zoom._ymin = Param->_pos._y;
+      Param->_MAJ._planXY = true;
+      Param->_MAJ._planZY = true;
+    }
+
+    // Adapt current zoom to include new position
+    if (Param->_Zoom._ymax<Param->_pos._y) {
+      Param->_Zoom._ymax = Param->_pos._y;
+      Param->_MAJ._planXY = true;
+      Param->_MAJ._planZY = true;
+    }
+
     Param->_MAJ._planXZ = true;
     di->Paint( );
   }
@@ -209,6 +237,20 @@ void ImageDraw_PositionParam::CB_PlanZ (void* cd)
     {
       Param->_pos._z = img->_tz-1;
       _this->UpdateParameter(_this->_id_planZ);
+    }
+
+    // Adapt current zoom to include new position
+    if (Param->_Zoom._zmin>Param->_pos._z) {
+      Param->_Zoom._zmin = Param->_pos._z;
+      Param->_MAJ._planXZ = true;
+      Param->_MAJ._planZY = true;
+    }
+
+    // Adapt current zoom to include new position
+    if (Param->_Zoom._zmax<Param->_pos._z) {
+      Param->_Zoom._zmax = Param->_pos._z;
+      Param->_MAJ._planXZ = true;
+      Param->_MAJ._planZY = true;
     }
 
     Param->_MAJ._planXY = true;

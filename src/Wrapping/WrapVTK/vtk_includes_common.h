@@ -30,6 +30,7 @@
 #include <vtkCoordinate.h>
 #include <vtkCornerAnnotation.h>
 #include <vtkCubeAxesActor.h>
+#include <vtkCursor3D.h>
 #include <vtkDICOMImageReader.h>
 #include <vtkDirectory.h>
 #include <vtkDoubleArray.h>

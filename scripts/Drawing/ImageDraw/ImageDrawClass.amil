@@ -171,6 +171,14 @@ if (!exists(ImageDrawClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::OnEraseBg( OBJECT event) \
+    {
+      #printn "::OnEraseBg"
+      event.GetDC().GradientFillLinear(::win.GetClientRect(), \
+            wx.wxColour(200,200,200), wx.wxColour(150,150,255), wx.wxRIGHT)
+    }
+
+    #---------------------------------------------------------------------------
     proc ::OnLeftDown( OBJECT event) \
     {
       if ::enable_draw {
@@ -280,6 +288,13 @@ if (!exists(ImageDrawClass)) {
       ::input_draw.SetUseMask(    ::enable_mask)
       #::input_draw.PaintCallback( &::Draw)
 
+      # test bg of ::win
+      del ::evh_win_erasebg
+      ::evh_win_erasebg = wx.wxAmiEventHandler(::OnEraseBg)
+      ::win.Connect(wx.wxEVT_ERASE_BACKGROUND, \
+                    ::evh_win_erasebg.GetEraseEventFunction(),\
+                    NULL,::evh_win_erasebg)
+      
       # Set Mouse Motion Event
       del ::evh_mouse_motion
       ::evh_mouse_motion     = wx.wxAmiEventHandler(&::OnMotion)

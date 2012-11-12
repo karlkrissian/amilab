@@ -18,6 +18,11 @@
   AMI_DECLARE_TYPE(wxChildFocusEvent)
 #endif    
   
+#ifndef wxEraseEvent_declared
+  #define wxEraseEvent_declared
+  AMI_DECLARE_TYPE(wxEraseEvent)
+#endif  
+
 #ifndef wxFocusEvent_declared
   #define wxFocusEvent_declared
   AMI_DECLARE_TYPE(wxFocusEvent)
@@ -143,6 +148,21 @@ class wxAmiEventHandler: public wxEvtHandler
       event.Skip();
     }
    
+   
+    void OnEraseEvent(wxEraseEvent& event)
+    {
+      if (callback_function!=NULL)
+      {
+        ParamList::ptr p(new ParamList());
+        // Add the event to the list
+        BasicVariable::ptr v = AMILabType<wxEraseEvent>::CreateVar(
+                                                  (wxEraseEvent*)&event,true);
+        p->AddParam(v);
+        CallAmiFunction(callback_function,p);
+      }
+      else
+        wxLogMessage(wxT("Callback function not available"));
+    }
    
     void OnFocusEvent(wxFocusEvent& event)
     {
@@ -345,6 +365,12 @@ class wxAmiEventHandler: public wxEvtHandler
     wxObjectEventFunction* GetEventFunction() {
       // TODO: delete the new allocation
       eventfunc = new wxObjectEventFunction(wxCommandEventHandler(wxAmiEventHandler::OnEvent));
+      return eventfunc;
+    }
+
+    wxObjectEventFunction* GetEraseEventFunction() {
+      // TODO: delete the new allocation
+      eventfunc = new wxObjectEventFunction(wxEraseEventHandler(wxAmiEventHandler::OnEraseEvent));
       return eventfunc;
     }
 

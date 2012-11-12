@@ -1,0 +1,11 @@
+
+func "vtkCursor3DClass"
+
+if (!exists(vtkCursor3D_obj)) {
+  vtkCursor3DClass vtkCursor3D_obj
+  vtkCursor3D_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

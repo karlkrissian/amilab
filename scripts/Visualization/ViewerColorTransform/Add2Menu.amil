@@ -7,4 +7,4 @@
 
 # Scripts Menu
 ami.MainFrame.AddToMenu("&Scripts","&Visualization","&ViewerColorTransform",\
-                        "ViewerColorTransformGui.amil")
+                        op_system.GetCurrentScriptDir()+"/ViewerColorTransformGui.amil")

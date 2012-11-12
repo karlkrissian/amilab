@@ -1,119 +1,117 @@
 
 func "Common/ScriptGui"
 
-if (!exists(ScriptExampleClass)) {
+del ScriptExampleClass
 
-  Class ScriptExampleClass : public ScriptGui \
-  {
-    
-    func "Variable/ObjectIO"
-    #===========================================================================
-    # Set parameters here
-    Class ::ParamClass : public ObjectIO {
-
-        ::description = "Default parameters", \
-                        "Description of the set of parameters"
-
-
-        #-----------------------------------------------------------------------
-        # copy parameters
-        proc ::__assign__( VAR p) {
-        }
-    }
-
-    #---------------------------------------------------------------------------
-    proc ::Init() {
-      
-      ::input_name   = "","Name of the input image variable"
-
-      ::ParamClass ::params
-
-      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
-      # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
-
-      ::html_filename = GetScriptsDir+\
-                        "/ScriptExample/Doc/ScriptExample/index.html"
-    }
-
-
-    #---------------------------------------------------------------------------
-    proc ::load_input() {
-      eval "::input <<= (FLOAT)"+::input_name+";"
-      if (::input_name=="BrowseImage") {
-        ::input_name = "::input"
-        ::win.Update(-1)
-      }
+Class ScriptExampleClass : public ScriptGui \
+{
   
-      if (exists(::win)) {
-        ::win.Update(-1)
+  func "Variable/ObjectIO"
+  #===========================================================================
+  # Set parameters here
+  Class ::ParamClass : public ObjectIO {
+
+      ::description = "Default parameters", \
+                      "Description of the set of parameters"
+
+
+      #-----------------------------------------------------------------------
+      # copy parameters
+      proc ::__assign__( VAR p) {
       }
-    }
-    Comments( ::load_input, "Copies the input image in a local image "+\
-                            "member named 'input'")
-
-
-    #---------------------------------------------------------------------------
-    proc ::Run() \
-    {
-      if (!exists(::input)) {
-        Infodialog "First load the input image !"
-      } else {
-        InfoDialog "Filtro fantastico :) !!!"
-      }
-    }
-
-    #---------------------------------------------------------------------------
-    proc ::Gui() {
-    
-      if (exists(::parent_panel)) {
-        ::win = ParamPanel("ScriptExample",&::parent_panel)
-      } else {
-        ::win = ParamPanel("ScriptExample")
-      }
-      
-      ::win.BeginBook()
-    
-        ::win.AddPage("Init")
-
-          ::win.BeginBoxPanel("Input Image")
-            # set the input image
-            ::win.BeginHorizontal()
-              ::win.AddImageChoice( &::input_name, "")
-              ::win.AddButton("Load",::load_input)
-            ::win.EndHorizontal()
-          ::win.EndBoxPanel()
-
-        ::win.AddPage("Param")
-          ::win.AddLabel("Info:","Set your parameters here")
-
-        ::win.AddPage("Run")
-          ::win.AddButton("Run Filter",::Run)
-
-        # add page for saving/loading parameters
-        ::AddParamPage(&::win)
-
-        # add help page
-        if wx.wxFileName(::html_filename).FileExists() {
-          ::AddHelpPage(&::win)
-        }
-    
-      ::win.EndBook()
-    
-      ::AddStandardButtons(&::win)
-
-      if (exists(::parent_panel)) {
-        ::win.ShowPanel()
-      } else {
-        ::win.Display()
-      }
-      ::win.Update(-1)
-
-
-    }
-    ::Init()
-    
   }
-  # End of class
+
+  #---------------------------------------------------------------------------
+  proc ::Init() {
+    
+    ::input_name   = "","Name of the input image variable"
+
+    ::ParamClass ::params
+
+    #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+    # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+    ::html_filename = GetScriptsDir+\
+                      "/ScriptExample/Doc/ScriptExample/index.html"
+  }
+
+
+  #---------------------------------------------------------------------------
+  proc ::load_input() {
+    eval "::input <<= (FLOAT)"+::input_name+";"
+    if (::input_name=="BrowseImage") {
+      ::input_name = "::input"
+      ::win.Update(-1)
+    }
+
+    if (exists(::win)) {
+      ::win.Update(-1)
+    }
+  }
+  Comments( ::load_input, "Copies the input image in a local image "+\
+                          "member named 'input'")
+
+
+  #---------------------------------------------------------------------------
+  proc ::Run() \
+  {
+    if (!exists(::input)) {
+      Infodialog "First load the input image !"
+    } else {
+      InfoDialog "Filtro fantastico :) !!!"
+    }
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::Gui() {
   
-} 
-# End of If
+    if (exists(::parent_panel)) {
+      ::win = ParamPanel("ScriptExample",&::parent_panel)
+    } else {
+      ::win = ParamPanel("ScriptExample")
+    }
+    
+    ::win.BeginBook()
+  
+      ::win.AddPage("Init")
+
+        ::win.BeginBoxPanel("Input Image")
+          # set the input image
+          ::win.BeginHorizontal()
+            ::win.AddImageChoice( &::input_name, "")
+            ::win.AddButton("Load",::load_input)
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+
+      ::win.AddPage("Param")
+        ::win.AddLabel("Info:","Set your parameters here")
+
+      ::win.AddPage("Run")
+        ::win.AddButton("Run Filter",::Run)
+
+      # add page for saving/loading parameters
+      ::AddParamPage(&::win)
+
+      # add help page
+      if wx.wxFileName(::html_filename).FileExists() {
+        ::AddHelpPage(&::win)
+      }
+  
+    ::win.EndBook()
+  
+    ::AddStandardButtons(&::win)
+
+    if (exists(::parent_panel)) {
+      ::win.ShowPanel()
+    } else {
+      ::win.Display()
+    }
+    ::win.Update(-1)
+
+
+  }
+  ::Init()
+  
+}
+# End of class
+  

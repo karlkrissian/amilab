@@ -110,10 +110,10 @@ if (!exists(DistancePolyDataClass)) {
       actor.SetMapper( mapper )
     
       if (use_scalarbar) {
-        scalarBar = vtk.vtkScalarBarActor.New()
-        scalarBar.SetLookupTable(mapper.GetLookupTable())
-        scalarBar.SetTitle("Distance")
-        scalarBar.SetNumberOfLabels(::params.labels)
+        ::scalarBar = vtk.vtkScalarBarActor.New()
+        ::scalarBar.SetLookupTable(mapper.GetLookupTable())
+        ::scalarBar.SetTitle("Distance")
+        ::scalarBar.SetNumberOfLabels(::params.labels)
       }
 
       # Create image of distances
@@ -126,7 +126,7 @@ if (!exists(DistancePolyDataClass)) {
       return = VarVector()
       return.push_back(actor)
       if (use_scalarbar) {
-        return.push_back(scalarBar)
+        return.push_back(::scalarBar)
       }
       return.push_back(valim)
       

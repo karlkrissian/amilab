@@ -1,0 +1,10 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+
+# Scripts Menu
+ami.MainFrame.AddToMenu("&Scripts","&VTKControls","&vtkCursor3D",\
+    op_system.GetCurrentScriptDir()+"/vtkCursor3DGui.amil")
