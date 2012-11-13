@@ -73,6 +73,9 @@ if (!exists(vtkChartClass)) {
     #---------------------------------------------------------------------------
     proc ::Update() \
     {
+      ::params.show_legend = ::vtkchart.GetShowLegend()
+      ::params.title = ::vtkchart.GetTitle().convert_string()
+      
       # deal with plots
       ::num_plots = ::vtkchart.GetNumberOfPlots()
       if (::selected_plot>=::num_plots) { ::selected_plot = ::num_plots-1;  }
@@ -157,30 +160,35 @@ if (!exists(vtkChartClass)) {
       if (!exists(::win)) {
         ::win = &win
       }
-      win.BeginBoxPanel("vtkChart control")
-        win.BeginHorizontal()
-          ::nbplots_id   = win.AddLabel("Plots:", "")
-          ::nbaxes_id    = win.AddLabel("Axes:", "")
-        win.EndHorizontal()
-        win.BeginHorizontal()
-          win.AddBoolean(::params.show_legend,"Legend")
-          win.SetCallback(::CB_ShowLegend)
-          win.AddString(::params.title,"Title")
-          win.SetCallback(::CB_Title)
-        win.EndHorizontal()
-        win.BeginBoxPanel("Plots")
+      win.BeginBook()
+        # Main tab
+        win.AddPage("vtkChart")
+          win.BeginHorizontal()
+            ::nbplots_id   = win.AddLabel("Plots:", "")
+            ::nbaxes_id    = win.AddLabel("Axes:", "")
+          win.EndHorizontal()
+          win.BeginHorizontal()
+            win.AddBoolean(::params.show_legend,"Legend")
+            win.SetCallback(::CB_ShowLegend)
+            win.AddString(::params.title,"Title")
+            win.SetCallback(::CB_Title)
+          win.EndHorizontal()
+
+        # Plots
+        win.AddPage("Plots")
           ::plot_id = win.AddInt(::selected_plot,"Plot",0,::num_plots-1)
           win.SetCallback(::CB_SelectPlot)
           # Add Plot Gui
           ::plotctrl.AddGui(::win)
-        win.EndBoxPanel()
-        win.BeginBoxPanel("Axes")
+
+        # Axes
+        win.AddPage("Axes")
           ::axis_id = win.AddInt(::selected_axis,"Axis",0,::num_axes-1)
           win.SetCallback(::CB_SelectAxis)
           # Add Axis Gui
           ::axisctrl.AddGui(::win)
-        win.EndBoxPanel()
-        win.EndBoxPanel()
+      win.EndBook()
+        
     }
 
     #---------------------------------------------------------------------------
@@ -195,7 +203,7 @@ if (!exists(vtkChartClass)) {
       ::win.BeginBook()
         ::win.AddPage("Main")
           # Select Chart
-          ::win.AddAMIObjectChoice( &::chart_name, "", "vtkChart")
+          ::win.AddAMIObjectChoice( ::chart_name, "", "vtkChart")
           ::win.SetCallback(::CB_Chart)
           # add gui
           ::AddGui(::win)

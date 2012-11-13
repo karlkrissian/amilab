@@ -334,8 +334,8 @@ if (!exists(vtkXYPlotClass)) {
           ::win.EndHorizontal()
 
         ::win.AddPage("Chart")
-            # Add Chart Gui
-            ::chartctrl.AddGui(::win)
+          # Add Chart Gui
+          ::chartctrl.AddGui(::win)
         if wx.wxFileName(::html_filename).FileExists() {
           ::AddHelpPage(&::win)
         }

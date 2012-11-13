@@ -7,7 +7,8 @@ if (!exists(DistancePolyDataClass)) {
   {
     
     func "Visualization/vtkXYPlot/vtkXYPlotClass"
-    vtkXYPlotClass ::xyplot
+    vtkXYPlotClass ::xyplot_histo
+    vtkXYPlotClass ::xyplot_dice
 
     func "Variable/ObjectIO"
     #===========================================================================
@@ -98,7 +99,10 @@ if (!exists(DistancePolyDataClass)) {
       mapper =  vtk.vtkPolyDataMapper.New()
       mapper.SetInputConnection( distanceFilter.GetOutputPort() )
       r = vector_double(2)
-      distanceFilter.GetOutput().GetPointData().GetScalars().GetRange_4(&r[0])
+      distanceFilter.GetOutput().GetPointData().GetScalars().GetRange_4(r[0])
+      printn "Range = %1%" % r[0] + ", %1%" % r[1]
+      distanceFilter.GetOutput().GetPointData().GetScalars().GetRange(r[0])
+      printn "Range = %1%" % r[0] + ", %1%" % r[1]
       ::win.FloatConstraints(::range_min_id,r[0],0,r[0])
       ::win.FloatConstraints(::range_max_id,0,r[1],r[0])
       #::params.range_min = r[0]
@@ -110,6 +114,7 @@ if (!exists(DistancePolyDataClass)) {
       actor.SetMapper( mapper )
     
       if (use_scalarbar) {
+        del ::scalarBar
         ::scalarBar = vtk.vtkScalarBarActor.New()
         ::scalarBar.SetLookupTable(mapper.GetLookupTable())
         ::scalarBar.SetTitle("Distance")
@@ -146,6 +151,22 @@ if (!exists(DistancePolyDataClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::ClearActors(OBJECT renderer) \
+    {
+      # empty actors
+      r1_actors = renderer.GetActors()
+      r1_actors.InitTraversal()
+      a = r1_actors.GetNextActor()
+      ok = language.WrapVariable(a).GetTypeName()!="int"
+      while ok {
+        renderer.RemoveActor(a)
+        del a
+        a = r1_actors.GetNextActor()
+        ok = language.WrapVariable(a).GetTypeName()!="int"
+      }
+    }
+
+    #---------------------------------------------------------------------------
     proc ::Run() \
     {
       # always reload the surfaces
@@ -153,23 +174,31 @@ if (!exists(DistancePolyDataClass)) {
       del ::vtksurf2
       eval "::vtksurf1 = vtktools.ToVtkPolyData(&%1%);" % ::surface1_selected
       eval "::vtksurf2 = vtktools.ToVtkPolyData(&%1%);" % ::surface2_selected
+      
+      ::ClearActors(::renderer)
+      ::ClearActors(::renderer2)
     
       actors1 = ::ProcessAndDisplay(::vtksurf1,::vtksurf2, true)
       ::renderer.AddActor( actors1[0] )
       ::renderer.AddActor2D(actors1[1])
       ::renwin_interact.GetRenderWindow().Render()
+      del ::dist1
       ::dist1 = actors1[2]
 
       actors2 = ::ProcessAndDisplay(::vtksurf2,::vtksurf1, false)
       ::renderer2.AddActor( actors2[0] )
       ::renwin_interact2.GetRenderWindow().Render()
+      del ::dist2
       ::dist2 = actors2[1]
 
       # share active camera
-      ::renderer2.SetActiveCamera(::renderer.GetActiveCamera())
-      ::cam_cmd = vtk.vtkAmiCommand.New()
-      ::cam_cmd.SetAmiFunction(&::CB_CamEvent)
-      ::renderer.GetActiveCamera().AddObserver(vtk.vtkCommand.ModifiedEvent, &::cam_cmd)
+      if (!exists(::cam_cmd)) {
+        ::renderer2.SetActiveCamera(::renderer.GetActiveCamera())
+        ::cam_cmd = vtk.vtkAmiCommand.New()
+        ::cam_cmd.SetAmiFunction(::CB_CamEvent)
+        ::renderer.GetActiveCamera().AddObserver( vtk.vtkCommand.ModifiedEvent,\
+                                                  ::cam_cmd)
+      }
       ::renderer.ResetCamera()
  
       #renWin.Render()
@@ -201,6 +230,36 @@ if (!exists(DistancePolyDataClass)) {
       printn "mean of abs = %1%" % mean(abs(::dist2))
       printn "RMS = %1%" %sqrt(mean(::dist2*::dist2))
       ::histo2 = histo(::dist2,d2min,d2max,(d2max-d2min)/0.1)
+      
+      # Update in xyplot_histo
+      ::xyplot_histo.set_input(::histo1)
+      ::xyplot_histo.RunImage()
+
+      ::xyplot_histo.set_input(::histo2)
+      ::xyplot_histo.RunImage()
+      
+      chart=&::xyplot_histo.chart
+      chart.SetTitle("Distances")
+      chart.SetShowLegend(true)
+      
+      # Change titles and colors
+      p0 = chart.GetPlot(0)
+      p0.SetLabel("auto-->manual")
+      p0.SetColor(0,0,1)
+
+      p1 = chart.GetPlot(1)
+      p1.SetLabel("manual-->auto")
+      p1.SetColor(1,0,0)
+      
+      xaxis = chart.GetAxis(1)
+      xaxis.SetTitle("Signed distance")
+      xaxis.SetMinimum(-3)
+      xaxis.SetMaximum(3)
+      
+      yaxis = chart.GetAxis(0)
+      yaxis.SetTitle("Number of vertices")
+      
+      ::xyplot_histo.chartctrl.Update()
     }
     
     #----------------------------
@@ -313,9 +372,13 @@ if (!exists(DistancePolyDataClass)) {
           ::win.AddButton("Run Filter",::Run)
           ::win.AddButton("Stats",::Stats)
 
-          ::xyplot.SetParentPanel(::win.CurrentParent())
-          ::xyplot.Gui()
-          ::win.AddPage("Hist",::xyplot.win)
+          ::xyplot_histo.SetParentPanel(::win.CurrentParent())
+          ::xyplot_histo.Gui()
+          ::win.AddPage("Hist",::xyplot_histo.win)
+
+          ::xyplot_dice.SetParentPanel(::win.CurrentParent())
+          ::xyplot_dice.Gui()
+          ::win.AddPage("Dice",::xyplot_dice.win)
 
         # add page for saving/loading parameters
         ::AddParamPage(&::win)

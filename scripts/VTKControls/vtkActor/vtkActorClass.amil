@@ -52,10 +52,13 @@ Class vtkActorClass : public ScriptGui \
   proc ::Update() \
   {
     ::vtk_front_property.Update()
-    ::vtk_back_property .Update()
+    if (::params.use_backface_property) {
+      ::vtk_back_property .Update()
+    }
     printn "::use_backface_property %1% " % ::params.use_backface_property
     ::win.EnablePanel(::backprop_id,::params.use_backface_property)
-    ::visibility = ::vtkactor.GetVisibility()
+    ::params.visibility = ::vtkactor.GetVisibility()
+    ::win.Update(::visibility_id)
   }
 
   #-----------------------------------------------------------------------------
@@ -75,8 +78,8 @@ Class vtkActorClass : public ScriptGui \
       ::vtk_front_property.SetProperty(::vtkactor.GetProperty())
       #::vtk_back_property. SetProperty(::vtkactor.GetProperty())
       if (exists(::callback)) {
-        ::vtk_front_property.SetCallback(&::callback)
-        ::vtk_back_property. SetCallback(&::callback)
+        ::vtk_front_property.SetCallback(::callback)
+        ::vtk_back_property. SetCallback(::callback)
       }
 
       # Check if it has a back property
@@ -96,6 +99,7 @@ Class vtkActorClass : public ScriptGui \
     }
 
     ::Update()
+    ::win.Update(-1)
   }
 
   #-----------------------------------------------------------------------------
@@ -140,6 +144,7 @@ Class vtkActorClass : public ScriptGui \
         }
       }
       ::Update()
+      ::ChangeProperty()
     } else {
       InfoDialog "Choose the input actor first"
     }
@@ -149,6 +154,7 @@ Class vtkActorClass : public ScriptGui \
   proc ::CB_Visibility( ) \
   {
     ::vtkactor.SetVisibility(::params.visibility)
+    ::ChangeProperty()
   }
 
   #-----------------------------------------------------------------------------
@@ -158,14 +164,18 @@ Class vtkActorClass : public ScriptGui \
     if (!exists(::win)) {
       ::win = &win
     }
-    win.BeginBoxPanel("vtkActor control")
-      win.AddBoolean(::params.visibility,"Visibility")
-      win.SetCallback(::CB_Visibility)
-      ::frontprop_id = ::vtk_front_property.AddGui(win)
-      win.AddBoolean(::params.use_backface_property,"Backface property")
-      win.SetCallback(::CB_BackProp)
-      ::backprop_id  = ::vtk_back_property. AddGui(win)
-    win.EndBoxPanel()
+  #  win.BeginBoxPanel("vtkActor control")
+      win.BeginBook()
+        win.AddPage("Actor Properties")
+          ::visibility_id = win.AddBoolean(::params.visibility,"Visibility")
+          win.SetCallback(::CB_Visibility)
+          ::frontprop_id = ::vtk_front_property.AddGui(win)
+        win.AddPage("Back")
+          win.AddBoolean(::params.use_backface_property,"Backface property")
+          win.SetCallback(::CB_BackProp)
+          ::backprop_id  = ::vtk_back_property. AddGui(win)
+      win.EndBook()
+  #  win.EndBoxPanel()
   }
 
 

@@ -598,7 +598,14 @@ if (!exists(ScriptGui)) \
       # here put dropbox???
       ::PARAMfilelistgui.SetSelectionCommand(::ReadPARAM)
 
-      win.AddPage("ParamIO")
+      #-------------------------------------------------------------------------
+      # ParamIO page with bitmap
+      win.AddPage("")
+      paramio_page = win.GetBookCtrl().GetPageCount()-1
+      ::icons.LoadIconPNG("Attach")
+      win.GetBookCtrl().SetPageBitmap(paramio_page,::icons._Attach.Scale(16,16))
+      win.GetBookCtrl().SetPageToolTip(paramio_page,"Read/Write Parameters")
+      #win.AddPage("ParamIO")
         win.BeginHorizontal()
           win.AddButton("Save",::SaveParameters)
           win.SetPositionProp(1,2)

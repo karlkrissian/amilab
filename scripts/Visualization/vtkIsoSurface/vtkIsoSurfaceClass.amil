@@ -25,6 +25,7 @@ if (!exists(vtkIsoSurfaceClass)) {
 
     func "VTKControls/vtkProperty/vtkPropertyClass"
     vtkPropertyClass ::vtk_property1_gui
+    vtkPropertyClass ::vtk_property2_gui
 
     #----------------------------
     proc ::Init() \
@@ -208,6 +209,30 @@ if (!exists(vtkIsoSurfaceClass)) {
     }
     Comments(::StartNew,"Starts rendering of first volume.")
 
+    #----------------------------
+    proc ::AddVolume2() \
+    {
+      if (!exists(::input2)) {
+        ::load_input2()
+      }
+
+      if (!exists(::renderer)) {
+        InfoDialog "Missing renderer ..."
+      } else {
+        #if (exists(::renwin_interact)) { del ::renwin_interact; }
+        if (!exists(::renwin_interact)) {
+          ::renwin_interact = wxvtk.wxVTKFrame()
+        }
+
+        ::StartVolume2()
+
+        ::vtk_property2_gui.SetProperty(::vol2_actor.GetProperty())
+        ::vtk_property2_gui.SetCallback(::Vol2PropertyCallback)
+      }
+
+
+    }
+    Comments(::AddVolume2,"Adds rendering of second volume.")
 
     #----------------------------
     proc ::StartVolume1() \
@@ -245,42 +270,54 @@ if (!exists(vtkIsoSurfaceClass)) {
       ::SetRendererBg()
       ::renderer.ResetCamera()
       ::BackupView()
+      ::renwin_interact.Render()
+    }
+
+    #----------------------------
+    proc ::StartVolume2() \
+    {
+
+      # Create isosurface and vtkPolyData 
+      vol2_isosurf = isosurf(::input2,::vol2_threshold)
+      del ::vol2_polydata
+      ::vol2_polydata = vtktools.ToVtkPolyData(&vol2_isosurf)
+
+      # compute normals
+      ::renderer.ResetCamera()
+      ::vol2_normals = vtk.vtkPolyDataNormals.New()
+      ::vol2_normals.SetInput(::vol2_polydata)
+      ::vol2_normals.SetFeatureAngle(60.0)
+
+      # need a vtkPolyDataMapper here ...
+      ::vol2_mapper = vtk.vtkPolyDataMapper.New()
+      ::vol2_mapper.SetInputConnection(::vol2_normals.GetOutputPort())
+      ::vol2_mapper.ScalarVisibilityOff()
+      #::vol1_mapper.ImmediateModeRenderingOn()
+      # use display list to display faster ...
+      ::vol2_mapper.ImmediateModeRenderingOff()
+
+      # create actor
+      ::vol2_actor = vtk.vtkActor.New()
+      ::vol2_actor.SetMapper(::vol2_mapper)
+      # Set Color Property ...
+
+      ::renderer.AddActor(::vol2_actor)
+      ::renderer.ResetCameraClippingRange()
+      ::renwin_interact.Render()
+
     }
 
     #----------------------------
     proc ::ApplyVol1() \
     {
-      if (!exists(::renderer)) {
+      if (!exists(::vol1_actor)) {
         ::StartNew()
-        ::renwin_interact.Render()
       } else {
         vol1_isosurf = isosurf(::input,::vol1_threshold)
         del ::vol1_polydata
         ::vol1_polydata = vtktools.ToVtkPolyData(&vol1_isosurf)
         ::vol1_normals.SetInput(&::vol1_polydata)
-
-        ## compute normals
-        #::SetRendererBg()
-        #::renderer.ResetCamera()
-        #::vol1_normals = vtk.vtkPolyDataNormals.New()
-        #::vol1_normals.SetInput(&::vol1_polydata)
-        #::vol1_normals.SetFeatureAngle(60.0)
-
-        ## need a vtkPolyDataMapper here ...
-        #::vol1_mapper = vtk.vtkPolyDataMapper.New()
-        #::vol1_mapper.SetInputConnection(&::vol1_normals.GetOutputPort())
-        #::vol1_mapper.ScalarVisibilityOff()
-        ##::vol1_mapper.ImmediateModeRenderingOn()
-        ## use display list to display faster ...
-        #::vol1_mapper.ImmediateModeRenderingOff()
-
-        ## create actor
-        #::vol1_actor = vtk.vtkActor.New()
-        #::vol1_actor.SetMapper(&::vol1_mapper)
-        ## need a vtkPolyDataMapper here ...
-
         ::renderer.ResetCamera()
-        ::renwin.Render()
         ::renwin_interact.Render()
       }
     }
@@ -288,6 +325,16 @@ if (!exists(vtkIsoSurfaceClass)) {
     #----------------------------
     proc ::ApplyVol2() \
     {
+      if (!exists(::vol2_actor)) {
+        ::AddVolume2()
+      } else {
+        vol2_isosurf = isosurf(::input2,::vol2_threshold)
+        del ::vol2_polydata
+        ::vol2_polydata = vtktools.ToVtkPolyData(&vol2_isosurf)
+        ::vol2_normals.SetInput(&::vol2_polydata)
+        ::renderer.ResetCamera()
+        ::renwin_interact.Render()
+      }
     }
 
     #----------------------------
@@ -305,37 +352,6 @@ if (!exists(vtkIsoSurfaceClass)) {
         ::renderer.SetGradientBackground( ::UseGradientBackground)
       }
     }
-
-    #----------------------------
-    proc ::AddVolume2() \
-    {
-      if (!exists(::input2)) {
-        ::load_input2()
-      }
-
-      if (exists(::renwin_interact)) \
-      {
-
-        if (::vtkvol2.initialized>0.5) {
-          ::vtkvol2.ResetVTK()
-        }
-        ::vtkvol2.SetInteractor(&::renwin_interact)
-        ::vtkvol2.SetRenderer(&::renderer)
-        ::vtkvol2.SetRenderWindow(&::renwin)
-        volok = ::vtkvol2.CreateVTK( &::input2)
-
-        if (volok>0.5) {
-          ::vtkvol2.ReCompute()
-
-          # Add the volume to the scene
-          ::renderer.AddVolume( &::vtkvol2.vol )
-          #::renderer.ResetCamera()
-          ::renwin_interact.Render()
-        }
-      }
-
-    }
-    Comments(::AddVolume2,"Adds rendering of second volume.")
 
     #----------------------------
      proc ::InitCamera() {
@@ -474,6 +490,12 @@ if (!exists(vtkIsoSurfaceClass)) {
     }
 
     #----------------------------
+    proc ::Vol2PropertyCallback() \
+    {
+      ::renwin_interact.Render()
+    }
+
+    #----------------------------
     proc ::ChangeView()  \
     {    
       ::renderer.GetActiveCamera().Azimuth(::azimuth)
@@ -536,13 +558,13 @@ if (!exists(vtkIsoSurfaceClass)) {
         ::win = ParamPanel("vtkIsoSurface")
       }
       
-      ::win.BeginHorizontal()
-        ::AddBitmapButton16(&::win, &::icons._Show, "StartNew")
-        ::win.SetPositionProp(1)
-        ::icons.LoadIconPNG("Add")
-        ::AddBitmapButton16(&::win, &::icons._Add, "AddVolume2")
-        ::win.SetPositionProp(1)
-      ::win.EndHorizontal()
+      #::win.BeginHorizontal()
+      #  ::AddBitmapButton16(&::win, &::icons._Show, "StartNew")
+      #  ::win.SetPositionProp(1)
+      #  ::icons.LoadIconPNG("Add")
+      #  ::AddBitmapButton16(&::win, &::icons._Add, "AddVolume2")
+      #  ::win.SetPositionProp(1)
+      #::win.EndHorizontal()
 
       ::win.BeginBook()
     
@@ -578,19 +600,20 @@ if (!exists(vtkIsoSurfaceClass)) {
             ::vol2_page = ::win.AddPage("Vol2")
               ::vol2threshold_id = ::win.AddFloat(::vol2_threshold,"Th",0,255)
               ::win.AddButton("Apply",::ApplyVol2)
+              ::vtk_property2_gui.AddGui(::win)
           ::win.EndBook()
 
         ::win.AddPage("Scene")
-          ::win.BeginBoxPanel("Background")
-            ::win.BeginHorizontal()
-              ::win.AddColor("Color",&::background_color)
-              ::win.SetCallback(&::SetRendererBg)
-              ::win.AddColor("Color 2",&::background_color2)
-              ::win.SetCallback(&::SetRendererBg)
-            ::win.EndHorizontal()
-            ::win.AddBoolean(&::UseGradientBackground,"Gradient")
-            ::win.SetCallback(&::SetRendererBg)
-          ::win.EndBoxPanel()
+          #::win.BeginBoxPanel("Background")
+            #::win.BeginHorizontal()
+              #::win.AddColor("Color",&::background_color)
+              #::win.SetCallback(&::SetRendererBg)
+              #::win.AddColor("Color 2",&::background_color2)
+              #::win.SetCallback(&::SetRendererBg)
+            #::win.EndHorizontal()
+            #::win.AddBoolean(&::UseGradientBackground,"Gradient")
+            #::win.SetCallback(&::SetRendererBg)
+          #::win.EndBoxPanel()
           
           ::win.BeginBoxPanel("Snapshot")
             ::win.AddButton("Get",&::GetSnapshot)

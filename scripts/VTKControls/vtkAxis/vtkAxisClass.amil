@@ -54,6 +54,16 @@ if (!exists(vtkAxisClass)) {
       ::params.title         = ::vtkaxis.GetTitle().convert_string()
       ::params.gridvisible   = ::vtkaxis.GetGridVisible()
       ::params.labelsvisible = ::vtkaxis.GetLabelsVisible()
+      ::params.minval        = ::vtkaxis.GetMinimum()
+      ::params.maxval        = ::vtkaxis.GetMaximum()
+      
+      minlimit = ::params.minval #::vtkaxis.GetMinimumLimit()
+      maxlimit = ::params.maxval #::vtkaxis.GetMaximumLimit()
+      diff = maxlimit-minlimit
+      minlimit -= diff/4
+      maxlimit += diff/4
+      ::win.FloatConstraints(::minval_id,minlimit,maxlimit,::params.minval)
+      ::win.FloatConstraints(::maxval_id,minlimit,maxlimit,::params.maxval)
       ::win.Update(-1)
 
     }
@@ -100,6 +110,16 @@ if (!exists(vtkAxisClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::CB_Range( ) \
+    {
+      if (exists(::vtkaxis)) {
+        ::vtkaxis.SetMinimum(::params.minval)
+        ::vtkaxis.SetMaximum(::params.maxval)
+        ::Modified()
+      }
+    }
+
+    #---------------------------------------------------------------------------
     # create the gui on a ParamPanel
     proc ::AddGui( OBJECT win) \
     {
@@ -115,6 +135,12 @@ if (!exists(vtkAxisClass)) {
           win.AddBoolean(::params.labelsvisible,"Labels")
           win.SetCallback(::CB_Labels)
         win.EndHorizontal()
+        win.BeginBoxPanel("Range")
+          ::minval_id = win.AddFloat(::params.minval,"min",0,10)
+          ::win.SetCallback(::CB_Range)
+          ::maxval_id = win.AddFloat(::params.maxval,"max",0,10)
+          ::win.SetCallback(::CB_Range)
+        win.EndBoxPanel()
       win.EndBoxPanel()
     }
 
@@ -152,7 +178,7 @@ if (!exists(vtkAxisClass)) {
         ::win.AddPage("Main")
           # Select Pen
           ::win.AddAMIObjectChoice( &::axis_name, "", "vtkAxis")
-          ::win.SetCallback(::CB_Pen)
+          ::win.SetCallback(::CB_Axis)
           # add gui
           ::AddGui(::win)
         # add page for saving/loading parameters

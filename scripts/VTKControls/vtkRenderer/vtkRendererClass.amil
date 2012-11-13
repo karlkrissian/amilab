@@ -6,6 +6,8 @@ func "Common/ScriptGui"
 
 Class vtkRendererClass : public ScriptGui \
 {
+  func "VTKControls/vtkActor/vtkActorClass"
+  vtkActorClass ::actor_ctrl
 
   func "Variable/ObjectIO"
   # 
@@ -37,6 +39,7 @@ Class vtkRendererClass : public ScriptGui \
     ::renderer2_name = ""
     ::sync_camera  = false, "Allow synchronizing camera with second renderer"
     ::camera_synced = false
+    ::select_actor = INT(0), "Select an actor by index"
   }
 
   #-----------------------------------------------------------------------------
@@ -48,16 +51,17 @@ Class vtkRendererClass : public ScriptGui \
   #-----------------------------------------------------------------------------
   proc ::Update() \
   {
+    nb_actors = ::vtkrenderer.GetActors().GetNumberOfItems()
     ::win.SetLabelValue(::nblights_id,\
                         "%1%" % ::vtkrenderer.GetLights().GetNumberOfItems())
-    ::win.SetLabelValue(::nbactors_id,\
-                        "%1%" % ::vtkrenderer.GetActors().GetNumberOfItems())
+    ::win.SetLabelValue(::nbactors_id, "%1%" % nb_actors)
     ::win.SetLabelValue(::nbvols_id,\
                         "%1%" % ::vtkrenderer.GetVolumes().GetNumberOfItems())
     ::win.SetLabelValue(::time_id,\
                         "%1% sec" % ::vtkrenderer.GetLastRenderTimeInSeconds())
 
     # update background colors
+    ::win.IntegerConstraints(::select_actor_id,0,nb_actors-1,::select_actor)
 
   }
 
@@ -69,15 +73,30 @@ Class vtkRendererClass : public ScriptGui \
   }
 
   #-----------------------------------------------------------------------------
+  proc ::DefaultCallback() \
+  {
+    if (exists(::vtkrenderer)) {
+      if (exists(::callback)) {
+        ::callback()
+      } else {
+        ::vtkrenderer.GetRenderWindow().Render()
+      }
+    }
+  }
+
+  #-----------------------------------------------------------------------------
   proc ::SetRenderer( OBJECT obj) \
   {
     if obj.IsA("vtkRenderer") {
       del ::vtkrenderer
       ::vtkrenderer = &obj
+      ::CB_SelectActor()
+      ::Update()
+      return = true
     } else {
       InfoDialog "vtkRendererClass.SetRenderer(obj): wrong object type"
+      return = false
     }
-    ::Update()
   }
 
   #-----------------------------------------------------------------------------
@@ -86,8 +105,10 @@ Class vtkRendererClass : public ScriptGui \
     if obj.IsA("vtkRenderer") {
       del ::vtkrenderer2
       ::vtkrenderer2 = &obj
+      return = true
     } else {
       InfoDialog "vtkRendererClass.SetRenderer2(obj): wrong object type"
+      return = false
     }
   }
 
@@ -113,10 +134,11 @@ Class vtkRendererClass : public ScriptGui \
     polymapper = vtk.vtkPolyDataMapper.New()
     polymapper.SetInputConnection(&polynormals.GetOutputPort())
     polymapper.ScalarVisibilityOff()
-    ::polyactor = vtk.vtkActor.New()
-    ::polyactor.SetMapper(&polymapper)
-    ::vtkrenderer.AddActor(::polyactor)
+    polyactor = vtk.vtkActor.New()
+    polyactor.SetMapper(polymapper)
+    ::vtkrenderer.AddActor(polyactor)
     ::vtkrenderer.GetRenderWindow().Render()
+    ::Update()
   }
 
   #----------------------------
@@ -201,11 +223,11 @@ Class vtkRendererClass : public ScriptGui \
   #-----------------------------------------------------------------------------
   proc ::CB_Renderer( ) \
   {
-    printn "::CB_Renderer()"
+    #printn "::CB_Renderer()"
     #eval "ok = exists(%1%);" % ::renderer_name
     #if (ok) {
-      eval "::SetRenderer(%1%);" % ::renderer_name
-      ::Update()
+    eval "::SetRenderer(%1%);" % ::renderer_name
+    #::Update()
     #}
   }
 
@@ -273,8 +295,42 @@ Class vtkRendererClass : public ScriptGui \
                         "object named '"+GetObjectName(::Close)+"'.")
 
   #-----------------------------------------------------------------------------
+  proc ::CB_SelectActor( ) \
+  {
+    if exists(::vtkrenderer) {
+      actors = ::vtkrenderer.GetActors()
+      nb_actors = actors.GetNumberOfItems()
+      if (::select_actor<0)          { ::select_actor=0;          }
+      if (::select_actor>=nb_actors) { ::select_actor=nb_actors-1;} 
+      ::win.Update(::select_actor_id)
+      if (nb_actors>0) {
+        current_actor_object = actors.GetItemAsObject(::select_actor)
+        del ::current_actor
+        ::current_actor = vtk.vtkActor.SafeDownCast(current_actor_object)
+        ::actor_ctrl.SetActor(::current_actor)
+      } else {
+        printn "No actor in renderer" 
+      }
+    } else {
+      printn "First select vtkRenderer ..."
+    }
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::CB_RemoveActor( ) \
+  {
+    ::vtkrenderer.RemoveActor(::current_actor)
+    ::DefaultCallback()
+    ::Update()
+    ::CB_SelectActor()
+    ::win.Update(-1)
+  }
+  
+  #-----------------------------------------------------------------------------
   proc ::Gui( ) \
   {
+      # TODO: would be nice to have a treelistctrl here for actors, lights, ...
+  
       # parameters window
       if (exists(::parent_panel)) {
         ::win = ParamPanel("vtkRen",&::parent_panel)
@@ -282,13 +338,20 @@ Class vtkRendererClass : public ScriptGui \
         ::win = ParamPanel("vtkRen")
       }
       ::win.BeginBook()
-        ::win.AddPage("Main")
+        ::win.AddPage("vtkRenderer")
           # Select Renderer
           ::win.AddAMIObjectChoice( &::renderer_name, "", "vtkRenderer")
           ::win.SetCallback(::CB_Renderer)
           # add gui
           ::AddGui(::win)
 
+        ::win.AddPage("Actors")
+          ::select_actor_id = ::win.AddInt(::select_actor,"select",0,0)
+          ::win.SetCallback(::CB_SelectActor)
+          ::win.AddButton("Remove current actor",::CB_RemoveActor)
+          ::actor_ctrl.AddGui(::win)
+          ::actor_ctrl.SetCallback(::DefaultCallback)
+        
         ::win.AddPage("Compare")
           # Select Renderer
           ::win.AddAMIObjectChoice( &::renderer2_name, "", "vtkRenderer")
