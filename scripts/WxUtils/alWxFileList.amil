@@ -57,7 +57,19 @@ Class alWxFileList \
   #
   proc ::AddPath( STRING path) \
   {
-    ::paths.push_back(path)
+    # check if path is already inside (not very efficient but ok for now)
+    already_in = false
+    for n=0 to ::paths.size()-1 {
+      if ::paths[n]==path {
+        already_in = true
+      }
+    }
+    if (!already_in) {
+      ::paths.push_back(path)
+      if (exists(::win)) {
+        ::win.AddEnumChoice(::spath_id, path)
+      }
+    }
   }
 
   #-----------------------------------------------------------------------------
@@ -441,6 +453,7 @@ Class alWxFileList \
   #-----------------------------------------------------------------------------
   proc ::AddGui( OBJECT win) \
   {
+    ::win = &win
     win.BeginBook()
       win.AddPage("List")
         ::use_dvlistctrl=false

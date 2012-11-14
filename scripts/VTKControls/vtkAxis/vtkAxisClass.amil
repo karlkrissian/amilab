@@ -15,17 +15,19 @@ if (!exists(vtkAxisClass)) {
         ::description = "Default parameters", \
                         "Description of the set of parameters"
 
+        ::visible       = true,     "Visible (inherited from vtkContextItem)"
         ::minval        = 0,        "Axis minimum"
         ::maxval        = 0,        "Axis maximum"
         ::num_ticks     = INT(5),   "Number of ticks"
         ::title         = "Title",  "Axis title"
-        ::logscale      = UCHAR(0), "Log scale"
-        ::gridvisible   = UCHAR(0), "Grid visible"
-        ::labelsvisible = UCHAR(0), "Labels visible"
+        ::logscale      = false,    "Log scale"
+        ::gridvisible   = false,    "Grid visible"
+        ::labelsvisible = false,    "Labels visible"
 
         #-----------------------------------------------------------------------
         # copy parameters
         proc ::__assign__( VAR p) {
+          ::visible       = p.visible
           ::minval        = p.minval
           ::maxval        = p.maxval
           ::num_ticks     = p.num_ticks
@@ -51,6 +53,7 @@ if (!exists(vtkAxisClass)) {
     #-----------------------------------------------------------------------------
     proc ::Update() \
     {
+      ::params.visible       = ::vtkaxis.GetVisible()
       ::params.title         = ::vtkaxis.GetTitle().convert_string()
       ::params.gridvisible   = ::vtkaxis.GetGridVisible()
       ::params.labelsvisible = ::vtkaxis.GetLabelsVisible()
@@ -79,6 +82,15 @@ if (!exists(vtkAxisClass)) {
     {
       if (exists(::changed_cb)) {
         ::changed_cb()
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_Visible( ) \
+    {
+      if (exists(::vtkaxis)) {
+        ::vtkaxis.SetVisible(::params.visible)
+        ::Modified()
       }
     }
 
@@ -127,6 +139,8 @@ if (!exists(vtkAxisClass)) {
         ::win = &win
       }
       win.BeginBoxPanel("vtkAxis control")
+        win.AddBoolean(::params.visible,"Visible")
+        win.SetCallback(::CB_Visible)
         win.AddString(::params.title,"Title")
         win.SetCallback(::CB_Title)
         win.BeginHorizontal()

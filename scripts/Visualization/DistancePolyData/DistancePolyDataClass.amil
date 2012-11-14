@@ -231,6 +231,8 @@ if (!exists(DistancePolyDataClass)) {
       printn "RMS = %1%" %sqrt(mean(::dist2*::dist2))
       ::histo2 = histo(::dist2,d2min,d2max,(d2max-d2min)/0.1)
       
+      ::xyplot_histo.ClearPlots()
+      
       # Update in xyplot_histo
       ::xyplot_histo.set_input(::histo1)
       ::xyplot_histo.RunImage()

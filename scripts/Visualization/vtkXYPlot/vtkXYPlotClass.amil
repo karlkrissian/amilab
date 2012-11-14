@@ -65,6 +65,15 @@ if (!exists(vtkXYPlotClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::ClearPlots() \
+    {
+      if (exists(::chart)) {
+        ::chart.ClearPlots()
+        ::chartctrl.Update()
+      }
+    }
+    
+    #---------------------------------------------------------------------------
     proc ::RunImage() \
     {
       chart_created = false

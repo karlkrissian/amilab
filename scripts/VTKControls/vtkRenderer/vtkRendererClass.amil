@@ -302,7 +302,7 @@ Class vtkRendererClass : public ScriptGui \
       nb_actors = actors.GetNumberOfItems()
       if (::select_actor<0)          { ::select_actor=0;          }
       if (::select_actor>=nb_actors) { ::select_actor=nb_actors-1;} 
-      ::win.Update(::select_actor_id)
+      if exists(::win) { ::win.Update(::select_actor_id); }
       if (nb_actors>0) {
         current_actor_object = actors.GetItemAsObject(::select_actor)
         del ::current_actor
