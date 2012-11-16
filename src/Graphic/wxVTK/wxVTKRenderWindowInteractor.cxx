@@ -88,10 +88,21 @@ wxWindow* wxGetTopLevelParent(wxWindow *win)
     #include <wx/gtk/win_gtk.h>
   #endif
   #if  wxCHECK_VERSION(2, 9, 0)
-    #define piz(wxwin) WX_PIZZA((wxwin)->m_wxwindow)
-    #define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
-    GDK_WINDOW_XWINDOW(((GtkWidget*)piz(wxwin))->window) : \
-                            GDK_WINDOW_XWINDOW((wxwin)->m_widget->window)
+    #ifdef __WXGTK3__
+      #define GDK_WINDOW_XWINDOW(win)       (gdk_x11_window_get_xid (win))
+
+      #define piz(wxwin) WX_PIZZA((wxwin)->m_wxwindow)
+      #define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
+      GDK_WINDOW_XWINDOW( gtk_widget_get_window((GtkWidget*)piz(wxwin))) : \
+                              GDK_WINDOW_XWINDOW( gtk_widget_get_window((wxwin)->m_widget))
+    #else
+    
+      #define piz(wxwin) WX_PIZZA((wxwin)->m_wxwindow)
+      #define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
+      GDK_WINDOW_XWINDOW(((GtkWidget*)piz(wxwin))->window) : \
+                              GDK_WINDOW_XWINDOW((wxwin)->m_widget->window)
+    #endif
+    
   #else
     #define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
     GDK_WINDOW_XWINDOW(GTK_PIZZA((wxwin)->m_wxwindow)->bin_window) : \

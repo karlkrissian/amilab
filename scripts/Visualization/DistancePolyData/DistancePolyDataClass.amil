@@ -218,7 +218,7 @@ if (!exists(DistancePolyDataClass)) {
       printn "mean  = %1%" % mean(::dist1)
       printn "mean of abs = %1%" % mean(abs(::dist1))
       printn "RMS = %1%" %sqrt(mean(::dist1*::dist1))
-      ::histo1 = histo(::dist1,d1min,d1max,(d1max-d1min)/0.1)
+      ::histo1 <<= histo(::dist1,d1min,d1max,(d1max-d1min)/0.1)
 
       printn "*** DIST2 ***"
       d2min = min(::dist2)
@@ -229,7 +229,7 @@ if (!exists(DistancePolyDataClass)) {
       printn "mean  = %1%" % mean(::dist2)
       printn "mean of abs = %1%" % mean(abs(::dist2))
       printn "RMS = %1%" %sqrt(mean(::dist2*::dist2))
-      ::histo2 = histo(::dist2,d2min,d2max,(d2max-d2min)/0.1)
+      ::histo2 <<= histo(::dist2,d2min,d2max,(d2max-d2min)/0.1)
       
       ::xyplot_histo.ClearPlots()
       

@@ -566,7 +566,7 @@ void DessinImageBase::InitCouleurs( )
             << " color " << (int) _tab_intensite_couleur[i].Red()
             << " , " << (int)_tab_intensite_couleur[i].Green()
             << " , " << (int)_tab_intensite_couleur[i].Blue()
-            << ": " << (int) _tab_intensite_couleur[i].GetPixel()
+            //<< ": " << (int) _tab_intensite_couleur[i].GetPixel()
             << std::endl;
 
   } // end for // i

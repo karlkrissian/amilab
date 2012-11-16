@@ -61,7 +61,9 @@ Class vtkRendererClass : public ScriptGui \
                         "%1% sec" % ::vtkrenderer.GetLastRenderTimeInSeconds())
 
     # update background colors
-    ::win.IntegerConstraints(::select_actor_id,0,nb_actors-1,::select_actor)
+    if exists(::select_actor_id) {
+      ::win.IntegerConstraints(::select_actor_id,0,nb_actors-1,::select_actor)
+    }
 
   }
 
@@ -302,7 +304,9 @@ Class vtkRendererClass : public ScriptGui \
       nb_actors = actors.GetNumberOfItems()
       if (::select_actor<0)          { ::select_actor=0;          }
       if (::select_actor>=nb_actors) { ::select_actor=nb_actors-1;} 
-      if exists(::win) { ::win.Update(::select_actor_id); }
+      if exists(::select_actor_id) { 
+        ::win.Update(::select_actor_id) 
+      }
       if (nb_actors>0) {
         current_actor_object = actors.GetItemAsObject(::select_actor)
         del ::current_actor

@@ -21,6 +21,21 @@ ELSE(WIN32)
     IF(NOT VTK_USE_X)
       MESSAGE(FATAL_ERROR "You need to have VTK_USE_X")
     ENDIF(NOT VTK_USE_X)
+
+
+    # this for GTK3
+#     # Use the package PkgConfig to detect GTK+ headers/library files
+#     FIND_PACKAGE(PkgConfig REQUIRED)
+#     PKG_CHECK_MODULES(GTK3 REQUIRED gtk+-3.0)
+#     # Setup CMake to use GTK+, tell the compiler where to look for headers
+#     # and to the linker where to look for libraries
+#     MESSAGE("GTK3_INCLUDE_DIRS=${GTK3_INCLUDE_DIRS}")
+#     INCLUDE_DIRECTORIES(${GTK3_INCLUDE_DIRS})
+#     LINK_DIRECTORIES(${GTK3_LIBRARY_DIRS})
+#     # Add other flags to the compiler
+#     ADD_DEFINITIONS(${GTK3_CFLAGS_OTHER})
+
+    # this for GTK2
     # CMake 2.6:
     # technically those packages are not required since one can still use the Motif/X11 version and not the gtk one:
     FIND_PACKAGE(PkgConfig)

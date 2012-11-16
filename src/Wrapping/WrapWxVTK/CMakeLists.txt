@@ -35,12 +35,27 @@ SET(WrapWxVTK_SRCS
 my_add_library ( WrapWxVTK)
 
 IF(Need_Find_GTK)
-  FIND_PACKAGE(GTK2 REQUIRED gtk)
-  IF(GTK2_FOUND)
-    MESSAGE("Find GTK2!!!")
-    INCLUDE_DIRECTORIES(${GTK2_INCLUDE_DIRS})
-    TARGET_LINK_LIBRARIES(WrapWxVTK ${GTK2_LIBRARIES})
-  ENDIF(GTK2_FOUND)
+
+  # this for GTK3
+#   # Use the package PkgConfig to detect GTK+ headers/library files
+#   FIND_PACKAGE(PkgConfig REQUIRED)
+#   PKG_CHECK_MODULES(GTK3 REQUIRED gtk+-3.0)
+#   # Setup CMake to use GTK+, tell the compiler where to look for headers
+#   # and to the linker where to look for libraries
+#   MESSAGE("GTK3_INCLUDE_DIRS=${GTK3_INCLUDE_DIRS}")
+#   INCLUDE_DIRECTORIES(${GTK3_INCLUDE_DIRS})
+#   LINK_DIRECTORIES(${GTK3_LIBRARY_DIRS})
+#   # Add other flags to the compiler
+#   ADD_DEFINITIONS(${GTK3_CFLAGS_OTHER})
+
+  # this for GTK2
+    FIND_PACKAGE(GTK2 REQUIRED gtk)
+    IF(GTK2_FOUND)
+      MESSAGE("Find GTK2!!!")
+      INCLUDE_DIRECTORIES(${GTK2_INCLUDE_DIRS})
+      TARGET_LINK_LIBRARIES(WrapWxVTK ${GTK2_LIBRARIES})
+    ENDIF(GTK2_FOUND)
 ENDIF(Need_Find_GTK)
+
 
 add_dependencies ( WrapWxVTK WrapWxWidgets WrapVTK )
