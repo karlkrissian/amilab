@@ -300,6 +300,16 @@ void VarContexts::SearchAMIObjectTypeVariablesRecursive( const std::string & typ
             variables->Add(new_prefix);
           }
         }// if(TheObject.get())
+        else {
+          // search for ami classes, but would need to separe them from wrapped
+          // c++ classes, we add (ami) add the beginning ...
+          AMIClass::ptr oclass = varobj->Pointer()->GetClass();
+          if (oclass.get()) {
+            if (std::string("(ami)")+oclass->GetName()==type_string) {
+              variables->Add(new_prefix);
+            }
+          }
+        }
         new_prefix += wxT(".");
         SearchAMIObjectTypeVariablesRecursive(type_string, variables, 
                                               obj->GetContext(), 

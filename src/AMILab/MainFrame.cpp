@@ -2019,9 +2019,17 @@ void MainFrame::UpdateVarDataView(  const wxDataViewItem& rootbranch,
         DYNAMIC_CAST_VARIABLE(AMIObject, var, varobj)
         if (varobj.get()) { 
           WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject());
-          if (wrapped_base.get()) 
-            valtext = (boost::format("[%1%]") % 
+          if (wrapped_base.get()) {
+            valtext = (boost::format("(c++)[%1%]") % 
                           wrapped_base->ObjPointerAsString()).str();
+          } else {
+            // try to get amilab classname
+            AMIClass::ptr oclass = varobj->Pointer()->GetClass();
+            if (oclass.get()) {
+              valtext = (boost::format("(ami)[%1%]") % 
+                            oclass->GetName()).str();
+            }
+          }
         }
         append_id = categories_id[std::string("Objects")];
       } else

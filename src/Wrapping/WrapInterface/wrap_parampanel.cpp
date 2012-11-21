@@ -945,8 +945,8 @@ BasicVariable::ptr WrapClass_ParamPanel::wrap_AddAMIObjectChoice::CallMember( Pa
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
 
-  AMIObjectlist = Vars.SearchAMIObjectTypeVariables("SurfacePoly");
-  AMIObjectlist->Add(_T("Select surface image..."));
+  AMIObjectlist = Vars.SearchAMIObjectTypeVariables(object_type);
+  AMIObjectlist->Add(_T("Select object ..."));
 
   // Get list of image names
   this->_objectptr->GetObj()->AddListChoice( &var_id,
