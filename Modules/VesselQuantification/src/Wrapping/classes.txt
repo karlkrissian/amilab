@@ -1,4 +1,17 @@
 PruebaClass
+
+#
+# Module classes
+#
+VesselQuantif::Point3D
+VesselQuantif::Line
+VesselQuantif::LineResample
+std::vector<VesselQuantif::Point3D, std::allocator<VesselQuantif::Point3D> >
+std::vector<VesselQuantif::Point3D, std::allocator<VesselQuantif::Point3D> >::iterator
+
+#
+# VTK classes
+#
 vtkContourFilter
 vtkImageShiftScale
 vtkParametricSpline

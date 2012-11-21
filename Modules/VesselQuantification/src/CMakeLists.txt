@@ -91,12 +91,14 @@ SET(${KIT}_HDRS
   ${${KIT}_HDRS}
   ${KIT}Plugin.h
   PruebaClass.h
+  funcion1.h
 )
 
 SET(${KIT}_SRCS
   ${${KIT}_SRCS}
   ${KIT}Plugin.cpp
   PruebaClass.cpp
+  funcion1.cpp
 )
 
 SET(${KIT}_scriptsdir
