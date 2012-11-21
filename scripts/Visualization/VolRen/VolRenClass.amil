@@ -61,6 +61,12 @@ if (!exists(VolRenClass)) {
       ::input2_name =  "", "name of the second input image"
       ::input_size  = "0 Mb",  "input volume size in Mb (2^20 bytes)"
       ::input2_size = "0 Mb", "second input volume size in Mb (2^20 bytes)"
+      
+      ::compare_objname = "", "name of similar object for comparison"
+      ::compare_enable = false, "Enable/Disable comparison"
+      ::compare_copy_curves = false, "Copy transfer function curves to "+\
+                                      "object in comparison"
+      
       ::background_color  = wx.wxColour(173,216,230)
       ::background_color2 = wx.wxColour(144,238,144)
       ::UseGradientBackground = UCHAR(1)
@@ -975,7 +981,37 @@ if (!exists(VolRenClass)) {
       ::renwin_interact.Render()
     }
 
+    #---------------------------------------------------------------------------
+    proc ::CB_Compare()\
+    {
+    }
 
+    #---------------------------------------------------------------------------
+    proc ::ApplyCompareCopyCurves() {
+      if (::compare_enable) {
+        eval "o = &%1%;" % ::compare_objname
+        if (exists(o->vol0)) {
+          # copy the curves
+          # or at least try to do it
+          o.vol0.imhisto1.dw.GetControlledCurves() = ::vol0.imhisto1.dw.GetControlledCurves()
+          # update display
+          o.vol0.OnLinearColormap()
+        }
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::CB_CompareCopyCurves() {
+      if exists(::vol0) {
+        if (::compare_copy_curves) {
+          ::vol0.SetLinearColormap_callback(::ApplyCompareCopyCurves)
+        } else {
+          # TODO: improve by creating a function to delete
+          del ::vol0->linearcolormap_callback
+        }
+      }
+    }
+    
     #----------------------------
     proc ::Gui() {
     
@@ -1086,6 +1122,12 @@ if (!exists(VolRenClass)) {
             #::win.EndHorizontal()
           #::win.EndBoxPanel()
 
+        ::win.AddPage("Compare")
+          ::win.AddAMIObjectChoice( &::compare_objname, "", "(ami)VolRenClass")
+          ::win.SetCallback(::CB_Compare)
+          ::win.AddBoolean(::compare_enable,"Enable")
+          ::win.AddBoolean(::compare_copy_curves,"Copy curves")
+          ::win.SetCallback(::CB_CompareCopyCurves)
       ::win.EndBook()
       ::AddStandardButtons(&::win)
       

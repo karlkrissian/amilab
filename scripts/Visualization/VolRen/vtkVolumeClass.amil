@@ -34,9 +34,10 @@ if (!exists(vtkVolumeClass)) {
     member = "\"vtkVolumeClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
+    objname = "GetObjectName(::trace)"
     ::trace_begin="printn \"**\"+"+ \
                   "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
-                  "\" Begin \"+%1%;" % member
+                  "\" Begin \"+%1%" % member+"+ \"; \" + %1%;" % objname
     ::trace_end  ="printn \"**\"+"+\
                   "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
                   "\" End   \"+%1%;" % member
@@ -403,6 +404,15 @@ if (!exists(vtkVolumeClass)) {
         ::imhisto2.dw.DrawLinearCM()
       if ::trace { eval ::trace_end; }
     }
+
+    #---------------------------------------------------------------------------
+    proc ::SetLinearColormap_callback( VAR cb) \
+    {
+      del ::linearcolormap_callback
+      ::linearcolormap_callback = &cb
+    }
+    
+    
     #---------------------------
     proc ::OnLinearColormap() \
     {
@@ -412,9 +422,13 @@ if (!exists(vtkVolumeClass)) {
       ::imhisto1.ColormapMinMax()
       ::imhisto1.UpdateCM()
       ::OnRender()
+      if exists(::linearcolormap_callback) {
+        ::linearcolormap_callback()
+      }
       if ::trace { eval ::trace_end; }
     }
-        #---------------------------
+    
+    #---------------------------
     proc ::OnLinearColormap2() \
     {
       if ::trace { eval ::trace_begin; }
@@ -427,43 +441,45 @@ if (!exists(vtkVolumeClass)) {
       ::OnRender()
       if ::trace { eval ::trace_end; }
     }
-    #----------------------------
-    proc ::SaveCurve(  ) \
-    {
-      if ::trace { eval ::trace_begin; }
-      thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
-      if(thefilename.FileExists()) {
-        msg = "The %1% file exists." % \
-                  wx.FromWxString(thefilename.GetFullName())
-      } else {
-        if (!exists(::linearcurve1)) {
-          msg = "It is not possible to save the curve because it has not been defined."
-        } else {
-          ::CurveIO.SaveCurve( wx.FromWxString(thefilename.GetFullName())\
-                                , &::linearcurve1 )
-          msg = "The curve has been saved correctly in the file: %1%" % \
-            wx.FromWxString(thefilename.GetFullName())
-        }
-      }
-      InfoDialog msg
-      if ::trace { eval ::trace_end; }
-    }
 
-    #----------------------------
-    proc ::LoadCurve(  ) \
-    {
-      thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
-      if(thefilename.FileExists()) {
-        ::linearcurve1 = ::CurveIO.LoadCurve( \
-                        wx.FromWxString(thefilename.GetFullName()) )
-        msg = "The curve has been loaded correctly from the file: %1%" %\
-                  wx.FromWxString(thefilename.GetFullName())
-      } else {
-        msg = "The %1% file does not exist." %\
-                wx.FromWxString(thefilename.GetFullName())
-      }
-      InfoDialog msg
-    }
+    # deprecated ...
+    ##----------------------------
+    #proc ::SaveCurve(  ) \
+    #{
+      #if ::trace { eval ::trace_begin; }
+      #thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
+      #if(thefilename.FileExists()) {
+        #msg = "The %1% file exists." % \
+                  #wx.FromWxString(thefilename.GetFullName())
+      #} else {
+        #if (!exists(::linearcurve1)) {
+          #msg = "It is not possible to save the curve because it has not been defined."
+        #} else {
+          #::CurveIO.SaveCurve( wx.FromWxString(thefilename.GetFullName())\
+                                #, &::linearcurve1 )
+          #msg = "The curve has been saved correctly in the file: %1%" % \
+            #wx.FromWxString(thefilename.GetFullName())
+        #}
+      #}
+      #InfoDialog msg
+      #if ::trace { eval ::trace_end; }
+    #}
+
+    ##----------------------------
+    #proc ::LoadCurve(  ) \
+    #{
+      #thefilename = wx.wxFileName(&::curve_folder, &::curve_filename)
+      #if(thefilename.FileExists()) {
+        #::linearcurve1 = ::CurveIO.LoadCurve( \
+                        #wx.FromWxString(thefilename.GetFullName()) )
+        #msg = "The curve has been loaded correctly from the file: %1%" %\
+                  #wx.FromWxString(thefilename.GetFullName())
+      #} else {
+        #msg = "The %1% file does not exist." %\
+                #wx.FromWxString(thefilename.GetFullName())
+      #}
+      #InfoDialog msg
+    #}
 
     #----------------------------
     proc ::ResetLinearCurve1() \
