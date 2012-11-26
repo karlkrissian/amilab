@@ -1,0 +1,379 @@
+
+func "Common/ScriptGui"
+
+del vtkCubeAxesActorClass
+
+Class vtkCubeAxesActorClass : public ScriptGui \
+{
+  
+  func "Variable/ObjectIO"
+  #===========================================================================
+  # Set parameters here
+  Class ::ParamClass : public ObjectIO {
+
+    func "WxUtils/alEnum"
+    ::description = "Default parameters for the vtkCubeAxesActorClass", \
+                    "Description of the set of parameters"
+
+    ::visibility = true, "Visibility"
+
+    ::inertia = INT(1000), "Inertial factor that controls how often "+\
+                            "(i.e, how many renders) the axes can switch "+\
+                            "position (jump from one axes to another)"
+
+    ::overall_color = wx.wxColour(0,0,0)
+
+    # ----- Fly mode
+    alEnum ::fly_modes
+    ::fly_modes.SetTitle("Fly mode")
+    ::fly_modes.SetHelp("Specify a mode to control how the axes are drawn")
+    ::fly_modes.AddValue( "OuterEdges",     "Outer edges mode")
+    ::fly_modes.AddValue( "ClosestTriad",   "Closest triad mode")
+    ::fly_modes.AddValue( "FurthestTriad",  "Furthest triad mode")
+    ::fly_modes.AddValue( "StaticTriad",    "Static triad mode")
+    ::fly_modes.AddValue( "StaticEdges",    "Static edges mode")
+    ::fly_mode = INT(1), ::fly_modes.GetHelpMessage()
+    ::fly_modes.SetVariable(::fly_mode)
+
+    ::use_2d_mode = false, "Enable 2D mode"
+
+    ::xlabelformat = "%-g", "format to print the labels in X"
+    ::ylabelformat = "%-g", "format to print the labels in Y"
+    ::zlabelformat = "%-g", "format to print the labels in Z"
+
+    ::xlabelvisibility = true, "Label visibility in X"
+    ::ylabelvisibility = true, "Label visibility in Y"
+    ::zlabelvisibility = true, "Label visibility in Z"
+
+    ::xtickvisibility = true, "Tick visibility in X"
+    ::ytickvisibility = true, "Tick visibility in Y"
+    ::ztickvisibility = true, "Tick visibility in Z"
+
+    ::xminortickvisibility = true, "Minor tick visibility in X"
+    ::yminortickvisibility = true, "Minor tick visibility in Y"
+    ::zminortickvisibility = true, "Minor tick visibility in Z"
+
+    # ----- tick location mode
+    alEnum ::ticklocation_modes
+    ::ticklocation_modes.SetTitle("Tick location mode")
+    ::ticklocation_modes.SetHelp("Tick location for X axis")
+    ::ticklocation_modes.AddValue( "Inside",     "Inside")
+    ::ticklocation_modes.AddValue( "Outside",    "Outsite")
+    ::ticklocation_modes.AddValue( "Both",       "Both")
+    ::ticklocation_mode = INT(0), ::ticklocation_modes.GetHelpMessage()
+    ::ticklocation_modes.SetVariable(::ticklocation_mode)
+
+    #-----------------------------------------------------------------------
+    # copy parameters
+    proc ::__assign__( VAR p) {
+      ::visibility      = p.visibility
+      ::inertia         = p.inertia
+      ::fly_mode        = p.fly_mode
+      ::use_2d_mode     = p.use_2d_mode
+      ::xlabelformat    = p.xlabelformat
+      ::ylabelformat    = p.ylabelformat
+      ::zlabelformat    = p.zlabelformat
+  
+      ::xlabelvisibility = p.xlabelvisibility
+      ::ylabelvisibility = p.ylabelvisibility
+      ::zlabelvisibility = p.zlabelvisibility
+
+      ::xtickvisibility = p.xtickvisibility
+      ::ytickvisibility = p.ytickvisibility
+      ::ztickvisibility = p.ztickvisibility
+
+      ::xminortickvisibility = p.xminortickvisibility
+      ::yminortickvisibility = p.yminortickvisibility
+      ::zminortickvisibility = p.zminortickvisibility
+
+      ::overall_color   = p.overall_color
+    }
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::Init() {
+    
+    ::cubeaxesactor_name   = "", "Name of the input vtkCubeAxesActor variable"
+
+    ::ParamClass ::params
+
+    #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+    # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+    ::html_filename = GetScriptsDir+\
+                      "/vtkCubeAxesActor/Doc/vtkCubeAxesActor/index.html"
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetCallback( VAR cb) {
+    del ::callback
+    ::callback = &cb
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetCubeAxesActorNoUpdate( OBJECT obj) \
+  {
+    if obj.IsA("vtkCubeAxesActor") {
+      del ::vtkcubeaxesactor
+      ::vtkcubeaxesactor = &obj
+
+    } else {
+      InfoDialog "vtkCubeAxesActorClass.SetCubeAxesActor(obj): wrong object type"
+    }
+    if exists(::win) {
+      ::win.Update(-1)
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetCubeAxesActor( OBJECT obj) \
+  {
+    ::SetCubeAxesActorNoUpdate(obj)
+    ::Update()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::CB_CubeAxesActor( ) \
+  {
+      eval "::SetCubeAxesActor(%1%);" % ::cubeaxesactor_name
+      ::Update()
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::Update() \
+  {
+    ::params.visibility   = ::vtkcubeaxesactor.GetVisibility()
+    ::params.inertia      = ::vtkcubeaxesactor.GetInertia()
+    ::params.fly_mode     = ::vtkcubeaxesactor.GetFlyMode()
+    ::params.use_2d_mode  = ::vtkcubeaxesactor.GetUse2DMode()
+    ::params.xlabelformat = ::vtkcubeaxesactor.GetXLabelFormat()
+    ::params.ylabelformat = ::vtkcubeaxesactor.GetYLabelFormat()
+    ::params.zlabelformat = ::vtkcubeaxesactor.GetZLabelFormat()
+
+    ::params.xlabelvisibility = ::vtkcubeaxesactor.GetXAxisLabelVisibility()
+    ::params.ylabelvisibility = ::vtkcubeaxesactor.GetYAxisLabelVisibility()
+    ::params.zlabelvisibility = ::vtkcubeaxesactor.GetZAxisLabelVisibility()
+
+    ::params.xtickvisibility = ::vtkcubeaxesactor.GetXAxisTickVisibility()
+    ::params.ytickvisibility = ::vtkcubeaxesactor.GetYAxisTickVisibility()
+    ::params.ztickvisibility = ::vtkcubeaxesactor.GetZAxisTickVisibility()
+
+    ::params.xminortickvisibility = ::vtkcubeaxesactor.GetXAxisMinorTickVisibility()
+    ::params.yminortickvisibility = ::vtkcubeaxesactor.GetYAxisMinorTickVisibility()
+    ::params.zminortickvisibility = ::vtkcubeaxesactor.GetZAxisMinorTickVisibility()
+
+    ::params.ticklocation_mode = ::vtkcubeaxesactor.GetTickLocation()
+
+    ::win.Update(-1)
+    ::params.fly_modes.Update()
+  }
+
+
+  #-----------------------------------------------------------------------------
+  proc ::UpdateVTK() \
+  {
+    if (exists(::vtkcubeaxesactor)) {
+      ::vtkcubeaxesactor.SetVisibility(::params.visibility)
+      ::vtkcubeaxesactor.SetInertia   (::params.inertia)
+      ::vtkcubeaxesactor.SetFlyMode   (::params.fly_mode)
+      ::vtkcubeaxesactor.SetUse2DMode (::params.use_2d_mode)
+
+      ::vtkcubeaxesactor.SetXLabelFormat(::params.xlabelformat)
+      ::vtkcubeaxesactor.SetYLabelFormat(::params.ylabelformat)
+      ::vtkcubeaxesactor.SetZLabelFormat(::params.zlabelformat)
+
+      ::vtkcubeaxesactor.SetXAxisLabelVisibility(::params.xlabelvisibility)
+      ::vtkcubeaxesactor.SetYAxisLabelVisibility(::params.ylabelvisibility)
+      ::vtkcubeaxesactor.SetZAxisLabelVisibility(::params.zlabelvisibility)
+
+      ::vtkcubeaxesactor.SetXAxisTickVisibility(::params.xtickvisibility)
+      ::vtkcubeaxesactor.SetYAxisTickVisibility(::params.ytickvisibility)
+      ::vtkcubeaxesactor.SetZAxisTickVisibility(::params.ztickvisibility)
+
+      ::vtkcubeaxesactor.SetXAxisMinorTickVisibility(::params.xminortickvisibility)
+      ::vtkcubeaxesactor.SetYAxisMinorTickVisibility(::params.yminortickvisibility)
+      ::vtkcubeaxesactor.SetZAxisMinorTickVisibility(::params.zminortickvisibility)
+
+      ::vtkcubeaxesactor.SetTickLocation(::params.ticklocation_mode)
+
+      ::CB_overall_color()
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::RunCallBack( ) \
+  {
+    if (exists(::callback)) {
+      ::callback()
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::ChangeProperty( ) \
+  {
+    ::UpdateVTK()
+    ::RunCallBack()
+  }
+
+  #-----------------------------------------------------------------------------
+  # create the gui on a ParamPanel
+  proc ::CB_overall_color() \
+  {
+    AxisName = VarVector()
+    AxisName.push_back("X")
+    AxisName.push_back("Y")
+    AxisName.push_back("Z")
+    
+    red   = (FLOAT)::params.overall_color.Red()  /255
+    green = (FLOAT)::params.overall_color.Green()/255
+    blue  = (FLOAT)::params.overall_color.Blue() /255
+    for axis=0 to 2 {
+      ::vtkcubeaxesactor.GetTitleTextProperty(axis).SetColor(red,green,blue)
+      ::vtkcubeaxesactor.GetLabelTextProperty(axis).SetColor(red,green,blue)
+      del prop
+      eval "prop = ::vtkcubeaxesactor.Get%1%AxesLinesProperty();" % AxisName[axis]
+      prop.SetColor(red,green,blue)
+    }
+    ::vtkcubeaxesactor.SetRebuildAxes(true)
+    ::RunCallBack()
+  }
+
+  #-----------------------------------------------------------------------------
+  # create the gui on a ParamPanel
+  proc ::Rebuild() \
+  {
+    ::vtkcubeaxesactor.SetRebuildAxes(true)
+    ::RunCallBack()
+  }
+
+  #-----------------------------------------------------------------------------
+  # create the gui on a ParamPanel
+  proc ::AddGui( OBJECT win) \
+  {
+    if (!exists(::win)) {
+      ::win = &win
+    }
+  #  win.BeginBoxPanel("vtkActor control")
+      win.BeginBook()
+        win.AddPage("vtkCubeAxesActor Properties")
+          win.AddBoolean(::params.visibility, "Visibility")
+          win.SetCallback(::ChangeProperty)
+
+          ::inertia_id = win.AddInt(::params.inertia,"Inertia",0,10000)
+          win.SetCallback(::ChangeProperty)
+
+          win.AddColor("Overall color",::params.overall_color)
+          win.SetCallback(::CB_overall_color)
+
+          win.AddBoolean(::params.use_2d_mode,"2D mode")
+          win.SetCallback(::ChangeProperty)
+
+          ::params.fly_modes.SetGuiMode(1)
+          ::params.fly_modes.AddGui(win)
+          ::params.fly_modes.SetCallback(::ChangeProperty)
+
+          win.BeginBoxPanel("Label formats")
+            win.BeginHorizontal()
+              win.AddString(::params.xlabelformat,"X")
+              win.SetCallback(::ChangeProperty)
+              win.AddString(::params.ylabelformat,"Y")
+              win.SetCallback(::ChangeProperty)
+              win.AddString(::params.zlabelformat,"Z")
+              win.SetCallback(::ChangeProperty)
+            win.EndHorizontal()
+          win.EndBoxPanel()
+
+          win.BeginBoxPanel("Label visibility")
+            win.BeginHorizontal()
+              win.AddBoolean(::params.xlabelvisibility,"X")
+              win.SetCallback(::ChangeProperty)
+              win.AddBoolean(::params.ylabelvisibility,"Y")
+              win.SetCallback(::ChangeProperty)
+              win.AddBoolean(::params.zlabelvisibility,"Z")
+              win.SetCallback(::ChangeProperty)
+            win.EndHorizontal()
+          win.EndBoxPanel()
+
+          win.BeginBoxPanel("Tick visibility")
+            win.BeginHorizontal()
+              win.AddBoolean(::params.xtickvisibility,"X")
+              win.SetCallback(::ChangeProperty)
+              win.AddBoolean(::params.ytickvisibility,"Y")
+              win.SetCallback(::ChangeProperty)
+              win.AddBoolean(::params.ztickvisibility,"Z")
+              win.SetCallback(::ChangeProperty)
+            win.EndHorizontal()
+          win.EndBoxPanel()
+
+          win.BeginBoxPanel("Minor tick visibility")
+            win.BeginHorizontal()
+              win.AddBoolean(::params.xminortickvisibility,"X")
+              win.SetCallback(::ChangeProperty)
+              win.AddBoolean(::params.yminortickvisibility,"Y")
+              win.SetCallback(::ChangeProperty)
+              win.AddBoolean(::params.zminortickvisibility,"Z")
+              win.SetCallback(::ChangeProperty)
+            win.EndHorizontal()
+          win.EndBoxPanel()
+
+          ::params.ticklocation_modes.SetGuiMode(1)
+          ::params.ticklocation_modes.AddGui(win)
+          ::params.ticklocation_modes.SetCallback(::ChangeProperty)
+
+          win.AddButton("Rebuild",::Rebuild)
+
+      win.EndBook()
+  }
+
+
+
+  #---------------------------------------------------------------------------
+  proc ::Gui() {
+  
+    if (exists(::parent_panel)) {
+      ::win = ParamPanel("vtkCubeAxesActor",&::parent_panel)
+    } else {
+      ::win = ParamPanel("vtkCubeAxesActor")
+    }
+    
+    if (exists(::parent_panel)) {
+      ::win = ParamPanel("vtkCubAx",&::parent_panel)
+    } else {
+      ::win = ParamPanel("vtkCubAx")
+    }
+    
+    ::win.BeginBook()
+  
+      ::win.AddPage("Main")
+
+        # Select vtkCubeAxesActor
+        ::win.AddAMIObjectChoice(::cubeaxesactor_name, "", "vtkCubeAxesActor")
+        ::win.SetCallback(::CB_CubeAxesActor)
+
+         # add gui
+        ::AddGui(::win)
+
+      # add page for saving/loading parameters
+      ::AddParamPage(&::win)
+
+      # add help page
+      if wx.wxFileName(::html_filename).FileExists() {
+        ::AddHelpPage(&::win)
+      }
+  
+    ::win.EndBook()
+  
+    ::AddStandardButtons(&::win)
+
+    if (exists(::parent_panel)) {
+      ::win.ShowPanel()
+    } else {
+      ::win.Display()
+    }
+    ::win.Update(-1)
+  }
+  ::Init()
+  
+}
+# End of class
+  

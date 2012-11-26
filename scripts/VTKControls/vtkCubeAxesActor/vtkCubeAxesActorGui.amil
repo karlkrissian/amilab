@@ -1,0 +1,11 @@
+
+func "vtkCubeAxesActorClass"
+
+if (!exists(vtkCubeAxesActor_obj)) {
+  vtkCubeAxesActorClass vtkCubeAxesActor_obj
+  vtkCubeAxesActor_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

@@ -1,0 +1,231 @@
+
+
+
+
+del SimpsonIntClass
+Class SimpsonIntClass \
+{
+  # todo put this in a file ?
+  Class StringFunctionClass \
+  {
+    ::varname = "x",  "Function variable"
+    ::fstring = "cos(x)", "Function as a string"
+    ::varlist   = VarVector()
+    ::valuelist = VarVector()
+
+    #---------------------------------------------------------------------------
+    proc ::AddVar(STRING vname, NUM value) \
+    {
+    printn "::AddVar begin"
+      ::varlist  .push_back(vname)
+      ::valuelist.push_back(value)
+      return = ::varlist.size()-1
+    printn "::AddVar end"
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SetVarValue(NUM var_pos, NUM value) \
+    {
+      ::varlist[var_pos] = value
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SetVarName(STRING v) \
+    {
+      ::varname = v
+    }
+    #---------------------------------------------------------------------------
+    proc ::SetFunctionString(STRING fstr) \
+    {
+      ::fstring = fstr
+    }
+    #---------------------------------------------------------------------------
+    proc ::Eval(VAR _val) \
+    {
+      for n=0 to ::varlist.size()-1 {
+        eval "%1% = ::valuelist[n];"     % ::varlist[n]
+        printn "%1% = " % ::varlist[n] +"%1%" % ::valuelist[n]
+      }
+      #printn "%1% = &_val;"     % ::varname
+      eval "%1% = _val;"     % ::varname
+      printn "%1% = "  % ::varname + "%1%" % _val
+      eval "return = %1%;"  % ::fstring
+      printn "return = %1%" % return
+    }
+  }
+  ::StringFunctionClass = &StringFunctionClass
+
+  ::debug=false
+  ::varname = "x"
+
+  #-----------------------------------------------------------------------------
+  # change the name of the integration variable (was "x")
+  proc ::SetVariableName(STRING varname) {
+    ::varname = varname
+  }
+
+  #-------------------------------------------------------------------------------
+  # eval a string with 'x' as parameter (can be any variable type that accept 
+  # the string expression)
+  proc ::EvalFunction(STRING fstring, VAR _x) \
+  {
+    eval "%1% = &_x;" % ::varname
+    eval "return = %1%;" % fstring
+  }
+
+  #-------------------------------------------------------------------------------
+  proc ::RangeImage(NUM i, NUM j) \
+  {
+    # not very efficient but ok for now
+    return = (DOUBLE) Xpos(Image(UCHAR,j-i+1,1,1))+i
+  }
+
+  #-------------------------------------------------------------------------------
+  proc ::Sum(IMAGE i) \
+  {
+    sumop = ami_Sum()
+    return = sumop(i)
+  }
+
+  #-------------------------------------------------------------------------------
+  proc ::DebugPrint(STRING s) \
+  {
+    if (::debug) {
+      printn s
+    }
+  }
+
+  #-------------------------------------------------------------------------------
+  #
+  # Compute simple Simpson integral, based on a function of 'x' given as a string
+  # will use n intervals and 2*n values
+  #
+  proc ::Run(VAR function, NUM xmin, NUM xmax, NUM n) \
+  {
+    # check wikipedia http://en.wikipedia.org/wiki/Simpson%27s_rule
+    # the integral can be written as a sum of 4 terms:
+    # h=(xmax-xmin)/n
+    # h/3* (f(xmin)+f(xmax)+4.sum_{k in [0..n-1]} f(xmin+h/2+kh) 
+    # + 2.sum_{k in [1..n-1] f(xmin+kh))
+
+    h = ((DOUBLE) xmax - xmin)/n
+    fmin = function((DOUBLE)xmin)
+    fmax = function((DOUBLE)xmax)
+    sumval = fmin+fmax
+
+    ::DebugPrint( "sumval(1) = %1%" % sumval)
+
+    # here adding a 1D image to a 2D image ??
+    pos     = xmin+h/2+::RangeImage(0,n-1)*h
+    ::DebugPrint( "min(pos) = %1% " % min(pos))
+    ::DebugPrint( "max(pos) = %1% " % max(pos))
+    values  = function(pos)
+
+    #global::pos <<= pos
+    #show global::pos
+
+    #global::val1 <<= values
+    #show global::val1
+
+    # now we need the sum of the values
+    sumval  += ::Sum(values)*4
+    ::DebugPrint( "sumval(2) = %1%" % sumval)
+
+    pos     <<= xmin+::RangeImage(1,n-1)*h
+    ::DebugPrint( "min(pos) = %1% " % min(pos))
+    ::DebugPrint( "max(pos) = %1% " % max(pos))
+    values  <<= function(pos)
+    # now we need the sum of the values
+    sumval  +=  ::Sum(values)*2
+    ::DebugPrint( "sumval(3) = %1%" % sumval)
+
+    return = sumval*h/6
+  }
+
+  #-------------------------------------------------------------------------------
+  #
+  # Compute simple Simpson integral, based on a function of 'x' given as a string
+  # will use n intervals and 2*n values
+  #
+  proc ::RunString(STRING fstring, STRING varname, NUM xmin, NUM xmax, NUM n) \
+  {
+    ::StringFunctionClass function
+    function.SetVarName       (varname)
+    function.SetFunctionString(fstring)
+    return = ::Run(function.Eval,xmin,xmax,n)
+  }
+
+
+  #-------------------------------------------------------------------------------
+  #
+  # Compute Simpson double integral, based on a function of 'x' given as a string
+  # will use n intervals and 2*n values
+  #
+  proc ::IntegrateU( NUM vval)\
+  {
+    ::function.SetVarValue(::v_id,vval)
+    eval "umin = %1%;" % ::umin_str
+    eval "umax = %1%;" % ::umax_str
+    printn "umin = %1%" % umin
+    printn "umax = %1%" % umax
+    return = ::Run(::function.Eval,umin,umax,::un)
+  }
+
+  #-------------------------------------------------------------------------------
+  #
+  # Compute Simpson double integral, based on a function of 'varname' given 
+  # as a string will use n intervals and 2*n values
+  #
+  proc ::RunDouble( STRING fstring, \
+                     STRING vname, NUM vmin,          NUM vmax,         NUM vn,\
+                     STRING uname, STRING umin_str,   STRING umax_str,  NUM un)\
+  {
+    ::fstring  = fstring
+    ::vname    = vname
+    ::uname    = uname
+    ::umin_str = umin_str
+    ::umax_str = umax_str
+    ::un       = un
+
+    del ::function
+    ::StringFunctionClass ::function
+    ::function.SetVarName       (::uname)
+    ::function.SetFunctionString(::fstring)
+    ::v_id = ::function.AddVar(::vname,0)
+
+    h = ((DOUBLE) vmax - vmin)/vn
+    fmin = ::IntegrateU(vmin)
+    fmax = ::IntegrateU(vmax)
+    sumval = fmin+fmax
+
+    # here adding a 1D image to a 2D image ??
+    pos = vmin+h/2
+    for k=0 to vn-1 {
+    printn "pos = %1%" % pos
+      sumval += 4*::IntegrateU(pos)
+      pos += h
+    }
+
+    pos = vmin
+    for k=1 to vn-1 {
+      sumval += 2*::IntegrateU(pos)
+      pos += h
+    }
+
+    return = sumval*h/6
+  }
+
+}
+
+proc SimpsonInt(STRING fstring, STRING varname, NUM xmin, NUM xmax, NUM n) \
+{
+  # should be in another file and call func ...
+  global::SimpsonIntClass sic
+
+  proc function(NUM _x) {
+    eval "%1% = &_x;" % ::varname
+    eval "return = %1%;" % fstring
+  }
+
+  return = sic.Run(&function, xmin,xmax,n)
+}
