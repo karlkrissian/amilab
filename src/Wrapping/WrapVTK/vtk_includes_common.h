@@ -1,4 +1,7 @@
 
+// several defines of VTK configuration
+#include <vtkToolkits.h>
+
 #include <vtkActor2D.h>
 #include <vtkActorCollection.h>
 #include <vtkAlgorithm.h>
@@ -40,6 +43,12 @@
 #include <vtkFixedPointVolumeRayCastMapper.h>
 #include <vtkFloatArray.h>
 #include <vtkGlyph3D.h>
+
+#ifdef VTK_USE_GL2PS
+  // should be in a module??
+  #include <vtkGL2PSExporter.h>
+#endif
+
 #include <vtkGPUInfo.h>
 #include <vtkGPUInfoList.h>
 #include <vtkGPUVolumeRayCastMapper.h>

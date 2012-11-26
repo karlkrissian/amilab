@@ -43,7 +43,7 @@ Class ParametricSurfacesClass : public ScriptGui \
     # 0: superquadric
     # 1: torus
     # 2: user
-    ::type = INT(0), "Equation type 0: superquadric, 1: torus, 2: user"
+    ::type = INT(0), "Equation type 0: superquadric, 1: torus, 2: user, 3:Image"
 
     # torus param
     ::R = 1,    "Torus big radius"
@@ -71,6 +71,10 @@ Class ParametricSurfacesClass : public ScriptGui \
     ::kmax     = INT(0), "maximal value of k"
     # 
     ::timestep = INT(100), "timestep in milliseconds"
+    
+    ::polar_from_image = false, "Rotates a 1D image from the center to create"+\
+                                "a surface in polar coordinates"
+    
                     
     #-----------------------------------------------------------------------
     # copy parameters
@@ -116,6 +120,9 @@ Class ParametricSurfacesClass : public ScriptGui \
   #---------------------------------------------------------------------------
   proc ::Init() {
     
+    # Generate from image    
+    ::input_name =  "", "Name of input image"
+
     ::ParamClass ::params
     ::updating    = 0
     ::in_evolve   = false
@@ -128,6 +135,16 @@ Class ParametricSurfacesClass : public ScriptGui \
 
     ::html_filename = GetScriptsDir+\
                       "/ParametricSurfaces/Doc/ParametricSurfaces/index.html"
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::LoadInput() \
+  {
+        eval "::input <<="+::input_name+";"
+        if (::input_name=="Image") {
+          ::input_name = "::input"
+        }
+        ::win.Update(-1)
   }
 
   #------------------------------------
@@ -189,8 +206,10 @@ Class ParametricSurfacesClass : public ScriptGui \
       eval "max2=%1%;" % ::params.max2
     }
     
-    ::theta = ::theta*(max1-min1)+min1
-    ::phi   = ::phi  *(max2-min2)+min2
+    if (::params.type!=3) {
+      ::theta = ::theta*(max1-min1)+min1
+      ::phi   = ::phi  *(max2-min2)+min2
+    }
 
   } // ::UpdateResolution()
 
@@ -467,6 +486,76 @@ Class ParametricSurfacesClass : public ScriptGui \
   }
 
   #---------------------------------------------------------------------------
+  proc ::ApplyImage() \
+  {
+    #printn "::Update()"
+    if (exists(::input)) {
+      ::updating = 1
+
+      if (::params.polar_from_image) {
+        # Take the first line from the image
+        i0 = ::input[0:(::input.tx-1),0:0,0:0]
+        # use the first parameter, but go from 0 to 2Pi for the moment
+        values <<= Image(DOUBLE,i0.tx,::params.theta_dim,1)
+        # X is the radius
+        # Y is the angle
+
+        values.settranslation(i0.trx,0,0)
+        values.setvoxelsize(i0.vx,2*Pi/(values.ty-1),1)
+        
+        # need to replicate the initial image
+        for y=0 to values.ty-1 {
+          values.putimage(i0,0,y,0)
+        }
+        del ::values
+        ::values=&values
+        spos = SpacePos(values)
+        
+        ::pos <<= Image(DOUBLE,values.tx,values.ty,1,3)
+
+        ::pos.SetComponent(0,spos[0]*cos(spos[1]))
+        ::pos.SetComponent(1,spos[0]*sin(spos[1]))
+        ::pos.SetComponent(2,values)
+        
+        new_s = CreateFlatMesh(::pos[0]*0+1, 0 )
+        if (exists(::mesh_colors)) {
+          #printn "Set Mesh Colors"
+          new_s.SetColors(::mesh_colors)
+          new_s.SetColorMaterial(1)
+        }
+        new_s.ElevateMesh(::pos)
+
+      } else {
+        # if 3D image, take first slice??
+        i0 = ::input[:,:,0:0]
+        spos = SpacePos(i0)
+        
+        ::pos <<= Image(DOUBLE,i0.tx,i0.ty,1,3)
+        ::pos.SetComponent(0,spos[0])
+        ::pos.SetComponent(1,spos[1])
+        ::pos.SetComponent(2,i0)
+
+
+        # parameter 0 invert normals
+        #printn max(::theta)
+
+        new_s = CreateFlatMesh(i0*0+1, 0 )
+        if (exists(::mesh_colors)) {
+          #printn "Set Mesh Colors"
+          new_s.SetColors(::mesh_colors)
+          new_s.SetColorMaterial(1)
+        }
+        new_s.ElevateMesh(::pos)
+        # need to show the surface before computing any opengl operation!!!
+      }
+
+      #::SwitchSurface   (new_s)
+      ::SwitchVtkSurface(new_s)
+      ::updating = 0
+    }
+  }
+
+  #---------------------------------------------------------------------------
   proc ::Evolve() \
   {
     if (::in_evolve==0) {
@@ -605,16 +694,17 @@ Class ParametricSurfacesClass : public ScriptGui \
   #Initialize Interactor,Renderer, RendererWindow and variables
   proc ::CreateRenderer( OBJECT inter ) \
   {
+    ::renwin = inter.GetRenderWindow()
+    # enable line smoothing
+    ::renwin.SetLineSmoothing(true)
+
     inter.Show()
     inter.Update()
     ::renderer = vtk.vtkRenderer.New()
-    ::renderer.ResetCamera()   # carlos
-    inter.GetRenderWindow().AddRenderer(&::renderer)
+    ::renwin.AddRenderer(&::renderer)
     interact = vtk.vtkInteractorStyleTrackballCamera.New()
     inter.SetInteractorStyle(interact)
-    ::renwin = inter.GetRenderWindow()
-    # enable line smoothing
-    #::renwin.SetLineSmoothing(true)
+    ::renderer.ResetCamera()   # carlos
     ::InitCamera()
   }
 
@@ -709,6 +799,7 @@ Class ParametricSurfacesClass : public ScriptGui \
       ::win.AddEnumChoice(::type_id,"SuperQuadric")
       ::win.AddEnumChoice(::type_id,"Torus")
       ::win.AddEnumChoice(::type_id,"Expression")
+      ::win.AddEnumChoice(::type_id,"Image")
     ::win.SetCallback( &::NewType)
 
     ::book = ::win.BeginBook()
@@ -796,8 +887,15 @@ Class ParametricSurfacesClass : public ScriptGui \
         ::win.AddButton("Read", ::ReadEquation)
         #::win.EndHorizontal()
 
+      ::page_image = ::win.AddPage("Image")
+        ::win.BeginHorizontal()
+          ::win.AddImageChoice( ::input_name, "")
+          ::win.AddButton("Load",::LoadInput)
+        ::win.EndHorizontal()
+        ::win.AddBoolean(::params.polar_from_image, "Polar surface")
+        ::win.AddButton("Apply",::ApplyImage)
 
-        ::win.AddPage("VTK")
+      ::win.AddPage("VTK")
         ::win.BeginBook()
         ::win.AddPage("Actor")
           ::actor_ctrl      .AddGui(::win)

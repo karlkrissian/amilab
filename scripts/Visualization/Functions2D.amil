@@ -19,12 +19,16 @@ if (!exists(Functions2DClass)) {
     #--------------------------------------------
     Class ::CurveParamClass  {
     #     ---------------
-      ::mode = INT(0), "Equation mode: 0 for user equation, 1 for equation from input image"
+      ::mode = INT(0), "Equation mode:  0 for user equation, "+\
+                                       "1 for equation from input image, "+\
+                                       "2 for script functions. "
+
       ::equation   =  "sin(X)*3", "Equation as a function of the image X, example sin(X)"
       ::color_str  = "#000000", "Curve color defined by a string of the type RRGGBB"
       ::_style = INT(0), "style 0 for solid, 1 for dot, 2 for long dash, 3 for short dash, 4 for dot dash"
       ::_width = INT(1), "line width"
       ::input_name =  "", "Name of input image"
+      ::func_name  =  "", "Name of the input function"
 
       #----------------------------
       proc ::LoadInput() \
@@ -36,6 +40,13 @@ if (!exists(Functions2DClass)) {
           #::win.update
         }
         #::win.update
+      }
+
+      #----------------------------
+      proc ::LoadFunction() \
+      {
+        del ::function
+        eval "::function = &%1%;" % ::func_name
       }
 
       #--------------------------
@@ -52,7 +63,7 @@ if (!exists(Functions2DClass)) {
       #--------------------------
       proc ::GetYLimits( NUM xmin, NUM xmax, NUM res, NUM ymin, NUM ymax) \
       {
-        if (::mode==0) {
+        if (::mode==0)||(::mode==2) {
           numval = INT((xmax-xmin)/res+0.5)
           if (numval==0) { numval=1; }
           X <<= Image(DOUBLE,numval,1,1)
@@ -164,7 +175,7 @@ if (!exists(Functions2DClass)) {
       ::dw.SetXLimits(::xmin,::xmax)
       ::dw.SetYLimits(::ymin,::ymax)
 
-      if (::c1->mode==0) {
+      if (::c1.mode==0) {
         numval = INT((::xmax-::xmin)/::resolution+0.5)
         if (numval==0) { numval=1; }
         ::X <<= Image(FLOAT,numval,1,1)
@@ -173,12 +184,23 @@ if (!exists(Functions2DClass)) {
         _pos = SpacePos(::X)
         ::X = _pos[0]
         X = ::X
-        eval "::Y1 <<= "+::c1->equation+";"
+        eval "::Y1 <<= "+::c1.equation+";"
         ::dw.SetCurve(::Y1,0)
       }
-      if (::c1->mode==1) {
+      if (::c1.mode==1) {
         # set min and max
         ::dw.SetCurve(::c1->input,0)
+      }
+      if (::c1.mode==2) {
+        numval = INT((::xmax-::xmin)/::resolution+0.5)
+        if (numval==0) { numval=1; }
+        ::X <<= Image(FLOAT,numval,1,1)
+        ::X.settranslation(::xmin,0,0)
+        ::X.setvoxelsize(::resolution,1,1)
+        _pos = SpacePos(::X)
+        ::X = _pos[0]
+        ::Y1 <<= ::c1.function.Eval(::X)
+        ::dw.SetCurve(::Y1,0)
       }
     }
     # end ::SetCurve1()
@@ -278,6 +300,7 @@ if (!exists(Functions2DClass)) {
           ::eq1_mode_id = ::win.AddEnum( &::c1->mode,"mode")
             ::win.AddEnumChoice(::eq1_mode_id,"User equation")
             ::win.AddEnumChoice(::eq1_mode_id,"Input image")
+            ::win.AddEnumChoice(::eq1_mode_id,"Script function")
           ::win.SetCallback( &::EqModeEvent)
 
           # set input equation
@@ -291,6 +314,14 @@ if (!exists(Functions2DClass)) {
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::c1->input_name, "")
               ::win.AddButton("Load",::c1->LoadInput)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+          # set the input function
+          ::c1_function_panel = ::win.BeginBoxPanel("Function")
+            ::win.BeginHorizontal()
+              ::win.AddAMIObjectChoice( ::c1.func_name, "", "(ami)SimpsonIntClass")
+              ::win.AddButton("Load",::c1.LoadFunction)
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
@@ -309,6 +340,7 @@ if (!exists(Functions2DClass)) {
           ::eq2_mode_id = ::win.AddEnum( &::c2->mode,"mode")
             ::win.AddEnumChoice(::eq2_mode_id,"User equation")
             ::win.AddEnumChoice(::eq2_mode_id,"Input image")
+            ::win.AddEnumChoice(::eq1_mode_id,"Script function")
           ::win.SetCallback( &::EqModeEvent)
 
           # set input equation

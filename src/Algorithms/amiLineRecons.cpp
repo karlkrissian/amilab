@@ -295,7 +295,7 @@ InrImage::ptr LineRecons::Run( SurfacePoly* surf)
     } // if nbpoints>1
   } // end for i
 
-  //--- Lib�ration des objets
+  //--- Libération des objets
   return recons;
 
 } // LineRecons()

@@ -1,93 +1,21 @@
 
-
-
+func "StringFunctionClass"
 
 del SimpsonIntClass
-Class SimpsonIntClass \
+Class SimpsonIntClass : public StringFunctionClass\
 {
-  # todo put this in a file ?
-  Class StringFunctionClass \
-  {
-    ::varname = "x",  "Function variable"
-    ::fstring = "cos(x)", "Function as a string"
-    ::varlist   = VarVector()
-    ::valuelist = VarVector()
-
-    #---------------------------------------------------------------------------
-    proc ::AddVar(STRING vname, NUM value) \
-    {
-    printn "::AddVar begin"
-      ::varlist  .push_back(vname)
-      ::valuelist.push_back(value)
-      return = ::varlist.size()-1
-    printn "::AddVar end"
-    }
-
-    #---------------------------------------------------------------------------
-    proc ::SetVarValue(NUM var_pos, NUM value) \
-    {
-      ::varlist[var_pos] = value
-    }
-
-    #---------------------------------------------------------------------------
-    proc ::SetVarName(STRING v) \
-    {
-      ::varname = v
-    }
-    #---------------------------------------------------------------------------
-    proc ::SetFunctionString(STRING fstr) \
-    {
-      ::fstring = fstr
-    }
-    #---------------------------------------------------------------------------
-    proc ::Eval(VAR _val) \
-    {
-      for n=0 to ::varlist.size()-1 {
-        eval "%1% = ::valuelist[n];"     % ::varlist[n]
-        printn "%1% = " % ::varlist[n] +"%1%" % ::valuelist[n]
-      }
-      #printn "%1% = &_val;"     % ::varname
-      eval "%1% = _val;"     % ::varname
-      printn "%1% = "  % ::varname + "%1%" % _val
-      eval "return = %1%;"  % ::fstring
-      printn "return = %1%" % return
-    }
-  }
+  func "StringFunctionClass"
+  # included by inheritence ... no ...
   ::StringFunctionClass = &StringFunctionClass
 
   ::debug=false
-  ::varname = "x"
+  # redefine ::varname here?
+  del ::varname
+  ::varname = "x", "Main variable name in case of a function"
+  
+  ::type = INT(0), "0: single integral, 1: double integral"
 
   #-----------------------------------------------------------------------------
-  # change the name of the integration variable (was "x")
-  proc ::SetVariableName(STRING varname) {
-    ::varname = varname
-  }
-
-  #-------------------------------------------------------------------------------
-  # eval a string with 'x' as parameter (can be any variable type that accept 
-  # the string expression)
-  proc ::EvalFunction(STRING fstring, VAR _x) \
-  {
-    eval "%1% = &_x;" % ::varname
-    eval "return = %1%;" % fstring
-  }
-
-  #-------------------------------------------------------------------------------
-  proc ::RangeImage(NUM i, NUM j) \
-  {
-    # not very efficient but ok for now
-    return = (DOUBLE) Xpos(Image(UCHAR,j-i+1,1,1))+i
-  }
-
-  #-------------------------------------------------------------------------------
-  proc ::Sum(IMAGE i) \
-  {
-    sumop = ami_Sum()
-    return = sumop(i)
-  }
-
-  #-------------------------------------------------------------------------------
   proc ::DebugPrint(STRING s) \
   {
     if (::debug) {
@@ -95,12 +23,110 @@ Class SimpsonIntClass \
     }
   }
 
-  #-------------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
+  proc ::SetType(NUM t) \
+  {
+    ::type = t
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::SetFunction(VAR f) \
+  {
+    ::function = f
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::GetFunction() \
+  {
+    return  = &::function
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::SetString(STRING f_str) \
+  {
+    if (!exists(::function)) {
+      ::StringFunctionClass ::function
+    }
+    ::function.SetFunctionString(f_str)
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::SetFirstVariable(STRING vname, NUM vmin, NUM vmax, NUM vn) \
+  {
+    ::vname    = vname
+    ::vmin     = vmin
+    ::vmax     = vmax
+    ::vn       = vn
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::SetSecondVariable(STRING uname,STRING umin_str,STRING umax_str,NUM un)\
+  {
+    ::uname    = uname
+    ::umin_str = umin_str
+    ::umax_str = umax_str
+    ::un       = un
+  }
+  
+  #---------------------------------------------------------------------------
+  # adding the variable to the object context
+  #
+  proc ::AddParam(STRING pname, VAR value) \
+  {
+    ::function.AddParam(pname,value)
+  }
+
+  #---------------------------------------------------------------------------
+  # setting/adding the variable to the object context
+  #
+  proc ::SetParamValue(STRING pname, VAR value) \
+  {
+    ::function.SetParamValue(pname,value)
+  }
+
+  #---------------------------------------------------------------------------
+  # Name of the main variable
+  #
+  proc ::SetVarName(STRING v) \
+  {
+    ::varname = v
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::Eval(VAR x)\
+  {
+    ::function.AddParam(::varname,x)
+    if (::type==0) {
+      ::function.SetVarName(vname)
+      return = ::Run(::function, ::vmin, ::vmax, ::vn)
+    } else {
+      if (::type==1) {
+        return = ::RunDouble0()
+      }
+    }
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::RangeImage(NUM i, NUM j) \
+  {
+    # not very efficient but ok for now
+    return = (DOUBLE) Xpos(Image(UCHAR,j-i+1,1,1))+i
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::Sum(IMAGE i) \
+  {
+    sumop = ami_Sum()
+    return = sumop(i)
+  }
+
+  #-----------------------------------------------------------------------------
   #
   # Compute simple Simpson integral, based on a function of 'x' given as a string
   # will use n intervals and 2*n values
+  # optimized for scalar function
   #
-  proc ::Run(VAR function, NUM xmin, NUM xmax, NUM n) \
+  proc ::RunScalar(VAR function, NUM xmin, NUM xmax, NUM n) \
   {
     # check wikipedia http://en.wikipedia.org/wiki/Simpson%27s_rule
     # the integral can be written as a sum of 4 terms:
@@ -142,7 +168,60 @@ Class SimpsonIntClass \
     return = sumval*h/6
   }
 
-  #-------------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
+  #
+  # Compute simple Simpson integral, based on a function of 'x' given as a string
+  # will use n intervals and 2*n values
+  # run on any variable type that allows numerical operations (like images)
+  #
+  proc ::RunGeneral(VAR function, NUM xmin, NUM xmax, NUM n) \
+  {
+    ::DebugPrint("::RunGeneral() begin")
+
+    # check wikipedia http://en.wikipedia.org/wiki/Simpson%27s_rule
+    # the integral can be written as a sum of 4 terms:
+    # h=(xmax-xmin)/n
+    # h/3* (f(xmin)+f(xmax)+4.sum_{k in [0..n-1]} f(xmin+h/2+kh) 
+    # + 2.sum_{k in [1..n-1] f(xmin+kh))
+
+    h = ((DOUBLE) xmax - xmin)/n
+    fmin = function((DOUBLE)xmin)
+    fmax = function((DOUBLE)xmax)
+    sumval = fmin+fmax
+
+    # here adding a 1D image to a 2D image ??
+    pos = (DOUBLE)xmin+h/2
+    for k=0 to n-1 {
+      sumval += 4*function(pos)
+      pos += h
+    }
+
+    pos = (DOUBLE)xmin+h
+    for k=1 to n-1 {
+      sumval += 2*function(pos)
+      pos += h
+    }
+
+    return = sumval*h/6
+    ::DebugPrint("::RunGeneral() end")
+
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::Run(VAR function, NUM xmin, NUM xmax, NUM n) \
+  {
+    ::DebugPrint("::Run() begin")
+    # check function type
+    r = function(0)
+    if (language.WrapVariable(r).IsNumeric()) {
+      return = ::RunScalar(function,xmin,xmax,n)
+    } else {
+      return = ::RunGeneral(function,xmin,xmax,n)
+    }
+    ::DebugPrint("::Run() end")
+  }
+
+  #-----------------------------------------------------------------------------
   #
   # Compute simple Simpson integral, based on a function of 'x' given as a string
   # will use n intervals and 2*n values
@@ -156,63 +235,111 @@ Class SimpsonIntClass \
   }
 
 
-  #-------------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
   #
   # Compute Simpson double integral, based on a function of 'x' given as a string
   # will use n intervals and 2*n values
   #
-  proc ::IntegrateU( NUM vval)\
+  proc ::IntegrateU( VAR function, NUM vval)\
   {
-    ::function.SetVarValue(::v_id,vval)
+    ::DebugPrint( "::IntegrateU ( .., %1%)" % vval)
+    function.SetParamValue(::vname,vval)
+    eval "%1% = vval;"     % ::vname
     eval "umin = %1%;" % ::umin_str
     eval "umax = %1%;" % ::umax_str
-    printn "umin = %1%" % umin
-    printn "umax = %1%" % umax
-    return = ::Run(::function.Eval,umin,umax,::un)
+    return = ::Run(function.Eval,umin,umax,::un)
+    #::debug=true
+    ::DebugPrint("::IntegrateU(function,%1%) = " % vval + "%1%" % return)
+    #::debug=false
+    ::DebugPrint("::IntegrateU ( .., %1%) end" % vval)
   }
 
-  #-------------------------------------------------------------------------------
+
+  
+  #-----------------------------------------------------------------------------
   #
   # Compute Simpson double integral, based on a function of 'varname' given 
   # as a string will use n intervals and 2*n values
   #
-  proc ::RunDouble( STRING fstring, \
+  proc ::RunDouble0()\
+  {
+    ::DebugPrint("::RunDouble0() begin")
+
+    ::DebugPrint("::RunDouble0() 1")
+    ::function.SetVarName       (::uname)
+    ::function.AddParam(::vname,0)
+
+    ::DebugPrint("::RunDouble0() 2")
+    h = ((DOUBLE) ::vmax - ::vmin)/::vn
+    fmin = ::IntegrateU(::function,::vmin)
+    fmax = ::IntegrateU(::function,::vmax)
+    sumval = fmin+fmax
+
+    ::DebugPrint("::RunDouble0() 3")
+    # here adding a 1D image to a 2D image ??
+    pos = ::vmin+h/2
+    for k=0 to ::vn-1 {
+      ::DebugPrint( "pos = %1%" % pos)
+      sumval += 4*::IntegrateU(::function,pos)
+      pos += h
+    }
+
+    ::DebugPrint("::RunDouble0() 4")
+    pos = ::vmin+h
+    for k=1 to ::vn-1 {
+      ::DebugPrint( "pos = %1%" % pos)
+      sumval += 2*::IntegrateU(::function,pos)
+      pos += h
+    }
+    #sumval.info
+    return = sumval*h/6
+  }
+
+  #-----------------------------------------------------------------------------
+  #
+  # Compute Simpson double integral, based on a function of 'varname' given 
+  # as a string will use n intervals and 2*n values
+  #
+  proc ::RunDouble( VAR function, \
                      STRING vname, NUM vmin,          NUM vmax,         NUM vn,\
                      STRING uname, STRING umin_str,   STRING umax_str,  NUM un)\
   {
-    ::fstring  = fstring
-    ::vname    = vname
-    ::uname    = uname
-    ::umin_str = umin_str
-    ::umax_str = umax_str
-    ::un       = un
+    ::DebugPrint("::RunDouble() begin")
+    ::SetFunction       (function)
+    ::SetFirstVariable  (vname,vmin    ,vmax,    vn)
+    ::SetSecondVariable (uname,umin_str,umax_str,un)
 
-    del ::function
-    ::StringFunctionClass ::function
-    ::function.SetVarName       (::uname)
-    ::function.SetFunctionString(::fstring)
-    ::v_id = ::function.AddVar(::vname,0)
+    return = ::RunDouble0()
+  }
+  
+  
+  #-----------------------------------------------------------------------------
+  # Compute Simpson double integral, based on a function of 'varname' given 
+  # as a string will use n intervals and 2*n values
+  #
+  proc ::RunDoubleString( STRING fstring, \
+                          STRING vname,NUM vmin,       NUM vmax,       NUM vn,\
+                          STRING uname,STRING umin_str,STRING umax_str,NUM un)\
+  {
+    ::StringFunctionClass function
+    function.SetFunctionString(fstring)
+    return = ::RunDouble(function,vname,vmin,vmax,vn,uname,umin_str,umax_str,un)
+  }
+  
+  #-----------------------------------------------------------------------------
+  proc ::RunTests() \
+  {
+    epsilon = 1E-5
 
-    h = ((DOUBLE) vmax - vmin)/vn
-    fmin = ::IntegrateU(vmin)
-    fmax = ::IntegrateU(vmax)
-    sumval = fmin+fmax
-
-    # here adding a 1D image to a 2D image ??
-    pos = vmin+h/2
-    for k=0 to vn-1 {
-    printn "pos = %1%" % pos
-      sumval += 4*::IntegrateU(pos)
-      pos += h
+    printn "Checking int_0^1 \int_0^v e^u du dv = exp(1)-2 "
+    res = ::RunDoubleString("exp(u)","v",0,1,10,"u","0","v",10)
+    res_ideal = exp(1)-2
+    diff = res-res_ideal
+    if (abs(diff)<epsilon) {
+      printn "Test passed: diff = %1%" % diff
+    } else {
+      printn "Test failed: diff = %1%" % diff
     }
-
-    pos = vmin
-    for k=1 to vn-1 {
-      sumval += 2*::IntegrateU(pos)
-      pos += h
-    }
-
-    return = sumval*h/6
   }
 
 }

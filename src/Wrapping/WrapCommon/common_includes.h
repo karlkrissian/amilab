@@ -11,6 +11,7 @@
 #include <set>
 #include <string>
 
+
 #ifdef __GCCXML__
   template class ami::ImageExtent<float>;
  

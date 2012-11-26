@@ -1,0 +1,64 @@
+
+del StringFunctionClass
+
+# This class allows to use a string to represent a function
+# and evaluate it
+# would need std::map here
+Class StringFunctionClass \
+{
+  ::varname = "x",  "Function variable"
+  ::fstring = "cos(x)", "Function as a string"
+  ::debug = false
+  ::vars = &language.Vars
+  ::object_context = ::vars.GetObjectContext()
+
+  #---------------------------------------------------------------------------
+  proc ::DebugPrint(STRING s) \
+  {
+    if (::debug) {
+      printn s
+    }
+  }
+  
+  #---------------------------------------------------------------------------
+  # adding the variable to the object context
+  #
+  proc ::AddParam(STRING pname, VAR value) \
+  {
+    # delete the variable in case it changes its type
+    eval "del ::%1%;" % pname
+    # add the new variable to the object context
+    eval "::%1% = value;" % pname
+  }
+
+  #---------------------------------------------------------------------------
+  # setting/adding the variable to the object context
+  #
+  proc ::SetParamValue(STRING pname, VAR value) \
+  {
+    eval "::%1% = value;" % pname
+  }
+
+  #---------------------------------------------------------------------------
+  # Name of the main variable
+  #
+  proc ::SetVarName(STRING v) \
+  {
+    ::varname = v
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::SetFunctionString(STRING fstr) \
+  {
+    ::fstring = fstr
+  }
+  
+  #---------------------------------------------------------------------------
+  proc ::Eval(VAR _val) \
+  {
+    # trick to use the object context as default and avoid ::
+    ::vars.GetCurrentContext().AddDefault(::object_context)
+    eval "%1% = _val;"     % ::varname
+    eval "return = %1%;"   % ::fstring
+  }
+}
