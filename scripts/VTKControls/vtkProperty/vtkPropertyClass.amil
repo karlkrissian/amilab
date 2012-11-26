@@ -16,6 +16,17 @@ Class vtkPropertyClass : public ScriptGui \
                     "vtkProperty parameters"
     ::color   = wx.wxColour(0,0,255)
     ::opacity = 1.0, "opacity property"
+
+    ::ambient       = 0.5,  "Ambient value"
+    ::diffuse       = 1.0,  "Diffuse value"
+    ::specular      = 0.5,  "Specular value"
+    ::specularpower = 30,   "Specular power"
+
+# colors
+# line width
+# point size
+# ...
+
     ::enable_lighting = UCHAR(1), "Enable lighting"
 
     # ----- Shading interpolation mode
@@ -84,6 +95,11 @@ Class vtkPropertyClass : public ScriptGui \
     ::params.enable_lighting     = ::vtkproperty.GetLighting()
     ::params.interpolation_mode  = ::vtkproperty.GetInterpolation()
     ::params.representation_mode = ::vtkproperty.GetRepresentation()
+
+    ::params.ambient        = ::vtkproperty.GetAmbient()
+    ::params.diffuse        = ::vtkproperty.GetDiffuse()
+    ::params.specular       = ::vtkproperty.GetSpecular()
+    ::params.specularpower  = ::vtkproperty.GetSpecularPower()
   }
 
   #-----------------------------------------------------------------------------
@@ -94,13 +110,19 @@ Class vtkPropertyClass : public ScriptGui \
                               (FLOAT)::params.color.Green()/255,\
                               (FLOAT)::params.color.Blue() /255)
       ::vtkproperty.SetOpacity(::params.opacity)
-      ::vtkproperty.SetInterpolation( ::params.interpolation_mode)
-      ::vtkproperty.SetRepresentation(::params.representation_mode)
+      ::vtkproperty.SetInterpolation  (::params.interpolation_mode)
+      ::vtkproperty.SetRepresentation (::params.representation_mode)
+      ::vtkproperty.SetLighting       (::params.enable_lighting)
+
+      ::vtkproperty.SetAmbient        (::params.ambient)
+      ::vtkproperty.SetDiffuse        (::params.diffuse)
+      ::vtkproperty.SetSpecular       (::params.specular)
+      ::vtkproperty.SetSpecularPower  (::params.specularpower)
     }
   }
 
   #-----------------------------------------------------------------------------
-  proc ::SetProperty( OBJECT obj) \
+  proc ::SetPropertyNoUpdate( OBJECT obj) \
   {
     if obj.IsA("vtkProperty") {
       del ::vtkproperty
@@ -113,7 +135,12 @@ Class vtkPropertyClass : public ScriptGui \
         InfoDialog "vtkPropertyClass.SetProperty(obj): wrong object type"
       }
     }
+  }
 
+  #-----------------------------------------------------------------------------
+  proc ::SetProperty( OBJECT obj) \
+  {
+    ::SetPropertyNoUpdate(obj)
     ::Update()
   }
 
@@ -126,25 +153,25 @@ Class vtkPropertyClass : public ScriptGui \
       }
   }
 
-  #-----------------------------------------------------------------------------
-  proc ::CB_Lighting( ) \
-  {
-    ::vtkproperty.SetLighting(::params.enable_lighting)
-  }
+  ##-----------------------------------------------------------------------------
+  #proc ::CB_Lighting( ) \
+  #{
+    #::vtkproperty.SetLighting(::params.enable_lighting)
+  #}
 
-  #-----------------------------------------------------------------------------
-  proc ::CB_Interpolation( ) \
-  {
-    #printn "Setting interpolation to %1%" % ::params.interpolation_mode
-    ::vtkproperty.SetInterpolation(::params.interpolation_mode)
-  }
+  ##-----------------------------------------------------------------------------
+  #proc ::CB_Interpolation( ) \
+  #{
+    ##printn "Setting interpolation to %1%" % ::params.interpolation_mode
+    #::vtkproperty.SetInterpolation(::params.interpolation_mode)
+  #}
 
-  #-----------------------------------------------------------------------------
-  proc ::CB_Representation( ) \
-  {
-    #printn "Setting interpolation to %1%" % ::params.interpolation_mode
-    ::vtkproperty.SetRepresentation(::params.representation_mode)
-  }
+  ##-----------------------------------------------------------------------------
+  #proc ::CB_Representation( ) \
+  #{
+    ##printn "Setting interpolation to %1%" % ::params.interpolation_mode
+    #::vtkproperty.SetRepresentation(::params.representation_mode)
+  #}
 
   #-----------------------------------------------------------------------------
   proc ::CB_Property( ) \
@@ -162,19 +189,28 @@ Class vtkPropertyClass : public ScriptGui \
     }
     return = win.BeginBoxPanel("vtkProperty control")
       ::color_id   = win.AddColor("Color",&::params.color)
-      win.SetCallback( &::ChangeProperty)
+      win.SetCallback( ::ChangeProperty)
       ::opacity_id = win.AddFloat(&::params.opacity,"Opacity",0,1)
-      win.SetCallback( &::ChangeProperty)
+      win.SetCallback( ::ChangeProperty)
       win.AddBoolean(::params.enable_lighting,"Lighting")
-      win.SetCallback(::CB_Lighting)
+      win.SetCallback(  ::ChangeProperty)
 
       ::params.interpolation_modes.SetGuiMode(1)
       ::params.interpolation_modes.AddGui(win)
-      ::params.interpolation_modes.SetCallback(::CB_Interpolation)
+      ::params.interpolation_modes.SetCallback(::ChangeProperty)
 
       ::params.representation_modes.SetGuiMode(1)
       ::params.representation_modes.AddGui(win)
-      ::params.representation_modes.SetCallback(::CB_Representation)
+      ::params.representation_modes.SetCallback(::ChangeProperty)
+
+      win.AddFloat(::params.ambient,      "Ambient"     ,0,1)
+      win.SetCallback( ::ChangeProperty)
+      win.AddFloat(::params.diffuse,      "Diffuse"     ,0,1)
+      win.SetCallback( ::ChangeProperty)
+      win.AddFloat(::params.specular,     "Specular"    ,0,1)
+      win.SetCallback( ::ChangeProperty)
+      win.AddFloat(::params.specularpower,"Spec. power" ,0,50)
+      win.SetCallback( ::ChangeProperty)
     win.EndBoxPanel()
   }
 

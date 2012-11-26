@@ -47,14 +47,16 @@ int   ami::count( InrImage* im)
   return num;
 }
 
-boost::shared_ptr<ami::MeanClass> ami::MeanClass::operator[](InrImage::ptr m)
+//------------------------------------------------------------------------------
+boost::shared_ptr<ami::Mean> ami::Mean::operator[](InrImage::ptr m)
 {
-  boost::shared_ptr<MeanClass> res(new MeanClass());
+  boost::shared_ptr<Mean> res(new Mean());
   res->mask = m;
   return res;
 }
 
-double ami::MeanClass::operator()(InrImage::ptr im, InrImage::ptr m) {
+//------------------------------------------------------------------------------
+double ami::Mean::operator()(InrImage::ptr im, InrImage::ptr m) {
   if (im.get())
     if (m.get())
       return Func_mean(im.get(),m.get());
@@ -63,6 +65,63 @@ double ami::MeanClass::operator()(InrImage::ptr im, InrImage::ptr m) {
         return Func_mean(im.get(),mask.get());
       else
         return Func_mean(im.get());
+  else
+    return 0.0;
+}
+
+//--------------------------------------------------
+double     Func_sum( InrImage* im)
+{
+  double sum;
+
+  sum = 0;
+  im->InitBuffer();
+  do {
+    sum += im->ValeurBuffer();
+  } while (im->IncBuffer());
+  
+  return sum;
+}
+
+//--------------------------------------------------
+double     Func_sum( InrImage* im, InrImage* mask)
+{
+  long  numpoints;
+  double  sum;
+
+  sum      = 0;
+  numpoints = 0;
+  im  ->InitBuffer();
+  if (mask!=NULL) mask->InitBuffer();
+  do {
+    if ( (mask!=NULL) && (mask->ValeurBuffer() > 0.5) ) {
+      sum += im->ValeurBuffer();
+      numpoints++;
+    } // end if
+    if (mask!=NULL) mask->IncBuffer();
+  } while (im->IncBuffer());
+  
+  return sum;
+}
+
+//------------------------------------------------------------------------------
+boost::shared_ptr<ami::Sum> ami::Sum::operator[](InrImage::ptr m)
+{
+  boost::shared_ptr<Sum> res(new Sum());
+  res->mask = m;
+  return res;
+}
+
+//------------------------------------------------------------------------------
+double ami::Sum::operator()(InrImage::ptr im, InrImage::ptr m) {
+  if (im.get())
+    if (m.get())
+      return Func_sum(im.get(),m.get());
+    else
+      if (mask.get())
+        return Func_sum(im.get(),mask.get());
+      else
+        return Func_sum(im.get());
   else
     return 0.0;
 }

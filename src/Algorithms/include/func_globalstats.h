@@ -43,20 +43,32 @@ InrImage*   Func_Histogram( InrImage* im, float min, float max, int ninterv);
 
 // count the number of positive points of the image
 namespace ami {
-int         count( InrImage* im);
+  int         count( InrImage* im);
 
-class MeanClass
-{
-private:
-  InrImage::ptr mask;
-public:
-  MeanClass()   { }
-  
-  boost::shared_ptr<MeanClass> operator[](InrImage::ptr m);
-  
-  double operator()(InrImage::ptr im, InrImage::ptr m=InrImage::ptr());
-};
+  class Mean
+  {
+  private:
+    InrImage::ptr mask;
+  public:
+    Mean()   { }
+    
+    boost::shared_ptr<Mean> operator[](InrImage::ptr m);
+    
+    double operator()(InrImage::ptr im, InrImage::ptr m=InrImage::ptr());
+  };
 
+  class Sum
+  {
+  private:
+    InrImage::ptr mask;
+  public:
+    Sum()   { }
+    
+    boost::shared_ptr<Sum> operator[](InrImage::ptr m);
+    double operator()(InrImage::ptr im, InrImage::ptr m=InrImage::ptr());
+  };
+
+  
 }
 
 

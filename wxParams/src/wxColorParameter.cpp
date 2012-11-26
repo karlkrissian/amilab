@@ -32,7 +32,6 @@
 
 #include "wxColorParameter.h"
 
-
 //================================================================================
 // Class wxColorParameter
 //
@@ -47,21 +46,20 @@
 #endif
 #include "wx/colordlg.h"
 
-//BEGIN_EVENT_TABLE(wxColorParameter, wxButtonParameter)
-//    EVT_LEFT_UP(  wxColorParameter::OnLeftButton)
-//END_EVENT_TABLE()
+BEGIN_EVENT_TABLE(wxColorParameter, wxColourPickerCtrl)
+  EVT_COLOURPICKER_CHANGED( wxID_ANY, wxColorParameter::OnColour)
+END_EVENT_TABLE()
 
 
 ///
-wxColorParameter::wxColorParameter( wxWindow* parent, const char* libelle, wxColour* couleur)
-//----------
-  : wxButtonParameter(parent,libelle ,
-		      (void*) NULL,
-		      (void*) NULL)
+wxColorParameter::wxColorParameter( wxWindow* parent, const char* libelle, 
+                                    wxColour* couleur)
+  : wxColourPickerCtrl(parent,wxID_ANY)
 {
-  SetBackgroundStyle( wxBG_STYLE_COLOUR);
+//SetBackgroundStyle( wxBG_STYLE_COLOUR);
   parametre = couleur;
   Update();
+  this->SetToolTip(wxString(libelle));
 }
 
 ///
@@ -74,40 +72,41 @@ wxColorParameter::~wxColorParameter()
 void  wxColorParameter::Update()
 //
 {
-  this->_wx_color.Set(parametre->Red(),
-                      parametre->Green(),
-                      parametre->Blue());
-  this->SetBackgroundColour(this->_wx_color);
-
-  if (_wx_color.Red()+ _wx_color.Green()+ _wx_color.Blue()
-      < (1.5*255))
-    SetForegroundColour(*wxWHITE);
-  else
-    SetForegroundColour(*wxBLACK);
+//   this->_wx_color.Set(parametre->Red(),
+//                       parametre->Green(),
+//                       parametre->Blue());
+//   this->SetBackgroundColour(this->_wx_color);
+// 
+//   if (_wx_color.Red()+ _wx_color.Green()+ _wx_color.Blue()
+//       < (1.5*255))
+//     SetForegroundColour(*wxWHITE);
+//   else
+//     SetForegroundColour(*wxBLACK);
+  this->SetColour(*parametre);
 
 }
 
 ///
-void wxColorParameter::OnButton( wxCommandEvent& event)
+void wxColorParameter::OnColour( wxColourPickerEvent& event)
 //                     --------
 {
 
   //printf("wxColorParameter::OnLeftButton()\n");
-  wxColour col;
-  this->_wx_color.Set(parametre->Red(),
-                      parametre->Green(),
-                      parametre->Blue());
-
-  wxColourData data;
-  data.SetColour( this->_wx_color);
-  wxColourDialog dialog(this, &data);
-
-  if ( dialog.ShowModal() == wxID_OK )
-    {
-      col = dialog.GetColourData().GetColour();
-    }
-
-  parametre->Set(col.Red(),col.Green(),col.Blue());
+//   wxColour col;
+//   this->_wx_color.Set(parametre->Red(),
+//                       parametre->Green(),
+//                       parametre->Blue());
+// 
+//   wxColourData data;
+//   data.SetColour( this->_wx_color);
+//   wxColourDialog dialog(this, &data);
+// 
+//   if ( dialog.ShowModal() == wxID_OK )
+//     {
+//       col = dialog.GetColourData().GetColour();
+//     }
+// 
+  *parametre = this->GetColour();
   this->Update();
 
   //printf("wxColorParameter::OnLeftButton() \tthis->_callback != NULL ??\n");

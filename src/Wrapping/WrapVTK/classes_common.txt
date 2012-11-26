@@ -15,6 +15,7 @@ vtkAppendPolyData
 vtkArrowSource
 vtkAxesActor
 vtkAxis
+vtkAxisActor
 vtkBMPReader
 vtkBoxWidget
 vtkBrush
@@ -44,6 +45,7 @@ vtkDataSet
 vtkDICOMImageReader
 vtkDirectory
 vtkDoubleArray
+vtkElevationFilter
 vtkFieldData
 vtkFixedPointVolumeRayCastMapper
 vtkFloatArray

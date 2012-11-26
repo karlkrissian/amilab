@@ -6,6 +6,19 @@ del ParametricSurfacesClass
 Class ParametricSurfacesClass : public ScriptGui \
 {
   
+  func "VTKControls/vtkCamera/vtkCameraClass"
+  vtkCameraClass ::vtk_camera_gui
+
+  func "VTKControls/vtkRenderer/vtkRendererClass"
+  vtkRendererClass ::vtk_renderer_gui
+
+  func "VTKControls/vtkActor/vtkActorClass"
+  vtkActorClass ::actor_ctrl
+  vtkActorClass ::lineactor_ctrl
+
+  func "VTKControls/vtkCubeAxesActor/vtkCubeAxesActorClass"
+  vtkCubeAxesActorClass ::cubeaxesactor_ctrl
+
   func "Variable/ObjectIO"
   #===========================================================================
   # Set parameters here
@@ -47,6 +60,8 @@ Class ParametricSurfacesClass : public ScriptGui \
     ::Y = "sin(U)*cos(V)", "Equation of Y coordinates"
     ::Z = "sin(V)",        "Equation of Z coordinates"
 
+    ::use_scalars = false, "Use scalar values to add colors to the surface"
+
     ::AutoUpdateEquation = false, "Automatically update the equation and the text changes"
 
     # temporal evolution of the equation
@@ -79,6 +94,7 @@ Class ParametricSurfacesClass : public ScriptGui \
       ::max1  = p.max1
       ::min2  = p.min2
       ::max2  = p.max2
+      ::use_scalars = p.use_scalars
       ::AutoUpdateEquation  = p.AutoUpdateEquation
       ::evolve_state        = p.evolve_state
       ::k                   = p.k
@@ -107,6 +123,8 @@ Class ParametricSurfacesClass : public ScriptGui \
 
     #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
     # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+    ::background_color  = wx.wxColour(173,216,230)
+    ::background_color2 = wx.wxColour(144,238,144)
 
     ::html_filename = GetScriptsDir+\
                       "/ParametricSurfaces/Doc/ParametricSurfaces/index.html"
@@ -207,10 +225,175 @@ Class ParametricSurfacesClass : public ScriptGui \
     ::Update()
   }
   
+  #-----------------------------------------------------------------------------
+  proc ::AddVTKPlaneActors( ) \
+  {
+    ::render_planes=true
+    if (::render_planes) {
+      if exists(::plane1_actor) {
+        ::renderer.RemoveActor(::plane1_actor)
+      }
+      del ::plane1
+      ::plane1 = vtk.vtkPlaneSource.New()
+
+      # TODO: avoid this re-calculation
+      zmin = min(::pos[2])
+      zmax = max(::pos[2])
+      eval "xmin=%1%;" % ::params.min1
+      eval "xmax=%1%;" % ::params.max1
+      eval "ymin=%1%;" % ::params.min2
+      eval "ymax=%1%;" % ::params.max2
+
+      ::plane1.SetOrigin(xmax,ymin,zmin)
+      ::plane1.SetPoint1(xmax,ymax,zmin)
+      ::plane1.SetPoint2(xmax,ymin,zmax)
+      #::plane1.SetNormal(-1,0,0)
+      del ::plane1_mapper
+      ::plane1_mapper = vtk.vtkPolyDataMapper.New()
+      ::plane1_mapper.SetInputConnection(::plane1.GetOutputPort())
+      del ::plane1_actor
+      ::plane1_actor = vtk.vtkActor.New()
+      ::plane1_actor.SetMapper(::plane1_mapper)
+    }
+    ::renderer.AddActor(::plane1_actor)
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SwitchVtkSurface( OBJECT new_surf) \
+  {
+    first=false
+    if (exists(::vtksurf_actor)) {
+      ::renderer.RemoveActor(::vtksurf_actor)
+      ::renderer.RemoveActor(::vtksurf_lineactor)
+    } else {
+      first=true
+    }
+    del ::vtksurf
+    ::vtksurf = vtktools.ToVtkPolyData(new_surf)
+    polynormals = vtk.vtkPolyDataNormals.New()
+    polynormals.SetInput(::vtksurf)
+    polynormals.SetFeatureAngle(60.0)
+    polymapper = vtk.vtkPolyDataMapper.New()
+
+    if (::params.use_scalars) {
+      # use vtkElevationFilter to create the colors for the moment
+      elevation_color = vtk.vtkElevationFilter.New()
+      elevation_color.SetInputConnection(polynormals.GetOutputPort())
+      low  = min(::pos[2])
+      high = max(::pos[2])
+      elevation_color.SetLowPoint (0,0,low)
+      elevation_color.SetHighPoint(0,0,high)
+      elevation_color.SetScalarRange(low,high)
+      polymapper.SetInputConnection(elevation_color.GetOutputPort())
+      polymapper.SetScalarRange(low,high)
+      polymapper.ScalarVisibilityOn()
+
+      lut = vtk.vtkLookupTable.New()
+      lut.SetHueRange(0.6, 0)
+      lut.SetSaturationRange(1.0, 0)
+      lut.SetValueRange(0.5, 1.0)
+
+      polymapper.SetLookupTable(lut)
+    } else {
+      polymapper.SetInputConnection(polynormals.GetOutputPort())
+      polymapper.ScalarVisibilityOff()
+    }
+
+    del ::vtksurf_actor
+    ::vtksurf_actor =  vtk.vtkActor.New()
+    ::vtksurf_actor.SetMapper(polymapper)
+
+    # create line actor and mapper
+    #linedata = vtk.vtkPolyData.SafeDownCast(polymapper.GetInput())
+    polylinemapper = vtk.vtkPolyDataMapper.New()
+    polylinemapper.SetInput(::vtksurf)
+    polylinemapper.ScalarVisibilityOff()
+    del ::vtksurf_lineactor
+    ::vtksurf_lineactor = vtk.vtkActor.New()
+    ::vtksurf_lineactor.SetMapper(polylinemapper)
+
+    # Set Line properties
+    # color: black
+    ::vtksurf_lineactor.GetProperty().SetColor(0,0,0)
+    # type: lines
+    ::vtksurf_lineactor.GetProperty().SetRepresentationToWireframe()
+
+      # Add Actors
+    ::renderer.AddActor(::vtksurf_actor)
+    ::renderer.AddActor(::vtksurf_lineactor)
+
+    # TODO: update the vtkrenderer_gui
+    if (first) {
+      ::actor_ctrl.SetActor(::vtksurf_actor)
+    } else {
+      ::actor_ctrl.SetActorNoUpdate(::vtksurf_actor)
+    }
+    # apply previous settings and render
+    ::actor_ctrl.UpdateVTK()
+
+    if (first) {
+      ::lineactor_ctrl.SetActor(::vtksurf_lineactor)
+    } else {
+      ::lineactor_ctrl.SetActorNoUpdate(::vtksurf_lineactor)
+    }
+    # apply previous settings and render
+    ::lineactor_ctrl.UpdateVTK()
+    
+    # setup ::cubAxesActor
+    if (exists(::cubeAxesActor)) {
+      # safer to remove it
+      ::renderer.RemoveActor(::cubeAxesActor)
+      del ::cubeAxesActor
+    }
+
+    ::cubeAxesActor = vtk.vtkCubeAxesActor.New()
+    ::cubeAxesActor.SetCamera(::renderer.GetActiveCamera())
+    ::cubeAxesActor.SetInertia(1000)
+    ::cubeAxesActor.SetXLabelFormat("%-g")
+    ::cubeAxesActor.SetYLabelFormat("%-g")
+    ::cubeAxesActor.SetZLabelFormat("%-g")
+    ::cubeAxesActor.SetBounds(::vtksurf.GetBounds())
+
+
+    if (first) {
+      ::cubeaxesactor_ctrl.SetCubeAxesActor(::cubeAxesActor)
+    } else {
+      ::cubeaxesactor_ctrl.SetCubeAxesActorNoUpdate(::cubeAxesActor)
+    }
+    ::cubeaxesactor_ctrl.UpdateVTK()
+
+    ::renderer.AddActor(::cubeAxesActor)
+
+
+    ::renderer.GetRenderWindow().Render()
+  }
+
+  #---------------------------------------------------------------------------
+  # ::s is the previous surface
+  #
+  proc ::SwitchSurface( OBJECT new_surf) \
+  {
+    if (exists(::s_draw)) {
+      ::s_draw.Remove(::s)
+    }
+    del ::s
+    ::s = &new_surf
+    if (exists(::s_draw)) {
+      ::s_draw += ::s
+    } else {
+      show ::s
+      #::s_draw = Viewer3D("3D Surface Viewer")
+      #::s_draw += ::s
+    }
+    ::s.Normals()
+    ::s.Recompute()
+    ::s_draw.Paint()
+  }
+  
   #---------------------------------------------------------------------------
   proc ::Update() \
   {
-  
+    #printn "::Update()"
     if (::updating==0) {
       ::updating = 1
       if (!exists(::pos)) {
@@ -265,37 +448,20 @@ Class ParametricSurfacesClass : public ScriptGui \
         eval "::pos.SetComponent(2, "+::params.Z+");"
       }
 
-      if (exists(::s_draw)) {
-        ::s_draw.Remove(&::s)
-        del ::s
-      }
-
       # parameter 0 invert normals
       #printn max(::theta)
-      ::s = \
-        CreateFlatMesh\
-        (\
-          ::theta>-1,\
-          0\
-          )
+
+      new_s = CreateFlatMesh(::theta*0+1, 0 )
       if (exists(::mesh_colors)) {
         #printn "Set Mesh Colors"
-        ::s.SetColors(::mesh_colors)
-        ::s.SetColorMaterial(1)
+        new_s.SetColors(::mesh_colors)
+        new_s.SetColorMaterial(1)
       }
-      ::s.ElevateMesh(::pos)
+      new_s.ElevateMesh(::pos)
       # need to show the surface before computing any opengl operation!!!
 
-      if (exists(::s_draw)) {
-        ::s_draw += ::s
-      } else {
-        show ::s
-        #::s_draw = Viewer3D("3D Surface Viewer")
-        #::s_draw += ::s
-      }
-      ::s.Normals()
-      ::s.Recompute()
-      ::s_draw.Paint()
+      #::SwitchSurface   (new_s)
+      ::SwitchVtkSurface(new_s)
       ::updating = 0
     }
   }
@@ -404,6 +570,131 @@ Class ParametricSurfacesClass : public ScriptGui \
   }
 
   #---------------------------------------------------------------------------
+  proc ::RenderCallback() \
+  {
+    if exists(::renwin_interact) {
+      ::renwin_interact.Render()
+    }
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::SetRendererBg() \
+  {
+    if (exists(::renderer)) {
+      ::renderer.SetBackground( \
+        (FLOAT) ::background_color.Red() /255, \
+        (FLOAT) ::background_color.Green() /255, \
+        (FLOAT) ::background_color.Blue() /255)
+      ::renderer.SetBackground2( \
+        (FLOAT) ::background_color2.Red() /255, \
+        (FLOAT) ::background_color2.Green() /255, \
+        (FLOAT) ::background_color2.Blue() /255)
+      ::renderer.SetGradientBackground( true)
+    }
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::InitCamera() {
+    ::camera=::renderer.GetActiveCamera()
+    ::camera.SetPosition(0,-100,0)
+    ::camera.SetViewUp(0,0,1) # change orientation
+    #::camera.SetParallelProjection(true)
+  }
+
+  #---------------------------------------------------------------------------
+  #Initialize Interactor,Renderer, RendererWindow and variables
+  proc ::CreateRenderer( OBJECT inter ) \
+  {
+    inter.Show()
+    inter.Update()
+    ::renderer = vtk.vtkRenderer.New()
+    ::renderer.ResetCamera()   # carlos
+    inter.GetRenderWindow().AddRenderer(&::renderer)
+    interact = vtk.vtkInteractorStyleTrackballCamera.New()
+    inter.SetInteractorStyle(interact)
+    ::renwin = inter.GetRenderWindow()
+    # enable line smoothing
+    #::renwin.SetLineSmoothing(true)
+    ::InitCamera()
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::MainBook_AddvtkSurfaceTab()  \
+  {
+    mb = ami.MainFrame.GetMainBook()
+
+    ::panel = wx.wxPanel(ami.MainFrame)
+    #sbox = wx.wxStaticBox(&::panel,-1,"VTK-based isosurface visualization.")
+    ::sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+    ::panel.SetSizer(::sbox_sizer)
+    # create widget here
+
+    ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(::panel,wx.wxID_ANY)
+    ::sbox_sizer.Add( ::renwin_interact, \
+                      wx.wxSizerFlags().Expand().Proportion(1) )
+
+    #::renwin_interact = wxvtk.wxVTKFrame(&panel,-1)
+
+    ::renwin_interact.UseCaptureMouseOn()
+    ::renwin_interact.Enable(true)
+    ::renwin_interact.Initialize()
+
+    ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
+    # Still drawing problem (missed exposed events???)
+    ::renwin_interact.SetBackgroundColour(wx.wxColour(255,255,255))
+    #::AttachRenWinInt()
+
+    ::icons.LoadIconPNG2("Transparent background","Transparent_background")
+
+    # Add to main book
+    mb.AddPage( ::panel,  "ParamSurf",1, \
+                wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+    ::vtkren_pageindex = mb.GetPageIndex(&::panel)
+    #mb.SetSelection(::vtkren_pageindex)
+
+    ::renwin_interact.Show()
+    ::panel.Show()
+    ::renwin_interact.Update()
+    ::panel.Update()
+
+    # Create renderer 
+    ::CreateRenderer(&::renwin_interact)
+    ::SetRendererBg()
+    ::renderer.ResetCamera()
+
+    # Set gui info
+    ::vtk_renderer_gui.SetRenderer(::renderer)
+    ::vtk_camera_gui.SetCamera(::renderer.GetActiveCamera())
+
+
+    # global VTK parameter to combine line and polygons
+    vtk.vtkMapper.SetResolveCoincidentTopologyToPolygonOffset()
+    vtk.vtkMapper.SetResolveCoincidentTopologyPolygonOffsetParameters(1,1)
+ 
+  }
+
+
+  #---------------------------------------------------------------------------
+  proc ::MainBook_CloseTab()  \
+  {
+    if (exists(::vtkren_pageindex)){
+      mb = ami.MainFrame.GetMainBook()
+      mb.DeletePage(::vtkren_pageindex)
+    }
+  }
+
+  #---------------------------------------------------------------------------
+  # Redefinition of Close to close the panel tab in main_book
+  #
+  proc ::Close() {
+    ::MainBook_CloseTab()
+    ::win.HidePanel()
+    delvars GetObjectName(::Close)
+  }
+  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+
+
+  #---------------------------------------------------------------------------
   proc ::Gui(){
 
     if (exists(::parent_panel)) {
@@ -486,6 +777,8 @@ Class ParametricSurfacesClass : public ScriptGui \
           ::win.SetCallback( ::Update)
           ::Z_id = ::win.AddString( ::params.Z,"Z=")
           ::win.SetCallback( ::Update)
+          ::win.AddBoolean(::params.use_scalars,        "Colors")
+          ::win.SetCallback( ::Update)
           ::win.AddBoolean(::params.AutoUpdateEquation, "Auto-update")
         ::win.EndBoxPanel()
         ::win.BeginBoxPanel("Time evolution:")
@@ -502,6 +795,29 @@ Class ParametricSurfacesClass : public ScriptGui \
         #::win.AddButton("Save", ::SaveEquation)
         ::win.AddButton("Read", ::ReadEquation)
         #::win.EndHorizontal()
+
+
+        ::win.AddPage("VTK")
+        ::win.BeginBook()
+        ::win.AddPage("Actor")
+          ::actor_ctrl      .AddGui(::win)
+          ::actor_ctrl      .SetCallback(::RenderCallback)
+        ::win.AddPage("Lines")
+          ::lineactor_ctrl  .AddGui(::win)
+          ::lineactor_ctrl  .SetCallback(::RenderCallback)
+        ::win.AddPage("Cube")
+          ::cubeaxesactor_ctrl.AddGui(::win)
+          ::cubeaxesactor_ctrl.SetCallback(::RenderCallback)
+
+        ::win.AddPage("Scene")
+          #::win.BeginBoxPanel("Snapshot")
+            #::win.AddButton("Get",&::GetSnapshot)
+          #::win.EndBoxPanel()
+
+          ::vtk_camera_gui  .AddGui(::win)
+          ::vtk_camera_gui  .SetCallback(::RenderCallback)
+          ::vtk_renderer_gui.AddGui(::win)
+        ::win.EndBook()
 
         # add page for saving/loading parameters
         ::AddParamPage(::win)
@@ -521,6 +837,9 @@ Class ParametricSurfacesClass : public ScriptGui \
       ::win.Display()
     }
     ::win.Update(-1)
+
+    ::MainBook_AddvtkSurfaceTab()
+
   }
 
   ::Init()

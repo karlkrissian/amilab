@@ -65,6 +65,30 @@ Class vtkActorClass : public ScriptGui \
   proc ::UpdateVTK() \
   {
     if (exists(::vtkactor)) {
+
+      ::vtkactor.SetVisibility(::params.visibility)
+      ::vtk_front_property.UpdateVTK()
+      ::vtk_back_property .UpdateVTK()
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::SetActorNoUpdate( OBJECT obj) \
+  {
+    if obj.IsA("vtkActor") {
+      del ::vtkactor
+      ::vtkactor = &obj
+      ::vtk_front_property.SetPropertyNoUpdate(::vtkactor.GetProperty())
+      bp = ::vtkactor.GetBackfaceProperty()
+      has_bp= (language.WrapVariable(bp).GetTypeName()=="AMIObject")
+      if (has_bp) {
+        ::vtk_back_property. SetPropertyNoUpdate(::vtkactor.GetBackfaceProperty())
+      }
+    } else {
+      InfoDialog "vtkActorClass.SetProperty(obj): wrong object type"
+    }
+    if exists(::win) {
+      ::win.Update(-1)
     }
   }
 
@@ -85,13 +109,9 @@ Class vtkActorClass : public ScriptGui \
       # Check if it has a back property
       bp = ::vtkactor.GetBackfaceProperty()
       has_bp= (language.WrapVariable(bp).GetTypeName()=="AMIObject")
-      printn "has_bp %1% " % has_bp
       if (has_bp) {
         ::params.use_backface_property=true
         ::vtk_back_property. SetProperty(::vtkactor.GetBackfaceProperty())
-        if exists(::win) {
-          ::win.Update(-1)
-        }
       }
 
     } else {
@@ -99,16 +119,24 @@ Class vtkActorClass : public ScriptGui \
     }
 
     ::Update()
-    ::win.Update(-1)
+    if exists(::win) {
+      ::win.Update(-1)
+    }
+  }
+
+  #-----------------------------------------------------------------------------
+  proc ::RunCallBack( ) \
+  {
+    if (exists(::callback)) {
+      ::callback()
+    }
   }
 
   #-----------------------------------------------------------------------------
   proc ::ChangeProperty( ) \
   {
     ::UpdateVTK()
-      if (exists(::callback)) {
-        ::callback()
-      }
+    ::RunCallBack()
   }
 
   #-----------------------------------------------------------------------------
@@ -150,12 +178,12 @@ Class vtkActorClass : public ScriptGui \
     }
   }
 
-  #-----------------------------------------------------------------------------
-  proc ::CB_Visibility( ) \
-  {
-    ::vtkactor.SetVisibility(::params.visibility)
-    ::ChangeProperty()
-  }
+  ##-----------------------------------------------------------------------------
+  #proc ::CB_Visibility( ) \
+  #{
+    #::vtkactor.SetVisibility(::params.visibility)
+    #::ChangeProperty()
+  #}
 
   #-----------------------------------------------------------------------------
   # create the gui on a ParamPanel
@@ -168,13 +196,15 @@ Class vtkActorClass : public ScriptGui \
       win.BeginBook()
         win.AddPage("Actor Properties")
           ::visibility_id = win.AddBoolean(::params.visibility,"Visibility")
-          win.SetCallback(::CB_Visibility)
+          win.SetCallback(::ChangeProperty)
           ::frontprop_id = ::vtk_front_property.AddGui(win)
         win.AddPage("Back")
           win.AddBoolean(::params.use_backface_property,"Backface property")
           win.SetCallback(::CB_BackProp)
           ::backprop_id  = ::vtk_back_property. AddGui(win)
       win.EndBook()
+      ::vtk_front_property.SetCallback(::RunCallBack)
+      ::vtk_back_property .SetCallback(::RunCallBack)
   #  win.EndBoxPanel()
   }
 
@@ -192,7 +222,7 @@ Class vtkActorClass : public ScriptGui \
   
       ::win.AddPage("Main")
 
-        # Select Property
+        # Select vtkActor
         ::win.AddAMIObjectChoice( &::actor_name, "", "vtkActor")
         ::win.SetCallback(::CB_Actor)
 

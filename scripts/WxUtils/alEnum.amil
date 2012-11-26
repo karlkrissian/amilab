@@ -62,6 +62,7 @@ Class alEnum \
   #-----------------------------------------------------------------------------
   proc ::SetCallback(  VAR selcmd) \
   {
+    del ::callback
     ::callback = &selcmd
   }
 

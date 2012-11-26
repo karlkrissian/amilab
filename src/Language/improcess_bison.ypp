@@ -5516,7 +5516,7 @@ image:
       } else
       {
         driver.err_print("sum operator only for scalar images ... \n");
-    }
+      }
       ADD_VARSTACK(InrImage,res);
     }
     |

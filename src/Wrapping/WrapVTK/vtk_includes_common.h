@@ -9,6 +9,7 @@
 #include <vtkArrowSource.h>
 #include <vtkAxesActor.h>
 #include <vtkAxis.h>
+#include <vtkAxisActor.h>
 #include <vtkBMPReader.h>
 #include <vtkBoxWidget.h>
 #include <vtkBrush.h>
@@ -34,6 +35,7 @@
 #include <vtkDICOMImageReader.h>
 #include <vtkDirectory.h>
 #include <vtkDoubleArray.h>
+#include <vtkElevationFilter.h>
 #include <vtkFieldData.h>
 #include <vtkFixedPointVolumeRayCastMapper.h>
 #include <vtkFloatArray.h>

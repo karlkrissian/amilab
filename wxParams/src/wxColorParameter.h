@@ -37,21 +37,21 @@
 #include "wxParamTypes.hpp"
 #include "ParamBox.hpp"
 #include "wx/colour.h"
+#include <wx/clrpicker.h>
 
 //======================================================================
-class wxColorParameter : public wxButtonParameter
+class wxColorParameter : public wxColourPickerCtrl, public wxGenericWidget
 //
 {
 
   wxColour*	parametre;
-  wxColour      _wx_color;
+//  wxColour      _wx_color;
 
  public:
 
   ///
   wxColorParameter( wxWindow* parent, const char* libelle,
-  //----------
-				 wxColour* couleur);
+                    wxColour* couleur);
   ///
   ~wxColorParameter();
   //---------
@@ -60,10 +60,16 @@ class wxColorParameter : public wxButtonParameter
   void Update();
   //
 
-  virtual void OnButton( wxCommandEvent& );
+  ///
+  void OnColour( wxColourPickerEvent& event);
+
+  void EnableWidget(bool enable = true)
+  {
+    this->Enable(enable);
+  }
 
 private:
-//    DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
  // wxColorParameter
 
