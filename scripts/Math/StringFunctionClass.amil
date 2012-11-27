@@ -11,6 +11,15 @@ Class StringFunctionClass \
   ::debug = false
   ::vars = &language.Vars
   ::object_context = ::vars.GetObjectContext()
+  ::mode = INT(0), "function mode: 0: simple function, "+\
+                    "1: multi-instructions, including the return=.. command"
+
+
+  #----------------------------------------------------------------------------
+  proc ::SetMode(NUM m)   { ::mode = m; }
+
+  #----------------------------------------------------------------------------
+  proc ::GetMode() { return = ::mode; }
 
   #---------------------------------------------------------------------------
   proc ::DebugPrint(STRING s) \
@@ -61,4 +70,6 @@ Class StringFunctionClass \
     eval "%1% = _val;"     % ::varname
     eval "return = %1%;"   % ::fstring
   }
+
+  
 }

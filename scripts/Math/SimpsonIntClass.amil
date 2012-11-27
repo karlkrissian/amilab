@@ -12,7 +12,6 @@ Class SimpsonIntClass : public StringFunctionClass\
   # redefine ::varname here?
   del ::varname
   ::varname = "x", "Main variable name in case of a function"
-  
   ::type = INT(0), "0: single integral, 1: double integral"
 
   #-----------------------------------------------------------------------------
@@ -51,6 +50,16 @@ Class SimpsonIntClass : public StringFunctionClass\
   }
   
   #-----------------------------------------------------------------------------
+  # the factor is the common part that can be factorized out of the integral
+  proc ::SetFactorString(STRING f_str) \
+  {
+    if (!exists(::factor_func)) {
+      ::StringFunctionClass ::factor_func
+    }
+    ::factor_func.SetFunctionString(f_str)
+  }
+  
+  #-----------------------------------------------------------------------------
   proc ::SetFirstVariable(STRING vname, NUM vmin, NUM vmax, NUM vn) \
   {
     ::vname    = vname
@@ -74,6 +83,9 @@ Class SimpsonIntClass : public StringFunctionClass\
   proc ::AddParam(STRING pname, VAR value) \
   {
     ::function.AddParam(pname,value)
+    if (exists(::factor_func)) {
+      ::factor_func.AddParam(pname,value)
+    }
   }
 
   #---------------------------------------------------------------------------
@@ -82,6 +94,9 @@ Class SimpsonIntClass : public StringFunctionClass\
   proc ::SetParamValue(STRING pname, VAR value) \
   {
     ::function.SetParamValue(pname,value)
+    if (exists(::factor_func)) {
+      ::factor_func.SetParamValue(pname,value)
+    }
   }
 
   #---------------------------------------------------------------------------
@@ -97,12 +112,16 @@ Class SimpsonIntClass : public StringFunctionClass\
   {
     ::function.AddParam(::varname,x)
     if (::type==0) {
-      ::function.SetVarName(vname)
+      ::function.SetVarName(::vname)
       return = ::Run(::function, ::vmin, ::vmax, ::vn)
     } else {
       if (::type==1) {
         return = ::RunDouble0()
       }
+    }
+    if (exists(::factor_func)) {
+      ::factor_func.AddParam(::varname,x)
+      return = return * ::factor_func(x)
     }
   }
   

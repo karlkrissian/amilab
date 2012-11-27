@@ -539,7 +539,7 @@ Class ParametricSurfacesClass : public ScriptGui \
         # parameter 0 invert normals
         #printn max(::theta)
 
-        new_s = CreateFlatMesh(i0*0+1, 0 )
+        new_s = CreateFlatMesh(::pos[0]*0+1, 0 )
         if (exists(::mesh_colors)) {
           #printn "Set Mesh Colors"
           new_s.SetColors(::mesh_colors)
@@ -868,7 +868,6 @@ Class ParametricSurfacesClass : public ScriptGui \
           ::win.SetCallback( ::Update)
           ::Z_id = ::win.AddString( ::params.Z,"Z=")
           ::win.SetCallback( ::Update)
-          ::win.AddBoolean(::params.use_scalars,        "Colors")
           ::win.SetCallback( ::Update)
           ::win.AddBoolean(::params.AutoUpdateEquation, "Auto-update")
         ::win.EndBoxPanel()
@@ -926,7 +925,10 @@ Class ParametricSurfacesClass : public ScriptGui \
         }
     ::win.EndBook()
 
-    ::win.AddButton("Update Surface", ::Update)
+    ::win.BeginHorizontal()
+      ::win.AddButton("Update Surface", ::Update)
+      ::win.AddBoolean(::params.use_scalars,        "Colors")
+    ::win.EndHorizontal()
     ::AddStandardButtons(::win)
 
     if (exists(::parent_panel)) {
