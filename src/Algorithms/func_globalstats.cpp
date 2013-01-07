@@ -233,6 +233,52 @@ int     Func_argmax( InrImage* im, InrImage* mask)
 } // Func_argmax()
 
 
+
+/**
+ * @brief Return the maximal value position in the image
+ *
+ * @param im input image
+ * @param mask mask (optional)
+ * @return std::vector<int> position in each coordinate
+ **/
+std::vector<int>  ami::argmax( InrImage* im, InrImage* mask)
+{
+  double lmax = -1E-10;
+  int x,y,z;
+  int xm,ym,zm;
+  double val;
+
+  xm = ym = zm = 0;
+  lmax = (*im)(xm,ym,zm);
+
+  for(x=0;x<=im->DimX()-1;x++) {
+  for(y=0;y<=im->DimY()-1;y++) {
+  for(z=0;z<=im->DimZ()-1;z++) {
+
+    if (mask!=NULL) 
+      if ((*mask)(x,y,z)<0.5) continue;
+
+    val = (*im)(x,y,z);
+    if (val>lmax) {
+      xm = x;
+      ym = y;
+      zm = z;
+      lmax = val;
+    }
+  } // endfor 
+  } // endfor 
+  } // endfor 
+
+  std::vector<int> res;
+  res.push_back(xm);
+  res.push_back(ym);
+  res.push_back(zm);
+  return res;
+  //xm+im->DimX()*(ym+im->DimY()*zm);
+
+} // Func_argmax()
+
+
 //--------------------------------------------------
 double     Func_min( InrImage* im, InrImage* mask)
 {

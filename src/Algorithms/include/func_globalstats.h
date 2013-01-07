@@ -30,6 +30,7 @@
 #define FUNC_GLOBALSTATS_H
 
 #include "inrimage.hpp"
+#include <vector>
 
 double      Func_mean( InrImage* im);
 double      Func_mean( InrImage* im, InrImage* mask);
@@ -45,6 +46,8 @@ InrImage*   Func_Histogram( InrImage* im, float min, float max, int ninterv);
 namespace ami {
   int         count( InrImage* im);
 
+  std::vector<int> argmax(  InrImage* im, InrImage* mask=NULL);
+  
   class Mean
   {
   private:

@@ -68,7 +68,12 @@ Class StringFunctionClass \
     # trick to use the object context as default and avoid ::
     ::vars.GetCurrentContext().AddDefault(::object_context)
     eval "%1% = _val;"     % ::varname
-    eval "return = %1%;"   % ::fstring
+    if (::mode==0) {
+      eval "return = %1%;"   % ::fstring
+    }
+    if (::mode==1) {
+      eval "%1%;"   % ::fstring
+    }
   }
 
   

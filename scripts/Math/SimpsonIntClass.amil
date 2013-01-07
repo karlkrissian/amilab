@@ -110,10 +110,12 @@ Class SimpsonIntClass : public StringFunctionClass\
   #-----------------------------------------------------------------------------
   proc ::Eval(VAR x)\
   {
+    ::DebugPrint("::Eval() begin")
+    #printn "x=%1%" % x
     ::function.AddParam(::varname,x)
     if (::type==0) {
       ::function.SetVarName(::vname)
-      return = ::Run(::function, ::vmin, ::vmax, ::vn)
+      return = ::Run(::function.Eval, ::vmin, ::vmax, ::vn)
     } else {
       if (::type==1) {
         return = ::RunDouble0()
@@ -121,8 +123,9 @@ Class SimpsonIntClass : public StringFunctionClass\
     }
     if (exists(::factor_func)) {
       ::factor_func.AddParam(::varname,x)
-      return = return * ::factor_func(x)
+      return = return * ::factor_func.Eval(x)
     }
+    ::DebugPrint("::Eval() end")
   }
   
   #-----------------------------------------------------------------------------
@@ -147,6 +150,7 @@ Class SimpsonIntClass : public StringFunctionClass\
   #
   proc ::RunScalar(VAR function, NUM xmin, NUM xmax, NUM n) \
   {
+    ::DebugPrint("::RunScalar() begin")
     # check wikipedia http://en.wikipedia.org/wiki/Simpson%27s_rule
     # the integral can be written as a sum of 4 terms:
     # h=(xmax-xmin)/n
@@ -162,6 +166,7 @@ Class SimpsonIntClass : public StringFunctionClass\
 
     # here adding a 1D image to a 2D image ??
     pos     = xmin+h/2+::RangeImage(0,n-1)*h
+    pos.info
     ::DebugPrint( "min(pos) = %1% " % min(pos))
     ::DebugPrint( "max(pos) = %1% " % max(pos))
     values  = function(pos)
@@ -185,6 +190,7 @@ Class SimpsonIntClass : public StringFunctionClass\
     ::DebugPrint( "sumval(3) = %1%" % sumval)
 
     return = sumval*h/6
+    ::DebugPrint("::RunScalar() end")
   }
 
   #-----------------------------------------------------------------------------
@@ -205,7 +211,11 @@ Class SimpsonIntClass : public StringFunctionClass\
 
     h = ((DOUBLE) xmax - xmin)/n
     fmin = function((DOUBLE)xmin)
+    #printn "xmin = %1%" % xmin
+    #print "fmin = ";printn fmin
     fmax = function((DOUBLE)xmax)
+    #printn "xmax = %1%" % xmax
+    #print "fmax = "; printn fmax
     sumval = fmin+fmax
 
     # here adding a 1D image to a 2D image ??

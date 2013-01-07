@@ -562,7 +562,7 @@ Class ParametricSurfacesClass : public ScriptGui \
       ::in_evolve = 1
       if (::evolve_state==0) {
         if (::params.kmax>0) {
-          ::k = 0
+          ::params.k = 0
           # starts
           ::evolve_state=1
         }
@@ -571,9 +571,9 @@ Class ParametricSurfacesClass : public ScriptGui \
         # first update the equation
         ::Update()
         # second: increment ::k and schedule new update
-        ::k = ::k + 1
-        if (::k==::params.kmax) { 
-          ::k = 0; 
+        ::params.k = ::params.k + 1
+        if (::params.k==::params.kmax) { 
+          ::params.k = 0; 
         }
         schedule(::params.timestep,::Evolve)
       }

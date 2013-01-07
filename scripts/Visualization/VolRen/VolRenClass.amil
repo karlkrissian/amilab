@@ -1016,7 +1016,7 @@ if (!exists(VolRenClass)) {
     proc ::Gui() {
     
     
-      title = GetObjectName(::Init)
+      title = GetObjectName(::Init)+"sss"
       # parameters window
       if (exists(::parent_panel)) {
         ::win = ParamPanel(title,&::parent_panel)

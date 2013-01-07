@@ -178,7 +178,7 @@ if (!exists(Functions2DClass)) {
       if (::c1.mode==0) {
         numval = INT((::xmax-::xmin)/::resolution+0.5)
         if (numval==0) { numval=1; }
-        ::X <<= Image(FLOAT,numval,1,1)
+        ::X <<= Image(DOUBLE,numval,1,1)
         ::X.settranslation(::xmin,0,0)
         ::X.setvoxelsize(::resolution,1,1)
         _pos = SpacePos(::X)
@@ -194,7 +194,7 @@ if (!exists(Functions2DClass)) {
       if (::c1.mode==2) {
         numval = INT((::xmax-::xmin)/::resolution+0.5)
         if (numval==0) { numval=1; }
-        ::X <<= Image(FLOAT,numval,1,1)
+        ::X <<= Image(DOUBLE,numval,1,1)
         ::X.settranslation(::xmin,0,0)
         ::X.setvoxelsize(::resolution,1,1)
         _pos = SpacePos(::X)
