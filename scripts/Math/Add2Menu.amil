@@ -1,0 +1,2 @@
+
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())

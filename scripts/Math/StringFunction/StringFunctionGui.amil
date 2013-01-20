@@ -1,0 +1,11 @@
+
+func "StringFunctionClass"
+
+if (!exists(StringFunction_obj)) {
+  StringFunctionClass StringFunction_obj
+  StringFunction_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

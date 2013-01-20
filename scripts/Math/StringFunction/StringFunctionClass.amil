@@ -1,0 +1,193 @@
+
+func "Common/ScriptGui"
+
+del StringFunctionClass
+
+Class StringFunctionClass : public ScriptGui \
+{
+  
+
+  #---------------------------------------------------------------------------
+  proc ::Init() {
+    
+    func "WxUtils/alEnum"
+
+    ::varname = "x",  "Param: Function variable"
+
+
+    ::fstring0 = "cos(x)", "Param: Function as a string"
+    ::num_outputs = 1, "Param: number of outputs"
+
+    ::debug = false
+    ::vars = &language.Vars
+    ::object_context = ::vars.GetObjectContext()
+
+    ::param_names = VarVector()
+    ::AddParam("b",0)
+
+    # ----- Function mode
+    alEnum ::function_modes
+    ::function_modes.SetTitle("Mode")
+    ::function_modes.SetHelp( "Defines the function type, i.e. how the string"+\
+                              "is used to compute the result")
+    ::function_modes.AddValue( "Simple",\
+                              "Direct mathematical expression"+\
+                              " anisotropic diffusion paper")
+    ::function_modes.AddValue( "Multi-instructions",\
+                              "function defined from multiple instructions"+\
+                              "separated by ';' and including 'return=' "+\
+                              "for the last instruction")
+    ::function_mode = INT(0), "Param: "+ ::function_modes.GetHelpMessage()
+    ::function_modes.SetVariable(::function_mode)
+
+
+    ::x = 0, "input value"
+
+    #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"+
+    # "/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+    ::html_filename = GetScriptsDir+\
+                      "/StringFunction/Doc/StringFunction/index.html"
+  }
+
+
+  #----------------------------------------------------------------------------
+  proc ::SetMode(NUM m)   { ::function_mode = m; }
+
+  #----------------------------------------------------------------------------
+  proc ::GetMode() { return = ::function_mode; }
+
+  #---------------------------------------------------------------------------
+  proc ::DebugPrint(STRING s) \
+  {
+    if (::debug) {
+      printn s
+    }
+  }
+  
+  #---------------------------------------------------------------------------
+  # adding the variable to the object context
+  #
+  proc ::AddParam(STRING pname, VAR value) \
+  {
+    eval "new = !exists(::%1%);" % pname
+    if new {
+      ::param_names.push_back(pname)
+    }
+    # delete the variable in case it changes its type
+    eval "del ::%1%;" % pname
+    # add the new variable to the object context
+    eval "::%1% = value, \"Param: function parameter\";" % pname
+  }
+
+  #---------------------------------------------------------------------------
+  # setting/adding the variable to the object context
+  #
+  proc ::SetParamValue(STRING pname, VAR value) \
+  {
+    eval "::%1% = value;" % pname
+  }
+
+  #---------------------------------------------------------------------------
+  # Name of the main variable
+  #
+  proc ::SetVarName(STRING v) \
+  {
+    ::varname = v
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::SetFunctionString(STRING fstr) \
+  {
+    ::fstring0 = fstr
+  }
+  
+  #---------------------------------------------------------------------------
+  proc ::AddOutputString(STRING fstr) \
+  {
+    ::num_outputs++
+    eval "::fstring%1%" % ::num_outputs + \
+      " = fstr, \"Param: Function as a string for output %1%\"" % ::num_outputs
+  }
+  
+  #---------------------------------------------------------------------------
+  proc ::Eval(VAR _val) \
+  {
+    # trick to use the object context as default and avoid ::
+    ::vars.GetCurrentContext().AddDefault(::object_context)
+    eval "%1% = _val;"     % ::varname
+    if (::function_mode==0) {
+      eval "return = %1%;"   % ::fstring0
+    }
+    if (::function_mode==1) {
+      eval "%1%;"   % ::fstring0
+    }
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::EvalFunction() \
+  {
+    printn "result = %1%" % ::Eval(::x)
+  }
+
+  #---------------------------------------------------------------------------
+  proc ::Gui() {
+  
+    if (exists(::parent_panel)) {
+      ::win = ParamPanel("StringFunction",&::parent_panel)
+    } else {
+      ::win = ParamPanel("StringFunction")
+    }
+    
+    ::win.BeginBook()
+  
+      ::win.AddPage("Param")
+
+        ::function_modes.SetGuiMode(1)
+        ::function_modes.AddGui(::win)
+        #::function_modes.SetCallback(&::CB_ContourMode)
+
+        
+        ::win.BeginBoxPanel("Outputs")
+          for n=0 to ::num_outputs-1 {
+            eval "::win.AddString(::fstring%1%,\"F%1%=\");" % n
+          }
+        ::win.EndBoxPanel()
+
+        ::win.AddFloat(::x,"Input",-10,10)
+
+        ::win.BeginBoxPanel("Parameter values")
+          for n=0 to ::param_names.size()-1 {
+            eval "::win.AddFloat(::%1%,\"%1%=\",-10,10);" % ::param_names[n]
+          }
+        ::win.EndBoxPanel()
+
+        ::win.AddButton("Eval function",::EvalFunction)
+
+      # add page for saving/loading parameters
+      ::AddParamPage(::win)
+      ::SetParamCommentsFilter(".*Param:.*")
+
+      # add help page
+      if wx.wxFileName(::html_filename).FileExists() {
+        ::AddHelpPage(&::win)
+      }
+  
+    ::win.EndBook()
+  
+    ::AddStandardButtons(&::win)
+
+    if (exists(::parent_panel)) {
+      ::win.ShowPanel()
+    } else {
+      ::win.Display()
+    }
+    ::win.Update(-1)
+
+
+  }
+  ::Init()
+  
+}
+# End of class
+  
