@@ -1,0 +1,11 @@
+
+func "MultiVolRenClass"
+
+if (!exists(MultiVolRen_obj)) {
+  MultiVolRenClass MultiVolRen_obj
+  MultiVolRen_obj.Gui()
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+
+

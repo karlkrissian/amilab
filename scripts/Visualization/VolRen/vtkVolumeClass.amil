@@ -91,11 +91,10 @@ if (!exists(vtkVolumeClass)) {
       ::input2_name = input2_name
     }
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::SaveVTKCurve(STRING filename)\
     {
       if ::trace { eval ::trace_begin; }
-      del aux_curve
       ::vtkcurveclass aux_curve
 
       aux_curve.category    = "UNKNOWN"
@@ -116,27 +115,63 @@ if (!exists(vtkVolumeClass)) {
       aux_curve.r2   = 255*color2[0]
       aux_curve.g2   = 255*color2[1]
       aux_curve.b2   = 255*color2[2]
-      aux_curve.Gradient    = 1
-      if (color[0]==color2[0] && color[1]==color2[1] && color[2]==color2[2]){
-        aux_curve.Gradient = 0
-      }
+      aux_curve.Gradient    = ::renderer.GetGradientBackground()
+      #if (color[0]==color2[0] && color[1]==color2[1] && color[2]==color2[2]){
+        #aux_curve.Gradient = 0
+      #}
       aux_curve.min_x = 0
       aux_curve.max_x = 1
       aux_curve.norma = 0
       printn "GetInput = %1%" % ::volmapper.GetInput()
       if (exists(::selected_curv)){
-        aux_curve.norma = ::selected_curv.norma
+        aux_curve.norma       = ::selected_curv.norma
         aux_curve.category    = ::selected_curv.category
         aux_curve.type        = ::selected_curv.type
         aux_curve.descripcion = ::selected_curv.descripcion
-        aux_curve.norma = ::selected_curv.norma
       }
       aux_curve.blend_mode  = ::blend_mode
       aux_curve.Save(filename)
       if ::trace { eval ::trace_end; }
     }
  
-    #----------------------------
+    #---------------------------------------------------------------------------
+    proc ::SaveVTKCurve2(STRING filename)\
+    {
+      if ::trace { eval ::trace_begin; }
+      ::vtkcurveclass aux_curve
+
+      aux_curve.category    = "UNKNOWN"
+      aux_curve.type        = "UNKNOWN_curve"
+      aux_curve.descripcion = "general descripcion"
+
+      color=vector_double(3,0)
+      ::renderer.GetBackground (&color[0], &color[1], &color[2])
+      color2=vector_double(3,0)
+      ::renderer.GetBackground2(&color2[0], &color2[1], &color2[2])
+
+      aux_curve.SetColorFun(&::colorFun2)
+      aux_curve.SetOpacityFun(&::opacityFun2)
+      aux_curve.SetPropertyFun(&::property2)
+      aux_curve.r1   = 255*color[0]
+      aux_curve.g1   = 255*color[1]
+      aux_curve.b1   = 255*color[2]
+      aux_curve.r2   = 255*color2[0]
+      aux_curve.g2   = 255*color2[1]
+      aux_curve.b2   = 255*color2[2]
+      aux_curve.Gradient    = ::renderer.GetGradientBackground()
+      #if (color[0]==color2[0] && color[1]==color2[1] && color[2]==color2[2]){
+        #aux_curve.Gradient = 0
+      #}
+      aux_curve.min_x = 0
+      aux_curve.max_x = 1
+      aux_curve.norma = 0
+      printn "GetInput = %1%" % ::volmapper.GetInput()
+      aux_curve.blend_mode  = ::blend_mode
+      aux_curve.Save(filename)
+      if ::trace { eval ::trace_end; }
+    }
+ 
+    #---------------------------------------------------------------------------
     proc ::CB_Clip(OBJECT caller, NUM id) \
     {
       if ::trace { eval ::trace_begin; }
@@ -334,23 +369,9 @@ if (!exists(vtkVolumeClass)) {
     }
 
     #---------------------------------------------------------------------------
-    proc ::ReadTransfDisk() \
+    proc ::SetImageTransform( IMAGE transfim) \
     {
-      # Get the scrip directory
-      ::InitUserScriptData()
-      # using ::scriptdata_path
-      # Ask the filename
-      default_name = "SecondVolumeTransform.ami.gz"
-      if exists(::input1_name) && exists(::input2_name) {
-        default_name = "%1%" % ::input1_name + "__%1%.ami.gz" % ::input2_name
-      }
-      filename = wx.wxFileSelector( "Read Matrix: select the filename",\
-                                    ::scriptdata_path, \
-                                    default_name, \
-                                    ".ami.gz", \
-                                    "*.*", \
-                                    wx.wxFD_OPEN)
-      immat = Image(filename.ToStdString())
+      immat = &transfim
       m = vtk.vtkMatrix4x4.New()
       for i=0 to 3 {
         for j=0 to 3 {
@@ -369,6 +390,27 @@ if (!exists(vtkVolumeClass)) {
       # set and apply new transform
       ::transf_box.SetTransform(t)
       ::ApplyTransfBox()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ReadTransfDisk() \
+    {
+      # Get the scrip directory
+      ::InitUserScriptData()
+      # using ::scriptdata_path
+      # Ask the filename
+      default_name = "SecondVolumeTransform.ami.gz"
+      if exists(::input1_name) && exists(::input2_name) {
+        default_name = "%1%" % ::input1_name + "__%1%.ami.gz" % ::input2_name
+      }
+      filename = wx.wxFileSelector( "Read Matrix: select the filename",\
+                                    ::scriptdata_path, \
+                                    default_name, \
+                                    ".ami.gz", \
+                                    "*.*", \
+                                    wx.wxFD_OPEN)
+      immat = Image(filename.ToStdString())
+      ::SetImageTransform(immat)
     }
 
     #----------------------------
@@ -828,26 +870,29 @@ if (!exists(vtkVolumeClass)) {
 
 
 
-    #----------------------------
+    #---------------------------------------------------------------------------
+    #
     proc ::PreviewApplied(OBJECT vtkcurve) \
     {
       if ::trace { eval ::trace_begin; }
       del ::selected_curv
-      //::selected_curv = &::previewer.GetSelection()
       ::selected_curv = &vtkcurve
       
       # now create the curve based on the vtkCurveClass object
-      ::SetBackground(::selected_curv.r1, ::selected_curv.g1, ::selected_curv.b1, \
-                ::selected_curv.r2, ::selected_curv.g2, ::selected_curv.b2, ::selected_curv.Gradient ) 
+      ::SetBackground(::selected_curv.r1, \
+                      ::selected_curv.g1, \
+                      ::selected_curv.b1, \
+                      ::selected_curv.r2, \
+                      ::selected_curv.g2, \
+                      ::selected_curv.b2, \
+                      ::selected_curv.Gradient ) 
      
       if (!exists(::imhisto1->h)) {
-
         ::UpdateHistogram()
       }
       hmax = max(::imhisto1.h[0])
 
       curve = ami.dwControlledCurve()
-
       n1 = ::selected_curv.colorFun.GetSize()
       n2 = ::selected_curv.opacityFun.GetSize()
       for n=0 to n1-1 {
@@ -865,12 +910,12 @@ if (!exists(vtkVolumeClass)) {
         curve.GetControlPoints().push_back(&cp)
       }
       curve.SetType(1) # solid
-      ::SetLinearCurve(&curve)
       ::ambient  = ::selected_curv.property.GetAmbient()
       ::diffuse  = ::selected_curv.property.GetDiffuse()
       ::specular = ::selected_curv.property.GetSpecular()
       ::specular_power =  ::selected_curv.property.GetSpecularPower()
-      ::scalar_opacity_unitdistance =  ::selected_curv.property.GetScalarOpacityUnitDistance()
+      ::scalar_opacity_unitdistance = \
+        ::selected_curv.property.GetScalarOpacityUnitDistance()
 
       ::use_shade   = ::selected_curv.use_shade
       ::blend_mode  = ::selected_curv.blend_mode
@@ -880,7 +925,60 @@ if (!exists(vtkVolumeClass)) {
       if ::trace { eval ::trace_end; }
     }
 
-    #----------------------------
+    #---------------------------------------------------------------------------
+    #
+    proc ::SetSecondCurve(OBJECT vtkcurve) \
+    {
+      if ::trace { eval ::trace_begin; }
+      
+      ## now create the curve based on the vtkCurveClass object
+      #::SetBackground(::selected_curv.r1, \
+                      #::selected_curv.g1, \
+                      #::selected_curv.b1, \
+                      #::selected_curv.r2, \
+                      #::selected_curv.g2, \
+                      #::selected_curv.b2, \
+                      #::selected_curv.Gradient ) 
+     
+      if (!exists(::imhisto2->h)) {
+        ::UpdateHistogram2()
+      }
+      hmax = max(::imhisto2.h[0])
+
+      curve = ami.dwControlledCurve()
+      n1 = vtkcurve.colorFun.GetSize()
+      n2 = vtkcurve.opacityFun.GetSize()
+      for n=0 to n1-1 {
+        # add point
+        vals  = vector_double(6)
+        vals_op = vector_double(4)
+        vtkcurve.colorFun  .GetNodeValue(n,&vals [0])
+        vtkcurve.opacityFun.GetNodeValue(n,&vals_op[0])
+        del cp
+        # TODO: check compatibility between color and opacity functions ...
+        cp = ami.dwControlPoint(vals[0],vals_op[1]*hmax)
+        cp.SetColour(wx.wxColour(vals[1]*255,vals[2]*255,vals[3]*255))
+        cp.Setmidpoint(vals[4])
+        cp.Setsharpness(vals[5])
+        curve.GetControlPoints().push_back(&cp)
+      }
+      curve.SetType(1) # solid
+      ::ambient  = vtkcurve.property.GetAmbient()
+      ::diffuse  = vtkcurve.property.GetDiffuse()
+      ::specular = vtkcurve.property.GetSpecular()
+      ::specular_power =  vtkcurve.property.GetSpecularPower()
+      ::scalar_opacity_unitdistance = \
+        vtkcurve.property.GetScalarOpacityUnitDistance()
+
+      ::use_shade   = vtkcurve.use_shade
+      ::blend_mode  = vtkcurve.blend_mode
+      ::SetLinearCurve2(curve)
+      ::OnRender()
+      ::win.Update(-1)
+      if ::trace { eval ::trace_end; }
+    }
+
+    #---------------------------------------------------------------------------
     proc ::ReCompute() \
     {
       if ::trace { eval ::trace_begin; }

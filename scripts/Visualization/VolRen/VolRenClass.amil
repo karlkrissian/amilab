@@ -56,7 +56,6 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::Init() \
     {
-
       ::input_name  =  "", "name of the input image"
       ::input2_name =  "", "name of the second input image"
       ::input_size  = "0 Mb",  "input volume size in Mb (2^20 bytes)"
@@ -229,6 +228,23 @@ if (!exists(VolRenClass)) {
       ::input<<=image
       ::UpdateImageInfo(&::input,&::input_size)
       ::win.SetLabelValue(::input_size_id,::input_size)
+      ::UpdateVolPages()
+      ::win.Update(-1)
+      if ::trace { eval ::trace_end; }
+    }
+
+    #----------------------------
+    proc ::set_inputs(IMAGE image1, IMAGE image2) {
+      if ::trace { eval ::trace_begin; }
+
+      ::input<<=image1
+      ::UpdateImageInfo(::input,::input_size)
+      ::win.SetLabelValue(::input_size_id,::input_size)
+
+      ::input2<<=image2
+      ::UpdateImageInfo(::input2,::input2_size)
+      ::win.SetLabelValue(::input2_size_id,::input2_size)
+
       ::UpdateVolPages()
       ::win.Update(-1)
       if ::trace { eval ::trace_end; }
@@ -602,13 +618,14 @@ if (!exists(VolRenClass)) {
     #----------------------------
     proc ::SetRendererBg() \
     {
-
+printn "::SetRendererBg() begin"
       if (::volVector.size()>0) {
         ::volVector[0].SetBackground(::background_color.Red(),\
             ::background_color.Green(),::background_color.Blue(),\
             ::background_color2.Red(),::background_color2.Green(),\
             ::background_color2.Blue(),::UseGradientBackground)
        }
+printn "::SetRendererBg() end"
     }
 
     #----------------------------
@@ -657,7 +674,6 @@ if (!exists(VolRenClass)) {
 
       ::panel = wx.wxPanel(ami.MainFrame)
       ::panel.SetName("VolRen panel")
-
       # StaticBox gives problems on XP ..., avoid it ...
       sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
       ::panel.SetSizer(sbox_sizer)
@@ -729,7 +745,7 @@ if (!exists(VolRenClass)) {
       ::renwin_interact.Update()
       ::panel.Update()
       # now can create the renderer
-      ::volVector[0].CreateRenderer(&::renwin_interact)
+      ::volVector[0].CreateRenderer(::renwin_interact)
       ::volVector[0].AddAnnotatedCube() 
       ::SetRendererBg()
       
@@ -786,14 +802,12 @@ if (!exists(VolRenClass)) {
       res = wx.wxFileSelector("Select Curve Filename",\
                               ::scriptdata_path,"VolRen_Curve.txt","txt",\
                               "*.*",wx.wxFD_OPEN)
-
       func "vtkCurveClass.amil"
-      vtkCurveClass selected_curv
-
-      selected_curv.Load(wx.FromWxString(res))
-      ::background_color.Set(selected_curv.r1,selected_curv.g1,selected_curv.b1)
-      ::background_color2.Set(selected_curv.r2,selected_curv.g2,selected_curv.b2)
-      ::volVector[index].PreviewApplied(&selected_curv)
+      vtkCurveClass curv
+      curv.Load(wx.FromWxString(res))
+      ::background_color .Set(curv.r1,curv.g1,curv.b1)
+      ::background_color2.Set(curv.r2,curv.g2,curv.b2)
+      ::volVector[index].PreviewApplied(curv)
     }
 
     #----------------------------
@@ -1014,7 +1028,6 @@ if (!exists(VolRenClass)) {
     
     #----------------------------
     proc ::Gui() {
-    
     
       title = GetObjectName(::Init)
       # parameters window

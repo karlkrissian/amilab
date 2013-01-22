@@ -172,11 +172,11 @@ if (!exists(SimplevtkVolumeClass)) {
         ::axes.SetOrientationMarker(&::cubeActor)
         ::axes.SetInteractor(&::renwininter)
         ::axes.EnabledOn()
-        //if (::interacCube ==1){
-        //   ::axes.InteractiveOn()
-        //}else{
+        #if (::interacCube ==1){
+        #   ::axes.InteractiveOn()
+        #}else{
           ::axes.InteractiveOff()
-        //}
+        #}
       }
       if ::trace2 { eval ::trace2_end; }
     }

@@ -1,0 +1,9 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+# Scripts Menu
+ami.MainFrame.AddToMenu("&Modules","vtkAmiVolRen","&MultiVolRen",\
+  op_system.GetCurrentScriptDir()+"/MultiVolRenGui.amil")

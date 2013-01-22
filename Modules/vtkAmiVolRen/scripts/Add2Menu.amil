@@ -1,3 +1,9 @@
 
-ami.MainFrame.AddToMenu("&Modules","&vtkAmiVolRen","&Load",  "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen")
-ami.MainFrame.AddToMenu("&Modules","&vtkAmiVolRen","&ReLoad",  "../Modules/vtkAmiVolRen/scripts/ReLoad_vtkAmiVolRen")
+ami.MainFrame.AddToMenu(  "&Modules","&vtkAmiVolRen","&Load", \
+                          "../Modules/vtkAmiVolRen/scripts/Load_vtkAmiVolRen")
+ami.MainFrame.AddToMenu(  "&Modules","&vtkAmiVolRen","&ReLoad", \
+                          "../Modules/vtkAmiVolRen/scripts/ReLoad_vtkAmiVolRen")
+
+
+# Checking scripts in subdirectories
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())

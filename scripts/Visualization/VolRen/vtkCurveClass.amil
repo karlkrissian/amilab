@@ -8,12 +8,12 @@ comments="vtkCurveClass: Contains basic operations to work with vtk curve"
 
 if (!exists(vtkCurveClass)) {
 
-  #-----------------------------------------------------
+  #-----------------------------------------------------------------------------
   #  vtkCurveClass
-  #-----------------------------------------------------
+  #-----------------------------------------------------------------------------
   Class vtkCurveClass  {
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::Init() {
       ::category    = "", "name of the category"
       ::type        = "", "type in category"
@@ -35,7 +35,7 @@ if (!exists(vtkCurveClass)) {
       ::norma       = 0
     }
 
-   #----------------------------
+    #---------------------------------------------------------------------------
     proc ::Norm_x()\
     {
       if (::norma==1){
@@ -62,15 +62,16 @@ if (!exists(vtkCurveClass)) {
           opacityvector=vector_double(4) 
           ::opacityFun.GetNodeValue (z, &opacityvector[0])
           x=colorvector[0]*(::max_x-::min_x)/max_local 
-          //x=min_local+abs (colorvector[0]*(::max_x-::min_x)/(max_local))      
+          #x=min_local+abs (colorvector[0]*(::max_x-::min_x)/(max_local))
           colorvector[0]=x
           opacityvector[0]=x
-          ::colorFun.SetNodeValue(z,&colorvector[0])
-          ::opacityFun.SetNodeValue(z,&opacityvector[0])
+          ::colorFun  .SetNodeValue(z, colorvector[0])
+          ::opacityFun.SetNodeValue(z, opacityvector[0])
         }
       }
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
     proc ::__assign__(OBJECT c1) {
       ::category    = c1.category
       ::type        = c1.type
@@ -80,46 +81,55 @@ if (!exists(vtkCurveClass)) {
       ::property  .DeepCopy(&c1.property)
     }
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::SetCategory(STRING c) {
       ::category  = c
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
     proc ::SetType(STRING t) {
       ::type = t
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
     proc ::SetColorFun(OBJECT  f) {
       del ::colorFun
       ::colorFun  = &f
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
     proc ::SetOpacityFun(OBJECT  f) {
       del ::opacityFun
       ::opacityFun  = &f
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
     proc ::SetPropertyFun(OBJECT  f) {
       del ::property
       ::property  = &f
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
     proc ::SetBlendMode(NUM  m) {
       ::blend_mode  = m
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
     proc ::GetPropertyFun() {
       return= &::property
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
     proc ::GetColorFun() {
       return= &::colorFun
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
     proc ::GetOpacityFun() {
       return= &::opacityFun
     }
-    #----------------------------
+
+    #---------------------------------------------------------------------------
     proc ::AddPoint(NUM i, NUM r, NUM g, NUM b, NUM o ,NUM m, NUM s ){
       res = ::colorFun.AddRGBPoint( &i, &r, &g, &b, &m, &s )
       if res==-1 {
@@ -128,7 +138,7 @@ if (!exists(vtkCurveClass)) {
       ::opacityFun.AddPoint( &i, &o, &m , &s)
     }
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::Save( STRING filename){
       numelem = ::colorFun.GetSize()
       if(numelem>0) {
@@ -185,7 +195,7 @@ if (!exists(vtkCurveClass)) {
     }
     Comments(::Save,"Save operation.")
 
-    #----------------------------
+    #---------------------------------------------------------------------------
     proc ::Load( STRING path){
       inputfile = File(path,"r")
       #comentario

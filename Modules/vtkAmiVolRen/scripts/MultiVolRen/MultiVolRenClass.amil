@@ -1,0 +1,325 @@
+
+func "Common/ScriptGui"
+
+# load module 
+if (!exists(vtkAmiVolRen)) {
+  func "../Load_vtkAmiVolRen"
+} else {
+  func "../ReLoad_vtkAmiVolRen"
+}
+
+if (!exists(MultiVolRenClass)) {
+
+  Class MultiVolRenClass : public ScriptGui \
+  {
+
+    func "Visualization/VolRen/VolRenClass"
+    #func "../VolRenClass.amil"
+    VolRenClass ::MultiVolRen
+ 
+    //---------------------------------------------------
+    proc ::Init() {
+      
+
+      ::input1_name   = "","Param: Name of the first  input image variable"
+      ::input2_name   = "","Param: Name of the second input image variable"
+
+      ::transform_name = "", "Param: Name of the transform between both images"
+
+      #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+"/MultiVolRen/Doc/MultiVolRen/index.html"
+
+      ::opacity_weight = 0.5, "Param: defines opacties for each volume in [0,1] "+\
+                              " with the sum equal to 1"
+
+      ::clip = false,       "Param: Enable/Disable clipping box"
+
+      ::transf_box = false, "Param: apply spatial transformation to the "+\
+                            "second volume"
+    }
+
+
+    ##-----------------------------------------------
+    #proc ::load_input1() \
+    #{
+      #if exists(::input1) { del ::input1; }
+      #eval "::input1 = &"+::input1_name+";"
+      #if (::input1_name=="BrowseImage") {
+        #::input1_name = "::input1"
+        #::win.Update(-1)
+      #}
+  
+      #if (exists(::win)) {
+        #::win.Update(-1)
+      #}
+    #}
+    #Comments( ::load_input1,  "Copies the input image in a local image "+\
+                              #"member named 'input1'")
+
+    ##-----------------------------------------------
+    #proc ::load_input2() \
+    #{
+      #if exists(::input2) { del ::input2; }
+      #eval "::input2 = &"+::input2_name+";"
+      #if (::input2_name=="BrowseImage") {
+        #::input1_name = "::input2"
+        #::win.Update(-1)
+      #}
+  
+      #if (exists(::win)) {
+        #::win.Update(-1)
+      #}
+    #}
+    #Comments( ::load_input2,  "Copies the input image in a local image "+\
+                              #"member named 'input2'")
+
+    ##-----------------------------------------------
+    #proc ::load_transform() \
+    #{
+      #if exists(::transform) { del ::transform; }
+      #eval "::transform = &"+::transform_name+";"
+      #if (::transform_name=="BrowseImage") {
+        #::transform_name = "::transform"
+        #::win.Update(-1)
+      #}
+  
+      #if (exists(::win)) {
+        #::win.Update(-1)
+      #}
+    #}
+    #Comments( ::load_transform,   "Copies the transform image "+\
+                                  #"member named 'transform'")
+
+
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      # Read inputs
+      ::input1 = itk.DICOMRead( ::input1_name)
+      ::input2 = itk.DICOMRead( ::input2_name)
+
+      # Set as inputs for volume rendering
+      ::MultiVolRen.volrenmapper_type = 3 # AMILab type for multi-volren
+      ::MultiVolRen.set_inputs(::input1,::input2)
+      ::MultiVolRen.StartNew()
+
+      ::transform = Image(::transform_name)
+      ::MultiVolRen.vol0.SetImageTransform(::transform)
+
+      # set transfer functions for each volume
+
+      # set opacities
+      ::MultiVolRen.vol0.opacity_weight_one  = true
+      ::opacity_weight = 0.5
+      ::OnOpacityWeight()
+
+      #::OnClip()
+      ::OnTransfBox()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnOpacityWeight() \
+    {
+      ::MultiVolRen.vol0.opacity_attenuation = ::opacity_weight
+      ::MultiVolRen.vol0.OnOpacity1()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnClip() \
+    {
+      ::MultiVolRen.vol0.clip = ::clip
+      ::MultiVolRen.vol0.OnClip()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::OnTransfBox() \
+    {
+      ::MultiVolRen.vol0.enable_transf_box = ::transf_box
+      ::MultiVolRen.vol0.OnTransfBox()
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SaveCurve1() \
+    {
+      ::InitUserScriptData()
+      if (::MultiVolRen.vol0.initialized){
+        pathname=wx.FromWxString(wx.wxFileName.GetCwd())
+
+        res = wx.wxFileSelector("Select Curve 1 Filename",\
+                                ::scriptdata_path,"MultiVolRen_Curve1.txt","txt",\
+                                "*.*",wx.wxFD_SAVE)
+       ::MultiVolRen.vol0.SaveVTKCurve2(wx.FromWxString(res))
+       InfoDialog "Curve 1 saved as %1%" % wx.FromWxString(res)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ReadCurve1() \
+    {
+      ::InitUserScriptData()
+      res = wx.wxFileSelector("Select Curve Filename",\
+                              ::scriptdata_path,"VolRen_Curve.txt","txt",\
+                              "*.*",wx.wxFD_OPEN)
+      func "Visualization/VolRen/vtkCurveClass.amil"
+      vtkCurveClass curv
+      curv.Load(wx.FromWxString(res))
+      ::MultiVolRen.vol0.PreviewApplied(curv)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::SaveCurve2() \
+    {
+      ::InitUserScriptData()
+      if (::MultiVolRen.vol0.initialized){
+        pathname=wx.FromWxString(wx.wxFileName.GetCwd())
+
+        res = wx.wxFileSelector("Select Curve 2 Filename",\
+                                ::scriptdata_path,"MultiVolRen_Curve2.txt","txt",\
+                                "*.*",wx.wxFD_SAVE)
+       ::MultiVolRen.vol0.SaveVTKCurve(wx.FromWxString(res))
+       InfoDialog "Curve 2 saved as %1%" % wx.FromWxString(res)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ReadCurve2() \
+    {
+      ::InitUserScriptData()
+      res = wx.wxFileSelector("Select Curve Filename",\
+                              ::scriptdata_path,"VolRen_Curve.txt","txt",\
+                              "*.*",wx.wxFD_OPEN)
+      func "Visualization/VolRen/vtkCurveClass.amil"
+      vtkCurveClass curv
+      curv.Load(wx.FromWxString(res))
+      ::MultiVolRen.vol0.SetSecondCurve(curv)
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Close() \
+    {
+      ::MultiVolRen.Close()
+      ::win.HidePanel()
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close, "Will close the interface and delete the corresponding"+\
+                        " object named '"+GetObjectName(::Close)+"'.")
+
+    //---------------------------------------------------
+    proc ::Gui() {
+    
+      # Hide Var tree and output
+      ami.MainFrame.GetAuiManager().GetPane("VariablesTree").Hide()
+      ami.MainFrame.GetAuiManager().GetPane("Log")          .Hide()
+      ami.MainFrame.GetAuiManager().Update()
+
+      if (exists(::parent_panel)) {
+        ::win = ParamPanel("MultiVolRen",&::parent_panel)
+      } else {
+        ::win = ParamPanel("MultiVolRen")
+      }
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Init")
+
+          ::win.AddDirname(::input1_name,"DICOM  1")
+          ::win.AddDirname(::input2_name,"DICOM  2")
+
+          ::win.AddFilename(::transform_name,"transform image","","*.ami*")
+          #::win.BeginBoxPanel("Input1 Image")
+            ## set the input image
+            #::win.BeginHorizontal()
+              #::win.AddImageChoice( ::input1_name, "")
+              #::win.AddButton("Load",::load_input1)
+            #::win.EndHorizontal()
+          #::win.EndBoxPanel()
+
+          #::win.BeginBoxPanel("Input2 Image")
+            ## set the input image
+            #::win.BeginHorizontal()
+              #::win.AddImageChoice( ::input2_name, "")
+              #::win.AddButton("Load",::load_input2)
+            #::win.EndHorizontal()
+          #::win.EndBoxPanel()
+
+          #::win.BeginBoxPanel("Transform Image")
+            ## set the input image
+            #::win.BeginHorizontal()
+              #::win.AddImageChoice( ::input2_name, "")
+              #::win.AddButton("Load",::load_transform)
+            #::win.EndHorizontal()
+          #::win.EndBoxPanel()
+
+        #::win.AddPage("Param")
+          #::win.AddLabel("Info:","Set your parameters here")
+
+        #::win.AddPage("Run")
+
+        ::win.AddButton("Run",::Run)
+
+        ::win.AddFloat(::opacity_weight,"Opacity weight",0,1)
+        ::win.SetCallback( ::OnOpacityWeight)
+
+        ::win.AddBoolean(::clip,"Clip")
+        ::win.SetCallback( ::OnClip)
+
+        ::win.AddBoolean(::transf_box,"Transform")
+        ::win.SetCallback( ::OnTransfBox)
+
+
+        ::win.BeginBoxPanel("Transfer functions")
+          ::win.BeginHorizontal()
+            ::win.AddButton("Save Curve 1", ::SaveCurve1)
+            ::win.AddButton("Read Curve 1", ::ReadCurve1)
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
+            ::win.AddButton("Save Curve 2", ::SaveCurve2)
+            ::win.AddButton("Read Curve 2", ::ReadCurve2)
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+
+        ::MultiVolRen.SetParentPanel(::win)
+        ::MultiVolRen.Gui()
+        ::win.AddPage("VolRen",::MultiVolRen.win)
+        ::renderer = &::MultiVolRen.vol0.renderer
+
+        # hide annotated cube, because it is not well oriented ...
+        ::MultiVolRen.AnnotatedCubeVisible=false
+        ::MultiVolRen.OnAnnotatedCube()
+
+        # Set background to black
+        ::MultiVolRen.background_color = wx.wxColour(0,0,0)
+        ::MultiVolRen.UseGradientBackground = false
+        ::MultiVolRen.SetRendererBg()
+
+
+        # add page for saving/loading parameters
+        ::AddParamPage(::win)
+        # only save variables containing 'Param:' in their comments
+        ::SetParamCommentsFilter(".*Param:.*")
+
+        if wx.wxFileName(::html_filename).FileExists() {
+            ::AddHelpPage(&::win)
+          }
+    
+      ::win.EndBook()
+    
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      ::win.Update(-1)
+
+
+    }
+    ::Init()
+    
+  }
+  # End of class
+  
+} 
+# End of If
