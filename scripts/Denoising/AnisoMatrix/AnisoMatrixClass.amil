@@ -149,6 +149,13 @@ if (!exists(AnisoMatrixClass)) {
 
         ::remove_bias = UCHAR(1), "Remove bias due to Rician noise model"
 
+        ::roi_xmin = INT(0),   "Region of Interest minimal X value"
+        ::roi_xmax = INT(100), "Region of Interest minimal X value"
+        ::roi_ymin = INT(0),   "Region of Interest minimal Y value"
+        ::roi_ymax = INT(100), "Region of Interest minimal Y value"
+        ::roi_zmin = INT(0),   "Region of Interest minimal Z value"
+        ::roi_zmax = INT(100), "Region of Interest minimal Z value"
+
         #-----------------------------------------------------------------------
         proc ::__assign__( VAR p) {
           ::t                     = p.t
@@ -163,6 +170,12 @@ if (!exists(AnisoMatrixClass)) {
           ::scheme                = p.scheme
           ::run_on_roi            = p.run_on_roi
           ::remove_bias           = p.remove_bias
+          ::roi_xmin              = p.roi_xmin
+          ::roi_xmax              = p.roi_xmax
+          ::roi_ymin              = p.roi_ymin
+          ::roi_ymax              = p.roi_ymax
+          ::roi_zmin              = p.roi_zmin
+          ::roi_zmax              = p.roi_zmax
         }
     }
 
@@ -201,14 +214,43 @@ if (!exists(AnisoMatrixClass)) {
         del ::input
         eval "::input =&"+::input_name+";"
       }
+      ::UpdateROILimits()
     }
   
-    #--------------------------------------------------
+    #---------------------------------------------------------------------------
+    proc ::UpdateROILimits()  \
+    {
+      if (exists(::win)) {
+
+        ::win.IntegerConstraints(::xmin_id,0,::input.tx-1,0)
+        ::win.IntegerConstraints(::xmax_id,0,::input.tx-1,::input.tx-1)
+        ::params.roi_xmin = max(0,min(::params.roi_xmin,::input.tx-1))
+        ::params.roi_xmax = max(0,min(::params.roi_xmax,::input.tx-1))
+
+        ::win.IntegerConstraints(::ymin_id,0,::input.ty-1,0)
+        ::win.IntegerConstraints(::ymax_id,0,::input.ty-1,::input.ty-1)
+        ::params.roi_ymin = max(0,min(::params.roi_ymin,::input.ty-1))
+        ::params.roi_ymax = max(0,min(::params.roi_ymax,::input.ty-1))
+
+        ::win.Enable(::zmin_id,::input.tz>1)
+        ::win.Enable(::zmax_id,::input.tz>1)
+
+        ::win.IntegerConstraints(::zmin_id,0,::input.tz-1,0)
+        ::win.IntegerConstraints(::zmax_id,0,::input.tz-1,::input.tz-1)
+        ::params.roi_zmin = max(0,min(::params.roi_zmin,::input.tz-1))
+        ::params.roi_zmax = max(0,min(::params.roi_zmax,::input.tz-1))
+
+        ::win.Update(-1)
+      }
+    }
+
+    #---------------------------------------------------------------------------
     proc ::set_input(IMAGE im)  \
     {
       del ::input
       ::input = &im
       ::input_name = "::input"
+      ::UpdateROILimits()
     }
 
     #---------------------------------------------------------------------------
@@ -260,16 +302,56 @@ if (!exists(AnisoMatrixClass)) {
     proc ::GetRoi() \
     {
       if (!exists(::input)) {
-        ::load_input
+        ::load_input()
         ::Display()
       }
       if (exists(::input_draw)) {
         ::roi <<= ::input[::input_draw]
+
+        ::params.roi_xmin = ::input_draw.GetXmin()
+        ::params.roi_xmax = ::input_draw.GetXmax()
+        ::params.roi_ymin = ::input_draw.GetYmin()
+        ::params.roi_ymax = ::input_draw.GetYmax()
+        ::params.roi_zmin = ::input_draw.GetZmin()
+        ::params.roi_zmax = ::input_draw.GetZmax()
+        ::win.Update(-1)
+
       }
       ::Display()
     }
     Comments( ::GetRoi, "Select the Region of Interest (ROI) for noise estimation.")
     
+    #---------------------------------------------------------------------------
+    proc ::OnRoi() \
+    {
+      if (!exists(::input)) {
+        ::load_input()
+        ::Display()
+      }
+      if (exists(::input_draw)) {
+        x1 = ::params.roi_xmin
+        x2 = ::params.roi_xmax
+        y1 = ::params.roi_ymin
+        y2 = ::params.roi_ymax
+        z1 = ::params.roi_zmin
+        z2 = ::params.roi_zmax
+        ::roi <<= ::input[x1:x2,y1:y2,z1:z2]
+
+        if (!exists(::input_draw)) {
+          show ::input
+        }
+        # draw limits of ROI
+        roibox <<= ::roi[0]*0+1
+        ::imbox  <<= ::input[0]*0
+        ::imbox.putimage(roibox)
+        ::input_draw.SetIsoContour(0,::imbox,0.5)
+        ::input_draw.DrawIsoContour(0,true)
+        show ::input
+        #::Display()
+      }
+    }
+    Comments( ::OnRoi, "Select the Region of Interest (ROI) for noise estimation.")
+
     #---------------------------------------------------------------------------
     proc ::FilterFlux() \
     {
@@ -611,6 +693,22 @@ if (!exists(AnisoMatrixClass)) {
             s.GetItem(1).SetFlag(wx.wxALIGN_CENTER_HORIZONTAL)
           ::win.EndPanel()
           
+        ::win.AddPage("ROI")
+          ::win.BeginBoxPanel("Extent")
+            ::xmin_id = ::win.AddInt(::params.roi_xmin,"xmin",0,100)
+            ::win.SetCallback(::OnRoi)
+            ::xmax_id = ::win.AddInt(::params.roi_xmax,"xmax",0,100)
+            ::win.SetCallback(::OnRoi)
+            ::ymin_id = ::win.AddInt(::params.roi_ymin,"ymin",0,100)
+            ::win.SetCallback(::OnRoi)
+            ::ymax_id = ::win.AddInt(::params.roi_ymax,"ymax",0,100)
+            ::win.SetCallback(::OnRoi)
+            ::zmin_id = ::win.AddInt(::params.roi_zmin,"zmin",0,100)
+            ::win.SetCallback(::OnRoi)
+            ::zmax_id = ::win.AddInt(::params.roi_zmax,"zmax",0,100)
+            ::win.SetCallback(::OnRoi)
+          ::win.EndBoxPanel()
+
         ::win.AddPage("Save")
           ::win.BeginBoxPanel("Result --> disk")
             ::win.BeginHorizontal()
