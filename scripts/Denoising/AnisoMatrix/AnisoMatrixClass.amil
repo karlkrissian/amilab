@@ -277,8 +277,14 @@ if (!exists(AnisoMatrixClass)) {
         ::load_input
       }
       numit = ::params.t/::params.dt
-      # running on the squared image
-      input1 <<= ::input*::input
+
+      ::squared = (::params.noise_model == 3) # Rician model
+      if ::squared {
+        # running on the squared image
+        input1 <<= ::input*::input
+      } else {
+        input1 = &::input
+      }
       if (::params.run_on_roi) {
         input1 <<= input1[::roi.GetExtent]
       }
@@ -322,10 +328,11 @@ if (!exists(AnisoMatrixClass)) {
       ::res0 <<= ::NRADfilter.GetOutput()
       if (::params.run_on_roi) {
         ::res <<= ::input
-        ::res0 = sqrt(::res0)
+        if (::squared) { ::res0 = sqrt(::res0); }
         ::res.putimage(::res0)
       } else {
-        ::res <<= sqrt(::res0)
+        if (::squared) { ::res0 = sqrt(::res0); }
+        ::res <<= ::res0
       }
 
       # Output estimated noise standard deviation
@@ -364,18 +371,20 @@ if (!exists(AnisoMatrixClass)) {
           if (::params.remove_bias) {
             ::res0 = ::res0 - 2*noise_variance
             ::res0 = ::res0*(::res0>0)
-            ::res0 = sqrt(::res0)
+            if (::squared) { ::res0 = sqrt(::res0); }
           } else {
-            ::res0 = sqrt(::res0)
+            if (::squared) { ::res0 = sqrt(::res0); }
           }
           ::res.putimage(::res0)
         } else {
           if (::params.remove_bias) {
             ::res0 = ::res0 - 2*noise_variance
             ::res0 = ::res0*(::res0>0)
-            ::res <<= sqrt(::res0)
+            if (::squared) { ::res0 = sqrt(::res0); }
+            ::res <<= ::res0
           } else {
-            ::res <<= sqrt(::res0)
+            if (::squared) { ::res0 = sqrt(::res0); }
+            ::res <<= ::res0
           }
         }
         if (exists(::groundtruth)) {
