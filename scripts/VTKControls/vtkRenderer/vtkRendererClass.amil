@@ -90,10 +90,14 @@ Class vtkRendererClass : public ScriptGui \
   proc ::SetRenderer( OBJECT obj) \
   {
     if obj.IsA("vtkRenderer") {
+    printn "::SetRenderer 1"
       del ::vtkrenderer
       ::vtkrenderer = &obj
+    printn "::SetRenderer 2"
       ::CB_SelectActor()
+    printn "::SetRenderer 3"
       ::Update()
+    printn "::SetRenderer 4"
       return = true
     } else {
       InfoDialog "vtkRendererClass.SetRenderer(obj): wrong object type"

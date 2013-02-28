@@ -70,8 +70,10 @@ if (!exists(ScriptGui)) \
       printn ::objectfilename
       cmd = "global; func \"%1%\";" % ::objectfilename
       printn cmd
-      ::CloseAll()
-      eval cmd
+      ::CloseAll()
+      if (::objectfilename!="Command line prompt") {
+        eval cmd
+      }
     }
     Comments( ::ReloadScript, "Reloads the script from disk.")
       

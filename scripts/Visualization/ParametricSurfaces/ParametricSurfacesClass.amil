@@ -711,6 +711,8 @@ Class ParametricSurfacesClass : public ScriptGui \
   #---------------------------------------------------------------------------
   proc ::MainBook_AddvtkSurfaceTab()  \
   {
+  print "::MainBook_AddvtkSurfaceTab() begin"
+  print "1"
     mb = ami.MainFrame.GetMainBook()
 
     ::panel = wx.wxPanel(ami.MainFrame)
@@ -736,6 +738,7 @@ Class ParametricSurfacesClass : public ScriptGui \
 
     ::icons.LoadIconPNG2("Transparent background","Transparent_background")
 
+  print "2"
     # Add to main book
     mb.AddPage( ::panel,  "ParamSurf",1, \
                 wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
@@ -752,14 +755,17 @@ Class ParametricSurfacesClass : public ScriptGui \
     ::SetRendererBg()
     ::renderer.ResetCamera()
 
+  print "3"
     # Set gui info
     ::vtk_renderer_gui.SetRenderer(::renderer)
     ::vtk_camera_gui.SetCamera(::renderer.GetActiveCamera())
 
+  print "4"
 
     # global VTK parameter to combine line and polygons
     vtk.vtkMapper.SetResolveCoincidentTopologyToPolygonOffset()
     vtk.vtkMapper.SetResolveCoincidentTopologyPolygonOffsetParameters(1,1)
+  print "::MainBook_AddvtkSurfaceTab() end"
  
   }
 
@@ -787,6 +793,7 @@ Class ParametricSurfacesClass : public ScriptGui \
   #---------------------------------------------------------------------------
   proc ::Gui(){
 
+  print "::Gui() begin"
     if (exists(::parent_panel)) {
       ::win = ParamPanel("ParamSurf",&::parent_panel)
     } else {
@@ -940,6 +947,7 @@ Class ParametricSurfacesClass : public ScriptGui \
 
     ::MainBook_AddvtkSurfaceTab()
 
+  print "::Gui() end"
   }
 
   ::Init()

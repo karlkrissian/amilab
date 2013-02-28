@@ -130,6 +130,7 @@ Class ModulePlugin \
     if ::IsLoaded {
       printn "::Unload() begin"
       # should delete variables in Builtin
+      printn "::ModuleName = %1%" % ::ModuleName
       eval "del %1%;" % ::ModuleName
       # need to call detach first, otherwise SEGFAULT!
       #::plugin_mgr.Detach()

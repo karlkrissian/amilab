@@ -62,6 +62,7 @@ Class vtkCameraClass \
   }
 
   proc ::SetCamera( OBJECT obj) {
+    print "::SetCamera 1"
     if obj.IsA("vtkCamera") {
       del ::vtkcam
       ::vtkcam = &obj
@@ -72,6 +73,7 @@ Class vtkCameraClass \
       } else {
         InfoDialog "vtkCameraClass.SetCamera(obj): wrong object type"
       }
+    print "::SetCamera 2"
     }
 
     del ::init_cam

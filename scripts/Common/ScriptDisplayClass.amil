@@ -118,7 +118,17 @@ Class ScriptDisplayClass {
     ::LoadBitmap()
 
     # create wxMenuItem
-    new_mi_id = 10000*menu_id+100*submenu_id+submenu.GetMenuItemCount()
+    # can´t go higher than 32K
+    # so let´s say max is 32
+    #max_num =32
+    #printn "submenu.GetMenuItemCount() = %1%" % submenu.GetMenuItemCount()
+    #printn "menu_id = %1%"    % menu_id
+    #printn "submenu_id = %1%" % submenu_id
+    
+    #new_mi_id = max_num*(max_num*menu_id+submenu_id)+submenu.GetMenuItemCount()
+    # let wxWidgets generate a new id ...
+    #new_mi_id = wx.wxNewId()
+    #printn "new_mi_id = %1%" % new_mi_id
 
     # version 1: problem to show bitmaps ...
     #new_mi = submenu.Append(new_mi_id,::menu_name)
@@ -129,13 +139,13 @@ Class ScriptDisplayClass {
     ## version 2: pb??? segfault ???
     # ok fixed by setting new_mi as object member to prevent it 
     # from beeing deleted
-    ::new_mi = wx.wxMenuItem.wxMenuItem(submenu,new_mi_id,::menu_name,::menu_help)
+    ::new_mi = wx.wxMenuItem.wxMenuItem(submenu,wx.wxID_ANY,::menu_name,::menu_help)
     ::new_mi.SetBitmap(::bm)
     submenu.Append(::new_mi)
 
     # create event
     ::evh = wx.wxAmiEventHandler(&::CB_Menu)
-    ami.MainFrame.Connect(new_mi_id,wx.wxEVT_COMMAND_MENU_SELECTED,\
+    ami.MainFrame.Connect(::new_mi->GetId(),wx.wxEVT_COMMAND_MENU_SELECTED,\
       &::evh.GetEventFunction(),&NULL,&::evh)
 
   }
