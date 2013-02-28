@@ -1,12 +1,13 @@
 
 func "Common/ScriptGui"
 
-# load module 
-if (!exists(vtkAmiVolRen)) {
-  func "../Load_vtkAmiVolRen"
-} else {
-  func "../ReLoad_vtkAmiVolRen"
-}
+# loaded in global context from VolRenClass ...
+## load module 
+#if (!exists(vtkAmiVolRen)) {
+#  func "../Load_vtkAmiVolRen"
+#} else {
+#  func "../ReLoad_vtkAmiVolRen"
+#}
 
 if (!exists(MultiVolRenClass)) {
 

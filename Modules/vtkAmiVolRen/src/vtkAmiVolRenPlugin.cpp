@@ -48,5 +48,7 @@ bool vtkAmiVolRenPlugin::Execute(void)
 void vtkAmiVolRenPlugin::Destroy()
 {
   std::cout << "vtkAmiVolRenPlugin::Destroy()" << std::endl;
+  std::cout << "Deleting variable " << this->GetName() << std::endl;
   Vars.GetBuiltinContext()->deleteVar(this->GetName().c_str());
+
 }
