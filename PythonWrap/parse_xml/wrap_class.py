@@ -1059,35 +1059,39 @@ def ImplementDuplicatedMethodWrap(classname, method, nummethods, methods, \
   res += "  BasicVariable::ptr res;\n"
   # do it first without call to constructors ...
   for c in [True,False]:
-    for n in range(1,nummethods+1):
-      usedname= "{0}_{1}".format(method.usedname,n)
-      utils.WarningMessage(" wrapping of {0}".format(usedname))
-      # find corresponding method and check if it is implemented
-      pos=0
-      # Set False as default ...
-      is_implemented=False
-      for m in methods:
-        #print "method name {0} usedname {1}".format(m.name,m.usedname)
-        if m.usedname==usedname:
-          #print " found method {0}".format(usedname)
-          #print " Is implemented = {0}".format(not methods[pos].missingtypes)
-          is_implemented = not methods[pos].missingtypes
-          utils.WarningMessage(" Duplicated Method {0} is implemented: {1}".format(usedname,is_implemented))
-        pos = pos+1
-      if is_implemented:
-        if m.static=="1":
-          usedname = "static_"+usedname
-        if c:
-          if constructor or (m.static=="1"):
-            res += "  {0}::wrap_{1} m{2};\n".format(wrapclass_name,usedname,n)
+    # implement non-constant methods first to avoid problems ...
+    # like using &v[0] from a std::vector in VTK
+    for constness in [False,True]:
+      for n in range(1,nummethods+1):
+        usedname= "{0}_{1}".format(method.usedname,n)
+        utils.WarningMessage(" wrapping of {0}".format(usedname))
+        # find corresponding method and check if it is implemented
+        pos=0
+        # Set False as default ...
+        is_implemented=False
+        for m in methods:
+          #print "method name {0} usedname {1}".format(m.name,m.usedname)
+          # checking here for the right constness
+          if m.usedname==usedname and m.const == constness:
+            #print " found method {0}".format(usedname)
+            #print " Is implemented = {0}".format(not methods[pos].missingtypes)
+            is_implemented = not methods[pos].missingtypes
+            utils.WarningMessage(" Duplicated Method {0} is implemented: {1}".format(usedname,is_implemented))
+          pos = pos+1
+        if is_implemented:
+          if m.static=="1":
+            usedname = "static_"+usedname
+          if c:
+            if constructor or (m.static=="1"):
+              res += "  {0}::wrap_{1} m{2};\n".format(wrapclass_name,usedname,n)
+            else:
+              res += "  {0}::wrap_{1} m{2}(this->_objectptr);\n".format(wrapclass_name,usedname,n)
+            res += "  m{0}.Set_noconstr(true);\n".format(n)
           else:
-            res += "  {0}::wrap_{1} m{2}(this->_objectptr);\n".format(wrapclass_name,usedname,n)
-          res += "  m{0}.Set_noconstr(true);\n".format(n)
-        else:
-          res += "  m{0}.Set_noconstr(false);\n".format(n)
-          res += "  m{0}.Set_arg_failure(false);\n".format(n)
-        res += "  res = m{0}.CallMember(_p);\n".format(n)
-        res += "  if (!m{0}.Get_arg_failure()) return res;\n".format(n)
+            res += "  m{0}.Set_noconstr(false);\n".format(n)
+            res += "  m{0}.Set_arg_failure(false);\n".format(n)
+          res += "  res = m{0}.CallMember(_p);\n".format(n)
+          res += "  if (!m{0}.Get_arg_failure()) return res;\n".format(n)
   res += "  if (!quiet)\n"
   res += "    ClassHelpAndReturn\n"
   res += "  else\n"
@@ -1410,6 +1414,9 @@ def WrapClass(classname,include_file,inputfile):
         if missingtypes!="":
           constructors_decl +=  indent+"*/\n"
         else:
+          if wrapped_constructors==0:
+            wrapped_constructor_name = m.usedname
+            print "wrapped_constructor_name = {0}".format(wrapped_constructor_name)
           wrapped_constructors = wrapped_constructors+1
         pos=pos+1
       constructors_decl+='\n'
@@ -1762,6 +1769,7 @@ def WrapClass(classname,include_file,inputfile):
     else:
       export_macro = ''
         
+    print "header_filename = {0}".format(header_filename)
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)
       line = line.replace("${EXPORT_MACRO}",      export_macro)
@@ -1788,7 +1796,10 @@ def WrapClass(classname,include_file,inputfile):
     else:
       #if len(fm.Constructors)>0:
       if wrapped_constructors>0:
-        implement_createvar += "  WrapClass_{0}::wrap_{1} construct;\n".format(config.ClassUsedName(classname),ClassConstructor(classname))
+        implement_createvar += "  WrapClass_{0}::wrap_{1} construct;\n".\
+            format(config.ClassUsedName(classname),\
+            wrapped_constructor_name)
+        #    ClassConstructor(classname))
         implement_createvar += "  construct.Set_quiet(quiet);\n"
         implement_createvar += "  return construct.CallMember(p);\n"
       else:
@@ -1904,6 +1915,7 @@ def WrapClass(classname,include_file,inputfile):
     # in place replace TEMPLATE by classname
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
+    print "impl_filename = {0}".format(impl_filename)
     for line in fileinput.FileInput(impl_filename,inplace=1):
       line = line.replace("${INCLUDES}",                config.CreateIncludes())
       line = line.replace("${IMPLEMENT_TYPE}",          implement_type)

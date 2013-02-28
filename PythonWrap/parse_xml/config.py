@@ -23,10 +23,24 @@ classes_blacklist=[
   'std::_Container_base_aux_alloc_real<std::allocator<double> >', # idem
   'std::_Container_base_aux_alloc_real<std::allocator<float> >', # idem
   'std::_Container_base_aux_alloc_real<std::allocator<int> >', # idem
+
+  'std::_Ranit<double, long long, double const*, double const&>', #idem
+  'std::_Ranit<float, long long, float const*, float const&>', #idem
+  'std::_Ranit<int, long long, int const*, int const&>', #idem
+  'std::_Ranit<std::string, long long, std::string const*, std::string const&>', #idem
+
+  'std::_Iterator_with_base<std::bidirectional_iterator_tag, std::string, long long, std::string const*, std::string const&, std::_Iterator_base_aux>', # std::set<std::string>::iterator on windows with gccxml
+
+
   'wxTrackable', # problem protected destructor: to fix (wx2.9.3)
   #'wxConfigBase', # problems in 2.9.3 also
   'wxRefCounter', # protected destructor not compatible with smart pointers
  ]
+
+classes_startswith_blacklist=[
+  'std::_Iterator_with_base<',            # VC++ gccxml 
+  'std::_Container_base_aux_alloc_real<', # idem
+]
 
 # ignore specific members
 members_blacklist=[
@@ -172,6 +186,7 @@ def ClassUsedName(classname):
   res = res.replace(',','_')
   res = res.replace('::','_')
   res = res.replace('*','_ptr')
+  res = res.replace('&','_ref')
   res = res.replace('unsigned char', 'UC')
   res = res.replace('unsigned short','US')
   res = res.replace('unsigned int',  'UI')
@@ -194,6 +209,7 @@ def ClassShortName(classname,libnamespace=""):
   res = res.replace(',','_')
   res = res.replace('::','_')
   res = res.replace('*','_ptr')
+  res = res.replace('&','_ref')
   res = res.replace('unsigned char', 'UC')
   res = res.replace('unsigned short','US')
   res = res.replace('unsigned int',  'UI')

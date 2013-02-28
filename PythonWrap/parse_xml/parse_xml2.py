@@ -498,8 +498,12 @@ if __name__ == '__main__':
                     ( (not wrap_class.IsTemplate(classes_dict[anc_id])) \
                       or args.val.templates ):
                   m = re.match(args.val.filter, classes_dict[anc_id])
+                  exclude=False
+                  for excl in config.classes_startswith_blacklist:
+                    if classes_dict[anc_id].startswith(excl):
+                      exclude=True
                   #print "Check ancestor {0} to match filter".format(classes_dict[anc_id])
-                  if m != None:
+                  if m != None and not exclude:
                     #print "OK"
                     main_anc_id = config.types[anc_id].GetMainTypeId()
                     if b.find("stream") != -1:
@@ -517,8 +521,15 @@ if __name__ == '__main__':
                       #print "**** bases=",bases
                     if bases!=None:
                       for newanc in bases:
-                        if f_anc not in config.classes_blacklist:
-                          f_anc.append(newanc)
+                        print "newanc={0}".format(newanc[0])
+                        if newanc[0] not in config.classes_blacklist:
+                          exclude=False
+                          for excl in config.classes_startswith_blacklist:
+                            print "excl={0}".format(excl)
+                            if newanc[0].startswith(excl):
+                              exclude=True
+                          if not exclude:
+                            f_anc.append(newanc)
                           #print "adding __ {0}".format(newanc)
             #print "New ancestors of {0} are {1}".format(b,newlist)
       #print "All ancestors are   {0} ".format(ancestors)
