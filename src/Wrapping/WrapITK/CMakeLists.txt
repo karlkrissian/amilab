@@ -303,6 +303,8 @@ SET(WrapITK_SRCS
      ${WrapITK_HDRS}
      ${itk_SRCS}
      ${itk_HDRS}
+     itk_includes.h
+     classes.txt
 )
 
 

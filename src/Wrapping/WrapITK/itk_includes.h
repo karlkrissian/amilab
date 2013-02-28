@@ -257,7 +257,10 @@ typedef itk::Image<unsigned char, 3u>  ImageUC3;
   
   template class std::map<gdcm::Tag, char const*>;
   
-  template class std::pair<gdcm::Tag const, char const*>;
+  #ifndef WIN32
+    // problem on windows with const for gdcm::Tag in std::pair
+    template class std::pair<gdcm::Tag const, char const*>;
+  #endif
   gdcm::Dict::MapDictEntry mde;
   gdcm::Dict::MapDictEntry::iterator  mde_iterator;
 #endif

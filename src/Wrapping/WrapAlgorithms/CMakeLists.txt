@@ -176,33 +176,10 @@ IF(AMI_ENABLE_WRAPPING)
   UPDATE_OUTPUT_LIST( "${ancestors_list}"  )
   UPDATE_OUTPUT_LIST( "${functions_list}"  )
 
-#   # Wrap all classes at once since it is now fast
-#   FOREACH( class ${ancestors_list})
-# 
-#     ClassUsedName( class m_class )
-# 
-#     # Check that the class is not already wrapped with VTK wrapping
-#     IF ((NOT EXISTS ${VTK_OUTDIR}/wrap_${m_class}.h))
-#       SET(compilation_list ${compilation_list} ${m_class})
-#       IF ( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.cpp) OR
-#             (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.h))
-#         SET(OUTPUT_LIST ${GENERATED_DIR}/wrap_${m_class}.cpp ${OUTPUT_LIST})
-#         SET(OUTPUT_LIST ${GENERATED_DIR}/wrap_${m_class}.h ${OUTPUT_LIST})
-#         SET(MISSING_CLASSES ${class} ${MISSING_CLASSES})
-#       ENDIF( (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.cpp) OR
-#           (NOT EXISTS ${GENERATED_DIR}/wrap_${m_class}.h))
-# #    ELSE((NOT EXISTS ${VTK_OUTDIR}/wrap_${class}.h))
-#     ENDIF((NOT EXISTS ${VTK_OUTDIR}/wrap_${m_class}.h))
-#   ENDFOREACH( class ${ancestors_list}) 
-
-#   MESSAGE("Processing classes ${ancestors_list} and addwrap")
-#   MESSAGE(" GENERATED_DIR = ${GENERATED_DIR} ")
-#   MESSAGE(" GENERATE_HTML_HELP = ${GENERATE_HTML_HELP}")
 
   #------------------------------------------------------------  
   # Create the rule that wraps the code
   #------------------------------------------------------------
-
 
   SET(NO_METHOD_HELP true)
   WRAP_CODE()

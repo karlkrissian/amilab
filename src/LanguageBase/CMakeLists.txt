@@ -14,8 +14,8 @@ include_directories (
 
 # Difficult to avoid wxwidgets: used in Variables.cpp
 INCLUDE(${wxWidgets_USE_FILE})
-INCLUDE( ${VTK_USE_FILE} )
-INCLUDE( ${USE_ITK_FILE} )
+#INCLUDE( ${VTK_USE_FILE} )
+#INCLUDE( ${ITK_USE_FILE} )
 
 SET(LanguageBase_SRCS
     ami_object.cpp
