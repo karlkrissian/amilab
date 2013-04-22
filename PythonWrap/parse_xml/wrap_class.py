@@ -1248,6 +1248,7 @@ def WrapClass(classname,include_file,inputfile):
       if m.name == "=":
         if len(m.args)==1:
           typename = config.types[m.args[0].typeid].GetFullString()
+          print " operator=({0}) found ".format(typename)
           if typename=="{0} const &".format(classname):
             utils.WarningMessage( "Copy assign operator found: {0}".format(m.usedname))
             dh.has_copyassign = True

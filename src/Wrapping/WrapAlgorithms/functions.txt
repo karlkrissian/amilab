@@ -15,3 +15,6 @@ Func_InitWeickert
 Func_IterateWeickert
 Func_EndWeickert
 Func_InitWeickertCoherence
+
+# local stats
+Func_Compute_sigma2_Gaussian_mode

@@ -2,7 +2,7 @@
 This installer uses Python.
 The final aim will be to install on all the platform using python scripts.
 
-For know, it is been tested on linux platforms.
+For now, it is been tested on linux platforms.
 
 to install the trunk run:
 
