@@ -67,12 +67,13 @@ if (!exists(ScriptGui)) \
     # Reloads the script
     #
     proc ::ReloadScript() {
-      printn ::objectfilename
+      ofn =  &::objectfilename
+      
       cmd = "global; func \"%1%\";" % ::objectfilename
       printn cmd
       ::CloseAll()
-      if (::objectfilename!="Command line prompt") {
-        eval cmd
+      if (ofn!="Command line prompt") {
+        eval cmd
       }
     }
     Comments( ::ReloadScript, "Reloads the script from disk.")
