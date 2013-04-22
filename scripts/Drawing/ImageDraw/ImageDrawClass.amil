@@ -69,6 +69,7 @@ if (!exists(ImageDrawClass)) {
       ::rg_max_intensity = 0,         "maximal intensity for Region Growing"
       ::rg_thickness     = INT(0),    "Grow in (2n+1) slices"
 
+      ::STD_winsize = INT(20),        "Window radius to estimate the noise STD (2n+1)^3"
 
       ::show_local_denoising  = UCHAR(1), "Show denoising locally"
 
@@ -857,6 +858,121 @@ if (!exists(ImageDrawClass)) {
     }
 
     #---------------------------------------------------------------------------
+    proc ::EstimateNoiseSTD() {
+      # extract current slice and zoom from display
+      if (exists(::input_draw)) {
+        
+        x = ::input_draw.GetXPos()
+        y = ::input_draw.GetYPos()
+        z = ::input_draw.GetZPos()
+
+        bsize = ::STD_winsize // box size
+        xmin = x - bsize
+        xmax = x + bsize
+        ymin = y - bsize
+        ymax = y + bsize
+        zmin = z - bsize
+        zmax = z + bsize
+        
+        # extract slice from input
+        b_input = ::input[xmin:xmax,ymin:ymax,zmin:zmax]
+
+        ::estimated_noise_var = Func_Compute_sigma2_Gaussian_mode(::input,b_input)
+        printn "estimated STD = %1%" % sqrt(::estimated_noise_var)
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::PrecomputeStats() \
+    {
+      # ignore weights for the moment
+      ::weights = (UCHAR) ((::input>100)*(::input<700))
+      ::localstats_winsize = 1
+      ::min_weight = 0.01
+      
+      SetStatusText("::PrecomputeStats init")
+      # compute weighted local mean intensity
+      ::lm    = localmean2(::input*::weights,::localstats_winsize)
+      w_lm    = localmean2(::weights        ,::localstats_winsize)
+
+      SetStatusText("::PrecomputeStats local mean")
+      # set minimal weight, and divide by weights
+      w_lm = (w_lm>::min_weight)*w_lm+(w_lm<=::min_weight)*::min_weight
+      ::lm = ::lm/w_lm
+      ::lm = (w_lm>2*::min_weight)*::lm
+
+      SetStatusText("::PrecomputeStats local std")
+      # compute weighted local standard deviation of intensity
+      var = localmean2(::input*::input*::weights,::localstats_winsize)
+      var = var/w_lm 
+      var = (w_lm>2*::min_weight)*var
+      var = var-::lm*::lm
+      ::sd = sqrt(var)
+      SetStatusText("::PrecomputeStats done")
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::Grow3D() {
+      ok = exists(::estimated_noise_var)&&exists(::lm)&&exists(::sd)
+      if (ok) {
+
+        # get local mean at current point
+        x = ::input_draw.GetXPos()
+        y = ::input_draw.GetYPos()
+        z = ::input_draw.GetZPos()
+        current_localmean = ::lm(x,y,z)
+        printn "current_localmean = %1%" % current_localmean
+      
+        # create condition image
+        evolveim = abs(::lm-current_localmean) < (3*sqrt(::estimated_noise_var))
+        evolveim = evolveim*(::lm<sqrt(2)*::estimated_noise_var)
+        
+        if (exists(::rg_z)) {
+          if (z!=::rg_z)||(::rg_thick!=::rg_thickness) {
+            printn "Deleting..."
+            del ::rg_input
+            del ::rg_init
+            del ::rg_res_draw
+            del ::rg_res
+          }
+        }
+        ::rg_z     = z
+        ::rg_thick = ::rg_thickness
+
+        zmin = z-::rg_thickness
+        zmax = z+::rg_thickness
+        # extract slice from input
+        ::rg_input = evolveim[:,:,zmin:zmax]
+
+        # extract slice from mask
+        ::rg_init  = ::mask_image[:,:,zmin:zmax]
+        # start only from current point
+        ::rg_init = 0
+        ::rg_init.setpos(x,y,z-zmin)
+        ::rg_init.set(255)
+
+        rg = Algorithms.algorithms.ami_IntensityBasedRegionGrowing\
+            .IntensityBasedRegionGrowing(&::rg_input,&::rg_init)
+        rg.SetMin(0.5)
+        rg.SetMax(1.5)
+        rg.Evolve()
+        #return = initmask
+        ::rg_res = (rg.ami_RegionGrowingBase.GetStateImage()==2)*255
+        show ::rg_res
+      }
+    }
+
+    #---------------------------------------------------------------------------
+    proc ::ApplyGrow3D() {
+      if (exists(::rg_res)) {
+        rg_mask = ::mask_image[::rg_res]
+        ::rg_res = (((::rg_res>0)+(rg_mask>0))>0)*255
+        ::mask_image.putimage(::rg_res)
+        show ::input
+      }
+    }
+
+    #---------------------------------------------------------------------------
     proc ::ShowLocalDenoising() \
     {
       if (::show_local_denoising) {
@@ -1008,6 +1124,15 @@ if (!exists(ImageDrawClass)) {
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
+          ::win.BeginBoxPanel("Noise STD estimation")
+            ::stdws_id = ::win.AddInt( ::STD_winsize,\
+                                            "window radius",0,50)
+            ::win.AddButton("Noise STD",         ::EstimateNoiseSTD)
+            ::win.AddButton("Pre-compute stats", ::PrecomputeStats)
+            ::win.AddButton("Grow3D",            ::Grow3D)
+            ::win.AddButton("Apply",             ::ApplyGrow3D)
+          ::win.EndBoxPanel()
+          
           ::win.BeginBoxPanel("Denoising")
             ::win.BeginHorizontal()
               ::win.AddBoolean(&::show_local_denoising, "Local denoising")
