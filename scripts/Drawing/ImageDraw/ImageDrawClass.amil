@@ -60,20 +60,21 @@ if (!exists(ImageDrawClass)) {
       ::_slice = INT(0)
       
       ::enable_draw_range = UCHAR(0), "Enable/disable drawing intensity range"
-      ::draw_range_min = INT(0   ), "Minimal intensity for drawing"
-      ::draw_range_max = INT(1000), "Maximal intensity for drawing"
+      ::draw_range_min = INT(0   ),   "Minimal intensity for drawing"
+      ::draw_range_max = INT(1000),   "Maximal intensity for drawing"
       
-      ::rg_current_slice = UCHAR(1), "Apply Region Growing on current slice"
-      ::rg_current_zoom  = UCHAR(1), "Apply Region Growing on zoom"
-      ::rg_min_intensity = 0, "minimal intensity for Region Growing"
-      ::rg_max_intensity = 0, "maximal intensity for Region Growing"
+      ::rg_current_slice = UCHAR(1),  "Apply Region Growing on current slice"
+      ::rg_current_zoom  = UCHAR(1),  "Apply Region Growing on zoom"
+      ::rg_min_intensity = 0,         "minimal intensity for Region Growing"
+      ::rg_max_intensity = 0,         "maximal intensity for Region Growing"
+      ::rg_thickness     = INT(0),    "Grow in (2n+1) slices"
 
 
       ::show_local_denoising  = UCHAR(1), "Show denoising locally"
 
-      ::allow_undo = UCHAR(1), "Enable Undo/Redo"
+      ::allow_undo = UCHAR(1),            "Enable Undo/Redo"
       
-      ::denoise_thickness = INT(3), "Denoising ROI will include the current XY slice +/- this value"
+      ::denoise_thickness = INT(3),       "Denoising ROI will include the current XY slice +/- this value"
       
       # TODO: backups
       ::backup_actions = VarVector()
@@ -810,7 +811,7 @@ if (!exists(ImageDrawClass)) {
       if (exists(::input_draw)) {
         z = ::input_draw.GetZPos()
         if (exists(::rg_z)) {
-          if (z!=::rg_z) {
+          if (z!=::rg_z)||(::rg_thick!=::rg_thickness) {
             printn "Deleting..."
             del ::rg_input
             del ::rg_init
@@ -818,11 +819,15 @@ if (!exists(ImageDrawClass)) {
             del ::rg_res
           }
         }
-        ::rg_z = z
+        ::rg_z     = z
+        ::rg_thick = ::rg_thickness
+
+        zmin = z-::rg_thickness
+        zmax = z+::rg_thickness
         # extract slice from input
-        ::rg_input = ::input[:,:,z:z]
+        ::rg_input = ::input[:,:,zmin:zmax]
         # extract slice from mask
-        ::rg_init  = ::mask_image[:,:,z:z]
+        ::rg_init  = ::mask_image[:,:,zmin:zmax]
 
         rg = Algorithms.algorithms.ami_IntensityBasedRegionGrowing\
             .IntensityBasedRegionGrowing(&::rg_input,&::rg_init)
@@ -992,6 +997,9 @@ if (!exists(ImageDrawClass)) {
                                             "min intensity",0,100)
             ::rgmaxint_id = ::win.AddFloat( ::rg_max_intensity,\
                                             "max intensity",0,100)
+
+            ::rgthick_id = ::win.AddInt( ::rg_thickness,\
+                                            "slice thickness",0,50)
             ::win.AddButton("Auto-range", ::AutoRangeRegGrow)
             ::win.BeginHorizontal()
               ::win.AddButton("Try",    ::TryRegGrow)
