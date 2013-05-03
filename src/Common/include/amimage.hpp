@@ -299,7 +299,11 @@ public:
   void ComputeDataSize();
 
   unsigned long  GetDataSize() {return data_size; }
+
   void*          GetData() { return data; }
+  
+  template<class T> operator T* () { return (T*) data; }
+  
   void const*    GetConstData() const { return data; }
   void           SetData( void* d);
 

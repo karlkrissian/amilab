@@ -426,6 +426,20 @@ BasicVariable::ptr Variable<unsigned char>::TernaryCondition(const BasicVariable
   return NewReference();
 }
 
+template<> AMI_DLLEXPORT
+  BasicVariable::ptr Variable<unsigned char>::operator[](const BasicVariable::ptr& v)
+{
+  if (v->IsNumeric()) {
+    unsigned char* pointer = this->Pointer().get();
+    //std::cout << "Size of array " << ARRAY_SIZE(pointer) << std::endl;
+    // at the user own risk
+    unsigned char res = pointer[(int)(v->GetValueAsDouble()+0.5)];
+    return AMILabType<unsigned char>::CreateVar(res);
+  } else
+    CLASS_ERROR("operator[] only takes a numerical parameter");
+  return NewReference();
+}
+
 
 template<> 
 BasicVariable::ptr Variable<unsigned char>::operator =(const BasicVariable::ptr& b)

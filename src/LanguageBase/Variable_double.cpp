@@ -354,6 +354,10 @@ BasicVariable::ptr Variable<double>::TryCast(
     if (type_string==AMILabType<long>::name_as_string()) {
       RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
     } else 
+    // cast to unsigned long
+    if (type_string==AMILabType<unsigned long>::name_as_string()) {
+      RETURN_VARPTR(unsigned long, boost::numeric_cast<unsigned long>(Value()));
+    } else 
     // cast to unsigned char
     if (type_string==AMILabType<unsigned char>::name_as_string()) {
       RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
@@ -380,13 +384,13 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<double>::BasicCast(const in
   double res = Value();
 
   switch((WORDTYPE)type) {
-    case WT_UNSIGNED_CHAR:  res=(unsigned char) res; break;
-    case WT_SIGNED_SHORT:   res=(short) res;  break;
-    case WT_UNSIGNED_SHORT: res=(unsigned short) res;  break;
-    case WT_SIGNED_INT:     res=(int) res;  break;
+    case WT_UNSIGNED_CHAR:  { RETURN_VARPTR(unsigned char,  (unsigned char)  res); }
+    case WT_SIGNED_SHORT:   { RETURN_VARPTR(short,          (short)          res); }
+    case WT_UNSIGNED_SHORT: { RETURN_VARPTR(unsigned short, (unsigned short) res); }
+    case WT_SIGNED_INT:     { RETURN_VARPTR(int,            (int)            res); }
     case WT_UNSIGNED_INT:   res=(unsigned int) res;  break;
-    case WT_FLOAT:          { RETURN_VARPTR(float, (float) res); }
-    case WT_DOUBLE:         { RETURN_VARPTR(double, res); } /// New (added: 24/05/2010)
+    case WT_FLOAT:          { RETURN_VARPTR(float,          (float)          res); }
+    case WT_DOUBLE:         { RETURN_VARPTR(double,         (double)         res); } 
     default:
       CLASS_ERROR(( boost::format("Conversion to type %1% not available")%((WORDTYPE)type)).str().c_str());
   }

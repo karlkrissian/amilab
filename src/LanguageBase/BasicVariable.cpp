@@ -89,6 +89,8 @@ bool BasicVariable::IsNumeric() const
           (_type==type_double)|| /// New (added: 24/05/2010)
           (_type==type_long)||   /// New (added: 27/05/2010)
           (_type==type_int)||
+          (_type==type_short)||
+          (_type==type_ushort)||
           (_type==type_uchar)||
           (_type==type_bool);
 }

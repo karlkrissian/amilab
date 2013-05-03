@@ -69,9 +69,11 @@ if (!exists(ImageDrawClass)) {
       ::rg_max_intensity = 0,         "maximal intensity for Region Growing"
       ::rg_thickness     = INT(0),    "Grow in (2n+1) slices"
 
-      ::STD_winsize      = INT(20),   "Window radius to estimate the noise STD (2n+1)^3"
+      ::STD_winsize      = INT(40),   "Window radius to estimate the noise STD (2n+1)^3"
       ::localstats_winsize = INT(1),  "Window radius to estimate the local statistics" +\
                                       " for the 3D region growing"
+                                      
+      ::blood_contrast_change = INT(20), "Allow mean intensity changes +/- this value"
 
       ::show_local_denoising  = UCHAR(1), "Show denoising locally"
 
@@ -927,7 +929,7 @@ if (!exists(ImageDrawClass)) {
     proc ::PrecomputeStats() \
     {
       # ignore weights for the moment
-      ::weights = (UCHAR) ((::input>100)*(::input<700))
+      ::weights = (UCHAR) ((::input>-100)*(::input<700))
       ::min_weight = 0.01
       
       SetStatusText("::PrecomputeStats init")
@@ -968,7 +970,7 @@ if (!exists(ImageDrawClass)) {
         # create condition image
         if exists(::vol_std) {
           vol_std2 = Resize(::vol_std,::lm.tx,::lm.ty,::lm.tz,1)
-          evolveim = abs(::lm-current_localmean) < (3*vol_std2)
+          evolveim = abs(::lm-current_localmean) < (::blood_contrast_change+3*vol_std2)
           evolveim = evolveim*(::sd<sqrt(2)*vol_std2)
           del vol_std2
         } else {
@@ -988,8 +990,8 @@ if (!exists(ImageDrawClass)) {
         ::rg_z     = z
         ::rg_thick = ::rg_thickness
 
-        zmin = z-::rg_thickness
-        zmax = z+::rg_thickness
+        zmin = max(0,z-::rg_thickness)
+        zmax = min(::lm.tz-1,z+::rg_thickness)
         # extract slice from input
         ::rg_input = evolveim[:,:,zmin:zmax]
 
@@ -1177,6 +1179,8 @@ if (!exists(ImageDrawClass)) {
           ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("Noise STD estimation")
+            ::cc_id = ::win.AddInt( ::blood_contrast_change, \
+                                    "Blood contrast changes", 0, 100)
             ::stdws_id = ::win.AddInt( ::STD_winsize,\
                                             "window radius",0,50)
             ::stdws_id = ::win.AddInt( ::localstats_winsize,\

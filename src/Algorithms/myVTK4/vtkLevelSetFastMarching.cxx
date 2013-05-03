@@ -960,25 +960,25 @@ void vtkLevelSetFastMarching::AddTrialPoints( short x, short y, short z, int pos
     npos = pos+txy;
     ndir=2; 
     if ((status[npos]==VTK_VAL_FAR)&&
-    ((this->mask==NULL)||((this->mask!=NULL) && (mask_buf[npos]>0.5)))
-    )
-      {
-    status[npos] = VTK_VAL_TRIAL;
-    trial.Init(x,y,z+1,npos,maxTime);
-    trial.SetClass(origin_class);
-    // initialize the minimums in each direction
-    trial.valmin[0]=macro_min(T_buf[npos-1], T_buf[npos+1]);
-    trial.valmin[1]=macro_min(T_buf[npos-tx],T_buf[npos+tx]);
-    if (dim==VTK_MODE_3D) {
-      trial.valmin[2]=macro_min(T_buf[npos-txy],T_buf[npos+txy]);
-    }
-    // put the value in the current direction to the maximum
-    // in order to process the point
-    valmin = trial.valmin[ndir];
-    trial.valmin[ndir]=maxTime;
-    this->ComputeValue(trial,valmin,ndir); 
-    this->mh += trial;
-      } // end if
+        ((this->mask==NULL)||((this->mask!=NULL) && (mask_buf[npos]>0.5)))
+        )
+    {
+      status[npos] = VTK_VAL_TRIAL;
+      trial.Init(x,y,z+1,npos,maxTime);
+      trial.SetClass(origin_class);
+      // initialize the minimums in each direction
+      trial.valmin[0]=macro_min(T_buf[npos-1], T_buf[npos+1]);
+      trial.valmin[1]=macro_min(T_buf[npos-tx],T_buf[npos+tx]);
+      if (dim==VTK_MODE_3D) {
+        trial.valmin[2]=macro_min(T_buf[npos-txy],T_buf[npos+txy]);
+      }
+      // put the value in the current direction to the maximum
+      // in order to process the point
+      valmin = trial.valmin[ndir];
+      trial.valmin[ndir]=maxTime;
+      this->ComputeValue(trial,valmin,ndir); 
+      this->mh += trial;
+    } // end if
 
   } // mode 3D
 
@@ -1184,22 +1184,22 @@ unsigned char vtkLevelSetFastMarching::ComputeValueSethian( FM_TrialPoint& trial
             (val0*val0+val1*val1-cost*cost)/2.0
             );
       else {
-    d1    = val2-val0;
-    d2    = val2-val1;
-    cost2 = cost*cost;
-    if ( d1*d1+d2*d2 > cost2 ) 
-      res = SolveQuad(
-              (val0+val1)/2.0, 
-              (val0*val0+val1*val1-cost2)/2.0
-              );
-    else 
-      if (val2>=maxTime) 
-        res = maxTime;
-      else
-        res = SolveQuad(
-                (val0+val1+val2)/3.0,
-                (val0*val0+val1*val1+val2*val2-cost2)/3.0
-                );
+        d1    = val2-val0;
+        d2    = val2-val1;
+        cost2 = cost*cost;
+        if ( d1*d1+d2*d2 > cost2 ) 
+          res = SolveQuad(
+                  (val0+val1)/2.0, 
+                  (val0*val0+val1*val1-cost2)/2.0
+                  );
+        else 
+          if (val2>=maxTime) 
+            res = maxTime;
+          else
+            res = SolveQuad(
+                    (val0+val1+val2)/3.0,
+                    (val0*val0+val1*val1+val2*val2-cost2)/3.0
+                    );
       } // end if
   } // end if
 

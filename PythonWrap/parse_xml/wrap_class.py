@@ -324,6 +324,7 @@ def CheckBlackList(mname,demangled):
     return True
   for bname in config.members_blacklist:
     #if demangled.startswith(bname+"(") or demangled==bname:
+    #print "bname = {0}, demangled = {1}".format(bname,demangled)
     if (bname+"(")  in demangled or demangled==bname:
       utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format( demangled))
       return True
@@ -618,9 +619,10 @@ class ParsePublicMembers:
     #print context
     #print classname
     mname=attrs.get('name',None)
-    if CheckBlackList(mname,demangled): 
-      #print "member {0} in blacklist".format(demangled)
-      return
+    if (demangled!=None):
+      if CheckBlackList(mname,demangled): 
+        #print "member {0} in blacklist".format(demangled)
+        return
     #print "continuing with {0}".format(demangled)
     if attributes=="deprecated":
       utils.WarningMessage("Skipping deprecated method {0}".format(mname))
@@ -777,6 +779,7 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
     returntypest=config.types[method.returntype].GetDemangled()
   else:
     returntypest="void"
+  #print "{0}: returntypest = {1}\n".format(wrapmethod_name,returntypest)
   if numparam==-1:
     numparam_text = "all"
   elif numparam==0:
@@ -831,8 +834,10 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
             methodcall = '{0}'.format(method.name)
         methodcall += methodparams;
     
+    returnpointer= (config.types[method.returntype].GetType()=="PointerType")
+    #print "returnpointer = {0}\n".format(returnpointer)
     # not in constructor and returning void
-    if returntypest=="void":
+    if (returntypest=="void")and(not returnpointer):
       res += ident+'  {0};\n'.format(methodcall)
       res += ident+'  return BasicVariable::ptr();\n'
     else:
@@ -861,7 +866,10 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
           res += ident+'  BasicVariable::ptr res_var = AMILabType<{0} >::CreateVar({1});\n'.format(substtype,substvar)
           res += ident+'  return res_var;\n'
         else:
-          res += ident+'  return AMILabType<{0} >::CreateVar({1});\n'.format(substtype,substvar)
+          if returnpointer and (returntypest=="void"):
+            res += ident+'  return AMILabType<{0} >::CreateVar({1},true);\n'.format(substtype,substvar)
+          else:
+            res += ident+'  return AMILabType<{0} >::CreateVar({1});\n'.format(substtype,substvar)
       #--- No type substitution before return
       else:
         typename=config.types[method.returntype].GetDemangled()

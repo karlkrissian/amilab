@@ -24,13 +24,13 @@ type_shortname={
 type_substitute={
   'unsigned int'       : 'long',
 #  'long int'          : 'long',
-  'long unsigned int'  : 'long',
+#  'long unsigned int'  : 'long',
   'long long unsigned int'  : 'long',
   'char'               : 'std::string',
   'wchar_t'            : 'std::string',
   'long long int'      : 'long',
-  'short unsigned int' : 'int',
-  'short int'          : 'int',
+#  'short unsigned int' : 'int',
+#  'short int'          : 'int',
   'signed char'        : 'unsigned char',
   'void'               : 'unsigned char',
 }
@@ -169,6 +169,12 @@ def ConvertPtrFrom_char(typevar,substvar):
   res = "{1} {0} = std::string({2});".format(substvar,substtype,typevar)
   return res
 
+def ConvertPtrFrom_void(typevar,substvar):
+  typename="void"
+  substtype = type_substitute[typename]
+  res = "{1}* {0} = ({1}*) {2};".format(substvar,substtype,typevar)
+  return res
+
 def ConvertValTo_char(substvar,typevar):
   typename="char"
   res =  "{0} {1} = ' ';\n".format(typename,typevar)
@@ -295,6 +301,7 @@ def ConvertPtrFrom(typeid,typevar,substvar):
   substtype = type_substitute[typename]
   shorttypename=GetShortName(typename)
   try:
+    #print "trying ConvertPtrFrom_{0}(typevar,substvar)".format(shorttypename)
     return eval("ConvertPtrFrom_{0}(typevar,substvar)".format(shorttypename))
   except NameError:
     print "Warning: pointer conversion failed for type {0}".format(typename)

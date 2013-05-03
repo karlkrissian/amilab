@@ -260,6 +260,7 @@ del ShortestPathClass
       # Run a Fast Marching start from End (point or mask) 
       # up to distance 1000
       fminit = (FLOAT) maxrepim_crop*0+::maxcost
+      fminit.info
       if (::end_mode==0) {
         ::AS->AddBrightSphere_mm( &maxrepim_crop,\
                             ::endx,::endy,::endz,\

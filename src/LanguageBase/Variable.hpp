@@ -672,7 +672,10 @@ AMI_DECLARE_TYPE_EXPORT(bool);
 AMI_DECLARE_TYPE_EXPORT(float);
 AMI_DECLARE_TYPE_EXPORT(double);
 AMI_DECLARE_TYPE_EXPORT(long);
+AMI_DECLARE_TYPE_EXPORT(unsigned long);
 AMI_DECLARE_TYPE_EXPORT(int);
+AMI_DECLARE_TYPE_EXPORT(short);
+AMI_DECLARE_TYPE_EXPORT(unsigned short);
 AMI_DECLARE_TYPE_EXPORT(unsigned char);
 AMI_DECLARE_TYPE_EXPORT(InrImage);
 AMI_DECLARE_TYPE_EXPORT(std::string);
@@ -1212,7 +1215,10 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<type>::m_##fname();
   #include "Variable_bool.h"   /// New (added: 19/11/2010)
   #include "Variable_double.h" /// New (added: 24/05/2010)
   #include "Variable_long.h"   /// New (added: 27/05/2010)
+  #include "Variable_ulong.h"   /// New (added: 27/05/2010)
   #include "Variable_int.h"
+  #include "Variable_short.h"
+  #include "Variable_ushort.h"
   #include "Variable_uchar.h"
   #include "Variable_InrImage.h"
   #include "Variable_string.h"

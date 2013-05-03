@@ -1850,6 +1850,30 @@ command:
         Vars.AddVar<long>(ident,varlong);
       }
       |
+      identifier ASSIGN_OP T_SHORT T_OP_PAR expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Creates a variable of type long
+      **/
+        IdentifierInfo::ptr ident($1);
+
+        short_ptr var (new short((short)$5));
+        Vars.AddVar<short>(ident,var);
+      }
+      |
+      identifier ASSIGN_OP T_USHORT T_OP_PAR expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Creates a variable of type long
+      **/
+        IdentifierInfo::ptr ident($1);
+
+        ushort_ptr var (new unsigned short((unsigned short)$5));
+        Vars.AddVar<unsigned short>(ident,var);
+      }
+      |
       identifier ASSIGN_OP T_DOUBLE T_OP_PAR expr T_CL_PAR
       {
       /**

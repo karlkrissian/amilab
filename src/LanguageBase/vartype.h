@@ -21,7 +21,10 @@ typedef enum {
   type_bool,             /**< boolean */               /// New (added: 19/11/2010)
   type_double,           /**< double point number */   /// New (added: 24/05/2010)
   type_long,             /**< long int point number */ /// New (added: 27/05/2010)
+  type_ulong,            /**< unsigned long int point number */ 
   type_int,              /**< integer number*/
+  type_short,            /**< short integer number*/
+  type_ushort,           /**< unsigned short integer number*/
   type_uchar,            /**< unsigned char number */
   type_string,           /**< string */
 //  type_imagedraw,        /**< image drawing window */

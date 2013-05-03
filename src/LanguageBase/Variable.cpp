@@ -74,7 +74,10 @@ VARTYPE_PROP( bool,                 type_bool,            true);
 VARTYPE_PROP( float,                type_float,           true);
 VARTYPE_PROP( double,               type_double,          true); /// New (added: 24/05/2010)
 VARTYPE_PROP( long,                 type_long,            true); /// New (added: 27/05/2010)
+VARTYPE_PROP( unsigned long,        type_ulong,           true); /// New (added: 27/05/2010)
 VARTYPE_PROP( int,                  type_int,             true);
+VARTYPE_PROP( short,                type_short,           true);
+VARTYPE_PROP( unsigned short,       type_ushort,          true);
 VARTYPE_PROP( unsigned char,        type_uchar,           true)
 VARTYPE_PROP( std::string,          type_string,          false)
 //VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
@@ -105,9 +108,12 @@ VARTYPE_PROP( VarArray,             type_array,           false)
 
 VARTYPE_STRING_DOUBLE( float,                Value(),                   Value())
 VARTYPE_STRING_DOUBLE( double,               Value(),                   Value())
-VARTYPE_STRING_DOUBLE( long,                 Value(),                   Value()) /// New (added: 27/05/2010)
+VARTYPE_STRING_DOUBLE( long,                 Value(),                   Value()) 
+VARTYPE_STRING_DOUBLE( unsigned long,        Value(),                   Value()) 
 VARTYPE_STRING_DOUBLE( bool,                 (Value()?"true":"false"),  (Value()?1:0)) /// New (added: 19/11/2010)
 VARTYPE_STRING_DOUBLE( int,                  Value(),                   Value())
+VARTYPE_STRING_DOUBLE( short,                Value(),                   Value())
+VARTYPE_STRING_DOUBLE( unsigned short,       (int)Value(),              Value())
 VARTYPE_STRING_DOUBLE( unsigned char,        (int)Value(),              Value())
 //VARTYPE_STRING_DOUBLE( std::string,          Value(),                   0)
 
@@ -204,7 +210,10 @@ AMI_DEFINE_BASICTYPE(bool);
 AMI_DEFINE_BASICTYPE(float);
 AMI_DEFINE_BASICTYPE(double);
 AMI_DEFINE_BASICTYPE(long);
+AMI_DEFINE_BASICTYPE(unsigned long);
 AMI_DEFINE_BASICTYPE(int);
+AMI_DEFINE_BASICTYPE(short);
+AMI_DEFINE_BASICTYPE(unsigned short);
 AMI_DEFINE_BASICTYPE(unsigned char);
 AMI_DEFINE_BASICTYPE(InrImage);
 AMI_DEFINE_BASICTYPE(std::string);

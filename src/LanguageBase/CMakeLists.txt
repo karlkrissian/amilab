@@ -33,8 +33,11 @@ SET(LanguageBase_SRCS
     Variable_float.cpp
     Variable_FloatMatrix.cpp
     Variable_InrImage.cpp
+    Variable_short.cpp
+    Variable_ushort.cpp
     Variable_int.cpp
     Variable_long.cpp
+    Variable_ulong.cpp
     Variable_string.cpp
     Variable_uchar.cpp
     Variable_WrapClassMember.cpp
@@ -70,8 +73,11 @@ SET(LanguageBase_HDRS
   Variable_float.h
   Variable_FloatMatrix.h
   Variable_InrImage.h
+  Variable_short.h
+  Variable_ushort.h
   Variable_int.h
   Variable_long.h
+  Variable_ulong.h
   Variable_string.h
   Variable_uchar.h
   Variable_WrapClassMember.h

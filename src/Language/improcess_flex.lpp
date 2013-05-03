@@ -1083,6 +1083,9 @@ yyip::Parser::token::yytokentype checkvar(
       case type_bool:
       case type_float:
       case type_long:
+      case type_ulong:
+      case type_short:
+      case type_ushort:
       case type_double:
       case type_int:
       case type_uchar:

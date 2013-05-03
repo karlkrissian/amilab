@@ -46,6 +46,14 @@
   
 #include "ContinuousMorphology.h"
 
+#ifdef __GCCXML__
+  template amimage::operator unsigned short*();
+  template amimage::operator short*         ();
+  template amimage::operator float*         ();
+  template amimage::operator double*        ();
+#endif // __GCCXML__
+  
+  
 // why do I need this include ??
 //#include "vcl_config_compiler.h"
 //#define vcl_generic_complex_STD 
