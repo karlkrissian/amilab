@@ -181,6 +181,8 @@ GeneralGaussianFilter ::   GeneralGaussianFilter( InrImage* image, int dim )
     int i;
 
     _silencieux = false;
+    _profile    = false;
+    _numthreads = -1; // auto
 
     _image_tmp  = (InrImage*) NULL;
     _image_tmp1 = (InrImage*) NULL;
@@ -455,7 +457,8 @@ void GeneralGaussianFilter ::  MyFiltre(
                                         InrImage* im, 
                                         InrImage* res,
                                         int der_x, int der_y, int der_z,
-                                        InrImage* ImMasque)
+                                        InrImage* ImMasque
+                                       )
 {
 
   
@@ -470,11 +473,13 @@ void GeneralGaussianFilter ::  MyFiltre(
 
   boost::shared_ptr<ami::ImageToImageFilterParam> params( new
       ami::ImageToImageFilterParam() );
-  InrImage::ptr input_ptr;( imageIn, 
-                            smartpointer_nodeleter<InrImage>());
-  InrImage::ptr output_ptr;( imageOut, 
-                            smartpointer_nodeleter<InrImage>());
-  params->SetNumberOfThreads(wxThread::GetCPUCount());
+  InrImage::ptr input_ptr;  // ( imageIn,  smartpointer_nodeleter<InrImage>());
+  InrImage::ptr output_ptr; // ( imageOut, smartpointer_nodeleter<InrImage>());
+  if (_numthreads==-1)
+    params->SetNumberOfThreads(wxThread::GetCPUCount());
+  else
+    params->SetNumberOfThreads(_numthreads);
+  params->SetProfile(Get_profile());
   
   if (GB_verbose) 
     printf( "MyFiltre(%d %d %d) (%2.2f, %2.2f, %2.2f)\n",
@@ -598,7 +603,10 @@ void GeneralGaussianFilter ::  MyFiltre(
               output_ptr = InrImage::ptr( imageOut, 
                                           smartpointer_nodeleter<InrImage>());
               params->SetInput(input_ptr);
-              params->SetNumberOfThreads(wxThread::GetCPUCount());
+              if (_numthreads==-1)
+                params->SetNumberOfThreads(wxThread::GetCPUCount());
+              else
+                params->SetNumberOfThreads(_numthreads);
               _new_convolution_filter->Set_kernel_support( Support[der_z]);
               _new_convolution_filter->SetParameters(*params);
               _new_convolution_filter->Set_dir(ami::ImageConvolution1D::DIR_Z);

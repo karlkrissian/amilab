@@ -32,6 +32,8 @@ void CircleBoundaries3D::Execute(InrImage* res)
   vep1->InitBuffer();
   mask->InitBuffer();
 
+  // make it parallel?
+
   Pour( z, 0, out->DimZ() - 1)
   Pour( y, 0, out->DimY() - 1)
   Pour( x, 0, out->DimX() - 1)
@@ -59,6 +61,7 @@ void CircleBoundaries3D::Execute(InrImage* res)
   FinPour
   FinPour
   FinPour
+  
 
   //return out;
 }

@@ -20,7 +20,8 @@ std::vector<std::string, std::allocator<std::string> >::iterator
 
 set_string
 set_string_iterator
-set_string_pair_iterator_bool
+# giving an error now
+#set_string_pair_iterator_bool
 
 # ----- iostream -----
 

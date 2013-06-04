@@ -13,7 +13,12 @@
 #include "amiImageToImageFilter.h"
 #include <pthread.h>
 #include <iostream>
+#include "Timing.hpp"
 
+#include "AMILabConfig.h"
+#ifdef AMI_USE_OPENMP
+  #include <omp.h>
+#endif
 
 namespace ami {
 
@@ -74,6 +79,23 @@ void ImageToImageFilter::Init()
 
 
 //------------------------------------------------------------------
+void ImageToImageFilter::Process_thread_omp(void* threadarg)
+{
+  // Get the arguments from threadarg
+  thread_info<ImageToImageFilter>* args = (thread_info<ImageToImageFilter>*) threadarg;
+
+  int   thread_id     = args->thread_id;
+//  int   total_threads = args->total_threads;
+
+  ImageToImageFilter* _this = args->_this;
+
+  //std::cout  << " thread begin" << thread_id << std::endl;
+  _this->Process(thread_id);
+  //std::cout  << " thread end" << thread_id << std::endl;
+
+} // ImageToImageFilter::Process_thread()
+
+//------------------------------------------------------------------
 void* ImageToImageFilter::Process_thread(void* threadarg)
 {
   // Get the arguments from threadarg
@@ -87,7 +109,7 @@ void* ImageToImageFilter::Process_thread(void* threadarg)
   //std::cout  << " thread begin" << thread_id << std::endl;
   _this->Process(thread_id);
 
-//  std::cout  << " thread end" << thread_id << std::endl;
+  //  std::cout  << " thread end" << thread_id << std::endl;
   pthread_exit(NULL);
   return(NULL);
 
@@ -100,50 +122,67 @@ void ImageToImageFilter::Run_multithreads()
   if (params.GetNumberOfThreads()==1) {
     // no thread here ...
     Process();
-  } else {
+  } else 
+  {
     // num_threads
-    thread_info<ImageToImageFilter>* thread_info_array;
     int i;
-    pthread_t* threads;
-    pthread_attr_t attr;
-    int rc,status;
+    thread_info<ImageToImageFilter>* thread_info_array;
     int num_threads = params.GetNumberOfThreads();
-
-    pthread_attr_init(&attr);
-    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-
     thread_info_array = new thread_info<ImageToImageFilter>[num_threads];
+    
+    if (UseOpenMP) {
+#ifdef AMI_USE_OPENMP
+      omp_set_num_threads(num_threads);
+#endif
+      #pragma omp parallel
+      #pragma omp for
+      for (i=0;i<num_threads;i++) {
+        thread_info_array[i].thread_id      = i;
+        thread_info_array[i].total_threads  = num_threads;
+        thread_info_array[i]._this          = this;
 
-    threads     = new pthread_t[num_threads];
-    for (i=0;i<num_threads;i++) {
-      thread_info_array[i].thread_id      = i;
-      thread_info_array[i].total_threads  = num_threads;
-      thread_info_array[i]._this          = this;
-
-      rc = pthread_create(&threads[i], &attr,
-                          Process_thread,
-                          (void *) &thread_info_array[i]);
-      if (rc) {
-        std::cerr  << __func__ 
-              << " \t ERROR; return code from pthread_create()"
-              << "is " <<  rc << std::endl;
-        return;
-      }
-    } // end for
-  
-    // Free attribute and wait for the other threads 
-    pthread_attr_destroy(&attr);
-    for(i=0; i<num_threads; i++)
+        Process_thread_omp( (void *) &thread_info_array[i]);
+      } // end for
+    } else
     {
-        rc = (int) pthread_join((pthread_t)threads[i], (void **)&status);
-        if (rc)
+      pthread_t* threads;
+      pthread_attr_t attr;
+      int rc,status;
+
+      pthread_attr_init(&attr);
+      pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+
+      threads     = new pthread_t[num_threads];
+      for (i=0;i<num_threads;i++) {
+        thread_info_array[i].thread_id      = i;
+        thread_info_array[i].total_threads  = num_threads;
+        thread_info_array[i]._this          = this;
+
+        rc = pthread_create(&threads[i], &attr,
+                            Process_thread,
+                            (void *) &thread_info_array[i]);
+        if (rc) {
           std::cerr  << __func__ 
-                <<  "\t ERROR; return code from pthread_join()"
-                <<  "is " <<  rc << std::endl;
+                << " \t ERROR; return code from pthread_create()"
+                << "is " <<  rc << std::endl;
+          return;
+        }
+      } // end for
+    
+      // Free attribute and wait for the other threads 
+      pthread_attr_destroy(&attr);
+      for(i=0; i<num_threads; i++)
+      {
+          rc = (int) pthread_join((pthread_t)threads[i], (void **)&status);
+          if (rc)
+            std::cerr  << __func__ 
+                  <<  "\t ERROR; return code from pthread_join()"
+                  <<  "is " <<  rc << std::endl;
+      }
+    
+      delete [] thread_info_array;
+      delete [] threads;
     }
-  
-    delete [] thread_info_array;
-    delete [] threads;
   } // else if  numthread==1
 } // ImageToImageFilter::Process_multithreads()
 
@@ -152,13 +191,24 @@ void ImageToImageFilter::Run_multithreads()
 void ImageToImageFilter::Run()
 {
   //std::cout << "ImageToImageFilter::Run() Begin" << std::endl;
-  
   //std::cout << "Init()" << std::endl;
+  Timing t("ImageToImageFilter::Run()");
+  if (params.GetProfile()) {
+    t.Debut();
+  }
+  
   Init();
   //std::cout << "Run_multithreads()" << std::endl;
   Run_multithreads();
   //std::cout << "Close()" << std::endl;
   Close();
+
+  if (params.GetProfile()) {
+    t.Fin();
+    std::cout << t << std::endl;
+  }
+
+  
 } // ImageToImageFilter::Run()
 
 } // end namespace ami

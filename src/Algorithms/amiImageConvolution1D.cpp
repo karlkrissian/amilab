@@ -88,6 +88,7 @@ double ImageConvolution1D::ConvolveDirX(  T* input,
                                           const T& minval, 
                                           const T& maxval)
 {
+  
   register T*       input1;
   register T*       input2;
   register int      i;
@@ -296,6 +297,17 @@ void ImageConvolution1D::TemplateProcess( int threadid)
   T* tmp;
   T minval;
   T maxval;
+
+  if (params.GetProfile()) {
+    std::cout << "ImageConvolution1D::TemplateProcess()" << std::endl;
+    std::cout << "tx=" << tx <<", ty=" << ty << ",tz=" << tz << std::endl;
+    std::cout << "extent = " 
+                << extent.GetMin(0) << "-" << extent.GetMax(0) << "; "
+                << extent.GetMin(1) << "-" << extent.GetMax(1) << "; "
+                << extent.GetMin(2) << "-" << extent.GetMax(2) << std::endl;
+    std::cout << "dir :" <<  _dir << std::endl;
+    std::cout << "kernel radius :" <<  _kernel_radius << std::endl;
+  }
 
   for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
   for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)

@@ -55,7 +55,7 @@ namespace ami {
     */
     enum ConvOrientation
     {
-      DIR_X,
+      DIR_X= 0,
       DIR_Y,
       DIR_Z
     };

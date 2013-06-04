@@ -405,33 +405,29 @@ BasicVariable::ptr Variable<int>::TryCast(
     return NewCopy();
   try
   {
-    // cast to double
-    if (type_string==AMILabType<double>::name_as_string()) {
-      RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
-    } else 
-    // cast to float
-    if (type_string==AMILabType<float>::name_as_string()) {
-      RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
-    } else
-    // cast to long
-    if (type_string==AMILabType<long>::name_as_string()) {
-      RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
-    } else 
-    // cast to unsigned char
-    if (type_string==AMILabType<unsigned char>::name_as_string()) {
-      RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
-    } else
-    // cast to bool
-    if (type_string==AMILabType<bool>::name_as_string()) {
-      RETURN_VARPTR(bool, boost::numeric_cast<bool>(Value()));
-    } else
+    #define TRYCAST(type)\
+      if (type_string==AMILabType<type>::name_as_string()) {\
+        RETURN_VARPTR(type, boost::numeric_cast<type>(Value()));\
+      } else 
+    TRYCAST(double)
+    TRYCAST(float)
+    TRYCAST(long)
+    TRYCAST(unsigned long)
+    //TRYCAST(int)
+    TRYCAST(short)
+    TRYCAST(unsigned short)
+    TRYCAST(unsigned char)
+    TRYCAST(bool)
     {
       // make default conversion to double??
-      CLASS_ERROR((boost::format("No conversion available for variable %1% from int to %2%") % _name % type_string).str().c_str());
+      CLASS_ERROR(
+        (boost::format("No conversion available for variable %1% from int to %2%") 
+          % _name % type_string).str().c_str());
     }
   } catch (std::bad_cast &e)
   {
-    CLASS_ERROR((boost::format("%1%, for variable %2% from int to %3%") % e.what() % _name % type_string).str().c_str());
+    CLASS_ERROR((boost::format("%1%, for variable %2% from int to %3%") 
+                  % e.what() % _name % type_string).str().c_str());
     return BasicVariable::ptr();
   }
   return BasicVariable::ptr();

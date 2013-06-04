@@ -36,6 +36,8 @@ class ImageToImageFilterParam {
   int NumberOfThreads;
   InrImage::ptr input;
   ImageExtent<int> output_extent;
+  
+  bool Profile;
 
 public:
 
@@ -47,6 +49,16 @@ public:
   int  GetNumberOfThreads() 
   { 
     return NumberOfThreads;
+  }
+
+  void SetProfile(bool p)
+  {
+    Profile = p;
+  }
+
+  bool  GetProfile() 
+  { 
+    return Profile;
   }
 
   void SetInput( InrImage::ptr& in)
@@ -70,7 +82,7 @@ public:
     return output_extent;
   }
 
-  ImageToImageFilterParam() : NumberOfThreads(1) {}
+  ImageToImageFilterParam() : NumberOfThreads(1), Profile(false) {}
 
 }; // ImageToImageFilterParam;
 
@@ -88,17 +100,29 @@ protected:
   ImageToImageFilterParam params;
   typedef ImageExtent<int> extenttype;
   std::vector<extenttype> extents;
+  
+  bool UseOpenMP;
 
 public:
 
-  ImageToImageFilter()  {}
+  ImageToImageFilter() : UseOpenMP(false)  {}
   ~ImageToImageFilter() {}
 
   void SetParameters( const ImageToImageFilterParam& p)
   {
     params = p;
   }
+  
+  void SetUseOpenMP(bool uomp)
+  {
+    UseOpenMP = uomp;
+  }
 
+  bool GetUseOpenMP()
+  {
+    return UseOpenMP;
+  }
+  
   ImageToImageFilterParam& GetParameters( )
   {
     return params;
@@ -108,7 +132,9 @@ public:
 
   virtual void Process( int threadid = 0) = 0;
 
+  static void  Process_thread_omp(void* threadarg);
   static void* Process_thread(void* threadarg);
+
   void Run_multithreads();
 
   virtual void Run();

@@ -5134,7 +5134,12 @@ expr    : expr_var
               $$=var->GetValueAsDouble();
             else {
               $$=var->GetValueAsDouble();
-              driver.err_print("Numerical expression from non-numerical variable expression (check for recent changes like i[j] where i and j are images should now be rewritten as i[j.GetExtent] )...");
+              std::string mess;
+              mess = boost::format("Numerical expression from non-numerical variable expression").str();
+              mess = mess + (boost::format("(check for recent changes like i[j] where i and j are images should now be rewritten as i[j.GetExtent] )")).str();
+              mess = mess + (boost::format(" variable name : %1%") % var->Name()).str();
+              mess = mess + (boost::format(" variable typename : %1%") % var->GetTypeName()).str();
+              driver.err_print( mess.c_str());
               YYABORT;
             }
           else {
@@ -8164,6 +8169,20 @@ postfix_var:
                 extent->SetYmax( im->SpacePosY(im->DimY()-1));
                 extent->SetZmin( im->SpacePosZ(0));
                 extent->SetZmax( im->SpacePosZ(im->DimZ()-1));
+                //extent->print();
+                BasicVariable::ptr res(AMILabType<ami::ImageExtent<float> >::
+                                        CreateVar(extent));
+                driver.var_stack.AddVar(res);
+              } else
+              if (id=="GetRelativeExtent") {
+                ami::ImageExtent<float>* extent=new ami::ImageExtent<float>();
+                extent->SetMode(ami::ImageExtent<float>::Relative); 
+                extent->SetXmin( 0);
+                extent->SetXmax( im->DimX()-1);
+                extent->SetYmin( 0);
+                extent->SetYmax( im->DimY()-1);
+                extent->SetZmin( 0);
+                extent->SetZmax( im->DimZ()-1);
                 //extent->print();
                 BasicVariable::ptr res(AMILabType<ami::ImageExtent<float> >::
                                         CreateVar(extent));

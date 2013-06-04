@@ -37,6 +37,7 @@ if (!exists(HoughTransformsClass)) {
     }
     Comments( ::load_input, "Copies the input image in a local image member named 'input'")
 
+    #-----------------------------------------------
     proc ::RunHoughCircles() {
         # Translating C++ code to amilab
 

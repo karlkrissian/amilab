@@ -3,6 +3,7 @@
 #-------------------------------------------------------------------------------
 proc RunAdd2Menus( STRING base_dir) \
 {
+  #printn "RunAdd2Menus"
   currentDir = wx.wxDir(base_dir)
   nextDir = wx.wxString()
   # go through all the directories
@@ -23,8 +24,11 @@ proc RunAdd2Menus( STRING base_dir) \
   }
   list.Sort()
   for n=0 to list.GetCount()-1 {
-    func wx.FromWxString(list[n])
+    strval = wx.FromWxString(list[n])
+    #printn "running '%1%'" % strval
+    func strval
   }
+  #printn "RunAdd2Menus end"
 }
 
 #

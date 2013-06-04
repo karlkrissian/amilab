@@ -17,6 +17,9 @@ if (!exists(FastMarchingDistClass)) {
 
         ::maxtime = 1000, "Maximal evolution time"
         ::init_iso = 0, "Initialization isocontour(/isosurface) value"
+        ::x = INT(50), "seed point x coordinate"
+        ::y = INT(50), "seed point y coordinate"
+        ::z = INT(50), "seed point z coordinate"
         
         #-----------------------------------------------------------------------
         proc ::__assign__( VAR p) {
@@ -57,14 +60,16 @@ if (!exists(FastMarchingDistClass)) {
     #---------------------------------------------------------------------------
     proc ::RunFM() \
     { 
+        speed = 1
         # Create initialization image
-        initim = (FLOAT) speed*0+maxtime
-        initim.setpos(x,y,z)
+        initim = (FLOAT) ::input*0+::params.maxtime
+        initim.setpos(::params.x,::params.y,::params.z)
         initim.set(-4)
 
+        RestartTime; InitTime
         # convert images to VTK images
-        vtk_input  = vtktools.ToVtkImageData(&speed)
-        vtk_init   = vtktools.ToVtkImageData(&initim)
+        vtk_input  = vtktools.ToVtkImageData(::input)
+        vtk_init   = vtktools.ToVtkImageData(initim)
 
         vtk_FM = algorithms.vtkLevelSetFastMarching.New()
 
@@ -75,21 +80,24 @@ if (!exists(FastMarchingDistClass)) {
         # otherwise, it call InitWithImage which is much faster, and
         # all values lower than initmaxdist will be accepted to start with.
 
-        vtk_FM.Setinitiso(   0);
+        vtk_FM.Setinitiso(::params.init_iso);
         vtk_FM.Setinitmaxdist(1+1E-3);
-        vtk_FM.SetmaxTime( maxtime);
+        vtk_FM.SetmaxTime( ::params.maxtime);
         vtk_FM.Update();
 
         return = vtktools.FromVtkImageData(&vtk_FM.GetOutput())
         vtk_FM.Delete()
+        EndTime
+        SetStatusText( "processing time: "+TimeSpent)
     }
   
     #---------------------------------------------------------------------------
     proc ::Run() \
     {
       if (!exists(::input)) {
-        Infodialog "First load the input image !"
+        InfoDialog "First load the input image !"
       } else {
+        ::res = ::RunFM()
       }
     }
 
@@ -119,6 +127,11 @@ if (!exists(FastMarchingDistClass)) {
           ::win.BeginBoxPanel("Initialization")
             ::win.AddFloat(&::params.init_iso,"Isocontour",-100,100)
           ::win.EndBoxPanel()
+          
+          ::win.AddInt(::params.x,"x",0,511)
+          ::win.AddInt(::params.y,"y",0,511)
+          ::win.AddInt(::params.z,"z",0,511)
+
           ::win.BeginBoxPanel("Speed")
           ::win.EndBoxPanel()
           ::win.AddFloat(&::params.maxtime,"Maximum Time",0.1,2000)

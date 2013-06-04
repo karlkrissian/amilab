@@ -1597,20 +1597,23 @@ def WrapClass(classname,include_file,inputfile):
       add_public_fields += indent+'Variables::ptr context(tmpobj->GetContext());\n'
 
     for f in fm.Fields:
-      typename=config.types[f.typeid].GetString()
+      typename  = config.types[f.typeid].GetString()
+      demangled = config.types[f.typeid].GetDemangled()
       shared_type = config.IsSharedPtr(typename)
       if shared_type!=None:
         typename=shared_type
       fulltypename=config.types[f.typeid].GetFullString()
       ispointer= config.types[f.typeid].GetType()=="PointerType"
       isconstpointer = fulltypename.endswith("const *")
-      available_type =  (typename in config.available_classes) or \
-                        (typename in config.available_types)
+      available_type =  (typename  in config.available_classes) or \
+                        (typename  in config.available_types)   or \
+                        (demangled in config.available_classes) or \
+                        (demangled in config.available_types)
       add_public_fields += indent+"\n"
       # Wwe can't take address of a bit field
       if not available_type or f.bits!=None or config.types[f.typeid].GetType()=="ArrayType":
         if not available_type:
-          add_public_fields += indent+"/* Type not available\n"
+          add_public_fields += indent+"/* Type not available '{0}'\n".format(typename)
         else:
           if config.types[f.typeid].GetType()=="ArrayType":
             add_public_fields += indent+"/* ArrayType not implemented\n"

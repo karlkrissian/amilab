@@ -1326,6 +1326,7 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_DOUBLE = (FORMAT_DOUBLE*) this->GetData();
       *min = *max = (float) (*buf_DOUBLE);
+      //#pragma omp parallel for
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_DOUBLE < *min AlorsFait *min =(float)  *buf_DOUBLE;
         Si *buf_DOUBLE > *max AlorsFait *max =(float)  *buf_DOUBLE;
@@ -1338,6 +1339,7 @@ inline void InrImage :: MinMax( float* min, float* max)
       register  FORMAT_FLOAT*          buf_FLOAT;
       buf_FLOAT = (FORMAT_FLOAT*) this->GetData();
       *min = *max = *buf_FLOAT;
+      //#pragma omp parallel for
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_FLOAT < *min AlorsFait *min = *buf_FLOAT;
         Si *buf_FLOAT > *max AlorsFait *max = *buf_FLOAT;
@@ -1351,6 +1353,7 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_UNSIGNED_CHAR = (FORMAT_UNSIGNED_CHAR*) this->GetData();
       *min = *max = (float) *buf_UNSIGNED_CHAR;
+      //#pragma omp parallel for
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_UNSIGNED_CHAR < *min AlorsFait *min = (float) *buf_UNSIGNED_CHAR;
         Si *buf_UNSIGNED_CHAR > *max AlorsFait *max = (float) *buf_UNSIGNED_CHAR;
@@ -1364,6 +1367,7 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_UNSIGNED_SHORT = (FORMAT_UNSIGNED_SHORT*) this->GetData();
       *min = *max = (float) *buf_UNSIGNED_SHORT;
+      //#pragma omp parallel for
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_UNSIGNED_SHORT < *min AlorsFait *min = (float) *buf_UNSIGNED_SHORT;
         Si *buf_UNSIGNED_SHORT > *max AlorsFait *max = (float) *buf_UNSIGNED_SHORT;
@@ -1377,6 +1381,7 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_SIGNED_SHORT = (FORMAT_SIGNED_SHORT*) this->GetData();
       *min = *max = (float) *buf_SIGNED_SHORT;
+      //#pragma omp parallel for
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_SIGNED_SHORT < *min AlorsFait *min = (float) *buf_SIGNED_SHORT;
         Si *buf_SIGNED_SHORT > *max AlorsFait *max = (float) *buf_SIGNED_SHORT;
@@ -1390,6 +1395,7 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_UNSIGNED_INT = (FORMAT_UNSIGNED_INT*) this->GetData();
       *min = *max = (float) *buf_UNSIGNED_INT;
+      //#pragma omp parallel for
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_UNSIGNED_INT < *min AlorsFait *min = (float) *buf_UNSIGNED_INT;
         Si *buf_UNSIGNED_INT > *max AlorsFait *max = (float) *buf_UNSIGNED_INT;
@@ -1403,6 +1409,7 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_SIGNED_INT = (FORMAT_SIGNED_INT*) this->GetData();
       *min = *max = (float) (*buf_SIGNED_INT);
+      //#pragma omp parallel for
       for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_SIGNED_INT < *min AlorsFait *min = (float) (*buf_SIGNED_INT);
         Si *buf_SIGNED_INT > *max AlorsFait *max = (float) (*buf_SIGNED_INT);

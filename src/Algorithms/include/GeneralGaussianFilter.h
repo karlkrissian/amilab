@@ -260,7 +260,10 @@ protected:
   ami::ImageConvolution1D::ptr _new_convolution_filter;
   
   bool _use_new_filter;
-
+  
+  bool _profile;
+  int  _numthreads;
+  
 public:
 
 
@@ -317,6 +320,27 @@ public:
     return _use_new_filter;
   }
 
+  void Set_profile(bool p) 
+  {
+    _profile = p;
+  }
+  
+  bool Get_profile()
+  {
+    return _profile;
+  }
+
+  void Set_numthreads(int n) 
+  {
+    _numthreads = n;
+  }
+  
+  bool Get_numthreads()
+  {
+    return _numthreads;
+  }
+
+  
   ///
   void DontUseVoxelSize()
   {
@@ -413,10 +437,11 @@ public:
 
 
   ///
-  void MyFiltre( InrImage* im, InrImage* res, 
+  void MyFiltre(  InrImage* im, InrImage* res, 
   //   --------
-               int der_x, int der_y, int der_z,
-         InrImage* ImMasque=(InrImage*)NULL);
+                  int der_x, int der_y, int der_z,
+                  InrImage* ImMasque=(InrImage*)NULL
+               );
 
   ///
   void MyFiltre1D( InrImage* entree, InrImage* sortie, InrImage* masque,

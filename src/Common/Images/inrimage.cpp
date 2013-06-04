@@ -2849,6 +2849,7 @@ InrImage& operator +=(  InrImage& i1,  InrImage& i2)
     i2_it->InitBuffer();
     long size = i1.Size();
     long i;
+    //#pragma omp parallel for
     for(i=0;i<size;i++) {
       i1_it->SetDoubleValue(  i1_it->GetDoubleValue() +
                               i2_it->GetDoubleValue()); 
@@ -2922,6 +2923,7 @@ InrImage* operator *(  const InrImage& i1,  const InrImage& i2)
     res_it->InitBuffer();
     i1_it->InitBuffer();
     i2_it->InitBuffer();
+    //#pragma omp parallel for
     for(i=0;i<=i1.Size()-1;i++) {
       res_it->SetDoubleValue(i1_it->GetValueIncDoubleValue(i) * i2_it->GetValueIncDoubleValue(i)); 
       res_it->IncScalarBufferFast();
