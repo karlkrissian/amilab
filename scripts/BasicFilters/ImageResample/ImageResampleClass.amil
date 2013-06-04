@@ -81,6 +81,23 @@ if (!exists(ImageResampleClass)) {
     }
 
     #-----------------------------------------------
+    proc ::ChangedMag() \
+    {
+      ::new_dimx = (FLOAT)::input.tx*::magnification_x
+      ::new_dimy = (FLOAT)::input.ty*::magnification_y
+      ::new_dimz = (FLOAT)::input.tz*::magnification_z
+      ::new_voxsize_x   = (FLOAT)::input.vx/::magnification_x
+      ::new_voxsize_y   = (FLOAT)::input.vy/::magnification_y
+      ::new_voxsize_z   = (FLOAT)::input.vz/::magnification_z
+      ::win.Update(::magnification_x_id)
+      ::win.Update(::magnification_y_id)
+      ::win.Update(::magnification_z_id)
+      ::win.Update(::new_voxsize_x_id)
+      ::win.Update(::new_voxsize_y_id)
+      ::win.Update(::new_voxsize_z_id)
+    }
+
+    #-----------------------------------------------
     proc ::ChangedVoxelSize() \
     {
       ::new_dimx = ((FLOAT)::input.tx*::input.vx)/::new_voxsize_x
@@ -199,8 +216,11 @@ if (!exists(ImageResampleClass)) {
             ::win.EndBoxPanel()
             ::win.BeginBoxPanel("New Magnification")
               ::magnification_x_id = ::win.AddFloat(&::magnification_x,"X",0.01,10)
+              ::win.SetCallback( &::ChangedMag)
               ::magnification_y_id = ::win.AddFloat(&::magnification_y,"Y",0.01,10)
+              ::win.SetCallback( &::ChangedMag)
               ::magnification_z_id = ::win.AddFloat(&::magnification_z,"Z",0.01,10)
+              ::win.SetCallback( &::ChangedMag)
             ::win.EndBoxPanel()
             ::win.BeginBoxPanel("New Voxel Size")
               ::new_voxsize_x_id = ::win.AddFloat(&::new_voxsize_x,"X",0.01,10)

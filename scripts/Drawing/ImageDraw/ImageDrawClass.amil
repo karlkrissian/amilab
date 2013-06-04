@@ -990,8 +990,11 @@ if (!exists(ImageDrawClass)) {
         ::rg_z     = z
         ::rg_thick = ::rg_thickness
 
-        zmin = max(0,z-::rg_thickness)
-        zmax = min(::lm.tz-1,z+::rg_thickness)
+
+        zmin = max(z-::rg_thickness,0)
+        zmax = min(z+::rg_thickness,evolveim.tz-1)
+        #zmax = min(::lm.tz-1,z+::rg_thickness)
+
         # extract slice from input
         ::rg_input = evolveim[:,:,zmin:zmax]
 

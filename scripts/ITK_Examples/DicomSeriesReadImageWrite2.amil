@@ -68,6 +68,7 @@ Class DicomSeriesReadImage \
     ::CreateITK("nameGenerator", "GDCMSeriesFileNames")
     ::nameGenerator.SetUseSeriesDetails( true )
     ::nameGenerator.AddSeriesRestriction("0008|0021")
+    #::nameGenerator.AddSeriesRestriction("0020|0012") # acquisition number
     ::nameGenerator.SetDirectory( ::Dirname )
 
     # should use exceptions here ... or catch itk::Except::reader.GetImageIO()ions in amilab
