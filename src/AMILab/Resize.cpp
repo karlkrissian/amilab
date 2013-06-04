@@ -81,7 +81,7 @@ InrImage* Func_MeanHalfSize( InrImage* in, int dimension)
 
   std::cout << dimx << ":" << dimy << ":" << dimz << ":\n";
   sprintf(newname,"%s-div2.ami.gz",in->GetName());
-  out = new InrImage( dimx, dimy, dimz, WT_FLOAT, newname);
+  out = new InrImage( dimx, dimy, dimz, in->GetVDim(), WT_FLOAT, newname);
   out->InitImage( 0.0);
 
 
@@ -92,22 +92,43 @@ InrImage* Func_MeanHalfSize( InrImage* in, int dimension)
     x = 2*x1;  
     y = 2*y1;
 
-    Si dimension == 3 Alors
-      z = 2*z1;
-      val = (*in)( x,y,  z)   +  (*in)(x+1,y  ,z  ) +
-            (*in)( x,y+1,z)   +  (*in)(x+1,y+1,z  ) +
-            (*in)( x,y,  z+1) +  (*in)(x+1,y  ,z+1) +
-            (*in)( x,y+1,z+1) +  (*in)(x+1,y+1,z+1);
-      val /= 8.0;
-    Sinon
-      z = z1;
-      val = (*in)( x,y,  z)   +  (*in)(x+1,y  ,z  ) +
-            (*in)( x,y+1,z)   +  (*in)(x+1,y+1,z  );
-      val /= 4.0;
-    FinSi
+    // linear interpolation
+    if (in->ScalarFormat()) {
+      Si dimension == 3 Alors
+        z = 2*z1;
+        val = (*in)( x,y,  z)   +  (*in)(x+1,y  ,z  ) +
+              (*in)( x,y+1,z)   +  (*in)(x+1,y+1,z  ) +
+              (*in)( x,y,  z+1) +  (*in)(x+1,y  ,z+1) +
+              (*in)( x,y+1,z+1) +  (*in)(x+1,y+1,z+1);
+        val /= 8.0;
+      Sinon
+        z = z1;
+        val = (*in)( x,y,  z)   +  (*in)(x+1,y  ,z  ) +
+              (*in)( x,y+1,z)   +  (*in)(x+1,y+1,z  );
+        val /= 4.0;
+      FinSi
 
-    out->BufferPos(x1,y1,z1);
-    out->FixeValeur( val);
+      out->BufferPos(x1,y1,z1);
+      out->FixeValeur( val);
+    } else {
+      for (int i = 0;i < in->GetVDim();i++) {
+        Si dimension == 3 Alors
+          z = 2*z1;
+          val = (*in)( x,y,  z  ,i) +  (*in)(x+1,y  ,z  ,i) +
+                (*in)( x,y+1,z  ,i) +  (*in)(x+1,y+1,z  ,i) +
+                (*in)( x,y,  z+1,i) +  (*in)(x+1,y  ,z+1,i) +
+                (*in)( x,y+1,z+1,i) +  (*in)(x+1,y+1,z+1,i);
+          val /= 8.0;
+        Sinon
+          z = z1;
+          val = (*in)( x,y,  z,i)   +  (*in)(x+1,y  ,z,i) +
+                (*in)( x,y+1,z,i)   +  (*in)(x+1,y+1,z,i);
+          val /= 4.0;
+        FinSi
+        out->BufferPos(x1,y1,z1);
+        out->VectFixeValeur(i, val);
+      }
+    }
 
   FinPour
   FinPour
