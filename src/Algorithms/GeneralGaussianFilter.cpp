@@ -531,6 +531,7 @@ void GeneralGaussianFilter ::  MyFiltre(
 
           //std::cout << "dir_x" << std::endl;
           if ((_use_new_filter)&&(image_masque==NULL)) {
+//             std::cout << "dir_x" << std::endl;
             input_ptr = InrImage::ptr( imageIn,
                                       smartpointer_nodeleter<InrImage>());
             output_ptr = InrImage::ptr( imageOut, 
@@ -560,8 +561,7 @@ void GeneralGaussianFilter ::  MyFiltre(
         Si (der_y >= 0)Et(der_y<=2) Alors
 
           Si _dim >= MODE_2D Alors
-
-//std::cout << "dir_y" << std::endl;
+//             std::cout << "dir_y" << std::endl;
             if ((_use_new_filter)&&(image_masque==NULL)) {
               input_ptr = InrImage::ptr( imageIn,
                                         smartpointer_nodeleter<InrImage>());
@@ -595,8 +595,7 @@ void GeneralGaussianFilter ::  MyFiltre(
         Si (der_z >= 0)Et(der_z<=2) Alors
 
           Si _dim == MODE_3D Alors
-
-//std::cout << "dir_z" << std::endl;
+//             std::cout << "dir_z" << std::endl;
             if ((_use_new_filter)&&(image_masque==NULL)) {
               input_ptr = InrImage::ptr( imageIn,
                                         smartpointer_nodeleter<InrImage>());
