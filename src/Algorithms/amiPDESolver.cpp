@@ -13,6 +13,7 @@
 #include "amiImageToImageFilter.h"
 #include <pthread.h>
 #include <iostream>
+#include "Timing.hpp"
 
 
 namespace ami {
@@ -150,9 +151,14 @@ void ImageToImageFilter::Run_multithreads()
 //------------------------------------------------------------------
 void ImageToImageFilter::Run()
 {
+  Timing t("ImageToImageFilter::Run()");
+  t.Debut();
   Init();
   Run_multithreads();
   Close();
+  t.Fin();
+  std::cout << t << std::endl();
+  
 } // ImageToImageFilter::Run()
 
 } // end namespace ami
