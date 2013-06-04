@@ -18,6 +18,7 @@
 #include "amiImageExtent.h"
 #include "amilab_messages.h"
 #include <iostream>
+#include "Timing.hpp"
 
 #ifndef M_PI
 # define M_PI           3.14159265358979323846  /* pi */
@@ -309,38 +310,106 @@ void ImageConvolution1D::TemplateProcess( int threadid)
     std::cout << "kernel radius :" <<  _kernel_radius << std::endl;
   }
 
-  for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
-  for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
-  {
-    T* in_data1  = in_data + z*incz + y*incy +
-                        extent.GetMin(0)*incx;
-    T* out_data1 = out_data + z*incz + y*incy +
-                        extent.GetMin(0)*incx;
-    for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+  if (_dir==DIR_X) {
+    for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
     {
-      if (_dir==DIR_X) {
+      T* in_data1  = in_data + z*incz + y*incy +
+                          extent.GetMin(0)*incx;
+      T* out_data1 = out_data + z*incz + y*incy +
+                          extent.GetMin(0)*incx;
+      for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+      {
         tmp = in_data+z*incz+y*incy;
         minval = *(tmp);
         maxval = *(tmp+(tx-1)*incx);
         *out_data1 = ConvolveDirX<T>(in_data1,x,tx,minval,maxval);
-      } else
-      if (_dir==DIR_Y) {
+        in_data1++;
+        out_data1++;
+      }
+    }
+  }
+  if (_dir==DIR_Y) {
+    for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
+    {
+      T* in_data1  = in_data + z*incz + y*incy +
+                          extent.GetMin(0)*incx;
+      T* out_data1 = out_data + z*incz + y*incy +
+                          extent.GetMin(0)*incx;
+      for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+      {
         tmp = in_data+z*incz+x*incx;
         minval = *(tmp);
         maxval = *(tmp+(ty-1)*incy);
         *out_data1 = ConvolveDirY<T>(in_data1,y,ty,incy,minval,maxval);
-      } else
-      if (_dir==DIR_Z) {
+        in_data1++;
+        out_data1++;
+      }
+    }
+  }
+  if (_dir==DIR_Z) {
+#define ZVER1
+#ifdef ZVER1
+    for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
+    {
+      T* in_data1  = in_data + z*incz + y*incy +
+                          extent.GetMin(0)*incx;
+      T* out_data1 = out_data + z*incz + y*incy +
+                          extent.GetMin(0)*incx;
+      for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+      {
         tmp = in_data+y*incy+x*incx;
         minval = *(tmp);
         maxval = *(tmp+(tz-1)*incz);
         *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
-      } 
-
-      in_data1++;
-      out_data1++;
+        in_data1++;
+        out_data1++;
+      }
     }
+#endif
+#ifdef ZVER2
+    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
+    for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+    {
+      T* in_data1  = in_data  + extent.GetMin(0)*incz + y*incy + x*incx;
+      T* out_data1 = out_data + extent.GetMin(0)*incz + y*incy + x*incx;
+      for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+      {
+        tmp = in_data+y*incy+x*incx;
+        minval = *(tmp);
+        maxval = *(tmp+(tz-1)*incz);
+        *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+        in_data1  += incz;
+        out_data1 += incz;
+      }
+    }
+#endif
+#ifdef ZVER3
+    T in1 [tz];
+    T out1[tz];
+    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
+    for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+    {
+      int pos = extent.GetMin(0)*incz + y*incy + x*incx;
+      T* in_data1  = in_data  + pos;
+      T* out_data1 = out_data + pos;
+      // 1. copy in1
+      tmp = in_data+y*incy+x*incx;
+      for(z=0;z<tz;z++) { in1[z] = *tmp; tmp+=incz; }
+      minval = in1[0];
+      maxval = in1[tz-1];
+      for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+        out1[z] = ConvolveDirX<T>(in1,z,tz,minval,maxval);
+      for(z=extent.GetMin(2);z<=extent.GetMax(2); z++) {
+        *out_data = out1[z];
+        out_data1 += incz;
+      }
+    }
+#endif
   }
+  
 
 }
 
@@ -370,6 +439,10 @@ void ImageConvolution1D::Process( int threadid)
 void ImageConvolution1D::Run()
 {
   //std::cout << "ImageConvolution1D::Run() Begin" << std::endl;
+  
+  Timing t((boost::format("ImageConvolution1D::Run() %1%") % _dir).str());
+  
+  t.Debut();
   InrImage::ptr in = params.GetInput();
   bool output_ok = false;
   if (output.get()) {
@@ -388,6 +461,8 @@ void ImageConvolution1D::Run()
   
   InitGaussianKernel();
   ImageToImageFilter::Run();
+  t.Fin();
+  std::cout << t << std::endl;
   //std::cout << "ImageConvolution1D::Run() End" << std::endl;
 }
 
