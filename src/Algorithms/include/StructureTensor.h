@@ -17,6 +17,7 @@
 #include "AlgorithmsConfigure.h"
 #include "style.hpp"
 #include "inrimage.hpp"
+#include <vector>
 
 
 Algorithms_EXPORT unsigned char Func_StructureTensor2D( InrImage* image_initiale, 
@@ -41,12 +42,13 @@ Algorithms_EXPORT unsigned char Func_StructureTensorHessian( InrImage* image_ini
                      bool save_grad = false);
 
 //--------------------------------------------------------------------------
-Algorithms_EXPORT InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale, 
+Algorithms_EXPORT InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale, 
 //        ------------------------------
                      float sigma,
                      float beta,
-                     InrImage::ptr mask,
-                     InrImage::ptr imgrad
+                     InrImage::ptr mask = InrImage::ptr(),
+                     InrImage::ptr imgrad = InrImage::ptr(),
+                     std::vector<float> PSF = std::vector<float>(3,0)
                      );
 
 #endif // _StructureTensor_h_

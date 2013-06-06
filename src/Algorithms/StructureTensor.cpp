@@ -817,12 +817,13 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
 // of the same dimensions as image_initiale
 //---------------------------------------------------------
 
-InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale, 
+InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale, 
 //        ------------------------------
                         float sigma,
                         float beta,
                         InrImage::ptr mask,
-                        InrImage::ptr imgrad  
+                        InrImage::ptr imgrad,
+                        std::vector<float> PSF
                         )
 {
   // TODO: 2D version
@@ -834,7 +835,7 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
     double              gradarray[3];
     InrImage::ptr       image;
 
-    InrImage*           result;
+    InrImage::ptr       result;
 
     GeneralGaussianFilter::ptr filtre;
     double              hessien[9];
@@ -859,6 +860,7 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
   filtre->Utilise_Image(   false);
   filtre->UtiliseHessien(  true);
   filtre->UtiliseGradient( true);
+  filtre->SetPointSpreadFunctionStandDev(PSF[0],PSF[1],PSF[2]);
   filtre->InitDerivees();
   filtre->GammaNormalise( true);
   filtre->SetSupportSize(5);
@@ -868,7 +870,10 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
   if (mask.use_count())
     filtre->FixeMasque(mask.get());
 
-  result =  new InrImage( WT_FLOAT, 6, "StructTensorH.ami.gz", image.get());
+  result =  InrImage::ptr(new InrImage( WT_FLOAT, 
+                                        6, 
+                                        "StructTensorH.ami.gz", 
+                                        image.get()));
 
   // Calcul des coefficients du tenseur non liss�
   double initval[6] = { 0,0,0,0,0,0};

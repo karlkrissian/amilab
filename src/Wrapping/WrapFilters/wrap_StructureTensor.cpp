@@ -15,7 +15,7 @@
 
 #include "wrapfunctions.hpp"
 
-InrImage* wrap_StructureTensorHessianNew(ParamList* p)
+BasicVariable::ptr wrap_StructureTensorHessianNew(ParamList* p)
 {
     char functionname[] = "wrap_StructureTensorHessianNew";
     char description[]=" \n\
@@ -39,16 +39,16 @@ InrImage* wrap_StructureTensorHessianNew(ParamList* p)
     InrImage::ptr imgrad; // get the smoothed gradient
     int n=0;
 
-   if (!get_val_smtptr_param<InrImage>( input,  p, n)) HelpAndReturnNULL;
-   if (!get_val_param<float>(           sigma,  p, n)) HelpAndReturnNULL;
-   if (!get_val_param<float>(           beta,   p, n)) HelpAndReturnNULL;
+   if (!get_val_smtptr_param<InrImage>( input,  p, n)) HelpAndReturnVarPtr;
+   if (!get_val_param<float>(           sigma,  p, n)) HelpAndReturnVarPtr;
+   if (!get_val_param<float>(           beta,   p, n)) HelpAndReturnVarPtr;
    // mask is not required
-   if (!get_val_smtptr_param<InrImage>( mask,   p, n, false)) HelpAndReturnNULL;
+   if (!get_val_smtptr_param<InrImage>( mask,   p, n, false)) HelpAndReturnVarPtr;
    // gradient image is not required
-   if (!get_val_smtptr_param<InrImage>( imgrad, p, n, false)) HelpAndReturnNULL;
+   if (!get_val_smtptr_param<InrImage>( imgrad, p, n, false)) HelpAndReturnVarPtr;
 
-  InrImage* result = Func_StructureTensorHessianNew( input, sigma, beta, mask, imgrad);
+  InrImage::ptr result = Func_StructureTensorHessianNew( input, sigma, beta, mask, imgrad);
 
-
-  return result;
+  Variable<InrImage>::ptr varres( new Variable<InrImage>(result));
+  return varres; 
 }

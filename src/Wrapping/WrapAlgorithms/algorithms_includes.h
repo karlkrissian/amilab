@@ -36,6 +36,8 @@
 #include "localstats.h"
 #include "fonctions.h"
 
+#include "StructureTensor.h"
+
 #ifdef __GCCXML__
   template class ami::ImageExtent<float>;
 #endif // __GCCXML__

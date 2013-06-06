@@ -24,6 +24,9 @@
 #include "Point3D.hpp"
 #include "coord_image.hpp"
 
+#include <boost/shared_ptr.hpp>
+#include <boost/shared_array.hpp>
+
 #define PAIRS_MIN  0 
 #define PAIRS_MAX  1
 #define PAIRS_MEAN 2
@@ -74,7 +77,7 @@ class CalculRepCercle
     double      _rayon;
 
     
-    CoordImage* _coord_image;
+    boost::shared_ptr<CoordImage> _coord_image;
 
     /// Response type
     CircleResponseType  _type_reponse;
@@ -91,8 +94,8 @@ class CalculRepCercle
     std::vector<response_info> responses;
 
     /// Precomputed cosinus and sinus value
-    double*   coeff_cos;
-    double*   coeff_sin;
+    boost::shared_array<double>   coeff_cos;
+    boost::shared_array<double>   coeff_sin;
 
     /// Number of points used along the circle 
     int       nb_points;
@@ -121,6 +124,12 @@ class CalculRepCercle
     float     _SeuilET;  /**< Threshold on the standard deviation along the circle */
     float     _SeuilEXC; /**< Threshold on Excentricity */
 
+    ImageLinearInterpolator::ptr _linear_interpolator;
+
+    
+    bool debug;
+    int  debug_at_x,debug_at_y,debug_at_z;
+    
 private:
 
   /// 
@@ -157,10 +166,17 @@ public:
   void SetOptReponse(unsigned char b) { _OptReponse = b; }
   //   -------------
 
+  void SetDebug(bool b) { debug = b; }
+  bool GetDebug() const {return debug;}
+  
   /**
    * Sets gradient image as a vector field.
    */
-  void SetGradient(InrImage* g )     { _grad = g; }
+  void SetGradient(InrImage* g ) { 
+    _grad = g; 
+    _linear_interpolator = ImageLinearInterpolator::ptr(
+                                  new ImageLinearInterpolator(g));
+  }
   
   /**
    *  Returns the gradient image.
@@ -205,10 +221,13 @@ public:
   void FixeRayon( double rayon, float coeff_rayon);
   //   ---------
 
+  void InitCoeff();
+  //   ---------
 
   ///
-  void  ComputeResponse( const Vect3D<double>& pos, const Vect3D<double>& vect, response_info& rep);
+  void  ComputeResponse( const Vect3D<double>& pos, const Vect3D<double>& vect, 
   //    ---------------
+                         response_info& rep, bool debuginfo=false);
 
   ///
   void  CalculReponses( const int& x, const int& y, const int& z, 

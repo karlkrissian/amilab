@@ -191,9 +191,9 @@ GeneralGaussianFilter ::   GeneralGaussianFilter( InrImage* image, int dim )
    
     _InrImage_initiale = image;
 
-_vx = image->VoxSizeX();
-_vy = image->VoxSizeY();
-_vz = image->VoxSizeZ();
+    _vx = image->VoxSizeX();
+    _vy = image->VoxSizeY();
+    _vz = image->VoxSizeZ();
     _dim = dim;
 
     _utilise_image    = false;
@@ -753,7 +753,9 @@ void GeneralGaussianFilter ::  InitDerivees( )
 
   Pour(i,0,NB_IMAGES-1)
     Si _utilise_Image_sigma[i] Alors
-      _InrImage_sigma[i] = new InrImage( WT_FLOAT, (char*) _ImageNom[i],_InrImage_initiale);
+      _InrImage_sigma[i] = new InrImage( WT_FLOAT, 
+                                         (char*) _ImageNom[i],
+                                         _InrImage_initiale);
     FinSi
   FinPour
 
@@ -833,12 +835,8 @@ void GeneralGaussianFilter ::  InitDeriveesCompressees( InrImage* masque,
 void GeneralGaussianFilter ::  LibereDerivees( )
 //                                --------------
 {
-
-  
-    int i;
-
-//std::cout << "Libere Derivees " << std::endl;
-
+  int i;
+  //std::cout << "Libere Derivees " << std::endl;
   Pour(i,0,NB_IMAGES-1)
     Si _utilise_Image_sigma[i] Alors
       Si _InrImage_sigma[i] != (InrImage*) NULL Alors 
@@ -848,8 +846,6 @@ void GeneralGaussianFilter ::  LibereDerivees( )
       FinSi
     FinSi
   FinPour
-
-
 } // LibereDerivees()
 
 
@@ -938,126 +934,131 @@ void GeneralGaussianFilter ::  CalculMyFiltres( InrImage* image_depart)
     return;
   FinSi
 
-     // Utiliser un masque est tres difficile
-     // (il faudrait le dillater en fonction de la taille du support) 
-     // dans les filtrages intermedaires
+  // Utiliser un masque est tres difficile
+  // (il faudrait le dillater en fonction de la taille du support) 
+  // dans les filtrages intermedaires
 
-     // Calcul Hxx
-     Si GB_verbose Et Non(_silencieux) 
-       Alors  printf(" 200 "); fflush(stdout); FinSi
-     MyFiltre( image_depart,
-     _InrImage_sigma[IMxx_sigma],      2,  0,  -1);
+  // Calcul Hxx
+  Si GB_verbose Et Non(_silencieux) Alors  
+    printf(" 200 "); fflush(stdout); 
+  FinSi
+  MyFiltre( image_depart,  
+            _InrImage_sigma[IMxx_sigma],      2,  0,  -1);
 
-     MyFiltre( _InrImage_sigma[IMxx_sigma],
-     _InrImage_sigma[IMxx_sigma],     -1, -1,   0,
-     _image_masque);
+  MyFiltre( _InrImage_sigma[IMxx_sigma],
+            _InrImage_sigma[IMxx_sigma],     -1, -1,   0,  _image_masque);
 
-     // Convolution Derivee Gaussienne en X:
-     // Factorisation pour Gx,Hxy,Hxz
-     Si GB_verbose Et Non(_silencieux) 
-       Alors  printf(" 1.. "); fflush(stdout); FinSi
-     MyFiltre( image_depart,
-     _InrImage_sigma[IMxy_sigma],      1, -1, -1);
+  // Convolution Derivee Gaussienne en X:
+  // Factorisation pour Gx,Hxy,Hxz
+  Si GB_verbose Et Non(_silencieux) Alors  
+    printf(" 1.. "); fflush(stdout); 
+  FinSi
+  MyFiltre( image_depart,
+            _InrImage_sigma[IMxy_sigma],      1, -1, -1);
 
-       // Gaussienne en Y: Gx, Hxz
-       Si GB_verbose Et Non(_silencieux) 
-   Alors  printf(" 10. "); fflush(stdout); FinSi
-       MyFiltre( _InrImage_sigma[IMxy_sigma],
-       _InrImage_sigma[IMx_sigma],    -1,  0, -1);
+  // Gaussienne en Y: Gx, Hxz
+  Si GB_verbose Et Non(_silencieux)  Alors  
+    printf(" 10. "); fflush(stdout); 
+  FinSi
+  MyFiltre( _InrImage_sigma[IMxy_sigma],
+            _InrImage_sigma[IMx_sigma],    -1,  0, -1);
 
-         // Hxz
-         Si GB_verbose Et Non(_silencieux) 
-     Alors  printf(" 101 "); fflush(stdout); FinSi
-         MyFiltre( _InrImage_sigma[IMx_sigma], 
-         _InrImage_sigma[IMxz_sigma], -1, -1,  1,
-         _image_masque );
+  // Hxz
+  Si GB_verbose Et Non(_silencieux) Alors 
+    printf(" 101 "); fflush(stdout); 
+  FinSi
+  MyFiltre( _InrImage_sigma[IMx_sigma], 
+            _InrImage_sigma[IMxz_sigma], -1, -1,  1, _image_masque );
 
-         // Gx
-         Si GB_verbose Et Non(_silencieux) 
-     Alors  printf(" 100 "); fflush(stdout); FinSi
-         MyFiltre( _InrImage_sigma[IMx_sigma], 
-         _InrImage_sigma[IMx_sigma],  -1, -1,  0,
-         _image_masque_gradient);
+  // Gx
+  Si GB_verbose Et Non(_silencieux) Alors
+    printf(" 100 "); fflush(stdout); 
+  FinSi
+  MyFiltre( _InrImage_sigma[IMx_sigma], 
+            _InrImage_sigma[IMx_sigma],  -1, -1,  0, _image_masque_gradient);
 
-       // Hxy
-       Si GB_verbose Et Non(_silencieux) 
-   Alors  printf(" 110 "); fflush(stdout); FinSi
-       MyFiltre( _InrImage_sigma[IMxy_sigma], 
-       _InrImage_sigma[IMxy_sigma],   -1,  1, -1);
-       MyFiltre( _InrImage_sigma[IMxy_sigma], 
-       _InrImage_sigma[IMxy_sigma],   -1, -1,  0,
-       _image_masque);
-
-
-     // Convolution Gaussienne en X:
-     // Factorisation pour Gy,Gz,Hyy,Hyz,Hzz
-
-     Si GB_verbose Et Non(_silencieux) 
-       Alors  printf(" 0.. "); fflush(stdout); FinSi
-     MyFiltre( image_depart,
-     _InrImage_sigma[IMyy_sigma],      0, -1, -1);
-
-       // Derivee Gaussienne en Y: Gy, Hyz
-       Si GB_verbose Et Non(_silencieux) 
-   Alors  printf(" 01. "); fflush(stdout); FinSi
-       MyFiltre( _InrImage_sigma[IMyy_sigma],
-       _InrImage_sigma[IMy_sigma],    -1,  1, -1);
-
-         // Hyz
-         Si GB_verbose Et Non(_silencieux) 
-     Alors  printf(" 011 "); fflush(stdout); FinSi
-         MyFiltre( _InrImage_sigma[IMy_sigma], 
-         _InrImage_sigma[IMyz_sigma], -1, -1,  1, 
-         _image_masque);
-
-         // Gy
-         Si GB_verbose Et Non(_silencieux) 
-     Alors  printf(" 010 "); fflush(stdout); FinSi
-         MyFiltre( _InrImage_sigma[IMy_sigma], 
-         _InrImage_sigma[IMy_sigma],  -1, -1,  0,
-         _image_masque_gradient);
-
-       // Gaussienne en Y: Hyz, Gz
-       Si GB_verbose Et Non(_silencieux) 
-   Alors  printf(" 00. "); fflush(stdout); FinSi
-       MyFiltre( _InrImage_sigma[IMyy_sigma],
-       _InrImage_sigma[IMz_sigma],    -1,  0, -1);
-
-         // I
-         Si _utilise_image Alors
-           Si GB_verbose Et Non(_silencieux) 
-       Alors  printf(" *000 "); fflush(stdout); FinSi
-           MyFiltre( _InrImage_sigma[IMz_sigma], 
-         _InrImage_sigma[IM_sigma],  -1, -1,  0 );
-         FinSi
-
-         // Hzz
-         Si GB_verbose Et Non(_silencieux) 
-     Alors  printf(" 002 "); fflush(stdout); FinSi
-         MyFiltre( _InrImage_sigma[IMz_sigma], 
-         _InrImage_sigma[IMzz_sigma], -1, -1,  2,
-         _image_masque);
-
-         // Gz
-         Si GB_verbose Et Non(_silencieux) 
-     Alors  printf(" 001 "); fflush(stdout); FinSi
-         MyFiltre( _InrImage_sigma[IMz_sigma], 
-         _InrImage_sigma[IMz_sigma],  -1, -1,  1,
-         _image_masque_gradient);
+  // Hxy
+  Si GB_verbose Et Non(_silencieux) Alors
+    printf(" 110 "); fflush(stdout); 
+  FinSi
+  MyFiltre( _InrImage_sigma[IMxy_sigma], 
+            _InrImage_sigma[IMxy_sigma],   -1,  1, -1);
+  MyFiltre( _InrImage_sigma[IMxy_sigma], 
+            _InrImage_sigma[IMxy_sigma],   -1, -1,  0,  _image_masque);
 
 
-       // Hyy
-       Si GB_verbose Et Non(_silencieux) 
-   Alors  printf(" 020 "); fflush(stdout); FinSi
-       MyFiltre( _InrImage_sigma[IMyy_sigma], 
-       _InrImage_sigma[IMyy_sigma],   -1,  2,  -1);
-       MyFiltre( _InrImage_sigma[IMyy_sigma], 
-       _InrImage_sigma[IMyy_sigma],   -1, -1,   0,
-       _image_masque);
+  // Convolution Gaussienne en X:
+  // Factorisation pour Gy,Gz,Hyy,Hyz,Hzz
+
+  Si GB_verbose Et Non(_silencieux) Alors 
+    printf(" 0.. "); fflush(stdout); 
+  FinSi
+  MyFiltre( image_depart,
+            _InrImage_sigma[IMyy_sigma],      0, -1, -1);
+
+  // Derivee Gaussienne en Y: Gy, Hyz
+  Si GB_verbose Et Non(_silencieux) Alors
+    printf(" 01. "); fflush(stdout);
+  FinSi
+  MyFiltre( _InrImage_sigma[IMyy_sigma],
+            _InrImage_sigma[IMy_sigma],    -1,  1, -1);
+
+  // Hyz
+  Si GB_verbose Et Non(_silencieux) Alors
+    printf(" 011 "); fflush(stdout); 
+  FinSi
+  MyFiltre( _InrImage_sigma[IMy_sigma], 
+            _InrImage_sigma[IMyz_sigma], -1, -1,  1, _image_masque);
+
+  // Gy
+  Si GB_verbose Et Non(_silencieux) Alors
+    printf(" 010 "); fflush(stdout);
+  FinSi
+  MyFiltre( _InrImage_sigma[IMy_sigma], 
+          _InrImage_sigma[IMy_sigma],  -1, -1,  0, _image_masque_gradient);
+
+  // Gaussienne en Y: Hyz, Gz
+  Si GB_verbose Et Non(_silencieux) Alors 
+    printf(" 00. "); fflush(stdout); 
+  FinSi
+  MyFiltre( _InrImage_sigma[IMyy_sigma],
+            _InrImage_sigma[IMz_sigma],    -1,  0, -1);
+
+  // I
+  Si _utilise_image Alors
+    Si GB_verbose Et Non(_silencieux) Alors  
+      printf(" *000 "); fflush(stdout); 
+    FinSi
+    MyFiltre( _InrImage_sigma[IMz_sigma], 
+              _InrImage_sigma[IM_sigma],  -1, -1,  0 );
+  FinSi
+
+  // Hzz
+  Si GB_verbose Et Non(_silencieux) Alors 
+    printf(" 002 "); fflush(stdout); 
+  FinSi
+  MyFiltre( _InrImage_sigma[IMz_sigma], 
+            _InrImage_sigma[IMzz_sigma], -1, -1,  2, _image_masque);
+
+  // Gz
+  Si GB_verbose Et Non(_silencieux) Alors
+    printf(" 001 "); fflush(stdout); 
+  FinSi
+  MyFiltre( _InrImage_sigma[IMz_sigma], 
+            _InrImage_sigma[IMz_sigma],  -1, -1,  1, _image_masque_gradient);
+
+  // Hyy
+  Si GB_verbose Et Non(_silencieux) Alors
+    printf(" 020 "); fflush(stdout); 
+  FinSi
+  MyFiltre( _InrImage_sigma[IMyy_sigma], 
+            _InrImage_sigma[IMyy_sigma],   -1,  2,  -1);
+  MyFiltre( _InrImage_sigma[IMyy_sigma], 
+            _InrImage_sigma[IMyy_sigma],   -1, -1,   0, _image_masque);
 
 
-     Si GB_verbose Et Non(_silencieux) AlorsFait
-       printf("\n");
+  Si GB_verbose Et Non(_silencieux) AlorsFait
+    printf("\n");
 
 
 } // CalculMyFiltres()
@@ -1258,10 +1259,10 @@ void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
        case MY_FILTRE_CONV :
        //     --------------
         //std::cout << "4 MyFiltre" << std::endl;
-         MyFiltre( _InrImage_initiale, _InrImage_sigma[i],  
-       _derivees[i][DIM_X], 
-       _derivees[i][DIM_Y],
-       _derivees[i][DIM_Z],
+         MyFiltre(  _InrImage_initiale, _InrImage_sigma[i],  
+                    _derivees[i][DIM_X], 
+                    _derivees[i][DIM_Y],
+                    _derivees[i][DIM_Z],
        mask);
 
        break;

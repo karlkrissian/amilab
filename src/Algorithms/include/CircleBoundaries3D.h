@@ -4,6 +4,7 @@
 
 #include "inrimage.hpp"
 #include "CalculRepCercle.hpp"
+#include "amiImageToImageFilter.h"
 
 /** Computes the responses to the boundaries integration over a circle
  *  for each voxel within a given mask.
@@ -11,7 +12,7 @@
  * The parameters for the integration over the circle are defined in the CalculRepCercle object.
  */
 
-class CircleBoundaries3D
+class CircleBoundaries3D : public ami::ImageToImageFilter 
 {
  
   protected:
@@ -30,11 +31,13 @@ class CircleBoundaries3D
     /// Class that deal with the circle integration
     CalculRepCercle* rep;
     
+    InrImage* output;
+    
   public:
     /// Constructor, sets pointers to NULL
     CircleBoundaries3D()
     {
-      vep0=vep1=mask=NULL;
+      vep0=vep1=mask=output=NULL;
       rep = NULL;
     }
     
@@ -57,8 +60,16 @@ class CircleBoundaries3D
       mask = m;
     }
     
+    /**
+    * Process part of the image
+    * @param threadid 
+    */
+    void Process( int threadid = 0);
+
     /// Execute the computation, res is the resulting image.
     void Execute(InrImage* res);
+
+    void Execute_old(InrImage* res);
 
 };
 

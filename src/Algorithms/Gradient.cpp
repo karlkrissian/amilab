@@ -37,7 +37,7 @@ InrImage::ptr Gradient::Execute( )
   resname = (boost::format("%1%.filter") % input->GetName()).str();
 
   filtre = new GeneralGaussianFilter( image_entree,  mode);
-
+  filtre->Set_use_new_filter(true);
   filtre->Utilise_Image(   false);
   filtre->UtiliseHessien(  false);
   filtre->UtiliseGradient( true);
@@ -51,7 +51,7 @@ InrImage::ptr Gradient::Execute( )
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
   filtre->CalculFiltres( );
 
-  
+  // todo: improve this slow part
   image_res->InitBuffer();
   Pour( z, 0, image_res->_tz - 1)
   Pour( y, 0, image_res->_ty - 1)

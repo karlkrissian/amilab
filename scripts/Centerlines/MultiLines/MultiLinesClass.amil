@@ -108,10 +108,11 @@ if (!exists(MultiLinesClass)) {
 
       ::output_name="Multilines-maxresponse.ami.gz"
 
-      ::normalize_gradient = UCHAR(1), "Param: normalize gradient"
+      ::normalize_gradient = true, "Param: normalize gradient"
       ::PSF_stddev = 0, "Param: Standard deviation (in voxels) of the point spread function"
+      ::use_StructTensorGrad = true, "Param: use the gradient computed by the structure tensor"
 
-      ::upsample_recons = UCHAR(0), "Param: Reconstruct the vessel in an image with double resolution compared to the input image"
+      ::upsample_recons = false, "Param: Reconstruct the vessel in an image with double resolution compared to the input image"
 
       ::smoothradii_std = 1, "Param: Gaussian standard deviation for smoothing the lines radii"
       #::Gui()
@@ -121,11 +122,11 @@ if (!exists(MultiLinesClass)) {
       ::trackvoxel_x = INT(0),"X position of voxel to track"
       ::trackvoxel_y = INT(0),"Y position of voxel to track"
       ::trackvoxel_z = INT(0),"Z position of voxel to track"
-      ::enable_track = UCHAR(0)
+      ::enable_track = false
 
       
-      ::max_memory_usage = INT(1000), "Expected memory usage in Mb"
-      ::split_image = false, "Split image to avoid excess of RAM usage"
+      ::max_memory_usage = INT(1000), "Param: Expected memory usage in Mb"
+      ::split_image = false, "Param: Split image to avoid excess of RAM usage"
       
       ::abort = false, "Abort current processing"
     }
@@ -355,6 +356,7 @@ if (!exists(MultiLinesClass)) {
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       printn "time: "+time_elapsed
+      ::total_structtensor_time += diff
     
       SetProgress(::current_progress+::current_step*0.25)
     
@@ -389,6 +391,7 @@ if (!exists(MultiLinesClass)) {
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       printn "EigenDecomp2 time: "+time_elapsed
+      ::total_eigen_time        += diff
 
       if (::keep_eigenratio) {
         ::current_eigen_ratio <<= sqrt(ed.Geteigenvalue1())/\
@@ -412,12 +415,17 @@ if (!exists(MultiLinesClass)) {
       #if (::normalize_gradient) {
       #  grad = grad*sigma
       #}
+      inittime = wx.wxDateTime.UNow()
       grad_algo = algorithms.Gradient(&::input,sigma,::normalize_gradient)
       grad_algo.SetPSF(::PSF_stddev,::PSF_stddev,::PSF_stddev)
       grad = grad_algo.Execute()
       if (exists(::grad_mask)) {
         grad = grad*(::grad_mask>0)
       }
+      diff=wx.wxDateTime.UNow()-inittime
+      time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
+      printn "Gradient time: "+time_elapsed
+      ::total_gradient_time       += diff
 
       SetProgress(::current_progress+::current_step*0.75)
     
@@ -462,6 +470,7 @@ if (!exists(MultiLinesClass)) {
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       printn "Circle boundaries time: "+time_elapsed
+      ::total_circle_time       += diff
 
       #diff = max(norm(response-::response2))
       #printn "Maximal difference = %1%" % diff
@@ -497,17 +506,18 @@ if (!exists(MultiLinesClass)) {
                                         IMAGE response, \
                                         OBJECT extent) \
     {
+      main_inittime = wx.wxDateTime.UNow()
 
       # add a margin to the extent?
       ::PrintExtent(extent, "extent")
       extent2 = extent
-      ::PrintExtent(extent2,"extent2")
+      #::PrintExtent(extent2,"extent2")
       # need to check the right margin to add
       imextent = response.GetExtent
       imextent.SetRelative(response)
-      ::PrintExtent(imextent,"imextent")
+      #::PrintExtent(imextent,"imextent")
       extent2.AddMargin(max(4,::theta*sigma*3),imextent)
-      ::PrintExtent(extent2,"extent2")
+      #::PrintExtent(extent2,"extent2")
       
       
       sub_response  = response[extent2]
@@ -518,7 +528,7 @@ if (!exists(MultiLinesClass)) {
       #sub_input     = ::input [extent]
       
       ::PrintExtent(extent2,"extent2")
-      sub_response.info
+      #sub_response.info
 
       printn "::ComputeResponse_new_extent"
       sub_response.initvalue(0)
@@ -533,10 +543,26 @@ if (!exists(MultiLinesClass)) {
       # Compute Structure Tensor
       printn "Structure Tensor"
       inittime = wx.wxDateTime.UNow()
-      sth = filters.StructureTensorH(sub_input,sigma,1,sub_mask)
+      #sth = filters.StructureTensorH(sub_input,sigma,1,sub_mask)
+      # get the gradient at the same time
+      
+      #del ::grad0
+      if (::use_StructTensorGrad) {
+        grad0 = Image(FLOAT,3,sub_input)
+        # should adjust PSF acording to voxel spacing
+        psf = vector_float(3)
+        psf[0] = ::PSF_stddev/sub_input.vx
+        psf[1] = ::PSF_stddev/sub_input.vy
+        psf[2] = ::PSF_stddev/sub_input.vz
+        
+        sth = Func_StructureTensorHessianNew(sub_input,sigma,1,sub_mask,grad0,psf)
+      } else {
+        sth = Func_StructureTensorHessianNew(sub_input,sigma,1,sub_mask)
+      }
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       printn "time: "+time_elapsed
+      ::total_structtensor_time      += diff
     
       SetProgress(::current_progress+::current_step*0.25)
     
@@ -571,6 +597,8 @@ if (!exists(MultiLinesClass)) {
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       printn "EigenDecomp2 time: "+time_elapsed
+      ::total_eigen_time        += diff
+      
 
       if (::keep_eigenratio) {
         #::current_eigen_ratio 
@@ -595,12 +623,25 @@ if (!exists(MultiLinesClass)) {
       #if (::normalize_gradient) {
       #  grad = grad*sigma
       #}
-      grad_algo = algorithms.Gradient(sub_input,sigma,::normalize_gradient)
-      grad_algo.SetPSF(::PSF_stddev,::PSF_stddev,::PSF_stddev)
-      grad = grad_algo.Execute()
+      inittime = wx.wxDateTime.UNow()
+      if (::use_StructTensorGrad) {
+        grad = & grad0
+      } else {
+        grad_algo = algorithms.Gradient(sub_input,sigma,::normalize_gradient)
+        grad_algo.SetPSF(::PSF_stddev,::PSF_stddev,::PSF_stddev)
+        grad = grad_algo.Execute()
+      }
+      
+      
       if (exists(::grad_mask)) {
         grad = grad*(::grad_mask[extent]>0)
       }
+      #del ::grad
+      #::grad = &grad
+      diff=wx.wxDateTime.UNow()-inittime
+      time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
+      printn "Gradient time: "+time_elapsed
+      ::total_gradient_time       += diff
 
       SetProgress(::current_progress+::current_step*0.75)
     
@@ -642,10 +683,35 @@ if (!exists(MultiLinesClass)) {
       cb3d.SetOrientations(e3,e4)
       #::grad0 = grad
       #response
+      #sub_response2 = sub_response
+
+      inittime2 = wx.wxDateTime.UNow()
+      cb3d.GetParameters().SetNumberOfThreads(wx.wxThread.GetCPUCount())
       cb3d.Execute(sub_response)
+      diff=wx.wxDateTime.UNow()-inittime2
+      time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
+      printn "Circle boundaries execute time: "+time_elapsed
+
+      #inittime2 = wx.wxDateTime.UNow()
+      #cb3d.Execute_old(sub_response2)
+      #diff=wx.wxDateTime.UNow()-inittime2
+      #time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
+      #printn "Circle boundaries execute old time: "+time_elapsed
+      
+      #d = sub_response-sub_response2
+      #printn "max diff = %1% " % max(abs(d))
+      
+      
+      ## save the 2 images for debugging purpose
+      #if (!exists(::sub_response)) {
+        #::sub_response  <<= sub_response
+        #::sub_response2 <<= sub_response2
+      #}
+      
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
       printn "Circle boundaries time: "+time_elapsed
+      ::total_circle_time       += diff
 
       #diff = max(norm(response-::response2))
       #printn "Maximal difference = %1%" % diff
@@ -660,10 +726,10 @@ if (!exists(MultiLinesClass)) {
     
       # put back result in full size images in initial extent
       extent3 = extent
-      ::PrintExtent(extent3,"extent3")
+      #::PrintExtent(extent3,"extent3")
       extent3.SetRelative(extent2)
       
-      ::PrintExtent(extent3,"extent3")
+      #::PrintExtent(extent3,"extent3")
       
       #printn "sub_response max %1%" % max(sub_response)
       # Need to check why sub_response[extent3] 
@@ -676,7 +742,7 @@ if (!exists(MultiLinesClass)) {
       zm = extent3.Zmin()
       zM = extent3.Zmax()
       tmp = sub_response[ xm:xM,ym:yM,zm:zM]
-      tmp.info
+      #tmp.info
       response.putimage(tmp)
       #printn "response max %1%" % max(response)
       if (::local_maxima) {
@@ -691,6 +757,9 @@ if (!exists(MultiLinesClass)) {
         ::current_eigen_ratio.putimage(tmp)
       }
     
+      diff=wx.wxDateTime.UNow()-main_inittime
+      printn "::ComputeResponse_new_extent() time: "+\
+              wx.FromWxString(diff.Format("%M min %S s %l ms"))
     } 
     # ::ComputeResponse_new_extent
 
@@ -700,6 +769,9 @@ if (!exists(MultiLinesClass)) {
     proc ::ComputeResponse_new_split(  NUM sigma, \
                                        IMAGE response) \
     {
+      
+      main_inittime = wx.wxDateTime.UNow()
+    
       # Split image to reduce memory usage
       image_size = (response.tx*response.ty*response.tz)*4/1000000
 
@@ -708,14 +780,14 @@ if (!exists(MultiLinesClass)) {
       #    - response
       #    - if local_maxima, ::current_maxima and ::previous_maxima
       remaining_memory = (FLOAT)::max_memory_usage - 2*(image_size)
-      maximages = 12
+      maximages = 15 # 6 Hessian + 3 gradient + 6 store struct tensor
       
       if ::local_maxima {
         remaining_memory -= 2*image_size
         maximages++
       }
       if remaining_memory<0 {
-        DisplayInfo "Not enough memory to run on the input image !!!"
+        InfoDialog "Not enough memory to run on the input image !!!"
       }
       
 
@@ -797,6 +869,9 @@ if (!exists(MultiLinesClass)) {
         
       } 
       
+      diff=wx.wxDateTime.UNow()-main_inittime
+      printn "::ComputeResponse_new_split() time: "+\
+              wx.FromWxString(diff.Format("%M min %S s %l ms"))
     }
 
     #--------------------------------------------------
@@ -941,6 +1016,9 @@ if (!exists(MultiLinesClass)) {
     #
     proc ::MultiLines_new( ) \
     {
+      printn "###############################################"
+      printn " ::MultiLines_new( )"
+      printn "###############################################"
       current_proc = "::MultiLines_new()"
       if (!exists(::SD_th)) {
         InfoDialog "MultiLines_new Multilines not initialized"
@@ -948,6 +1026,16 @@ if (!exists(MultiLinesClass)) {
 
       # TODO: adapt for ROI
       inittime = wx.wxDateTime.UNow()
+      
+      # initialize total time counters
+      del ::total_circle_time
+      ::total_circle_time       = wx.wxTimeSpan()
+      del ::total_structtensor_time
+      ::total_structtensor_time = wx.wxTimeSpan()
+      del ::total_gradient_time
+      ::total_gradient_time        = wx.wxTimeSpan()
+      del ::total_eigen_time
+      ::total_eigen_time        = wx.wxTimeSpan()
 
       #  Load input images
       if (!exists(::input)) {
@@ -980,6 +1068,8 @@ if (!exists(MultiLinesClass)) {
         ::all_responses <<= Image(FLOAT,::input.tx,::input.ty,::input.tz,::numrad)
       }
     
+
+      time_before_loop = wx.wxDateTime.UNow()
 
       for i=0 to ::numrad-1 {
         iteration_mess = " Iteration %1%" % i
@@ -1085,6 +1175,8 @@ if (!exists(MultiLinesClass)) {
         SetProgress(i/::numrad*100)
       }
 
+      time_after_loop = wx.wxDateTime.UNow()
+
       # free memory from global images used for the computation
       if (::local_maxima) {
         del ::current_v1
@@ -1114,8 +1206,26 @@ if (!exists(MultiLinesClass)) {
 
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
-      printn "time: "+time_elapsed
+      printn "Total Boundary circle time: "+\
+              wx.FromWxString(::total_circle_time.Format("%M min %S s %l ms"))
+      printn "Total Struct Tensor   time: "+\
+              wx.FromWxString(::total_structtensor_time.Format("%M min %S s %l ms"))
+      printn "Total Gradient        time: "+\
+              wx.FromWxString(::total_gradient_time.Format("%M min %S s %l ms"))
+      printn "Total Eigen decomp    time: "+\
+              wx.FromWxString(::total_eigen_time.Format("%M min %S s %l ms"))
+      printn "Total time: "+time_elapsed
+
+      printn "Before loop: "+\
+              wx.FromWxString((time_before_loop-inittime).Format("%M min %S s %l ms"))
+      printn "Durring loop: "+\
+              wx.FromWxString((time_after_loop-time_before_loop).Format("%M min %S s %l ms"))
+      printn "After loop: "+\
+              wx.FromWxString((wx.wxDateTime.UNow()-time_after_loop).Format("%M min %S s %l ms"))
+      
       SetStatusText( "Finished MultiLines_new (%1%)" % time_elapsed )
+
+      printn "###############################################"
     } # MultiLines_new
 
     #-----------------------------------------------
@@ -1349,6 +1459,7 @@ if (!exists(MultiLinesClass)) {
 
           ::win.AddBoolean( &::keep_all_scales, "Keep all scales")
           ::win.AddBoolean( &::normalize_gradient, "Normalize gradient")
+          ::win.AddBoolean( &::use_StructTensorGrad, "Use gradient from Structure Tensor")
           ::win.AddFloat( &::PSF_stddev, "PSF")
           ::win.AddBoolean( &::use_linearinterp, "Linear Interpolation")
 

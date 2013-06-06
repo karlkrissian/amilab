@@ -16,6 +16,6 @@
 #include "inrimage.hpp"
 #include "paramlist.h"
 
-InrImage* wrap_StructureTensorHessianNew(ParamList*);
+BasicVariable::ptr wrap_StructureTensorHessianNew(ParamList*);
 
 #endif // _wrap_StructureTensor_h_

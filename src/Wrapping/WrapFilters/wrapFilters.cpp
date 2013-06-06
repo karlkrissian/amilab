@@ -77,7 +77,8 @@ void AddWrapFilters(AMIObject::ptr& obj)
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NLmeans_fast",NLmeans_fast);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NLmeans_MRI", NLmeans_MRI);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"LeastSquares",WrapLeastSquares);
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"StructureTensorH",wrap_StructureTensorHessianNew);
+
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"StructureTensorH",wrap_StructureTensorHessianNew);
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"EigenDecomp",Wrap_EigenDecomp);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"SplineResample",Wrap_SmoothLinesToSplines);

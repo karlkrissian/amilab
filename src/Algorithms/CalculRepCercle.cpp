@@ -58,7 +58,7 @@ CalculRepCercle ::  CalculRepCercle( InrImage* image, CircleResponseType type_re
 
   _image        = image;
 
-  _coord_image  = new CoordImage(image);
+  _coord_image  = boost::shared_ptr<CoordImage>(new CoordImage(image));
 
   _type_reponse = type_reponse;
   
@@ -74,8 +74,8 @@ CalculRepCercle ::  CalculRepCercle( InrImage* image, CircleResponseType type_re
   useSD(        0.7);
   useEXC(       1);
   KeepHighest(  70);
-
-  coeff_cos = coeff_sin = (double*) NULL;
+  
+  debug = false;
 
 }
 
@@ -85,10 +85,6 @@ CalculRepCercle ::  CalculRepCercle( InrImage* image, CircleResponseType type_re
 CalculRepCercle :: ~CalculRepCercle()
 //                           -----------
 {
-  delete [] coeff_cos;
-  delete [] coeff_sin;
-
-  delete _coord_image;
 }
 
 
@@ -97,8 +93,6 @@ CalculRepCercle :: ~CalculRepCercle()
 void CalculRepCercle :: FixeRayon( double rayon, float coeff_rayon)
 //                                ---------
 {
-    double alpha;
-    int    i;
     float  radius_x,radius_y,radius_z;
     float  radius_vox;
 
@@ -140,8 +134,16 @@ void CalculRepCercle :: FixeRayon( double rayon, float coeff_rayon)
    std::cout << "Rayon    = " << _rayon << std::endl;
    std::cout << "NbPoints = " << nb_points << std::endl;
 
-    coeff_cos      = new double[ nb_points2];
-    coeff_sin      = new double[ nb_points2];
+   InitCoeff();
+} // FixeRayon
+
+//----------------------------------------------------------------------------
+void  CalculRepCercle::InitCoeff()
+{
+  double alpha;
+  int    i;
+    coeff_cos      = boost::shared_array<double> (new double[ nb_points2]);
+    coeff_sin      = boost::shared_array<double> (new double[ nb_points2]);
     alpha       = 0;
     d_alpha     = (double) (2.0 * PI / nb_points);
     // Precompute coefficients
@@ -150,18 +152,19 @@ void CalculRepCercle :: FixeRayon( double rayon, float coeff_rayon)
       coeff_sin[i] = sin(alpha);
       alpha   += d_alpha;
     }
-} // FixeRayon
+}
 
-  
 //----------------------------------------------------------------------------
 void  CalculRepCercle :: ComputeResponse( const Vect3D<double>& pos, 
 //                      ---------------
-                                        const Vect3D<double>& vect,
-                                        response_info& response)
+                                          const Vect3D<double>& vect,
+                                          response_info& response,
+                                          bool debuginfo
+                                        )
 {
-      register Vect3D<double>     g;
-      float                        gx,gy,gz;
-      double rep;
+  register Vect3D<double>     g;
+  float                        gx,gy,gz;
+  double rep;
 
     if (!(GradientCorrect(pos))) {
       response.radius_gradient  = 0;
@@ -178,22 +181,24 @@ void  CalculRepCercle :: ComputeResponse( const Vect3D<double>& pos,
           g = _filter->Gradient( posx,posy,posz);
       else {
         // buffer pos is not thread safe ...
-        _grad->BufferPos(posx,posy,posz);
-        g.Init( _grad->ValeurBuffer(0),
-                _grad->ValeurBuffer(1),
-                _grad->ValeurBuffer(2));
+        g.Init( (*_grad)(posx,posy,posz,0),
+                (*_grad)(posx,posy,posz,1),
+                (*_grad)(posx,posy,posz,2));
       }
     } else {
       if (_filter!= NULL) 
           g = _filter->Gradient( pos.x , pos.y, pos.z);
       else {
-          gx = _grad->InterpLinIntensite(pos.x,pos.y,pos.z,0);
-          gy = _grad->InterpLinIntensite(pos.x,pos.y,pos.z,1);
-          gz = _grad->InterpLinIntensite(pos.x,pos.y,pos.z,2);
+          gx = _linear_interpolator->InterpLinIntensite(pos.x,pos.y,pos.z,0);
+          gy = _linear_interpolator->InterpLinIntensite(pos.x,pos.y,pos.z,1);
+          gz = _linear_interpolator->InterpLinIntensite(pos.x,pos.y,pos.z,2);
           g.Init(gx,gy,gz);
       }
     }
 
+    if (debuginfo) {
+      std::cout << "g = " << g.x << "," << g.y << "," << g.z << std::endl;
+    }
     // since for bright tubes, the gradient is oriented inwards
     // take a positive response by multiplying by -1
     rep = -1.0*( g * vect) ;
@@ -226,6 +231,7 @@ void  CalculRepCercle::CalculReponses(  const int& x,
       register Vect3D<double>     pos;
       float                       radius_x,radius_y,radius_z;
       response_info               rep1,rep2;
+      bool                        debuginfo;
 
 
     /*--- calcul de la reponse du filtre gradient par integrale le long 
@@ -234,8 +240,9 @@ void  CalculRepCercle::CalculReponses(  const int& x,
     // empty vector of responses
     responses.clear();
 
-    if ((x==20)&&(y==7)&&(z==35)) {
-      std::cout << " at 20,7,35" << std::endl;
+    debuginfo = (this->debug)&&(x==40)&&(y==34)&&(z==31);
+    if (debuginfo) {
+      std::cout << " at 40,34,31" << std::endl;
     }
                    
     k         = 0;
@@ -260,9 +267,9 @@ void  CalculRepCercle::CalculReponses(  const int& x,
       // First point
       //
       pos = p + displacement;
-      this->ComputeResponse(pos,vecteur, rep1);
+      this->ComputeResponse(pos,vecteur, rep1, debuginfo);
 
-      if ((x==20)&&(y==7)&&(z==35)) {
+      if (debuginfo) {
         std::cout << " k = " << k << " rep1 = " << rep1.radius_gradient << std::endl;
       }
 
@@ -271,9 +278,9 @@ void  CalculRepCercle::CalculReponses(  const int& x,
       //
       pos = p + (-1.0)*displacement;
       vecteur = -1.0*vecteur;
-      this->ComputeResponse(pos,vecteur, rep2);
+      this->ComputeResponse(pos,vecteur, rep2, debuginfo);
 
-      if ((x==20)&&(y==7)&&(z==35)) {
+      if (debuginfo) {
         std::cout << " k = " << k << " rep2 = " << rep2.radius_gradient << std::endl;
       }
 

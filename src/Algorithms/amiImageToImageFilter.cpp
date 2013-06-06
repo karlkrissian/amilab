@@ -33,11 +33,11 @@ struct thread_info {
 
 void ImageToImageFilter::Init()
 {
-  
-  InrImage::ptr in = params.GetInput();
+  // just need output extent, not input here  
+  //InrImage::ptr in = params.GetInput();
   int nt = params.GetNumberOfThreads();
 
-  if (in.get()) {
+  //if (in.get()) {
     extenttype extent(params.GetOutputExtent());
 #define SPLIT_Z_FIRST
 #ifdef SPLIT_Z_FIRST
@@ -74,7 +74,7 @@ void ImageToImageFilter::Init()
       extent.SetMinMax(splitaxis,minpos+extmin,minpos+extmax);
       extents.push_back(extent);
     }
-  }
+  //}
 }
 
 
