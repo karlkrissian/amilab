@@ -21,3 +21,9 @@ Func_Compute_sigma2_Gaussian_mode
 
 # Structure Tensor
 Func_StructureTensorHessianNew
+
+# Gaussian filtering
+Func_Filter
+
+# Initialize image to 0
+InitZero

@@ -22,16 +22,19 @@ Algorithms_EXPORT InrImage* Func_Gradient(    InrImage* im,
 /**
  * Apply a Gaussian (or its derivatives) convolution to the input image
  * @param im input image
- * @param sigma Gaussian standard deviation
+ * @param sigma Gaussian standard deviation in real space unit (often mm)
  * @param der_x derivation order in X (-1: no convolution, 0: Gaussian smoothing, 1: first order derivative, 2:second order der.)
  * @param der_y same in Y
  * @param der_z same in Z
+ * @param support_factor size of the support will be sigma*support_factor
  * @return pointer to the resulting image
  */
-Algorithms_EXPORT InrImage* Func_Filter(      InrImage* im, 
+Algorithms_EXPORT InrImage::ptr Func_Filter(  InrImage* im, 
                                               float sigma,
                                               int der_x, 
                                               int der_y, 
-                                              int der_z);
+                                              int der_z,
+                                              int support_factor = 5
+                                          );
 
 #endif // _ImageDerivatives_h_

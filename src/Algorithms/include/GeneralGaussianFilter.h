@@ -264,6 +264,20 @@ protected:
   bool _profile;
   int  _numthreads;
   
+  // coefficient required to multiply derivative values
+  bool   _coeff_precomputed;
+  // for gradient
+  double _coeff_x;
+  double _coeff_y;
+  double _coeff_z;
+  // for hessian
+  double _coeff_xx;
+  double _coeff_xy;
+  double _coeff_xz;
+  double _coeff_yy;
+  double _coeff_yz;
+  double _coeff_zz;
+  
 public:
 
 
@@ -520,8 +534,17 @@ public:
     return _InrImage_sigma[i];
   }
 
+  InrImage* operator () ( int i) const
+  //        -----------
+  {
+    Si i<0 Ou i>= NB_IMAGES AlorsFait return (InrImage*)NULL;
+    return _InrImage_sigma[i];
+  }
+
+  void PreComputeCoeffs();
+
   ///
-  Vect3D<double>  Gradient( int x, int y, int z)
+  Vect3D<double>  Gradient( const int& x, const int& y, const int& z) 
   //              --------
     throw (GradientNotComputed);
 
@@ -531,8 +554,9 @@ public:
     throw (GradientNotComputed);
 
   /// trilinear interpolation
-  Vect3D<double>  Gradient( const double& x, const double& y, 
-                            const double& z) 
+  Vect3D<double>  InterpolatedGradient( const double& x, 
+                                        const double& y, 
+                                        const double& z) 
     throw (GradientNotComputed);
 
   ///
@@ -553,7 +577,7 @@ public:
     throw (HessianNotComputed);
 
   ///
-  void  Hessien( double* hessien, int x, int y, int z)
+  void  Hessien( double* hessien, int x, int y, int z) 
   //    -------
     throw (HessianNotComputed);
 

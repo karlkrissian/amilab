@@ -173,11 +173,8 @@ GeneralGaussianFilter ::   GeneralGaussianFilter( PTRINRIMAGE image, int dim )
 
 
 ///
-GeneralGaussianFilter ::   GeneralGaussianFilter( InrImage* image, int dim ) 
-
+GeneralGaussianFilter::GeneralGaussianFilter( InrImage* image, int dim ) 
 {
-
-  
     int i;
 
     _silencieux = false;
@@ -228,6 +225,9 @@ GeneralGaussianFilter ::   GeneralGaussianFilter( InrImage* image, int dim )
 
   _use_new_filter = false;
 
+  _coeff_precomputed = false;
+  _coeff_x = _coeff_y = _coeff_z = 1.0;
+  
 }
 
 
@@ -322,9 +322,12 @@ void GeneralGaussianFilter ::  InitFiltre(float sigma, int type)
        << " sigma z = " << _sigmaz  << std::endl;
 
   Si _gamma_normalisation Alors
-    _normx = pow(_point_spread_function_standard_deviation[0]+_sigmax,_gamma);
-    _normy = pow(_point_spread_function_standard_deviation[1]+_sigmay,_gamma);
-    _normz = pow(_point_spread_function_standard_deviation[2]+_sigmaz,_gamma);
+    double psf0 = _point_spread_function_standard_deviation[0];
+    _normx = pow(sqrt(psf0*psf0+_sigmax*_sigmax),_gamma);
+    double psf1 = _point_spread_function_standard_deviation[1];
+    _normy = pow(sqrt(psf1*psf1+_sigmay*_sigmay),_gamma);
+    double psf2 = _point_spread_function_standard_deviation[2];
+    _normz = pow(sqrt(psf2*psf2+_sigmaz*_sigmaz),_gamma);
   FinSi
 
   switch ( _type ){
@@ -1277,9 +1280,40 @@ void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
 
 } // CalculFiltres()
 
+//------------------------------------------------------------------------------
+void GeneralGaussianFilter::PreComputeCoeffs()
+{
+
+  if (_sigma_unit!=REAL_SPACE) {
+    // Is it correct, or is it _vx instead ???
+    _coeff_x = 1.0/_vx;  
+    _coeff_y = 1.0/_vy;  
+    _coeff_z = 1.0/_vz;  
+  }
+  else {
+    _coeff_x=_coeff_y=_coeff_z=1.0;
+  }
+
+  Si _gamma_normalisation Alors
+    _coeff_x /= _normx;
+    _coeff_y /= _normy;
+    _coeff_z /= _normz;
+  FinSi
+  
+  _coeff_xx = _coeff_x*_coeff_x;
+  _coeff_xy = _coeff_x*_coeff_y;
+  _coeff_xz = _coeff_x*_coeff_z;
+  _coeff_yy = _coeff_y*_coeff_y;
+  _coeff_yz = _coeff_y*_coeff_z;
+  _coeff_zz = _coeff_z*_coeff_z;
+  
+  _coeff_precomputed = true;
+}
 
 //------------------------------------------------------
-Vect3D<double> GeneralGaussianFilter :: Gradient( int x, int y, int z)
+Vect3D<double> GeneralGaussianFilter :: Gradient( const int& x, 
+                                                  const int& y, 
+                                                  const int& z) 
 //                                         --------
       throw (GradientNotComputed)
 {
@@ -1290,39 +1324,28 @@ Vect3D<double> GeneralGaussianFilter :: Gradient( int x, int y, int z)
     throw GradientNotComputed();
   FinSi
 
-  gx = gy = gz = 0.0;
-
   switch ( _type ){
-
-    case FILTRE_REC:
-        gx =  (*(*this)(IMx_sigma))(x,y,z);
-        gy =  (*(*this)(IMy_sigma))(x,y,z);
-        Si _dim == MODE_3D AlorsFait gz =  (*(*this)(IMz_sigma))(x,y,z);
-    break;
-
     case FILTRE_CONV:
         gx =  -(*(*this)(IMx_sigma))(x,y,z);
         gy =  -(*(*this)(IMy_sigma))(x,y,z);
         Si _dim == MODE_3D AlorsFait gz =  -(*(*this)(IMz_sigma))(x,y,z);
     break;
 
+    case FILTRE_REC:
     case MY_FILTRE_CONV:
         gx =  (*(*this)(IMx_sigma))(x,y,z);
         gy =  (*(*this)(IMy_sigma))(x,y,z);
         Si _dim == MODE_3D AlorsFait gz =  (*(*this)(IMz_sigma))(x,y,z);
     break;
 
+    default:
+      gx = gy = gz = 0.0;
   } // end switch
 
-  gx /= _vx;
-  gy /= _vy;
-  gz /= _vz;
-
-  Si _gamma_normalisation Alors
-    gx *= _normx;
-    gy *= _normy;
-    gz *= _normz;
-  FinSi
+  if (!_coeff_precomputed) PreComputeCoeffs();
+  gx /= _coeff_x;
+  gy /= _coeff_y;
+  gz /= _coeff_z;
 
   return Vect3D<double>(gx,gy,gz);
 
@@ -1376,7 +1399,9 @@ Vect2D<double> GeneralGaussianFilter :: Gradient( int x, int y)
 
 
 //------------------------------------------------------
-Vect3D<double> GeneralGaussianFilter :: Gradient( const double& x, const double& y,  const double& z) 
+Vect3D<double> GeneralGaussianFilter :: InterpolatedGradient( const double& x, 
+                                                              const double& y,  
+                                                              const double& z) 
       throw (GradientNotComputed)
 {
 
@@ -1519,7 +1544,7 @@ void GeneralGaussianFilter :: Hessien2D( double* hessien,
 //------------------------------------------------------
 void GeneralGaussianFilter :: Hessien( double* hessien,
 //                               -------
-            int x, int y, int z)
+            int x, int y, int z) 
       throw (HessianNotComputed)
 {
 
@@ -1530,34 +1555,20 @@ void GeneralGaussianFilter :: Hessien( double* hessien,
     throw HessianNotComputed();
   FinSi
 
-  if (_sigma_unit!=REAL_SPACE) {
-    coeffx = 1.0/_vx;  
-    coeffy = 1.0/_vy;  
-    coeffz = 1.0/_vz;  
-  }
-  else {
-    coeffx=coeffy=coeffz=1.0;
-  }
+  if (!_coeff_precomputed) PreComputeCoeffs();
 
-
-  Si _gamma_normalisation Alors
-    coeffx /= _normx;
-    coeffy /= _normy;
-    coeffz /= _normz;
+  hessien[0] =               (*(*this)(IMxx_sigma))(x,y,z) / _coeff_xx;
+  hessien[1] = hessien[3] =  (*(*this)(IMxy_sigma))(x,y,z) / _coeff_xy;
+  hessien[4] =               (*(*this)(IMyy_sigma))(x,y,z) / _coeff_yy;
+  Si _dim == MODE_2D Alors
+    hessien[2] = hessien[6] =  0.0;
+    hessien[5] = hessien[7] =  0.0;
+    hessien[8] =               0.0;
+  Sinon
+    hessien[2] = hessien[6] =  (*(*this)(IMzx_sigma))(x,y,z) / _coeff_xz;
+    hessien[5] = hessien[7] =  (*(*this)(IMzy_sigma))(x,y,z) / _coeff_yz;
+    hessien[8] =               (*(*this)(IMzz_sigma))(x,y,z) / _coeff_zz;
   FinSi
-
-    hessien[0] =               (*(*this)(IMxx_sigma))(x,y,z) / coeffx / coeffx;
-    hessien[1] = hessien[3] =  (*(*this)(IMxy_sigma))(x,y,z) / coeffx / coeffy;
-    hessien[4] =               (*(*this)(IMyy_sigma))(x,y,z) / coeffy / coeffy;
-    Si _dim == MODE_2D Alors
-      hessien[2] = hessien[6] =  0.0;
-      hessien[5] = hessien[7] =  0.0;
-      hessien[8] =               0.0;
-    Sinon
-      hessien[2] = hessien[6] =  (*(*this)(IMzx_sigma))(x,y,z) / coeffx / coeffz;
-      hessien[5] = hessien[7] =  (*(*this)(IMzy_sigma))(x,y,z) / coeffz / coeffy;
-      hessien[8] =               (*(*this)(IMzz_sigma))(x,y,z) / coeffz / coeffz;
-    FinSi
 
  
 } // Hessien()

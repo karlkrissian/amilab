@@ -128,6 +128,8 @@ if (!exists(MultiLinesClass)) {
       ::max_memory_usage = INT(1000), "Param: Expected memory usage in Mb"
       ::split_image = false, "Param: Split image to avoid excess of RAM usage"
       
+      ::speedup_convolutions = false, "Param: Reduce time of big convolutions"
+      
       ::abort = false, "Abort current processing"
     }
 
@@ -233,7 +235,7 @@ if (!exists(MultiLinesClass)) {
     #    ---------------
       printn "ComputeResponse with sigma = %1%" % sigma
     
-      response.initvalue(0)
+      InitZero(response)
     
       # Computation of the direction
       # the results are 
@@ -340,7 +342,7 @@ if (!exists(MultiLinesClass)) {
     proc ::ComputeResponse_new( NUM sigma, IMAGE response) {
       printn "::ComputeResponse_new"
     
-      response.initvalue(0)
+      InitZero(response)
     
       # Computation of the direction
       # the results are 
@@ -510,6 +512,7 @@ if (!exists(MultiLinesClass)) {
     {
       main_inittime = wx.wxDateTime.UNow()
 
+      inittime = wx.wxDateTime.UNow()
       # add a margin to the extent?
       ::PrintExtent(extent, "extent")
       extent2 = extent
@@ -533,8 +536,14 @@ if (!exists(MultiLinesClass)) {
       #sub_response.info
 
       printn "::ComputeResponse_new_extent"
-      sub_response.initvalue(0)
+      #sub_response.initvalue(0)
+      InitZero(sub_response)
     
+      diff=wx.wxDateTime.UNow()-inittime
+      time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
+      printn "Initialization"
+      printn "%|40t|time:%1%" % time_elapsed
+
       # Computation of the direction
       # the results are 
       #
@@ -550,13 +559,31 @@ if (!exists(MultiLinesClass)) {
       #del ::grad0
       if (::use_StructTensorGrad) {
         grad0 = Image(FLOAT,3,sub_input)
-        # should adjust PSF acording to voxel spacing
-        psf = vector_float(3)
-        psf[0] = ::PSF_stddev/sub_input.vx
-        psf[1] = ::PSF_stddev/sub_input.vy
-        psf[2] = ::PSF_stddev/sub_input.vz
-        
-        sth = Func_StructureTensorHessianNew(sub_input,sigma,1,sub_mask,grad0,psf)
+        # decide on initial filtering
+        max_vs = max(sub_input.vx,sub_input.vy)
+        max_vs = max(max_vs,sub_input.vz)
+        if (::speedup_convolutions)&&(sigma>4*max_vs) {
+          #
+          sigma0 = sqrt(sigma*sigma-4*max_vs*max_vs)
+          # should set the support factor to max 5 ...
+          sub_input_smoothed = filter(sub_input,sigma0,0,0,0)
+
+          # should adjust PSF acording to voxel spacing
+          psf = vector_float(3)
+          psf[0] = (::PSF_stddev+sigma0)/sub_input.vx
+          psf[1] = (::PSF_stddev+sigma0)/sub_input.vy
+          psf[2] = (::PSF_stddev+sigma0)/sub_input.vz
+          sth = Func_StructureTensorHessianNew( sub_input_smoothed,\
+                                                2*max_vs,\
+                                                1,sub_mask,grad0,psf)
+        } else {
+          # should adjust PSF acording to voxel spacing
+          psf = vector_float(3)
+          psf[0] = ::PSF_stddev/sub_input.vx
+          psf[1] = ::PSF_stddev/sub_input.vy
+          psf[2] = ::PSF_stddev/sub_input.vz
+          sth = Func_StructureTensorHessianNew(sub_input,sigma,1,sub_mask,grad0,psf)
+        }
       } else {
         sth = Func_StructureTensorHessianNew(sub_input,sigma,1,sub_mask)
       }
@@ -748,10 +775,14 @@ if (!exists(MultiLinesClass)) {
       response.putimage(tmp)
       #printn "response max %1%" % max(response)
       if (::local_maxima) {
+        inittime = wx.wxDateTime.UNow()
         sub_current_maxima = LocalExtrema(sub_response,e3,e4,sub_mask)
+        diff=wx.wxDateTime.UNow()-inittime
         del tmp
         tmp = sub_current_maxima[xm:xM,ym:yM,zm:zM]
         ::current_maxima.putimage(tmp)
+        printn "::ComputeResponse_new_extent() LocalExtrema time: "+\
+                wx.FromWxString(diff.Format("%M min %S s %l ms"))
       }
       if (::keep_eigenratio) {
         del tmp
@@ -911,18 +942,18 @@ if (!exists(MultiLinesClass)) {
       #
     
       response=Image(FLOAT,1,::input)
-      response.initvalue(0)
+      InitZero(response)
     
       if (::keep_all_scales) {
         ::all_responses <<= Image(FLOAT,::input.tx,::input.ty,::input.tz,::numrad)
       }
 
       v1=Image(FLOAT,3,::input)
-      v1.initvalue(0,0,0)
+      InitZero(v1)
       v2=Image(FLOAT,3,::input)
-      v2.initvalue(0,0,0)
+      InitZero(v2)
       v3=Image(FLOAT,3,::input)
-      v3.initvalue(0,0,0)
+      InitZero(v3)
     
 #      ::all_responses     = VarVector()
 #      ::all_maxresponses  = VarVector()
@@ -1064,7 +1095,7 @@ if (!exists(MultiLinesClass)) {
       # main loop 
       #
       response<<=Image(FLOAT,1,::input)
-      response.initvalue(0)
+      InitZero(response)
 
       if (::keep_all_scales) {
         ::all_responses <<= Image(FLOAT,::input.tx,::input.ty,::input.tz,::numrad)
@@ -1460,11 +1491,12 @@ if (!exists(MultiLinesClass)) {
             ::win.AddEnumChoice(modeid,"Hessian Matrix")
             ::win.AddEnumChoice(modeid,"Structure Tensor")
 
-          ::win.AddBoolean( &::keep_all_scales, "Keep all scales")
-          ::win.AddBoolean( &::normalize_gradient, "Normalize gradient")
-          ::win.AddBoolean( &::use_StructTensorGrad, "Use gradient from Structure Tensor")
-          ::win.AddFloat( &::PSF_stddev, "PSF")
-          ::win.AddBoolean( &::use_linearinterp, "Linear Interpolation")
+          ::win.AddBoolean( ::keep_all_scales, "Keep all scales")
+          ::win.AddBoolean( ::normalize_gradient, "Normalize gradient")
+          ::win.AddBoolean( ::use_StructTensorGrad, "Use gradient from Structure Tensor")
+          ::win.AddFloat(   ::PSF_stddev, "PSF")
+          ::win.AddBoolean( ::use_linearinterp, "Linear Interpolation")
+          ::win.AddBoolean( ::speedup_convolutions, "Speed-up convolutions")
 
           ::win.BeginBoxPanel("Controls")
             ::win.BeginHorizontal()

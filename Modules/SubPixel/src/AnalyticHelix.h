@@ -13,6 +13,7 @@
 const double PI = 3.141592741;
 #endif
 
+#undef AddSetGetVar
 #define AddSetGetVar( name, type) \
   type  name; \
   void Set##name( type _arg) \

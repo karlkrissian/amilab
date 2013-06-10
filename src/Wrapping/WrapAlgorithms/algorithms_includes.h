@@ -37,16 +37,16 @@
 #include "fonctions.h"
 
 #include "StructureTensor.h"
+#include "ImageDerivatives.h"
 
 #ifdef __GCCXML__
   template class ami::ImageExtent<float>;
 #endif // __GCCXML__
 
 #include "amiSRAD.h"
-
 #include "gnuplot.hpp"
-  
 #include "ContinuousMorphology.h"
+#include "func_imagebasictools.h"
 
 #ifdef __GCCXML__
   template amimage::operator unsigned short*();

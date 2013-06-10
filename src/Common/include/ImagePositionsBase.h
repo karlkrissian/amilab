@@ -37,6 +37,9 @@ public:
 
   virtual void* GetVoidPos(int x,int y, int z=0) = 0;
 
+  virtual void SetValue(int x,int y, int z, int coord, double val) = 0;
+
+  virtual void SetVectorValue(int x,int y, int z, double* val) = 0;
 };
 
 

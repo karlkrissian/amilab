@@ -393,15 +393,15 @@ InrImage* Func_Gradient( InrImage* im, float sigma )
 }
 
 //------------------------------------------------------------------------------
-InrImage* Func_Filter( InrImage* im, float sigma, 
-               int der_x, int der_y, int der_z)
+InrImage::ptr Func_Filter( InrImage* im, float sigma, 
+               int der_x, int der_y, int der_z, int support_size)
 {
 
-  InrImage*       image_entree;
-  InrImage*       image_res;
-  GeneralGaussianFilter* filtre;
-  std::string     resname;
-  int             mode;
+  InrImage*               image_entree;
+  InrImage::ptr           image_res;
+  GeneralGaussianFilter*  filtre;
+  std::string             resname;
+  int                     mode;
 
   Si (im->_format == WT_FLOAT) Alors
     image_entree = im;
@@ -413,7 +413,7 @@ InrImage* Func_Filter( InrImage* im, float sigma,
   FinSi
 
   resname = (boost::format("%s.filter") % im->GetName()).str();
-  image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
+  image_res = InrImage::ptr(new InrImage(WT_FLOAT, resname.c_str() , im));
 
   Si image_entree->_tz > 1 Alors
     mode = MODE_3D; 
@@ -422,12 +422,12 @@ InrImage* Func_Filter( InrImage* im, float sigma,
   FinSi
 
   filtre = new GeneralGaussianFilter( image_entree,  mode);
-
+  filtre->Set_use_new_filter(true);
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
+  filtre->SetSupportSize(support_size);
 
-
-  filtre->MyFiltre( image_entree, image_res,  der_x, der_y, der_z);
+  filtre->MyFiltre( image_entree, image_res.get(),  der_x, der_y, der_z);
 
   
   Si image_entree!=im AlorsFait delete image_entree;

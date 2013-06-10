@@ -207,3 +207,9 @@ void Func_PutImage( InrImage* i1,
   FinPour
 
 }
+
+//------------------------------------------------------------------------------
+void InitZero(InrImage::ptr im)
+{
+  im->InitZero();
+}

@@ -75,6 +75,8 @@
 #include "FloatMatrix.hpp"
 #include "Eigen.hpp"
 //#include "fonctions.h"
+#include "Timing.hpp"
+#include <omp.h>
 
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts  Vars;
@@ -131,7 +133,7 @@ unsigned char Func_StructureTensor2D( InrImage* image_initiale,
                 InrImage* mask)
 {
     FloatMatrix     matrice(2,2);
-    FloatMatrix     matriceinit(2,2);
+//    FloatMatrix     matriceinit(2,2);
     float           vap[2];
     FloatMatrix     vec_propre(2,2);
     int          x,y;
@@ -311,7 +313,7 @@ unsigned char Func_StructureTensor( InrImage* image_initiale,
 
   
     FloatMatrix     matrice(3,3);
-    FloatMatrix     matriceinit(3,3);
+//    FloatMatrix     matriceinit(3,3);
     float           vap[3];
     FloatMatrix     vec_propre(3,3);
     int          x,y,z;
@@ -585,7 +587,7 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
 
   
     FloatMatrix     matrice(3,3);
-    FloatMatrix     matriceinit(3,3);
+//    FloatMatrix     matriceinit(3,3);
     FloatMatrix     H_3D(3,3);
     float           vap[3];
     FloatMatrix     vec_propre(3,3);
@@ -827,19 +829,13 @@ InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
                         )
 {
   // TODO: 2D version
-    FloatMatrix         matrice(3,3);
-    FloatMatrix         matriceinit(3,3);
-    FloatMatrix         H_3D(3,3);
-    int                 x,y,z;
-    Vect3D<double>      grad;
-    double              gradarray[3];
+//    FloatMatrix         matriceinit(3,3);
     InrImage::ptr       image;
-
     InrImage::ptr       result;
-
     GeneralGaussianFilter::ptr filtre;
-    double              hessien[9];
-    int                 i,j,k;
+
+  Timing t0("Func_StructureTensorHessianNew() Filtering"); 
+  t0.Debut();
 
   type_filtre = MY_FILTRE_CONV;
   Si (image_initiale->_format == WT_FLOAT) Alors
@@ -870,19 +866,26 @@ InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
   if (mask.use_count())
     filtre->FixeMasque(mask.get());
 
+  t0.Fin();
+  std::cout << t0 << std::endl;
+
+  Timing t("Func_StructureTensorHessianNew() Creating tensor"); 
+  t.Debut();
+
   result =  InrImage::ptr(new InrImage( WT_FLOAT, 
                                         6, 
                                         "StructTensorH.ami.gz", 
                                         image.get()));
 
   // Calcul des coefficients du tenseur non liss�
-  double initval[6] = { 0,0,0,0,0,0};
-  result->InitImage(initval,6);
+  //double initval[6] = { 0,0,0,0,0,0};
+  //result->InitImage(initval,6);
+  result->InitZero();
 
-  result->InitBuffer();
+  
   if (imgrad.get()) {
-    imgrad->InitImage(0,0,0);
-    imgrad->InitBuffer();
+    //imgrad->InitImage(0,0,0);
+    imgrad->InitZero();
   }
 
   long int n=0;
@@ -890,67 +893,93 @@ InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
   bool process;
   printf("Struct Tensor: ");
 
-  Pour( z, 0, image->_tz - 1)
-  Pour( y, 0, image->_ty - 1)
-  Pour( x, 0, image->_tx - 1)
-    int per = (int)((100.0*n)/image->Size());
-    if ((int)(per/10) != (int)(prev_per/10)) {
-      printf(" %d %% ",per);
-      fflush(stdout);
-      prev_per = per;
-    }
+  bool use_mask      = mask.use_count();
+  bool save_gradient = imgrad.get();
+  
+  filtre->PreComputeCoeffs();
+  
+  #pragma omp parallel
+  #pragma omp for
+  for( int z=0; z<= image->_tz - 1; z++)
+  {
+    double              G[3];
+    Vect3D<double>      grad;
+    double              H[9];
+    //FloatMatrix         matrice(3,3);
 
-    if (!mask.use_count())
-      process = true;
-    else
-      process = (*mask)(x,y,z)>0.5;
+    for( int y=0; y<= image->_ty - 1; y++)
+    for( int x=0; x<= image->_tx - 1; x++)
+    {
+  //     int per = (int)((100.0*n)/image->Size());
+  //     if ((int)(per/10) != (int)(prev_per/10)) {
+  //       printf(" %d %% ",per);
+  //       fflush(stdout);
+  //       prev_per = per;
+  //     }
 
-    if (process) {
-      grad = filtre->Gradient(x,y,z);
-      gradarray[0]=grad.x;
-      gradarray[1]=grad.y;
-      gradarray[2]=grad.z;
-      filtre->Hessien( hessien, x,y,z);
+      if (!use_mask)
+        process = true;
+      else
+        process = (*mask)(x,y,z)>0.5;
 
-      // Compute squared hessian
-      H_3D[0][0] = hessien[0];
-      H_3D[0][1] = hessien[1];
-      H_3D[0][2] = hessien[2];
-      H_3D[1][0] = hessien[3];
-      H_3D[1][1] = hessien[4];
-      H_3D[1][2] = hessien[5];
-      H_3D[2][0] = hessien[6];
-      H_3D[2][1] = hessien[7];
-      H_3D[2][2] = hessien[8];
+      if (process) {
+        grad = filtre->Gradient(x,y,z);
+        G[0]=grad.x;
+        G[1]=grad.y;
+        G[2]=grad.z;
+        filtre->Hessien( H, x,y,z);
+        
+        double tens[6];
 
-      int pos=0;
-      for(i=0;i<3;i++) 
-      {
-        for(j=i;j<3;j++) 
-        {
-            matrice[i][j]=0;
-            for(k=0;k<3;k++)
-              matrice[i][j] += H_3D[i][k]*H_3D[k][j];
-            matrice[i][j] += beta*gradarray[i]*gradarray[j];
-            result->VectFixeValeur( pos++, matrice[i][j]);
+        // matrice at 0,0
+        tens[0] = H[0]*H[0]+H[1]*H[1]+H[2]*H[2]+beta*(G[0]*G[0]);
+        // matrice at 0,1
+        tens[1] = H[0]*H[3]+H[1]*H[4]+H[2]*H[5]+beta*(G[0]*G[1]);
+        // matrice at 0,2
+        tens[2] = H[0]*H[6]+H[1]*H[7]+H[2]*H[8]+beta*(G[0]*G[2]);
+        // matrice at 1,1
+        tens[3] = H[3]*H[3]+H[4]*H[4]+H[5]*H[5]+beta*(G[1]*G[1]);
+        // matrice at 1,2
+        tens[4] = H[3]*H[6]+H[4]*H[7]+H[5]*H[8]+beta*(G[1]*G[2]);
+        // matrice at 2,2
+        tens[5] = H[6]*H[6]+H[7]*H[7]+H[8]*H[8]+beta*(G[2]*G[2]);
+
+        result->SetVectorValue(x,y,z, tens);
+
+        // Compute squared hessian
+//         H_3D[0][0] = hessien[0];
+//         H_3D[0][1] = hessien[1];
+//         H_3D[0][2] = hessien[2];
+//         H_3D[1][0] = hessien[3];
+//         H_3D[1][1] = hessien[4];
+//         H_3D[1][2] = hessien[5];
+//         H_3D[2][0] = hessien[6];
+//         H_3D[2][1] = hessien[7];
+//         H_3D[2][2] = hessien[8];
+
+//         for(int i=0;i<3;i++) 
+//         {
+//           for(int j=i;j<3;j++) 
+//           {
+//               matrice[i][j]=0;
+//               for(int k=0;k<3;k++)
+//                 matrice[i][j] += H_3D[i][k]*H_3D[k][j];
+//               matrice[i][j] += beta*gradarray[i]*gradarray[j];
+//               result->SetValue(x,y,z, pos++, matrice[i][j]);
+//           }
+//         }
+        if (save_gradient) {
+          imgrad->SetVectorValue(x,y,z, G);
         }
       }
-      if (imgrad.get()) {
-        for(i=0;i<3;i++) 
-          imgrad->VectFixeValeur( i, gradarray[i]);
-      }
-    }
 
-    result->IncBuffer();
-    if (imgrad.get()) imgrad->IncBuffer();
-
-    n++;
-
-  FinPour
-  FinPour
-  FinPour
+    } // for x,y
+  } // parallel for z
 
   printf("\n");
+
+  t.Fin();
+  std::cout << t << std::endl;
 
   return result;
 

@@ -31,14 +31,17 @@
 
 #include "inrimage.hpp"
 
-InrImage* Func_AutoCrop( InrImage* im, int margin);
+InrImage* Func_AutoCrop(  InrImage* im, 
+                          int margin);
 
-InrImage* Func_SubImage( InrImage* im, 
-			 int x1, int y1, int z1,
-			 int x2, int y2, int z2);
+InrImage* Func_SubImage(  InrImage* im, 
+                          int x1, int y1, int z1,
+                          int x2, int y2, int z2);
 
-void      Func_PutImage( InrImage* i1, 
-			 InrImage* i2,
-			 int x, int y, int z);
+void      Func_PutImage(  InrImage* i1, 
+                          InrImage* i2,
+                          int x, int y, int z);
+
+void      InitZero(InrImage::ptr im);
 
 #endif // FUNC_BASICTOOLS_H

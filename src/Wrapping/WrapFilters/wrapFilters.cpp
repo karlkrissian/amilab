@@ -841,8 +841,8 @@ InrImage* NLmeans_MRI(ParamList* p)
   (*result)=(*input);
 
   // estimate the noise standard deviation
-  InrImage* in_lmean = NULL;
-  InrImage* in_lsd   = NULL;
+  InrImage::ptr in_lmean;
+  InrImage::ptr in_lsd;
 
   var_noise = Func_Compute_sigma2_MRI_mode(input_float, input_roi);
 
@@ -858,10 +858,6 @@ InrImage* NLmeans_MRI(ParamList* p)
 
   for (it=0;it<nb_it;it++) {
 
-    if (it>0) {
-      delete in_lmean;
-      delete in_lsd;
-    }
     in_lmean = Func_Filter(result,sigma,0,0,0);
 
     input_float->InitBuffer();
@@ -899,8 +895,8 @@ InrImage* NLmeans_MRI(ParamList* p)
       thread_info[i].thread_id      = i;
       thread_info[i].total_threads  = num_threads;
       thread_info[i].input_float    = input_float;
-      thread_info[i].input_lmean    = in_lmean;
-      thread_info[i].input_lsd      = in_lsd;
+      thread_info[i].input_lmean    = in_lmean.get();
+      thread_info[i].input_lsd      = in_lsd.get();
       thread_info[i].result         = result;
       thread_info[i].t              = t;
       thread_info[i].h              = h;
@@ -939,8 +935,6 @@ InrImage* NLmeans_MRI(ParamList* p)
 
   noise_reduction->Sauve();
 
-  delete in_lmean;
-  delete in_lsd;
   return result;
 
 }  // NLmeans_MRI()

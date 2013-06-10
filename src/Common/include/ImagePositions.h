@@ -71,6 +71,10 @@ public:
 
   void* GetVoidPos(int x,int y, int z=0);
 
+  void SetValue(int x,int y, int z, int coord, double val);
+
+  void SetVectorValue(int x,int y, int z, double* val);
+  
 };
 
 #include "ImagePositions.tpp"

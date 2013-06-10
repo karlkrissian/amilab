@@ -126,3 +126,16 @@ void* ImagePositions<T>::GetVoidPos(int x, int y, int z)
 {
   return (void*) (_positions[z][y]+_vdim*x);
 }
+
+template<class T>
+void ImagePositions<T>::SetValue(int x,int y, int z, int coord, double val)
+{
+  *(_positions[z][y]+_vdim*x+coord) = (T) val;
+}
+
+template<class T>
+void ImagePositions<T>::SetVectorValue(int x,int y, int z, double* val)
+{
+  T* pos = _positions[z][y]+_vdim*x;
+  for(int i=0;i<_vdim;i++) pos[i] = (T) val[i];
+}

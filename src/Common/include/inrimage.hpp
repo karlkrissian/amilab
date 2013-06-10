@@ -946,38 +946,23 @@ public:
     //   --------------
     // Fixe la valeur de l'image au point courant du buffer
     {
-
       _Iterator->SetDoubleValue(coord,val);
-
-       /*
-       case WT_RGBA:
-       case WT_UNSIGNED_CHAR:
-          _buffer_UNSIGNED_CHAR[coord]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
-       break;
-
-       case WT_UNSIGNED_SHORT:
-          _buffer_UNSIGNED_SHORT[coord]   = (FORMAT_UNSIGNED_SHORT)    (val+0.05);
-       break;
-
-       case WT_SIGNED_SHORT:
-          _buffer_SIGNED_SHORT[coord]   = (FORMAT_SIGNED_SHORT)    round(val);
-       break;
-
-       case WT_SIGNED_INT:
-          _buffer_SIGNED_INT[coord]   = (FORMAT_SIGNED_INT)    (round(val));
-       break;
-
-       case WT_UNSIGNED_INT:
-          _buffer_UNSIGNED_INT[coord]   = (FORMAT_UNSIGNED_INT)    (val+0.05);
-       break;
-
-       case WT_RGB:
-          _buffer_RGB[coord]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
-        break;
-       */
-
     } // VectFixeValeur()
 
+    //
+    void SetValue( int x, int y, int z, unsigned char coord, double val)
+    //   --------------
+    // Fixe la valeur de l'image au point courant du buffer
+    {
+      _positions->SetValue(x,y,z,coord,val);
+    } // VectFixeValeur()
+
+    void SetVectorValue( int x, int y, int z, double* values)
+    //   --------------
+    // Fixe la valeur de l'image au point courant du buffer
+    {
+      _positions->SetVectorValue(x,y,z,values);
+    } // VectFixeValeur()
 
   //@}
 
