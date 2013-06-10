@@ -350,12 +350,12 @@ if (!exists(MultiLinesClass)) {
       #
     
       # Compute Structure Tensor
-      printn "Structure Tensor"
       inittime = wx.wxDateTime.UNow()
       sth = filters.StructureTensorH(&::input,sigma,1,&::mask)
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
-      printn "time: "+time_elapsed
+      printn "Structure Tensor"
+      printn "%|40t|time:%1%" % time_elapsed
       ::total_structtensor_time += diff
     
       SetProgress(::current_progress+::current_step*0.25)
@@ -390,7 +390,8 @@ if (!exists(MultiLinesClass)) {
       ed.Run()
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
-      printn "EigenDecomp2 time: "+time_elapsed
+      printn "EigenDecomp2 time: %|40t|%1%" % time_elapsed
+      #printn "EigenDecomp2 time: "+time_elapsed
       ::total_eigen_time        += diff
 
       if (::keep_eigenratio) {
@@ -424,7 +425,7 @@ if (!exists(MultiLinesClass)) {
       }
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
-      printn "Gradient time: "+time_elapsed
+      printn "Gradient time: %|40t|%1%" % time_elapsed
       ::total_gradient_time       += diff
 
       SetProgress(::current_progress+::current_step*0.75)
@@ -455,21 +456,22 @@ if (!exists(MultiLinesClass)) {
       repcircle.FixeRayon(::theta*sigma,1)
 
       cb3d = algorithms.CircleBoundaries3D()
-      cb3d.SetBoundaryComputationClass(&repcircle)
-      cb3d.SetMask(&::mask)
+      cb3d.SetBoundaryComputationClass(repcircle)
+      cb3d.SetMask(::mask)
 
       #e3 = eig[3]
       #e4 = eig[4]
       e3 = ed.Geteigenvector1()
       e4 = ed.Geteigenvector2()
 
-      cb3d.SetOrientations(&e3,&e4)
+      cb3d.SetOrientations(e3,e4)
       #::grad0 = grad
       #response
-      cb3d.Execute(&response)
+      cb3d.GetParameters().SetNumberOfThreads(wx.wxThread.GetCPUCount())
+      cb3d.Execute(response)
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
-      printn "Circle boundaries time: "+time_elapsed
+      printn "Circle boundaries time: %|40t|%1%" % time_elapsed
       ::total_circle_time       += diff
 
       #diff = max(norm(response-::response2))
@@ -541,7 +543,6 @@ if (!exists(MultiLinesClass)) {
       #
     
       # Compute Structure Tensor
-      printn "Structure Tensor"
       inittime = wx.wxDateTime.UNow()
       #sth = filters.StructureTensorH(sub_input,sigma,1,sub_mask)
       # get the gradient at the same time
@@ -561,7 +562,8 @@ if (!exists(MultiLinesClass)) {
       }
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
-      printn "time: "+time_elapsed
+      printn "Structure Tensor"
+      printn "%|40t|time:%1%" % time_elapsed
       ::total_structtensor_time      += diff
     
       SetProgress(::current_progress+::current_step*0.25)
@@ -596,7 +598,7 @@ if (!exists(MultiLinesClass)) {
       ed.Run()
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
-      printn "EigenDecomp2 time: "+time_elapsed
+      printn "EigenDecomp2 time: %|40t|%1%" % time_elapsed
       ::total_eigen_time        += diff
       
 
@@ -640,7 +642,7 @@ if (!exists(MultiLinesClass)) {
       #::grad = &grad
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
-      printn "Gradient time: "+time_elapsed
+      printn "Gradient time: %|40t|%1%" % time_elapsed
       ::total_gradient_time       += diff
 
       SetProgress(::current_progress+::current_step*0.75)
@@ -690,7 +692,7 @@ if (!exists(MultiLinesClass)) {
       cb3d.Execute(sub_response)
       diff=wx.wxDateTime.UNow()-inittime2
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
-      printn "Circle boundaries execute time: "+time_elapsed
+      printn "Circle boundaries execute time: %|40t|%1%" % time_elapsed
 
       #inittime2 = wx.wxDateTime.UNow()
       #cb3d.Execute_old(sub_response2)
@@ -710,7 +712,7 @@ if (!exists(MultiLinesClass)) {
       
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
-      printn "Circle boundaries time: "+time_elapsed
+      printn "Circle boundaries time: %|40t|%1%" % time_elapsed
       ::total_circle_time       += diff
 
       #diff = max(norm(response-::response2))
@@ -1072,8 +1074,9 @@ if (!exists(MultiLinesClass)) {
       time_before_loop = wx.wxDateTime.UNow()
 
       for i=0 to ::numrad-1 {
-        iteration_mess = " Iteration %1%" % i
+        iteration_mess = "----- Iteration %1% -----" % i
         SetStatusText( current_proc+iteration_mess )
+        printn iteration_mess
         ::current_progress = (FLOAT)i/::numrad*100
         ::current_step     = 1/::numrad*100
         SetProgress(::current_progress)
