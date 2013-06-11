@@ -410,6 +410,17 @@ void amimage::ComputeDataSize()
                 repres_size[repres]*type_size[type];
 }
 
+//----------------------------------------------------------------------
+int amimage::GetRepresSize() const
+{
+  return repres_size[repres];
+}
+
+//----------------------------------------------------------------------
+int amimage::GetTypeSize() const
+{
+  return type_size[type];
+}
 
 //----------------------------------------------------------------------
 void amimage::initialize()

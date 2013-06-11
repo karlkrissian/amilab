@@ -133,7 +133,10 @@ static double MoyenneVoxel( InrImage* image, int x, int y, int z)
 
 
 //-------------------------------------------------------
-CreeCrest* Func_IsoLine( InrImage* input, float Sigma, InrImage* image_masque, InrImage* image_resultat)
+CreeCrest* Func_IsoLine( InrImage* input, 
+                         float Sigma, 
+                         InrImage* image_masque, 
+                         InrImage* image_resultat)
 //     ----
 {
 

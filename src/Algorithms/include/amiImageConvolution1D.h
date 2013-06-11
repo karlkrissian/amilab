@@ -90,6 +90,9 @@ namespace ami {
     /// Gaussian derivation order
     AddSetGetVar( _order, int)
 
+    /// Mask Image
+    AddSetGetVar( _mask, InrImage::ptr)
+
     ///
     double GaussianFunction( double x, double sigma,  int orden=0);
 

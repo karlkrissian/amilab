@@ -101,23 +101,23 @@ double probability_weight2(InrImage* in, InrImage* smoothed,
 
   // extract subimages
   InrImage::ptr sub1;
-  InrImage* sub1_smoothed;
+  InrImage::ptr sub1_smoothed;
   InrImage::ptr sub2;
   InrImage* sub1diff;
   InrImage* sub2diff;
 
 
-  sub1 = InrImage::ptr(Func_SubImage(in,
-                          x+fi_min,y+fj_min,z+fk_min,
-                          x+fi_max,y+fj_max,z+fk_max));
-  sub1_smoothed = Func_SubImage(smoothed, 
-                          x+fi_min,y+fj_min,z+fk_min,
-                          x+fi_max,y+fj_max,z+fk_max);
-  sub2 = InrImage::ptr(Func_SubImage(in,
-                          x+dx+fi_min,y+dy+fj_min,z+dz+fk_min,
-                          x+dx+fi_max,y+dy+fj_max,z+dz+fk_max));
+  sub1 =          Func_SubImageNew( in,
+                                    x+fi_min,y+fj_min,z+fk_min,
+                                    x+fi_max,y+fj_max,z+fk_max);
+  sub1_smoothed = Func_SubImageNew( smoothed, 
+                                    x+fi_min,y+fj_min,z+fk_min,
+                                    x+fi_max,y+fj_max,z+fk_max);
+  sub2 =          Func_SubImageNew( in,
+                                    x+dx+fi_min,y+dy+fj_min,z+dz+fk_min,
+                                    x+dx+fi_max,y+dy+fj_max,z+dz+fk_max);
 
-  if (!sub2) {
+  if (!sub2.get()) {
     std::cerr << "pb getting the subwindow sub ar x+dx,y+dy,z+dz" << std::endl;
     return 0;
   }
@@ -149,10 +149,8 @@ double probability_weight2(InrImage* in, InrImage* smoothed,
   double diff = mean1-mean2;
   double varsum = var1+var2+0.01;
 
-  delete sub1_smoothed;
   delete sub1diff;
   delete sub2diff;
-
  
   return (1.0/sqrt(varsum))*exp(-diff*diff/(2.0*(varsum)));
 //  printf("e sd \n");

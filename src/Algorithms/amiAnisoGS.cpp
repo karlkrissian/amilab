@@ -159,7 +159,7 @@ InrImage::ptr ami::AnisoGS::GetOutput()
   InrImage* imres = this->Getresult_image();
   int bs = this->boundary_extension_size;
 
-  InrImage::ptr res(Func_SubImage( imres,
+  InrImage::ptr res(Func_SubImageNew( imres,
                         bs,bs,bs,
                         imres->DimX()-1-bs,
                         imres->DimY()-1-bs,
@@ -188,7 +188,7 @@ InrImage::ptr ami::AnisoGS::Run(InrImage::ptr input, float sigma, float k,
   int bs = aniso->boundary_extension_size;
 
   InrImage::ptr res(
-                    Func_SubImage( imres,
+                    Func_SubImageNew( imres,
                         bs,bs,bs,
                         imres->DimX()-1-bs,
                         imres->DimY()-1-bs,
@@ -792,7 +792,7 @@ void ami::AnisoGS::Grad2DShiftY(float* I,t_3Point& grad)
 double ami::AnisoGS::Compute_q0_subvol( InrImage* im)
 {
 
-  InrImage* subvol;
+  InrImage::ptr subvol;
   InrImage::ptr im2 = this->SRAD_ROI;
   int xmin,xmax,ymin,ymax,zmin,zmax;
   double var;
@@ -811,10 +811,10 @@ double ami::AnisoGS::Compute_q0_subvol( InrImage* im)
   xmax = (int) ((im2->TrX()-im->TrX())/im2->VoxSizeX()+im2->DimX()-1+0.5);
   ymax = (int) ((im2->TrY()-im->TrY())/im2->VoxSizeY()+im2->DimY()-1+0.5);
   zmax = (int) ((im2->TrZ()-im->TrZ())/im2->VoxSizeZ()+im2->DimZ()-1+0.5);
-  subvol = Func_SubImage( im,
-        xmin,ymin,zmin,
-        xmax,ymax,zmax);
-  mean   = Func_mean(subvol);
+  subvol = Func_SubImageNew(  im,
+                              xmin,ymin,zmin,
+                              xmax,ymax,zmax);
+  mean   = Func_mean(subvol.get());
 
   subvol->InitBuffer();
   total =0;
@@ -828,8 +828,6 @@ double ami::AnisoGS::Compute_q0_subvol( InrImage* im)
 
   total = total/subvol->Size();
   var=total;
-
-  delete subvol;
 
   if (mean>0) return var/mean/mean;   else return 0;
 
@@ -885,9 +883,9 @@ double ami::AnisoGS::Compute_sigma2_MRI(InrImage* im)
   xmax = (int) ((im2->TrX()-im->TrX())/im2->VoxSizeX()+im2->DimX()-1+0.5);
   ymax = (int) ((im2->TrY()-im->TrY())/im2->VoxSizeY()+im2->DimY()-1+0.5);
   zmax = (int) ((im2->TrZ()-im->TrZ())/im2->VoxSizeZ()+im2->DimZ()-1+0.5);
-  InrImage::ptr subvol( Func_SubImage(  im,
-                                        xmin,ymin,zmin,
-                                        xmax,ymax,zmax));
+  InrImage::ptr subvol( Func_SubImageNew( im,
+                                          xmin,ymin,zmin,
+                                          xmax,ymax,zmax));
   
   mean   = Func_mean(subvol.get());
 

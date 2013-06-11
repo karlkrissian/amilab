@@ -20,15 +20,15 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::dimensions.SetHelp("Choose the synthetic image dimensionº")
     ::dimensions.AddValue( "2D","2D image")
     ::dimensions.AddValue( "3D","3D image")
-    ::ImageDim = INT(0), ::dimensions.GetHelpMessage()
+    ::ImageDim = INT(0), "Param: "+::dimensions.GetHelpMessage()
     ::dimensions.SetVariable(&::ImageDim)
 
-    ::type2D     = INT(0), "Analytic 2D function type"
-    ::type3D     = INT(0), "Analytic 3D function type"
+    ::type2D     = INT(0), "Param: Analytic 2D function type"
+    ::type3D     = INT(0), "Param: Analytic 3D function type"
     #::pv_type    = INT(0), "Compute partial effect function"
-    ::subdiv2D   = INT(6), "Subdivision level for 2D functions"
-    ::subdiv3D   = INT(4), "Subdivision level for 3D functions"
-    ::autodisplay = UCHAR(1), "Display image after computation"
+    ::subdiv2D   = INT(6), "Param: Subdivision level for 2D functions"
+    ::subdiv3D   = INT(4), "Param: Subdivision level for 3D functions"
+    ::autodisplay = UCHAR(1), "Param: Display image after computation"
     ::output_name= "synthetic_res", "Output image name"
     
     ::reloadLine     = UCHAR(0), "Reload the analytic line"
@@ -42,71 +42,73 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::reloadHelix    = UCHAR(0), "Reload the analytic helix"
     
     #Input image parameters
-    ::dimx = INT(100), "Input image X size"
-    ::dimy = INT(100), "Input image Y size"
-    ::dimz = INT(100), "Input image Z size"
+    ::dimx = INT(100), "Param: Input image X size"
+    ::dimy = INT(100), "Param: Input image Y size"
+    ::dimz = INT(100), "Param: Input image Z size"
     
     #Circle parameters
-    ::cx = 50.0, "X component of the center of the circle"
-    ::cy = 50.0, "Y component of the center of the circle"
-    ::cr = 20.0, "Radius of the circle"
+    ::cx = 50.0, "Param: X component of the center of the circle"
+    ::cy = 50.0, "Param: Y component of the center of the circle"
+    ::cr = 20.0, "Param: Radius of the circle"
     
     #Line parameters
-    ::line_angle = 45.0, "Angle of the line"
-    ::n          = 50.0, "Y axis cut point"
+    ::line_angle = 45.0, "Param: Angle of the line"
+    ::n          = 50.0, "Param: Y axis cut point"
     
     #Straight Vessel 2D parameters
-    ::vessel_cx    = 50.0, "X component of the center of the vessel"
-    ::vessel_cy    = 50.0, "Y component of the center of the vessel"
-    ::vessel_angle = 45.0, "Angle of the vessel"
-    ::vessel_thick =  4.0, "Thickness of the vessel"
+    ::vessel_cx    = 50.0, "Param: X component of the center of the vessel"
+    ::vessel_cy    = 50.0, "Param: Y component of the center of the vessel"
+    ::vessel_angle = 45.0, "Param: Angle of the vessel"
+    ::vessel_thick =  4.0, "Param: Thickness of the vessel"
     
     #Ring 2D parameters
-    ::ring_cx     = 50.0, "X component of the center of the ring"
-    ::ring_cy     = 50.0, "Y component of the center of the ring"
-    ::ring_radius = 30.0, "Ring internal radius"
-    ::ring_thick  = 2.0, "Thickness of the ring"
+    ::ring_cx     = 50.0, "Param: X component of the center of the ring"
+    ::ring_cy     = 50.0, "Param: Y component of the center of the ring"
+    ::ring_radius = 30.0, "Param: Ring internal radius"
+    ::ring_thick  = 2.0, "Param: Thickness of the ring"
     
     #Cube parameters
-    ::cube_cx   = 50.0, "X component of the center of the cube"
-    ::cube_cy   = 50.0, "Y component of the center of the cube"
-    ::cube_cz   = 50.0, "Z component of the center of the cube"
-    ::cube_dimx = 30.0, "X size of the cube"
-    ::cube_dimy = 30.0, "Y size of the cube"
-    ::cube_dimz = 30.0, "Z size of the cube"
+    ::cube_cx   = 50.0, "Param: X component of the center of the cube"
+    ::cube_cy   = 50.0, "Param: Y component of the center of the cube"
+    ::cube_cz   = 50.0, "Param: Z component of the center of the cube"
+    ::cube_dimx = 30.0, "Param: X size of the cube"
+    ::cube_dimy = 30.0, "Param: Y size of the cube"
+    ::cube_dimz = 30.0, "Param: Z size of the cube"
     
     #Cylinder parameters
     ::cylinder = AnalyticCylinder()
     # use variable direction from object ...
-    Comments(::cylinder->Radius,   "Radius of the cylinder")
-    Comments(::cylinder->Xdir,     "Cylinder X direction")
-    Comments(::cylinder->Ydir,     "Cylinder Y direction")
-    Comments(::cylinder->Zdir,     "Cylinder Z direction")
-    Comments(::cylinder->Center_x, "Cylinder center x") 
-    Comments(::cylinder->Center_y, "Cylinder center y")
-    Comments(::cylinder->Center_z, "Cylinder center z")
+    Comments(::cylinder->Radius,   "Param: Radius of the cylinder")
+    Comments(::cylinder->Xdir,     "Param: Cylinder X direction")
+    Comments(::cylinder->Ydir,     "Param: Cylinder Y direction")
+    Comments(::cylinder->Zdir,     "Param: Cylinder Z direction")
+    Comments(::cylinder->Center_x, "Param: Cylinder center x") 
+    Comments(::cylinder->Center_y, "Param: Cylinder center y")
+    Comments(::cylinder->Center_z, "Param: Cylinder center z")
     ::ResetCylinder()
     
     #Sphere parameters
-    ::sx = 50.0, "X component of the center of the sphere"
-    ::sy = 50.0, "Y component of the center of the sphere"
-    ::sz = 50.0, "Z component of the center of the sphere"
-    ::sr = 20.0, "Radius of the sphere"
+    ::sx = 50.0, "Param: X component of the center of the sphere"
+    ::sy = 50.0, "Param: Y component of the center of the sphere"
+    ::sz = 50.0, "Param: Z component of the center of the sphere"
+    ::sr = 20.0, "Param: Radius of the sphere"
     
     #Torus parameters
-    ::tx = 50.0, "X component of the center of the torus"
-    ::ty = 50.0, "Y component of the center of the torus"
-    ::tz = 50.0, "Z component of the center of the torus"
-    ::tr = 2.0,  "Minimum radius of the torus"
-    ::tR = 10.0, "Maximum radius of the torus"
+    ::tx = 50.0, "Param: X component of the center of the torus"
+    ::ty = 50.0, "Param: Y component of the center of the torus"
+    ::tz = 50.0, "Param: Z component of the center of the torus"
+    ::tr = 2.0,  "Param: Minimum radius of the torus"
+    ::tR = 10.0, "Param: Maximum radius of the torus"
     
     #Helix parameters
-    ::helix_cx = 50.0, "X component of the center of the torus"
-    ::helix_cy = 50.0, "Y component of the center of the torus"
-    ::helix_cz = 50.0, "Z component of the center of the torus"
-    ::helix_r  = 10.0,     "radius"
-    ::helix_t  = 2.0,      "thickness"
-    ::helix_coeff = Pi/10, "rotation coefficient"
+    ::helix_cx = 50.0, "Param: X component of the center of the torus"
+    ::helix_cy = 50.0, "Param: Y component of the center of the torus"
+    ::helix_cz = 50.0, "Param: Z component of the center of the torus"
+    ::helix_r  = 10.0,     "Param: radius"
+    ::helix_t  = 2.0,      "Param: thickness"
+    ::helix_coeff = Pi/10, "Param: rotation coefficient"
+    ::helix_radius_change_amplitude = 2,  "Param: amplitude of radius change"
+    ::helix_radius_change_period    = 20, "Param: period of radius change"
 
 
     #Help
@@ -114,8 +116,8 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::html_filename = op_system.GetCurrentScriptDir()+"/Doc/SyntheticPVEImages/index.html"
     
     #Image intensities
-    ::A = 200.0
-    ::B = 100.0
+    ::A = 200.0, "Param: Foreground intensity"
+    ::B = 100.0, "Param: Background intensity"
     
     #::NewType2D()
     #::NewType3D()
@@ -471,8 +473,11 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::helix.Setradius(::helix_r)
     ::helix.Setthickness(::helix_t)
     ::helix.Setrotation_coeff(::helix_coeff)
+    ::helix.Setradius_change_amplitude(::helix_radius_change_amplitude)
+    ::helix.Setradius_change_period   (::helix_radius_change_period)
   }
   Comments(::GenerateHelix, "Generate analytic helix")
+
   #--------------------------------------------------------------
   proc ::ResetHelix() {
     ::helix_cx = 50.0
@@ -481,6 +486,8 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::helix_r = 10.0
     ::helix_t = 2.0
     ::helix_coeff = 0.1
+    ::helix_radius_change_amplitude = 2
+    ::helix_radius_change_period    = 20
     ::win.Update(-1)
     if(::reloadHelix == 1){
       ::RecomputeHelix()
@@ -607,10 +614,12 @@ if (!exists(SyntheticPVEImagesClass)) {
   #--------------------------------------------------------------
   proc ::RecomputeHelix() {
     if(exists(::helix)) {
-      ::helix.setCenter(::helix_cx,::helix_cy,::helix_cz)
-      ::helix.Setradius(::helix_r)
-      ::helix.Setthickness(::helix_t)
-      ::helix.Setrotation_coeff(::helix_coeff)
+      ::helix.setCenter                 (::helix_cx,::helix_cy,::helix_cz)
+      ::helix.Setradius                 (::helix_r)
+      ::helix.Setthickness              (::helix_t)
+      ::helix.Setrotation_coeff         (::helix_coeff)
+      ::helix.Setradius_change_amplitude(::helix_radius_change_amplitude)
+      ::helix.Setradius_change_period   (::helix_radius_change_period)
       if(exists(::pv)) {
         ::pv->setAnalyticFunction(&::helix)
         ::Compute()
@@ -905,6 +914,12 @@ if (!exists(SyntheticPVEImagesClass)) {
                   ::win.AddFloat(&::helix_t, "thick", 1, 100)
                   #::win.SetCallback(&::RecomputeHelix)
                   ::win.AddFloat(&::helix_coeff, "coeff", 1, 10)
+
+                  ::win.AddFloat( ::helix_radius_change_amplitude, \
+                                  "radius change amplitude", 1, 10)
+
+                  ::win.AddFloat( ::helix_radius_change_period, \
+                                  "radius change period", 1, 100)
                   #::win.SetCallback(&::RecomputeHelix)
                 ::win.EndBoxPanel()
                 ::win.BeginHorizontal()
@@ -918,6 +933,11 @@ if (!exists(SyntheticPVEImagesClass)) {
           #::win.EnablePanel(::functions_page, 0)
         #::win.EndBook()
       
+      # add page for saving/loading parameters
+      ::AddParamPage(::win)
+      # only save variables containing 'Param:' in their comments
+      ::SetParamCommentsFilter(".*Param:.*")
+
       #Help tab
       ::AddHelpPage(&::win)
       

@@ -10,6 +10,7 @@
 
 #include "AnalyticFunctionBase.h"
 
+#undef AddSetGetVar
 #define AddSetGetVar( name, type) \
   type  name; \
   void set##name( type _arg) \

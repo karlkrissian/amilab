@@ -239,10 +239,10 @@ protected:
   unsigned char     _OptFiltrage;
 
   unsigned char     _masque;
-  InrImage*   _image_masque;
+  InrImage*         _image_masque;
 
   unsigned char     _masque_gradient;
-  InrImage*   _image_masque_gradient;
+  InrImage*         _image_masque_gradient;
 
   // Pour le filtrage de type MY_FILTRE_CONV
   InrImage*   _image_tmp;
@@ -442,7 +442,10 @@ public:
   ///
   void FixeMasque( InrImage* masque)
   //
-  { _masque = true; _image_masque = masque; }
+  { 
+    _masque = true; 
+    _image_masque = masque; 
+  }
 
   ///
   void FixeMasqueGradient( InrImage* masque)
@@ -454,7 +457,7 @@ public:
   void MyFiltre(  InrImage* im, InrImage* res, 
   //   --------
                   int der_x, int der_y, int der_z,
-                  InrImage* ImMasque=(InrImage*)NULL
+                  InrImage::ptr ImMasque= InrImage::ptr()
                );
 
   ///

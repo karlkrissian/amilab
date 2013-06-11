@@ -38,6 +38,14 @@ InrImage* Func_SubImage(  InrImage* im,
                           int x1, int y1, int z1,
                           int x2, int y2, int z2);
 
+InrImage::ptr Func_SubImageNew( InrImage* im,
+                                int x1, int y1, int z1,
+                                int x2, int y2, int z2);
+
+InrImage::ptr Func_SubImageNew( InrImage::ptr im, 
+                                int x1, int y1, int z1,
+                                int x2, int y2, int z2);
+
 void      Func_PutImage(  InrImage* i1, 
                           InrImage* i2,
                           int x, int y, int z);

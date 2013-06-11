@@ -39,6 +39,8 @@
 
 using namespace std;
 
+#include <string.h>
+
 #include "CommonConfigure.h"
 COMMON_VAR_IMPORT unsigned char GB_debug;
 
@@ -150,6 +152,7 @@ InrImage* Func_SubImage( InrImage* im,
     im->BufferPos(x1,y,z);
     Pour(x,x1,x2)
 
+      // here use memcpy ...
       if (im->ScalarFormat())
           subim->FixeValeur(im->ValeurBuffer());
 
@@ -164,6 +167,86 @@ InrImage* Func_SubImage( InrImage* im,
 
   return subim;
 
+}
+
+InrImage::ptr Func_SubImageNew( InrImage* im, 
+                                int x1, int y1, int z1,
+                                int x2, int y2, int z2)
+{
+    InrImage::ptr subim;
+    char imname[255];
+    int x,y,z;
+    float tx,ty,tz;
+
+  if (GB_debug)
+    printf("SubImage [ %d --> %d , %d -->  %d , %d --> %d ] \n",x1,x2,y1,y2,z1,z2);
+
+  im->GetTranslation(tx,ty,tz);
+  //  x1-=tx;
+  //  x2-=tx;
+  //  y1-=ty;
+  //  y2-=ty;
+  //  z1-=tz;
+  //  z2-=tz;
+
+  Si Non(im->CoordOK(x1,y1,z1)) Alors
+    fprintf(stderr,"Func_SubImage() \t bad coordinates for the first corner \n");
+    fprintf(stderr,"Func_SubImage() \t %d %d %d \n",x1,y1,z1);
+    fprintf(stderr,"Func_SubImage() \t dim = %d x %d x %d \n",im->DimX(),im->DimY(),im->DimZ());
+    x1 = macro_min(macro_max(x1,0),im->_tx-1);
+    y1 = macro_min(macro_max(y1,0),im->_ty-1);
+    z1 = macro_min(macro_max(z1,0),im->_tz-1);
+    fprintf(stderr,"Func_SubImage() \t new value : %d %d %d \n",x1,y1,z1);
+  FinSi
+
+  Si Non(im->CoordOK(x2,y2,z2)) Alors
+    fprintf(stderr,"Func_SubImage() \t bad coordinates for the second corner \n");
+    x2 = macro_min(macro_max(x2,0),im->_tx-1);
+    y2 = macro_min(macro_max(y2,0),im->_ty-1);
+    z2 = macro_min(macro_max(z2,0),im->_tz-1);
+  FinSi
+
+  Si x2<x1 AlorsFait x2=x1;
+  Si y2<y1 AlorsFait y2=y1;
+  Si z2<z1 AlorsFait z2=z1;
+
+  sprintf(imname,"sub-%s",im->GetName());
+  subim = InrImage::ptr(new InrImage( x2-x1+1,
+                                      y2-y1+1,
+                                      z2-z1+1,
+                                      im->GetVDim(),
+                                      im->_format,
+                                      imname));
+
+  subim->SetTranslation( tx+x1*im->VoxSizeX(),
+       ty+y1*im->VoxSizeY(),
+       tz+z1*im->VoxSizeZ());
+
+  subim->SetVoxelSize(im->_size_x, im->_size_y, im->_size_z);
+  // preserve endianness
+  ((amimage*)(*subim))->SetEndianness(((amimage*)(*im))->GetEndianness());
+
+  int voxel_size =  im->GetVDim() *
+                    ((amimage*)(*im))->GetRepresSize() *
+                    ((amimage*)(*im))->GetTypeSize();
+                    
+  Pour(z,z1,z2)
+  Pour(y,y1,y2)
+    // here use memcpy ...
+    void* imptr    = im   ->BufferPtr(x1,y   ,z   );
+    void* subimptr = subim->BufferPtr(0 ,y-y1,z-z1);
+    memcpy(subimptr,imptr, (x2-x1+1)*voxel_size);
+  FinPour
+  FinPour
+
+  return subim;
+}
+  
+InrImage::ptr Func_SubImageNew( InrImage::ptr im, 
+                                int x1, int y1, int z1,
+                                int x2, int y2, int z2)
+{
+  return Func_SubImageNew(im.get(),x1,y1,z1,x2,y2,z2);
 }
 
 

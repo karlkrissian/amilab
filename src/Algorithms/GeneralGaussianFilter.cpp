@@ -460,7 +460,7 @@ void GeneralGaussianFilter ::  MyFiltre(
                                         InrImage* im, 
                                         InrImage* res,
                                         int der_x, int der_y, int der_z,
-                                        InrImage* ImMasque
+                                        InrImage::ptr ImMasque
                                        )
 {
 
@@ -469,7 +469,6 @@ void GeneralGaussianFilter ::  MyFiltre(
 //    unsigned char   continuer;
     InrImage* imageIn;
     InrImage* imageOut;
-    InrImage* image_masque;
     Chaine    nom;
 //    int    i;
     int       Support[3] = { 4,5,6};
@@ -489,11 +488,6 @@ void GeneralGaussianFilter ::  MyFiltre(
             der_x,der_y,der_z, 
             _sigmax,_sigmay,_sigmaz);
 
-  Si ImMasque !=  (InrImage*) NULL Alors
-    image_masque = ImMasque;
-  Sinon
-    image_masque =  (InrImage*) NULL;
-  FinSi
 
   Si (_image_tmp == NULL) 
   Alors
@@ -533,7 +527,7 @@ void GeneralGaussianFilter ::  MyFiltre(
         Si (der_x >= 0)Et(der_x<=2) Alors
 
           //std::cout << "dir_x" << std::endl;
-          if ((_use_new_filter)&&(image_masque==NULL)) {
+          if (_use_new_filter) {
 //             std::cout << "dir_x" << std::endl;
             input_ptr = InrImage::ptr( imageIn,
                                       smartpointer_nodeleter<InrImage>());
@@ -546,10 +540,11 @@ void GeneralGaussianFilter ::  MyFiltre(
             _new_convolution_filter->Set_sigma(_sigmax);
             _new_convolution_filter->Set_order(der_x);
             _new_convolution_filter->SetOutputImage(output_ptr);
+            _new_convolution_filter->Set_mask( ImMasque);
             _new_convolution_filter->Run();
           } else {
             _filtre.SetSupportSize( Support[der_x]);
-            _filtre.Filtre1D( imageIn, imageOut, image_masque, 
+            _filtre.Filtre1D( imageIn, imageOut, ImMasque.get(), 
                               DIR_X, (double) _sigmax, der_x );
           }
 
@@ -565,7 +560,7 @@ void GeneralGaussianFilter ::  MyFiltre(
 
           Si _dim >= MODE_2D Alors
 //             std::cout << "dir_y" << std::endl;
-            if ((_use_new_filter)&&(image_masque==NULL)) {
+            if (_use_new_filter) {
               input_ptr = InrImage::ptr( imageIn,
                                         smartpointer_nodeleter<InrImage>());
               output_ptr = InrImage::ptr( imageOut, 
@@ -577,10 +572,11 @@ void GeneralGaussianFilter ::  MyFiltre(
               _new_convolution_filter->Set_sigma(_sigmay);
               _new_convolution_filter->Set_order(der_y);
               _new_convolution_filter->SetOutputImage(output_ptr);
+              _new_convolution_filter->Set_mask( ImMasque);
               _new_convolution_filter->Run();
             } else {
               _filtre.SetSupportSize( Support[der_y]);
-              _filtre.Filtre1D( imageIn, imageOut, image_masque, 
+              _filtre.Filtre1D( imageIn, imageOut, ImMasque.get(), 
                                 DIR_Y, (double) _sigmay, der_y );
             }
 
@@ -599,7 +595,7 @@ void GeneralGaussianFilter ::  MyFiltre(
 
           Si _dim == MODE_3D Alors
 //             std::cout << "dir_z" << std::endl;
-            if ((_use_new_filter)&&(image_masque==NULL)) {
+            if (_use_new_filter) {
               input_ptr = InrImage::ptr( imageIn,
                                         smartpointer_nodeleter<InrImage>());
               output_ptr = InrImage::ptr( imageOut, 
@@ -615,10 +611,11 @@ void GeneralGaussianFilter ::  MyFiltre(
               _new_convolution_filter->Set_sigma(_sigmaz);
               _new_convolution_filter->Set_order(der_z);
               _new_convolution_filter->SetOutputImage(output_ptr);
+              _new_convolution_filter->Set_mask( ImMasque);
               _new_convolution_filter->Run();
             } else {
               _filtre.SetSupportSize( Support[der_z]);
-              _filtre.Filtre1D( imageIn, imageOut, image_masque, 
+              _filtre.Filtre1D( imageIn, imageOut, ImMasque.get(), 
                                 DIR_Z, (double) _sigmaz, der_z );
             }
 
@@ -930,7 +927,12 @@ void GeneralGaussianFilter ::  CalculMyFiltres2D( InrImage* image_depart)
 void GeneralGaussianFilter ::  CalculMyFiltres( InrImage* image_depart)
 //                                ---------------
 {
-
+  
+  // create a smart pointer without deleter for the mask image
+  InrImage::ptr mask_ptr(_image_masque, 
+                         smartpointer_nodeleter<InrImage>());
+  InrImage::ptr gradmask_ptr(_image_masque_gradient, 
+                         smartpointer_nodeleter<InrImage>());
 
   Si _dim == MODE_2D Alors
     CalculMyFiltres2D( image_depart);
@@ -949,7 +951,7 @@ void GeneralGaussianFilter ::  CalculMyFiltres( InrImage* image_depart)
             _InrImage_sigma[IMxx_sigma],      2,  0,  -1);
 
   MyFiltre( _InrImage_sigma[IMxx_sigma],
-            _InrImage_sigma[IMxx_sigma],     -1, -1,   0,  _image_masque);
+            _InrImage_sigma[IMxx_sigma],     -1, -1,   0,  mask_ptr);
 
   // Convolution Derivee Gaussienne en X:
   // Factorisation pour Gx,Hxy,Hxz
@@ -971,14 +973,14 @@ void GeneralGaussianFilter ::  CalculMyFiltres( InrImage* image_depart)
     printf(" 101 "); fflush(stdout); 
   FinSi
   MyFiltre( _InrImage_sigma[IMx_sigma], 
-            _InrImage_sigma[IMxz_sigma], -1, -1,  1, _image_masque );
+            _InrImage_sigma[IMxz_sigma], -1, -1,  1, mask_ptr );
 
   // Gx
   Si GB_verbose Et Non(_silencieux) Alors
     printf(" 100 "); fflush(stdout); 
   FinSi
   MyFiltre( _InrImage_sigma[IMx_sigma], 
-            _InrImage_sigma[IMx_sigma],  -1, -1,  0, _image_masque_gradient);
+            _InrImage_sigma[IMx_sigma],  -1, -1,  0, gradmask_ptr);
 
   // Hxy
   Si GB_verbose Et Non(_silencieux) Alors
@@ -987,7 +989,7 @@ void GeneralGaussianFilter ::  CalculMyFiltres( InrImage* image_depart)
   MyFiltre( _InrImage_sigma[IMxy_sigma], 
             _InrImage_sigma[IMxy_sigma],   -1,  1, -1);
   MyFiltre( _InrImage_sigma[IMxy_sigma], 
-            _InrImage_sigma[IMxy_sigma],   -1, -1,  0,  _image_masque);
+            _InrImage_sigma[IMxy_sigma],   -1, -1,  0,  mask_ptr);
 
 
   // Convolution Gaussienne en X:
@@ -1011,14 +1013,14 @@ void GeneralGaussianFilter ::  CalculMyFiltres( InrImage* image_depart)
     printf(" 011 "); fflush(stdout); 
   FinSi
   MyFiltre( _InrImage_sigma[IMy_sigma], 
-            _InrImage_sigma[IMyz_sigma], -1, -1,  1, _image_masque);
+            _InrImage_sigma[IMyz_sigma], -1, -1,  1, mask_ptr);
 
   // Gy
   Si GB_verbose Et Non(_silencieux) Alors
     printf(" 010 "); fflush(stdout);
   FinSi
   MyFiltre( _InrImage_sigma[IMy_sigma], 
-          _InrImage_sigma[IMy_sigma],  -1, -1,  0, _image_masque_gradient);
+          _InrImage_sigma[IMy_sigma],  -1, -1,  0, gradmask_ptr);
 
   // Gaussienne en Y: Hyz, Gz
   Si GB_verbose Et Non(_silencieux) Alors 
@@ -1041,14 +1043,14 @@ void GeneralGaussianFilter ::  CalculMyFiltres( InrImage* image_depart)
     printf(" 002 "); fflush(stdout); 
   FinSi
   MyFiltre( _InrImage_sigma[IMz_sigma], 
-            _InrImage_sigma[IMzz_sigma], -1, -1,  2, _image_masque);
+            _InrImage_sigma[IMzz_sigma], -1, -1,  2, mask_ptr);
 
   // Gz
   Si GB_verbose Et Non(_silencieux) Alors
     printf(" 001 "); fflush(stdout); 
   FinSi
   MyFiltre( _InrImage_sigma[IMz_sigma], 
-            _InrImage_sigma[IMz_sigma],  -1, -1,  1, _image_masque_gradient);
+            _InrImage_sigma[IMz_sigma],  -1, -1,  1, gradmask_ptr);
 
   // Hyy
   Si GB_verbose Et Non(_silencieux) Alors
@@ -1057,7 +1059,7 @@ void GeneralGaussianFilter ::  CalculMyFiltres( InrImage* image_depart)
   MyFiltre( _InrImage_sigma[IMyy_sigma], 
             _InrImage_sigma[IMyy_sigma],   -1,  2,  -1);
   MyFiltre( _InrImage_sigma[IMyy_sigma], 
-            _InrImage_sigma[IMyy_sigma],   -1, -1,   0, _image_masque);
+            _InrImage_sigma[IMyy_sigma],   -1, -1,   0, mask_ptr);
 
 
   Si GB_verbose Et Non(_silencieux) AlorsFait
@@ -1222,6 +1224,9 @@ void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
     InrImage* image_depart;
    //std::cout << "1" << std::endl;
 
+  InrImage::ptr mask_ptr(mask, 
+                         smartpointer_nodeleter<InrImage>());
+
   // Optimisation particuliere
   Si _utilise_gradient Et _utilise_hessien Et _type==MY_FILTRE_CONV Alors
 
@@ -1266,7 +1271,7 @@ void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
                     _derivees[i][DIM_X], 
                     _derivees[i][DIM_Y],
                     _derivees[i][DIM_Z],
-       mask);
+                    mask_ptr);
 
        break;
 

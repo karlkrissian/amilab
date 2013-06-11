@@ -274,12 +274,15 @@ public:
   void SetScanOrder(SCANORDER s) { scanorder = s; }
   
   void SetRepres(AMI_REPRES r) { repres = r; }
-
   AMI_REPRES GetRepres() { return repres; }
+  
 
   void SetType(  AMI_TYPE   t) { type   = t; }
 
   AMI_TYPE GetType() { return type; }
+
+  int GetRepresSize() const;
+  int GetTypeSize() const;
 
   void SetDim( int tx, int ty, int tz, int tv=1)
   {

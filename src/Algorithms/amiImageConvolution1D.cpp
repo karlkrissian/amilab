@@ -310,6 +310,8 @@ void ImageConvolution1D::TemplateProcess( int threadid)
     std::cout << "kernel radius :" <<  _kernel_radius << std::endl;
   }
 
+  bool has_mask = _mask.get();
+  
   if (_dir==DIR_X) {
     for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
     for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
@@ -318,14 +320,28 @@ void ImageConvolution1D::TemplateProcess( int threadid)
                           extent.GetMin(0)*incx;
       T* out_data1 = out_data + z*incz + y*incy +
                           extent.GetMin(0)*incx;
-      for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
-      {
-        tmp = in_data+z*incz+y*incy;
-        minval = *(tmp);
-        maxval = *(tmp+(tx-1)*incx);
-        *out_data1 = ConvolveDirX<T>(in_data1,x,tx,minval,maxval);
-        in_data1++;
-        out_data1++;
+      if (has_mask) {
+        for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+        {
+          if ((*_mask)(x,y,z)>0.5) {
+            tmp = in_data+z*incz+y*incy;
+            minval = *(tmp);
+            maxval = *(tmp+(tx-1)*incx);
+            *out_data1 = ConvolveDirX<T>(in_data1,x,tx,minval,maxval);
+          }
+          in_data1++;
+          out_data1++;
+        }
+      } else {
+        for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+        {
+          tmp = in_data+z*incz+y*incy;
+          minval = *(tmp);
+          maxval = *(tmp+(tx-1)*incx);
+          *out_data1 = ConvolveDirX<T>(in_data1,x,tx,minval,maxval);
+          in_data1++;
+          out_data1++;
+        }
       }
     }
   }
@@ -337,14 +353,28 @@ void ImageConvolution1D::TemplateProcess( int threadid)
                           extent.GetMin(0)*incx;
       T* out_data1 = out_data + z*incz + y*incy +
                           extent.GetMin(0)*incx;
-      for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
-      {
-        tmp = in_data+z*incz+x*incx;
-        minval = *(tmp);
-        maxval = *(tmp+(ty-1)*incy);
-        *out_data1 = ConvolveDirY<T>(in_data1,y,ty,incy,minval,maxval);
-        in_data1++;
-        out_data1++;
+      if (has_mask) {
+        for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+        {
+          if ((*_mask)(x,y,z)>0.5) {
+            tmp = in_data+z*incz+x*incx;
+            minval = *(tmp);
+            maxval = *(tmp+(ty-1)*incy);
+            *out_data1 = ConvolveDirY<T>(in_data1,y,ty,incy,minval,maxval);
+          }
+          in_data1++;
+          out_data1++;
+        }
+      } else {
+        for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+        {
+          tmp = in_data+z*incz+x*incx;
+          minval = *(tmp);
+          maxval = *(tmp+(ty-1)*incy);
+          *out_data1 = ConvolveDirY<T>(in_data1,y,ty,incy,minval,maxval);
+          in_data1++;
+          out_data1++;
+        }
       }
     }
   }
@@ -358,14 +388,28 @@ void ImageConvolution1D::TemplateProcess( int threadid)
                           extent.GetMin(0)*incx;
       T* out_data1 = out_data + z*incz + y*incy +
                           extent.GetMin(0)*incx;
-      for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
-      {
-        tmp = in_data+y*incy+x*incx;
-        minval = *(tmp);
-        maxval = *(tmp+(tz-1)*incz);
-        *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
-        in_data1++;
-        out_data1++;
+      if (has_mask) {
+        for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+        {
+          if ((*_mask)(x,y,z)>0.5) {
+            tmp = in_data+y*incy+x*incx;
+            minval = *(tmp);
+            maxval = *(tmp+(tz-1)*incz);
+            *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+          }
+          in_data1++;
+          out_data1++;
+        }
+      } else {
+        for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+        {
+          tmp = in_data+y*incy+x*incx;
+          minval = *(tmp);
+          maxval = *(tmp+(tz-1)*incz);
+          *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+          in_data1++;
+          out_data1++;
+        }
       }
     }
 #endif
@@ -375,14 +419,28 @@ void ImageConvolution1D::TemplateProcess( int threadid)
     {
       T* in_data1  = in_data  + extent.GetMin(0)*incz + y*incy + x*incx;
       T* out_data1 = out_data + extent.GetMin(0)*incz + y*incy + x*incx;
-      for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
-      {
-        tmp = in_data+y*incy+x*incx;
-        minval = *(tmp);
-        maxval = *(tmp+(tz-1)*incz);
-        *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
-        in_data1  += incz;
-        out_data1 += incz;
+      if (has_mask) {
+        for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+        {
+          if ((*_mask)(x,y,z)>0.5) {
+            tmp = in_data+y*incy+x*incx;
+            minval = *(tmp);
+            maxval = *(tmp+(tz-1)*incz);
+            *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+          }
+          in_data1  += incz;
+          out_data1 += incz;
+        }
+      } else {
+        for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+        {
+          tmp = in_data+y*incy+x*incx;
+          minval = *(tmp);
+          maxval = *(tmp+(tz-1)*incz);
+          *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+          in_data1  += incz;
+          out_data1 += incz;
+        }
       }
     }
 #endif
@@ -400,8 +458,14 @@ void ImageConvolution1D::TemplateProcess( int threadid)
       for(z=0;z<tz;z++) { in1[z] = *tmp; tmp+=incz; }
       minval = in1[0];
       maxval = in1[tz-1];
-      for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
-        out1[z] = ConvolveDirX<T>(in1,z,tz,minval,maxval);
+      if (has_mask) {
+        for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+          if ((*_mask)(x,y,z)>0.5)
+            out1[z] = ConvolveDirX<T>(in1,z,tz,minval,maxval);
+      } else {
+        for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+          out1[z] = ConvolveDirX<T>(in1,z,tz,minval,maxval);
+      }
       for(z=extent.GetMin(2);z<=extent.GetMax(2); z++) {
         *out_data = out1[z];
         out_data1 += incz;

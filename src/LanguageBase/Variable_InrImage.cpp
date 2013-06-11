@@ -718,7 +718,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator[](const
     if (extent.get()) {
       InrImage::ptr im(Pointer());
       extent->SetRelative(im.get());
-      InrImage::ptr res ( Func_SubImage( im.get(),
+      InrImage::ptr res ( Func_SubImageNew( im.get(),
                   (int)  round((double)extent->Xmin()),
                   (int)  round((double)extent->Ymin()),
                   (int)  round((double)extent->Zmin()),
@@ -757,7 +757,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<InrImage>::operator[](const
 
         InrImage::ptr im(Pointer());
         extent->SetRelative(im.get());
-        InrImage::ptr res ( Func_SubImage( im.get(),
+        InrImage::ptr res ( Func_SubImageNew( im.get(),
                     (int)  round((double)extent->Xmin()),
                     (int)  round((double)extent->Ymin()),
                     (int)  round((double)extent->Zmin()),

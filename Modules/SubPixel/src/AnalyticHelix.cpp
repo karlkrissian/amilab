@@ -21,7 +21,12 @@ double AnalyticHelix::operator () (const double& x, const double& y, const doubl
   double d1 = x1*cos(angle)+y1*sin(angle);
   double d2 = sqrt(x1*x1+y1*y1);
 
-  if ((abs(d1)<=thickness/2.0)&&(d2<radius)) 
+  double current_radius = radius;
+  if (radius_change_amplitude>0) {
+    current_radius += radius_change_amplitude*sin(z1/radius_change_period*2*PI);
+  }
+  
+  if ((abs(d1)<=thickness/2.0)&&(d2<current_radius)) 
   {
     return 1;
   } else {

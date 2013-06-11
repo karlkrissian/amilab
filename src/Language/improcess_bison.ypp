@@ -6210,9 +6210,9 @@ image:
 
       **/
       GET_VARSTACK_VALUE(InrImage, im);
-    InrImage::ptr res ( Func_SubImage( im.get(),
-                 (int) $5, (int) $7, (int) $9,
-                 (int) $11,(int) $13,(int) $15));
+    InrImage::ptr res ( Func_SubImageNew( im,
+                                          (int) $5, (int) $7, (int) $9,
+                                          (int) $11,(int) $13,(int) $15));
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi

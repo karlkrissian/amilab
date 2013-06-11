@@ -20,7 +20,7 @@ const double PI = 3.141592741;
   { \
     this->name = _arg; \
   };  \
-  type Get##name() \
+  type Get##name() const \
   { \
     return this->name; \
   };
@@ -48,6 +48,8 @@ public:
     radius = 10;
     thickness=2;
     rotation_coeff=PI/20;
+    radius_change_amplitude = 0;
+    radius_change_period = 1000;
   }
   
   ~AnalyticHelix();
@@ -80,6 +82,13 @@ public:
   }
   
   AddSetGetVar(radius,        float)
+
+  //! possibility to vary the radius
+  AddSetGetVar(radius_change_amplitude,        float)
+
+  //! possibility to vary the radius
+  AddSetGetVar(radius_change_period,        float)
+
   AddSetGetVar(thickness,     float)
   
   /**

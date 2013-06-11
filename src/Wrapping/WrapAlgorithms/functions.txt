@@ -27,3 +27,5 @@ Func_Filter
 
 # Initialize image to 0
 InitZero
+Func_SubImageNew
+
