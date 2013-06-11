@@ -521,11 +521,15 @@ OPTION(AMI_USE_SSE "Use SSE CPU instructions set" OFF)
 
 IF(AMI_USE_SSE)
   # add flag for mingw
-    MESSAGE("${CMAKE_CXX_COMPILER}")
+  MESSAGE("${CMAKE_CXX_COMPILER}")
   IF(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/i686-pc-mingw32-g++")
     MESSAGE("adding -msse for compiler")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse")
   ENDIF(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/i686-pc-mingw32-g++")
+  IF (CMAKE_COMPILER_IS_GNUCXX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse3")
+  ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+
 ENDIF(AMI_USE_SSE)
 
 

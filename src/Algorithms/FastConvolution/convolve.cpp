@@ -52,7 +52,8 @@ int convolve_naive(float* in, float* out, int length,
   register float tmp;
   register float* in1;
   register float* k1;
-  for(int i=0; i<=length-kernel_length; i++)
+  int i;
+  for(i=0; i<=length-kernel_length; i++)
   {
     tmp = 0.0;
     in1 = in+i;
@@ -115,8 +116,12 @@ int convolve_sse_simple(float* in, float* out, int length,
         kernel_reverse[i] = _mm_load_ps(kernel_block);
     }
 
-    for(int i=0; i<length-kernel_length; i+=4){
+    //for(int i=0; i<length-kernel_length; i+=4){
 
+    // Karl small modification to adapt for any size
+    // take all the 4 successive elements
+    int i;
+    for(i=0; i<=length-kernel_length-3; i+=4){
         // Zero the accumulator
         acc = _mm_setzero_ps();
 
@@ -137,13 +142,18 @@ int convolve_sse_simple(float* in, float* out, int length,
 
     }
 
-    // Need to do the last value as a special case
-    int i = length - kernel_length;
-    out[i] = 0.0;
-    for(int k=0; k<kernel_length; k++){
-        out[i] += in[i+k] * kernel[kernel_length - k - 1];
+    //// Need to do the last value as a special case
+    // Karl modification: compute the remaining cases
+    while(i<=length-kernel_length)
+    {
+      //int i = length - kernel_length;
+      out[i] = 0.0;
+      for(int k=0; k<kernel_length; k++){
+          out[i] += in[i+k] * kernel[kernel_length - k - 1];
+      }
+      i++;
     }
-
+    
     return 0;
 }
 
@@ -175,31 +185,45 @@ int convolve_sse_partial_unroll(float* in, float* out, int length,
         kernel_reverse[i] = _mm_load_ps(kernel_block);
     }
     
-    for(int i=0; i<length-kernel_length; i+=4){
+    int i;
+    for(i=0; i<=length-kernel_length-3; i+=4){
 
         acc = _mm_setzero_ps();
 
-        for(int k=0; k<kernel_length; k+=4){
+        // Karl adapt for any length
+        int k;
+        for(k=0; k<kernel_length-3; k+=4){
+          int data_offset = i + k;
+          for (int l = 0; l < 4; l++){
+            data_block = _mm_loadu_ps(in + data_offset + l);
+            prod = _mm_mul_ps(kernel_reverse[k+l], data_block);
+            acc = _mm_add_ps(acc, prod);
+          }
+        }
+        while(k<kernel_length) 
+        {
+            // Load 4-float data block. These needs to be an unaliged
+            // load (_mm_loadu_ps) as we step one sample at a time.
+            data_block = _mm_loadu_ps(in + i + k);
+            prod = _mm_mul_ps(kernel_reverse[k], data_block);
 
-            int data_offset = i + k;
-
-            for (int l = 0; l < 4; l++){
-
-                data_block = _mm_loadu_ps(in + data_offset + l);
-                prod = _mm_mul_ps(kernel_reverse[k+l], data_block);
-
-                acc = _mm_add_ps(acc, prod);
-            }
+            // Accumulate the 4 parallel values
+            acc = _mm_add_ps(acc, prod);
+            k++;
         }
         _mm_storeu_ps(out+i, acc);
 
     }
 
-    // Need to do the last value as a special case
-    int i = length - kernel_length;
-    out[i] = 0.0;
-    for(int k=0; k<kernel_length; k++){
-        out[i] += in[i+k] * kernel[kernel_length - k - 1];
+    // Karl modification: compute the remaining cases
+    while(i<=length-kernel_length)
+    {
+      //int i = length - kernel_length;
+      out[i] = 0.0;
+      for(int k=0; k<kernel_length; k++){
+          out[i] += in[i+k] * kernel[kernel_length - k - 1];
+      }
+      i++;
     }
 
     return 0;
@@ -257,31 +281,44 @@ int convolve_sse_in_aligned(float* in, float* out, int length,
         memcpy(in_aligned[i], (in+i), (length-i)*sizeof(float));
     }
 
-    for(int i=0; i<length-kernel_length; i+=4){
-
-        acc = _mm_setzero_ps();
-
-        for(int k=0; k<kernel_length; k+=4){
-
-            int data_offset = i + k;
-
-            for (int l = 0; l < 4; l++){
-
-                data_block = _mm_load_ps(in_aligned[l] + data_offset);
-                prod = _mm_mul_ps(kernel_reverse[k+l], data_block);
-
-                acc = _mm_add_ps(acc, prod);
-            }
+    int i;
+    for(i=0; i<=length-kernel_length-3; i+=4) 
+    {
+      acc = _mm_setzero_ps();
+      int k;
+      for(k=0; k<kernel_length-3; k+=4)
+      {
+        int data_offset = i + k;
+        for (int l = 0; l < 4; l++)
+        {
+            data_block = _mm_load_ps(in_aligned[l] + data_offset);
+            prod = _mm_mul_ps(kernel_reverse[k+l], data_block);
+            acc = _mm_add_ps(acc, prod);
         }
-        _mm_storeu_ps(out+i, acc);
+      }
+      while(k<kernel_length) 
+      {
+          // Load 4-float data block. These needs to be an unaliged
+          // load (_mm_loadu_ps) as we step one sample at a time.
+          data_block = _mm_loadu_ps(in + i + k);
+          prod = _mm_mul_ps(kernel_reverse[k], data_block);
 
+          // Accumulate the 4 parallel values
+          acc = _mm_add_ps(acc, prod);
+          k++;
+      }
+      _mm_storeu_ps(out+i, acc);
     }
 
-    // Need to do the last value as a special case
-    int i = length - kernel_length;
-    out[i] = 0.0;
-    for(int k=0; k<kernel_length; k++){
-        out[i] += in_aligned[0][i+k] * kernel[kernel_length - k - 1];
+    // Karl modification: compute the remaining cases
+    while(i<=length-kernel_length)
+    {
+      //int i = length - kernel_length;
+      out[i] = 0.0;
+      for(int k=0; k<kernel_length; k++){
+          out[i] += in[i+k] * kernel[kernel_length - k - 1];
+      }
+      i++;
     }
 
     return 0;

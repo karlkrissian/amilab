@@ -1,6 +1,10 @@
 # Create a library called "Hello" which includes the source file "hello.cxx".
 # The extension is already found.  Any number of sources could be listed here.
 
+include_directories (
+  ${AMILAB_SOURCE_DIR}/Algorithms/FastConvolution
+  )
+
 add_subdirectory (myVTK4)
 add_subdirectory (DerivAndOrient)
 
@@ -121,6 +125,9 @@ SET(Algorithms_SRCS
   diag_3x3mat/dsyevh3.c
   diag_3x3mat/dsyevc3.c
   diag_3x3mat/dsytrd3.c
+  
+  # fast convolution
+  FastConvolution/convolve.cpp
 )
 
 # avoid dealing with -std=c99 option
@@ -229,6 +236,10 @@ SET(Algorithms_HDRS
   diag_3x3mat/dsyevh3.h
   diag_3x3mat/dsyevc3.h
   diag_3x3mat/dsytrd3.h
+  
+  # fast convolution
+  FastConvolution/convolve.h
+  
 )
 
 IF(WIN32)

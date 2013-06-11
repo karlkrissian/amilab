@@ -28,6 +28,12 @@
 #ifndef _CONVOLVE_H
 #define _CONVOLVE_H
 
+#include "AMILabConfig.h"
+
+#ifdef AMI_USE_SSE 
+  #define SSE3
+#endif
+
 #if defined SSE3 || defined AVX
 #include <immintrin.h>
 #endif
@@ -44,16 +50,19 @@
  *                    float* kernel, int kernel_length)
  * */
 #ifndef MULTIPLE_CONVOLVE
-#define MULTIPLE_CONVOLVE(FUNCTION_NAME) \
-int FUNCTION_NAME ## _multiple(float* in, float* out, int length, \
-        float* kernel, int kernel_length, int N) \
-{ \
-    for(int i=0; i<N; i++){ \
-        FUNCTION_NAME(in, out, length, kernel, kernel_length); \
-    } \
- \
-    return 0; \
-}
+
+#define MULTIPLE_CONVOLVE(FUNCTION_NAME) 
+
+// int FUNCTION_NAME ## _multiple(float* in, float* out, int length, \
+//         float* kernel, int kernel_length, int N) \
+// { \
+//   int i; \
+//     for(i=0; i<N; i++){ \
+//         FUNCTION_NAME(in, out, length, kernel, kernel_length); \
+//     } \
+//  \
+//     return 0; \
+// }
 #endif
 
 int convolve_naive(float* in, float* out, int length,
