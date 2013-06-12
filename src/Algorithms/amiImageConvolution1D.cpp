@@ -312,7 +312,7 @@ void ImageConvolution1D::TemplateProcess( int threadid)
   bool has_mask = _mask.get();
 
   // use SSE only with float for the moment
-  bool use_sse = _use_fastconvolve && (typeid(T)==typeid(float)) && (!has_mask);
+  bool use_sse = _use_fastconvolve && (typeid(T)==typeid(float));
 
   if (params.GetProfile()) {
     std::cout << "ImageConvolution1D::TemplateProcess()" << std::endl;
@@ -354,7 +354,7 @@ void ImageConvolution1D::TemplateProcess( int threadid)
     // prepare for SSE convolution
     // allocate input
     int size = extent.GetSize((int)_dir)+2*_kernel_radius;
-    sse_input = new float[size];
+    sse_input = (float*)_mm_malloc(sizeof(float)*size,16);
     // allocate and set kernel
     sse_kernel = new float[kernel_size];
     sse_kernel[_kernel_radius] = _kernel_coeff[0];
@@ -439,38 +439,110 @@ void ImageConvolution1D::TemplateProcess( int threadid)
     }
   }
   if (_dir==DIR_Y) {
-    for(z=zmin;z<=zmax; z++)
-    for(y=ymin;y<=ymax; y++)
-    {
-      T* in_data1  = in_data + z*incz + y*incy +
-                          extent.GetMin(0)*incx;
-      T* out_data1 = out_data + z*incz + y*incy +
-                          extent.GetMin(0)*incx;
-      if (has_mask) {
-        for(x=xmin;x<=xmax; x++)
+    switch(_diry_version) 
+    { 
+      case 0:
+        for(z=zmin;z<=zmax; z++)
+        for(y=ymin;y<=ymax; y++)
         {
-          if ((*_mask)(x,y,z)>0.5) {
-            tmp = in_data+z*incz+x*incx;
-            minval = *(tmp);
-            maxval = *(tmp+(ty-1)*incy);
-            *out_data1 = ConvolveDirY<T>(in_data1,y,ty,incy,minval,maxval);
+          T* in_data1  = in_data + z*incz + y*incy +
+                              extent.GetMin(0)*incx;
+          T* out_data1 = out_data + z*incz + y*incy +
+                              extent.GetMin(0)*incx;
+          if (has_mask) {
+            for(x=xmin;x<=xmax; x++)
+            {
+              if ((*_mask)(x,y,z)>0.5) {
+                tmp = in_data+z*incz+x*incx;
+                minval = *(tmp);
+                maxval = *(tmp+(ty-1)*incy);
+                *out_data1 = ConvolveDirY<T>(in_data1,y,ty,incy,minval,maxval);
+              }
+              in_data1++;
+              out_data1++;
+            }
+          } else {
+            for(x=xmin;x<=xmax; x++)
+            {
+              tmp = in_data+z*incz+x*incx;
+              minval = *(tmp);
+              maxval = *(tmp+(ty-1)*incy);
+              *out_data1 = ConvolveDirY<T>(in_data1,y,ty,incy,minval,maxval);
+              in_data1++;
+              out_data1++;
+            }
           }
-          in_data1++;
-          out_data1++;
-        }
-      } else {
+        } // end for
+        break;
+      case 1:
+        T* in1 = new T[ty];
+        T* in1_ptr;
+        T* out1 = new T[ty];
+        T* out1_ptr;
+        for(z=zmin;z<=zmax; z++)
         for(x=xmin;x<=xmax; x++)
         {
+          int pos = z*incz + ymin*incy + x*incx;
+          T* in_data1  = in_data  + pos;
+          T* out_data1 = out_data + pos;
+          // 1. copy in1
           tmp = in_data+z*incz+x*incx;
-          minval = *(tmp);
-          maxval = *(tmp+(ty-1)*incy);
-          *out_data1 = ConvolveDirY<T>(in_data1,y,ty,incy,minval,maxval);
-          in_data1++;
-          out_data1++;
+          for(y=0;y<ty;y++) { in1[y] = *tmp; tmp+=incy; }
+          minval = in1[0];
+          maxval = in1[ty-1];
+          in1_ptr  = in1+ymin;
+          out1_ptr = out1+ymin;
+          if (use_sse) {
+            // prepare sse_input:  1 memcpy
+            int minpos = macro_max(0,    ymin-_kernel_radius);
+            int maxpos = macro_min(ty-1, ymax+_kernel_radius);
+            int pos=0;
+            for(y=ymin-_kernel_radius;y<minpos;y++) {
+              sse_input[pos] = minval;
+              pos++;
+            }
+            memcpy(&sse_input[pos],
+                    in1_ptr-_kernel_radius+pos,
+                    sizeof(float)*(maxpos-minpos+1) );
+            pos += maxpos-minpos+1;
+            for(y=maxpos+1;y<=ymax+_kernel_radius;y++) {
+              sse_input[pos] = maxval;
+              pos++;
+            }
+              
+            switch(_fast_convolve_mode) {
+              case NAIVE:
+              case SSE_IN_ALIGNED:
+                  fast_convolve(sse_input,
+                                out1_ptr,   ysize+2*_kernel_radius,
+                                sse_kernel,  kernel_size);
+                  break;
+
+              case SSE_SIMPLE:
+              case SSE_PARTIAL_UNROLL:
+                  fast_convolve_prepared(sse_input,
+                                out1_ptr,   ysize+2*_kernel_radius,
+                                sse_kernel_prepared, kernel_size);
+                  break;
+            }
+            
+          } else {
+            for(y=ymin;y<=ymax; y++) {
+              out1[y] = ConvolveDirX<T>(in1_ptr,y,ty,minval,maxval);
+              in1_ptr++;
+            }
+          }
+            
+          for(y=ymin;y<=ymax; y++) {
+            *out_data1 = out1[y];
+            out_data1 += incy;
+          }
         }
-      }
-    }
-  }
+        delete [] in1;
+        delete [] out1;
+        break;
+    } // end switch
+  } // end if 
   if (_dir==DIR_Z) {
     switch(_dirz_version) 
     { 
@@ -553,55 +625,47 @@ void ImageConvolution1D::TemplateProcess( int threadid)
           maxval = in1[tz-1];
           in1_ptr  = in1+zmin;
           out1_ptr = out1+zmin;
-          if (has_mask) {
-            for(z=zmin;z<=zmax; z++) {
-              if ((*_mask)(x,y,z)>0.5)
-                out1[z] = ConvolveDirX<T>(in1_ptr,z,tz,minval,maxval);
-              in1_ptr++;
+          if (use_sse) {
+            // prepare sse_input:  1 memcpy
+            int minpos = macro_max(0,    zmin-_kernel_radius);
+            int maxpos = macro_min(tz-1, zmax+_kernel_radius);
+            int pos=0;
+            for(z=zmin-_kernel_radius;z<minpos;z++) {
+              sse_input[pos] = minval;
+              pos++;
             }
-          } else {
-            if (use_sse) {
-              // prepare sse_input:  1 memcpy
-              int minpos = macro_max(0,    zmin-_kernel_radius);
-              int maxpos = macro_min(tz-1, zmax+_kernel_radius);
-              int pos=0;
-              for(z=zmin-_kernel_radius;z<minpos;z++) {
-                sse_input[pos] = minval;
-                pos++;
-              }
-              memcpy(&sse_input[pos],
-                      in1_ptr-_kernel_radius+pos,
-                      sizeof(float)*(maxpos-minpos+1) );
-              pos += maxpos-minpos+1;
-              for(z=maxpos+1;z<=zmax+_kernel_radius;z++) {
-                sse_input[pos] = maxval;
-                pos++;
-              }
-                
-              switch(_fast_convolve_mode) {
-                case NAIVE:
-                case SSE_IN_ALIGNED:
-                    fast_convolve(sse_input,
-                                  out1_ptr,   zsize+2*_kernel_radius,
-                                  sse_kernel,  kernel_size);
-                    break;
-
-                case SSE_SIMPLE:
-                case SSE_PARTIAL_UNROLL:
-                    fast_convolve_prepared(sse_input,
-                                  out1_ptr,   zsize+2*_kernel_radius,
-                                  sse_kernel_prepared, kernel_size);
-                    break;
-              }
+            memcpy(&sse_input[pos],
+                    in1_ptr-_kernel_radius+pos,
+                    sizeof(float)*(maxpos-minpos+1) );
+            pos += maxpos-minpos+1;
+            for(z=maxpos+1;z<=zmax+_kernel_radius;z++) {
+              sse_input[pos] = maxval;
+              pos++;
+            }
               
-            } else {
-              for(z=zmin;z<=zmax; z++) {
-                out1[z] = ConvolveDirX<T>(in1_ptr,z,tz,minval,maxval);
-                in1_ptr++;
-              }
+            switch(_fast_convolve_mode) {
+              case NAIVE:
+              case SSE_IN_ALIGNED:
+                  fast_convolve(sse_input,
+                                out1_ptr,   zsize+2*_kernel_radius,
+                                sse_kernel,  kernel_size);
+                  break;
+
+              case SSE_SIMPLE:
+              case SSE_PARTIAL_UNROLL:
+                  fast_convolve_prepared(sse_input,
+                                out1_ptr,   zsize+2*_kernel_radius,
+                                sse_kernel_prepared, kernel_size);
+                  break;
             }
             
+          } else {
+            for(z=zmin;z<=zmax; z++) {
+              out1[z] = ConvolveDirX<T>(in1_ptr,z,tz,minval,maxval);
+              in1_ptr++;
+            }
           }
+            
           for(z=zmin;z<=zmax; z++) {
             *out_data1 = out1[z];
             out_data1 += incz;
@@ -615,7 +679,7 @@ void ImageConvolution1D::TemplateProcess( int threadid)
  
   if (use_sse) {
     // free allocated arrays
-    delete [] sse_input;
+    _mm_free(sse_input);
     delete [] sse_kernel;
     sse_free_kernel(sse_kernel_prepared);
   }

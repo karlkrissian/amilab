@@ -57,7 +57,7 @@ namespace ami {
       _use_fastconvolve   = true;
       _fast_convolve_mode = SSE_PARTIAL_UNROLL;
       _first_call         = true;
-      _diry_version       = 0;
+      _diry_version       = 1;
       _dirz_version       = 2;
     }
     
@@ -194,27 +194,27 @@ namespace ami {
     {
       switch(_fast_convolve_mode) {
         case NAIVE:
-          if (_first_call) {
+          if ((_first_call)&&params.GetProfile()) {
             std::cout << "running convolve_naive" << std::endl;
             _first_call = false;
           }
           return convolve_naive(in,out,length,kernel,kernel_length);
         #ifdef SSE3
         case SSE_SIMPLE:
-          if (_first_call) {
+          if ((_first_call)&&params.GetProfile()) {
             std::cout << "running convolve_sse_simple" << std::endl;
             _first_call = false;
           }
           return convolve_sse_simple(in,out,length,kernel,kernel_length);
         case SSE_PARTIAL_UNROLL:
-          if (_first_call) {
+          if ((_first_call)&&params.GetProfile()) {
             std::cout << "running convolve_sse_partial_unroll" << std::endl;
             _first_call = false;
           }
           return convolve_sse_partial_unroll(in,out,length,kernel,kernel_length);
           break;
         case SSE_IN_ALIGNED:
-          if (_first_call) {
+          if ((_first_call)&&params.GetProfile()) {
             std::cout << "running convolve_sse_in_aligned" << std::endl;
             _first_call = false;
           }
@@ -251,14 +251,14 @@ namespace ami {
           return false;
         #ifdef SSE3
         case SSE_SIMPLE:
-          if (_first_call) {
-            std::cout << "running convolve_sse_simple" << std::endl;
+          if ((_first_call)&&params.GetProfile()) {
+            std::cout << "running convolve_sse_simple_prepared" << std::endl;
             _first_call = false;
           }
           return convolve_sse_simple_prepared(in,out,length,kernel,kernel_length);
         case SSE_PARTIAL_UNROLL:
-          if (_first_call) {
-            std::cout << "running convolve_sse_partial_unroll" << std::endl;
+          if ((_first_call)&&params.GetProfile()) {
+            std::cout << "running convolve_sse_partial_unroll_prepared" << std::endl;
             _first_call = false;
           }
           return convolve_sse_partial_unroll_prepared(in,out,length,kernel,kernel_length);

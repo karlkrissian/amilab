@@ -565,6 +565,7 @@ if (!exists(MultiLinesClass)) {
         if (::speedup_convolutions)&&(sigma>4*max_vs) {
           #
           sigma0 = sqrt(sigma*sigma-4*max_vs*max_vs)
+          printn "running filter with sigma0 = %1%" % sigma0
           # should set the support factor to max 5 ...
           sub_input_smoothed = filter(sub_input,sigma0,0,0,0)
 
@@ -573,6 +574,7 @@ if (!exists(MultiLinesClass)) {
           psf[0] = (::PSF_stddev+sigma0)/sub_input.vx
           psf[1] = (::PSF_stddev+sigma0)/sub_input.vy
           psf[2] = (::PSF_stddev+sigma0)/sub_input.vz
+          printn "running tensor with std = %1%" % (2*max_vs)
           sth = Func_StructureTensorHessianNew( sub_input_smoothed,\
                                                 2*max_vs,\
                                                 1,sub_mask,grad0,psf)
