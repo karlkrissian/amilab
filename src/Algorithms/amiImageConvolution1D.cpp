@@ -21,6 +21,7 @@
 #include "Timing.hpp"
 #include <typeinfo>
 #include "convolve.h"
+#include <xmmintrin.h>
 
 #ifndef M_PI
 # define M_PI           3.14159265358979323846  /* pi */
@@ -337,32 +338,42 @@ void ImageConvolution1D::TemplateProcess( int threadid)
   
   float* sse_input;
   float* sse_kernel;
+  __m128* sse_kernel_prepared;
   int xmin  = extent.GetMin(0);
   int xmax  = extent.GetMax(0);
   int xsize = extent.GetSize(0);
+  int ymin  = extent.GetMin(1);
+  int ymax  = extent.GetMax(1);
+  int ysize = extent.GetSize(1);
+  int zmin  = extent.GetMin(2);
+  int zmax  = extent.GetMax(2);
+  int zsize = extent.GetSize(2);
+  int kernel_size = 2*_kernel_radius+1;
   
+  if (use_sse) {
+    // prepare for SSE convolution
+    // allocate input
+    int size = extent.GetSize((int)_dir)+2*_kernel_radius;
+    sse_input = new float[size];
+    // allocate and set kernel
+    sse_kernel = new float[kernel_size];
+    sse_kernel[_kernel_radius] = _kernel_coeff[0];
+    for(int i=1; i<=_kernel_radius;i++)
+      if (_symmetry==EVEN) 
+        sse_kernel[_kernel_radius-i] = 
+        sse_kernel[_kernel_radius+i] = _kernel_coeff[i];
+      else {
+        // re-invert kernel
+        sse_kernel[_kernel_radius-i] =  _kernel_coeff[i];
+        sse_kernel[_kernel_radius+i] = -_kernel_coeff[i];
+      }
+    sse_kernel_prepared = sse_prepare_kernel_reverse(sse_kernel,kernel_size);
+  }
   
   if (_dir==DIR_X) {
-    if (use_sse) {
-      // prepare for SSE convolution
-      // allocate input
-      sse_input = new float[extent.GetSize(0)+2*_kernel_radius];
-      // allocate and set kernel
-      sse_kernel = new float[2*_kernel_radius+1];
-      sse_kernel[_kernel_radius] = _kernel_coeff[0];
-      for(int i=1; i<=_kernel_radius;i++)
-        if (_symmetry==EVEN) 
-          sse_kernel[_kernel_radius-i] = 
-          sse_kernel[_kernel_radius+i] = _kernel_coeff[i];
-        else {
-          // re-invert kernel
-          sse_kernel[_kernel_radius-i] =  _kernel_coeff[i];
-          sse_kernel[_kernel_radius+i] = -_kernel_coeff[i];
-        }
-    }
 
-    for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
-    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
+    for(z=zmin;z<=zmax; z++)
+    for(y=ymin;y<=ymax; y++)
     {
       T* in_data1  = in_data  + z*incz + y*incy + xmin*incx;
       T* out_data1 = out_data + z*incz + y*incy + xmin*incx;
@@ -383,38 +394,38 @@ void ImageConvolution1D::TemplateProcess( int threadid)
         minval = *(tmp);
         maxval = *(tmp+(tx-1)*incx);
         if (use_sse) {
-          // Prepare for the convolution function
-          // need an input array of size extent.size in X + kernel size
-          // need an output array of size extent.size: is out_data1
-          // need the kernel array
-          // all in float ...
-          // 1. if everything fits 
-//           if ((xmin-_kernel_radius>0)&&(xmax+_kernel_radius<tx)) {
-//             fast_convolve(in_data1-_kernel_radius,
-//                      out_data1,   xsize,
-//                      sse_kernel,  2*_kernel_radius+1
-//                     );
-//           } else {
-            // prepare sse_input:  1 memcpy
-            int minpos = macro_max(0,    xmin-_kernel_radius);
-            int maxpos = macro_min(tx-1, xmax+_kernel_radius);
-            int pos=0;
-            for(x=xmin-_kernel_radius;x<minpos;x++) {
-              sse_input[pos] = minval;
-              pos++;
-            }
-            memcpy(&sse_input[pos],
-                   in_data1-_kernel_radius+pos,
-                   sizeof(float)*(maxpos-minpos+1) );
-            pos += maxpos-minpos+1;
-            for(x=maxpos+1;x<=xmax+_kernel_radius;x++) {
-              sse_input[pos] = maxval;
-              pos++;
-            }
-            fast_convolve(sse_input,
-                          out_data1,   xsize+2*_kernel_radius,
-                          sse_kernel,  2*_kernel_radius+1);
-//           }
+          // prepare sse_input:  1 memcpy
+          int minpos = macro_max(0,    xmin-_kernel_radius);
+          int maxpos = macro_min(tx-1, xmax+_kernel_radius);
+          int pos=0;
+          for(x=xmin-_kernel_radius;x<minpos;x++) {
+            sse_input[pos] = minval;
+            pos++;
+          }
+          memcpy(&sse_input[pos],
+                  in_data1-_kernel_radius+pos,
+                  sizeof(float)*(maxpos-minpos+1) );
+          pos += maxpos-minpos+1;
+          for(x=maxpos+1;x<=xmax+_kernel_radius;x++) {
+            sse_input[pos] = maxval;
+            pos++;
+          }
+            
+          switch(_fast_convolve_mode) {
+            case NAIVE:
+            case SSE_IN_ALIGNED:
+                fast_convolve(sse_input,
+                              out_data1,   xsize+2*_kernel_radius,
+                              sse_kernel,  kernel_size);
+                break;
+
+            case SSE_SIMPLE:
+            case SSE_PARTIAL_UNROLL:
+                fast_convolve_prepared(sse_input,
+                              out_data1,   xsize+2*_kernel_radius,
+                              sse_kernel_prepared, kernel_size);
+                break;
+          }
           
         } else {
           for(x=xmin;x<=xmax; x++)
@@ -426,23 +437,17 @@ void ImageConvolution1D::TemplateProcess( int threadid)
         }
       }
     }
-    if (use_sse) {
-      // prepare for SSE convolution
-      // allocate input
-      delete [] sse_input;
-      delete [] sse_kernel;
-    }
   }
   if (_dir==DIR_Y) {
-    for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
-    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
+    for(z=zmin;z<=zmax; z++)
+    for(y=ymin;y<=ymax; y++)
     {
       T* in_data1  = in_data + z*incz + y*incy +
                           extent.GetMin(0)*incx;
       T* out_data1 = out_data + z*incz + y*incy +
                           extent.GetMin(0)*incx;
       if (has_mask) {
-        for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+        for(x=xmin;x<=xmax; x++)
         {
           if ((*_mask)(x,y,z)>0.5) {
             tmp = in_data+z*incz+x*incx;
@@ -454,7 +459,7 @@ void ImageConvolution1D::TemplateProcess( int threadid)
           out_data1++;
         }
       } else {
-        for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+        for(x=xmin;x<=xmax; x++)
         {
           tmp = in_data+z*incz+x*incx;
           minval = *(tmp);
@@ -467,99 +472,152 @@ void ImageConvolution1D::TemplateProcess( int threadid)
     }
   }
   if (_dir==DIR_Z) {
-#define ZVER1
-#ifdef ZVER1
-    for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
-    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
-    {
-      T* in_data1  = in_data + z*incz + y*incy +
-                          extent.GetMin(0)*incx;
-      T* out_data1 = out_data + z*incz + y*incy +
-                          extent.GetMin(0)*incx;
-      if (has_mask) {
-        for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+    switch(_dirz_version) 
+    { 
+      case 0: // call ConvolveDirZ, loop z,y,x
+        for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+        for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
         {
-          if ((*_mask)(x,y,z)>0.5) {
+          T* in_data1  = in_data + z*incz + y*incy +
+                              extent.GetMin(0)*incx;
+          T* out_data1 = out_data + z*incz + y*incy +
+                              extent.GetMin(0)*incx;
+          if (has_mask) {
+            for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+            {
+              if ((*_mask)(x,y,z)>0.5) {
+                tmp = in_data+y*incy+x*incx;
+                minval = *(tmp);
+                maxval = *(tmp+(tz-1)*incz);
+                *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+              }
+              in_data1++;
+              out_data1++;
+            }
+          } else {
+            for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+            {
+              tmp = in_data+y*incy+x*incx;
+              minval = *(tmp);
+              maxval = *(tmp+(tz-1)*incz);
+              *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+              in_data1++;
+              out_data1++;
+            }
+          }
+        }
+        break;
+      case 1:  // call ConvolveDirZ, loop y,x,z
+          for(y=ymin;y<=ymax; y++)
+          for(x=xmin;x<=xmax; x++)
+          {
+            T* in_data1  = in_data  + zmin*incz + y*incy + x*incx;
+            T* out_data1 = out_data + zmin*incz + y*incy + x*incx;
             tmp = in_data+y*incy+x*incx;
             minval = *(tmp);
             maxval = *(tmp+(tz-1)*incz);
-            *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+            if (has_mask) {
+              for(z=zmin;z<=zmax; z++)
+              {
+                if ((*_mask)(x,y,z)>0.5) {
+                  *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+                }
+                in_data1  += incz;
+                out_data1 += incz;
+              }
+            } else {
+              for(z=zmin;z<=zmax; z++)
+              {
+                *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+                in_data1  += incz;
+                out_data1 += incz;
+              }
+            }
           }
-          in_data1++;
-          out_data1++;
-        }
-      } else {
-        for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+        break;
+      case 2: // call ConvolveDirX, loop y,x,z
+        T* in1 = new T[tz];
+        T* in1_ptr;
+        T* out1 = new T[tz];
+        T* out1_ptr;
+        for(y=ymin;y<=ymax; y++)
+        for(x=xmin;x<=xmax; x++)
         {
+          int pos = zmin*incz + y*incy + x*incx;
+          T* in_data1  = in_data  + pos;
+          T* out_data1 = out_data + pos;
+          // 1. copy in1
           tmp = in_data+y*incy+x*incx;
-          minval = *(tmp);
-          maxval = *(tmp+(tz-1)*incz);
-          *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
-          in_data1++;
-          out_data1++;
-        }
-      }
-    }
-#endif
-#ifdef ZVER2
-    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
-    for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
-    {
-      T* in_data1  = in_data  + extent.GetMin(0)*incz + y*incy + x*incx;
-      T* out_data1 = out_data + extent.GetMin(0)*incz + y*incy + x*incx;
-      if (has_mask) {
-        for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
-        {
-          if ((*_mask)(x,y,z)>0.5) {
-            tmp = in_data+y*incy+x*incx;
-            minval = *(tmp);
-            maxval = *(tmp+(tz-1)*incz);
-            *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
+          for(z=0;z<tz;z++) { in1[z] = *tmp; tmp+=incz; }
+          minval = in1[0];
+          maxval = in1[tz-1];
+          in1_ptr  = in1+zmin;
+          out1_ptr = out1+zmin;
+          if (has_mask) {
+            for(z=zmin;z<=zmax; z++) {
+              if ((*_mask)(x,y,z)>0.5)
+                out1[z] = ConvolveDirX<T>(in1_ptr,z,tz,minval,maxval);
+              in1_ptr++;
+            }
+          } else {
+            if (use_sse) {
+              // prepare sse_input:  1 memcpy
+              int minpos = macro_max(0,    zmin-_kernel_radius);
+              int maxpos = macro_min(tz-1, zmax+_kernel_radius);
+              int pos=0;
+              for(z=zmin-_kernel_radius;z<minpos;z++) {
+                sse_input[pos] = minval;
+                pos++;
+              }
+              memcpy(&sse_input[pos],
+                      in1_ptr-_kernel_radius+pos,
+                      sizeof(float)*(maxpos-minpos+1) );
+              pos += maxpos-minpos+1;
+              for(z=maxpos+1;z<=zmax+_kernel_radius;z++) {
+                sse_input[pos] = maxval;
+                pos++;
+              }
+                
+              switch(_fast_convolve_mode) {
+                case NAIVE:
+                case SSE_IN_ALIGNED:
+                    fast_convolve(sse_input,
+                                  out1_ptr,   zsize+2*_kernel_radius,
+                                  sse_kernel,  kernel_size);
+                    break;
+
+                case SSE_SIMPLE:
+                case SSE_PARTIAL_UNROLL:
+                    fast_convolve_prepared(sse_input,
+                                  out1_ptr,   zsize+2*_kernel_radius,
+                                  sse_kernel_prepared, kernel_size);
+                    break;
+              }
+              
+            } else {
+              for(z=zmin;z<=zmax; z++) {
+                out1[z] = ConvolveDirX<T>(in1_ptr,z,tz,minval,maxval);
+                in1_ptr++;
+              }
+            }
+            
           }
-          in_data1  += incz;
-          out_data1 += incz;
+          for(z=zmin;z<=zmax; z++) {
+            *out_data1 = out1[z];
+            out_data1 += incz;
+          }
         }
-      } else {
-        for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
-        {
-          tmp = in_data+y*incy+x*incx;
-          minval = *(tmp);
-          maxval = *(tmp+(tz-1)*incz);
-          *out_data1 = ConvolveDirZ<T>(in_data1,z,tz,incz,minval,maxval);
-          in_data1  += incz;
-          out_data1 += incz;
-        }
-      }
+        delete [] in1;
+        delete [] out1;
+        break;
     }
-#endif
-#ifdef ZVER3
-    T in1 [tz];
-    T out1[tz];
-    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
-    for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
-    {
-      int pos = extent.GetMin(0)*incz + y*incy + x*incx;
-      T* in_data1  = in_data  + pos;
-      T* out_data1 = out_data + pos;
-      // 1. copy in1
-      tmp = in_data+y*incy+x*incx;
-      for(z=0;z<tz;z++) { in1[z] = *tmp; tmp+=incz; }
-      minval = in1[0];
-      maxval = in1[tz-1];
-      if (has_mask) {
-        for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
-          if ((*_mask)(x,y,z)>0.5)
-            out1[z] = ConvolveDirX<T>(in1,z,tz,minval,maxval);
-      } else {
-        for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
-          out1[z] = ConvolveDirX<T>(in1,z,tz,minval,maxval);
-      }
-      for(z=extent.GetMin(2);z<=extent.GetMax(2); z++) {
-        *out_data = out1[z];
-        out_data1 += incz;
-      }
-    }
-#endif
+  }
+ 
+  if (use_sse) {
+    // free allocated arrays
+    delete [] sse_input;
+    delete [] sse_kernel;
+    sse_free_kernel(sse_kernel_prepared);
   }
   
 
@@ -619,42 +677,6 @@ void ImageConvolution1D::Run()
 }
 
 
-//------------------------------------------------------------------------------
-int ImageConvolution1D::fast_convolve_float(  float* in, float* out, int length,
-                                              float* kernel, int kernel_length)
-{
-    switch(_fast_convolve_mode) {
-      case NAIVE:
-        if (_first_call) {
-          std::cout << "running convolve_naive" << std::endl;
-          _first_call = false;
-        }
-        return convolve_naive(in,out,length,kernel,kernel_length);
-      #ifdef SSE3
-      case SSE_SIMPLE:
-        if (_first_call) {
-          std::cout << "running convolve_sse_simple" << std::endl;
-          _first_call = false;
-        }
-        return convolve_sse_simple(in,out,length,kernel,kernel_length);
-      case SSE_PARTIAL_UNROLL:
-        if (_first_call) {
-          std::cout << "running convolve_sse_partial_unroll" << std::endl;
-          _first_call = false;
-        }
-        return convolve_sse_partial_unroll(in,out,length,kernel,kernel_length);
-        break;
-      case SSE_IN_ALIGNED:
-        if (_first_call) {
-          std::cout << "running convolve_sse_in_aligned" << std::endl;
-          _first_call = false;
-        }
-        return convolve_sse_in_aligned(in,out,length,kernel,kernel_length);
-        break;
-      #endif
-      }
-      return false;
-}
 
 } // end namespace ami
 

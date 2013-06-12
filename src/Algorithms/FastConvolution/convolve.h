@@ -65,47 +65,50 @@
 // }
 #endif
 
-int convolve_naive(float* in, float* out, int length,
+inline int convolve_naive(float* in, float* out, int length,
         float* kernel, int kernel_length);
-MULTIPLE_CONVOLVE(convolve_naive);
 
 #ifdef SSE3
-int convolve_sse_simple(float* in, float* out, int length,
-        float* kernel, int kernel_length);
-MULTIPLE_CONVOLVE(convolve_sse_simple);
 
-int convolve_sse_partial_unroll(float* in, float* out, int length,
-        float* kernel, int kernel_length);
-MULTIPLE_CONVOLVE(convolve_sse_partial_unroll);
+inline __m128* sse_prepare_kernel_reverse( float* kernel, int kernel_length);
+inline void    sse_free_kernel           (__m128* kernel);
 
-int convolve_sse_in_aligned(float* in, float* out, int length,
-        float* kernel, int kernel_length);
-MULTIPLE_CONVOLVE(convolve_sse_in_aligned);
+inline int convolve_sse_simple_prepared(float* in, float* out, int length,
+                                        __m128* kernel, int kernel_length);
 
-int convolve_sse_in_aligned_fixed_kernel(float* in, float* out, int length,
-        float* kernel, int kernel_length);
-MULTIPLE_CONVOLVE(convolve_sse_in_aligned_fixed_kernel);
+inline int convolve_sse_simple(         float* in, float* out, int length,
+                                        float* kernel, int kernel_length);
 
-int convolve_sse_unrolled_avx_vector(float* in, float* out, int length,
-        float* kernel, int kernel_length);
-MULTIPLE_CONVOLVE(convolve_sse_unrolled_avx_vector);
+inline int convolve_sse_partial_unroll_prepared( 
+                                        float* in, float* out, int length,
+                                        __m128* kernel, int kernel_length);
 
-int convolve_sse_unrolled_vector(float* in, float* out, int length,
+inline int convolve_sse_partial_unroll( float* in, float* out, int length,
+                                        float* kernel, int kernel_length);
+
+inline int convolve_sse_in_aligned(float* in, float* out, int length,
         float* kernel, int kernel_length);
-MULTIPLE_CONVOLVE(convolve_sse_unrolled_vector);
+
+inline int convolve_sse_in_aligned_fixed_kernel(float* in, float* out, int length,
+        float* kernel, int kernel_length);
+
+inline int convolve_sse_unrolled_avx_vector(float* in, float* out, int length,
+        float* kernel, int kernel_length);
+
+inline int convolve_sse_unrolled_vector(float* in, float* out, int length,
+        float* kernel, int kernel_length);
 
 #endif
 
 #ifdef AVX
-int convolve_avx_unrolled_vector(float* in, float* out, int length,
+inline int convolve_avx_unrolled_vector(float* in, float* out, int length,
         float* kernel, int kernel_length);
-MULTIPLE_CONVOLVE(convolve_avx_unrolled_vector);
 
-int convolve_avx_unrolled_vector_partial_aligned(
+inline int convolve_avx_unrolled_vector_partial_aligned(
         float* in, float* out, int length,
         float* kernel, int kernel_length);
-MULTIPLE_CONVOLVE(convolve_avx_unrolled_vector_partial_aligned);
-
 #endif
+
+#include "convolve.cpp"
 
 #endif /*Header guard*/

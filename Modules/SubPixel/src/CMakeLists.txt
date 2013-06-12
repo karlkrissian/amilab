@@ -44,6 +44,7 @@ SET(${KIT}_INCLUDE_PATHS
     ${AMILab_SOURCE_DIR}/Language
     ${AMILab_SOURCE_DIR}/Common/include
     ${AMILab_SOURCE_DIR}/Algorithms/include
+    ${AMILab_SOURCE_DIR}/Algorithms/FastConvolution
     ${AMILab_SOURCE_DIR}/CommonBase
     ${AMILab_SOURCE_DIR}/Wrapping/include
     ${AMILab_SOURCE_DIR}

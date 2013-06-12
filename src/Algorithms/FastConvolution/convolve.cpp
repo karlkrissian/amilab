@@ -46,7 +46,7 @@
  *
  * Returns the same as numpy.convolve(in, kernel, mode='valid')
  * */
-int convolve_naive(float* in, float* out, int length,
+inline int convolve_naive(float* in, float* out, int length,
         float* kernel, int kernel_length)
 {
   register float tmp;
@@ -83,7 +83,35 @@ int convolve_naive(float* in, float* out, int length,
 
 #ifdef SSE3
 
+//------------------------------------------------------------------------------
+__m128* sse_prepare_kernel_reverse( float* kernel, int kernel_length)
+{
+  //float kernel_block[4] __attribute__ ((aligned (16)));
 
+  __m128* kernel_reverse = (__m128*) _mm_malloc(sizeof(__m128)*kernel_length,16);
+  if (kernel_reverse==NULL) return NULL;
+
+  // Reverse the kernel and repeat each value across a 4-vector
+  for(int i=0; i<kernel_length; i++){
+      //       kernel_block[0] = kernel[kernel_length - i - 1];
+      //       kernel_block[1] = kernel[kernel_length - i - 1];
+      //       kernel_block[2] = kernel[kernel_length - i - 1];
+      //       kernel_block[3] = kernel[kernel_length - i - 1];
+      // 
+      //       kernel_reverse[i] = _mm_load_ps(kernel_block);
+       kernel_reverse[i] = _mm_set_ps1(kernel[kernel_length - i - 1]);
+  }
+
+  return kernel_reverse;
+}
+
+//------------------------------------------------------------------------------
+void sse_free_kernel(__m128* kernel)
+{
+  _mm_free(kernel);
+}
+
+//------------------------------------------------------------------------------
 /* Vectorize the algorithm to compute 4 output samples in parallel.
  *
  * Each kernel value is repeated 4 times, which can then be used on
@@ -95,26 +123,13 @@ int convolve_naive(float* in, float* out, int length,
  *
  * The last value needs to be done as a special case.
  */
-int convolve_sse_simple(float* in, float* out, int length,
-        float* kernel, int kernel_length)
+int convolve_sse_simple_prepared( float* in, float* out, int length,
+                                  __m128* kernel_reverse, int kernel_length)
 {
-    float kernel_block[4] __attribute__ ((aligned (16)));
-
-    __m128 kernel_reverse[kernel_length] __attribute__ ((aligned (16)));    
     __m128 data_block __attribute__ ((aligned (16)));
 
     __m128 prod __attribute__ ((aligned (16)));
     __m128 acc __attribute__ ((aligned (16)));
-
-    // Reverse the kernel and repeat each value across a 4-vector
-    for(int i=0; i<kernel_length; i++){
-        kernel_block[0] = kernel[kernel_length - i - 1];
-        kernel_block[1] = kernel[kernel_length - i - 1];
-        kernel_block[2] = kernel[kernel_length - i - 1];
-        kernel_block[3] = kernel[kernel_length - i - 1];
-
-        kernel_reverse[i] = _mm_load_ps(kernel_block);
-    }
 
     //for(int i=0; i<length-kernel_length; i+=4){
 
@@ -144,12 +159,15 @@ int convolve_sse_simple(float* in, float* out, int length,
 
     //// Need to do the last value as a special case
     // Karl modification: compute the remaining cases
+    float result[4];
     while(i<=length-kernel_length)
     {
       //int i = length - kernel_length;
       out[i] = 0.0;
       for(int k=0; k<kernel_length; k++){
-          out[i] += in[i+k] * kernel[kernel_length - k - 1];
+        // hope it doesn't slow down
+        _mm_store_ps (result, kernel_reverse[k]);
+        out[i] += in[i+k] * result[0];
       }
       i++;
     }
@@ -158,33 +176,30 @@ int convolve_sse_simple(float* in, float* out, int length,
 }
 
 
+//------------------------------------------------------------------------------
+int convolve_sse_simple(float* in, float* out, int length,
+                        float* kernel, int kernel_length)
+{
+  __m128* kernel_reverse = sse_prepare_kernel_reverse(kernel,kernel_length);    
+  convolve_sse_simple_prepared(in,out,length,kernel_reverse,kernel_length);
+  sse_free_kernel(kernel_reverse);
+}
+
+//------------------------------------------------------------------------------
 /* As convolve_sse_simple plus...
  *
  * We specify that the kernel must have a length which is a multiple
  * of 4. This allows us to define a fixed inner-most loop that can be 
  * unrolled by the compiler
  */
-int convolve_sse_partial_unroll(float* in, float* out, int length,
-        float* kernel, int kernel_length)
+inline int convolve_sse_partial_unroll_prepared( 
+                                  float* in, float* out, int length,
+                                  __m128* kernel_reverse, int kernel_length)
 {
-    float kernel_block[4] __attribute__ ((aligned (16)));
-
-    __m128 kernel_reverse[kernel_length] __attribute__ ((aligned (16)));    
     __m128 data_block __attribute__ ((aligned (16)));
-
     __m128 prod __attribute__ ((aligned (16)));
     __m128 acc __attribute__ ((aligned (16)));
 
-    // Repeat the kernel across the vector
-    for(int i=0; i<kernel_length; i++){
-        kernel_block[0] = kernel[kernel_length - i - 1];
-        kernel_block[1] = kernel[kernel_length - i - 1];
-        kernel_block[2] = kernel[kernel_length - i - 1];
-        kernel_block[3] = kernel[kernel_length - i - 1];
-
-        kernel_reverse[i] = _mm_load_ps(kernel_block);
-    }
-    
     int i;
     for(i=0; i<=length-kernel_length-3; i+=4){
 
@@ -216,12 +231,15 @@ int convolve_sse_partial_unroll(float* in, float* out, int length,
     }
 
     // Karl modification: compute the remaining cases
+    float result[4];
     while(i<=length-kernel_length)
     {
       //int i = length - kernel_length;
       out[i] = 0.0;
       for(int k=0; k<kernel_length; k++){
-          out[i] += in[i+k] * kernel[kernel_length - k - 1];
+        // hope it doesn't slow down
+        _mm_store_ps (result, kernel_reverse[k]);
+        out[i] += in[i+k] * result[0];
       }
       i++;
     }
@@ -230,6 +248,17 @@ int convolve_sse_partial_unroll(float* in, float* out, int length,
 }
 
 
+//------------------------------------------------------------------------------
+inline int convolve_sse_partial_unroll( float* in, float* out, int length,
+                                        float* kernel, int kernel_length)
+{
+  __m128* kernel_reverse = sse_prepare_kernel_reverse(kernel,kernel_length);    
+    convolve_sse_partial_unroll_prepared(in,out,length,
+                                         kernel_reverse,kernel_length);
+  sse_free_kernel(kernel_reverse);
+}
+
+//------------------------------------------------------------------------------
 /* As convolve_sse_partial_unroll plus...
  *
  * We repeat the input data 4 times, with each repeat being shifted
@@ -252,11 +281,12 @@ int convolve_sse_partial_unroll(float* in, float* out, int length,
  * an aligned data load (_mm_load_ps), speeding up the algorithm 
  * by ~2x.
  * */
-int convolve_sse_in_aligned(float* in, float* out, int length,
+inline int convolve_sse_in_aligned(float* in, float* out, int length,
         float* kernel, int kernel_length)
 {
     float kernel_block[4] __attribute__ ((aligned (16)));
-    float in_aligned[4][length] __attribute__ ((aligned (16)));
+    int length1 = ((int)(1.0*(length-1)/4.0)+1)*4; // force multiple of 4 length for alignment
+    float in_aligned[4][length1] __attribute__ ((aligned (16)));
 
     __m128 kernel_reverse[kernel_length] __attribute__ ((aligned (16)));    
     __m128 data_block __attribute__ ((aligned (16)));
@@ -328,7 +358,7 @@ int convolve_sse_in_aligned(float* in, float* out, int length,
  * allows the compiler to do another level of loop unrolling.
  */
 #define KERNEL_LENGTH 16
-int convolve_sse_in_aligned_fixed_kernel(float* in, float* out, int length,
+inline int convolve_sse_in_aligned_fixed_kernel(float* in, float* out, int length,
         float* kernel, int kernel_length)
 {
     float kernel_block[4] __attribute__ ((aligned (16)));
@@ -394,7 +424,7 @@ int convolve_sse_in_aligned_fixed_kernel(float* in, float* out, int length,
 #define ALIGNMENT 32
 #define SSE_SIMD_LENGTH 4
 #define AVX_SIMD_LENGTH 8
-int convolve_sse_unrolled_avx_vector(float* in, float* out, int length,
+inline int convolve_sse_unrolled_avx_vector(float* in, float* out, int length,
         float* kernel, int kernel_length)
 {
     float kernel_block[SSE_SIMD_LENGTH] __attribute__ (
@@ -474,7 +504,7 @@ int convolve_sse_unrolled_avx_vector(float* in, float* out, int length,
 }
 
 #define VECTOR_LENGTH 16
-int convolve_sse_unrolled_vector(float* in, float* out, 
+inline int convolve_sse_unrolled_vector(float* in, float* out, 
         int length, float* kernel, int kernel_length)
 {
     float kernel_block[SSE_SIMD_LENGTH] __attribute__ (
@@ -646,7 +676,7 @@ int convolve_avx_unrolled_vector(float* in, float* out,
     return 0;
 }
 
-int convolve_avx_unrolled_vector_partial_aligned(float* in, float* out, 
+inline int convolve_avx_unrolled_vector_partial_aligned(float* in, float* out, 
         int length, float* kernel, int kernel_length)
 {
     float kernel_block[AVX_SIMD_LENGTH] __attribute__ (

@@ -18,7 +18,9 @@
 #include "amiImageToImageFilter.h"
 #include <vector>
 #include "DefineClass.hpp"
-//#include "convolve.h"
+#include "../FastConvolution/convolve.h"
+#include <iostream>
+#include <xmmintrin.h>
 
 namespace ami {
 
@@ -50,9 +52,13 @@ namespace ami {
       _symmetry           = NONE;
       _sigma              = 1;
       _order              = 0;
-      _use_fastconvolve   = false;
-      _fast_convolve_mode = NAIVE;
+
+      // Setup fast default values
+      _use_fastconvolve   = true;
+      _fast_convolve_mode = SSE_PARTIAL_UNROLL;
       _first_call         = true;
+      _diry_version       = 0;
+      _dirz_version       = 2;
     }
     
     /** @name ConvOrientation
@@ -110,6 +116,12 @@ namespace ami {
 
     /// Fast Convolution mode
     AddSetGetVar( _fast_convolve_mode, FastConvolveMode)
+
+    /// Fast Convolution mode in Y
+    AddSetGetVar( _diry_version, int)
+
+    /// Fast Convolution mode in Z
+    AddSetGetVar( _dirz_version, int)
 
     ///
     double GaussianFunction( double x, double sigma,  int orden=0);
@@ -175,26 +187,87 @@ namespace ami {
       return fast_convolve_float(in,(float*)out,length,kernel,kernel_length);
     }
     
-    int fast_convolve_float(  float* in, float* out, int length,
-                              float* kernel, int kernel_length);
+    
+    //--------------------------------------------------------------------------
+    inline int fast_convolve_float( float* in, float* out, int length,
+                                    float* kernel, int kernel_length)
+    {
+      switch(_fast_convolve_mode) {
+        case NAIVE:
+          if (_first_call) {
+            std::cout << "running convolve_naive" << std::endl;
+            _first_call = false;
+          }
+          return convolve_naive(in,out,length,kernel,kernel_length);
+        #ifdef SSE3
+        case SSE_SIMPLE:
+          if (_first_call) {
+            std::cout << "running convolve_sse_simple" << std::endl;
+            _first_call = false;
+          }
+          return convolve_sse_simple(in,out,length,kernel,kernel_length);
+        case SSE_PARTIAL_UNROLL:
+          if (_first_call) {
+            std::cout << "running convolve_sse_partial_unroll" << std::endl;
+            _first_call = false;
+          }
+          return convolve_sse_partial_unroll(in,out,length,kernel,kernel_length);
+          break;
+        case SSE_IN_ALIGNED:
+          if (_first_call) {
+            std::cout << "running convolve_sse_in_aligned" << std::endl;
+            _first_call = false;
+          }
+          return convolve_sse_in_aligned(in,out,length,kernel,kernel_length);
+          break;
+        #endif
+      }
+      return false;
+    }
 
-//     switch(_fast_convolve_mode) {
-//       case NAIVE:
-//         return convolve_naive();
-//       case SSE_SIMPLE:
-//       #ifdef SSE3
-//         return convolve_sse_simple(in,(float*)out,length,kernel,kernel_length);
-//       #else
-//         return false;
-//       #endif
-//       case SSE_PARTIAL_UNROLL:
-//         break;
-//       case SSE_IN_ALIGNED:
-//         break;
-//       }
-//       return true;
+
+
   private:
     bool _first_call;
+    
+    //--------------------------------------------------------------------------
+    template <class T>
+    int fast_convolve_prepared( float* in, T* out, int length,
+                                __m128* kernel, int kernel_length)
+    {
+      if (typeid(T)!=typeid(float))
+        return false;
+      
+      return fast_convolve_float_prepared(in,(float*)out,length,
+                                          kernel,kernel_length);
+    }
+
+    //--------------------------------------------------------------------------
+    inline int fast_convolve_float_prepared(  float* in, float* out, int length,
+                                              __m128* kernel, int kernel_length)
+    {
+      switch(_fast_convolve_mode) {
+        case NAIVE:
+          return false;
+        #ifdef SSE3
+        case SSE_SIMPLE:
+          if (_first_call) {
+            std::cout << "running convolve_sse_simple" << std::endl;
+            _first_call = false;
+          }
+          return convolve_sse_simple_prepared(in,out,length,kernel,kernel_length);
+        case SSE_PARTIAL_UNROLL:
+          if (_first_call) {
+            std::cout << "running convolve_sse_partial_unroll" << std::endl;
+            _first_call = false;
+          }
+          return convolve_sse_partial_unroll_prepared(in,out,length,kernel,kernel_length);
+        case SSE_IN_ALIGNED:
+          return false;
+        #endif
+      }
+      return false;
+    }
     
   }; // ImageConvolution1D
 

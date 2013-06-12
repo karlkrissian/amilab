@@ -127,7 +127,7 @@ SET(Algorithms_SRCS
   diag_3x3mat/dsytrd3.c
   
   # fast convolution
-  FastConvolution/convolve.cpp
+#  FastConvolution/convolve.cpp
 )
 
 # avoid dealing with -std=c99 option
