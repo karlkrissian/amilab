@@ -825,7 +825,8 @@ InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
                         float beta,
                         InrImage::ptr mask,
                         InrImage::ptr imgrad,
-                        std::vector<float> PSF
+                        std::vector<float> PSF,
+                        int num_threads
                         )
 {
   // TODO: 2D version
@@ -861,6 +862,8 @@ InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
   filtre->GammaNormalise( true);
   filtre->SetSupportSize(5);
   filtre->InitFiltre( sigma, type_filtre);  
+  if (num_threads>0)
+    filtre->Set_numthreads(num_threads);
   filtre->CalculFiltres( );
 
   if (mask.use_count())

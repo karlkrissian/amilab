@@ -58,7 +58,7 @@ namespace ami {
       _fast_convolve_mode = SSE_PARTIAL_UNROLL;
       _first_call         = true;
       _diry_version       = 1;
-      _dirz_version       = 2;
+      _dirz_version       = 3;
     }
     
     /** @name ConvOrientation
@@ -189,8 +189,9 @@ namespace ami {
     
     
     //--------------------------------------------------------------------------
-    inline int fast_convolve_float( float* in, float* out, int length,
-                                    float* kernel, int kernel_length)
+    //inline 
+    int fast_convolve_float(  float* in, float* out, int length,
+                              float* kernel, int kernel_length)
     {
       switch(_fast_convolve_mode) {
         case NAIVE:
@@ -243,7 +244,8 @@ namespace ami {
     }
 
     //--------------------------------------------------------------------------
-    inline int fast_convolve_float_prepared(  float* in, float* out, int length,
+    //inline 
+    int fast_convolve_float_prepared(  float* in, float* out, int length,
                                               __m128* kernel, int kernel_length)
     {
       switch(_fast_convolve_mode) {

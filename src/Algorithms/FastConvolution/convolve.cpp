@@ -92,15 +92,31 @@ __m128* sse_prepare_kernel_reverse( float* kernel, int kernel_length)
   if (kernel_reverse==NULL) return NULL;
 
   // Reverse the kernel and repeat each value across a 4-vector
-  for(int i=0; i<kernel_length; i++){
-      //       kernel_block[0] = kernel[kernel_length - i - 1];
-      //       kernel_block[1] = kernel[kernel_length - i - 1];
-      //       kernel_block[2] = kernel[kernel_length - i - 1];
-      //       kernel_block[3] = kernel[kernel_length - i - 1];
-      // 
-      //       kernel_reverse[i] = _mm_load_ps(kernel_block);
+  for(int i=0; i<kernel_length; i++)
        kernel_reverse[i] = _mm_set_ps1(kernel[kernel_length - i - 1]);
-  }
+
+  return kernel_reverse;
+}
+
+//------------------------------------------------------------------------------
+__m128* sse_prepare_kernel_reverse_x4( float* kernel, 
+                                       int kernel_length,
+                                       int& new_kernel_length
+                                     )
+{
+  //float kernel_block[4] __attribute__ ((aligned (16)));
+  // next multiple of 4
+  new_kernel_length = kernel_length+3 -((kernel_length+3)%4);
+  
+  __m128* kernel_reverse = (__m128*) _mm_malloc(sizeof(__m128)*new_kernel_length,16);
+  if (kernel_reverse==NULL) return NULL;
+
+  // initialize to 0
+  bzero(kernel_reverse,sizeof(__m128)*new_kernel_length);
+  
+  // Reverse the kernel and repeat each value across a 4-vector
+  for(int i=0; i<kernel_length; i++)
+       kernel_reverse[i] = _mm_set_ps1(kernel[kernel_length - i - 1]);
 
   return kernel_reverse;
 }
@@ -257,6 +273,44 @@ inline int convolve_sse_partial_unroll( float* in, float* out, int length,
                                          kernel_reverse,kernel_length);
   sse_free_kernel(kernel_reverse);
 }
+
+//------------------------------------------------------------------------------
+
+// process 4 lines in a row
+inline int convolve_sse_x4_prepared(  __m128* in, __m128* out, int length,
+                                      __m128* kernel_reverse, int kernel_length)
+{
+
+    __m128 prod __attribute__ ((aligned (16)));
+    __m128 acc __attribute__ ((aligned (16)));
+
+    int i;
+    for(i=0; i<=length-kernel_length; i++){
+
+        acc = _mm_setzero_ps();
+        // Karl adapt for any length
+        int k;
+        for(k=0; k<kernel_length-3; k+=4){
+          int data_offset = i + k;
+          // for unrolling
+          for (int l = 0; l < 4; l++){
+            prod = _mm_mul_ps(kernel_reverse[k+l], in[data_offset+l]);
+            acc = _mm_add_ps(acc, prod);
+          }
+        }
+        while(k<kernel_length) 
+        {
+            prod = _mm_mul_ps(kernel_reverse[k], in[i+k]);
+            acc = _mm_add_ps(acc, prod);
+            k++;
+        }
+        out[i] =  acc;
+    }
+
+    return 0;
+  
+}
+
 
 //------------------------------------------------------------------------------
 /* As convolve_sse_partial_unroll plus...

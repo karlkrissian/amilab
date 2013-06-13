@@ -71,6 +71,13 @@ inline int convolve_naive(float* in, float* out, int length,
 #ifdef SSE3
 
 inline __m128* sse_prepare_kernel_reverse( float* kernel, int kernel_length);
+
+// force multiple of 4 kernel by padding with 0
+inline __m128* sse_prepare_kernel_reverse_x4( float* kernel, 
+                                              int kernel_length,
+                                              int& new_kernel_length
+                                            );
+
 inline void    sse_free_kernel           (__m128* kernel);
 
 inline int convolve_sse_simple_prepared(float* in, float* out, int length,
@@ -85,6 +92,12 @@ inline int convolve_sse_partial_unroll_prepared(
 
 inline int convolve_sse_partial_unroll( float* in, float* out, int length,
                                         float* kernel, int kernel_length);
+
+
+// process 4 lines in a row
+inline int convolve_sse_x4_prepared(  __m128* in, __m128* out, int length,
+                                      __m128* kernel, int kernel_length);
+
 
 inline int convolve_sse_in_aligned(float* in, float* out, int length,
         float* kernel, int kernel_length);

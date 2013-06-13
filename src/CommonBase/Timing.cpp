@@ -56,6 +56,7 @@
 
 #include "Timing.hpp"
 #include <iostream>
+#include <iomanip>
 
 #include "AMILabConfig.h"
 #ifdef AMI_USE_OPENMP
@@ -101,8 +102,9 @@ int gettimeofday(struct timeval* tp, void* tzp)
 std::ostream& operator<<(std::ostream& o, const Timing& d)
 {
   if (d.debut_OK && d.fin_OK)
-    return o << d.name << " Timing du traitement: " << 
-                d.diff_sec*1.0+d.diff_microsec*1E-6 << " sec. ";
+    return o  << d.name << " Timing du traitement: " 
+              << std::setw(12) << std::setprecision(6) 
+              << d.diff_sec*1.0+d.diff_microsec*1E-6 << " sec. ";
   else
     return o << " Timing inconnue ";
 }

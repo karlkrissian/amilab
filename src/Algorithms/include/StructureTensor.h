@@ -44,11 +44,12 @@ Algorithms_EXPORT unsigned char Func_StructureTensorHessian( InrImage* image_ini
 //--------------------------------------------------------------------------
 Algorithms_EXPORT InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale, 
 //        ------------------------------
-                     float sigma,
-                     float beta,
-                     InrImage::ptr mask = InrImage::ptr(),
-                     InrImage::ptr imgrad = InrImage::ptr(),
-                     std::vector<float> PSF = std::vector<float>(3,0)
+                      float sigma,
+                      float beta,
+                      InrImage::ptr mask = InrImage::ptr(),
+                      InrImage::ptr imgrad = InrImage::ptr(),
+                      std::vector<float> PSF = std::vector<float>(3,0),
+                      int num_threads = -1
                      );
 
 #endif // _StructureTensor_h_

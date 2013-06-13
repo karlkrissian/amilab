@@ -502,8 +502,10 @@ void GeneralGaussianFilter ::  MyFiltre(
   if (_use_new_filter) {
     _new_convolution_filter = ami::ImageConvolution1D::ptr( 
       new ami::ImageConvolution1D());
+    // this line is useless
     _new_convolution_filter->Set_kernel_support( _facteur_support);
   } else {
+    // this line is useless
     _filtre.SetSupportSize( _facteur_support);
     Si _coeff_int_gauss AlorsFait _filtre.IntegraleCoeffGaussienne();
   }

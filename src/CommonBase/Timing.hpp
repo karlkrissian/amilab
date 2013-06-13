@@ -144,6 +144,17 @@ public:
     diff_timer = timer_t2-timer_t1;
   }
 
+  // Return the time spent in seconds
+  float GetDuration()
+  {
+    return diff_sec*1.0+diff_microsec*1E-6;
+  }
+  
+  float GetDurationMilliSec()
+  {
+    return diff_sec*1000.0+diff_microsec*1E-3;
+  }
+
   ///
   friend CommonBase_EXPORT std::ostream& operator<<(std::ostream& o, const Timing& d);
 
