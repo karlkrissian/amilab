@@ -45,11 +45,15 @@ public:
   AnalyticHelix() 
   {
     center[0]=center[1]=center[2]=50;
-    radius = 10;
-    thickness=2;
-    rotation_coeff=PI/20;
-    radius_change_amplitude = 0;
-    radius_change_period = 1000;
+    radius                      = 10;
+    thickness                   = 2;
+    rotation_coeff              = PI/20;
+    radius_change_amplitude     = 0;
+    radius_change_period        = 1000;
+    containing_object           = false;
+    dissection                  = false;
+    centerline_circle           = false;
+    centerline_radius           = 10;
   }
   
   ~AnalyticHelix();
@@ -95,6 +99,19 @@ public:
    * the angle in XY plane will be rotation_coeff*z
    */
   AddSetGetVar(rotation_coeff,float)
+
+  //! outputs containing object
+  AddSetGetVar(containing_object,bool)
+
+  //! Simulate vessel dissection
+  AddSetGetVar(dissection,bool)
+
+  //! Move centerline
+  AddSetGetVar(centerline_circle,bool)
+  
+  //! Move centerline
+  AddSetGetVar(centerline_radius,float)
+
 };
 
 #endif

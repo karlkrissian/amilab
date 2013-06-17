@@ -81,6 +81,12 @@
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts  Vars;
 
+#include "AMILabConfig.h"
+#ifdef AMI_USE_SSE 
+#include <immintrin.h>
+#endif
+
+
 #include "CommonConfigure.h"
 COMMON_VAR_IMPORT unsigned char GB_debug;
 COMMON_VAR_IMPORT unsigned char GB_verbose;
@@ -893,7 +899,6 @@ InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
 
   long int n=0;
   int prev_per=0;
-  bool process;
   printf("Struct Tensor: ");
 
   bool use_mask      = mask.use_count();
@@ -901,82 +906,254 @@ InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
   
   filtre->PreComputeCoeffs();
   
-  #pragma omp parallel
-  #pragma omp for
-  for( int z=0; z<= image->_tz - 1; z++)
+  InrImage* imx  = (*filtre)(IMx_sigma);
+  InrImage* imy  = (*filtre)(IMy_sigma);
+  InrImage* imz  = (*filtre)(IMz_sigma);
+  InrImage* imxx = (*filtre)(IMxx_sigma);
+  InrImage* imxy = (*filtre)(IMxy_sigma);
+  InrImage* imyy = (*filtre)(IMyy_sigma);
+  InrImage* imxz = (*filtre)(IMxz_sigma);
+  InrImage* imyz = (*filtre)(IMyz_sigma);
+  InrImage* imzz = (*filtre)(IMzz_sigma);
+  // all the image are in float
+  
+  float* imx_ptr = (float*) imx->GetData();
+  float* imy_ptr = (float*) imy->GetData();
+  float* imz_ptr = (float*) imz->GetData();
+
+  float* imxx_ptr = (float*) imxx->GetData();
+  float* imxy_ptr = (float*) imxy->GetData();
+  float* imyy_ptr = (float*) imyy->GetData();
+  float* imxz_ptr = (float*) imxz->GetData();
+  float* imyz_ptr = (float*) imyz->GetData();
+  float* imzz_ptr = (float*) imzz->GetData();
+  
+  // speed-up calculation by multiplying beta here
+  double cx = filtre->GetCoeffX();
+  double cy = filtre->GetCoeffY();
+  double cz = filtre->GetCoeffZ();
+
+  double cxx = filtre->GetCoeffXX();
+  double cxy = filtre->GetCoeffXY();
+  double cxz = filtre->GetCoeffXZ();
+  double cyy = filtre->GetCoeffYY();
+  double cyz = filtre->GetCoeffYZ();
+  double czz = filtre->GetCoeffZZ();
+
+  double sqrt_beta = sqrt(beta);
+  
+  unsigned char* mask_ptr=NULL;
+  if ((use_mask)&&(mask->GetFormat()==WT_UNSIGNED_CHAR))
+      mask_ptr = (unsigned char*) mask->GetData();
+  
+  float* imgrad_ptr = NULL;
+  if ((save_gradient)&&(imgrad->GetFormat()==WT_FLOAT))
+    imgrad_ptr = (float*) imgrad->GetData();
+  
+  float* result_ptr = (float*) result->GetData();
+  int tx = image->DimX();
+  int ty = image->DimY();
+  int tz = image->DimZ();
+  int dim = filtre->GetDim();
+
+  
+  #pragma omp parallel for 
+  //private(G,grad,H,pos,x,y,z,process,tens)
+  for(int z=0; z<= tz - 1; z++)
   {
-    double              G[3];
-    Vect3D<double>      grad;
-    double              H[9];
-    //FloatMatrix         matrice(3,3);
+    float   G[3];
+    double  H[9];
 
-    for( int y=0; y<= image->_ty - 1; y++)
-    for( int x=0; x<= image->_tx - 1; x++)
+    // l0 will contain hxx, hxy, hxz, gx
+    // l1 will contain hxy, hyy, hyz, gy
+    // l2 will contain hxz, hyz, hzz, gz
+    float L0[4] __attribute__ ((aligned (16)));
+    float L1[4] __attribute__ ((aligned (16)));
+    float L2[4] __attribute__ ((aligned (16)));
+
+    float T0[4] __attribute__ ((aligned (16)));
+    float T1[4] __attribute__ ((aligned (16)));
+    float T2[4] __attribute__ ((aligned (16)));
+    float T3[4] __attribute__ ((aligned (16)));
+    float T4[4] __attribute__ ((aligned (16)));
+    float T5[4] __attribute__ ((aligned (16)));
+
+    __m128 l0 __attribute__ ((aligned (16)));
+    __m128 l1 __attribute__ ((aligned (16)));
+    __m128 l2 __attribute__ ((aligned (16)));
+    __m128 acc __attribute__ ((aligned (16)));
+
+    bool    process;
+    float   tens[6] __attribute__ ((aligned (16)));;
+    long    pos;
+    pos = tx*ty*z;
+    for(int y=0; y<= ty - 1; y++)
     {
-  //     int per = (int)((100.0*n)/image->Size());
-  //     if ((int)(per/10) != (int)(prev_per/10)) {
-  //       printf(" %d %% ",per);
-  //       fflush(stdout);
-  //       prev_per = per;
-  //     }
-
+//#undef AMI_USE_SSE
+#ifdef AMI_USE_SSE 
+    // unroll loop, do SSE 4 lines in // ?
+    for(int x=0; x<=tx-1; x++,pos++)
+    {
+      
       if (!use_mask)
         process = true;
       else
-        process = (*mask)(x,y,z)>0.5;
+        if (mask_ptr!=NULL)
+          process = mask_ptr[pos]>0;
+        else
+          process = (*mask)(x,y,z)>0.5;
 
       if (process) {
-        grad = filtre->Gradient(x,y,z);
-        G[0]=grad.x;
-        G[1]=grad.y;
-        G[2]=grad.z;
-        filtre->Hessien( H, x,y,z);
+
+
+        G[0] = L0[3] = imx_ptr[pos]/cx;
+        G[1] = L1[3] = imy_ptr[pos]/cy;
+        if (dim==MODE_3D)
+          G[2] = L2[3] = imz_ptr[pos]/cz;
+        else 
+          G[2] = L2[3] = 0.0;
         
-        double tens[6];
-
-        // matrice at 0,0
-        tens[0] = H[0]*H[0]+H[1]*H[1]+H[2]*H[2]+beta*(G[0]*G[0]);
-        // matrice at 0,1
-        tens[1] = H[0]*H[3]+H[1]*H[4]+H[2]*H[5]+beta*(G[0]*G[1]);
-        // matrice at 0,2
-        tens[2] = H[0]*H[6]+H[1]*H[7]+H[2]*H[8]+beta*(G[0]*G[2]);
-        // matrice at 1,1
-        tens[3] = H[3]*H[3]+H[4]*H[4]+H[5]*H[5]+beta*(G[1]*G[1]);
-        // matrice at 1,2
-        tens[4] = H[3]*H[6]+H[4]*H[7]+H[5]*H[8]+beta*(G[1]*G[2]);
-        // matrice at 2,2
-        tens[5] = H[6]*H[6]+H[7]*H[7]+H[8]*H[8]+beta*(G[2]*G[2]);
-
-        result->SetVectorValue(x,y,z, tens);
-
-        // Compute squared hessian
-//         H_3D[0][0] = hessien[0];
-//         H_3D[0][1] = hessien[1];
-//         H_3D[0][2] = hessien[2];
-//         H_3D[1][0] = hessien[3];
-//         H_3D[1][1] = hessien[4];
-//         H_3D[1][2] = hessien[5];
-//         H_3D[2][0] = hessien[6];
-//         H_3D[2][1] = hessien[7];
-//         H_3D[2][2] = hessien[8];
-
-//         for(int i=0;i<3;i++) 
-//         {
-//           for(int j=i;j<3;j++) 
-//           {
-//               matrice[i][j]=0;
-//               for(int k=0;k<3;k++)
-//                 matrice[i][j] += H_3D[i][k]*H_3D[k][j];
-//               matrice[i][j] += beta*gradarray[i]*gradarray[j];
-//               result->SetValue(x,y,z, pos++, matrice[i][j]);
-//           }
-//         }
         if (save_gradient) {
-          imgrad->SetVectorValue(x,y,z, G);
+          if (imgrad_ptr!=NULL) {
+            memcpy(imgrad_ptr+3*pos,G,3*sizeof(float));
+          } else {
+            double _grad[3] = { G[0], G[1], G[2] };
+            imgrad->SetVectorValue(x,y,z, _grad);
+          }
         }
-      }
+        
+        L0[3] *= sqrt_beta;
+        L1[3] *= sqrt_beta;
+        L2[3] *= sqrt_beta;
 
-    } // for x,y
+        L0[0] =          imxx_ptr[pos] / cxx;
+        L0[1] = L1[0] =  imxy_ptr[pos] / cxy;
+        L1[1] =          imyy_ptr[pos] / cyy;
+        Si dim == MODE_2D Alors
+          L0[2] = L2[0] =  0.0;
+          L1[2] = L2[1] =  0.0;
+          L2[2] =          0.0;
+        Sinon
+          L0[2] = L2[0] =  imxz_ptr[pos] / cxz;
+          L1[2] = L2[1] =  imyz_ptr[pos] / cyz;
+          L2[2] =          imzz_ptr[pos] / czz;
+        FinSi
+
+        l0 = _mm_load_ps(L0);
+        l1 = _mm_load_ps(L1);
+        l2 = _mm_load_ps(L2);
+
+        // get squared vectors
+        _mm_store_ps(T0, _mm_mul_ps(l0,l0));
+        _mm_store_ps(T1, _mm_mul_ps(l0,l1));
+        _mm_store_ps(T2, _mm_mul_ps(l0,l2));
+        _mm_store_ps(T3, _mm_mul_ps(l1,l1));
+        _mm_store_ps(T4, _mm_mul_ps(l1,l2));
+        _mm_store_ps(T5, _mm_mul_ps(l2,l2));
+
+        // is SSE3 we can use _mm_hadd_ps
+        //_mm_hadd_ps()
+        
+        // compute with SSE ...
+        // matrice at 0,0
+        // get the first four values
+        acc =                _mm_setr_ps(T0[0],T1[0],T2[0],T3[0]);
+        acc = _mm_add_ps(acc,_mm_setr_ps(T0[1],T1[1],T2[1],T3[1]));
+        acc = _mm_add_ps(acc,_mm_setr_ps(T0[2],T1[2],T2[2],T3[2]));
+        acc = _mm_add_ps(acc,_mm_setr_ps(T0[3],T1[3],T2[3],T3[3]));
+        
+//         tens[0] = T0[0]+T0[1]+T0[2]+T0[3];
+//         // matrice at 0,1
+//         tens[1] = T1[0]+T1[1]+T1[2]+T1[3];
+//         // matrice at 0,2
+//         tens[2] = T2[0]+T2[1]+T2[2]+T2[3];
+//         // matrice at 1,1
+//         tens[3] = T3[0]+T3[1]+T3[2]+T3[3];
+        _mm_store_ps(tens, acc);
+
+        // matrice at 1,2
+        tens[4] = T4[0]+T4[1]+T4[2]+T4[3];
+        // matrice at 2,2
+        tens[5] = T5[0]+T5[1]+T5[2]+T5[3];
+
+        memcpy(result_ptr+6*pos,tens,6*sizeof(float));
+        //result->SetVectorValue(x,y,z, tens);
+
+      }
+    } // for x
+#else
+    // unroll loop, do SSE 4 lines in // ?
+    for(int x=0; x<= tx - 1; x++,pos++)
+    {
+      
+      if (!use_mask)
+        process = true;
+      else
+        if (mask_ptr!=NULL)
+          process = mask_ptr[pos]>0;
+        else
+          process = (*mask)(x,y,z)>0.5;
+
+      if (process) {
+        //         grad = filtre->Gradient(x,y,z);
+        //         G[0]=grad.x;
+        //         G[1]=grad.y;
+        //         G[2]=grad.z;
+        //         filtre->Hessien( H, x,y,z);
+        G[0] = imx_ptr[pos]/cx;
+        G[1] = imy_ptr[pos]/cy;
+        if (dim==MODE_3D)
+          G[2] = imz_ptr[pos]/cz;
+        else 
+          G[2] = 0.0;
+        
+        if (save_gradient) {
+          if (imgrad_ptr!=NULL) {
+            memcpy(imgrad_ptr+3*pos,G,3*sizeof(float));
+          } else {
+            double _grad[3] = { G[0], G[1], G[2] };
+            imgrad->SetVectorValue(x,y,z, _grad);
+          }
+        }
+
+        G[0] *= sqrt_beta;
+        G[1] *= sqrt_beta;
+        G[2] *= sqrt_beta;
+        
+        H[0] =         imxx_ptr[pos] / cxx;
+        H[1] = H[3] =  imxy_ptr[pos] / cxy;
+        H[4] =         imyy_ptr[pos] / cyy;
+        Si dim == MODE_2D Alors
+          H[2] = H[6] =  0.0;
+          H[5] = H[7] =  0.0;
+          H[8] =         0.0;
+        Sinon
+          H[2] = H[6] =  imxz_ptr[pos] / cxz;
+          H[5] = H[7] =  imyz_ptr[pos] / cyz;
+          H[8] =         imzz_ptr[pos] / czz;
+        FinSi
+
+        // compute with SSE ...
+        // matrice at 0,0
+        tens[0] = H[0]*H[0]+H[1]*H[1]+H[2]*H[2]+G[0]*G[0];
+        // matrice at 0,1
+        tens[1] = H[0]*H[3]+H[1]*H[4]+H[2]*H[5]+G[0]*G[1];
+        // matrice at 0,2
+        tens[2] = H[0]*H[6]+H[1]*H[7]+H[2]*H[8]+G[0]*G[2];
+        // matrice at 1,1
+        tens[3] = H[3]*H[3]+H[4]*H[4]+H[5]*H[5]+G[1]*G[1];
+        // matrice at 1,2
+        tens[4] = H[3]*H[6]+H[4]*H[7]+H[5]*H[8]+G[1]*G[2];
+        // matrice at 2,2
+        tens[5] = H[6]*H[6]+H[7]*H[7]+H[8]*H[8]+G[2]*G[2];
+
+        memcpy(result_ptr+6*pos,tens,6*sizeof(float));
+        //result->SetVectorValue(x,y,z, tens);
+
+      }
+    } // for x
+#endif
+    } // for y
   } // parallel for z
 
   printf("\n");

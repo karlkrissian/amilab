@@ -393,11 +393,15 @@ bool MyApp::OnInit()
 //  GB_contexte  = (XtAppContext) this->GetAppContext();
   GB_wxApp = this;
 
+  int screen_size_x = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+  int screen_size_y = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+
   mainframe = new MainFrame(
                 GetwxStr("AMILab ")+GetwxStr(AMILAB_VERSION),
 //                _T("AMILab: Image Processing and Visualization"),
                 wxDefaultPosition,
-                wxSize(900,700));
+                // 80% of screen size?
+                wxSize(screen_size_x*0.85,screen_size_y*0.85));
 
 //  #if defined(WIN32) || defined(__APPLE__)
     mainframe->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));

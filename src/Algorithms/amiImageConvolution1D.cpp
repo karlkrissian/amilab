@@ -678,7 +678,8 @@ void ImageConvolution1D::TemplateProcess( int threadid)
         }
         break;
         
-      case 3: // call ConvolveDirX, loop y,x,z, only for float inputs
+      case 3: // process 4 lines in parallel
+      case 4: // process 4 lines in parallel with symmetry
         {
           if (use_sse) {
             int size = extent.GetSize((int)_dir)+2*_kernel_radius;
@@ -745,9 +746,24 @@ void ImageConvolution1D::TemplateProcess( int threadid)
                   pos++;
                 }
                   
-                convolve_sse_x4_prepared( in_x4,
-                                          out_x4,   zsize+2*_kernel_radius,
-                                          sse_kernel_prepared,  kernel_size);
+                if (_dirz_version==4) {
+                  if (_symmetry==EVEN)
+                    convolve_sse_x4_prepared_sym( in_x4,
+                                                  out_x4,
+                                                  zsize+2*_kernel_radius,
+                                                  sse_kernel_prepared,
+                                                  _kernel_radius);
+                  else
+                    convolve_sse_x4_prepared_asym( in_x4,
+                                                   out_x4,
+                                                   zsize+2*_kernel_radius,
+                                                   sse_kernel_prepared,  
+                                                   _kernel_radius);
+                }
+                else
+                  convolve_sse_x4_prepared( in_x4,
+                                            out_x4,   zsize+2*_kernel_radius,
+                                            sse_kernel_prepared,  kernel_size);
                 
                 // copy back the results
                 float* out_data1 = (float*)out_data + zmin*incz + pos0;

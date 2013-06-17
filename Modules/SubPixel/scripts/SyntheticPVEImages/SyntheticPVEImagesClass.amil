@@ -30,7 +30,11 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::subdiv3D   = INT(4), "Param: Subdivision level for 3D functions"
     ::autodisplay = UCHAR(1), "Param: Display image after computation"
     ::output_name= "synthetic_res", "Output image name"
-    
+   
+     ::add_gaussnoise = false, "Param: add Gaussian noise"
+     ::noise_mean     = 0,     "Param: Gaussian noise mean"
+     ::noise_std      = 30,    "Param: Gaussian noise standard deviation"
+   
     ::reloadLine     = UCHAR(0), "Reload the analytic line"
     ::reloadCircle   = UCHAR(0), "Reload the analytic circle"
     ::reloadVessel2D = UCHAR(0), "Reload the analytic vessel2D"
@@ -109,6 +113,10 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::helix_coeff = Pi/10, "Param: rotation coefficient"
     ::helix_radius_change_amplitude = 2,  "Param: amplitude of radius change"
     ::helix_radius_change_period    = 20, "Param: period of radius change"
+    ::helix_containing_object = false, "Param: get the containing object"
+    ::helix_dissection        = false, "Param: simulate dissection"
+    ::helix_centerline_circle = false,  "Param: use a torus"
+    ::helix_centerline_radius = 10,     "Param: centerline radius"
 
 
     #Help
@@ -124,6 +132,12 @@ if (!exists(SyntheticPVEImagesClass)) {
     
   }
 
+  #----------------------------------------------------------
+  proc ::UpdateGui() \
+  {
+    ::dimensions.Update()
+    ::win.Update(-1)
+  }
 
   #----------------------------------------------------------
   proc ::NewType2D() {
@@ -273,6 +287,11 @@ if (!exists(SyntheticPVEImagesClass)) {
             InfoDialog "Compute analytic volume only in 3D images."
           }
       }
+      # Add Gaussian noise
+      if (::add_gaussnoise) {
+        ami_AddImageNoise.AddGaussianNoise(::res,::noise_mean,::noise_std)
+      }
+
       #Enable the save box
       printn "EnablePanel ::save_box"
       ::win.EnablePanel(::save_box, 1)
@@ -475,6 +494,10 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::helix.Setrotation_coeff(::helix_coeff)
     ::helix.Setradius_change_amplitude(::helix_radius_change_amplitude)
     ::helix.Setradius_change_period   (::helix_radius_change_period)
+    ::helix.Setcontaining_object      (::helix_containing_object)
+    ::helix.Setdissection             (::helix_dissection)
+    ::helix.Setcenterline_circle      (::helix_centerline_circle)
+    ::helix.Setcenterline_radius      (::helix_centerline_radius)
   }
   Comments(::GenerateHelix, "Generate analytic helix")
 
@@ -488,6 +511,10 @@ if (!exists(SyntheticPVEImagesClass)) {
     ::helix_coeff = 0.1
     ::helix_radius_change_amplitude = 2
     ::helix_radius_change_period    = 20
+    ::helix_containing_object = false
+    ::helix_dissection = false
+    ::helix_centerline_circle = false
+    ::helix_centerline_radius = 10
     ::win.Update(-1)
     if(::reloadHelix == 1){
       ::RecomputeHelix()
@@ -620,6 +647,10 @@ if (!exists(SyntheticPVEImagesClass)) {
       ::helix.Setrotation_coeff         (::helix_coeff)
       ::helix.Setradius_change_amplitude(::helix_radius_change_amplitude)
       ::helix.Setradius_change_period   (::helix_radius_change_period)
+      ::helix.Setcontaining_object      (::helix_containing_object)
+      ::helix.Setdissection             (::helix_dissection)
+      ::helix.Setcenterline_circle      (::helix_centerline_circle)
+      ::helix_SetCenterline_radius      (::helix_centerline_radius)
       if(exists(::pv)) {
         ::pv->setAnalyticFunction(&::helix)
         ::Compute()
@@ -699,6 +730,12 @@ if (!exists(SyntheticPVEImagesClass)) {
           #::pv_id = ::win.AddEnum(&::pv_type, "Method")
           #  ::win.AddEnumChoice(::pv_id, "Analytic PS")
           #  ::win.AddEnumChoice(::pv_id, "Analytic PV")
+        ::win.EndBoxPanel()
+
+        ::win.BeginBoxPanel("Additive Gaussian noise")
+          ::win.AddBoolean(::add_gaussnoise,"Add Gaussian noise")
+          #::win.AddFloat(::noise_mean,"mean",-10,10)
+          ::win.AddFloat(::noise_std,"Standard deviation",0,100)
         ::win.EndBoxPanel()
         
         ::win.AddBoolean(&::autodisplay,"Auto Display")
@@ -920,6 +957,14 @@ if (!exists(SyntheticPVEImagesClass)) {
 
                   ::win.AddFloat( ::helix_radius_change_period, \
                                   "radius change period", 1, 100)
+                  ::win.AddBoolean( ::helix_containing_object, \
+                                  "containing object")
+                  ::win.AddBoolean( ::helix_dissection, \
+                                  "dissection")
+                  ::win.AddBoolean( ::helix_centerline_circle, \
+                                  "torus")
+                  ::win.AddFloat( ::helix_centerline_radius, \
+                                  "centerline radius", 0.01, 100)
                   #::win.SetCallback(&::RecomputeHelix)
                 ::win.EndBoxPanel()
                 ::win.BeginHorizontal()

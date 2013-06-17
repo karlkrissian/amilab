@@ -545,6 +545,17 @@ public:
   }
 
   void PreComputeCoeffs();
+  double GetCoeffX() const { return _coeff_x; }
+  double GetCoeffY() const { return _coeff_y; }
+  double GetCoeffZ() const { return _coeff_z; }
+  double GetCoeffXX() const { return _coeff_xx; }
+  double GetCoeffXY() const { return _coeff_xy; }
+  double GetCoeffXZ() const { return _coeff_xz; }
+  double GetCoeffYY() const { return _coeff_yy; }
+  double GetCoeffYZ() const { return _coeff_yz; }
+  double GetCoeffZZ() const { return _coeff_zz; }
+  
+  int GetDim() const { return _dim; }
 
   ///
   Vect3D<double>  Gradient( const int& x, const int& y, const int& z) 

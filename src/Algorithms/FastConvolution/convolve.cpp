@@ -275,7 +275,6 @@ inline int convolve_sse_partial_unroll( float* in, float* out, int length,
 }
 
 //------------------------------------------------------------------------------
-
 // process 4 lines in a row
 inline int convolve_sse_x4_prepared(  __m128* in, __m128* out, int length,
                                       __m128* kernel_reverse, int kernel_length)
@@ -307,6 +306,101 @@ inline int convolve_sse_x4_prepared(  __m128* in, __m128* out, int length,
         out[i] =  acc;
     }
 
+    return 0;
+  
+}
+
+
+//------------------------------------------------------------------------------
+// take advantage of kernel symmetry
+// kernel length is 2*kernel_radius+1
+//
+inline int convolve_sse_x4_prepared_sym(  __m128* in, __m128* out, int length,
+                                          __m128* kernel_reverse, 
+                                          int kernel_radius)
+{
+
+    __m128 prod __attribute__ ((aligned (16)));
+    __m128 acc __attribute__ ((aligned (16)));
+    __m128 sum __attribute__ ((aligned (16)));
+    int kernel_length = 2*kernel_radius+1;
+
+    int i;
+    for(i=0; i<=length-kernel_length; i++){
+
+        acc = _mm_setzero_ps();
+        // add the center
+        prod = _mm_mul_ps(kernel_reverse[kernel_radius], in[i+kernel_radius]);
+        acc = _mm_add_ps(acc, prod);
+        
+        // Adapt for any length
+        int k1;
+        int data_offset1 = i + kernel_radius+1;
+        int data_offset2 = i + kernel_radius-1;
+        // TODO: should sum starting from the smallest values 
+        for(k1=kernel_radius+1; k1<kernel_length-3; ){
+          // for unrolling
+          for (int l = 0; l < 4; l++){
+            sum  = _mm_add_ps(in[data_offset1++],in[data_offset2--]);
+            prod = _mm_mul_ps(kernel_reverse[k1++], sum);
+            acc = _mm_add_ps(acc, prod);
+          }
+        }
+        while(k1<kernel_length) 
+        {
+            sum  = _mm_add_ps(in[data_offset1++],in[data_offset2--]);
+            prod = _mm_mul_ps(kernel_reverse[k1++], sum);
+            acc = _mm_add_ps(acc, prod);
+        }
+        out[i] =  acc;
+    }
+    return 0;
+  
+}
+
+//------------------------------------------------------------------------------
+// take advantage of kernel symmetry
+// kernel length is 2*kernel_radius+1
+//
+inline int convolve_sse_x4_prepared_asym(  __m128* in, __m128* out, int length,
+                                           __m128* kernel_reverse, 
+                                           int kernel_radius)
+{
+
+    __m128 prod __attribute__ ((aligned (16)));
+    __m128 acc __attribute__ ((aligned (16)));
+    __m128 sum __attribute__ ((aligned (16)));
+    int kernel_length = 2*kernel_radius+1;
+
+    int i;
+    for(i=0; i<=length-kernel_length; i++){
+
+        acc = _mm_setzero_ps();
+        // add the center
+        prod = _mm_mul_ps(kernel_reverse[kernel_radius], in[i+kernel_radius]);
+        acc = _mm_add_ps(acc, prod);
+        
+        // Adapt for any length
+        int k1;
+        int data_offset1 = i + kernel_radius+1;
+        int data_offset2 = i + kernel_radius-1;
+        // TODO: should sum starting from the smallest values 
+        for(k1=kernel_radius+1; k1<kernel_length-3; ){
+          // for unrolling
+          for (int l = 0; l < 4; l++){
+            sum  = _mm_sub_ps(in[data_offset1++],in[data_offset2--]);
+            prod = _mm_mul_ps(kernel_reverse[k1++], sum);
+            acc = _mm_add_ps(acc, prod);
+          }
+        }
+        while(k1<kernel_length) 
+        {
+            sum  = _mm_sub_ps(in[data_offset1++],in[data_offset2--]);
+            prod = _mm_mul_ps(kernel_reverse[k1++], sum);
+            acc = _mm_add_ps(acc, prod);
+        }
+        out[i] =  acc;
+    }
     return 0;
   
 }

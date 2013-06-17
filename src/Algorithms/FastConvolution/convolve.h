@@ -99,6 +99,16 @@ inline int convolve_sse_x4_prepared(  __m128* in, __m128* out, int length,
                                       __m128* kernel, int kernel_length);
 
 
+// process 4 lines in a row with symmetric kernel
+inline int convolve_sse_x4_prepared_sym(  __m128* in, __m128* out, int length,
+                                          __m128* kernel_reverse, 
+                                          int kernel_radius);
+
+// process 4 lines in a row with asymmetric kernel
+inline int convolve_sse_x4_prepared_asym(  __m128* in, __m128* out, int length,
+                                           __m128* kernel_reverse, 
+                                           int kernel_radius);
+
 inline int convolve_sse_in_aligned(float* in, float* out, int length,
         float* kernel, int kernel_length);
 
