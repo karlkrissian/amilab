@@ -130,6 +130,8 @@ if (!exists(MultiLinesClass)) {
       
       ::speedup_convolutions = false, "Param: Reduce time of big convolutions"
       
+      ::num_threads = INT(-1), "Param: set the number of threads if possible"
+      
       ::abort = false, "Abort current processing"
     }
 
@@ -577,17 +579,20 @@ if (!exists(MultiLinesClass)) {
           printn "running tensor with std = %1%" % (2*max_vs)
           sth = Func_StructureTensorHessianNew( sub_input_smoothed,\
                                                 2*max_vs,\
-                                                1,sub_mask,grad0,psf)
+                                                1,sub_mask,grad0,psf,\
+                                                ::num_threads)
         } else {
           # should adjust PSF acording to voxel spacing
           psf = vector_float(3)
           psf[0] = ::PSF_stddev/sub_input.vx
           psf[1] = ::PSF_stddev/sub_input.vy
           psf[2] = ::PSF_stddev/sub_input.vz
-          sth = Func_StructureTensorHessianNew(sub_input,sigma,1,sub_mask,grad0,psf)
+          sth = Func_StructureTensorHessianNew( sub_input,sigma,1,sub_mask,\
+                                                grad0,psf, ::num_threads)
         }
       } else {
-        sth = Func_StructureTensorHessianNew(sub_input,sigma,1,sub_mask)
+        sth = Func_StructureTensorHessianNew( sub_input,sigma,1,sub_mask,\
+                                              ::num_threads)
       }
       diff=wx.wxDateTime.UNow()-inittime
       time_elapsed = wx.FromWxString(diff.Format("%M min %S s %l ms"))
@@ -1509,6 +1514,7 @@ if (!exists(MultiLinesClass)) {
               ::win.AddButton("Run new",    ::MultiLines_new)
               ::win.AddBoolean(::split_image,"Split image for memory usage")
               ::win.AddInt(::max_memory_usage, "max memory Mb",100,10000) 
+              ::win.AddInt(::num_threads, "Number of threads",-1,20) 
             ::win.EndBoxPanel()
             ::outputname_id = ::win.AddString( &::output_name, "Output")
             ::win.BeginBoxPanel("Display")
