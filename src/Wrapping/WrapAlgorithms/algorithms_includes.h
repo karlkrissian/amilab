@@ -7,6 +7,8 @@
 #include "vtkFastMarching_nD_plus.h"
 #include "Gradient.h"
 #include "amiShortestPathClass.h"
+#include "amiBackgroundComponents.h"
+
 #include "Curvatures.h"
 
 #include "amiComputePositiveArea.hpp"

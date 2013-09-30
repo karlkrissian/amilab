@@ -338,9 +338,16 @@ BasicVariable::ptr VarContexts::AddVar(
               const IdentifierInfo::ptr& info, 
               BasicVariable::ptr& val)
 {
-  int context;
-  context = info->GetCreationContext();
-  return AddVar(info->GetName().c_str(),val,context);
+ int context;
+ context = info->GetCreationContext();
+ std::string idname = info->GetName();
+ BasicVariable::ptr res =  
+  AddVar(
+          idname.c_str(),
+          val,
+          context);
+  
+ return res;
 } // AddVar()
 
 //--------------------------------------------------

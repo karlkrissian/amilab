@@ -46,6 +46,9 @@ ami::LineRecons
 ami::Mean
 ami::Sum
 
+# Background components
+ami::BackgroundComponents
+
 # linear interpolator
 amimage
 amiDirectionMatrix

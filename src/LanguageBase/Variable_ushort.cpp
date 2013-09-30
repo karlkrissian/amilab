@@ -355,6 +355,10 @@ BasicVariable::ptr Variable<unsigned short>::TryCast(
     if (type_string==AMILabType<unsigned char>::name_as_string()) {
       RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
     } else 
+    // cast to unsigned long
+    if (type_string==AMILabType<unsigned long>::name_as_string()) {
+      RETURN_VARPTR(unsigned long, boost::numeric_cast<unsigned long>(Value()));
+    } else 
     {
       // make default conversion to double??
       CLASS_ERROR((boost::format("No conversion available for variable %1% from int to %2%") % _name % type_string).str().c_str());

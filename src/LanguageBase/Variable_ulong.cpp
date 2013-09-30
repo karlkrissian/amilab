@@ -379,7 +379,33 @@ BasicVariable::ptr Variable<unsigned long>::TryCast(
 //
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned long>::BasicCast(const int& type)
 {
-  long int res = Value();
+#define NUMCAST(amitype,type) \
+      case amitype:  { RETURN_VARPTR(type, boost::numeric_cast<type>(Value())); }
+
+  try
+  {
+    switch((WORDTYPE)type) {
+      NUMCAST( WT_UNSIGNED_CHAR,  unsigned char )
+      NUMCAST( WT_SIGNED_SHORT,   short         )
+      NUMCAST( WT_UNSIGNED_SHORT, unsigned short)
+      NUMCAST( WT_SIGNED_INT,     int           )
+      NUMCAST( WT_SIGNED_LONG,    long          )
+      NUMCAST( WT_FLOAT,          float         )
+      NUMCAST( WT_DOUBLE,         double        )
+      //NUMCAST( WT_UNSIGNED_INT,   unsigned int  )
+      case WT_UNSIGNED_INT: { RETURN_VARPTR(float, (unsigned int) Value()); }
+      default:
+        CLASS_ERROR(( boost::format("Conversion to type %1% not available")%((WORDTYPE)type)).str().c_str());
+    }
+  } catch (std::bad_cast &e)
+  {
+    CLASS_ERROR((boost::format("%1%, for variable %2% from float to WORDTYPE %3%") % e.what() % _name % (WORDTYPE)type ).str().c_str());
+    return BasicVariable::ptr();
+  }
+
+  RETURN_VARPTR(unsigned long, Value());
+
+/*  long int res = Value();
 
   switch((WORDTYPE)type) {
     case WT_UNSIGNED_CHAR:  res=(unsigned char) res; break;
@@ -393,6 +419,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned long>::BasicCast(c
       CLASS_ERROR(( boost::format("Conversion to type %1% not available")%((WORDTYPE)type)).str().c_str());
   }
   RETURN_VARPTR(long, res);
+  */
 }
 
 //

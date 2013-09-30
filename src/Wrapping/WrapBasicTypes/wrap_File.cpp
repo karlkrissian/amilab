@@ -91,7 +91,7 @@ std::string readline(FILE* f)
   {
     line[len] = '\0';
     res = line;
-    delete line;
+    free(line);
   }
   
   return res;

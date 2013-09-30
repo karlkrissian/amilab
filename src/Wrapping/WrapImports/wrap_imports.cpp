@@ -67,7 +67,12 @@ extern bool CheckNullVar(ParamList* _p, int _n);
   AMI_DECLARE_TYPE(VarContexts);
 #endif
 
-typedef std::ostream std_ostream;
+#ifndef BasicVariable_declared
+  #define BasicVariable_declared
+    AMI_DECLARE_TYPE(BasicVariable);
+#endif
+
+  typedef std::ostream std_ostream;
 #ifndef std_ostream_declared
   #define std_ostream_declared
   AMI_DECLARE_TYPE(std_ostream);

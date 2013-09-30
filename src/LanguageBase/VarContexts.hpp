@@ -184,7 +184,9 @@ public:
   * @return 
   */
   template <class T>
-  boost::shared_ptr<Variable<T> > AddVar(const char* name, boost::shared_ptr<Variable<T> >& val, int context=NEWVAR_CONTEXT)
+  boost::shared_ptr<Variable<T> > AddVar(const char* name, 
+                                         boost::shared_ptr<Variable<T> >& val, 
+                                         int context=NEWVAR_CONTEXT)
 #ifdef __GCCXML__
     ;
 #else
