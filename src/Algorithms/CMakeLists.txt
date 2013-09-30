@@ -57,6 +57,8 @@ SET(Algorithms_SRCS
   amiAnisoGS.cpp
   amiAnisoGSBase.cpp
   amiAnisoGS_NRAD.cpp
+  
+  amiBackgroundComponents.cpp
   #WrapOld_AnisoGS.cpp
   NLmeans.cpp
 
@@ -171,6 +173,7 @@ SET(Algorithms_HDRS
 
   include/amiLineRecons.h
 
+  include/amiBackgroundComponents.h
 
   include/AnalyticFunctionBase.h
   include/ComputePartialVolume.h

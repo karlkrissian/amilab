@@ -13,6 +13,65 @@ proc LeeFilter(IMAGE input, IMAGE out, NUM size, NUM noisevar) {
 
 }
 
+#
+# Lee Filter for additive noise
+# with box window
+#
+proc AdditiveLeeFilter(IMAGE input,  NUM size) \
+{
+  i1 = localmean2(input,size)
+  i2 = localSD2(input,i1,size)
+
+  h = histo(i2,0,100,200)
+  noisesigma = argmax(h)*h.vx+h.trx
+  noisevar = noisesigma*noisesigma
+
+  i2=i2*i2
+  k = (i2>noisevar)*(i2-noisevar)/i2
+  return = i1 + (input-i1)*k
+}
+
+#
+# Lee Filter for additive noise
+# with Gaussian window
+#
+proc AdditiveLeeFilterGauss(IMAGE input,  NUM size) \
+{
+  i1   = filter(input,size,0,0,0)
+  i1_2 = filter(input*input,size,0,0,0)
+
+  i2 = i1_2-i1*i1
+  del i1_2
+
+  h = histo(i2,0,10000,200)
+  noisevar = argmax(h)*h.vx+h.trx
+
+  k = (i2>noisevar)*(i2-noisevar)/i2
+  return = i1 + (input-i1)*k
+}
+
+proc AdditiveLeeFilterGaussIt(IMAGE input,  NUM size, NUM coeff, NUM it) \
+{
+  i0 = (FLOAT)input
+  
+  for n=1 to it {
+    printn "Iteration %1%" % n
+	i1   = filter(i0,size,0,0,0)
+	i1_2 = filter(i0*i0,size,0,0,0)
+
+	i2 = i1_2-i1*i1
+	del i1_2
+
+	h = histo(i2,0,10000,200)
+	noisevar = argmax(h)*h.vx+h.trx
+	printn "noisevar = %1%" % noisevar
+
+	k = (i2>noisevar)*(i2-noisevar)/i2
+	i0 = i0 + (1-k)*coeff*(i1-i0)
+  }
+  
+  return = &i0
+}
 
 #
 # Lee Filter for multiplicative noise

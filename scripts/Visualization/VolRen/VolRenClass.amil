@@ -274,10 +274,12 @@ if (!exists(VolRenClass)) {
               ::volVector[n].imhisto1.dw.Show(false)
             }
           }
-          ::splitter.Unsplit();
-          sizer=(::splitter.GetWindow1()).GetVirtualSize()
-          h=sizer.GetHeight()*0.8
-          ::splitter.SplitHorizontally(&::panel1, &::panel2,h)
+          if (exists(::splitter)) {
+            ::splitter.Unsplit();
+            sizer=(::splitter.GetWindow1()).GetVirtualSize()
+            h=sizer.GetHeight()*0.8
+            ::splitter.SplitHorizontally(&::panel1, &::panel2,h)
+          }
         }
       }
       if ::trace { eval ::trace_end; }
@@ -670,72 +672,91 @@ printn "::SetRendererBg() end"
     proc ::MainBook_AddVolRenTab()  \
     {
       if ::trace { eval ::trace_begin; }
-       mb = ami.MainFrame.GetMainBook()
-
-      ::panel = wx.wxPanel(ami.MainFrame)
-      ::panel.SetName("VolRen panel")
-      # StaticBox gives problems on XP ..., avoid it ...
-      sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
-      ::panel.SetSizer(sbox_sizer)
-      ::splitter =wx.wxSplitterWindow(&::panel,-1)
-
-      sbox_sizer.Add( &::splitter, 1, wx.wxALL | wx.wxEXPAND,2)
-      # create widget here
-      ::panel1 = wx.wxPanel(&::splitter)
-      #::panel1.SetBackgroundColour(wx.wxColour(0,0,50))
-      ::panel1_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
-      ::panel1.SetSizer(&::panel1_sizer)   
-      ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(::panel1,wx.wxID_ANY)
-      ::panel1_sizer.Add(::renwin_interact,1,wx.wxEXPAND )
-      #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
-      ::renwin_interact.UseCaptureMouseOn()
-      ::renwin_interact.Enable(true)
-      ::renwin_interact.Initialize()
-
-      # Still drawing problem (missed exposed events???)
-      ::icons.LoadIconPNG2("Transparent background","Transparent_background")
-      ::panel2 = wx.wxPanel(&::splitter)
-      ::win.EnablePanel(::vol1_page , true)
-      ::win.EnablePanel(::vol2_page , true)
-
-      # show histogram and curve controls at the bottom
-      # for the first volume
-      sbox_sizerH = wx.wxBoxSizer(wx.wxHORIZONTAL)
-      ::panel2.SetSizer(&sbox_sizerH)   
-      ::obj1 = &::volVector[0].imhisto1.dw
-      ::volVector[0].imhisto1.dw_boxsizer.Detach(&::obj1)
-      ::obj1.Reparent(&::panel2)
-      sbox_sizerH.Add(&::obj1,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
-      ::obj1.Hide() 
-
-      # add histogram of the second input of the first mapper in case
-      # in are using vtkOpenGLGPUMultiVolumeRayCastMapper
-      ::obj1_2 = &::volVector[0].imhisto2.dw
-      ::volVector[0].imhisto2.dw_boxsizer.Detach(&::obj1_2)
-      ::obj1_2.Reparent(&::panel2)
-      sbox_sizerH.Add(&::obj1_2,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
-      ::obj1_2.Hide() 
-
-      # for the second volume
-      ::obj2 = &::volVector[1].imhisto1.dw
-      ::volVector[1].imhisto1.dw_boxsizer.Detach(&::obj2)
-      ::obj2.Reparent(&::panel2)
-      sbox_sizerH.Add(&::obj2,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
-      ::obj2.Hide()  
-
-      ::win.EnablePanel(::vol1_page , false)
-      ::win.EnablePanel(::vol2_page , false)
-
-      //::splitter.SetSashGravity(1)//(0.8)
       
-      ::splitter.SplitHorizontally(&::panel1, &::panel2)
-      ::splitter.Unsplit()
+      separate_window = false
+      
+      if (separate_window) {
+        ::frame = wx.wxFrame( &ami.MainFrame,wx.wxID_ANY,"wxVTK example")
+        ::frame.Show(); ::frame.Update()
+        ::frame.SetSizer(&wx.wxBoxSizer(wx.wxVERTICAL))
+        ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(::frame,wx.wxID_ANY)
+        ::renwin_interact.UseCaptureMouseOn()  
+        ::renwin_interact.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera.New())
+        ::frame.GetSizer().Add(::renwin_interact, wx.wxSizerFlags().Expand().Proportion(1))
+        ::panel = &::frame
+      } else {
+        mb = ami.MainFrame.GetMainBook()
+        ::panel = wx.wxPanel(ami.MainFrame)
+        ::panel.SetName("VolRen panel")
+        # StaticBox gives problems on XP ..., avoid it ...
+        sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+        ::panel.SetSizer(sbox_sizer)
+        ::splitter =wx.wxSplitterWindow(&::panel,-1)
+
+        sbox_sizer.Add( &::splitter, 1, wx.wxALL | wx.wxEXPAND,2)
+        # create widget here
+        ::panel1 = wx.wxPanel(&::splitter)
+        #::panel1.SetBackgroundColour(wx.wxColour(0,0,50))
+        ::panel1_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
+        ::panel1.SetSizer(&::panel1_sizer)   
+        ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(::panel1,wx.wxID_ANY)
+        ::panel1_sizer.Add(::renwin_interact,1,wx.wxEXPAND )
+        #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+        ::renwin_interact.UseCaptureMouseOn()
+        ::renwin_interact.Enable(true)
+        ::renwin_interact.Initialize()
+
+        # Still drawing problem (missed exposed events???)
+        ::icons.LoadIconPNG2("Transparent background","Transparent_background")
+        ::panel2 = wx.wxPanel(&::splitter)
+        ::win.EnablePanel(::vol1_page , true)
+        ::win.EnablePanel(::vol2_page , true)
+
+        # show histogram and curve controls at the bottom
+        # for the first volume
+        sbox_sizerH = wx.wxBoxSizer(wx.wxHORIZONTAL)
+        ::panel2.SetSizer(&sbox_sizerH)   
+        ::obj1 = &::volVector[0].imhisto1.dw
+        ::volVector[0].imhisto1.dw_boxsizer.Detach(&::obj1)
+        ::obj1.Reparent(&::panel2)
+        sbox_sizerH.Add(&::obj1,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+        ::obj1.Hide() 
+
+        # add histogram of the second input of the first mapper in case
+        # in are using vtkOpenGLGPUMultiVolumeRayCastMapper
+        ::obj1_2 = &::volVector[0].imhisto2.dw
+        ::volVector[0].imhisto2.dw_boxsizer.Detach(&::obj1_2)
+        ::obj1_2.Reparent(&::panel2)
+        sbox_sizerH.Add(&::obj1_2,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+        ::obj1_2.Hide() 
+
+        # for the second volume
+        ::obj2 = &::volVector[1].imhisto1.dw
+        ::volVector[1].imhisto1.dw_boxsizer.Detach(&::obj2)
+        ::obj2.Reparent(&::panel2)
+        sbox_sizerH.Add(&::obj2,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
+        ::obj2.Hide()  
+
+        ::win.EnablePanel(::vol1_page , false)
+        ::win.EnablePanel(::vol2_page , false)
+
+        //::splitter.SetSashGravity(1)//(0.8)
+        
+        ::splitter.SplitHorizontally(&::panel1, &::panel2)
+        ::splitter.Unsplit()
+      }
       # Add to main book
       ::icons.LoadIconPNG2("Transparent background","Transparent_background")
       title = GetObjectName(::Init)
-      mb.AddPage( ::panel,  title,1, \
-                  wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
-      ::volren_pageindex = mb.GetPageIndex(&::panel)
+      if (separate_window) {
+        ::frame.SetTitle(title)
+        ::frame.SetSize(wx.wxSize(400,400))
+        ::frame.Layout()
+      } else {
+        mb.AddPage( ::panel,  title,1, \
+                    wx.wxBitmap(&::icons._Transparent_background.Scale(16,16)))
+        ::volren_pageindex = mb.GetPageIndex(&::panel)
+      }
       
       # initialize the renderer, camera, renderwindow in volvVctor[0]
       #::renwin_interact.Hide()

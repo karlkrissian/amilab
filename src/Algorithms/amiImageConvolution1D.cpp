@@ -635,13 +635,13 @@ void ImageConvolution1D::TemplateProcess( int threadid)
                 float* out_data1 = (float*)out_data + ymin*incy + pos0;
 
                 if (x>xmax-3) {
-                  for(y=0;y<extent.GetSize(2); y++) {
+                  for(y=0;y<extent.GetSize(1); y++) {
                     _mm_store_ps(values,out_x4[y]);
                     memcpy(out_data1,values,(xmax-x+1)*sizeof(float));
                     out_data1 += incy;
                   }
                 } else
-                  for(y=0;y<extent.GetSize(2); y++) {
+                  for(y=0;y<extent.GetSize(1); y++) {
                     _mm_storeu_ps(out_data1, out_x4[y]);
                     out_data1 += incy;
                   }

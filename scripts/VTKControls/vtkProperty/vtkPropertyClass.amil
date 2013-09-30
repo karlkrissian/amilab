@@ -21,6 +21,8 @@ Class vtkPropertyClass : public ScriptGui \
     ::diffuse       = 1.0,  "Diffuse value"
     ::specular      = 0.5,  "Specular value"
     ::specularpower = 30,   "Specular power"
+    
+    ::linewidth     = 1, "Line width"
 
 # colors
 # line width
@@ -100,6 +102,7 @@ Class vtkPropertyClass : public ScriptGui \
     ::params.diffuse        = ::vtkproperty.GetDiffuse()
     ::params.specular       = ::vtkproperty.GetSpecular()
     ::params.specularpower  = ::vtkproperty.GetSpecularPower()
+    ::params.linewidth      = ::vtkproperty.GetLineWidth()
   }
 
   #-----------------------------------------------------------------------------
@@ -118,6 +121,7 @@ Class vtkPropertyClass : public ScriptGui \
       ::vtkproperty.SetDiffuse        (::params.diffuse)
       ::vtkproperty.SetSpecular       (::params.specular)
       ::vtkproperty.SetSpecularPower  (::params.specularpower)
+      ::vtkproperty.SetLineWidth      (::params.linewidth)
     }
   }
 
@@ -210,6 +214,9 @@ Class vtkPropertyClass : public ScriptGui \
       win.AddFloat(::params.specular,     "Specular"    ,0,1)
       win.SetCallback( ::ChangeProperty)
       win.AddFloat(::params.specularpower,"Spec. power" ,0,50)
+      win.SetCallback( ::ChangeProperty)
+
+      win.AddFloat(::params.linewidth,"Line width" ,0,10)
       win.SetCallback( ::ChangeProperty)
     win.EndBoxPanel()
   }

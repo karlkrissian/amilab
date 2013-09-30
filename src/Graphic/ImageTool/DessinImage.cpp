@@ -873,6 +873,7 @@ void DessinImage::IncreaseZoomArea( )
     break;
 
   } // end switch // Param._type_coupe
+  Param._Zoom.Check(_image);
 
 }
 

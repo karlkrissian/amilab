@@ -28,6 +28,7 @@
 
 #include "DiscMeanCurvature.h"
 #include <boost/format.hpp>
+#include <iostream>
 
 InrImage* Func_DiscMeanCurvature( InrImage* im )
 {
@@ -42,14 +43,19 @@ InrImage* Func_DiscMeanCurvature( InrImage* im )
   register int mx,my,mz,px,py,pz;
   register double delta0;
   double D0xy,D0yz,D0zx;
-    register double D_x,Dx,D_y,Dy,D_z,Dz;
-    double  dxsq=0,dysq=0,dzsq=0;
+  register double D_x,Dx,D_y,Dy,D_z,Dz;
+  double  dxsq=0,dysq=0,dzsq=0;
   register double Dpmx=0;
   register double Dpmy=0;
   register double Dpmz=0;
   register double meancurv_grad;
-    register double dxy, dyz, dxz;
+  register double dxy, dyz, dxz;
  
+#define TRACE_VOXEL 1
+#define VOXEL_X 181
+#define VOXEL_Y 136
+#define VOXEL_Z 202
+    
 
   resname = (boost::format("%s.discmeancurv") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
@@ -73,6 +79,11 @@ InrImage* Func_DiscMeanCurvature( InrImage* im )
     Pour(z,0,im->_tz-1)
     Pour(y,0,im->_ty-1)
     Pour(x,0,im->_tx-1)
+
+#ifdef TRACE_VOXEL
+    if ((x==VOXEL_X)&&(y==VOXEL_Y)&&(z==VOXEL_Z))
+      std::cout << "tracing voxel " << std::endl;
+#endif
 
       if (x==0)    mx =  1;   else mx = -1;
       if (x==tx-1) px = -1;   else px =  1;

@@ -67,7 +67,9 @@ Class DicomSeriesReadImage \
 
     ::CreateITK("nameGenerator", "GDCMSeriesFileNames")
     ::nameGenerator.SetUseSeriesDetails( true )
-    ::nameGenerator.AddSeriesRestriction("0008|0021")
+    ::nameGenerator.SetLoadSequences( true )
+    ::nameGenerator.SetLoadPrivateTags( true )
+    #::nameGenerator.AddSeriesRestriction("0008|0021")
     #::nameGenerator.AddSeriesRestriction("0020|0012") # acquisition number
     ::nameGenerator.SetDirectory( ::Dirname )
 
