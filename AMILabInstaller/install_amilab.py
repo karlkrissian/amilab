@@ -79,6 +79,13 @@ def installer_install_Linux_debian(packages):
   os.system('su -c "apt-get -y install {0}"'.format(pkg_list))
 
 #-------------------------------------------------------------------------------
+def installer_install_Linux_Fedora(packages):
+  pkg_list = ''
+  for pkg in packages.split():
+    pkg_list += ' '+pkg
+  os.system('su -c "yum install {0}"'.format(pkg_list))
+
+#-------------------------------------------------------------------------------
 def installer_install_Linux(packages):
   # packagekit not working in opensuse: getting stuck ...
   print "'{0}'".format(conf_dist)
@@ -89,28 +96,31 @@ def installer_install_Linux(packages):
         conf_distnum != 'config_Linux_debian_wheezy/sid':
       installer_install_Linux_debian(packages)
     else:
-      pk = packagekit_wrapper.PackageKitClient()
-      for pkg in packages.split():
-        if conf_dist == 'config_Linux_Fedora' and \
-           platform.architecture()[0] == '64bit':
-             # ensure 64bit package since I had the problem with Julio
-             pkg = pkg + ".x86_64"
-        print "  '{0}'".format(pkg)
-        res = pk.Resolve('none',[pkg])
-        print "  resolved"
-        if res==[]:
-          print "ERROR: Package {0} not found ...".format(pkg)
-        else:
-          print res[0][1]
-          print "Installing {0}".format(res[0][1])
-          pk.InstallPackages([res[0][1]],cb)
-        #res = pk.SearchNames('none',packages.split())
-        #print res
-        #for n in range(len(res)/2):
-        #  pkgs = [res[n*2]]
-        #  print "Installing {0}".format(res[n*2])
-        #  pk.InstallPackages(pkgs,cb)
-      pk.SuggestDaemonQuit()
+      if  conf_dist    == 'config_Linux_Fedora':
+        installer_install_Linux_Fedora(packages)
+      else:
+        pk = packagekit_wrapper.PackageKitClient()
+        for pkg in packages.split():
+          if conf_dist == 'config_Linux_Fedora' and \
+             platform.architecture()[0] == '64bit':
+               # ensure 64bit package since I had the problem with Julio
+               pkg = pkg + ".x86_64"
+          print "  '{0}'".format(pkg)
+          res = pk.Resolve('none',[pkg])
+          print "  resolved"
+          if res==[]:
+            print "ERROR: Package {0} not found ...".format(pkg)
+          else:
+            print res[0][1]
+            print "Installing {0}".format(res[0][1])
+            pk.InstallPackages([res[0][1]],cb)
+          #res = pk.SearchNames('none',packages.split())
+          #print res
+          #for n in range(len(res)/2):
+          #  pkgs = [res[n*2]]
+          #  print "Installing {0}".format(res[n*2])
+          #  pk.InstallPackages(pkgs,cb)
+        pk.SuggestDaemonQuit()
 
 
 #------------------------------------------------------------------------
@@ -277,10 +287,10 @@ class App:
       client.checkout(url, path)
       print "Done. :)"
 
-  #amilabpath='amilab_release_3.2.0'
-  #svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/branches/Release-3.2.0',amilabpath)
-  amilabpath='amilab_trunk'
-  svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/trunk',amilabpath)
+    #amilabpath='amilab_release_3.2.0'
+    #svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/branches/Release-3.2.0',amilabpath)
+    amilabpath='amilab_trunk'
+    svn_co('https://amilab.svn.sourceforge.net/svnroot/amilab/trunk',amilabpath)
 
     import os
     import shutil
