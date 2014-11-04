@@ -145,7 +145,7 @@ Class vtkCubeAxesActorClass : public ScriptGui \
     ::params.visibility   = ::vtkcubeaxesactor.GetVisibility()
     ::params.inertia      = ::vtkcubeaxesactor.GetInertia()
     ::params.fly_mode     = ::vtkcubeaxesactor.GetFlyMode()
-    ::params.use_2d_mode  = ::vtkcubeaxesactor.GetUse2DMode()
+    ::params.use_2d_mode  = ::vtkcubeaxesactor.GetUse2DMode() # needs VTK 5.10 at least
     ::params.xlabelformat = ::vtkcubeaxesactor.GetXLabelFormat()
     ::params.ylabelformat = ::vtkcubeaxesactor.GetYLabelFormat()
     ::params.zlabelformat = ::vtkcubeaxesactor.GetZLabelFormat()
