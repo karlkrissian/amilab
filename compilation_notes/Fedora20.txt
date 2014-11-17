@@ -1,0 +1,4 @@
+with CMake:
+
+need to replace /bin by /usr/bin for several paths like wx-config, vtk, itk ...
+TODO: Do it automatically
