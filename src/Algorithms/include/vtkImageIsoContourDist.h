@@ -52,14 +52,14 @@
 #define _vtkImageIsoContourDist_h
 
 #include <vtkLevelSetsConfigure.h>
-#include "vtkImageToImageFilter.h"
+#include "vtkThreadedImageAlgorithm.h"
 #include "vtkFloatArray.h"
 
-class VTK_LEVELSETS_EXPORT vtkImageIsoContourDist : public vtkImageToImageFilter
+class VTK_LEVELSETS_EXPORT vtkImageIsoContourDist : public vtkThreadedImageAlgorithm
 {
 public:
   static vtkImageIsoContourDist *New();
-  vtkTypeRevisionMacro(vtkImageIsoContourDist,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkImageIsoContourDist,vtkThreadedImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   // Description

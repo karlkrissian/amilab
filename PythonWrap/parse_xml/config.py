@@ -81,6 +81,7 @@ members_blacklist=[
   'wxBitmap::GetSelectedInto', # not included in windows in release mode
   'wxBitmap::SetSelectedInto', # not included in windows in release mode
   'wxWindow::HandleQueryDragIcon',  # not include in windows link error
+  'wxWindowBase::GetAdjustedMinSize', # probably not implemented in wx 3.0.2
   'wxWindowList::front', # returning reference to pointer
   'wxListCtrl::ConvertToMSWStyle', # linking problem MacOS
   'wxListCtrl::ChangeCurrent',     # idem

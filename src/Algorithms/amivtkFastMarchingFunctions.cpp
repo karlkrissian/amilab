@@ -56,7 +56,7 @@ namespace ami {
 
       vtk_FM = vtkLevelSetFastMarching::New();
 
-      vtk_FM->SetInput(     vtk_input.get());
+      vtk_FM->SetInputData(     vtk_input.get());
 
       vtk_FM->Setinitimage( vtk_init.get());
       // if we set initiso to a different value than -1E10 (default value)
@@ -122,7 +122,7 @@ namespace ami {
         vtk_FM->AddTargetPoint( x+i,y+j,z+k);
       }
 
-      vtk_FM->SetInput(     vtk_input.get());
+      vtk_FM->SetInputData(     vtk_input.get());
 
       vtk_FM->Setinitimage( vtk_init.get());
       // if we set initiso to a different value than -1E10 (default value)
@@ -180,7 +180,7 @@ namespace ami {
 
       vtk_FM = vtkLevelSetFastMarching::New();
 
-      vtk_FM->SetInput(     vtk_input.get());
+      vtk_FM->SetInputData(     vtk_input.get());
       vtk_FM->SetEvolutionScheme( evol_scheme);
 
       vtk_FM->Setinitimage( vtk_init.get());
@@ -237,7 +237,7 @@ namespace ami {
 
       vtk_FM = vtkLevelSetFastMarching::New();
 
-      vtk_FM->SetInput          (vtk_input.get());
+      vtk_FM->SetInputData      (vtk_input.get());
       vtk_FM->SetEvolutionScheme(1); // Dijkstra
       vtk_FM->Settrack          (vtk_track.get());
 
@@ -296,7 +296,7 @@ namespace ami {
 
       vtk_FM = vtkLevelSetFastMarching::New();
 
-      vtk_FM->SetInput          (vtk_input.get());
+      vtk_FM->SetInputData       (vtk_input.get());
       vtk_FM->SetEvolutionScheme(1); // Dijkstra
       vtk_FM->Settrack          (vtk_track.get());
 

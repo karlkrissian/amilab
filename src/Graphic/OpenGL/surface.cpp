@@ -917,7 +917,7 @@ void SurfacePoly :: AddVTKPoly( vtkPolyData* vtkpoly)
     fprintf(stderr,"number of strips %d  \n",
 	    (int)vtkpoly->GetNumberOfStrips());
     triangle_filter = vtkTriangleFilter::New();
-    triangle_filter->SetInput(vtkpoly);
+    triangle_filter->SetInputData(vtkpoly);
     triangle_filter->Update();
     poly_triangles = triangle_filter->GetOutput();
     vtkpoly = poly_triangles;
@@ -3198,7 +3198,7 @@ fprintf(stderr,"writing vtk 2 ...\n");
 
   writer = vtkPolyDataWriter::New();
 
-  writer->SetInput( vtk_surf);
+  writer->SetInputData( vtk_surf);
   writer->SetFileTypeToBinary();
   //  writer->SetFileTypeToASCII();
   writer->SetFileName(nom);
@@ -4280,7 +4280,7 @@ void SurfacePoly :: SaveSelectedLines( char* name)
 
   writer = vtkPolyDataWriter::New();
 
-  writer->SetInput( vtk_lines);
+  writer->SetInputData( vtk_lines);
   writer->SetFileTypeToBinary();
   //  writer->SetFileTypeToASCII();
   writer->SetFileName(name);

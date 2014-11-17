@@ -30,7 +30,7 @@ if (!exists(vtkVolumeClass)) {
       }
       return=res
     }
-    ::trace=false, "gives tracing information"
+    ::trace=true, "gives tracing information"
     member = "\"vtkVolumeClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"

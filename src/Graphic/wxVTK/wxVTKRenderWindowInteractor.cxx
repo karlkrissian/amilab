@@ -67,28 +67,29 @@ wxWindow* wxGetTopLevelParent(wxWindow *win)
 #endif //__WXCOCOA__
 
 #ifdef __WXGTK__
-  #    include <gdk/gdkx.h> // GDK_WINDOW_XWINDOW is found here in wxWidgets 2.8.0
-  #    include "gdk/gdkprivate.h"
-  #if wxCHECK_VERSION(2, 8, 0)
-    #ifdef __WXGTK20__
+    #    include <gdk/gdkx.h> // GDK_WINDOW_XWINDOW is found here in wxWidgets 2.8.0
+    #    include "gdk/gdkprivate.h"
+    #if wxCHECK_VERSION(2, 8, 0)
+      #ifdef __WXGTK20__
 
-      #if  wxCHECK_VERSION(2, 9, 4)
-        #include <gtk/gtk.h>
-      #endif
+        #if  wxCHECK_VERSION(2, 9, 4)
+          #include <gtk/gtk.h>
+        #endif
 
-      #if  wxCHECK_VERSION(2, 9, 0)
-        #include <wx/gtk/private/win_gtk.h>
+        #if  wxCHECK_VERSION(2, 9, 0)
+          #include <wx/gtk/private/win_gtk.h>
+        #else
+          #include <wx/gtk/win_gtk.h>
+        #endif
       #else
-        #include <wx/gtk/win_gtk.h>
+        #include <wx/gtk1/win_gtk.h>
       #endif
     #else
-      #include <wx/gtk1/win_gtk.h>
+      #include <wx/gtk/win_gtk.h>
     #endif
-  #else
-    #include <wx/gtk/win_gtk.h>
-  #endif
+  
   #if  wxCHECK_VERSION(2, 9, 0)
-    #ifdef __WXGTK3__
+    #ifdef __WXGTK__
       #define GDK_WINDOW_XWINDOW(win)       (gdk_x11_window_get_xid (win))
 
       #define piz(wxwin) WX_PIZZA((wxwin)->m_wxwindow)
@@ -212,7 +213,28 @@ static int wxvtk_attributes[]={
 
 //---------------------------------------------------------------------------
 #if defined(__WXGTK__) && defined(USE_WXGLCANVAS)
-wxVTKRenderWindowInteractor::wxVTKRenderWindowInteractor() : wxGLCanvas(0, -1, wxDefaultPosition, wxDefaultSize, 0, wxT("wxVTKRenderWindowInteractor"), wxvtk_attributes), vtkRenderWindowInteractor()
+//   #if wxCHECK_VERSION(3, 0, 0)
+//     wxVTKRenderWindowInteractor::wxVTKRenderWindowInteractor() : 
+//       wxGLCanvas(0, 
+//                  -1,
+//                  wxvtk_attributes,
+//                  wxDefaultPosition, 
+//                  wxDefaultSize, 
+//                  0, 
+//                  wxT("wxVTKRenderWindowInteractor")
+//                  ), 
+//                  vtkRenderWindowInteractor()
+//   #else
+    wxVTKRenderWindowInteractor::wxVTKRenderWindowInteractor() : 
+      wxGLCanvas(0, 
+                 -1, 
+                 wxDefaultPosition, 
+                 wxDefaultSize, 
+                 0, 
+                 wxT("wxVTKRenderWindowInteractor"), 
+                 wxvtk_attributes), 
+                 vtkRenderWindowInteractor()
+//   #endif
 #else
 wxVTKRenderWindowInteractor::wxVTKRenderWindowInteractor() : wxWindow(), vtkRenderWindowInteractor()
 #endif //__WXGTK__
@@ -237,9 +259,13 @@ wxVTKRenderWindowInteractor::wxVTKRenderWindowInteractor(wxWindow *parent,
                                                          const wxPoint &pos,
                                                          const wxSize &size,
                                                          long style,
-                                                         const wxString &name)
+                                                         const wxString &name) :
 #if defined(__WXGTK__) && defined(USE_WXGLCANVAS)
-      : wxGLCanvas(parent, id, pos, size, style, name, wxvtk_attributes), vtkRenderWindowInteractor()
+//   #if wxCHECK_VERSION(3, 0, 0)
+//       wxGLCanvas(parent, id, wxvtk_attributes, pos, size, style, name), vtkRenderWindowInteractor()
+//   #else
+      wxGLCanvas(parent, id, pos, size, style, name, wxvtk_attributes), vtkRenderWindowInteractor()
+//   #endif
 #else
       : wxWindow(parent, id, pos, size, style, name), vtkRenderWindowInteractor()
 #endif //__WXGTK__
@@ -843,9 +869,7 @@ void wxVTKRenderWindowInteractor::OnMouseCaptureLost(wxMouseCaptureLostEvent& ev
 void wxVTKRenderWindowInteractor::Render()
 {
 #if wxCHECK_VERSION(2, 8, 0)
-  int renderAllowed = !IsFrozen();
-#else
-  int renderAllowed = 1;
+  int renderAllowed = !IsFrozen() && IsShown();
 #endif
   if (renderAllowed && !RenderWhenDisabled)
     {
@@ -862,21 +886,23 @@ void wxVTKRenderWindowInteractor::Render()
 
   if (renderAllowed)
     {
-    if(Handle && (Handle == GetHandleHack()) )
+    if (!Handle) Handle == GetHandleHack();
+    if(Handle)
       {
       RenderWindow->Render();
       }
 #if VTK_MAJOR_VERSION > 4 || (VTK_MAJOR_VERSION == 4 && VTK_MINOR_VERSION > 2)
-    else if(GetHandleHack())
-      {
-      //this means the user has reparented us; let's adapt to the
-      //new situation by doing the WindowRemap dance
-      //store the new situation
-      Handle = GetHandleHack();
-      RenderWindow->SetNextWindowId(reinterpret_cast<void *>(Handle));
-      RenderWindow->WindowRemap();
-      RenderWindow->Render();
-      }
+//     else 
+//       if(GetHandleHack())
+//       {
+//         //this means the user has reparented us; let's adapt to the
+//         //new situation by doing the WindowRemap dance
+//         //store the new situation
+//         Handle = GetHandleHack();
+//         RenderWindow->SetNextWindowId(reinterpret_cast<void *>(Handle));
+//         RenderWindow->WindowRemap();
+//         RenderWindow->Render();
+//       }
 #endif
     }
 }

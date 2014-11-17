@@ -26,7 +26,7 @@
 #include <vtkConvexHullConfigure.h>
 #include <vtkLevelSetsConfigure.h>
 
-#include "vtkImageToImageFilter.h"
+#include "vtkImageAlgorithm.h"
 #include "vtkImageData.h"
 #include "vtkFloatArray.h"
 
@@ -59,11 +59,11 @@ protected:
 
 
 //----------------------------------------------------------------------
-class VTK_LEVELSETS_EXPORT vtkConvexHull : public vtkImageToImageFilter
+class VTK_LEVELSETS_EXPORT vtkConvexHull : public vtkImageAlgorithm
 {
 public:
-  vtkTypeRevisionMacro(vtkConvexHull,vtkImageToImageFilter);
-  //vtkTypeMacro(vtkConvexHull,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkConvexHull,vtkImageAlgorithm);
+  //vtkTypeMacro(vtkConvexHull,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -99,8 +99,7 @@ protected:
 		      int dims[3], float Resolution);
 
   void ExecuteData(vtkDataObject *);
-  void Execute() { this->vtkImageToImageFilter::Execute(); };
-  void Execute(vtkImageData *outData) { this->vtkImageToImageFilter::Execute(outData); };
+  void Execute() { this->vtkImageAlgorithm::Execute(); };
 
 
 //BTX

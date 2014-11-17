@@ -191,19 +191,19 @@ IF (Graphic_SHARED)
     LIBRARY DESTINATION lib
   )
 
-  SET(LINK_VTK
-    vtkGraphics
-    vtkImaging
-    vtkIO
-    vtkFiltering
-    vtkCommon
-    # additional libraries for volume rendering
-    vtkRendering 
-    vtkVolumeRendering 
-    vtkWidgets
-    vtkViews
-    vtkCharts
-  )
+#   SET(LINK_VTK
+#     vtkGraphics
+#     vtkImaging
+#     vtkIO
+#     vtkFiltering
+#     vtkCommon
+#     # additional libraries for volume rendering
+#     vtkRendering 
+#     vtkVolumeRendering 
+#     vtkWidgets
+#     vtkViews
+#     vtkCharts
+#   )
 
   target_link_libraries(Graphic
     Algorithms

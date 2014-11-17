@@ -42,7 +42,7 @@ if (!exists(VolRenClass)) {
       }
       return=res
     }
-    ::trace=false, "gives tracing information"
+    ::trace=true, "gives tracing information"
     member = "\"VolRenClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
@@ -622,6 +622,7 @@ if (!exists(VolRenClass)) {
     {
 printn "::SetRendererBg() begin"
       if (::volVector.size()>0) {
+        ::volVector[0].renwin.Render()
         ::volVector[0].SetBackground(::background_color.Red(),\
             ::background_color.Green(),::background_color.Blue(),\
             ::background_color2.Red(),::background_color2.Green(),\
@@ -766,8 +767,13 @@ printn "::SetRendererBg() end"
       ::renwin_interact.Update()
       ::panel.Update()
       # now can create the renderer
+      ::renwin_interact.wxWindowBase.Layout()
+      ::renwin_interact.wxWindowBase.Show()
+      ::renwin_interact.Show()
+      ::renwin_interact.Render()
+      ::renwin_interact.Update()
       ::volVector[0].CreateRenderer(::renwin_interact)
-      ::volVector[0].AddAnnotatedCube() 
+      #::volVector[0].AddAnnotatedCube() 
       ::SetRendererBg()
       
       if ::trace { eval ::trace_end; }

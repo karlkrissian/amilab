@@ -299,22 +299,22 @@ void vtkConvexHull::ExecuteData(vtkDataObject *output)
   
   // Create float input image
   InputImage=vtkImageData::New();
-  InputImage->SetScalarType( VTK_FLOAT);
-  InputImage->SetNumberOfScalarComponents(1);
-  InputImage->SetDimensions( this->GetInput()->GetDimensions());
-  InputImage->SetOrigin(     this->GetInput()->GetOrigin());
-  InputImage->SetSpacing(    this->GetInput()->GetSpacing());
-  InputImage->CopyAndCastFrom(this->GetInput(),
-			      this->GetInput()->GetExtent());
+  vtkImageData::SetScalarType( VTK_FLOAT, InputImage->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1, InputImage->GetInformation());
+  InputImage->SetDimensions( this->GetImageDataInput(0)->GetDimensions());
+  InputImage->SetOrigin(     this->GetImageDataInput(0)->GetOrigin());
+  InputImage->SetSpacing(    this->GetImageDataInput(0)->GetSpacing());
+  InputImage->CopyAndCastFrom(this->GetImageDataInput(0),
+			      this->GetImageDataInput(0)->GetExtent());
 
   
   OutputImage=this->GetOutput();
-  OutputImage->SetScalarType(VTK_FLOAT);
-  OutputImage->SetNumberOfScalarComponents(1);
+  //OutputImage->SetScalarType(VTK_FLOAT);
+  //OutputImage->SetNumberOfScalarComponents(1);
   OutputImage->SetDimensions(InputImage->GetDimensions());
   OutputImage->SetOrigin(InputImage->GetOrigin());
   OutputImage->SetSpacing(InputImage->GetSpacing());
-  OutputImage->AllocateScalars();
+  OutputImage->AllocateScalars(VTK_FLOAT,1);
   
   
   

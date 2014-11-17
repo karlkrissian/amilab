@@ -365,13 +365,13 @@ void vtkLevelSets::DistanceMap()
     char name[255];
     vector_size  i;
 
-    copyImage->SetScalarType( VTK_FLOAT);
-    copyImage->SetNumberOfScalarComponents(1);
+    vtkImageData::SetScalarType( VTK_FLOAT, copyImage->GetInformation());
+    vtkImageData::SetNumberOfScalarComponents(1, copyImage->GetInformation());
     copyImage->SetDimensions( outputImage->GetDimensions());
     copyImage->SetOrigin(     outputImage->GetOrigin());
     copyImage->SetSpacing(    outputImage->GetSpacing());
 
-    copyImage->AllocateScalars();
+    copyImage->AllocateScalars(copyImage->GetInformation());
     //     copyImage->CopyAndCastFrom(outputImage,
     //                outputImage->GetExtent());
 
@@ -381,7 +381,7 @@ void vtkLevelSets::DistanceMap()
       ptr++;
     }
 
-    writer->SetInput(copyImage);
+    writer->SetInputData(copyImage);
     distmap_count++;
     sprintf(name,"distmap_input%d.vtk",distmap_count);
     writer->SetFileName(name);
@@ -422,13 +422,13 @@ void vtkLevelSets::DistanceMap()
     char            name[255];
     vector_size  i;
 
-    copyImage->SetScalarType( VTK_FLOAT);
-    copyImage->SetNumberOfScalarComponents(1);
+    vtkImageData::SetScalarType( VTK_FLOAT, copyImage->GetInformation());
+    vtkImageData::SetNumberOfScalarComponents(1, copyImage->GetInformation());
     copyImage->SetDimensions( outputImage->GetDimensions());
     copyImage->SetOrigin(     outputImage->GetOrigin());
     copyImage->SetSpacing(    outputImage->GetSpacing());
 
-    copyImage->AllocateScalars();
+    copyImage->AllocateScalars(copyImage->GetInformation());
     //     copyImage->CopyAndCastFrom(outputImage,
     //                outputImage->GetExtent());
 
@@ -438,7 +438,7 @@ void vtkLevelSets::DistanceMap()
       ptr++;
     }
 
-    writer->SetInput(copyImage);
+    writer->SetInputData(copyImage);
     distmap_count++;
     sprintf(name,"distmap%d.vtk",distmap_count);
     writer->SetFileName(name);
@@ -754,12 +754,11 @@ void vtkLevelSets::DistanceMapFMOld()
 
 
    // Use U[] as input
-   current_image->SetScalarType( VTK_FLOAT);
-   current_image->SetNumberOfScalarComponents(1);
+   vtkImageData::SetScalarType(VTK_FLOAT,        current_image->GetInformation());
+   vtkImageData::SetNumberOfScalarComponents(1,  current_image->GetInformation());
    current_image->SetDimensions( outputImage->GetDimensions());
    current_image->SetOrigin(     outputImage->GetOrigin());
    current_image->SetSpacing(    outputImage->GetSpacing());
-   current_image->SetNumberOfScalarComponents(1);
    vtkFloatArray* da = vtkFloatArray::New();
 
    da->SetArray(&(u[U_pos].front()),imsize,1);
@@ -773,7 +772,7 @@ void vtkLevelSets::DistanceMapFMOld()
    // Trick:
    // Set the init image equal to the input image
    // which set a uniform force of 1 for the evolution
-   fm->SetInput(     current_image);
+   fm->SetInputData( current_image);
    fm->Setinitimage( current_image);
 
    fm->Setinitiso(0);
@@ -833,8 +832,8 @@ void vtkLevelSets::DistanceMapFM()
     isodist = vtk_new<vtkImageIsoContourDist>()();
 
    // Use U[] as input
-   current_image->SetScalarType( VTK_FLOAT);
-   current_image->SetNumberOfScalarComponents(1);
+   vtkImageData::SetScalarType(VTK_FLOAT,        current_image->GetInformation());
+   vtkImageData::SetNumberOfScalarComponents(1,  current_image->GetInformation());
    current_image->SetDimensions( outputImage->GetDimensions());
    current_image->SetOrigin(     outputImage->GetOrigin());
    current_image->SetSpacing(    outputImage->GetSpacing());
@@ -844,7 +843,7 @@ void vtkLevelSets::DistanceMapFM()
    current_image->GetPointData()->SetScalars(da.get());
 
    // Compute the distance for the neighbors of the isocontour
-   isodist->SetInput(current_image.get());
+   isodist->SetInputData(current_image.get());
    isodist->Setthreshold(0);
    isodist->Setfarvalue(Band+1);
    isodist->SetNarrowBand(&(this->bnd.front()),
@@ -865,7 +864,7 @@ void vtkLevelSets::DistanceMapFM()
     vtkStructuredPointsWriter *writer = vtkStructuredPointsWriter::New();
     char name[255];
 
-    writer->SetInput(res1.get());
+    writer->SetInputData(res1.get());
     sprintf(name,"res1.vtk");
     writer->SetFileName(name);
     writer->SetFileTypeToBinary();
@@ -883,7 +882,7 @@ void vtkLevelSets::DistanceMapFM()
    // Trick:
    // Set the init image equal to the input image
    // which set a uniform force of 1 for the evolution
-   fm->SetInput(     res1.get());
+   fm->SetInputData( res1.get());
    fm->Setinitimage( res1.get());
    // The to Band because of possible anisotropic voxels
    fm->Setinitmaxdist(1+1E-3);
@@ -901,8 +900,9 @@ void vtkLevelSets::DistanceMapFM()
 
    // Probably not necessary
    //fm->GetOutput();
-   fm->UnRegisterAllOutputs();
-
+/* TODO: VTK6 port
+   //fm->UnRegisterAllOutputs();
+*/
    if (verbose) {
      fprintf(stderr, ".");fflush(stderr);
    }
@@ -970,8 +970,8 @@ void vtkLevelSets::DistanceMapChamfer()
       chamfer = vtk_new<vtkImageFastSignedChamfer> ()();
 
    // Use U[] as input
-   current_image->SetScalarType( VTK_FLOAT);
-   current_image->SetNumberOfScalarComponents(1);
+   vtkImageData::SetScalarType(VTK_FLOAT,        current_image->GetInformation());
+   vtkImageData::SetNumberOfScalarComponents(1,  current_image->GetInformation());
    current_image->SetDimensions( outputImage->GetDimensions());
    current_image->SetOrigin(     outputImage->GetOrigin());
    current_image->SetSpacing(    outputImage->GetSpacing());
@@ -982,7 +982,7 @@ void vtkLevelSets::DistanceMapChamfer()
    current_image->GetPointData()->SetScalars(da.get());
 
    // Compute the distance for the neighbors of the isocontour
-   isodist->SetInput(current_image.get());
+   isodist->SetInputData(current_image.get());
    isodist->Setthreshold(0);
    isodist->Setfarvalue(Band+1);
 
@@ -1008,7 +1008,7 @@ void vtkLevelSets::DistanceMapChamfer()
     boost::shared_ptr<vtkStructuredPointsWriter> writer = vtk_new<vtkStructuredPointsWriter> ()();
     char name[255];
 
-    writer->SetInput(res1);
+    writer->SetInputData(res1);
     sprintf(name,"res1.vtk");
     writer->SetFileName(name);
     writer->SetFileTypeToBinary();
@@ -1028,7 +1028,7 @@ void vtkLevelSets::DistanceMapChamfer()
    //   memcpy(newU,res1->GetScalarPointer(),imsize*sizeof(float));
 
    //    vtkStructuredPointsWriter *writer = vtkStructuredPointsWriter::New();
-   //    writer->SetInput(res1);
+   //    writer->SetInputData(res1);
    //    writer->SetFileName("isodist.vtk");
    //    writer->SetFileTypeToBinary();
    //    writer->Write();
@@ -1041,14 +1041,16 @@ void vtkLevelSets::DistanceMapChamfer()
    chamfer->UseInputOutputArray( &(u[newU_pos].front()) );
 
    // input not used ...
-   chamfer->SetInput(       res1);
+   chamfer->SetInputData(       res1);
    chamfer->Setmaxdist(     Band+1);
    // Don't propagate all the border points
    chamfer->Setnoborder(1);
    //     fprintf(stderr, "DistanceMapChamfer() update \n");
    chamfer->Update();
    chamfer->GetOutput();
-   chamfer->UnRegisterAllOutputs();
+/* TODO: VTK6 port
+   //chamfer->UnRegisterAllOutputs();
+*/
 
    if (GB_debug)
      fprintf(stderr, ";\n");
@@ -1102,8 +1104,8 @@ void vtkLevelSets::DistanceMapShape()
       shape = vtk_new<vtkImagePropagateDist2>()();
 
    // Creation vtkImage from U[.]
-   current_image->SetScalarType( VTK_FLOAT);
-   current_image->SetNumberOfScalarComponents(1);
+   vtkImageData::SetScalarType(VTK_FLOAT,        current_image->GetInformation());
+   vtkImageData::SetNumberOfScalarComponents(1,  current_image->GetInformation());
    current_image->SetDimensions( outputImage->GetDimensions());
    current_image->SetOrigin(     outputImage->GetOrigin());
    current_image->SetSpacing(    outputImage->GetSpacing());
@@ -1112,7 +1114,7 @@ void vtkLevelSets::DistanceMapShape()
    current_image->GetPointData()->SetScalars(da);
 
    // Compute the distance for the neighbors of the isocontour
-   shape->SetInput(current_image);
+   shape->SetInputData(current_image);
    shape->Setthreshold(0);
    shape->Setmindist(ShapeMinDist);
    shape->Setmaxdist(Band+1);
@@ -1130,8 +1132,8 @@ void vtkLevelSets::DistanceMapShape()
    if (SkeletonImage==NULL) {
      // Allocate the Skeleton Image
      SkeletonImage = vtkImageData::New();
-     SkeletonImage->SetScalarType(VTK_FLOAT);
-     SkeletonImage->SetNumberOfScalarComponents(1);
+     vtkImageData::SetScalarType(VTK_FLOAT,        SkeletonImage->GetInformation());
+     vtkImageData::SetNumberOfScalarComponents(1,  SkeletonImage->GetInformation());
      SkeletonImage->SetDimensions(inputImage->GetDimensions() );
      SkeletonImage->SetOrigin(    inputImage ->GetOrigin());
      SkeletonImage->SetSpacing(   inputImage->GetSpacing() );
@@ -1619,8 +1621,8 @@ void vtkLevelSets::InitParam( vtkImageData* input,
       // Create a copy of the data
       inputImage = vtkImageData::New();
 
-      inputImage->SetScalarType( VTK_FLOAT);
-      inputImage->SetNumberOfScalarComponents(1);
+      vtkImageData::SetScalarType(VTK_FLOAT,        inputImage->GetInformation());
+      vtkImageData::SetNumberOfScalarComponents(1,  inputImage->GetInformation());
       inputImage->SetDimensions( input->GetDimensions());
       inputImage->SetOrigin(     input->GetOrigin());
       inputImage->SetSpacing(    input->GetSpacing());
@@ -1651,9 +1653,9 @@ void vtkLevelSets::InitParam( vtkImageData* input,
 
     outputImage->SetDimensions(inputImage->GetDimensions() );
     outputImage->SetSpacing(   inputImage->GetSpacing() );
-    outputImage->SetScalarType(VTK_FLOAT);
-    outputImage->SetNumberOfScalarComponents(1);
-    outputImage->AllocateScalars();
+    vtkImageData::SetScalarType(VTK_FLOAT, outputImage->GetInformation());
+    vtkImageData::SetNumberOfScalarComponents(1, outputImage->GetInformation());
+    outputImage->AllocateScalars(outputImage->GetInformation());
     outputImage->CopyAndCastFrom(this->inputImage,
                                  this->inputImage->GetExtent());
 
@@ -3336,13 +3338,13 @@ void vtkLevelSets::PreComputeDataAttachment()
     float* ptr;
     char name[255];
 
-    copyImage->SetScalarType( VTK_FLOAT);
-    copyImage->SetNumberOfScalarComponents(1);
+    vtkImageData::SetScalarType( VTK_FLOAT, copyImage->GetInformation());
+    vtkImageData::SetNumberOfScalarComponents(1, copyImage->GetInformation());
     copyImage->SetDimensions( outputImage->GetDimensions());
     copyImage->SetOrigin(     outputImage->GetOrigin());
     copyImage->SetSpacing(    outputImage->GetSpacing());
 
-    copyImage->AllocateScalars();
+    copyImage->AllocateScalars(copyImage->GetInformation());
 
     ptr = (float*) copyImage->GetScalarPointer();
     for(vector_size i=0;i<this->imsize;i++) {
@@ -3350,7 +3352,7 @@ void vtkLevelSets::PreComputeDataAttachment()
       ptr++;
     }
 
-    writer->SetInput(copyImage);
+    writer->SetInputData(copyImage);
     sprintf(name,"SecDerGrad.vtk");
     writer->SetFileName(name);
     writer->SetFileTypeToBinary();
@@ -3567,7 +3569,7 @@ void vtkLevelSets::ExecuteData( vtkDataObject *outData)
 
   if (GB_debug) fprintf(stderr,"Execute begin \n");
 
-  InitParam( this->GetInput(), (vtkImageData*) outData);
+  InitParam( this->GetImageDataInput(0), (vtkImageData*) outData);
   InitEvolution();
   while (Iterate());
   EndEvolution();
@@ -3819,7 +3821,7 @@ void vtkLevelSets::PrintParameters()
 //----------------------------------------------------------------------
 void vtkLevelSets::PrintSelf(ostream& os, vtkIndent indent)
 {
-   vtkImageToImageFilter::PrintSelf(os,indent);
+   vtkImageAlgorithm::PrintSelf(os,indent);
    os << indent << "RescaleImage: "         << this->RescaleImage     << "\n";
    os << indent << "Initial threshold: "    << this->InitThreshold    << "\n";
    os << indent << "Band around isoline: "  << this->Band             << "\n";

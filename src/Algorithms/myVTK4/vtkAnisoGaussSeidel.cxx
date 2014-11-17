@@ -51,6 +51,7 @@
 #include "vtkImageGaussianSmooth.h"
 
 #include "vtk_common.h"
+#include <memory>
 
 //
 //  Code by Karl Krissian
@@ -138,8 +139,8 @@ static vtkImageData* CreateImageDataFloat( vtkImageData* im)
  Target->SetDimensions(im->GetDimensions());
  Target->SetSpacing(   im->GetSpacing   ());
  Target->SetOrigin(    im->GetOrigin    ());
- Target->SetScalarType(VTK_FLOAT); 
- Target->SetNumberOfScalarComponents(1);
+ vtkImageData::SetScalarType(               VTK_FLOAT,Target->GetInformation()); 
+ vtkImageData::SetNumberOfScalarComponents( 1,        Target->GetInformation());
  Target->CopyAndCastFrom(im, im->GetExtent());
 // Target->AllocateScalars();
 
@@ -211,7 +212,7 @@ void vtkAnisoGaussSeidel::Init( )
   //  beta        = p_beta;
   //  k           = p_k;
 
-  image_entree = this->GetInput();
+  image_entree = this->GetImageDataInput(0);
 
   if (image_entree == NULL) {
     vtkErrorMacro("Missing input");
@@ -224,23 +225,22 @@ void vtkAnisoGaussSeidel::Init( )
     //    FinSi
     
     // check the image is in float format, or convert
-    type = GetInput()->GetScalarType();
+    type = GetImageDataInput(0)->GetScalarType();
 
     // Make a copy in float format in im_tmp1
     vtkDebugMacro(<<"making a copy of the input into float format");
     // Create a copy of the data
     printf("Create im_tmp1 \n");
     im_tmp1 = vtk_new<vtkImageData>()
-                (CreateImageDataFloat(this->GetInput()));
+                (CreateImageDataFloat(this->GetImageDataInput(0)));
 
     // Create second temporary image
     printf("Create im_tmp2 \n");
     im_tmp2 = vtk_new<vtkImageData>()
-                (CreateImageDataFloat(this->GetInput()));
+                (CreateImageDataFloat(this->GetImageDataInput(0)));
 
     tx = this->im_tmp1->GetDimensions()[0];
     ty = this->im_tmp1->GetDimensions()[1];
-    tz = this->im_tmp1->GetDimensions()[2];
     txy = tx*ty;
     
     Si tz>1 Alors mode=MODE_3D; Sinon mode=MODE_2D; 
@@ -249,14 +249,14 @@ void vtkAnisoGaussSeidel::Init( )
     //--- image_resultat
     image_resultat      = this->GetOutput();
     
-    image_resultat->SetDimensions( this->GetInput()->GetDimensions() );
-    image_resultat->SetSpacing(    this->GetInput()->GetSpacing() );
-    image_resultat->SetOrigin(     this->GetInput()->GetOrigin());
+    image_resultat->SetDimensions( this->GetImageDataInput(0)->GetDimensions() );
+    image_resultat->SetSpacing(    this->GetImageDataInput(0)->GetSpacing() );
+    image_resultat->SetOrigin(     this->GetImageDataInput(0)->GetOrigin());
 
     // Set the output to the same type as the input
-    image_resultat->SetScalarType(type);
-    image_resultat->SetNumberOfScalarComponents(1);
-    image_resultat->AllocateScalars();
+    //image_resultat->SetScalarType(type);
+    //image_resultat->SetNumberOfScalarComponents(1);
+    image_resultat->AllocateScalars(type,1);
 
     // Smoothed image    
     image_lissee = NULL;
@@ -1223,7 +1223,7 @@ float vtkAnisoGaussSeidel::Iterate3D( vtkImageData *inData,  int inExt[6],
     unsigned long nbpts_anisotropic  = 0;
 
     unsigned char isotropic;
-    int           *wholeExtent;
+    //int           *wholeExtent;
     int           sx,sy,sz;
     register int           x1,y1,z1;
     register int           xp,xm;
@@ -1231,7 +1231,11 @@ float vtkAnisoGaussSeidel::Iterate3D( vtkImageData *inData,  int inExt[6],
     register int           zp,zm;
 
 
-    wholeExtent = this->GetInput()->GetWholeExtent();
+    vtkImageData*   input = this->GetImageDataInput(0);
+    vtkInformation* input_info = input->GetInformation();
+    
+    //wholeExtent = input_info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT());
+    //wholeExtent = input->GetWholeExtent();
 
     /*
     printf("Iterate3D outext: %d %d %d %d %d %d \n",
@@ -1734,6 +1738,7 @@ void vtkAnisoGaussSeidel::ExecuteData(vtkDataObject *out)
 {
   
   
+/* TODO: VTK6 port
 //    float error;
     int   i;
 //    char resname[100];
@@ -1771,7 +1776,7 @@ void vtkAnisoGaussSeidel::ExecuteData(vtkDataObject *out)
     sprintf(progresstext," Flux Diffusion %3d ",i);
     this->SetProgressText(progresstext);
     im_tmp1->Modified();
-    filter->SetInput(im_tmp1.get());
+    filter->SetInputData(im_tmp1.get());
     // 1. compute the smoothed image
     switch (mode) {
     case MODE_2D:
@@ -1795,7 +1800,7 @@ void vtkAnisoGaussSeidel::ExecuteData(vtkDataObject *out)
     // 2. run the threaded iteration
     
     //   Iterate3D();
-    vtkImageToImageFilter::MultiThread(im_tmp2.get(),im_tmp1.get());
+    vtkThreadedImageAlgorithm::MultiThread(im_tmp2.get(),im_tmp1.get());
     
     im_tmp2->CopyAndCastFrom(im_tmp1.get(),
                  im_tmp1->GetExtent());
@@ -1820,7 +1825,7 @@ void vtkAnisoGaussSeidel::ExecuteData(vtkDataObject *out)
                   im_tmp2->GetExtent());
 
     
-
+*/
 } // vtkAnisoGaussSeidel::Execute()
 
 
@@ -1828,6 +1833,7 @@ void vtkAnisoGaussSeidel::ExecuteData(vtkDataObject *out)
 void vtkAnisoGaussSeidel::ComputeInputUpdateExtent(int inExt[6], 
                            int outExt[6])
 {
+/* TODO: VTK6 port
   int *wholeExtent;
   int idx, border;
 
@@ -1836,7 +1842,7 @@ void vtkAnisoGaussSeidel::ComputeInputUpdateExtent(int inExt[6],
   // copy
   memcpy((void *)inExt, (void *)outExt, 6 * sizeof(int));
   // Expand filtered axes
-  wholeExtent = this->GetInput()->GetWholeExtent();
+  wholeExtent = this->GetImageDataInput(0)->GetWholeExtent();
   for (idx = 0; idx < 3; ++idx)
     {
       //    border = (int)(this->StandardDeviations[idx] * this->BorderFactors[idx]);
@@ -1852,6 +1858,7 @@ void vtkAnisoGaussSeidel::ComputeInputUpdateExtent(int inExt[6],
       inExt[idx*2+1] = wholeExtent[idx*2+1];
       }
     }
+    */
 }
 
 //----------------------------------------------------------------------

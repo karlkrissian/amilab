@@ -145,8 +145,8 @@ target_link_libraries(Language
   AMILab
   Common
   Graphic
-  vtkIO 
-  vtkImaging
+#  vtkIO 
+#  vtkImaging
   wxStcFrame
   myVTK4
   #WrapVTK

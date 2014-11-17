@@ -17,7 +17,8 @@ Class SubPixelPlugin \
     # 1. get rid of posible 'bin' directory at the end
     # 2. add lib/amilab-{version}/plugin/
     #
-    binpath = wx.wxStandardPaths().GetExecutablePath()
+    sp = wx.wxStandardPathsBase.Get()
+    binpath = sp.GetExecutablePath()
     execpath  = wx.wxFileName(binpath)
     execpath2 = wx.wxFileName(binpath)
     printn "binpath="+wx.FromWxString(binpath)

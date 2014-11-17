@@ -33,7 +33,7 @@ class FindFile(handler.ContentHandler):
 # 3. add event macros
 
 
-def CreateHeaderFileMacros(inputfile,outputfile,headerfilename):
+def CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,headerfilename):
   # Create the handler
   if (headerfilename=="version"):
     dh = FindFile("string.h")
@@ -54,18 +54,39 @@ def CreateHeaderFileMacros(inputfile,outputfile,headerfilename):
     headerfile = open(dh.name, 'r')
     found_macros=[]
     for line in headerfile:
+      ok=False
+      #print line
       # limited to macros of type #define wxXXXX 0x9999 for the moment
       findmacro = re.match(r"^\s*#define\s+(wx[_0-9a-zA-Z]+)\s*((0x[0-9]+)|([0-9]+))\s*(//.*)*$",line)
       if (findmacro!=None):
         found_macros.append(findmacro.group(1))
+        all_found_macros.append(findmacro.group(1))
         #print "Found macro : ", findmacro.group(1), " = ", findmacro.group(2)
+        ok=True
+      #else:
+        #print "direct not found"
       # allow macro defined from a previous one
-      findmacro = re.match(r"^\s*#define\s+(wx[_0-9a-zA-Z]+)\s*(wx[_0-9a-zA-Z]+)\s*(//.*)*$",line)
-      if (findmacro!=None):
-        if findmacro.group(2) in found_macros:
-          found_macros.append(findmacro.group(1))
-      
-      
+      if not ok:
+        findmacro = re.match(r"^\s*#define\s+(wx[_0-9a-zA-Z]+)\s*(wx[_0-9a-zA-Z]+)\s*(//.*)*$",line)
+        if (findmacro!=None):
+          #print "indirect found ", findmacro.group(2)
+          if findmacro.group(2) in all_found_macros:
+            #print "OK"
+            ok=True
+            found_macros.append(findmacro.group(1))
+            all_found_macros.append(findmacro.group(1))
+      if not ok:
+        # special treatment for event, since it is quite complicated:
+        # the macro defines a template type that can cast to int
+        #wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_CORE, wxEVT_MENU, wxCommandEvent);
+        findmacro = re.match(r"^\s*wxDECLARE_EXPORTED_EVENT\(\s*([_0-9a-zA-Z]+)\s*,\s*(wx[_0-9a-zA-Z]+)\s*,\s*(wx[_0-9a-zA-Z]+)\s*\);\s*(//.*)*$",line)
+        if (findmacro!=None):
+          #print "****",findmacro.group(2)
+          # add to macros
+          found_macros.append(findmacro.group(2))
+          all_found_macros.append(findmacro.group(2))
+          ok=True
+    
     if len(found_macros)>0:
       # add all the values
       res += "\n"
@@ -77,31 +98,35 @@ def CreateHeaderFileMacros(inputfile,outputfile,headerfilename):
       res += "\n"
     else:
       res += "  // No macro found in file {0}.h\n".format(headerfilename)
+    print " all_found_macros size = ", len(all_found_macros)
   return res
 
 
 def CreateMacros(inputfile,outputfile):
+  all_found_macros=[]
   wrapped_macros=""
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"defs")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"version")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"toplevel")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"valtext")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"types")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"treebase")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"textctrl")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"statusbr")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"listbase")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"slider")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"dataview")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextctrl")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextformatdlg")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextindentpage")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextliststylepage")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextprint")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextstyledlg")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextstylepage")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextsymboldlg")
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"richtext/richtextstyles")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"defs")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"version")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"toplevel")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"valtext")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"types")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"treebase")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"textctrl")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"statusbr")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"listbase")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"slider")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"dataview")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextctrl")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextformatdlg")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextindentpage")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextliststylepage")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextprint")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextstyledlg")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextstylepage")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextsymboldlg")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextstyles")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"event")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"notebook")
 
   if wrapped_macros!="":
     # Create the macros context

@@ -247,12 +247,12 @@ if (!exists(vtkIsoSurfaceClass)) {
       ::SetRendererBg()
       ::renderer.ResetCamera()
       ::vol1_normals = vtk.vtkPolyDataNormals.New()
-      ::vol1_normals.SetInput(&::vol1_polydata)
+      ::vol1_normals.SetInputData(::vol1_polydata)
       ::vol1_normals.SetFeatureAngle(60.0)
 
       # need a vtkPolyDataMapper here ...
       ::vol1_mapper = vtk.vtkPolyDataMapper.New()
-      ::vol1_mapper.SetInputConnection(&::vol1_normals.GetOutputPort())
+      ::vol1_mapper.SetInputConnection(::vol1_normals.GetOutputPort())
       ::vol1_mapper.ScalarVisibilityOff()
       #::vol1_mapper.ImmediateModeRenderingOn()
       # use display list to display faster ...
@@ -315,8 +315,8 @@ if (!exists(vtkIsoSurfaceClass)) {
       } else {
         vol1_isosurf = isosurf(::input,::vol1_threshold)
         del ::vol1_polydata
-        ::vol1_polydata = vtktools.ToVtkPolyData(&vol1_isosurf)
-        ::vol1_normals.SetInput(&::vol1_polydata)
+        ::vol1_polydata = vtktools.ToVtkPolyData(vol1_isosurf)
+        ::vol1_normals.SetInputData(::vol1_polydata)
         ::renderer.ResetCamera()
         ::renwin_interact.Render()
       }

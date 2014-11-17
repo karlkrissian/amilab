@@ -1021,7 +1021,7 @@ if (  CheckEndString( name, ".mhd")  ||
     vtk_id = (vtkImageData_ptr) (*this);
     vtk_iw = vtk_new<vtkStructuredPointsWriter>()();
 
-    vtk_iw->SetInput(vtk_id.get());
+    vtk_iw->SetInputData(vtk_id.get());
     vtk_iw->SetFileName( _nom.c_str());
     vtk_iw->SetFileTypeToBinary();
 //    vtk_iw->SetFileDimensionality(3);
@@ -1036,11 +1036,11 @@ if (  CheckEndString( name, ".mhd")  ||
     shared_ptr<vtkJPEGWriter> vtk_jpegw = vtk_new<vtkJPEGWriter>()();
 
     shared_ptr<vtkImageFlip> flipY = vtk_new<vtkImageFlip>()();
-    flipY->SetInput(vtk_id.get());
+    flipY->SetInputData(vtk_id.get());
     flipY->SetFilteredAxis(1);
     flipY->Update();
 
-    vtk_jpegw->SetInput(flipY->GetOutput());
+    vtk_jpegw->SetInputConnection(flipY->GetOutputPort());
 //    vtk_jpegw->SetInput(vtk_id.get());
     vtk_jpegw->SetFileName((char*) _nom.c_str());
     vtk_jpegw->Write();
@@ -1051,11 +1051,11 @@ if (  CheckEndString( name, ".mhd")  ||
     shared_ptr<vtkTIFFWriter> vtk_tiffw = vtk_new<vtkTIFFWriter>()();
 
     shared_ptr<vtkImageFlip> flipY = vtk_new<vtkImageFlip>()();
-    flipY->SetInput(vtk_id.get());
+    flipY->SetInputData(vtk_id.get());
     flipY->SetFilteredAxis(1);
     flipY->Update();
 
-    vtk_tiffw->SetInput(flipY->GetOutput());
+    vtk_tiffw->SetInputConnection(flipY->GetOutputPort());
 //    vtk_tiffw->SetInput(vtk_id.get());
     vtk_tiffw->SetFileName((char*) _nom.c_str());
     vtk_tiffw->Write();
@@ -1066,11 +1066,11 @@ if (  CheckEndString( name, ".mhd")  ||
     shared_ptr<vtkPNGWriter> vtk_pngw = vtk_new<vtkPNGWriter>()();
 
     shared_ptr<vtkImageFlip> flipY = vtk_new<vtkImageFlip>()();
-    flipY->SetInput(vtk_id.get());
+    flipY->SetInputData(vtk_id.get());
     flipY->SetFilteredAxis(1);
     flipY->Update();
 
-    vtk_pngw->SetInput(flipY->GetOutput());
+    vtk_pngw->SetInputConnection(flipY->GetOutputPort());
 //    vtk_pngw->SetInput(vtk_id.get());
     vtk_pngw->SetFileName((char*) _nom.c_str());
     vtk_pngw->Write();
@@ -2277,23 +2277,25 @@ InrImage :: operator vtkImageData*()
                this->TrY(),
                this->TrZ());
 
+  vtkInformation* info = vtk_image->GetInformation();
+  
   switch ( (WORDTYPE) _format ){
-     case WT_DOUBLE        : vtk_image->SetScalarType( VTK_DOUBLE); break;
-     case WT_FLOAT         : 
-     case WT_FLOAT_VECTOR  : vtk_image->SetScalarType(VTK_FLOAT);  break;
-     case WT_UNSIGNED_CHAR : 
-     case WT_RGB           : vtk_image->SetScalarType(VTK_UNSIGNED_CHAR);  break;
-     case WT_RGBA          : vtk_image->SetScalarType(VTK_UNSIGNED_CHAR);  break;
-     case WT_UNSIGNED_SHORT: vtk_image->SetScalarType(VTK_UNSIGNED_SHORT); break;
-     case WT_SIGNED_SHORT  : vtk_image->SetScalarType(VTK_SHORT);  break;
-     case WT_UNSIGNED_INT    : vtk_image->SetScalarType(VTK_UNSIGNED_INT);    break;
-     case WT_SIGNED_INT    : vtk_image->SetScalarType(VTK_INT);    break;
-     default: printf("InrImage::operator vtkImageData*()\t format non gere...\n");
+    case WT_DOUBLE        : vtkImageData::SetScalarType( VTK_DOUBLE,info);break;
+    case WT_FLOAT         : 
+    case WT_FLOAT_VECTOR  : vtkImageData::SetScalarType( VTK_FLOAT, info);break;
+    case WT_UNSIGNED_CHAR : 
+    case WT_RGB           : vtkImageData::SetScalarType(VTK_UNSIGNED_CHAR, info); break;
+    case WT_RGBA          : vtkImageData::SetScalarType(VTK_UNSIGNED_CHAR, info); break;
+    case WT_UNSIGNED_SHORT: vtkImageData::SetScalarType(VTK_UNSIGNED_SHORT,info); break;
+    case WT_SIGNED_SHORT  : vtkImageData::SetScalarType(VTK_SHORT,         info); break;
+    case WT_UNSIGNED_INT  : vtkImageData::SetScalarType(VTK_UNSIGNED_INT,  info); break;
+    case WT_SIGNED_INT    : vtkImageData::SetScalarType(VTK_INT,           info); break;
+    default: printf("InrImage::operator vtkImageData*()\t format non gere...\n");
   } // end switch
   
   // interpret 9 components vectors as tensors for now
   if (_vdim==9) {
-    vtk_image->AllocateScalars();
+    vtk_image->AllocateScalars(info);
     vtkDoubleArray* mat = vtkDoubleArray::New();
     mat->SetNumberOfComponents(9);
 
@@ -2311,8 +2313,8 @@ InrImage :: operator vtkImageData*()
 
   } else {
     int x,y,z;
-    vtk_image->SetNumberOfScalarComponents(_vdim);
-    vtk_image->AllocateScalars();
+    vtkImageData::SetNumberOfScalarComponents(_vdim,vtk_image->GetInformation());
+    vtk_image->AllocateScalars(vtk_image->GetInformation());
     // Essayer memcpy ???
     vtk_scalars = vtk_image->GetPointData()->GetScalars();
     InitBuffer();

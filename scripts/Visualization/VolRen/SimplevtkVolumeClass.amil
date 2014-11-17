@@ -14,7 +14,7 @@ if (!exists(SimplevtkVolumeClass)) {
       }
       return=res
     }
-    ::trace2=false, "gives tracing information"
+    ::trace2=true, "gives tracing information"
     member = "\"SimplevtkVolumeClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
@@ -127,9 +127,9 @@ if (!exists(SimplevtkVolumeClass)) {
       ::renwininter = &inter
       ::renderer = vtk.vtkRenderer.New()
       ::renderer.ResetCamera()   # carlos
-      ::renwininter.GetRenderWindow().AddRenderer(&::renderer)
+      ::renwininter.GetRenderWindow().AddRenderer(::renderer)
       interact = vtk.vtkInteractorStyleTrackballCamera.New()
-      ::renwininter.SetInteractorStyle(&interact)
+      ::renwininter.SetInteractorStyle(interact)
       del ::renwin
       ::renwin   = ::renwininter.GetRenderWindow()
       ::InitCamera()

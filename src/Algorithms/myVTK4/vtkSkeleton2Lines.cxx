@@ -98,13 +98,15 @@ void vtkSkeleton2Lines::Init_Pos()
 
 void vtkSkeleton2Lines::Init()
 {
+  vtkImageData* image_input = (vtkImageData*)this->GetInput(0);
+
   InputImage = vtkImageData::New();
-  InputImage->SetDimensions(this->GetInput()->GetDimensions());
-  InputImage->SetSpacing(this->GetInput()->GetSpacing());
-  InputImage->SetScalarType(VTK_UNSIGNED_SHORT);
-  InputImage->SetNumberOfScalarComponents(1);
-  InputImage->AllocateScalars();
-  InputImage->CopyAndCastFrom(this->GetInput(),this->GetInput()->GetExtent());
+  InputImage->SetDimensions(image_input->GetDimensions());
+  InputImage->SetSpacing(image_input->GetSpacing());
+  vtkImageData::SetScalarType(VTK_UNSIGNED_SHORT, InputImage->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1, InputImage->GetInformation());
+  InputImage->AllocateScalars(InputImage->GetInformation());
+  InputImage->CopyAndCastFrom(image_input,image_input->GetExtent());
     
   tx = InputImage->GetDimensions()[0];
   ty = InputImage->GetDimensions()[1];
@@ -156,22 +158,24 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
 
   Init();
   
-  this->GetInput()->GetOrigin(origin[0],origin[1],origin[2]);
-  this->GetInput()->GetSpacing(spacing[0],spacing[1],spacing[2]);
+  vtkImageData* image_input = (vtkImageData*)this->GetInput(0);
+  
+  image_input->GetOrigin(origin[0],origin[1],origin[2]);
+  image_input->GetSpacing(spacing[0],spacing[1],spacing[2]);
 
   pointid = vtkImageData::New();
-  pointid->SetDimensions(this->GetInput()->GetDimensions());
-  pointid->SetSpacing(this->GetInput()->GetSpacing());
-  pointid->SetScalarType(VTK_UNSIGNED_SHORT);
-  pointid->SetNumberOfScalarComponents(1);
-  pointid->AllocateScalars();
+  pointid->SetDimensions(image_input->GetDimensions());
+  pointid->SetSpacing(image_input->GetSpacing());
+  vtkImageData::SetScalarType(VTK_UNSIGNED_SHORT, pointid->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1, pointid->GetInformation());
+  pointid->AllocateScalars(pointid->GetInformation());
   
   loopid = vtkImageData::New();
-  loopid->SetDimensions(this->GetInput()->GetDimensions());
-  loopid->SetSpacing(this->GetInput()->GetSpacing());
-  loopid->SetScalarType(VTK_SHORT);
-  loopid->SetNumberOfScalarComponents(1);
-  loopid->AllocateScalars();
+  loopid->SetDimensions(image_input->GetDimensions());
+  loopid->SetSpacing(image_input->GetSpacing());
+  vtkImageData::SetScalarType(VTK_SHORT, loopid->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1, loopid->GetInformation());
+  loopid->AllocateScalars(loopid->GetInformation());
   
   //Init loop id to -1 (0 index is used)
   loopidPtr=(short*)loopid->GetScalarPointer();
@@ -196,21 +200,21 @@ void vtkSkeleton2Lines::ExecuteData(vtkDataObject* output)
   //------------ Check the number of neighbors -------------------
   //----------- Add the points to the surface with their numbers
   neighbors = vtkImageData::New();
-  neighbors->SetDimensions(this->GetInput()->GetDimensions());
-  neighbors->SetSpacing(this->GetInput()->GetSpacing());
-  neighbors->SetScalarType(VTK_UNSIGNED_SHORT);
-  neighbors->SetNumberOfScalarComponents(1);
-  neighbors->AllocateScalars();
+  neighbors->SetDimensions(image_input->GetDimensions());
+  neighbors->SetSpacing(image_input->GetSpacing());
+  vtkImageData::SetScalarType(VTK_UNSIGNED_SHORT, neighbors->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1, neighbors->GetInformation());
+  neighbors->AllocateScalars(neighbors->GetInformation());
   //fprintf(stderr,"neighbor image allocated...\n");
 
   // This image allows to avoid going twice through the same connection
   // by avoiding creating lines on points having more than 2 neighbors
   endpoints = vtkImageData::New();
-  endpoints->SetDimensions(this->GetInput()->GetDimensions());
-  endpoints->SetSpacing(this->GetInput()->GetSpacing());
-  endpoints->SetScalarType(VTK_UNSIGNED_CHAR);
-  endpoints->SetNumberOfScalarComponents(1);
-  endpoints->AllocateScalars();
+  endpoints->SetDimensions(image_input->GetDimensions());
+  endpoints->SetSpacing(image_input->GetSpacing());
+  vtkImageData::SetScalarType(VTK_UNSIGNED_CHAR, endpoints->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1, endpoints->GetInformation());
+  endpoints->AllocateScalars(endpoints->GetInformation());
   
   endpointsPtr=(unsigned char*)endpoints->GetScalarPointer();
   for (int i = 0 ; i< loopid->GetNumberOfPoints() ; i++) {

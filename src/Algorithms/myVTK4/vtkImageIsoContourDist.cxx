@@ -124,7 +124,7 @@ void vtkImageIsoContourDist::InitParam( )
 //  int i;
 
 
-  inputImage = this->GetInput();
+  inputImage = this->GetImageDataInput(0);
 
   if (inputImage == NULL) {
     vtkErrorMacro("Missing input");
@@ -139,17 +139,19 @@ void vtkImageIsoContourDist::InitParam( )
       // Create a copy of the data
       inputImage = vtkImageData::New();
 
-      inputImage->SetScalarType( VTK_FLOAT);
-      inputImage->SetNumberOfScalarComponents(1);
-      inputImage->SetDimensions( this->GetInput()->GetDimensions());
-      inputImage->SetOrigin(     this->GetInput()->GetOrigin());
-      inputImage->SetSpacing(    this->GetInput()->GetSpacing());
-      inputImage->CopyAndCastFrom(this->GetInput(),
-                  this->GetInput()->GetExtent());
+      vtkInformation* info = inputImage->GetInformation();
+      
+      vtkImageData::SetScalarType( VTK_FLOAT,info);
+      vtkImageData::SetNumberOfScalarComponents(1,info);
+      inputImage->SetDimensions( this->GetImageDataInput(0)->GetDimensions());
+      inputImage->SetOrigin(     this->GetImageDataInput(0)->GetOrigin());
+      inputImage->SetSpacing(    this->GetImageDataInput(0)->GetSpacing());
+      inputImage->CopyAndCastFrom(this->GetImageDataInput(0),
+                  this->GetImageDataInput(0)->GetExtent());
       inputImage_allocated = 1;
     }
     else {
-      inputImage = this->GetInput();
+      inputImage = this->GetImageDataInput(0);
       inputImage_allocated = 0;
     }
     //    fprintf(stderr,"vtkImageIsoContourDist \t inputImage allocated %d \n",
@@ -167,8 +169,8 @@ void vtkImageIsoContourDist::InitParam( )
       
     outputImage->SetDimensions(inputImage->GetDimensions() );
     outputImage->SetSpacing(   inputImage->GetSpacing() );
-    outputImage->SetScalarType(VTK_FLOAT); 
-    outputImage->SetNumberOfScalarComponents(1);
+    vtkImageData::SetScalarType(VTK_FLOAT,        outputImage->GetInformation()); 
+    vtkImageData::SetNumberOfScalarComponents(1,  outputImage->GetInformation());
      
     
     if (output_array != NULL) {
@@ -183,7 +185,7 @@ void vtkImageIsoContourDist::InitParam( )
       outputImage->GetPointData()->SetScalars(float_array);
     } 
     else {
-      outputImage->AllocateScalars();
+      outputImage->AllocateScalars(outputImage->GetInformation());
     }
     
     if (output_array == NULL) {
@@ -739,6 +741,6 @@ void vtkImageIsoContourDist::IsoSurfDist3D_band( int first_band, int last_band)
 //----------------------------------------------------------------------
 void vtkImageIsoContourDist::PrintSelf(ostream& os, vtkIndent indent)
 {
-   vtkImageToImageFilter::PrintSelf(os,indent);
+   vtkImageAlgorithm::PrintSelf(os,indent);
 
 } // PrintSelf()

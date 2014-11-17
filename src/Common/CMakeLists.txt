@@ -144,8 +144,9 @@ IF( NOT DEFINED ITK_LIBRARIES )
 ENDIF( NOT DEFINED ITK_LIBRARIES )
 
 target_link_libraries(Common 
-  vtkIO 
-  vtkImaging
+  #vtkIO 
+  #vtkImaging
+  ${VTK_LIBRARIES}
   ${ITK_LIBRARIES}
   ${wxWidgets_LIBRARIES}
   ${Boost_LIBRARIES}

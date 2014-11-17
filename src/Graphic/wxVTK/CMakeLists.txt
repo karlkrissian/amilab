@@ -18,9 +18,9 @@ ELSE(WIN32)
     ENDIF(VTK_USE_COCOA)
   ELSE(APPLE)
     # Ok X11 for sure, but just check:
-    IF(NOT VTK_USE_X)
-      MESSAGE(FATAL_ERROR "You need to have VTK_USE_X")
-    ENDIF(NOT VTK_USE_X)
+    #IF(NOT VTK_USE_X)
+    #  MESSAGE(FATAL_ERROR "You need to have VTK_USE_X")
+    #ENDIF(NOT VTK_USE_X)
 
 
     # this for GTK3
@@ -39,10 +39,11 @@ ELSE(WIN32)
     # CMake 2.6:
     # technically those packages are not required since one can still use the Motif/X11 version and not the gtk one:
     FIND_PACKAGE(PkgConfig)
-    pkg_check_modules (GTK2 gtk+-2.0)
+    #pkg_check_modules (GTK2 gtk+-2.0)
+    pkg_check_modules (GTK3 gtk+-3.0)
     #MESSAGE("${GTK2_INCLUDE_DIRS}")
-    INCLUDE_DIRECTORIES(${GTK2_INCLUDE_DIRS})
-    LINK_LIBRARIES(${GTK2_LIBRARIES})
+    INCLUDE_DIRECTORIES(${GTK3_INCLUDE_DIRS})
+    LINK_LIBRARIES(${GTK3_LIBRARIES})
     # Can I require all my user to have the gl lib on linux, even if they do not really need it...
     #SET(WXGLCANVASLIBS "gl")
   ENDIF(APPLE)

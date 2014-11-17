@@ -461,7 +461,7 @@ if ( reductionFactor < 1.0 )
     else
       {
         */
-      box->SetInput(input.get());
+      box->SetInputData(input.get());
 //      }
     
     box->SetDefaultRenderer(renderer);
@@ -483,7 +483,7 @@ if ( reductionFactor < 1.0 )
   else
     {
       */
-    mapper->SetInput( input.get() );
+    mapper->SetInputData( input.get() );
 //    }
     
   

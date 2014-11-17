@@ -22,7 +22,7 @@
 //
 
 
-#include "vtkImageToImageFilter.h"
+#include "vtkImageAlgorithm.h"
 #include "vtkImageData.h"
 
 //BTX
@@ -80,10 +80,10 @@ public:
 
 
 //----------------------------------------------------------------------
-class VTK_EXPORT vtkThinning : public vtkImageToImageFilter
+class VTK_EXPORT vtkThinning : public vtkImageAlgorithm
 {
 public:
-  vtkTypeMacro(vtkThinning,vtkImageToImageFilter);
+  vtkTypeMacro(vtkThinning,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

@@ -43,7 +43,7 @@
 
 #include <vtkLevelSetsConfigure.h>
 #include "vtkImageData.h"
-#include "vtkImageToImageFilter.h"
+#include "vtkImageAlgorithm.h"
 
 #include "vtkLevelSetFastMarching.h"
 #include "vtkImageIsoContourDist.h"
@@ -67,11 +67,11 @@
 #define WHITE_STRUCTURE 0
 #define BLACK_STRUCTURE 1
 
-class VTK_LEVELSETS_EXPORT vtkLevelSets : public vtkImageToImageFilter
+class VTK_LEVELSETS_EXPORT vtkLevelSets : public vtkImageAlgorithm
 {
 public:
   static vtkLevelSets *New();
-  vtkTypeRevisionMacro(vtkLevelSets,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkLevelSets,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   vtkSetMacro(isotropic_voxels,int);
@@ -431,11 +431,6 @@ protected:
 
   unsigned char CheckConvergence();
   void          CheckConvergenceNew();
-
-  void          ExecuteInformation()
-    {
-      this->vtkImageToImageFilter::ExecuteInformation();
-    };
 
   void PreComputeDataAttachment();
 

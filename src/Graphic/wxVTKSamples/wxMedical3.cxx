@@ -230,13 +230,13 @@ void wxMedical3Frame::ConfigureVTK()
   // strips from the isosurface; these render much faster on may
   // systems.
   vtkContourFilter *skinExtractor = vtkContourFilter::New();
-    skinExtractor->SetInput( this->input.get());
+    skinExtractor->SetInputData( this->input.get());
     skinExtractor->SetValue(0, 500);
   vtkPolyDataNormals *skinNormals = vtkPolyDataNormals::New();
     skinNormals->SetInputConnection(skinExtractor->GetOutputPort());
     skinNormals->SetFeatureAngle(60.0);
   vtkStripper *skinStripper = vtkStripper::New();
-    skinStripper->SetInput(skinNormals->GetOutput());
+    skinStripper->SetInputConnection(skinNormals->GetOutputPort());
   vtkPolyDataMapper *skinMapper = vtkPolyDataMapper::New();
     skinMapper->SetInputConnection(skinStripper->GetOutputPort());
     skinMapper->ScalarVisibilityOff();
@@ -253,15 +253,15 @@ void wxMedical3Frame::ConfigureVTK()
   // strips from the isosurface; these render much faster on may
   // systems.
   vtkContourFilter *boneExtractor = vtkContourFilter::New();
-    boneExtractor->SetInput(input.get());
+    boneExtractor->SetInputData(input.get());
     boneExtractor->SetValue(0, 1150);
   vtkPolyDataNormals *boneNormals = vtkPolyDataNormals::New();
     boneNormals->SetInputConnection(boneExtractor->GetOutputPort());
     boneNormals->SetFeatureAngle(60.0);
   vtkStripper *boneStripper = vtkStripper::New();
-    boneStripper->SetInput(boneNormals->GetOutput());
+    boneStripper->SetInputConnection(boneNormals->GetOutputPort());
   vtkPolyDataMapper *boneMapper = vtkPolyDataMapper::New();
-    boneMapper->SetInput(boneStripper->GetOutput());
+    boneMapper->SetInputConnection(boneStripper->GetOutputPort());
     boneMapper->ScalarVisibilityOff();
   vtkActor *bone = vtkActor::New();
     bone->SetMapper(boneMapper);
@@ -270,9 +270,9 @@ void wxMedical3Frame::ConfigureVTK()
   // An outline provides context around the data.
   //
   vtkOutlineFilter *outlineData = vtkOutlineFilter::New();
-    outlineData->SetInput(input.get());
+    outlineData->SetInputData(input.get());
   vtkPolyDataMapper *mapOutline = vtkPolyDataMapper::New();
-    mapOutline->SetInput(outlineData->GetOutput());
+    mapOutline->SetInputConnection(outlineData->GetOutputPort());
   vtkActor *outline = vtkActor::New();
     outline->SetMapper(mapOutline);
     outline->GetProperty()->SetColor(0,0,0);
@@ -313,28 +313,28 @@ void wxMedical3Frame::ConfigureVTK()
   // specifying the DisplayExtent, the pipeline requests data of this extent
   // and the vtkImageMapToColors only processes a slice of data.
   vtkImageMapToColors *saggitalColors = vtkImageMapToColors::New();
-    saggitalColors->SetInput(input.get());
+    saggitalColors->SetInputData(input.get());
     saggitalColors->SetLookupTable(bwLut);
   vtkImageActor *saggital = vtkImageActor::New();
-    saggital->SetInput(saggitalColors->GetOutput());
+    saggital->SetInputData(saggitalColors->GetOutput());
     saggital->SetDisplayExtent(32,32, 0,63, 0,92);
 
   // Create the second (axial) plane of the three planes. We use the
   // same approach as before except that the extent differs.
   vtkImageMapToColors *axialColors = vtkImageMapToColors::New();
-    axialColors->SetInput(input.get());
+    axialColors->SetInputData(input.get());
     axialColors->SetLookupTable(hueLut);
   vtkImageActor *axial = vtkImageActor::New();
-    axial->SetInput(axialColors->GetOutput());
+    axial->SetInputData(axialColors->GetOutput());
     axial->SetDisplayExtent(0,63, 0,63, 46,46);
 
   // Create the third (coronal) plane of the three planes. We use 
   // the same approach as before except that the extent differs.
   vtkImageMapToColors *coronalColors = vtkImageMapToColors::New();
-    coronalColors->SetInput(input.get());
+    coronalColors->SetInputData(input.get());
     coronalColors->SetLookupTable(satLut);
   vtkImageActor *coronal = vtkImageActor::New();
-    coronal->SetInput(coronalColors->GetOutput());
+    coronal->SetInputData(coronalColors->GetOutput());
     coronal->SetDisplayExtent(0,63, 32,32, 0,92);
 
   // It is convenient to create an initial view of the data. The

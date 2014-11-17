@@ -126,8 +126,8 @@ void vtkImageFastSignedChamfer::InitParam( vtkImageData* input, vtkImageData* ou
       // Create a copy of the data
       inputImage = vtkImageData::New();
 
-      inputImage->SetScalarType( VTK_FLOAT);
-      inputImage->SetNumberOfScalarComponents(1);
+      vtkImageData::SetScalarType( VTK_FLOAT,     inputImage->GetInformation());
+      vtkImageData::SetNumberOfScalarComponents(1,inputImage->GetInformation());
       inputImage->SetDimensions( input->GetDimensions());
       inputImage->SetOrigin(     input->GetOrigin());
       inputImage->SetSpacing(    input->GetSpacing());
@@ -156,8 +156,8 @@ void vtkImageFastSignedChamfer::InitParam( vtkImageData* input, vtkImageData* ou
     
     outputImage->SetDimensions(inputImage->GetDimensions() );
     outputImage->SetSpacing(   inputImage->GetSpacing() );
-    outputImage->SetScalarType(VTK_FLOAT); 
-    outputImage->SetNumberOfScalarComponents(1);
+    vtkImageData::SetScalarType(VTK_FLOAT, outputImage->GetInformation()); 
+    vtkImageData::SetNumberOfScalarComponents(1, outputImage->GetInformation());
 
     if (input_output_array != NULL) {
       local_floatarray = vtk_new<vtkFloatArray> ()();
@@ -165,7 +165,7 @@ void vtkImageFastSignedChamfer::InitParam( vtkImageData* input, vtkImageData* ou
       outputImage->GetPointData()->SetScalars(local_floatarray.get());
     } 
     else {
-      outputImage->AllocateScalars();
+      outputImage->AllocateScalars(outputImage->GetInformation());
     }
 
     //    outputImage->CopyAndCastFrom(this->inputImage,
@@ -190,7 +190,7 @@ void vtkImageFastSignedChamfer::ExecuteData(vtkDataObject *outData)
 //                   -------
 {
 
-  InitParam( this->GetInput(), this->GetOutput());
+  InitParam( this->GetImageDataInput(0), this->GetOutput());
 
   if (tz == 1) {
     coeff_a = 1.;
@@ -991,6 +991,6 @@ void vtkImageFastSignedChamfer::FastSignedChamfer3DBorders( )
 //----------------------------------------------------------------------
 void vtkImageFastSignedChamfer::PrintSelf(ostream& os, vtkIndent indent)
 {
-   vtkImageToImageFilter::PrintSelf(os,indent);
+   vtkImageAlgorithm::PrintSelf(os,indent);
 
 } // PrintSelf()

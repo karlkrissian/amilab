@@ -23,7 +23,7 @@
 // Brigham and Women's Hospital
 
 #include <vtkCorCTAConfigure.h>
-#include "vtkStructuredPointsToPolyDataFilter.h"
+#include "vtkPolyDataAlgorithm.h"
 #include "vtkImageData.h"
 
 
@@ -50,11 +50,11 @@ public:
 
 
 //----------------------------------------------------------------------
-class VTK_CORCTA_EXPORT vtkSkeleton2Lines : public vtkStructuredPointsToPolyDataFilter
+class VTK_CORCTA_EXPORT vtkSkeleton2Lines : public vtkPolyDataAlgorithm
 //               -----------------
 {
 public:
-  vtkTypeRevisionMacro(vtkSkeleton2Lines,vtkStructuredPointsToPolyDataFilter);
+  vtkTypeRevisionMacro(vtkSkeleton2Lines,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

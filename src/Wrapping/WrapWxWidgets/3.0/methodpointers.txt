@@ -1,0 +1,4 @@
+wxCharEventFunction
+wxCommandEventFunction
+wxEventFunction
+wxMouseEventFunction

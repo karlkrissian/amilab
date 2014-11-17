@@ -1320,7 +1320,7 @@ fprintf(stderr,"Nb Points %d \n",_CREST_tab_points.NbElts());
 
   writer = vtkPolyDataWriter::New();
 
-  writer->SetInput( vtk_lines);
+  writer->SetInputData( vtk_lines);
   writer->SetFileTypeToBinary();
   //  writer->SetFileTypeToASCII();
   writer->SetFileName(name);
@@ -1362,7 +1362,7 @@ this->ToPolyData(&vtk_lines,&points,&lines);
   vtk_lines->SetPoints(points);
   vtk_lines->SetLines(lines);
 
-  writer->SetInput( vtk_lines);
+  writer->SetInputData( vtk_lines);
   writer->SetFileTypeToBinary();
    //  writer->SetFileTypeToASCII();
   writer->SetFileName(name);

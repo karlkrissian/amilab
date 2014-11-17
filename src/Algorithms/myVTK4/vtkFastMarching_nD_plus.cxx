@@ -206,10 +206,10 @@ void vtkFastMarching_nD_plus::InitParam()
 
   // Image size
   force=NULL;
-  tx = this->GetInput()->GetDimensions()[0];
-  ty = this->GetInput()->GetDimensions()[1];
-  tz = this->GetInput()->GetDimensions()[2];
-  tt = this->GetInput()->GetNumberOfScalarComponents();
+  tx = this->GetImageDataInput(0)->GetDimensions()[0];
+  ty = this->GetImageDataInput(0)->GetDimensions()[1];
+  tz = this->GetImageDataInput(0)->GetDimensions()[2];
+  tt = this->GetImageDataInput(0)->GetNumberOfScalarComponents();
 
   if ((tx<3)||(ty<3)||(tz<3)||(tt<3)) {
     vtkErrorMacro("Input image need to be 4D ...");
@@ -217,7 +217,7 @@ void vtkFastMarching_nD_plus::InitParam()
   }
 
   // Get force image from input
-  force  = this->GetInput();
+  force  = this->GetImageDataInput(0);
   if (force == NULL)
     {
       vtkErrorMacro("Missing input");
@@ -229,14 +229,15 @@ void vtkFastMarching_nD_plus::InitParam()
     vtkDebugMacro(<<"making a copy of the input into float format");
     // Create a copy of the data
     force = vtkImageData::New();
-    force->SetScalarType( VTK_FLOAT);
-    force->SetNumberOfScalarComponents(this->GetInput()->GetNumberOfScalarComponents());
-    force->SetDimensions( this->GetInput()->GetDimensions());
-    force->SetOrigin(     this->GetInput()->GetOrigin());
-    force->SetSpacing(    this->GetInput()->GetSpacing());
+    vtkImageData::SetScalarType( VTK_FLOAT, force->GetInformation());
+    vtkImageData::SetNumberOfScalarComponents(this->GetImageDataInput(0)->GetNumberOfScalarComponents(),
+                                              force->GetInformation()    );
+    force->SetDimensions( this->GetImageDataInput(0)->GetDimensions());
+    force->SetOrigin(     this->GetImageDataInput(0)->GetOrigin());
+    force->SetSpacing(    this->GetImageDataInput(0)->GetSpacing());
 
-    force->CopyAndCastFrom(this->GetInput(),
-               this->GetInput()->GetExtent());
+    force->CopyAndCastFrom(this->GetImageDataInput(0),
+               this->GetImageDataInput(0)->GetExtent());
     force_allocated = 1;
   }
 
@@ -249,8 +250,8 @@ void vtkFastMarching_nD_plus::InitParam()
       // Create a copy of the data
       vtkImageData* mask1;
       mask1 = vtkImageData::New();
-      mask1->SetScalarType( VTK_UNSIGNED_CHAR);
-      mask1->SetNumberOfScalarComponents(1);
+      vtkImageData::SetScalarType(VTK_UNSIGNED_CHAR, mask1->GetInformation());
+      vtkImageData::SetNumberOfScalarComponents(1, mask1->GetInformation());
       mask1->SetDimensions( this->mask->GetDimensions());
       mask1->SetOrigin(     this->mask->GetOrigin());
       mask1->SetSpacing(    this->mask->GetSpacing());
@@ -324,10 +325,12 @@ void vtkFastMarching_nD_plus::InitParam()
   // Get the time image (output of the algorithm)
   T      = this->GetOutput();
   
-  T->SetDimensions(this->GetInput()->GetDimensions());
-  T->SetSpacing(   this->GetInput()->GetSpacing());
-  T->SetScalarType(VTK_FLOAT); 
-  T->SetNumberOfScalarComponents(this->GetInput()->GetNumberOfScalarComponents());
+  T->SetDimensions(this->GetImageDataInput(0)->GetDimensions());
+  T->SetSpacing(   this->GetImageDataInput(0)->GetSpacing());
+  vtkImageData::SetScalarType(VTK_FLOAT, T->GetInformation()); 
+  vtkImageData::SetNumberOfScalarComponents(
+    this->GetImageDataInput(0)->GetNumberOfScalarComponents(),
+    T->GetInformation());
 
   if (output_array != NULL) {
     vtkFloatArray* da = vtkFloatArray::New();
@@ -335,7 +338,7 @@ void vtkFastMarching_nD_plus::InitParam()
     T->GetPointData()->SetScalars(da);
   } 
   else {
-    T->AllocateScalars();
+    T->AllocateScalars(T->GetInformation());
   }
 
   // initialization of the buffers:

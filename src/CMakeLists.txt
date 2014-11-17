@@ -354,7 +354,13 @@ IF(AMI_ENABLE_WRAPPING)
   OPTION(AMI_WRAP_ULTRASOUND "Enable Automatic Wrapping of Ultrasound library for get ultrasound images" OFF)
 ENDIF(AMI_ENABLE_WRAPPING)
 
-
+# set gcc hidden visibility 
+# IF(UNIX)
+#     IF(CMAKE_COMPILER_IS_GNUCC)
+#          SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden")
+#          SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
+#     ENDIF(CMAKE_COMPILER_IS_GNUCC)
+# ENDIF(UNIX)
 
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
 
@@ -794,19 +800,19 @@ IF(AMI_USE_VTK)
   )
   INCLUDE(${VTK_USE_FILE})
 
-  SET(LINK_VTK
-    vtkGraphics
-    vtkImaging
-    vtkIO
-    vtkFiltering
-    vtkCommon
-    # additional libraries for volume rendering
-    vtkRendering 
-    vtkVolumeRendering 
-    vtkWidgets
-    vtkViews
-    vtkCharts
-  )
+#   SET(LINK_VTK
+#     vtkGraphics
+#     vtkImaging
+#     vtkIO
+#     vtkFiltering
+#     vtkCommon
+#     # additional libraries for volume rendering
+#     vtkRendering 
+#     vtkVolumeRendering 
+#     vtkWidgets
+#     vtkViews
+#     vtkCharts
+#   )
 
   # it seems that vtkNetCDF is not needed, at least on linux
   # TODO: check if we can really remove it

@@ -54,7 +54,7 @@ InrImage* Func_vtkMedianFilter3D( InrImage* im, int kx, int ky, int kz)
 
   vtk_median = vtkImageMedian3D::New();
 
-  vtk_median->SetInput(vtk_image.get());
+  vtk_median->SetInputData(vtk_image.get());
   vtk_median->SetKernelSize(kx,ky,kz);
 
   vtk_median->Update();
@@ -87,7 +87,7 @@ SurfacePoly* Func_vtkMarchingCubes( InrImage* im, float Threshold)
   vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
 
   vtk_mc = vtkImageMarchingCubes::New();
-  vtk_mc->SetInput(vtk_image.get());
+  vtk_mc->SetInputData(vtk_image.get());
   vtk_mc->SetValue(0,Threshold);
 
   vtk_mc->ComputeNormalsOff();
@@ -127,13 +127,13 @@ SurfacePoly* Func_decimate( SurfacePoly* surf, float target_reduction )
   // Triangularization
   //
   triangle_filter = vtkTriangleFilter::New();
-  triangle_filter->SetInput(vtk_surf);
+  triangle_filter->SetInputData(vtk_surf);
   triangle_filter->Update();
 
   // Run the decimation
   //
   deci = vtkDecimate::New();
-  deci->SetInput(triangle_filter->GetOutput());
+  deci->SetInputConnection(triangle_filter->GetOutputPort());
   deci->SetTargetReduction(target_reduction);
   deci->SetAspectRatio(20);
   deci->SetInitialError(0.0002);
@@ -175,7 +175,7 @@ SurfacePoly* Func_vtkSmooth( SurfacePoly* surf , int numiter)
   vtk_surf = (vtkPolyData*) (*surf);
 
   vtk_smooth = vtkSmoothPolyDataFilter::New();
-  vtk_smooth->SetInput(vtk_surf);
+  vtk_smooth->SetInputData(vtk_surf);
   vtk_smooth->SetNumberOfIterations(numiter);
   vtk_smooth->BoundarySmoothingOn();
   vtk_smooth->SetFeatureAngle(120);
@@ -217,7 +217,7 @@ SurfacePoly* Func_vtkWindowedSinc( SurfacePoly* surf , int numiter)
   vtk_surf = (vtkPolyData*) (*surf);
 
   vtk_smooth = vtkWindowedSincPolyDataFilter::New();
-  vtk_smooth->SetInput(vtk_surf);
+  vtk_smooth->SetInputData(vtk_surf);
   vtk_smooth->SetNumberOfIterations(numiter);
   vtk_smooth->BoundarySmoothingOn();
   vtk_smooth->SetFeatureAngle(120);
@@ -262,7 +262,7 @@ void Func_ApplyvtkSmooth( SurfacePoly* surf , int numiter)
   vtk_surf = (vtkPolyData*) (*surf);
 
   vtk_smooth = vtkSmoothPolyDataFilter::New();
-  vtk_smooth->SetInput(vtk_surf);
+  vtk_smooth->SetInputData(vtk_surf);
   vtk_smooth->SetNumberOfIterations(numiter);
   vtk_smooth->BoundarySmoothingOn();
   vtk_smooth->SetFeatureAngle(120);
@@ -315,7 +315,7 @@ InrImage* Func_vtkDist( InrImage* im)
     if (im->_ty>1)  vtk_dist->SetDimensionality(2);
     else            vtk_dist->SetDimensionality(1);
 
-  vtk_dist->SetInput(vtk_image.get());
+  vtk_dist->SetInputData(vtk_image.get());
 
   vtk_dist->Update();
 
@@ -348,7 +348,7 @@ InrImage* Func_vtkPropDanielsson( InrImage* im, float dmin, float dmax)
   vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
   vtk_prop  = vtkImagePropagateDist::New();
 
-  vtk_prop->SetInput(   vtk_image.get());
+  vtk_prop->SetInputData(   vtk_image.get());
   vtk_prop->Setmindist( dmin);
   vtk_prop->Setmaxdist( dmax);
 
@@ -386,7 +386,7 @@ InrImage* Func_vtkPropDaniel2( InrImage* im,
   vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
   vtk_prop  = vtkImagePropagateDist2::New();
 
-  vtk_prop->SetInput(   vtk_image.get());
+  vtk_prop->SetInputData(   vtk_image.get());
   vtk_prop->Setthreshold( threshold);
   vtk_prop->Setmindist(   dmin);
   vtk_prop->Setmaxdist(   dmax);
@@ -421,7 +421,7 @@ InrImage*    Func_vtkConvexHull( InrImage* im, int angles, float resolution)
   // Convert InrImage to vtkImageData
   vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
   vtk_CH = vtkConvexHull::New();
-  vtk_CH->SetInput(vtk_image.get());
+  vtk_CH->SetInputData(vtk_image.get());
   vtk_CH->SetAngles(angles);
   vtk_CH->SetResolution(resolution);
   vtk_CH->Update();
@@ -457,7 +457,7 @@ InrImage*    Func_vtkIsoContourDist( InrImage* im, float th)
   fprintf(stderr,"fonctions.c:Func_vtkIsoContourDist() \t conversion vtkImageIsoContourDist \n");
   vtk_isodist = vtkImageIsoContourDist::New();
 
-  vtk_isodist->SetInput(     vtk_image.get());
+  vtk_isodist->SetInputData(     vtk_image.get());
   vtk_isodist->Setthreshold( th);
 
   vtk_isodist->Update();
@@ -794,7 +794,7 @@ InrImage*    Func_vtkSignedBorgefors(InrImage* im, float dmax)
   //  fprintf(stderr,"Func_vtkSignedBorgefors() \t conversion vtkImageSignedBorgefors \n");
   vtk_SDT = vtkImageFastSignedChamfer::New();
 
-  vtk_SDT->SetInput(   vtk_image);
+  vtk_SDT->SetInputData(   vtk_image);
   vtk_SDT->Setmaxdist( dmax);
   vtk_SDT->Setnoborder(1);
 
@@ -836,7 +836,7 @@ InrImage*    Func_vtkSignedFMDist(InrImage* im, float dmax)
   //  fprintf(stderr,"Func_vtkSignedFMDist() \t conversion vtkImageSignedFMDist \n");
   vtk_FM = vtkLevelSetFastMarching::New();
 
-  vtk_FM->SetInput(       vtk_image);
+  vtk_FM->SetInputData(       vtk_image);
   vtk_FM->Setinitimage(   vtk_image);
   vtk_FM->Setinitiso(     0);
   vtk_FM->SetmaxTime(     dmax);

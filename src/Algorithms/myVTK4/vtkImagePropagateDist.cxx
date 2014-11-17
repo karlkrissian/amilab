@@ -133,8 +133,9 @@ void vtkImagePropagateDist::InitParam( vtkImageData* input, vtkImageData* output
       // Create a copy of the data
       inputImage = vtkImageData::New();
 
-      inputImage->SetScalarType( VTK_FLOAT);
-      inputImage->SetNumberOfScalarComponents(1);
+      vtkInformation* _info = inputImage->GetInformation();
+      vtkImageData::SetScalarType( VTK_FLOAT, _info);
+      vtkImageData::SetNumberOfScalarComponents(1, _info);
       inputImage->SetDimensions( input->GetDimensions());
       inputImage->SetOrigin(     input->GetOrigin());
       inputImage->SetSpacing(    input->GetSpacing());
@@ -163,8 +164,8 @@ void vtkImagePropagateDist::InitParam( vtkImageData* input, vtkImageData* output
     
     outputImage->SetDimensions(inputImage->GetDimensions() );
     outputImage->SetSpacing(   inputImage->GetSpacing() );
-    outputImage->SetScalarType(VTK_FLOAT); 
-    outputImage->SetNumberOfScalarComponents(1);
+    vtkImageData::SetScalarType(VTK_FLOAT,       outputImage->GetInformation()); 
+    vtkImageData::SetNumberOfScalarComponents(1, outputImage->GetInformation());
 
     if (input_output_array != NULL) {
       vtkFloatArray* da = vtkFloatArray::New();
@@ -172,7 +173,7 @@ void vtkImagePropagateDist::InitParam( vtkImageData* input, vtkImageData* output
       outputImage->GetPointData()->SetScalars(da);
     } 
     else {
-      outputImage->AllocateScalars();
+      outputImage->AllocateScalars(outputImage->GetInformation());
     }
 
     //    outputImage->CopyAndCastFrom(this->inputImage,
@@ -197,7 +198,7 @@ void vtkImagePropagateDist::ExecuteData(vtkDataObject *outData)
 //                   -------
 {
 
-  InitParam( this->GetInput(), this->GetOutput());
+  InitParam( this->GetImageDataInput(0), this->GetOutput());
 
   if (tz == 1) {
     PropagateDanielsson2D();
@@ -1059,13 +1060,13 @@ void vtkImagePropagateDist::SaveTrajectories2D( int num)
     l++;
       }
   
-  copyImage->SetScalarType( VTK_FLOAT);
-  copyImage->SetNumberOfScalarComponents(1);
+  vtkImageData::SetScalarType( VTK_FLOAT, copyImage->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1, copyImage->GetInformation());
   copyImage->SetDimensions( outputImage->GetDimensions());
   copyImage->SetOrigin(     outputImage->GetOrigin());
   copyImage->SetSpacing(    outputImage->GetSpacing());
   
-  copyImage->AllocateScalars();
+  copyImage->AllocateScalars(copyImage->GetInformation());
   //     copyImage->CopyAndCastFrom(outputImage,
   //                outputImage->GetExtent());
 
@@ -1079,7 +1080,7 @@ void vtkImagePropagateDist::SaveTrajectories2D( int num)
     ptr++;
   }
   
-  writer->SetInput(copyImage);
+  writer->SetInputData(copyImage);
   sprintf(name,"trajectory%d_X.vtk",num);
   writer->SetFileName(name);
   writer->SetFileTypeToBinary();
@@ -1097,7 +1098,7 @@ void vtkImagePropagateDist::SaveTrajectories2D( int num)
     ptr++;
   }
   
-  writer->SetInput(copyImage);
+  writer->SetInputData(copyImage);
   sprintf(name,"trajectory%d_Y.vtk",num);
   writer->SetFileName(name);
   writer->SetFileTypeToBinary();
@@ -1142,13 +1143,13 @@ void vtkImagePropagateDist::SaveTrajectories3D( int num)
     l++;
       }
   
-  copyImage->SetScalarType( VTK_FLOAT);
-  copyImage->SetNumberOfScalarComponents(1);
+  vtkImageData::SetScalarType( VTK_FLOAT, copyImage->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1, copyImage->GetInformation());
   copyImage->SetDimensions( outputImage->GetDimensions());
   copyImage->SetOrigin(     outputImage->GetOrigin());
   copyImage->SetSpacing(    outputImage->GetSpacing());
   
-  copyImage->AllocateScalars();
+  copyImage->AllocateScalars(copyImage->GetInformation());
   //     copyImage->CopyAndCastFrom(outputImage,
   //                outputImage->GetExtent());
 
@@ -1162,7 +1163,7 @@ void vtkImagePropagateDist::SaveTrajectories3D( int num)
     ptr++;
   }
   
-  writer->SetInput(copyImage);
+  writer->SetInputData(0,copyImage);
   sprintf(name,"trajectory%d_X.vtk",num);
   writer->SetFileName(name);
   writer->SetFileTypeToBinary();
@@ -1180,7 +1181,7 @@ void vtkImagePropagateDist::SaveTrajectories3D( int num)
     ptr++;
   }
   
-  writer->SetInput(copyImage);
+  writer->SetInputData(copyImage);
   sprintf(name,"trajectory%d_Y.vtk",num);
   writer->SetFileName(name);
   writer->SetFileTypeToBinary();
@@ -1196,7 +1197,7 @@ void vtkImagePropagateDist::SaveTrajectories3D( int num)
     ptr++;
   }
   
-  writer->SetInput(copyImage);
+  writer->SetInputData(copyImage);
   sprintf(name,"trajectory%d_Z.vtk",num);
   writer->SetFileName(name);
   writer->SetFileTypeToBinary();
@@ -1231,27 +1232,26 @@ void vtkImagePropagateDist::SaveProjection( int num)
   int  x0,y0,z0,p0;
   
   
-  copyImageX->SetScalarType( VTK_FLOAT);
-  copyImageX->SetNumberOfScalarComponents(1);
+  vtkImageData::SetScalarType( VTK_FLOAT,       copyImageX->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1,  copyImageX->GetInformation());
   copyImageX->SetDimensions( outputImage->GetDimensions());
   copyImageX->SetOrigin(     outputImage->GetOrigin());
   copyImageX->SetSpacing(    outputImage->GetSpacing());
-  copyImageX->AllocateScalars();
+  copyImageX->AllocateScalars(copyImageX->GetInformation());
 
-  copyImageY->SetScalarType( VTK_FLOAT);
-  copyImageY->SetNumberOfScalarComponents(1);
+  vtkImageData::SetScalarType( VTK_FLOAT,       copyImageY->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1,  copyImageY->GetInformation());
   copyImageY->SetDimensions( outputImage->GetDimensions());
   copyImageY->SetOrigin(     outputImage->GetOrigin());
   copyImageY->SetSpacing(    outputImage->GetSpacing());
-  copyImageY->AllocateScalars();
+  copyImageY->AllocateScalars(copyImageY->GetInformation());
 
-  copyImageZ->SetScalarType( VTK_FLOAT);
-  copyImageZ->SetNumberOfScalarComponents(1);
+  vtkImageData::SetScalarType( VTK_FLOAT,       copyImageZ->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1,  copyImageZ->GetInformation());
   copyImageZ->SetDimensions( outputImage->GetDimensions());
   copyImageZ->SetOrigin(     outputImage->GetOrigin());
   copyImageZ->SetSpacing(    outputImage->GetSpacing());
-  copyImageZ->AllocateScalars();
-
+  copyImageZ->AllocateScalars(copyImageZ->GetInformation());
 
   ptrX = (float*) copyImageX->GetScalarPointer();
   ptrY = (float*) copyImageY->GetScalarPointer();
@@ -1283,7 +1283,7 @@ void vtkImagePropagateDist::SaveProjection( int num)
     ptrZ++;
   }
   
-  writer->SetInput(copyImageX);
+  writer->SetInputData(copyImageX);
   sprintf(name,"projection%d_X.vtk",num);
   writer->SetFileName(name);
   writer->SetFileTypeToBinary();
@@ -1291,7 +1291,7 @@ void vtkImagePropagateDist::SaveProjection( int num)
 
   fprintf(stderr,"%s saved \n",name);
 
-  writer->SetInput(copyImageY);
+  writer->SetInputData(copyImageY);
   sprintf(name,"projection%d_Y.vtk",num);
   writer->SetFileName(name);
   writer->SetFileTypeToBinary();
@@ -1299,7 +1299,7 @@ void vtkImagePropagateDist::SaveProjection( int num)
 
   fprintf(stderr,"%s saved \n",name);
 
-  writer->SetInput(copyImageZ);
+  writer->SetInputData(copyImageZ);
   sprintf(name,"projection%d_Z.vtk",num);
   writer->SetFileName(name);
   writer->SetFileTypeToBinary();
@@ -1327,13 +1327,13 @@ void vtkImagePropagateDist::SaveState( int num)
   char name[255];
   int  i;
   
-  copyImage->SetScalarType( VTK_UNSIGNED_CHAR);
-  copyImage->SetNumberOfScalarComponents(1);
+  vtkImageData::SetScalarType( VTK_UNSIGNED_CHAR, copyImage->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1,    copyImage->GetInformation());
   copyImage->SetDimensions( outputImage->GetDimensions());
   copyImage->SetOrigin(     outputImage->GetOrigin());
   copyImage->SetSpacing(    outputImage->GetSpacing());
   
-  copyImage->AllocateScalars();
+  copyImage->AllocateScalars(copyImage->GetInformation());
   //     copyImage->CopyAndCastFrom(outputImage,
   //                outputImage->GetExtent());
 
@@ -1344,7 +1344,7 @@ void vtkImagePropagateDist::SaveState( int num)
     ptr++;
   }
   
-  writer->SetInput(copyImage);
+  writer->SetInputData(copyImage);
   sprintf(name,"State%d.vtk",num);
   writer->SetFileName(name);
   writer->SetFileTypeToBinary();
@@ -1373,13 +1373,13 @@ void vtkImagePropagateDist::SaveSkeleton( int num)
   int  i;
   
   
-  copyImage->SetScalarType( VTK_UNSIGNED_CHAR);
-  copyImage->SetNumberOfScalarComponents(1);
+  vtkImageData::SetScalarType( VTK_UNSIGNED_CHAR, copyImage->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1,    copyImage->GetInformation());
   copyImage->SetDimensions( outputImage->GetDimensions());
   copyImage->SetOrigin(     outputImage->GetOrigin());
   copyImage->SetSpacing(    outputImage->GetSpacing());
   
-  copyImage->AllocateScalars();
+  copyImage->AllocateScalars(copyImage->GetInformation());
   //     copyImage->CopyAndCastFrom(outputImage,
   //                outputImage->GetExtent());
 
@@ -1390,7 +1390,7 @@ void vtkImagePropagateDist::SaveSkeleton( int num)
     ptr++;
   }
   
-  writer->SetInput(copyImage);
+  writer->SetInputData(copyImage);
   sprintf(name,"Skeleton%d.vtk",num);
   writer->SetFileName(name);
   writer->SetFileTypeToBinary();
@@ -1420,13 +1420,13 @@ void vtkImagePropagateDist::SaveDistance( int num)
 
     buf    = (float*) outputImage ->GetScalarPointer();
     
-    copyImage->SetScalarType( VTK_FLOAT);
-    copyImage->SetNumberOfScalarComponents(1);
-    copyImage->SetDimensions( outputImage->GetDimensions());
-    copyImage->SetOrigin(     outputImage->GetOrigin());
-    copyImage->SetSpacing(    outputImage->GetSpacing());
-    
-    copyImage->AllocateScalars();
+  vtkImageData::SetScalarType( VTK_UNSIGNED_CHAR, copyImage->GetInformation());
+  vtkImageData::SetNumberOfScalarComponents(1,    copyImage->GetInformation());
+  copyImage->SetDimensions( outputImage->GetDimensions());
+  copyImage->SetOrigin(     outputImage->GetOrigin());
+  copyImage->SetSpacing(    outputImage->GetSpacing());
+  
+  copyImage->AllocateScalars(copyImage->GetInformation());
     //     copyImage->CopyAndCastFrom(outputImage,
     //                outputImage->GetExtent());
     
@@ -1436,7 +1436,7 @@ void vtkImagePropagateDist::SaveDistance( int num)
       ptr++;
     }
     
-    writer->SetInput(copyImage);
+    writer->SetInputData(copyImage);
     sprintf(name,"distmap%d.vtk",num);
     writer->SetFileName(name);
     writer->SetFileTypeToBinary();
@@ -1455,6 +1455,6 @@ void vtkImagePropagateDist::SaveDistance( int num)
 //----------------------------------------------------------------------
 void vtkImagePropagateDist::PrintSelf(ostream& os, vtkIndent indent)
 {
-   vtkImageToImageFilter::PrintSelf(os,indent);
+   vtkImageAlgorithm::PrintSelf(os,indent);
 
 } // PrintSelf()

@@ -57,7 +57,7 @@
 #define POINT_SET           4
 
 #include <vtkLevelSetsConfigure.h>
-#include "vtkImageToImageFilter.h"
+#include "vtkImageAlgorithm.h"
 #include "vtkFloatArray.h"
 
 #include <list>
@@ -178,11 +178,11 @@ const float& sqd)
 
 //ETX
 
-class VTK_LEVELSETS_EXPORT vtkImagePropagateDist2 : public vtkImageToImageFilter
+class VTK_LEVELSETS_EXPORT vtkImagePropagateDist2 : public vtkImageAlgorithm
 {
 public:
   static vtkImagePropagateDist2 *New();
-  vtkTypeRevisionMacro(vtkImagePropagateDist2,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkImagePropagateDist2,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   // Description

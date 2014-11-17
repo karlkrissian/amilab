@@ -139,7 +139,7 @@ InrImage* vtkAnisoGS(ParamList* p) {
     //    printf("2 \n");
 
     vtk_aniso = vtk_new<vtkAnisoGaussSeidel>()();
-    vtk_aniso->SetInput(              vtk_image.get());
+    vtk_aniso->SetInputData(              vtk_image.get());
     vtk_aniso->Setmode(               3);
     vtk_aniso->Setsigma(              sd);
     vtk_aniso->Setk(                  threshold);
@@ -193,7 +193,7 @@ BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
     //    printf("2 \n");
 
     vtk_skel2lines = vtk_new<vtkSkeleton2Lines>()();
-    vtk_skel2lines->SetInput( vtk_image.get());
+    vtk_skel2lines->SetInputData( vtk_image.get());
     vtk_skel2lines->Update();
     vtk_skel2lines->GetOutput();
 

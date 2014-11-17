@@ -57,7 +57,7 @@
 #define POINT_SET           4
 
 #include <vtkLevelSetsConfigure.h>
-#include "vtkImageToImageFilter.h"
+#include "vtkImageAlgorithm.h"
 
 //BTX
 
@@ -147,11 +147,11 @@ class PD_element {
 
 //ETX
 
-class VTK_LEVELSETS_EXPORT vtkImagePropagateDist : public vtkImageToImageFilter
+class VTK_LEVELSETS_EXPORT vtkImagePropagateDist : public vtkImageAlgorithm
 {
 public:
   static vtkImagePropagateDist *New();
-  vtkTypeRevisionMacro(vtkImagePropagateDist,vtkImageToImageFilter);
+  vtkTypeRevisionMacro(vtkImagePropagateDist,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   // Description

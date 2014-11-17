@@ -83,7 +83,7 @@
 
 
 #include <vtkDecimateConfigure.h>
-#include "vtkPolyDataToPolyDataFilter.h"
+#include "vtkPolyDataAlgorithm.h"
 
 #include "vtkCell.h" // Needed for VTK_CELL_SIZE
 
@@ -92,10 +92,10 @@
 class vtkIdList;
 
 //class VTK_DECIMATE_EXPORT vtkDecimate : public vtkPolyDataToPolyDataFilter
-class  vtkDecimate : public vtkPolyDataToPolyDataFilter
+class  vtkDecimate : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(vtkDecimate,vtkPolyDataToPolyDataFilter);
+  vtkTypeMacro(vtkDecimate,vtkPolyDataAlgorithm);
   static vtkDecimate *New();
   //vtkTypeRevisionMacro(vtkDecimate,vtkPolyDataToPolyDataFilter);
   void PrintSelf(ostream& os, vtkIndent indent);

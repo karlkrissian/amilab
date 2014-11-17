@@ -59,7 +59,7 @@
 
 #include <vtkFluxDiffusionConfigure.h>
 
-#include "vtkImageToImageFilter.h"
+#include "vtkThreadedImageAlgorithm.h"
 #include "vtkImageData.h"
 #include "vtkPointData.h"
 #include "vtkImageGaussianSmooth.h"
@@ -80,10 +80,10 @@ typedef std::vector<float_vec> vec_float_vec;
 
 //----------------------------------------------------------------------
 class VTK_FLUXDIFFUSION_EXPORT vtkAnisoGaussSeidel 
-           : public vtkImageToImageFilter
+           : public vtkThreadedImageAlgorithm
 {
 public:
-  vtkTypeMacro(vtkAnisoGaussSeidel,vtkImageToImageFilter);
+  vtkTypeMacro(vtkAnisoGaussSeidel,vtkThreadedImageAlgorithm);
   void PrintSelf(std::ostream& os, vtkIndent indent);
 
   // Description:

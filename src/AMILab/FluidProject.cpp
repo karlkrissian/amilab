@@ -604,16 +604,16 @@ SurfacePoly* Func_vtkCreateFlatMesh(InrImage* im, float minth, float maxth)
   // Convert InrImage to vtkImageData
   vtk_image = (vtkImageData*) (*im);
 
-   vtkgeom = vtkImageDataGeometryFilter::New();
-  vtkgeom->SetInput(vtk_image);
+  vtkgeom = vtkImageDataGeometryFilter::New();
+  vtkgeom->SetInputData(vtk_image);
   vtkgeom->Update();
 
   clip = vtkClipPolyData::New();
-  clip->SetInput(vtkgeom->GetOutput());
+  clip->SetInputConnection(vtkgeom->GetOutputPort());
   clip->SetValue(minth);
   clip->Update();
   clip2 = vtkClipPolyData::New();
-  clip2->SetInput(clip->GetOutput());
+  clip2->SetInputConnection(clip->GetOutputPort());
   clip2->SetValue(maxth);
   clip2->InsideOutOn();
   clip2->Update();

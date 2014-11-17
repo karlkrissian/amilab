@@ -59,7 +59,7 @@ void Func_VectorImage2StructuredGrid(InrImage* im, char* name)
   // We save the result
   vtkStructuredGridWriter* w = vtkStructuredGridWriter::New();
 
-  w->SetInput(sgrid);
+  w->SetInputData(sgrid);
   w->SetFileName(name);
   w->Write();
 #else
