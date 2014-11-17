@@ -41,16 +41,16 @@ if compile_ITK:
   installpath=os.environ['HOME']+'/usr/local'
   cmake_return = os.system('cmake .. -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Release')
   #-DCMAKE_INSTALL_PREFIX="{0}"'.format(installpath))
-  os.system('make -j {0} '.format(numthreads))  
+  os.system('make -j {0} install'.format(numthreads))  
   # no need for make install if we use the build directory to compile amilab
   #print "-------------------------------"
   #print " Installing as root: enter the sudo password"
   #print "-------------------------------"
   #os.system("sudo make install")
   # Write the installation dir in a files
-  f = open(initdir+'/ITK_DIR', 'w')
-  f.write('{0}'.format(os.getcwd()))
-  f.close()
+  #f = open(initdir+'/ITK_DIR', 'w')
+  #f.write('{0}'.format(os.getcwd()))
+  #f.close()
 
 os.chdir(initdir)
 

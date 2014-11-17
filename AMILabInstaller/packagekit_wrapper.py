@@ -216,7 +216,7 @@ class PackageKitClient:
         self._error_enum = None
         self._finished_status = None
         try:
-            tid = self.pk_control.GetTid()
+            tid = self.pk_control.CreateTransaction()
         except (AttributeError, dbus.DBusException), e:
             if self.pk_control == None or (hasattr(e, '_dbus_error_name') and \
                 e._dbus_error_name == 'org.freedesktop.DBus.Error.ServiceUnknown'):
@@ -224,7 +224,7 @@ class PackageKitClient:
                 self.pk_control = dbus.Interface(self.bus.get_object(
                     'org.freedesktop.PackageKit', '/org/freedesktop/PackageKit',
                     False), 'org.freedesktop.PackageKit')
-                tid = self.pk_control.GetTid()
+                tid = self.pk_control.CreateTransaction()
             else:
                 raise
 
