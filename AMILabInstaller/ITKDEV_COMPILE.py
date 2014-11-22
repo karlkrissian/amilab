@@ -39,7 +39,7 @@ else:
 if compile_ITK:
   os.chdir("build_release")
   installpath=os.environ['HOME']+'/usr/local'
-  cmake_return = os.system('cmake .. -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Release')
+  cmake_return = os.system('cmake .. -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release')
   #-DCMAKE_INSTALL_PREFIX="{0}"'.format(installpath))
   os.system('make -j {0} install'.format(numthreads))  
   # no need for make install if we use the build directory to compile amilab
