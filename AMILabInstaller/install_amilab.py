@@ -374,7 +374,7 @@ class App:
       f.close()
       config.AMILAB_CMAKE_FLAGS += ' -DVTK_DIR="{0}"'.format(VTK_DIR)
 
-    cmake_cmd = 'cmake ../.. {0} -DCMAKE_INSTALL_PREFIX="{1}"'.format(config.AMILAB_CMAKE_FLAGS,installpath)
+    cmake_cmd = 'cmake ../.. {0} -DAMI_USE_SSE=ON -DCMAKE_INSTALL_PREFIX="{1}"'.format(config.AMILAB_CMAKE_FLAGS,installpath)
     print "CMAKE CMD="+cmake_cmd
     cmake_return = os.system(cmake_cmd)
     #eval "cmake ${AMILAB_CMAKE_FLAGS} ../.."
