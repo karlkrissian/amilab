@@ -76,11 +76,16 @@ wxWindow* wxGetTopLevelParent(wxWindow *win)
           #include <gtk/gtk.h>
         #endif
 
-        #if  wxCHECK_VERSION(2, 9, 0)
-          #include <wx/gtk/private/win_gtk.h>
-        #else
-          #include <wx/gtk/win_gtk.h>
-        #endif
+        #if  wxCHECK_VERSION(3, 0, 0)
+          // small hack for the moment since win_gtk.h is not included in the distribution
+	  #include "../../Wrapping/WrapWxWidgets/3.0/wx/gtk/private/win_gtk.h"
+	#else
+	  #if  wxCHECK_VERSION(2, 9, 0)
+	    #include <wx/gtk/private/win_gtk.h>
+	  #else
+	    #include <wx/gtk/win_gtk.h>
+	  #endif
+	#endif
       #else
         #include <wx/gtk1/win_gtk.h>
       #endif
