@@ -1594,7 +1594,7 @@ def WrapClass(classname,include_file,inputfile):
       add_public_fields = "// Add public fields \n"
       add_public_fields += indent+'AMIObject::ptr tmpobj(amiobject.lock());\n'
       add_public_fields += indent+'if (!tmpobj.get()) return;\n'
-      add_public_fields += indent+'Variables::ptr context(tmpobj->GetContext());\n'
+      add_public_fields += indent+'boost::shared_ptr<Variables> context(tmpobj->GetContext());\n'
 
     for f in fm.Fields:
       typename  = config.types[f.typeid].GetString()
