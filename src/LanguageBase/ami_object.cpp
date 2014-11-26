@@ -2,7 +2,7 @@
 #include "ami_object.h"
 //#include "wrapfunction_class.h"
 #include <iostream>
-
+#include "Variables.hpp"
 
 AMIObject::AMIObject()
 {
@@ -18,6 +18,17 @@ AMIObject::~AMIObject()
   //CLASS_MESSAGE(boost::format("_wrapped_object count = %1%") % _wrapped_object->GetObjCounter() );
   _vars->EmptyVariables();
   //CLASS_MESSAGE(boost::format("_wrapped_object count = %1%") % _wrapped_object->GetObjCounter() );
+}
+
+void AMIObject::SetName( const std::string& fname)
+{ 
+//    _name = fname; 
+    _vars->SetName(fname);
+}
+
+const std::string AMIObject::GetName() const
+{ 
+  return _vars->GetName();
 }
 
 //--------------------------------------------------------

@@ -29,10 +29,17 @@
 #ifndef _ami_object_h_
 #define _ami_object_h_
 
-
-#include "Variables.hpp"
 #include <string>
 #include <boost/shared_ptr.hpp>
+#include "BasicVariable.h"
+
+//#include "Variables.hpp"
+class Variables;
+// BasicVariable::ptr Variables_AddVar(  boost::shared_ptr<Variables> vars,
+//                                       const std::string& name, 
+//                                       BasicVariable* val, 
+//                                       const boost::shared_ptr<Variables>& context = boost::shared_ptr<Variables>() );
+
 #include "DefineClass.hpp"
 #include "AmiInstructionBlock.h"
 #include "ami_class.h"
@@ -136,11 +143,7 @@ private:
    * Sets the object name
    * @param fname 
    */
-  void SetName( const std::string& fname) 
-  { 
-//    _name = fname; 
-    _vars->SetName(fname);
-  }
+  void SetName( const std::string& fname);
 
   const BasicVariable::ptr& GetConstructorVar() const 
   { 
@@ -156,10 +159,10 @@ private:
    * Gets the object name
    * @return object name
    */
-  const std::string GetName() const 
-  { 
-    return _vars->GetName();
-  }
+  const std::string GetName() const;
+//   { 
+//     return _vars->GetName();
+//   }
 
   /**
    * Gets the list of variables 
