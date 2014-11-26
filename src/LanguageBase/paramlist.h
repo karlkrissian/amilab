@@ -40,6 +40,7 @@ COMMON_VAR_IMPORT unsigned char GB_debug;
  * Stores a list of parameters from the scripting language
  **/
 #include "LanguageBaseConfigure.h"
+
 class LanguageBase_EXPORT ParamList {
 
   DEFINE_CLASS(ParamList);
@@ -59,9 +60,7 @@ private:
   /**
    * Constructor
    */
-  ParamList()
-    {
-    }
+  ParamList();
 
 //  ~ParamList();
 
@@ -70,25 +69,14 @@ private:
    * 
    * @return the number of parameters
    */
-  int GetNumParam() { return (int)params.size(); }
+  int GetNumParam();
 
   /**
    * 
    * @param i 
    * @return the type of the parameter i
    */
-  vartype GetType( int i) { 
-    if (i<0) {
-      fprintf(stderr,"ParamList:: GetType() negative param number \n");
-      i=0; 
-    }
-    if (i>=(int)GetNumParam()) {
-      fprintf(stderr,"ParamList:: GetType()  param number too high \n");
-      i = (int)GetNumParam()-1; 
-    }
-
-    return params[i]->Type();
-  }
+  vartype GetType( int i);
 
   bool AddParam( const BasicVariable::ptr& var);
 
@@ -107,108 +95,21 @@ class ParamListDecl {
   vartype     type[MAX_PARAM];
 
  public:
-  ParamListDecl()
-    {
-      num_param = 0;
-    }
+  ParamListDecl();
 
-  ~ParamListDecl()
-    {
-    }
+  ~ParamListDecl();
 
-  int GetNumParam() { return num_param; }
+  int GetNumParam();
 
-  vartype GetType( int i) { 
-    if (i<0) {
-      fprintf(stderr,"ParamList:: GetType() negative param number \n");
-      return type[0]; 
-    }
-    if (i>=num_param) {
-      fprintf(stderr,"ParamList:: GetType()  param number too high \n");
-      return type[num_param-1]; 
-    }
-    return type[i];
-  }
+  vartype GetType( int i);
 
-  char* GetName( int i) { 
-    if (i<0) {
-      fprintf(stderr,"ParamList:: GetName() negative param number \n");
-      return (char*) name[0].c_str(); 
-    }
-    if (i>=num_param) {
-      fprintf(stderr,"ParamList:: GetName()  param number too high \n");
-      return (char*) name[num_param-1].c_str(); 
-    }
-    return (char*) name[i].c_str();
-  }
+  char* GetName( int i);
 
-  unsigned char AddParam( const std::string& st, vartype t)
-  {
-    if ( num_param<MAX_PARAM-2 )
-    {
-      name[num_param] = st;
-      type[num_param] = t;
-      num_param++;
-      return 1;
-    }
-    else
-    {
-      fprintf ( stderr,"ParamListDecl::AddParam() \t too many parameters \n" );
-      return 0;
-    }
-  }
+  unsigned char AddParam( const std::string& st, vartype t);
 
-  unsigned char GetParam( int num, std::string& st, vartype& t, bool needed)
-  {
-    if ((num>=0)&&(num<num_param)) {
-      st = name[num];
-      t  = type[num];
-      return 1;
-    }
-    else {
-      if (needed)
-        fprintf(stderr,"ParamListDecl::GetParam()\t bad parameter number\n");
-      return 0;
-    }
-  }
+  unsigned char GetParam( int num, std::string& st, vartype& t, bool needed);
 
-  bool CheckParam( ParamList* pl) 
-  {
-    int       i;
-    //void*     p;
-    //vartype t;
-    if ( pl->GetNumParam() != GetNumParam() )
-    {
-      fprintf ( stderr,"Bad number of parameters \n" );
-      return false;
-    }
-
-    // Can't be that strict since there can be automatic conversion ...
-    for ( i=0;i<(int)GetNumParam();i++ )
-    {
-      //  pl->GetParam( i, p, t);
-      //  printf("%d: %d %d \n",i,t,type[i]);
-      // treat numeric (float) type separately ...
-      if (GetType(i)!=type_any)
-      {
-        if (GetType(i) == type_float)
-        {
-          // only check that the parameter is of numeric type
-          if (!pl->GetParam(i)->IsNumeric()) return false;
-        } else {
-          if ( pl->GetType ( i ) !=GetType ( i ) )
-          {
-            fprintf ( stderr,"Parameter %d has incorrect type \n",i );
-            return false;
-          }
-        }
-      }
-    }
-
-  
-    return true;
-  }
-
+  bool CheckParam( ParamList* pl);
 
 }; // class ParamListDecl
 
