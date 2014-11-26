@@ -21,6 +21,9 @@
 #include "ami_object.h"
 #include "Variable.hpp"
 
+// if we don't want this include, we need to move code to wrapped cpp files
+#include "Variables.hpp"
+
 #define STATIC_HELP \
     const std::string GetDescription() const { return StaticDescription();  }\
     const std::string GetFunctionName() const { return StaticFunctionName(); }\
