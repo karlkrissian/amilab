@@ -21,6 +21,7 @@
 #include "wrap_wxFrame.h"
 
 #include "FenetreDessin.hpp"
+#include "Variables.hpp"
 
 AMI_DECLARE_TYPE(FenetreDessin);
 

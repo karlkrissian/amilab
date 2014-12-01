@@ -31,6 +31,8 @@
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts  Vars;
 
+#include "message_dialog.h"
+
 
 AMIObject::ptr AddWrap_wxfunctions()
 {

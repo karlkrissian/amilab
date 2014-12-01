@@ -50,6 +50,7 @@
 #include "wrapConversion.tpp"
 
 #include "ami_itkWrite.h"
+#include "message_dialog.h"
 
 
 //-----------------------------------------------------------------------

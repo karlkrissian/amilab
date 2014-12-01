@@ -89,7 +89,7 @@ class ${EXPORT_MACRO} WrapClass_${TEMPLATE} : public WrapClass<${TEMPLATE}>
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass${TEMPLATE}_AddStaticMethods( Variables::ptr& context);
+void WrapClass${TEMPLATE}_AddStaticMethods( boost::shared_ptr<Variables>& context);
 
 
 #endif // _wrap_${TEMPLATE}_h

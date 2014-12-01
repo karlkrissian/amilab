@@ -1392,11 +1392,11 @@ def WrapClass(classname,include_file,inputfile):
       # Create a new variable
       methods_bases+=indent+'BasicVariable::ptr var_{1} = AMILabType<{0} >::CreateVarFromSmtPtr(parent_{1});\n'.format(basename,baseusedname)
       # Add the variable
-      methods_bases+=indent+'context->AddVar("{0}",var_{0});\n'.format(baseusedname)
+      methods_bases+=indent+'Variables_AddVar(context,"{0}",var_{0});\n'.format(baseusedname)
       # set as a default context
       methods_bases+=indent+'// Set as a default context\n'
       methods_bases+=indent+'Variable<AMIObject>::ptr obj_{0} = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_{0});\n'.format(baseusedname)
-      methods_bases+=indent+'context->AddDefault(obj_{0}->Pointer()->GetContext());\n'.format(baseusedname)
+      methods_bases+=indent+'Variables_AddDefault(context,obj_{0}->Pointer()->GetContext());\n'.format(baseusedname)
       
       if not(basename_ok):
         methods_bases +="*/\n"
@@ -1647,7 +1647,7 @@ def WrapClass(classname,include_file,inputfile):
       add_public_fields += indent+"  BasicVariable::ptr var_{1} = AMILabType<{0} >::CreateVarFromSmtPtr(var_{1}_ptr);\n".format(typename,f.name)
       add_public_fields += indent+"  if (var_{0}.get()) ".format(f.name)+'{\n'
       add_public_fields += indent+'    var_{0}->Rename("{0}");\n'.format(f.name)
-      add_public_fields += indent+'    context->AddVar(var_{0},context);\n'.format(f.name)
+      add_public_fields += indent+'    Variables_AddVar(context,var_{0},context);\n'.format(f.name)
       add_public_fields += indent+'  }\n'
       add_public_fields += indent+'}\n'
       f.iswrapped = True
@@ -1672,7 +1672,7 @@ def WrapClass(classname,include_file,inputfile):
       add_public_typedefs += indent
       add_public_typedefs += 'type_{0}->Rename("{1}");\n'.format(n,td.name)
       add_public_typedefs += indent
-      add_public_typedefs += "amiobject->GetContext()->AddVar(type_{0}->Name(),type_{0},context);\n".format(n)
+      add_public_typedefs += "Variables_AddVar(amiobject->GetContext(),type_{0}->Name(),type_{0},context);\n".format(n)
       n=n+1
 
     #print "add public enumerations"
@@ -1697,14 +1697,16 @@ def WrapClass(classname,include_file,inputfile):
         add_public_enums += indent
         add_public_enums += '  var_{0}->Rename("{0}");\n'.format(ev)
         add_public_enums += indent
-        add_public_enums += '  obj_{0}->GetContext()->AddVar(var_{1},obj_{0}->GetContext());\n'.format(enum_usedname,ev)
+        add_public_enums += '  Variables_AddVar(obj_{0}->GetContext(),var_{1},obj_{0}->GetContext());\n'.format(enum_usedname,ev)
         add_public_enums += indent+"}\n"
       add_public_enums += "\n"
       add_public_enums += indent+"// Add enum to context\n"
-      add_public_enums += indent
-      add_public_enums += "amiobject->GetContext()->AddVar<AMIObject>(obj_{0}->GetName().c_str(),obj_{0},context);\n".format(enum_usedname)
-      add_public_enums += indent+"// Add as default context\n"
-      add_public_enums += indent+"amiobject->GetContext()->AddDefault(obj_{0}->GetContext());\n".format(enum_usedname)
+      add_public_enums += indent+"{\n"
+      add_public_enums += indent+"  BasicVariable* tmp = new Variable<AMIObject>(obj_{0});\n".format(enum_usedname)
+      add_public_enums += indent+"  Variables_AddVar(amiobject->GetContext(),obj_{0}->GetName().c_str(),tmp,context);\n".format(enum_usedname)
+      add_public_enums += indent+"  // Add as default context\n"
+      add_public_enums += indent+"  Variables_AddDefault(amiobject->GetContext(),obj_{0}->GetContext());\n".format(enum_usedname)
+      add_public_enums += indent+"}\n"
          
 
     # Adding constructor to the user given context:

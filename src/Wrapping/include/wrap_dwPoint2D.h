@@ -21,6 +21,7 @@
 #include "amilab_boost.h"
 
 #include "dwPoint2D.h"
+#include "Variables.hpp"
 
 AMI_DECLARE_TYPE(dwPoint2D);
 

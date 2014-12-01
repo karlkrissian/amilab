@@ -28,6 +28,7 @@
 
 #include "dwCurve.h"
 #include "wrap_wxColour.h"
+#include "Variables.hpp"
 
 AMI_DECLARE_TYPE(dwCurve);
 

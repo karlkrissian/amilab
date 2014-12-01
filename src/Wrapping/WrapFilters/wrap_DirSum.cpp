@@ -11,6 +11,7 @@
 //
 
 #include "wrap_DirSum.h"
+#include "message_dialog.h"
 
 InrImage* wrap_DirSum(ParamList* p)
 {

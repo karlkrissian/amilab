@@ -28,6 +28,7 @@
 
 
 #include "dwControlledCurve.h"
+#include "Variables.hpp"
 
 AMI_DECLARE_TYPE(dwControlledCurve);
 

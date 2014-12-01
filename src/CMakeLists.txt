@@ -91,7 +91,8 @@ SET(CPACK_RPM_PACKAGE_LICENSE "LGPL")
 SET(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
 SET(CPACK_RPM_PACKAGE_VENDOR "Karl Krissian, ULPGC")
 SET(CPACK_RPM_PACKAGE_DESCRIPTION "AMILab is a software for 2D/3D image processing, including its own scripting language with wrapping possibilities.")
-SET(CPACK_RPM_PACKAGE_REQUIRES "glibc wxGTK wxGTK-gl")
+SET(CPACK_RPM_PACKAGE_REQUIRES "glibc ")
+#wxGTK wxGTK-gl")
 SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
 # this will make the package relocatable !!cd

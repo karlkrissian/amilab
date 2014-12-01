@@ -54,6 +54,8 @@
 #include "LanguageBaseConfigure.h"
 LanguageBase_VAR_IMPORT VarContexts  Vars;
 
+#include "message_dialog.h"
+
 //---------------------------------------------------------
 void AddWrapFilters(AMIObject::ptr& obj)
 {

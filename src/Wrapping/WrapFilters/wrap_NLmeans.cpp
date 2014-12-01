@@ -22,6 +22,7 @@
 #include "wrapfunctions.hpp"
 #include <pthread.h>
 #include "ImageDerivatives.h"
+#include "message_dialog.h"
 
 //------------------------------------------------------------------
 InrImage* NLmeans(ParamList* p)

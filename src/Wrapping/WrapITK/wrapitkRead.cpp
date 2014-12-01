@@ -47,6 +47,7 @@
 #include "wrapitkRead.h"
 
 #include "ami_itkRead.h"
+#include "message_dialog.h"
 
 //-------------------------------------------------------------------------------
 InrImage* wrap_itkRead(ParamList* p)

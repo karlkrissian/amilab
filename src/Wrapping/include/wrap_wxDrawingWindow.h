@@ -20,6 +20,7 @@
 #include <wx/html/htmlwin.h>
 #include "wrap_wxWindow.h"
 #include "wxDrawingWindow.h"
+#include "message_dialog.h"
 
 AMI_DECLARE_TYPE(wxDrawingWindow);
 
@@ -139,15 +140,16 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
       // Add public fields 
       AMIObject::ptr tmpobj(amiobject.lock());
       if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
+      boost::shared_ptr<Variables> context(tmpobj->GetContext());
 
       // Add base parent wxWindow
       boost::shared_ptr<wxWindow > parent_wxWindow(  boost::dynamic_pointer_cast<wxWindow >(this_ptr->GetObj()));
       BasicVariable::ptr var_wxWindow = AMILabType<wxWindow>::CreateVarFromSmtPtr(parent_wxWindow);
-      context->AddVar("wxWindow",var_wxWindow);
+//      context->AddVar("wxWindow",var_wxWindow);
+      Variables_AddVar(context,"wxWindow",var_wxWindow);
       // Set as a default context
       Variable<AMIObject>::ptr obj_wxWindow = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxWindow);
-      context->AddDefault(obj_wxWindow->Pointer()->GetContext());
+      Variables_AddDefault(context,obj_wxWindow->Pointer()->GetContext());
 
     }
 

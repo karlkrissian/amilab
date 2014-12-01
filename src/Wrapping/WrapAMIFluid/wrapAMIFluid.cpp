@@ -51,6 +51,7 @@ LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 static PDEOpticFlowParam ami_optic_flow_param;
 
+#include "message_dialog.h"
 
 
 //---------------------------------------------------------

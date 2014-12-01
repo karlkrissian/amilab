@@ -14,7 +14,7 @@
 #define _WRAPFUNCTIONS_HPP_
 
 
-#include "message_dialog.h"
+//#include "message_dialog.h"
 #include "ami_format.h"
 #include "WrapCommonConfigure.h"
 
@@ -105,9 +105,9 @@ class wrap_##methodname : public WrapClassMemberWithDoc { \
     STATIC_HELP\
 }; \
 \
-inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
-  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
-  _context->AddVar<WrapClassMember>(newname, tmp, _context); \
+inline void AddVar_##methodname(  boost::shared_ptr<Variables>& _context, const std::string& newname = #methodname) {\
+  BasicVariable* tmp = new Variable<WrapClassMember>(new wrap_##methodname()); \
+  Variables_AddVar(_context, newname, tmp, _context); \
 }
 
 

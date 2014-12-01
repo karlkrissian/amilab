@@ -37,6 +37,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkLocalMeanImageFilter.h"
+#include "message_dialog.h"
 
 InrImage* wrap_itkLocalMeanImageFilter2D(ParamList* p)
 {

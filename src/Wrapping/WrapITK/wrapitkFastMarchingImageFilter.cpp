@@ -40,6 +40,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkFastMarchingImageFilter.h"
+#include "message_dialog.h"
 
 InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
 {

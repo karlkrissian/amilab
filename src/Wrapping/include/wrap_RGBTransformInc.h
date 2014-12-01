@@ -23,6 +23,7 @@
 #include "RGBTransformInc.h"
 
 #include "wrap_RGBTransformBase.h"
+#include "Variables.hpp"
 
 
 AMI_DECLARE_TYPE(RGBTransformInc);

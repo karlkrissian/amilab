@@ -14,6 +14,7 @@
 #include "StructureTensor.h"
 
 #include "wrapfunctions.hpp"
+#include "message_dialog.h"
 
 BasicVariable::ptr wrap_StructureTensorHessianNew(ParamList* p)
 {

@@ -21,6 +21,8 @@
 #include "wrap_wxFrame.h"
 
 #include "wxStcFrame.h"
+#include "message_dialog.h"
+#include "Variables.hpp"
 
 AMI_DECLARE_TYPE(wxStcFrame)
 
@@ -65,7 +67,7 @@ class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxFr
       // Add public fields 
       AMIObject::ptr tmpobj(amiobject.lock());
       if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
+      boost::shared_ptr<Variables> context(tmpobj->GetContext());
 
       // Add base parent wxFrame
       boost::shared_ptr<wxFrame > parent_wxFrame(  boost::dynamic_pointer_cast<wxFrame >(this_ptr->GetObj()));

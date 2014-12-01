@@ -32,7 +32,7 @@ LanguageBase_VAR_IMPORT VarContexts  Vars;
 
 #include "addwrap_vtk.h"
 #include "inrimage.hpp"
-
+#include "message_dialog.h"
 
 
 //---------------------------------------------------------

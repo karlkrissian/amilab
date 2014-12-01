@@ -18,6 +18,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.h"
 #include "wrapitkIsoContourDist.h"
+#include "message_dialog.h"
 
 
 InrImage* wrap_itkIsoContourDist2D(ParamList* p)

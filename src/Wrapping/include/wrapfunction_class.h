@@ -22,7 +22,7 @@
 #include "Variable.hpp"
 
 // if we don't want this include, we need to move code to wrapped cpp files
-#include "Variables.hpp"
+//#include "Variables.hpp"
 
 #define STATIC_HELP \
     const std::string GetDescription() const { return StaticDescription();  }\
@@ -42,7 +42,7 @@ class wrap_##classname##methodname : public WrapClassMemberWithDoc { \
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
-    BasicVariable::ptr CallMember(ParamList*); \
+    boost::shared_ptr<BasicVariable> CallMember(ParamList*); \
     static const std::string StaticDescription()  { return description_str; }\
     static const std::string StaticFunctionName() \
     { return std::string(#classname)+"::"+#methodname; }\
@@ -68,7 +68,7 @@ class wrap_##methodname : public WrapClassMemberWithDoc { \
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
-    BasicVariable::ptr CallMember(ParamList*); \
+    boost::shared_ptr<BasicVariable> CallMember(ParamList*); \
     static const std::string StaticDescription()  { return description_str; }\
     static const std::string StaticFunctionName() \
     { std::string classname(AMILabType<ObjectType>::name_as_string());\
@@ -80,9 +80,10 @@ void AddVar_##methodname(  const _parentclass_ptr& pc, const std::string& newnam
   {\
     boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_##methodname(pc));\
     AMIObject::ptr tmpobj(amiobject.lock()); \
-    boost::shared_ptr<BasicVariable> newvar( (BasicVariable*) new Variable<WrapClassMember>(tmp));\
-    tmpobj->GetContext()->AddVar(newname, newvar, tmpobj->GetContext()); \
+    BasicVariable* newvar =  new Variable<WrapClassMember>(tmp);\
+    Variables_AddVar(tmpobj->GetContext(),newname, newvar, tmpobj->GetContext()); \
   }
+//      tmpobj->GetContext()->AddVar(newname, newvar, tmpobj->GetContext()); \
 
 #define ADD_CLASS_METHOD_LIGHT(methodname,description_str) \
 class wrap_##methodname : public WrapClassMember { \
@@ -94,7 +95,7 @@ class wrap_##methodname : public WrapClassMember { \
       Set_arg_failure(false);\
       Set_quiet(false);\
     } \
-    BasicVariable::ptr CallMember(ParamList*); \
+    boost::shared_ptr<BasicVariable> CallMember(ParamList*); \
 }; \
 \
 void AddVar_##methodname(  const _parentclass_ptr& pc, const std::string& newname = #methodname) {\
@@ -112,7 +113,7 @@ class wrap_##methodname : public WrapClassMember { \
     _parentclass_ptr _objectptr; \
   public: \
     wrap_##methodname(const _parentclass_ptr& pp);\
-    BasicVariable::ptr CallMember(ParamList*); \
+    boost::shared_ptr<BasicVariable> CallMember(ParamList*); \
 }; \
 \
 void AddVar_##methodname(  const _parentclass_ptr& pc, const std::string& newname = #methodname)\
@@ -120,8 +121,9 @@ void AddVar_##methodname(  const _parentclass_ptr& pc, const std::string& newnam
   AMIObject::ptr tmpobj(amiobject.lock()); \
   WrapClassMember* tmp = new wrap_##methodname(pc);\
   BasicVariable* newvar =  new Variable<WrapClassMember>(tmp);\
-  tmpobj->GetContext()->AddVar(newname, newvar, tmpobj->GetContext()); \
+  Variables_AddVar(tmpobj->GetContext(),newname, newvar, tmpobj->GetContext()); \
 }
+//  tmpobj->GetContext()->AddVar(newname, newvar, tmpobj->GetContext()); 
 
 ///
 #define DEFINE_CLASS_METHOD_LIGHT(classname,methodname) \
@@ -155,12 +157,12 @@ class wrap_Set##varname : public WrapClassMemberWithDoc { \
       Set_quiet(false);\
       ADDPARAMCOMMENT_TYPE(type,description_str); \
     } \
-    BasicVariable::ptr CallMember(ParamList* p) { \
+    boost::shared_ptr<BasicVariable> CallMember(ParamList* p) { \
       int n=0;\
       type val; \
       if (!get_val_param<type>( val, p, n)) ClassHelpAndReturn; \
       _objectptr->GetObj()->Set##varname(val); \
-      return BasicVariable::ptr(); \
+      return boost::shared_ptr<BasicVariable>(); \
     } \
     static const std::string StaticDescription()  \
     { return std::string("Sets ")+description_str; }\
@@ -181,7 +183,7 @@ class wrap_Get##varname : public WrapClassMemberWithDoc { \
       ami::format f("Returns a variable of type %1%."); \
       return_comments = (f % AMILabType<type>::name_as_string().c_str()).GetString(); \
     } \
-    BasicVariable::ptr CallMember(ParamList*) { \
+    boost::shared_ptr<BasicVariable> CallMember(ParamList*) { \
       type val = this->_objectptr->GetObj()->Get##varname(); \
       RETURN_VAR(type,val); \
     } \
@@ -216,7 +218,7 @@ class wrap_##methodname : public WrapClassMemberWithDoc { \
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
-    BasicVariable::ptr CallMember(ParamList* p); \
+    boost::shared_ptr<BasicVariable> CallMember(ParamList* p); \
     static const std::string StaticDescription()  { return description_str; }\
     static const std::string StaticFunctionName() \
     { std::string classname(AMILabType<ObjectType>::name_as_string());\
@@ -224,9 +226,9 @@ class wrap_##methodname : public WrapClassMemberWithDoc { \
     STATIC_HELP\
 }; \
 \
-static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
-  boost::shared_ptr<WrapClassMember> tmp( (WrapClassMember*) new wrap_##methodname());\
-  _context->AddVar<WrapClassMember>(newname, tmp, _context); \
+static void AddVar_##methodname(  boost::shared_ptr<Variables>& _context, const std::string& newname = #methodname) {\
+  BasicVariable* tmp = new Variable<WrapClassMember>(new wrap_##methodname()); \
+  Variables_AddVar(_context, newname, tmp, _context); \
 }
 
 
@@ -238,14 +240,14 @@ class wrap_##methodname : public WrapClassMemberWithDoc { \
   public: \
     wrap_##methodname();\
     void SetParametersComments(); \
-    BasicVariable::ptr CallMember(ParamList* p); \
+    boost::shared_ptr<BasicVariable> CallMember(ParamList* p); \
     static const std::string StaticDescription();\
     static const std::string StaticFunctionName();\
     STATIC_HELP\
 }; \
 \
-static const BasicVariable::ptr AddVar_##methodname(  \
-                              Variables::ptr& _context, \
+static const boost::shared_ptr<BasicVariable> AddVar_##methodname(  \
+                              boost::shared_ptr<Variables>& _context, \
                               const std::string& newname = #methodname);
 
 /** Macro for adding the class constructor with a static function
@@ -265,13 +267,15 @@ const std::string WrapClass_##classname::wrap_##methodname::StaticFunctionName()
 { std::string classname(AMILabType<ObjectType>::name_as_string());\
   return classname+"::"+#methodname; }\
 \
-const BasicVariable::ptr WrapClass_##classname::AddVar_##methodname(  \
-                                  Variables::ptr& _context, \
+const boost::shared_ptr<BasicVariable> WrapClass_##classname::AddVar_##methodname(  \
+                                  boost::shared_ptr<Variables>& _context, \
                                   const std::string& newname ) {\
   WrapClassMember* tmp = new wrap_##methodname();\
   BasicVariable* newvar = new Variable<WrapClassMember>(tmp);\
-  return _context->AddVar(newname, newvar, _context); \
+  return Variables_AddVar(_context,newname, newvar, _context); \
 }
+
+//  return _context->AddVar(newname, newvar, _context); 
 
 /** Macro for adding the class static method with a static function
   */
@@ -287,7 +291,7 @@ class wrap_static_##methodname : public WrapClassMemberWithDoc { \
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
-    BasicVariable::ptr CallMember(ParamList* p); \
+    boost::shared_ptr<BasicVariable> CallMember(ParamList* p); \
     static const std::string StaticDescription()  { return description_str; }\
     static const std::string StaticFunctionName() \
     { std::string classname(AMILabType<ObjectType>::name_as_string());\
@@ -295,11 +299,12 @@ class wrap_static_##methodname : public WrapClassMemberWithDoc { \
     STATIC_HELP\
 }; \
 \
-static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
+static void AddVar_##methodname(  boost::shared_ptr<Variables>& _context, const std::string& newname = #methodname) {\
   WrapClassMember* tmp = new wrap_static_##methodname();\
   BasicVariable* newvar = new Variable<WrapClassMember>(tmp);\
-  _context->AddVar(newname, newvar, _context); \
+  Variables_AddVar(_context,newname, newvar, _context); \
 }
+//  _context->AddVar(newname, newvar, _context); 
 
 /**
     Macro for adding the members to a class.
@@ -318,14 +323,14 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 // TODO:mettre un message plus explicite avec le numero et le nom du paramete ...
 #define ClassHelpAndReturn { \
     if (!quiet) this->ShowHelp();\
-    return BasicVariable::ptr();\
+    return boost::shared_ptr<BasicVariable>();\
   }
 
 // simple return with empty variable for a class member
 #define ClassReturnEmptyVar  {\
     Set_arg_failure(true);\
     Set_quiet(false);\
-    return BasicVariable::ptr();\
+    return boost::shared_ptr<BasicVariable>();\
     }
 
 /**
@@ -478,7 +483,7 @@ class WrapClass: public virtual WrapClassBase
     /// and avoid multiple smart pointers inside
 
     // Will call the constructor based on a ParamList
-    static BasicVariable::ptr CreateVar(ParamList*, bool quiet=false);
+    static boost::shared_ptr<BasicVariable> CreateVar(ParamList*, bool quiet=false);
     
     //
     virtual void AddMethods(boost::shared_ptr<WrapClass<T> > this_ptr ) = 0;
@@ -533,8 +538,8 @@ class WrapCommon_DECLARE WrapClassMember {
     WrapClassMember(): noconstr(false) {}
     virtual ~WrapClassMember() {}
     virtual void SetParametersComments()          {};
-    virtual BasicVariable::ptr CallMember(ParamList*)  
-    { return BasicVariable::ptr(); };
+    virtual boost::shared_ptr<BasicVariable> CallMember(ParamList*)  
+    { return boost::shared_ptr<BasicVariable>(); };
 
     /**
      * Display the function help in an information dialog.
@@ -566,8 +571,8 @@ class WrapCommon_DECLARE WrapClassMemberWithDoc : public WrapClassMember {
   public:
     virtual ~WrapClassMemberWithDoc() {}
     virtual void SetParametersComments()          {};
-    virtual BasicVariable::ptr CallMember(ParamList*)  
-    { return BasicVariable::ptr(); };
+    virtual boost::shared_ptr<BasicVariable> CallMember(ParamList*)  
+    { return boost::shared_ptr<BasicVariable>(); };
 
     /**
      * Display the function help in an information dialog.

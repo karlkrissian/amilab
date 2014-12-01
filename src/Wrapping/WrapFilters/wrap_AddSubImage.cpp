@@ -17,6 +17,7 @@
 #include "wrap_AddSubImage.h"
 #include "fonctions.h"
 #include "wrapfunctions.hpp"
+#include "message_dialog.h"
 
 //----------------------------------------------
 void wrap_AddSubImage(ParamList* p)

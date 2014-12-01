@@ -39,6 +39,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkBinaryThresholdImageFilter.h"
+#include "message_dialog.h"
 
 InrImage* wrap_itkBinaryThresholdImageFilter2D(ParamList* p)
 {

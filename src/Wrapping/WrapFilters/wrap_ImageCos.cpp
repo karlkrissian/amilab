@@ -16,6 +16,7 @@
 #include "wrapfunctions.hpp"
 #include "amiImageToImageFilter.h"
 #include "amiImageCos.h"
+#include "message_dialog.h"
 
 
 void wrap_ImageCos( ParamList* p)

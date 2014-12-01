@@ -49,6 +49,7 @@ using namespace amilab;
 #include "wrapfunctions.hpp"
 #include "wrapConversion.tpp"
 #include "wrapitkBackTrackingMeshFilter.h"
+#include "message_dialog.h"
 
 BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
 {

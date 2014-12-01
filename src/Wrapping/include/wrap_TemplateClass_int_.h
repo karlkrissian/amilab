@@ -18,6 +18,7 @@
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+#include "Variables.hpp"
 
 #include "TestClass.h"
 

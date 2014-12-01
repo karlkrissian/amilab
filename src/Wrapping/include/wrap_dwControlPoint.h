@@ -27,6 +27,7 @@
 #endif
 
 #include "dwControlPoint.h"
+#include "Variables.hpp"
 
 AMI_DECLARE_TYPE(dwControlPoint);
 

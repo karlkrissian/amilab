@@ -55,6 +55,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkDICOMRead.h"
+#include "message_dialog.h"
 
 //  The following section of code implements a Command observer
 //  used to monitor the evolution of the registration process.

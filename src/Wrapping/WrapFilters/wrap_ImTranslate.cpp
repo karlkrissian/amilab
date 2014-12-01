@@ -13,6 +13,7 @@
 #include "wrap_ImTranslate.h"
 #include "fonctions.h"
 #include "wrapfunctions.hpp"
+#include "message_dialog.h"
 
 //----------------------------------------------
 InrImage* wrap_ImTranslate(ParamList* p)

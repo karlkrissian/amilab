@@ -17,6 +17,7 @@
 
 #include "AMILabConfig.h"
 #include "amilab_messages.h"
+#include "message_dialog.h"
 
 #include "LanguageBaseConfigure.h"
 #include "VarContexts.hpp"

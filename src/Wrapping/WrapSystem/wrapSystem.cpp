@@ -18,6 +18,7 @@
 #include "wrapfunctions.hpp"
 #include "wrapSystem.h"
 #include "driver.h"
+#include "message_dialog.h"
 
 #include <wx/filename.h>
 

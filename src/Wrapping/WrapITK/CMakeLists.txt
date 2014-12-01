@@ -22,6 +22,7 @@ INCLUDE( ${wxWidgets_USE_FILE})
 #INCLUDE( ${USE_VTK_FILE})
 #WRAP_MESSAGE( "USE_VTK_FILE = ${USE_VTK_FILE}")
 
+OPTION(WrapITK_SHARED     "Compile WrapITK library as shared" OFF)
 
 IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_ITK)
 
@@ -315,4 +316,19 @@ SET(WrapITK_SRCS
 )
 
 
-my_add_library ( WrapITK)
+IF(WrapITK_SHARED)
+  set_source_files_properties(${WrapITK_SRCS} 
+    PROPERTIES COMPILE_FLAGS "-DWrapITK_EXPORTS")
+ENDIF(WrapVTK_SHARED)
+
+target_link_libraries( WrapVTK
+)
+
+IF(WrapITK_SHARED)
+  my_add_shared_library ( WrapITK)
+ELSE(WrapITK_SHARED)
+  my_add_library ( WrapITK)
+ENDIF(WrapITK_SHARED)
+
+
+

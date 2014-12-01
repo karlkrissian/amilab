@@ -39,6 +39,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkSigmoidImageFilter.h"
+#include "message_dialog.h"
 
 InrImage* wrap_itkSigmoidImageFilter2D(ParamList* p)
 {

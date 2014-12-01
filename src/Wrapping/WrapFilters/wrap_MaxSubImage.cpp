@@ -13,6 +13,7 @@
 #include "wrap_MaxSubImage.h"
 #include "fonctions.h"
 #include "wrapfunctions.hpp"
+#include "message_dialog.h"
 
 //----------------------------------------------
 void wrap_MaxSubImage(ParamList* p)

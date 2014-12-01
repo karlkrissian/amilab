@@ -14,6 +14,7 @@
 #include "wrapfunctions.hpp"
 #include "ComputePartialVolume.h"
 //#include "wrapfunction_class.h"
+#include "message_dialog.h"
 
 BasicVariable::ptr wrapComputePV(ParamList* p)
 {

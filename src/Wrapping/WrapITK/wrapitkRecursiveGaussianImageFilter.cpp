@@ -43,6 +43,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.h"
 #include "wrapitkRecursiveGaussianImageFilter.h"
+#include "message_dialog.h"
 
 
 //---------------------------------------------------------------------------------

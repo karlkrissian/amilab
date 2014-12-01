@@ -38,6 +38,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkTranslateImageFilter.h"
+#include "message_dialog.h"
 
 InrImage* wrap_itkTranslateImageFilter2D(ParamList* p)
 {

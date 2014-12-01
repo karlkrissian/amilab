@@ -49,6 +49,7 @@ LanguageBase_VAR_IMPORT VarContexts  Vars;
 #include "wrap_vtkPolyData.h"
 #include "wrap_SurfacePoly.h"
 #include "wrap_vtkRenderWindowInteractor.h"
+#include "message_dialog.h"
 
 //#include "addwrap_vtk.h"
 

@@ -39,6 +39,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkLevelSet.h"
+#include "message_dialog.h"
 
 InrImage* wrap_itkLevelSetFilter2D(ParamList* p)
 {

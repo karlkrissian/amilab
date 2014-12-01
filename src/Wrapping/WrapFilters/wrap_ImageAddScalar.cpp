@@ -17,6 +17,7 @@
 //#include "ImageToImageFilter.h"
 #include "amiImageAddScalar.h"
 #include <iostream>
+#include "message_dialog.h"
 
 void wrap_ImageAddScalar( ParamList* p)
 {

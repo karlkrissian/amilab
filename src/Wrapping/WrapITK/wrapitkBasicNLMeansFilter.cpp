@@ -45,6 +45,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkBasicNLMeansFilter.h"
+#include "message_dialog.h"
 
 
 InrImage* wrap_itkBasicNLMeans2D(ParamList* p)

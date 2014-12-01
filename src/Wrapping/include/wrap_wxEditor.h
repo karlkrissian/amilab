@@ -21,6 +21,7 @@
 #include "wrap_wxStyledTextCtrl.h"
 
 #include "wxEditor.h"
+#include "message_dialog.h"
 
 AMI_DECLARE_TYPE(wxEditor)
 
@@ -64,15 +65,15 @@ class WrapClass_wxEditor : public WrapClass<wxEditor>, public WrapClass_wxStyled
       // Add public fields 
       AMIObject::ptr tmpobj(amiobject.lock());
       if (!tmpobj.get()) return;
-      Variables::ptr context(tmpobj->GetContext());
+      boost::shared_ptr<Variables> context(tmpobj->GetContext());
 
       // Add base parent wxStyledTextCtrl
       boost::shared_ptr<wxStyledTextCtrl > parent_wxStyledTextCtrl(  boost::dynamic_pointer_cast<wxStyledTextCtrl >(this_ptr->GetObj()));
       BasicVariable::ptr var_wxStyledTextCtrl = AMILabType<wxStyledTextCtrl>::CreateVarFromSmtPtr(parent_wxStyledTextCtrl);
-      context->AddVar("wxStyledTextCtrl",var_wxStyledTextCtrl);
+      Variables_AddVar(context,"wxStyledTextCtrl",var_wxStyledTextCtrl);
       // Set as a default context
       Variable<AMIObject>::ptr obj_wxStyledTextCtrl = boost::dynamic_pointer_cast<Variable<AMIObject> >(var_wxStyledTextCtrl);
-      context->AddDefault(obj_wxStyledTextCtrl->Pointer()->GetContext());
+      Variables_AddDefault(context,obj_wxStyledTextCtrl->Pointer()->GetContext());
       
       
     }

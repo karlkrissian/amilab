@@ -95,7 +95,7 @@ void WrapClass_${TEMPLATENAME}::AddMethods(WrapClass<${TEMPLATE} >::ptr this_ptr
 /*
   * Adds the constructor and the static methods to the given context
   */
-void WrapClass${TEMPLATENAME}_AddStaticMethods( Variables::ptr& context)
+void WrapClass${TEMPLATENAME}_AddStaticMethods( boost::shared_ptr<Variables>& context)
 {
   // Create a new context (or namespace) for the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -105,11 +105,17 @@ void WrapClass${TEMPLATENAME}_AddStaticMethods( Variables::ptr& context)
   ${AddPublicEnums}
   ${AddPublicTypedefs}
 
+  BasicVariable* _tmp = new Variable<AMIObject>(amiobject);
+
+  //  add it to the given context
+  //context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
   //  add it to the given context
   BasicVariable::ptr classvar = 
-    context->AddVar<AMIObject>( amiobject->GetName().c_str(), 
-                                amiobject, 
-                                context);
+    Variables_AddVar(context, amiobject->GetName().c_str(), _tmp, context);
+
+//     context->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+//                                 amiobject, 
+//                                 context);
   AddClassMap("${TEMPLATE_DEMANGLED}",classvar);
 }
 

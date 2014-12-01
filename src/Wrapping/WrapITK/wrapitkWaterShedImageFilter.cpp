@@ -38,6 +38,7 @@
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkWaterShedImageFilter.h"
+#include "message_dialog.h"
 
 InrImage* wrap_itkWaterShedImageFilter2D(ParamList* p)
 {
