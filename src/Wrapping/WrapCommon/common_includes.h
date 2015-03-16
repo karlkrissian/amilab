@@ -10,6 +10,7 @@
 #include <sstream>
 #include <set>
 #include <string>
+#include <complex>
 
 
 #ifdef __GCCXML__
@@ -20,18 +21,24 @@
   template class std::vector<double>;
   template class std::vector<float>;
   template class std::vector<int>;
+  template class std::vector<long>;
+  template class std::vector<unsigned long>;
   template class std::vector<std::string>;
 
   // short names
-  typedef std::vector<double>       vector_double;
-  typedef std::vector<float>        vector_float;
-  typedef std::vector<int>          vector_int;
-  typedef std::vector<std::string>  vector_string;
+  typedef std::vector<double>         vector_double;
+  typedef std::vector<float>          vector_float;
+  typedef std::vector<int>            vector_int;
+  typedef std::vector<long>           vector_long;
+  typedef std::vector<unsigned long>  vector_ulong;
+  typedef std::vector<std::string>    vector_string;
   
   // instanciate iterators
   vector_double::iterator vdi;
   vector_float ::iterator vfi;
   vector_int   ::iterator vii;
+  vector_long  ::iterator vli;
+  vector_ulong ::iterator vuli;
   vector_string::iterator vsi;
 
   //----------------------------------------------------------------------------
@@ -57,6 +64,8 @@
   //std::ostream std_ostream_obj;
   std::stringstream string_stream_obj;
 //  std::iostream io_stream_obj;
+  
+  template class std::complex<float>;
 #endif // __GCCXML__
 
 // // trying iostream maybe should be moved from Algorithms to here ...
