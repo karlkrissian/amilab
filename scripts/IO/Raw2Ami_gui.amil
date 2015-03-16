@@ -31,11 +31,13 @@ if (!exists(Raw2AmiClass)) {
     proc ::Read() {
       printn "Read"
       if (::typePix == 0) { imtype = UCHAR.val;  }
-      if (::typePix == 1) { imtype = UINT.val;   }
-      if (::typePix == 2) { imtype = INT.val;    }
-      if (::typePix == 3) { imtype = FLOAT.val;  }
-      if (::typePix == 4) { imtype = DOUBLE.val; }
-      ::im = IO.ReadRawVectImages3D(::dimx,::dimy,::dimz,imtype,::dimv,::endianess,::input_filename)
+      if (::typePix == 1) { imtype = USHORT.val;   }
+      if (::typePix == 2) { imtype = SHORT.val;    }
+      if (::typePix == 3) { imtype = UINT.val;   }
+      if (::typePix == 4) { imtype = INT.val;    }
+      if (::typePix == 5) { imtype = FLOAT.val;  }
+      if (::typePix == 6) { imtype = DOUBLE.val; }
+      ::im = DataStructures.IO.ReadRawVectImage3D(::dimx,::dimy,::dimz,imtype,::dimv,::endianess,::input_filename)
       ::im.setvoxelsize(::voxSizeX, ::voxSizeY, ::voxSizeZ)
       eval ::output_varname+"<<= ::im;"
     }
@@ -67,6 +69,8 @@ if (!exists(Raw2AmiClass)) {
     
           pi_typePix = ::win.AddEnum(&::typePix,"Pixel Type")
             ::win.AddEnumChoice(pi_typePix,"UCHAR")
+            ::win.AddEnumChoice(pi_typePix,"USHORT")
+            ::win.AddEnumChoice(pi_typePix,"SHORT")
             ::win.AddEnumChoice(pi_typePix,"UINT")
             ::win.AddEnumChoice(pi_typePix,"INT")
             ::win.AddEnumChoice(pi_typePix,"FLOAT")
