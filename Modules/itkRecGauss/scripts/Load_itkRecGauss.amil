@@ -1,0 +1,12 @@
+
+#del itkRecGaussPlugin
+#func "itkRecGaussPlugin"
+func "Common/ModulePlugin"
+
+if (!exists(itkRecGauss_obj)) {
+  ModulePlugin itkRecGauss_obj
+  itkRecGauss_obj.SetModuleName("itkRecGauss")
+  itkRecGauss_obj.Load()
+} else {
+  InfoDialog "The script class itkRecGaussPlugin to be already instanciated." 
+}

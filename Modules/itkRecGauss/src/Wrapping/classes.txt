@@ -1,0 +1,24 @@
+PruebaClass
+
+#
+# Yvv
+#
+itk::SmartPointer<itk::SmoothingRecursiveYvvGaussianImageFilter<itk::Image<float, 2u>, itk::Image<float, 2u> > >
+itk::SmartPointer<itk::SmoothingRecursiveYvvGaussianImageFilter<itk::Image<float, 3u>, itk::Image<float, 3u> > >
+
+#
+# Deriche
+#
+itk::SmartPointer<itk::SmoothingRecursiveGaussianImageFilter<itk::Image<float, 2u>, itk::Image<float, 2u> > >
+itk::SmartPointer<itk::SmoothingRecursiveGaussianImageFilter<itk::Image<float, 3u>, itk::Image<float, 3u> > >
+
+#
+# LevenbergMarquardtOptimizer
+#
+
+itk::SmartPointer<itk::LevenbergMarquardtOptimizer>
+vnlOptimizerType
+
+itk::SmartPointer<RecGaussCostFunction>
+itk::Array<double>
+itk::OptimizerParameters<double>

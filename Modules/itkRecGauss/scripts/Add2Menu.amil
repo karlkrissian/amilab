@@ -1,0 +1,8 @@
+
+ami.MainFrame.AddToMenu("&Modules","&itkRecGauss","&Load",    \
+    op_system.GetCurrentScriptDir()+"/Load_itkRecGauss")
+ami.MainFrame.AddToMenu("&Modules","&itkRecGauss","&ReLoad",  \
+    op_system.GetCurrentScriptDir()+"/ReLoad_itkRecGauss")
+
+# Checking scripts in subdirectories
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())

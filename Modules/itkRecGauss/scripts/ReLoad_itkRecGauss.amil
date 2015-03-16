@@ -1,0 +1,5 @@
+
+if exists(itkRecGauss_obj) {
+  del itkRecGauss_obj
+}
+func "Load_itkRecGauss"
