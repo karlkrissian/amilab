@@ -189,9 +189,9 @@ if (!exists(AnisoScalarClass)) {
       numit = ::params.t/::params.dt
       if (::params.scalar_modes[::params.scalar_mode]=="MRI") {
           printn "running on squared image"
-          local::input1 = ::input*::input
+          input1 <<= ::input*::input
           ::res <<= \
-            algorithms.ami_SRAD.AnisoNRAD(&input1,\
+            algorithms.ami_SRAD.AnisoNRAD(input1,\
                                           ::params.scalar_mode,\
                                           ::params.dt,\
                                           numit,\
@@ -207,7 +207,7 @@ if (!exists(AnisoScalarClass)) {
         }
         if (::input.vdim ==1) {
           ::res <<= \
-            algorithms.ami_SRAD.AnisoNRAD(&::input,::params.scalar_mode,\
+            algorithms.ami_SRAD.AnisoNRAD(::input,::params.scalar_mode,\
                                           ::params.dt,numit,\
                                           ::params.neighborhood,\
                                           ::roi.GetExtent)
@@ -216,12 +216,12 @@ if (!exists(AnisoScalarClass)) {
           for n=0 to ::input.vdim-1 {
             if exists(tmp) { del tmp; }
             tmp = &::input[n]
-            res = \
+            _res <<= \
               algorithms.ami_SRAD.AnisoNRAD(&tmp,::params.scalar_mode,\
                                             ::params.dt,numit,\
                                             ::params.neighborhood,\
                                             ::roi.GetExtent)
-            ::res.SetComponent(n, res)
+            ::res.SetComponent(n, _res)
           }
         }
         if ::params.scalar_modes[::params.scalar_mode]=="Additive" \
