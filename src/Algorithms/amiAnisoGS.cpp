@@ -174,7 +174,7 @@ InrImage::ptr ami::AnisoGS::Run(InrImage::ptr input, float sigma, float k,
                                 float beta, int nb_iter)
 {
   ami::AnisoGS::ptr aniso(new ami::AnisoGS());
-  aniso->Init(input.get(),sigma,k,beta);
+  aniso->Init(input,sigma,k,beta);
 
   if (nb_iter < 1) nb_iter = 1;
 
@@ -221,11 +221,6 @@ ami::AnisoGS::~AnisoGS()
     this->image_lissee=NULL;
   } // end if
   
-  if ( this->im_tmp != NULL ) {
-    delete this->im_tmp;
-    this->im_tmp = NULL;
-  } // end if
-  
   if ( this->image_c != NULL ) {
     delete this->image_c;
     this->image_c = NULL;
@@ -235,12 +230,7 @@ ami::AnisoGS::~AnisoGS()
     delete divFim;
     divFim = NULL;
   } // end if
-  
-  if ( !(opt_mem) && (image_entree_allouee) ) {
-    delete image_entree;
-    image_entree=NULL;
-  } // end if
-      
+        
   if (tensor_xx!=NULL) { delete tensor_xx;  tensor_xx=NULL; }
   if (tensor_xy!=NULL) { delete tensor_xy; tensor_xy=NULL; }
   if (tensor_xz!=NULL) { delete tensor_xz; tensor_xz=NULL; }
@@ -257,7 +247,7 @@ ami::AnisoGS::~AnisoGS()
 }
 
 // Extend Boundary Conditions
-void ami::AnisoGS::ExtendBoundariesVonNeumann( InrImage* input)
+void ami::AnisoGS::ExtendBoundariesVonNeumann( InrImage::ptr input)
 {
   int x,y,z;
   int x1,y1,z1;
@@ -291,7 +281,7 @@ void ami::AnisoGS::ExtendBoundariesVonNeumann( InrImage* input)
 }
 
 // Compute image_entree
-void ami::AnisoGS::CreateBoundariesVonNeumann( InrImage* input)
+void ami::AnisoGS::CreateBoundariesVonNeumann( InrImage::ptr input)
 {
   int ext = 2*boundary_extension_size;
   int bs = boundary_extension_size;
@@ -306,25 +296,24 @@ void ami::AnisoGS::CreateBoundariesVonNeumann( InrImage* input)
     new_trz = input->TrZ()-1.0*bs*input->VoxSizeZ();
   }
 
-  image_entree = new InrImage(  input->DimX() + ext,
+  image_entree = InrImage::ptr(new InrImage(  input->DimX() + ext,
                                 input->DimY() + ext,
                                 new_dimz,
                                 WT_FLOAT, 
-                                "input_image.inr.gz");
+                                "input_image.inr.gz"));
   image_entree->SetVoxelSize( input->VoxSizeX(),
                                     input->VoxSizeY(),
                                     input->VoxSizeZ());
   image_entree->SetTranslation( input->TrX()-1.0*bs*input->VoxSizeX(),
                                 input->TrY()-1.0*bs*input->VoxSizeY(),
                                 new_trz);
-  image_entree_allouee=true;
   if (input->DimZ()==1) 
-    Func_PutImage(image_entree,input,
+    Func_PutImage(image_entree.get(),input.get(),
                   boundary_extension_size,
                   boundary_extension_size,
                   0);
   else
-    Func_PutImage(image_entree,input,
+    Func_PutImage(image_entree.get(),input.get(),
                   boundary_extension_size,
                   boundary_extension_size,
                   boundary_extension_size);
@@ -1465,8 +1454,8 @@ float ami::AnisoGS::Itere2D ( InrImage* im )
     ComputeImage_c ( im );
 
   ResetCoefficients();
-  if ( this->im_tmp == NULL ) 
-  this->im_tmp = new InrImage ( WT_FLOAT, "im_tmp.inr.gz", im );
+  if (!this->im_tmp.get()) 
+	this->im_tmp = InrImage::ptr(new InrImage ( WT_FLOAT, "im_tmp.inr.gz", im ));
 
   im->InitBuffer();
 
@@ -2226,8 +2215,8 @@ float ami::AnisoGS::Itere3D( InrImage* im )
     ComputeImage_c(im);
 
   ResetCoefficients();
-  if ( this->im_tmp == NULL ) 
-    this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
+  if (!this->im_tmp.get()) 
+    this->im_tmp = InrImage::ptr(new InrImage(WT_FLOAT, "im_tmp.inr.gz", im));
 
   im->InitBuffer();
 
@@ -2700,8 +2689,9 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
   ResetCoefficients();
   // pb: the coefficients are not good for multi-threading ???
 
-  if ( this->im_tmp == NULL ) 
-    this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
+  if (!this->im_tmp.get() ) 
+    this->im_tmp = InrImage::ptr(new InrImage(WT_FLOAT, "im_tmp.inr.gz", im));
+  
   if ( divFim == NULL ) {
     divFim = new InrImage(WT_FLOAT, divFname.c_str() , im);
   } // end if
@@ -3416,8 +3406,9 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
   // pb: the coefficients are not good for multi-threading ???
 
-  if ( this->im_tmp == NULL ) 
-    this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
+  if (!this->im_tmp.get() ) 
+    this->im_tmp = InrImage::ptr(new InrImage(WT_FLOAT, "im_tmp.inr.gz", im));
+  
   if ( divFim == NULL ) {
     divFim = new InrImage(WT_FLOAT, divFname.c_str() , im);
   } // end if
@@ -4102,8 +4093,8 @@ double norm_grad2,dx2,dy2,dz2;
 
 int xp,xm,yp,ym,zp,zm;
 
-  if ( this->im_tmp == NULL ) 
-    this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
+  if (!this->im_tmp.get() ) 
+    this->im_tmp = InrImage::ptr(new InrImage(WT_FLOAT, "im_tmp.inr.gz", im));
 
   im->InitBuffer();
   erreur = 0;
@@ -4333,8 +4324,8 @@ int xp,xm,yp,ym,zp,zm;
 double maxerr=0.5;
 
   ResetCoefficients();
-  if ( this->im_tmp == NULL ) 
-    this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
+  if (!this->im_tmp.get() ) 
+    this->im_tmp = InrImage::ptr(new InrImage(WT_FLOAT, "im_tmp.inr.gz", im));
   if ( divFim == NULL ) {
     divFim = new InrImage(WT_FLOAT, divFname.c_str() , im);
   } // end if
@@ -4566,8 +4557,8 @@ float ami::AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField,
 
 
   ResetCoefficients();
-  if ( this->im_tmp == NULL ) 
-    this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
+  if (!this->im_tmp.get() ) 
+    this->im_tmp = InrImage::ptr(new InrImage(WT_FLOAT, "im_tmp.inr.gz", im));
 
   im->InitBuffer();
 
@@ -4809,8 +4800,8 @@ float  ami::AnisoGS::Itere3D_3( InrImage* im )
 
 
   ResetCoefficients();
-  if ( this->im_tmp == NULL ) 
-    this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
+  if (!this->im_tmp.get() ) 
+    this->im_tmp = InrImage::ptr(new InrImage(WT_FLOAT, "im_tmp.inr.gz", im));
 
   im->InitBuffer();
 
@@ -5095,14 +5086,13 @@ float  ami::AnisoGS::Itere3D_3( InrImage* im )
 
 
 //------------------------------------------------------------------------------
-void ami::AnisoGS::Init(InrImage* in, 
+void ami::AnisoGS::Init(InrImage::ptr in, 
       float p_sigma, 
       float p_k,
       float p_beta
       )
 {
   
-    char resname[100];
 
   InitParam();
 
@@ -5123,16 +5113,14 @@ void ami::AnisoGS::Init(InrImage* in,
     use_filtre_rec = true;
   } // end if
 
-/*  if ( (opt_mem) || (in->_format == WT_FLOAT) ) {
+  if ( (opt_mem) || (in->_format == WT_FLOAT) ) {
     image_entree = in;
-    image_entree_allouee=false;
   } else {
     // conversion de l'image initiale en float
-    image_entree = new InrImage( WT_FLOAT, "image_reel.inr.gz", in);
-    image_entree_allouee=true;
+    image_entree = InrImage::ptr(new InrImage( WT_FLOAT, "image_reel.inr.gz", in.get()));
     (*image_entree) = (*in);
   } // end if
-*/
+  
   // Creates input image extending boundaries
   this->input_image = in;
 
@@ -5175,12 +5163,12 @@ void ami::AnisoGS::Init(InrImage* in,
     }
 //  }
   
-  this->image_lissee = new InrImage( WT_FLOAT, "image_lissee.inr.gz", image_entree);
+  this->image_lissee = new InrImage( WT_FLOAT, "image_lissee.inr.gz", image_entree.get());
 
   if ( use_filtre_rec ) {
     filtre_rec = new FiltrageRec(this->image_lissee);
   } else {
-    filtre = new GeneralGaussianFilter(image_entree, 
+    filtre = new GeneralGaussianFilter(image_entree.get(), 
         mode);
     filtre->GammaNormalise(false);
     filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
@@ -5189,8 +5177,9 @@ void ami::AnisoGS::Init(InrImage* in,
   InitCoefficients();
 
   //--- result_image
-    sprintf(resname,"%s.AnisoGS",in->GetName());
-  this->result_image = new InrImage( WT_FLOAT, resname, image_entree);
+  std::string resname = in->GetName();
+  resname += ".AnisoGS";
+  this->result_image = new InrImage( WT_FLOAT, resname.c_str(), image_entree.get());
 
   (*this->result_image)=(*image_entree);
 
