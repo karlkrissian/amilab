@@ -121,6 +121,107 @@ if (!exists(vtkXYPlotClass)) {
         ::chartctrl.Update()
       }
     }
+    
+    #---------------------------------------------------------------------------
+    proc ::PlotInput( NUM index) \
+    {
+      chart_created = false
+      if (!exists(::input)) {
+        InfoDialog "Load input image first!"
+      } else {
+        del ::table
+        ::table = vtk.vtkTable.New()
+      
+        arrX = vtk.vtkFloatArray.New()
+        arrX.SetName("X Axis")
+        ::table.AddColumn(&arrX)
+      
+        arrY = vtk.vtkFloatArray.New()
+        arrY.SetName("Y Axis")
+        ::table.AddColumn(&arrY)
+        
+        printn "Fill in the table with some example values"
+        p = SpacePos(::input)
+        px = p[0]
+        # Fill in the table with some example values
+        numPoints = ::input.tx
+        ::table.SetNumberOfRows(numPoints)
+        for  i = 0 to numPoints-1  {
+          ::table.SetValue(i, 0, &vtk.vtkVariant.vtkVariant_16(px(i)))
+          ::table.SetValue(i, 1, &vtk.vtkVariant.vtkVariant_16(::input(i)))
+        }
+      
+        # Add multiple line plots, setting the colors etc
+        if (!exists(::chart)) {
+          ::chart = vtk.vtkChartXY.New()
+          chart_created=true
+          ::view.GetScene().AddItem(&::chart)
+        }
+        line = ::chart.GetPlot(index)
+        if (language.WrapVariable(line).GetTypeName()=="int") {
+          del line
+          line = ::chart.AddPlot(vtk.vtkChart.LINE)
+          line.SetColor(0, 255, 0, 255)
+          line.SetWidth(1.0)
+        }
+        line.SetInput_3(&::table, 0, 1)
+        del line
+      }
+      if (chart_created) { 
+        ::chartctrl.SetChart(::chart)
+        ::chartctrl.SetChangedCallback(::UpdateDisplay)
+      } else {
+        ::chartctrl.Update()
+      }
+    }
+    
+    #---------------------------------------------------------------------------
+    proc ::Add2DCurveImage() \
+    {
+      chart_created = false
+      if (!exists(::input)) {
+        InfoDialog "Load input image first!"
+      } else {
+        del ::table
+        ::table = vtk.vtkTable.New()
+      
+        arrX = vtk.vtkFloatArray.New()
+        arrX.SetName("X Axis")
+        ::table.AddColumn(&arrX)
+      
+        arrY = vtk.vtkFloatArray.New()
+        arrY.SetName("Y Axis")
+        ::table.AddColumn(&arrY)
+        
+        printn "Fill in the table with image values"
+
+        # Fill in the table with some example values
+        numPoints = ::input.tx
+        ::table.SetNumberOfRows(numPoints)
+        for  i = 0 to numPoints-1  {
+          ::table.SetValue(i, 0, &vtk.vtkVariant.vtkVariant_16(::input(i;0)))
+          ::table.SetValue(i, 1, &vtk.vtkVariant.vtkVariant_16(::input(i;1)))
+        }
+      
+        # Add multiple line plots, setting the colors etc
+        if (!exists(::chart)) {
+          ::chart = vtk.vtkChartXY.New()
+          chart_created=true
+          ::view.GetScene().AddItem(&::chart)
+        }
+        line = ::chart.AddPlot(vtk.vtkChart.LINE)
+        line.SetInput_3(&::table, 0, 1)
+        line.SetColor(0, 255, 0, 255)
+        line.SetWidth(1.0)
+        del line
+      }
+      if (chart_created) { 
+        ::chartctrl.SetChart(::chart)
+        ::chartctrl.SetChangedCallback(::UpdateDisplay)
+      } else {
+        ::chartctrl.Update()
+      }
+    }
 
     #-----------------------------------------------
     proc ::RunChartXY() \
@@ -337,6 +438,7 @@ if (!exists(vtkXYPlotClass)) {
         #::win.AddPage("Run")
           ::win.AddButton("Run Example",::RunExample)
           ::win.AddButton("Add Image",::RunImage)
+          ::win.AddButton("Add 2D Curve Image", ::Add2DCurveImage)
           ::win.BeginHorizontal()
             ::win.AddButton("Detach", ::CB_Detach)
             ::win.AddButton("Attach", ::CB_Attach)
