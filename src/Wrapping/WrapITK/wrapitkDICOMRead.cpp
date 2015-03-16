@@ -45,9 +45,9 @@
 #endif
 
 #include "itkImageSeriesReader.h"
-#include "itkDICOMImageIO2.h"
+//#include "itkDICOMImageIO2.h"
 #include "itkGDCMImageIO.h"
-#include "itkDICOMSeriesFileNames.h"
+#include "itkGDCMSeriesFileNames.h"
 #include "itkImageIOBase.h"
 #endif // _WITHOUT_ITK_
 
@@ -192,11 +192,11 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
   typedef   itk::ImageIOBase::IOPixelType ptype;
   ptype image_pixel_type = itk::ImageIOBase::UNKNOWNPIXELTYPE;
   
-  typedef itk::DICOMImageIO2 ImageIOType;
+  typedef itk::GDCMImageIO ImageIOType;
 //  typedef itk::GDCMImageIO ImageIOType;
   ImageIOType::Pointer dicomIO = ImageIOType::New();
 
-  typedef itk::DICOMSeriesFileNames NamesGeneratorType;
+  typedef itk::GDCMSeriesFileNames NamesGeneratorType;
   NamesGeneratorType::Pointer nameGenerator = NamesGeneratorType::New();
   typedef std::vector< std::string > SeriesIdContainer;
   typedef std::vector< std::string > FileNamesContainer;

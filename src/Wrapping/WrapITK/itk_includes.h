@@ -140,7 +140,7 @@ typedef itk::Image<unsigned char, 3u>  ImageUC3;
   
   
   
-#include "itkDICOMImageIO2.h"
+//#include "itkDICOMImageIO2.h"
 #include "itkGDCMImageIO.h"
 #include "itkGDCMSeriesFileNames.h"
 #include "itkImageSeriesReader.h"
@@ -156,7 +156,7 @@ typedef itk::Image<unsigned char, 3u>  ImageUC3;
 #include "itkGDCMSeriesFileNames.h"
   
 #ifdef __GCCXML__
-  template class itk::SmartPointer<itk::DICOMImageIO2>;
+//  template class itk::SmartPointer<itk::DICOMImageIO2>;
   template class itk::SmartPointer<itk::GDCMImageIO>;
   template class itk::SmartPointer<itk::GDCMSeriesFileNames>;
 #endif

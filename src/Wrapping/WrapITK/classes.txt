@@ -66,7 +66,7 @@ itk::SmartPointer<itk::ImageSeriesReader<itk::Image<short, 3u> > >
 itk::SmartPointer<itk::ImageSeriesReader<itk::Image<float, 3u> > >
 itk::SmartPointer<itk::ImageSeriesReader<itk::Image<unsigned char, 3u> > >
 
-itk::SmartPointer<itk::DICOMImageIO2>
+#itk::SmartPointer<itk::DICOMImageIO2>
 itk::SmartPointer<itk::GDCMImageIO>
 itk::SmartPointer<itk::GDCMSeriesFileNames>
 
