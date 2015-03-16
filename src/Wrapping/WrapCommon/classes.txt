@@ -13,6 +13,12 @@ std::vector<float, std::allocator<float> >::iterator
 std::vector<int, std::allocator<int> >
 std::vector<int, std::allocator<int> >::iterator
 
+std::vector<long, std::allocator<long> >
+std::vector<long, std::allocator<long> >::iterator
+
+std::vector<unsigned long, std::allocator<unsigned long> >
+std::vector<unsigned long, std::allocator<unsigned long> >::iterator
+
 std::vector<std::string, std::allocator<std::string> >
 std::vector<std::string, std::allocator<std::string> >::iterator
 
@@ -27,3 +33,7 @@ set_string_iterator
 
 std::ostream
 std::stringstream
+
+# ----- complex numbers ---
+std::complex<float>
+
