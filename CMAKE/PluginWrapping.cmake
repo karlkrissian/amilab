@@ -124,8 +124,8 @@ ENDIF(EXISTS ${ANCESTORS_FILE})
 MESSAGE("functions_list = ${functions_list}")
 
 UPDATE_OUTPUT_LIST( "${ancestors_list}"     )
-UPDATE_OUTPUT_LIST( "${functions_list}"     )
-UPDATE_OUTPUT_LIST( "${methodpointers_list}")
+UPDATE_FUNCTION_OUTPUT_LIST( "${functions_list}"     )
+UPDATE_FUNCTION_OUTPUT_LIST( "${methodpointers_list}")
 
 FOREACH( MP ${methodpointers_list})
   SET( methodpointers_files ${methodpointers_files} ${GENERATED_DIR}/wrap_${MP}.h ${GENERATED_DIR}/wrap_${MP}.cpp )

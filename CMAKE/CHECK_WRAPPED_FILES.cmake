@@ -56,3 +56,13 @@ MACRO( UPDATE_OUTPUT_LIST ELTS_LIST)
     SET(OUTPUT_LIST ${GENERATED_DIR}/wrap_${m_elt}.h ${OUTPUT_LIST})
   ENDFOREACH( elt ${ELTS_LIST}) 
 ENDMACRO( UPDATE_OUTPUT_LIST ELTS_LIST)
+
+#-------------------------------------------------------------------------------
+MACRO( UPDATE_FUNCTION_OUTPUT_LIST ELTS_LIST)
+  FOREACH( elt  ${ELTS_LIST})
+    FunctionUsedName( elt m_elt )
+    SET(OUTPUT_LIST ${GENERATED_DIR}/wrap_${m_elt}.cpp ${OUTPUT_LIST})
+    SET(OUTPUT_LIST ${GENERATED_DIR}/wrap_${m_elt}.h ${OUTPUT_LIST})
+  ENDFOREACH( elt ${ELTS_LIST}) 
+ENDMACRO( UPDATE_FUNCTION_OUTPUT_LIST ELTS_LIST)
+

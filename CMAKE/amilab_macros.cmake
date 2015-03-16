@@ -228,12 +228,35 @@ MACRO( ClassUsedName input_name output_name )
   STRING(REGEX REPLACE "short int"      "short" ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE " " ""                   ${output_name} ${${output_name}} )
   STRING(REGEX REPLACE "itk_"           ""      ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "\\("            "_"     ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "\\)"            "_"     ${output_name} ${${output_name}} )
+
+ENDMACRO( ClassUsedName)
+#-------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
+MACRO( FunctionUsedName input_name output_name )
+#-------------------------------------------------------------------------------
+
+  STRING(REGEX REPLACE "<" "_L_"                ${output_name} ${${input_name}} )
+  STRING(REGEX REPLACE ">" "_G_"                ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "," "_"                  ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "::" "_"                 ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "\\*" "_ptr"             ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "&" "_ref"               ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsigned char"  "UC"    ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsigned short" "US"    ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsigned int"   "UI"    ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "unsigned long"  "UL"    ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "short int"      "short" ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE " " ""                   ${output_name} ${${output_name}} )
+  STRING(REGEX REPLACE "itk_"           ""      ${output_name} ${${output_name}} )
   # get rid of function parameters in case of a function
   STRING(REGEX REPLACE "\\(.*\\)"         ""      ${output_name} ${${output_name}} )
   
 
-ENDMACRO( ClassUsedName)
-#-------------------------------------------------------------------------------
+ENDMACRO( FunctionUsedName)
 
 
 #-------------------------------------------------------------------------------
