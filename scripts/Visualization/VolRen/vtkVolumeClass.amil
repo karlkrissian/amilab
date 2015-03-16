@@ -1181,11 +1181,13 @@ if (!exists(vtkVolumeClass)) {
     #----------------------------
     proc ::OnSampleDistance() \
     {
-      if (::volmapper.GetClassName()!="vtkSmartVolumeMapper") {
-        ::volmapper.SetAutoAdjustSampleDistances(::AutoAdjustSampleDistances)
-        ::volmapper.SetSampleDistance(::SampleDistance)
-        ::volmapper.SetImageSampleDistance(::ImageSampleDistance)
-        ::renwininter.Render()
+      if (exists(::volmapper)) {
+        if (::volmapper.GetClassName()!="vtkSmartVolumeMapper") {
+          ::volmapper.SetAutoAdjustSampleDistances(::AutoAdjustSampleDistances)
+          ::volmapper.SetSampleDistance(::SampleDistance)
+          ::volmapper.SetImageSampleDistance(::ImageSampleDistance)
+          ::renwininter.Render()
+        }
       }
     }
 
