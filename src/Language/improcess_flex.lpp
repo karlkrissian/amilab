@@ -288,6 +288,7 @@ INT           return(token::T_INT); /*{INT,T_INT}*/
 UINT          return(token::T_UINT); /*{UINT,T_UINT}*/
 FLOAT         return(token::T_FLOAT); /*{FLOAT,T_FLOAT}*/
 LONG          return(token::T_LONG); /*{LONG,T_LONG}*/ /// New (added: 27/05/2010)
+ULONG         return(token::T_ULONG); /*{ULONG,T_ULONG}*/ /// New (added: 27/05/2010)
 BOOL          return(token::T_BOOL); /*{BOOL,T_BOOL}*/ /// New (added: 19/11/2010)
 DOUBLE        return(token::T_DOUBLE); /*{DOUBLE,T_DOUBLE}*/
 RGB           return(token::T_RGB); /*{RGB,T_RGB}*/

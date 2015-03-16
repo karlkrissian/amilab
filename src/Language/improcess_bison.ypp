@@ -688,6 +688,7 @@ void CB_update_AMIObjectlist( void* AMIObjectlist_gui);
 %token T_CHAR T_UCHAR T_SHORT T_USHORT T_INT T_UINT
 %token T_BOOL   // New (added: 19/11/2010)
 %token T_LONG   // New (added: 27/05/2010)
+%token T_ULONG
 %token T_FLOAT T_DOUBLE
 %token T_RGB  T_FLOAT_VECTOR
 %token T_BasicType
@@ -1848,6 +1849,18 @@ command:
 
         long_ptr varlong (new long((long)$5));
         Vars.AddVar<long>(ident,varlong);
+      }
+      |
+      identifier ASSIGN_OP T_ULONG T_OP_PAR expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Creates a variable of type long
+      **/
+        IdentifierInfo::ptr ident($1);
+
+        ulong_ptr varlong (new unsigned long((unsigned long)$5));
+        Vars.AddVar<unsigned long>(ident,varlong);
       }
       |
       identifier ASSIGN_OP T_SHORT T_OP_PAR expr T_CL_PAR
@@ -5210,6 +5223,10 @@ basic_type:
        | T_LONG
        {
      $$=WT_SIGNED_LONG;
+       }
+       | T_ULONG
+       {
+     $$=WT_UNSIGNED_LONG;
        }
        | T_FLOAT
        {
