@@ -989,7 +989,8 @@ InrImage::ptr SRAD::SRAD_ver2( InrImage* input, float dt, int numit,
   delete image_c;
   delete image_d;
 
-  return InrImage::ptr(image_res);
+  InrImage::ptr res(image_res);
+  return res;
 
 }
 
