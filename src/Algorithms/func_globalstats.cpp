@@ -392,11 +392,17 @@ InrImage*    Func_Histogram( InrImage* im, float vmin, float vmax, int nint)
     numpts[n]=0;
   } // endfor
 
+  // avoid numerical problems
+  bool integer_ranges = fabsf((vmax-vmin)-nint)<1E-5;
+  
   im->InitBuffer();
   do {
     v = im->ValeurBuffer();
     if ( v>=vmin && v<vmax ) {
-      n = (int) ((v-vmin)/(vmax-vmin)*nint);
+	  if (integer_ranges)
+		  n = (int) (v-vmin);
+	  else
+          n = (int) ((v-vmin)/(vmax-vmin)*nint);
       if ( n==nint )  n=nint-1;
       numpts[n]++;
     } // end if
