@@ -425,6 +425,31 @@ if (!exists(SectionQuantifClass)) {
     }
     
     #---------------------------------------------------------------------------
+    proc ::AddSelectedLineToVolRen( OBJECT _line) {
+      if exists(::volren) {
+        if exists(::volren->vol0) {
+           del ::vtk_selectedline
+           ::vtk_selectedline = vtktools.ToVtkPolyData( &_line)
+           ::mapper_sl = vtk.vtkPolyDataMapper.New()
+           ::mapper_sl.SetInputConnection( &::vtk_selectedline.GetProducerPort() )
+           
+           if (exists(::actor_selectedline)) {
+             ::volren.vol0.renderer.RemoveActor(::actor_selectedline)
+             del ::actor_selectedline
+           }
+           
+           ::actor_selectedline = vtk.vtkActor.New()
+           ::actor_selectedline.SetMapper( ::mapper_sl )
+           
+           ::actor_selectedline.GetProperty().SetLineWidth(2)
+           vol0 = &::volren.vol0
+           vol0.renderer.AddActor( ::actor_selectedline)
+           vol0.OnRender()
+        }
+      }
+    }
+    
+    #---------------------------------------------------------------------------
     proc ::Display() {
          
      if (exists(::w1)) {
@@ -884,6 +909,18 @@ if (!exists(SectionQuantifClass)) {
       length = ::lines_length(::line_number,0,0)
       ::line_length = "%1% mm" % length
       ::win.SetLabelValue(::line_length_id,::line_length)
+      
+      # Extract one line
+      # save and read file for the moment: TODO: to improve
+      slp = ::lines.GetLine(::line_number) # selected line points
+      selected_line = Surface()
+      selected_line.NewLine()
+        for k=0 to slp.tx-1 {
+          selected_line.AddPoint(slp(k,0,0,0),slp(k,0,0,1),slp(k,0,0,2))
+          selected_line.LineAddPointNumber(k)
+        }
+      selected_line.EndLine()
+      ::AddSelectedLineToVolRen(selected_line)
     }
 
     #---------------------------------------------------------------------------
@@ -951,7 +988,7 @@ if (!exists(SectionQuantifClass)) {
                 ::win.AddEnumChoice(maskmode_id,"Mask image")
 
                 # set the mask threshold
-                ::mask_threshold_id = ::win.AddFloat(::ML_obj.mask_threshold,"Threshold",0,100)
+                ::mask_threshold_id = ::win.AddFloat(::ML_obj.mask_lowthreshold,"Low Threshold",0,100)
 
                 # set the mask image
                 ::win.AddImageChoice( ::ML_obj.mask_name, "Mask")
