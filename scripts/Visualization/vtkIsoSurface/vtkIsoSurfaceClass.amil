@@ -40,6 +40,7 @@ if (!exists(vtkIsoSurfaceClass)) {
       ::azimuth = INT(45), "Rotate camera angle along vertical axis (in degrees)"
       ::vol1_threshold = 0, "Isosurface threshold for volume 1"
       ::vol2_threshold = 0, "Isosurface threshold for volume 2"
+      ::reset_camera = true, "reset camera on each calculation"
       #::Gui()
     }
     
@@ -317,7 +318,7 @@ if (!exists(vtkIsoSurfaceClass)) {
         del ::vol1_polydata
         ::vol1_polydata = vtktools.ToVtkPolyData(vol1_isosurf)
         ::vol1_normals.SetInputData(::vol1_polydata)
-        ::renderer.ResetCamera()
+        if (::reset_camera) { ::renderer.ResetCamera(); }
         ::renwin_interact.Render()
       }
     }
@@ -332,7 +333,7 @@ if (!exists(vtkIsoSurfaceClass)) {
         del ::vol2_polydata
         ::vol2_polydata = vtktools.ToVtkPolyData(&vol2_isosurf)
         ::vol2_normals.SetInput(&::vol2_polydata)
-        ::renderer.ResetCamera()
+        if (::reset_camera) { ::renderer.ResetCamera(); }
         ::renwin_interact.Render()
       }
     }
@@ -591,15 +592,20 @@ if (!exists(vtkIsoSurfaceClass)) {
 
         ::win.AddPage("Volumes")
 
+          ::win.AddBoolean(::reset_camera,"Reset Camera")
           ::win.BeginBook()
             ::vol1_page = ::win.AddPage("Vol1")
               ::vol1threshold_id = ::win.AddFloat(::vol1_threshold,"Th",0,255)
-              ::win.AddButton("Apply",::ApplyVol1)
+              ::win.SetCallback(::ApplyVol1)
+              ::win.SetDragCallback(::vol1threshold_id,false)
+              #::win.AddButton("Apply",::ApplyVol1)
               ::vtk_property1_gui.AddGui(::win)
 
             ::vol2_page = ::win.AddPage("Vol2")
               ::vol2threshold_id = ::win.AddFloat(::vol2_threshold,"Th",0,255)
-              ::win.AddButton("Apply",::ApplyVol2)
+              ::win.SetCallback(::ApplyVol2)
+              ::win.SetDragCallback(::vol2threshold_id,false)
+              #::win.AddButton("Apply",::ApplyVol2)
               ::vtk_property2_gui.AddGui(::win)
           ::win.EndBook()
 
