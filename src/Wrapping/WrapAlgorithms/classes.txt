@@ -23,6 +23,7 @@ ami::Thinning
 ami::Find
 ami::vtkFastMarchingFunctions
 ami::ImageConvolution1D
+ami::RecursiveGaussianConvolution1D
 
 # Image Extent
 # ami::ImageExtent<float> moved to WrapCommon

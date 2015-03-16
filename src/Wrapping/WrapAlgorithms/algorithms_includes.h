@@ -18,6 +18,7 @@
 #include "amiIntensityBasedRegionGrowing.h"
 #include "amiThinning.h"
 #include "amiImageConvolution1D.h"
+#include "amiRecursiveGaussianConvolution1D.h"
 
 #include "amiFind.h"
 #include "amivtkFastMarchingFunctions.h"
@@ -52,6 +53,7 @@
 
 #ifdef __GCCXML__
   template amimage::operator unsigned short*();
+  template amimage::operator unsigned char* ();
   template amimage::operator short*         ();
   template amimage::operator float*         ();
   template amimage::operator double*        ();

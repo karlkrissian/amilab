@@ -20,6 +20,7 @@ Func_InitWeickertCoherence
 Func_Compute_sigma2_Gaussian_mode
 
 # Structure Tensor
+Func_StructureTensor
 Func_StructureTensorHessianNew
 
 # Gaussian filtering
