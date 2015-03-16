@@ -59,6 +59,8 @@ if (!exists(itkWaterShedClass)){
           ::grad = normgrad(::input,::stand)
         }
         ::g = 1
+      } else {
+        ::grad = (FLOAT) ::input
       }
       
       if (::dim==0) {
@@ -68,14 +70,32 @@ if (!exists(itkWaterShedClass)){
         ::water = itk.WaterShedImageFilter3D(::grad,::lThreshold,::FloodLevel)
         ::w = 1
       }
+      
+      # remove empty components
+      max_ws = max(::water)
+      h <<= histo(::water,0,max_ws+1,max_ws+1)
+
+      k=0
+      c <<= Image(FLOAT,max_ws+1,1,1)
+      c = 0
+      del n
+      for n=1 to max_ws {
+        if(h(n)>0) {
+          c.setpos(n,0,0)
+          k=k+1
+          printn ("%d" % n) + (" --> %d " % k)
+          c.set(k)
+        }
+      }
+      ::water2 <<= c(::water)
     }
     
     proc ::Display() {
     
       show ::grad
-      show ::water
-      ::water_draw.update()
-      ::grad_draw.compare(&::water_draw)
+      show ::water2
+      ::water2_draw.update()
+      ::grad_draw.compare(&::water2_draw)
     
     }
     
@@ -132,6 +152,7 @@ if (!exists(itkWaterShedClass)){
             ::win.BeginHorizontal()
               gradmode_id = ::win.AddEnum( &::gradient_mode,"Mode")
               ::win.AddEnumChoice(gradmode_id, "NormGradient")
+              ::win.AddEnumChoice(gradmode_id, "InputImage")
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
