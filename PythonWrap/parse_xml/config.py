@@ -203,6 +203,8 @@ def ClassUsedName(classname):
   res = res.replace('short int',     'short')
   res = res.replace(' ','')
   res = res.replace('itk_', '')
+  res = res.replace('(', '_')
+  res = res.replace(')', '_')
   return res
 
 #-------------------------------------------------------------
@@ -226,6 +228,8 @@ def ClassShortName(classname,libnamespace=""):
   res = res.replace('short int',     'short')
   res = res.replace(' ','')
   res = res.replace('itk_', '')
+  res = res.replace('(', '_')
+  res = res.replace(')', '_')
   return res
 
 #-------------------------------------------------------------

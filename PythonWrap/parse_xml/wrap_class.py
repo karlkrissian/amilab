@@ -739,12 +739,13 @@ def ImplementMethodDescription(classname, method, constructor=False, methodcount
     
     shared_type = config.IsSharedPtr(typename)
     if shared_type==None:
-      if typename.count(",")>0:
-        res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(config.ClassTypeDef(typename),a.name)
-      else:
-        res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(typename,a.name)
+		typename_comment = typename
     else:
-      res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(shared_type,a.name)
+		typename_comment = shared_type
+    if typename.count(",")>0:
+      res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(config.ClassTypeDef(typename_comment),a.name)
+    else:
+      res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(typename_comment,a.name)
     if a.default!=None:
       res+= ' (def:{0})'.format(FormatArgDefault(a.default))
     res += '")\n'

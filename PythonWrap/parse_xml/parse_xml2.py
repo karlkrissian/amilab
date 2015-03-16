@@ -831,25 +831,27 @@ if __name__ == '__main__':
         maintypeid  = td.GetMainTypeId()
         contextid   = td.GetContext()
         typedefname = td.GetName()
-        if config.types[contextid].GetType()=="Namespace":
-          classname = config.types[maintypeid].GetFullString()
-          if classname in lib_classes:
-            print "Adding typedef {0} --> {1} ( {2} )".format(\
-              typedefname,\
-              classname,\
-              config.types[td_id].GetString(),\
-              )
-            # Get the demangled class name
-            demangled_name = config.types[maintypeid].GetDemangled()
-            f.write("  // adding typedef {0}\n".format(typedefname))
-            f.write('  tdwvar = GetClassVar("{0}");\n'.format(demangled_name))
-            f.write("  if (!tdwvar.expired()) {\n")
-            f.write("    tdvar = tdwvar.lock();\n")
-            f.write("    newvar =  tdvar->NewReference();\n")
-            f.write('    context->AddVar("{0}",newvar);\n'.format(typedefname))
-            f.write("  }\n")
-          
-        
+        try:
+          if config.types[contextid].GetType()=="Namespace":
+            classname = config.types[maintypeid].GetFullString()
+            if classname in lib_classes:
+              print "Adding typedef {0} --> {1} ( {2} )".format(\
+                typedefname,\
+                classname,\
+                config.types[td_id].GetString(),\
+                )
+              # Get the demangled class name
+              demangled_name = config.types[maintypeid].GetDemangled()
+              f.write("  // adding typedef {0}\n".format(typedefname))
+              f.write('  tdwvar = GetClassVar("{0}");\n'.format(demangled_name))
+              f.write("  if (!tdwvar.expired()) {\n")
+              f.write("    tdvar = tdwvar.lock();\n")
+              f.write("    newvar =  tdvar->NewReference();\n")
+              f.write('    context->AddVar("{0}",newvar);\n'.format(typedefname))
+              f.write("  }\n")
+        except:
+		  print "trying to add typedefs: contextid {0} not recognized".\
+				format(contextid)
       f.write("\n")
       f.write("  wrap_enums (context);\n")
       f.write("  wrap_vars  (context);\n")
