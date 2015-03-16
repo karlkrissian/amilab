@@ -213,16 +213,16 @@ namespace ami {
   protected:
     //-------  Images
     /// original input image
-    InrImage* input_image; 
+    InrImage::ptr input_image; 
     /// copy for processing
-    InrImage* image_entree  ;
+    InrImage::ptr image_entree;
 
     /// resulting image
     InrImage* result_image;
 
     /// smoothed version
     InrImage* image_lissee  ;
-    InrImage* im_tmp        ;
+    InrImage::ptr im_tmp        ;
 
     /// image of the coefficients for SRAD type filtering
     InrImage* image_c; 
@@ -323,7 +323,6 @@ namespace ami {
     double   planstats_sigma;
     double   dirstats_sigma;
 
-    unsigned char   image_entree_allouee;
     int       boundary_extension_size;
     
     
@@ -355,10 +354,9 @@ namespace ami {
     void InitParam() 
     {
       verbose = false;
-      image_entree  = NULL;
+	  image_entree.reset();
       this->result_image= NULL;
       this->image_lissee  = NULL;
-      this->im_tmp        = NULL;
       this->image_c       = NULL;
       this->tensor_xx     = NULL;
       this->tensor_xy     = NULL;
@@ -416,8 +414,8 @@ namespace ami {
     }
 
 
-    void ExtendBoundariesVonNeumann( InrImage* input);
-    void CreateBoundariesVonNeumann( InrImage* input);
+    void ExtendBoundariesVonNeumann( InrImage::ptr input);
+    void CreateBoundariesVonNeumann( InrImage::ptr input);
 
     void EstimateNoiseStandardDeviation( InrImage* im);
 
@@ -464,7 +462,7 @@ namespace ami {
     float Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff);
     float Itere3D_3( InrImage* im );
 
-    void Init(InrImage* in, float p_sigma, float p_k, float p_beta);
+    void Init(InrImage::ptr in, float p_sigma, float p_k, float p_beta);
 
     /**
     * Main iteration method, directs to the appropriate specific method
