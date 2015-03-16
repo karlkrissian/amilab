@@ -133,7 +133,7 @@ std::string Variables::CheckVarName(const char* name)
 
 
 //--------------------------------------------------
-const BasicVariable::ptr& Variables::AddVar( 
+BasicVariable::ptr Variables::AddVar( 
           const std::string& name, 
           BasicVariable::ptr& val, 
           const boost::shared_ptr<Variables>& context)
@@ -173,7 +173,7 @@ BasicVariable::ptr Variables::AddVar(
 
 
 //--------------------------------------------------
-const BasicVariable::ptr& Variables::AddVar( BasicVariable::ptr& var, const Variables::ptr& context )
+BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, const Variables::ptr& context )
 {
 
   CLASS_MESSAGE((boost::format(" %s ") % var->Name()).str().c_str());

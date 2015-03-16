@@ -144,6 +144,7 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<int>::BasicCast(const
 /// (cond?a:b)
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<int>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2);
 
+template<>  LanguageBase_EXPORT BasicVariable::ptr Variable<int>::operator[](const BasicVariable::ptr& v);
 
 /// Other operators
 /// a=b

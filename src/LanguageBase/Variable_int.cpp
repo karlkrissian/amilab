@@ -485,6 +485,20 @@ BasicVariable::ptr Variable<int>::TernaryCondition(const BasicVariable::ptr& v1,
   return NewReference();
 }
 
+template<> AMI_DLLEXPORT
+  BasicVariable::ptr Variable<int>::operator[](const BasicVariable::ptr& v)
+{
+  if (v->IsNumeric()) {
+    int* pointer = this->Pointer().get();
+    //std::cout << "Size of array " << ARRAY_SIZE(pointer) << std::endl;
+    // at the user own risk
+    int res = pointer[(int)(v->GetValueAsDouble()+0.5)];
+    return AMILabType<int>::CreateVar(res);
+  } else
+    CLASS_ERROR("operator[] only takes a numerical parameter");
+  return NewReference();
+}
+
 
 template<> 
 BasicVariable::ptr Variable<int>::operator =(const BasicVariable::ptr& b)
