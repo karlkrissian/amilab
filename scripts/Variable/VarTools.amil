@@ -1,0 +1,19 @@
+
+
+proc ObjectContext(OBJECT v) \
+{
+    # 1. wrap the variable
+    wv = language.WrapVariable(v)
+    # 2. convert it to Variable<AMIObject>
+    ov = language.Variable_AMIObject.DynCast(wv)
+    # 3. get the AMIObject context
+    oc = ov.Pointer().GetContext()
+    return = &oc
+    
+    # this is probably reset at the end of the current context ...
+    #language.Vars.SetObjectContext(oc)
+}
+
+
+# todo: 
+# language.Vars.SetObjectContext(ObjectContext(..))
