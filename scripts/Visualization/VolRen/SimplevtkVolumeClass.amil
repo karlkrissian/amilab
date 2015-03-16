@@ -307,6 +307,8 @@ if (!exists(SimplevtkVolumeClass)) {
     #----------------------------
     proc ::SetVolMapperMode () \
     {
+        # force delete to free memory??
+        if (exists(::volmapper)) { ::volmapper.Delete(); }
         del ::volmapper
         #printn "VolMapper Mode = %1%" %::volrenmapper_type
 
@@ -383,7 +385,8 @@ if (!exists(SimplevtkVolumeClass)) {
           return = false
         } else {
 
-
+          if (exists(::vol)) { ::vol.Delete(); }
+          del ::vol
           ::vol       = vtk.vtkVolume.New()
           # don"t put the boxwidget for the moment
           # convert input to vtkimage
@@ -393,14 +396,14 @@ if (!exists(SimplevtkVolumeClass)) {
           }
 
           # Set first input
-          ::vtkinput  = vtktools.ToVtkImageData(&::input)
+          ::vtkinput  = vtktools.ToVtkImageData(::input)
           if (exists(::mask)){
-            ::volmapper.SetMaskInput(&::mask)
+            ::volmapper.SetMaskInput(::mask)
           }
           if (::volrenmapper_type!=3) {
-            ::volmapper.SetInput(&::vtkinput)
+            ::volmapper.SetInput(::vtkinput)
           } else {
-            ::volmapper.SetInput(0,&::vtkinput)
+            ::volmapper.SetInput(0,::vtkinput)
           }
           
           if (::volrenmapper_type==3) {
@@ -586,8 +589,11 @@ if (!exists(SimplevtkVolumeClass)) {
       del ::opacityFun2
       del ::property2 
       #}
-      del ::vol       
+       if (exists(::vol)) { ::vol.Delete(); }
+      del ::vol
+      if (exists(::volmapper)) { ::volmapper.Delete(); }
       del ::volmapper
+      if (exists(::colorFun)) { ::colorFun.Delete(); }
       del ::vtkinput
       del ::vtkinput2
       # don't delete box here ...
@@ -601,6 +607,7 @@ if (!exists(SimplevtkVolumeClass)) {
    #----------------------------Obsolete method
    proc ::ChangeVol(IMAGE input_image){
     #printn "CreateVTK 2"
+    if (exists(::vol)) { ::vol.Delete(); }
     del ::vol
     ::vol       = vtk.vtkVolume.New()
     # don"t put the boxwidget for the moment
@@ -608,13 +615,13 @@ if (!exists(SimplevtkVolumeClass)) {
     del ::vtkinput
     ::vtkinput  = vtktools.ToVtkImageData(&input_image)
     # connect up the volume to the property and the mapper
-    ::vol.SetProperty( &::property )
-    ::vol.SetMapper( &::volmapper )
+    ::vol.SetProperty( ::property )
+    ::vol.SetMapper( ::volmapper )
 
-    ::volmapper.SetInput(0,&::vtkinput)
+    ::volmapper.SetInput(0,::vtkinput)
     #Add volume to renderer
     if (exists(::renderer)){
-      ::renderer.AddVolume(&::vol)
+      ::renderer.AddVolume(::vol)
     }
    }
 
@@ -643,10 +650,13 @@ if (!exists(SimplevtkVolumeClass)) {
       ::initialized = false
       del ::input
       del ::input2
+      if (exists(::vol)) { ::vol.Delete(); }
       del ::vol
+      if (exists(::volmapper)) { ::volmapper.Delete(); }
       del ::volmapper
+      if (exists(::colorFun)) { ::colorFun.Delete(); }
       del ::colorFun
-      del ::opacityFun
+      del ::c
       del ::property
       del ::colorFun2
       del ::opacityFun2
