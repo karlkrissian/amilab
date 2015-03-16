@@ -40,23 +40,30 @@ if (!exists(SystemInfoClass)) {
 
     #-----------------------------------------------
     proc ::HumanReadableSize( NUM val ) {
-      if val>1E12 {
-        return = "%1% Tb" % (val/1E12)
+      neg = val<0
+      if (neg) { val=-val; }
+      Kb = 1024
+      Mb = 1024*Kb
+      Gb = 1024*Mb
+      Tb = 1024*Mb
+      if val>Tb {
+        return = "%1% Tb" % (val/Tb)
       } else {
-        if val>1E9 {
-          return = "%1% Gb" % (val/1E9)
+        if val>Gb {
+          return = "%1% Gb" % (val/Gb)
         } else {
-          if val>1E6 {
-            return = "%1% Mb" % (val/1E6)
+          if val>Mb {
+            return = "%1% Mb" % (val/Mb)
           } else {
-            if val>1E3 {
-              return = "%1% Kb" % (val/1E3)
+            if val>Kb {
+              return = "%1% Kb" % (val/Kb)
             } else {
               return = "%1% b" % val
             }
           }
         }
       }
+      if (neg) { return = "-"+return; }
     }
     
     #-----------------------------------------------
@@ -70,7 +77,8 @@ if (!exists(SystemInfoClass)) {
     
       total = wx.wxLongLongNative()
       free = wx.wxLongLongNative()
-      if (wx.wxGetDiskSpace(wx.wxGetUserHome().data(),&total,&free)) {
+      #if (wx.wxGetDiskSpace(wx.wxGetUserHome().data(),&total,&free)) {
+      if (wx.wxGetDiskSpace(wx.wxGetUserHome(),&total,&free)) {
         ::win.SetLabelValue(::totaldisk_id, \
                             ::HumanReadableSize(total.ToDouble()))
         ::win.SetLabelValue(::freedisk_id,  \
@@ -82,8 +90,17 @@ if (!exists(SystemInfoClass)) {
 
       ::free_memory = wx.wxGetFreeMemory().ToDouble()
       ::win.SetLabelValue(::freemem_id, ::HumanReadableSize(::free_memory))
+      if (exists(::ram_ref)) {
+        ::win.SetLabelValue(::diffmem_id, ::HumanReadableSize(::free_memory-::ram_ref))
+      }
     }
 
+    #-----------------------------------------------
+    proc ::SetRAMRef() \
+    {
+      ::ram_ref = ::free_memory
+    }
+    
     //---------------------------------------------------
     proc ::Gui() {
     
@@ -107,7 +124,9 @@ if (!exists(SystemInfoClass)) {
           ::win.EndBoxPanel()
 
           ::freemem_id = ::win.AddLabel("Free Memory: ","")
-          ::win.AddButton("Update",&::Update)
+          ::diffmem_id = ::win.AddLabel("Difference from reference: ","")
+          ::win.AddButton("Update",            ::Update)
+          ::win.AddButton("Set RAM reference", ::SetRAMRef)
 
 
         if wx.wxFileName(::html_filename).FileExists() {
