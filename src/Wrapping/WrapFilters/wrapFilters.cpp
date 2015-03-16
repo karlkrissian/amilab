@@ -512,9 +512,10 @@ InrImage* NLmeans_fast(ParamList* p)
     h = 10;
   }
 
-
+  bool input_float_allocated = false;
   if (input->GetFormat()!=WT_FLOAT) {
    input_float = new InrImage(WT_FLOAT,"NLmeans_result.ami.gz",input);
+   input_float_allocated = true;
    (*input_float)=(*input);
   } else input_float=input;
 
@@ -571,7 +572,7 @@ InrImage* NLmeans_fast(ParamList* p)
   free(threads);
 
   printf("finished !...\n");
-  if (input->GetFormat()!=WT_FLOAT)
+  if (input_float_allocated)
    delete input_float;
 //  delete[] voxel_weights;
 
