@@ -59,7 +59,7 @@ if (!exists(ComputeCrossSectionsClass)) {
 
 
     #---------------------------------------------------------------------------
-    proc ::ComputeSections()
+    proc ::ComputeSections() {}
     
     #---------------------------------------------------------------------------
     # p1 and p2 are 2 successive std::vector<double> 3D points 
