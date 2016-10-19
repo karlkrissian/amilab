@@ -1627,6 +1627,7 @@ void vtkLevelSets::InitParam( vtkImageData* input,
       inputImage->SetOrigin(     input->GetOrigin());
       inputImage->SetSpacing(    input->GetSpacing());
 
+      inputImage->AllocateScalars(inputImage->GetInformation());
       inputImage->CopyAndCastFrom(input,
                                   input->GetExtent());
       inputImage_allocated = 1;
