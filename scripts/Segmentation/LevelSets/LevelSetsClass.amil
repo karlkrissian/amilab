@@ -964,7 +964,7 @@ Class LevelSetsClass : public ScriptGui \
     ::vtks1 = vtktools.ToVtkPolyData(::s1)
     del polynormals
     polynormals = vtk.vtkPolyDataNormals.New()
-    polynormals.SetInput(::vtks1)
+    polynormals.SetInputData(::vtks1)
     polynormals.SetFeatureAngle(60.0)
     del polymapper
     polymapper = vtk.vtkPolyDataMapper.New()
@@ -995,7 +995,7 @@ Class LevelSetsClass : public ScriptGui \
     del ::vtks0
     ::vtks0 = vtktools.ToVtkPolyData(new_s0)
     polynormals = vtk.vtkPolyDataNormals.New()
-    polynormals.SetInput(::vtks0)
+    polynormals.SetInputData(::vtks0)
     polynormals.SetFeatureAngle(60.0)
     polymapper = vtk.vtkPolyDataMapper.New()
     polymapper.SetInputConnection(polynormals.GetOutputPort())
@@ -1010,7 +1010,7 @@ Class LevelSetsClass : public ScriptGui \
     ::vtks1 = vtktools.ToVtkPolyData(new_s1)
     del polynormals
     polynormals = vtk.vtkPolyDataNormals.New()
-    polynormals.SetInput(::vtks1)
+    polynormals.SetInputData(::vtks1)
     polynormals.SetFeatureAngle(60.0)
     del polymapper
     polymapper = vtk.vtkPolyDataMapper.New()
