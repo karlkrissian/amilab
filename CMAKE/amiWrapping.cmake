@@ -50,7 +50,7 @@ MACRO( RUN_GCCXML XML_INPUT XML_OUTPUT)
 
   WRAP_MESSAGE("Try to generate XML file ${XML_OUTPUT}")
 
-  SET(GCCXML_CMD ${GCCXML}   )
+  SET(GCCXML_CMD castxml -x c++ --castxml-gccxml -v -std=c++98  -D__GCCXML__  -fopenmp=libomp  )
 
   # remove duplicates
   LIST(REMOVE_DUPLICATES GCCXML_INCLUDES)
@@ -94,7 +94,7 @@ MACRO( RUN_GCCXML XML_INPUT XML_OUTPUT)
   WRAP_MESSAGE("Running gccxml")
   # Execute the command
   EXECUTE_PROCESS(
-    COMMAND ${GCCXML_CMD}  "-fxml=${XML_OUTPUT}"
+    COMMAND ${GCCXML_CMD}    -o ${XML_OUTPUT}
     RESULT_VARIABLE GCCXML_CMD_RESULT
     OUTPUT_VARIABLE GCCXML_CMD_OUTPUT
     ERROR_VARIABLE  GCCXML_CMD_ERROR
@@ -105,8 +105,8 @@ MACRO( RUN_GCCXML XML_INPUT XML_OUTPUT)
   IF(GCCXML_CMD_RESULT)
     MESSAGE(SEND_ERROR "Failed the generation of XML: ${GCCXML_CMD_ERROR} - ${GCCXML_CMD_RESULT}")
   ENDIF(GCCXML_CMD_RESULT)
-  WRAP_MESSAGE("GCCXML output: ${GCCXML_CMD_OUTPUT}")
-  WRAP_MESSAGE("GCCXML error:  ${GCCXML_CMD_ERROR}")
+#  WRAP_MESSAGE("GCCXML output: ${GCCXML_CMD_OUTPUT}")
+#  WRAP_MESSAGE("GCCXML error:  ${GCCXML_CMD_ERROR}")
 
 ENDMACRO( RUN_GCCXML )
 
@@ -263,6 +263,8 @@ ENDMACRO( CREATE_ANCESTORS )
 # it creates a "map" between the classname and the dependency file
 #
 MACRO( CREATE_ANCESTORS_DEPS )
+  MESSAGE("CREATE_ANCESTORS_DEPS start")
+
   SET(ANCESTORS_DEPFILE "${GENERATED_DIR}/ancestors_depfile.txt")
   IF(EXISTS ${ANCESTORS_DEPFILE})
     FILE(READ "${ANCESTORS_DEPFILE}" ancestors_depfile)
@@ -275,7 +277,7 @@ MACRO( CREATE_ANCESTORS_DEPS )
       STRING(SUBSTRING ${dep} 0 ${LEN} CLASSNAME)
       MATH(EXPR BEG "${SPLIT_POS}+2")
       STRING(SUBSTRING ${dep} ${BEG} -1 DEPFILE)
-      #MESSAGE("${CLASSNAME} --> ${DEPFILE}")
+      MESSAGE("${CLASSNAME} --> ${DEPFILE}")
       # create the simulated map structure
       ClassUsedName( CLASSNAME m_class )
       SET(CLASSDEP_${m_class} ${DEPFILE})

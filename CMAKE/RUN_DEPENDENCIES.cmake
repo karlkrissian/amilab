@@ -6,6 +6,7 @@ MESSAGE("***** executing RUN_DEPENDCIES.cmake *****")
 #   AMILAB_SOURCE_DIR
 #   ...
 
+MESSAGE("including cmake files")
 #MESSAGE("AMILAB_SOURCE_DIR=${AMILAB_SOURCE_DIR}")
 
 INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/amilab_macros.cmake)
@@ -14,6 +15,7 @@ INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/CHECK_WRAPPED_FILES.cmake)
 
 #MESSAGE("AMILAB_SOURCE_DIR=${AMILAB_SOURCE_DIR}")
 
+MESSAGE("reads ancestors_list")
 # reads ancestors_list
 IF(EXISTS "${GENERATED_DIR}/ancestors.txt")
   SET(ANCESTORS_FILE "${GENERATED_DIR}/ancestors.txt")
