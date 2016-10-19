@@ -227,11 +227,12 @@ if (!exists(VolRenClass)) {
     }
 
     #---------------------------------------------------------------------------
-    proc ::ShowHistograms( NUM toggle) \
+    proc ::ShowHistograms( NUM toggle, NUM _index) \
     {
       if ::trace { eval ::trace_begin; }
       if (::volVector.size()>0){
-        index=::vbCtrl.GetSelection()
+        index = _index
+        #index=::vbCtrl.GetSelection()
         if (!toggle){
           ::volVector[index].imhisto1.dw.Show(true)
           if ::volVector[index].volmapper.GetClassName()==\
@@ -262,7 +263,7 @@ if (!exists(VolRenClass)) {
     #---------------------------------------------------------------------------
     proc ::ShowHistogramToggle( ) \
     {
-      ::ShowHistograms(true)
+      ::ShowHistograms(true, ::vbCtrl.GetSelection())
     }
 
 
@@ -537,7 +538,7 @@ if (!exists(VolRenClass)) {
         ::renwin_interact.Render()
         ::renwin_interact.Refresh()
         ::EnableGPUmode(0)
-        ::ShowHistograms(false)
+        ::ShowHistograms(false, 0)
         ::volVector[0].OnLinearColormap()
 
         # TODO: fix the dependency of the renderer for the volVector[0] ...
@@ -621,7 +622,7 @@ if (!exists(VolRenClass)) {
         ::renwin_interact.Render()
         ::renwin_interact.Refresh()
         ::EnableGPUmode(1)
-        ::ShowHistograms(false)
+        ::ShowHistograms(false, 1)
         ::volVector[1].OnLinearColormap()
         #Set Linear curve
         ::volVector[1].ResetLinearCurve1()
@@ -870,7 +871,7 @@ if (!exists(VolRenClass)) {
 
     #----------------------------
     proc ::OnChangePage(){
-      ::ShowHistograms(false)
+      ::ShowHistograms(false, ::vbCtrl.GetSelection())
     }
     #----------------------------
     proc ::PreviewApplied() \
