@@ -30,12 +30,14 @@
 
 #include "AMILabConfig.h"
 
-#ifdef AMI_USE_SSE 
-  #define SSE3
-#endif
+#ifndef __GCCXML__
+  #ifdef AMI_USE_SSE 
+    #define SSE3
+  #endif
 
-#if defined SSE3 || defined AVX
-#include <immintrin.h>
+  #if defined SSE3 || defined AVX
+  #include <immintrin.h>
+  #endif
 #endif
 
 
@@ -132,6 +134,8 @@ inline int convolve_avx_unrolled_vector_partial_aligned(
         float* kernel, int kernel_length);
 #endif
 
+#ifndef __GCCXML__
 #include "convolve.cpp"
+#endif // __GCCXML__
 
 #endif /*Header guard*/
