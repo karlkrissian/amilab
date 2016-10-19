@@ -364,18 +364,19 @@ if (!exists(Subpixel2DClass)){
         ::s_method = "Basic method"
       }
       if (::alg_type == 1) {
-        ::res = ::sp2D->DenoisingGus()
+        ::sp2D->DenoisingGus()
+        ::res = ::sp2D.GetDenoised()
         ::s_method = "Averaged method"
       }
       if (::alg_type == 2) {
-        ::res = ::sp2D->SubpixelDenoising(::niter)
+        ::sp2D->SubpixelDenoising(::niter)
+        ::res = ::sp2D.GetDenoised()
         ::s_method = "Subpixel denoising"
       }
 			if (::alg_type != 2 || (::alg_type == 2 && ::thresholds_crossed==0)) {
         ::win.Update(-1)
         ::win.EnablePanel(::pxinf_panel, 1)
         ::win.EnablePanel(::stat_panel, 1)
-        
         ::Display()
         
         if (::draw_on_averaged) {
