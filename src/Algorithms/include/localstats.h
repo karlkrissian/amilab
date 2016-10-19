@@ -106,6 +106,8 @@ double        Func_Compute_sigma2_Gaussian_mode(InrImage* im,
                                                 double resolution=0.05
                                                );
 
-#include "localstats.tpp"
+#ifndef __GCCXML__
+  #include "localstats.tpp"
+#endif
 
 #endif
