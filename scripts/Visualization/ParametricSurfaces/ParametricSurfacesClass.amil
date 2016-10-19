@@ -290,7 +290,7 @@ Class ParametricSurfacesClass : public ScriptGui \
     del ::vtksurf
     ::vtksurf = vtktools.ToVtkPolyData(new_surf)
     polynormals = vtk.vtkPolyDataNormals.New()
-    polynormals.SetInput(::vtksurf)
+    polynormals.SetInputData(::vtksurf)
     polynormals.SetFeatureAngle(60.0)
     polymapper = vtk.vtkPolyDataMapper.New()
 
@@ -325,7 +325,7 @@ Class ParametricSurfacesClass : public ScriptGui \
     # create line actor and mapper
     #linedata = vtk.vtkPolyData.SafeDownCast(polymapper.GetInput())
     polylinemapper = vtk.vtkPolyDataMapper.New()
-    polylinemapper.SetInput(::vtksurf)
+    polylinemapper.SetInputData(::vtksurf)
     polylinemapper.ScalarVisibilityOff()
     del ::vtksurf_lineactor
     ::vtksurf_lineactor = vtk.vtkActor.New()
