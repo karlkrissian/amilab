@@ -30,7 +30,10 @@ class ArgTypeBase:
     self._name=n
 
   def GetName(self):
-    return self._name
+    if self._name!="":
+        return self._name
+    else:
+        return self._type+str(self._id)
   
   def GetAbstract(self):
     return None
@@ -64,13 +67,13 @@ class ArgTypeBase:
 
   def GetString(self):
     #print "ArgTypeBase::GetString()"
-    return self._name
+    return self.GetName()
     
   def IsConst(self):
     return False
     
   def SetContext(self,context):
-    utils.WarningMessage(" type {0} context {1} ".format(self._name,context) )
+    utils.WarningMessage(" type {0} context {1} ".format(self.GetName(),context) )
     self._context = context
     
   def GetContext(self):
@@ -95,13 +98,13 @@ class ClassInfo(ArgTypeBase):
   def GetString(self):
     if self._context != None:
       if self._context in config.types.keys() and self._context!="_1":
-        return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
+        return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
       else:
         #print "context = ",self._context," not recognized"
-        return self._name
+        return self.GetName()
     else:
-      #print "no context for class ",self._name
-      return self._name
+      #print "no context for class ",self.GetName()
+      return self.GetName()
   
   def GetAbstract(self):
     return self.abstract=="1"
@@ -116,11 +119,11 @@ class NamespaceInfo(ArgTypeBase):
   def GetString(self):
     if self._context != None:
       if self._context in config.types.keys() and self._context!="_1":
-        return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
+        return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
       else:
-        return self._name
+        return self.GetName()
     else:
-      return self._name
+      return self.GetName()
   
 
 #------------------------------
@@ -143,7 +146,7 @@ class TypedefInfo(ArgTypeBase):
     
   def GetRealType(self):
     #print "TypedefInfo::GetRealType()"
-    if (self._name not in config.available_classes) and (self._reftypeid in config.types.keys()):
+    if (self.GetName() not in config.available_classes) and (self._reftypeid in config.types.keys()):
       return config.types[self._reftypeid].GetType()
     else:
       return self.GetType()
@@ -152,15 +155,15 @@ class TypedefInfo(ArgTypeBase):
     # deal with typedef inside a class ...
     if self._context != None:
       if self._context in config.types.keys() and self._context!="_1":
-        return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
+        return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
     if self._reftypeid in config.types.keys():
       #print config.types[self._reftypeid].GetString()
       # if member typedef (or function), keep the typedef name
-      #print "*** {0}".format(self._name)
+      #print "*** {0}".format(self.GetName())
       maintyperef = config.types[self._reftypeid].GetMainTypeId()
       if config.types[maintyperef].GetType()=="MethodType":
-        #print "*** returning '{0}'".format(self._name)
-        typename=self._name
+        #print "*** returning '{0}'".format(self.GetName())
+        typename=self.GetName()
       else:
         typename=config.types[self._reftypeid].GetString()
     else:
@@ -174,7 +177,7 @@ class TypedefInfo(ArgTypeBase):
       # if member typedef (or function), keep the typedef name
       maintyperef = config.types[self._reftypeid].GetMainTypeId()
       if config.types[maintyperef].GetType()=="MethodType":
-        typename=self._name
+        typename=self.GetName()
       else:
         typename=config.types[self._reftypeid].GetFullString()
     else:
@@ -193,14 +196,14 @@ class TypedefInfo(ArgTypeBase):
       return self.GetId()
 
   def GetDemangled(self):
-    maintyperef = config.types[self._reftypeid].GetMainTypeId()
-    if config.types[maintyperef].GetType()=="MethodType":
-      typename = self._name
-    else:
-      if self._reftypeid in config.types.keys():
-        typename=config.types[self._reftypeid].GetDemangled()
+    if self._reftypeid in config.types.keys():
+      maintyperef = config.types[self._reftypeid].GetMainTypeId()
+      if config.types[maintyperef].GetType()=="MethodType":
+        typename = self.GetName()
       else:
-        typename=self._reftypeid
+        typename=config.types[self._reftypeid].GetDemangled()
+    else:
+      typename=self._reftypeid
     return typename
 
 
@@ -236,11 +239,11 @@ class EnumerationInfo(ArgTypeBase):
   def GetString(self):
     if self._context != None:
       if self._context in config.types.keys() and self._context!="_1":
-        return "{0}::{1}".format(config.types[self._context].GetString(),self._name)
+        return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
       else:
-        return self._name
+        return self.GetName()
     else:
-      return self._name
+      return self.GetName()
 
   def GetFullString(self):
     return self.GetString()
@@ -279,7 +282,7 @@ class MethodTypeInfo(ArgTypeBase):
   
   def GetString(self):
     # return "__MethodType__"
-    return self._name
+    return self.GetName()
 
   def SetConst(self,v):
     self.const = v
@@ -405,3 +408,10 @@ class PointerTypeInfo(ArgTypeBase):
     else:
       return self.GetId()
 
+#------------------------------
+class OperatorFunctionInfo(ArgTypeBase):
+  def __init__(self):
+    ArgTypeBase.__init__(self) 
+    self._type="OperatorFunction"
+    # saving the first argument id
+    self._first_argument_id = ''

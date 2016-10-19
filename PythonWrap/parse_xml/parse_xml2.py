@@ -375,7 +375,7 @@ if __name__ == '__main__':
       ancestors_toremove=[]
       ancestors_toadd=[]
       
-      #print "ancestors:", ancestors
+      print "ancestors:", ancestors
       #print "demanged_typefs:", fpm.parse_public_members.demangled_typedefs
       # check for possible typedefs
       for a in ancestors:
@@ -389,7 +389,8 @@ if __name__ == '__main__':
           refid = t.GetMainTypeId()
           #print "refid = {0}".format(refid)
           if refid in config.types.keys():
-            print "adding '{0}' ".format(config.types[refid].GetFullString())
+            print "1.adding '{0}' ".format(config.types[refid].GetFullString())
+            print config.types[refid], " ",refid
             ancestors_toadd.append(config.types[refid].GetFullString())
         if a in typedefs_global.keys():
           #print "Processing {0}".format(a)
@@ -400,7 +401,8 @@ if __name__ == '__main__':
           refid = t
           #print "refid = {0}".format(refid)
           if refid in config.types.keys():
-            print "adding '{0}' ".format(config.types[refid].GetFullString())
+            print "2.adding '{0}' ".format(config.types[refid].GetFullString())
+            print config.types[refid], " ",refid
             ancestors_toadd.append(config.types[refid].GetFullString())
         if a in typedefs_namespace.keys():
           #print "Processing {0}".format(a)
@@ -411,7 +413,8 @@ if __name__ == '__main__':
           refid = t
           #print "refid = {0}".format(refid)
           if refid in config.types.keys():
-            print "adding '{0}' ".format(config.types[refid].GetFullString())
+            print "3.adding '{0}' ".format(config.types[refid].GetFullString())
+            print config.types[refid]
             ancestors_toadd.append(config.types[refid].GetFullString())
       
       # remove processed typedefs
@@ -899,7 +902,9 @@ if __name__ == '__main__':
             # 2. add the values
             # 3. set as default
 
-            enum_usedname = config.types[t]._name.replace('.','enum')
+            enum_usedname = config.types[t].GetName().replace('.','enum')
+            if enum_usedname=="":
+                enum_usedname = config.types[t].GetId()
             # Create an amiobject
             f.write( "\n")
             f.write( "  // New enumeration {0}\n".format(enum_usedname))

@@ -11,7 +11,20 @@ import args
 import utils
 import wrap_class
 
-typelist=('Class','Typedef','Struct','FundamentalType','CvQualifiedType','ReferenceType','PointerType','Enumeration','ArrayType','Union','MethodType','Namespace')
+typelist=(
+    'Class',
+    'Typedef',
+    'Struct',
+    'FundamentalType',
+    'CvQualifiedType',
+    'ReferenceType',
+    'PointerType',
+    'Enumeration',
+    'ArrayType',
+    'Union',
+    'MethodType',
+    'Namespace',
+    'OperatorFunction')
 
 variablelist = ('Variable')
 
@@ -27,6 +40,7 @@ class FindTypesAndVariables(handler.ContentHandler):
     self.number_of_libclasses=0 # classes that match the current library filter
     self.inenum  = False
     self.inclass = False
+    self.inoperatorfunction = False
     self.number_of_files=0 # classes that match the current library filter
     print "FindTypesAndVariables"
 
@@ -49,18 +63,43 @@ class FindTypesAndVariables(handler.ContentHandler):
     # create the corresponding structure
     self.argtype = eval("argtypes."+name+"Info()")
     
+    # Class Id
+    classid = attrs.get('id', None)
+    self.argtype.SetId(classid)
+    
     # Name
     classname = attrs.get('name', None)
     if name=='Typedef':
       print "typedef='{0}'".format(classname)
+    if classname=="":
+        # replace empty name by type+id
+        classname=name+classid
     self.argtype.SetName(classname)
     
     if classname!=None:
       if re.match(args.val.filter, classname) != None:
         self.number_of_libclasses = self.number_of_libclasses +1
     
+    # Set Context
+    context = attrs.get('context', None)
+    if context != None:
+      self.argtype.SetContext(context)
     
     demangled=attrs.get('demangled',None)
+    #print "demangled = ",demangled
+    #print "name = ",name
+    #print "----- classname =",classname,
+    if classname!=None:
+        if demangled==None:
+            demangled=classname
+            #print "context = ", context,
+            if context in config.types:
+                #print " context type =",config.types[context].GetType(),
+                if config.types[context].GetType() in [ "Namespace", "Class", "Struct" ]:
+                    #print config.types[context].GetDemangled()
+                    if config.types[context].GetDemangled()!="::":
+                        demangled = config.types[context].GetDemangled() + "::"+demangled
+    #print " setting demangled to ",demangled
     self.argtype.SetDemangled(demangled)
     
     #print classname
@@ -68,9 +107,6 @@ class FindTypesAndVariables(handler.ContentHandler):
     #self.found=True
     self.inclass=True
     
-    # Class Id
-    classid = attrs.get('id', None)
-    self.argtype.SetId(classid)
     config.types[classid] = self.argtype
     # Find id from the class name
     if classname!=demangled and demangled!=None and (demangled.startswith("MT")or demangled.startswith("amilab")):
@@ -92,12 +128,7 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # Abstract
     self.argtype.abstract = attrs.get('abstract', '0')
-    
-    # Set Context
-    context = attrs.get('context', None)
-    if context != None:
-      self.argtype.SetContext(context)
-    
+        
     # File id
     self.argtype.fileid = attrs.get('file', None)
     #print "fileid = ", self.argtype.fileid 
@@ -151,6 +182,12 @@ class FindTypesAndVariables(handler.ContentHandler):
         config.enumvalues[name]=self.argtype.GetContext()
         self.argtype._values[name]=val
         return
+      
+      # parse first argument of operatorfunction
+      if self.inoperatorfunction and name=='Argument':
+        self.argtype._first_argument_id = attrs.get('type',0)
+        self.inoperatorfunction = False
+        return
     
     # don't parse non-classes types if only looking at the class hierarchy
     if args.val.ancestors == []:
@@ -162,6 +199,9 @@ class FindTypesAndVariables(handler.ContentHandler):
 
     # first check for variable
     if name =="Enumeration": self.inenum = True
+
+    # first check for variable
+    if name =="OperatorFunction": self.inoperatorfunction = True
 
     # create the corresponding structure
     self.argtype = eval("argtypes."+name+"Info()")
@@ -177,20 +217,19 @@ class FindTypesAndVariables(handler.ContentHandler):
 
     # Store typedefs
     if name=="Typedef":
-      name = attrs.get('name', None)
-      config.typedefs[name]=id
+      name_attribute = attrs.get('name', None)
+      config.typedefs[name_attribute]=id
       # File id
       self.argtype.fileid = attrs.get('file', None)
       #print "Added typedef {0} {1} {2}".format(name,id,self.argtype.GetRealType())
     
-
     context = attrs.get('context', None)
     if context != None:
       self.argtype.SetContext(context)
 
-    name = attrs.get('name', None)
-    if name != None:
-      self.argtype.SetName(name)
+    name_attribute = attrs.get('name', None)
+    if name_attribute != None:
+      self.argtype.SetName(name_attribute)
       
     const = attrs.get('const', None)
     if const != None:
@@ -203,9 +242,11 @@ class FindTypesAndVariables(handler.ContentHandler):
     
   #-------------------------------------------------------
   def endElement(self, name):
-    if (self.inenum==True) and (name =="Enumeration"):
+    if (self.inenum==True)              and (name =="Enumeration"):
       self.inenum=False
-    if (self.inclass==True) and (name =="Class"):
+    if (self.inoperatorfunction==True)  and (name =="OperatorFunction"):
+      self.inoperatorfunction=False
+    if (self.inclass==True)             and (name =="Class"):
       #print self.argtype.bases
       self.inclass=False
     #if args.val.ancestors == []:

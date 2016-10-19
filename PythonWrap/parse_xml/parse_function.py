@@ -114,7 +114,13 @@ class FindFunction(handler.ContentHandler):
     if self.found or (name != "Function"): return
 
     funcname = attrs.get('name', None)
+    context = attrs.get('context',None)
+    print "funcname=",funcname," context=",context," contextname=",config.types[context].GetFullString()
+    
     demangled=attrs.get('demangled',None)
+    if demangled==None and context!="_1":
+        demangled = config.types[context].GetFullString()+"::"+funcname
+    
     if (funcname != self.search_funcname):
       if demangled==None: 
         return

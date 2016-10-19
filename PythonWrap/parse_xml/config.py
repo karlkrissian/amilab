@@ -40,6 +40,9 @@ classes_blacklist=[
 classes_startswith_blacklist=[
   'std::_Iterator_with_base<',            # VC++ gccxml 
   'std::_Container_base_aux_alloc_real<', # idem
+  '__gnu_cxx::new_allocator',
+  'std::basic_ios',
+  'std::allocator',
 ]
 
 # ignore specific members
@@ -51,6 +54,7 @@ members_blacklist=[
   'wxStringBase::copy',
   'wxString::FormatV', 
   'wxString::PrintfV', 
+  'wxString::tchar_str', # not sure why it's failing: no matching function call ... 
   'wxFont::Unshare', 
   'wxStatusBar::SetBorderX', # not implemented ... 
   'wxStatusBar::SetBorderY', # not implemented ...
@@ -86,6 +90,22 @@ members_blacklist=[
   'wxListCtrl::ConvertToMSWStyle', # linking problem MacOS
   'wxListCtrl::ChangeCurrent',     # idem
   'wxListCtrl::ResetCurrent',      # idem
+  'wxStyledTextCtrl::wxCreateObject', # bug in wxwidgets? declared with DECLARE_DYNAMIC_CLASS and implemented with IMPLEMENT_CLASS?
+  'tchar_str', # this method gives problems with wxWidgets
+  'wxDataViewCtrlBase::wxCreateObject',
+  'wxURI::wxCreateObject', # bug in wxwidgets? declared with DECLARE_DYNAMIC_CLASS and implemented with IMPLEMENT_CLASS?
+  # undefined methods at linking ...
+  'wxMenuItemBase::GetAccelFromString',
+  'wxButton::GTKPressed',
+  'wxMenuBase::New',
+  'wxButton::GTKMouseLeaves',
+  'wxGenericListCtrl::Update',
+  'wxDC::DrawPolygon',
+  'wxFont::Unshare',
+  'wxButton::GTKReleased',
+  'wxButton::GTKMouseEnters',
+  'wxDC::DrawLines',
+  'wxWindowBase::GetAdjustedMinSize',
   'MacCreateUIFont',               #Mac problem
   'MacGetCTFont',                  #idem
   'wxApp::Initialize',               # double pointer pb
@@ -111,8 +131,11 @@ members_blacklist=[
   'vtkFixedPointVolumeRayCastMapper::GetGradientNormal', # double pointer pb
   'vtkCellArray::GetNextCell', # reference to pointer
   'vtkCellArray::GetCell', # reference to pointer
+  'vtkVolumeRayCastFunction::FunctionInitialize',
   'Variable<AMIObject>::Value', # problem of undefined method public: static class boost::shared_ptr<class BasicVariable> __cdecl AMILabType<class AMIObject>::CreateVar(class AMIObject const &)
-  'Variable<WrapClassMember>::Value', # problem of undefined method public: static class boost::shared_ptr<class BasicVariable> __cdecl AMILabType<class AMIObject>::CreateVar(class AMIObject const &)
+  'Variable<WrapClassMember>::Value', # problem of undefined method public: static class boost::shared_ptr<class BasicVariable> __cdecl AMILabType<class AMIObject>::CreateVar(class AMIObject const &),
+  'gdcm::DataElement::GetLength', # problem related to templates
+  'gdcm::DataSet::GetLength' # problem related to templates
 ]
 
 

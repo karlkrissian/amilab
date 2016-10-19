@@ -7,6 +7,9 @@ def get_include_file(classname,filename):
   incfile=filename[last+1:]
   incfile = '#include "{0}"'.format(incfile)
   #print "including class {0} from file {1}".format(classname,incfile)
+  if filename.endswith("ostream.tcc") or classname.startswith("std::ostream"):
+      print "classname=",classname
+      incfile = '#include <ostream>\n'
   return incfile
   #return "{0}.h".format(classname)
   
@@ -23,7 +26,8 @@ def implement_deleter(classname):
   # Ad-hoc trying to avoid classes that don't inherit from vtkObjectBase
   if classname.endswith("Info") or \
       classname in ["vtkVariant","vtkTimeStamp","vtkIndent"] or \
-      classname.endswith("String"):
+      classname.endswith("String") or \
+      classname in ["st1","st2"]:
     return ", smartpointer_nodeleter<{0} >()".format(classname)
   else:
     return ", vtk_deleter<{0} >()".format(classname)

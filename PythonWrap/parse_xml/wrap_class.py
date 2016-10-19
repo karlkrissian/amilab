@@ -73,6 +73,12 @@ def FindIncludeFile(classname,fileid):
     if classname in classes_inc.classes_includes.keys():
       #print "*"
       return '#include "{0}"'.format(classes_inc.classes_includes[classname])
+    else:
+      # search pattern that fit classname
+      for pattern in classes_inc.classes_includes.keys():
+        if classname.find(pattern)>-1:
+          #print "found pattern for include filename"
+          return '#include "{0}"'.format(classes_inc.classes_includes[pattern])
   except:
     pass
   if config.libmodule != None:
@@ -169,46 +175,54 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
     return False
   return True
 
+
 #------------------------------
 def MissingTypes(classname,method,check_includes=False):
   #print  "Checking types for {0}".format(method.name)
   missing_types=[]
   if method.returntype!=None:
-    #typename = config.types[method.returntype].GetDemangled()
-    typeid=config.types[method.returntype].GetMainTypeId()
-    # allow typedefs (using demangled from maintypeid) ...
-    typename = config.types[typeid].GetDemangled()
-    shared_type = config.IsSharedPtr(typename)
-    if shared_type!=None:
-      avail = AvailableType(shared_type,typeid,missing_types,check_includes,True)
-    else:
-      avail = AvailableType(typename,typeid,missing_types,check_includes,True)
-  for a in method.args:
-    typename=config.types[a.typeid].GetDemangled()
-    typefullname=config.types[a.typeid].GetFullString()
-    #
-    ispointer= config.types[a.typeid].GetType()=="PointerType"
-    isconstpointer = typefullname.endswith("const *")
-    if typename=='void' and ispointer:
-      print "\t\tneed to deal with 'void pointer' here"
-    else:
-      #
-      # discard triple pointers or double pointers with const (TODO: improve this part)
-      if (typefullname.endswith("* * *")) or (typefullname.endswith("* const *")):
-        missing_types.append(typefullname)
+    if method.returntype in config.types:
+      #typename = config.types[method.returntype].GetDemangled()
+      typeid=config.types[method.returntype].GetMainTypeId()
+      # allow typedefs (using demangled from maintypeid) ...
+      typename = config.types[typeid].GetDemangled()
+      shared_type = config.IsSharedPtr(typename)
+      if shared_type!=None:
+        avail = AvailableType(shared_type,typeid,missing_types,check_includes,True)
       else:
-        #print "a.typeid = {0}".format(a.typeid)
-        typeid=config.types[a.typeid].GetMainTypeId()
-        #print "main typeid = {0}".format(typeid)
-        # allow typedefs (using demangled from maintypeid)...
-        typename = config.types[typeid].GetDemangled()
-        shared_type = config.IsSharedPtr(typename)
-        if shared_type!=None:
-          avail = AvailableType(shared_type,typeid,missing_types,check_includes)
+        avail = AvailableType(typename,typeid,missing_types,check_includes,True)
+    else:
+      missing_types.append(method.returntype)
+  
+  for a in method.args:
+    if a.typeid not in config.types:
+      missing_types.append(typefullname)
+    else:
+      typename=config.types[a.typeid].GetDemangled()
+      typefullname=config.types[a.typeid].GetFullString()
+      #
+      ispointer= config.types[a.typeid].GetType()=="PointerType"
+      isconstpointer = typefullname.endswith("const *")
+      if typename=='void' and ispointer:
+        print "\t\tneed to deal with 'void pointer' here"
+      else:
+        #
+        # discard triple pointers or double pointers with const (TODO: improve this part)
+        if (typefullname.endswith("* * *")) or (typefullname.endswith("* const *")):
+          missing_types.append(typefullname)
         else:
-          avail = AvailableType(typename,typeid,missing_types,check_includes)
-        if (not avail):
-          utils.WarningMessage("type {0} not available: {1}".format(typename,config.types[typeid].GetType()))
+          #print "a.typeid = {0}".format(a.typeid)
+          typeid=config.types[a.typeid].GetMainTypeId()
+          #print "main typeid = {0}".format(typeid)
+          # allow typedefs (using demangled from maintypeid)...
+          typename = config.types[typeid].GetDemangled()
+          shared_type = config.IsSharedPtr(typename)
+          if shared_type!=None:
+            avail = AvailableType(shared_type,typeid,missing_types,check_includes)
+          else:
+            avail = AvailableType(typename,typeid,missing_types,check_includes)
+          if (not avail):
+            utils.WarningMessage("type {0} not available: {1}".format(typename,config.types[typeid].GetType()))
   res = ""
   if len(missing_types)>0:
     for t in missing_types:
@@ -217,6 +231,55 @@ def MissingTypes(classname,method,check_includes=False):
   if res!="":
     method.missingtypes=True
   return res
+
+##------------------------------
+#def MissingTypes(classname,method,check_includes=False):
+  ##print  "Checking types for {0}".format(method.name)
+  #missing_types=[]
+  #if method.returntype!=None:
+    ##typename = config.types[method.returntype].GetDemangled()
+    #typeid=config.types[method.returntype].GetMainTypeId()
+    ## allow typedefs (using demangled from maintypeid) ...
+    #typename = config.types[typeid].GetDemangled()
+    #shared_type = config.IsSharedPtr(typename)
+    #if shared_type!=None:
+      #avail = AvailableType(shared_type,typeid,missing_types,check_includes,True)
+    #else:
+      #avail = AvailableType(typename,typeid,missing_types,check_includes,True)
+  #for a in method.args:
+    #typename=config.types[a.typeid].GetDemangled()
+    #typefullname=config.types[a.typeid].GetFullString()
+    ##
+    #ispointer= config.types[a.typeid].GetType()=="PointerType"
+    #isconstpointer = typefullname.endswith("const *")
+    #if typename=='void' and ispointer:
+      #print "\t\tneed to deal with 'void pointer' here"
+    #else:
+      ##
+      ## discard triple pointers or double pointers with const (TODO: improve this part)
+      #if (typefullname.endswith("* * *")) or (typefullname.endswith("* const *")):
+        #missing_types.append(typefullname)
+      #else:
+        ##print "a.typeid = {0}".format(a.typeid)
+        #typeid=config.types[a.typeid].GetMainTypeId()
+        ##print "main typeid = {0}".format(typeid)
+        ## allow typedefs (using demangled from maintypeid)...
+        #typename = config.types[typeid].GetDemangled()
+        #shared_type = config.IsSharedPtr(typename)
+        #if shared_type!=None:
+          #avail = AvailableType(shared_type,typeid,missing_types,check_includes)
+        #else:
+          #avail = AvailableType(typename,typeid,missing_types,check_includes)
+        #if (not avail):
+          #utils.WarningMessage("type {0} not available: {1}".format(typename,config.types[typeid].GetType()))
+  #res = ""
+  #if len(missing_types)>0:
+    #for t in missing_types:
+      #res += t+", "
+    #res = res[:-2]
+  #if res!="":
+    #method.missingtypes=True
+  #return res
 
 
 
@@ -236,6 +299,11 @@ class MethodInfo:
     self.demangled=""
     self.converter=False
     self.virtual=False
+
+  def Print(self):
+    print " name:",self.name,
+    print " usedname:",self.usedname,
+    print " returntype:",self.returntype
 
   def GetDescription(self,classname,constructor=False):
     res=''
@@ -305,16 +373,16 @@ class MethodInfo:
 
 
 def CheckBlackList(mname,demangled):
+  print "check for {0}, {1}, in blacklist".format(mname,demangled)
   try:
     if mname in mem_blacklist.members_blacklist:
       utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format(mname))
       return True
-    #print "check for {0}, {1}, in blacklist".format(mname,demangled)
     #print mem_blacklist.members_blacklist
     for bname in mem_blacklist.members_blacklist:
       #print "is ok? {0}".format(demangled.startswith(bname+"("))
       #if demangled.startswith(bname+"(") or demangled==bname:
-      if (bname+"(") in demangled or demangled==bname:
+      if demangled!=None and ((bname+"(") in demangled or demangled==bname):
         utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format( demangled))
         return True
   except:
@@ -325,7 +393,7 @@ def CheckBlackList(mname,demangled):
   for bname in config.members_blacklist:
     #if demangled.startswith(bname+"(") or demangled==bname:
     #print "bname = {0}, demangled = {1}".format(bname,demangled)
-    if (bname+"(")  in demangled or demangled==bname:
+    if demangled!=None and ((bname+"(")  in demangled or demangled==bname):
       utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format( demangled))
       return True
   return False
@@ -580,8 +648,11 @@ class ParsePublicMembers:
       
     if name=='Enumeration':
       ename   = attrs.get('name',    None)
+      eid     = attrs.get('id',    None)
       access  = attrs.get('access',  None)
       self.enum = EnumInfo()
+      if ename=="":
+          ename=eid
       self.enum.name  =ename
       self.public_members.Enumerations.append(self.enum)
       self.inenum = True
@@ -611,17 +682,19 @@ class ParsePublicMembers:
 
     # Look for the title and number attributes (see text)
     access=attrs.get('access',None)
+    mname=attrs.get('name',None)
     demangled=attrs.get('demangled',None)
+    context = attrs.get('context',None)
+    if demangled==None and context!="_1":
+        demangled = config.types[context].GetFullString()+"::"+mname
     static=attrs.get('static',"0")
     const=attrs.get('const',"0")
     attributes=attrs.get('attributes',None)
     
     #print context
     #print classname
-    mname=attrs.get('name',None)
-    if (demangled!=None):
-      if CheckBlackList(mname,demangled): 
-        #print "member {0} in blacklist".format(demangled)
+    if CheckBlackList(mname,demangled): 
+        print "member {0} in blacklist".format(demangled)
         return
     #print "continuing with {0}".format(demangled)
     if attributes=="deprecated":
@@ -629,6 +702,8 @@ class ParsePublicMembers:
       #print "Skipping deprecated method {0}".format(mname)
       return False
     self.method = MethodInfo()
+    if mname==None and name=='Constructor':
+        mname='constructor'
     self.method.name=mname
     self.method.static=static
     self.method.const = (const=="1")
@@ -640,7 +715,8 @@ class ParsePublicMembers:
       # replace it by the class or structure name ...
       # only if not template ... so check for '<' character
       #if mname != config.types[context].GetString() and config.types[context].GetString().find("<")==-1:
-      if config.types[context].GetString().find(mname)==-1:
+      print "config.types[context].GetString()=",config.types[context].GetString()
+      if mname==None or config.types[context].GetString().find(mname)==-1:
         utils.WarningMessage(" replacing constructor name {0} --> {1}".format(mname,config.types[context].GetString()))
         mname = config.types[context].GetString()
       self.CheckMethodName(self.public_members.ConstructorNames,self.public_members.Constructors,mname)
@@ -664,6 +740,8 @@ class ParsePublicMembers:
       self.public_members.OperatorMethods.append(self.method)
     if name=='Converter':
       self.method.converter=True
+      if self.method.name==None:
+          self.method.name="Convert"
       self.public_members.Converters.append(self.method)
     if name=='Destructor':
       self.public_members.destructor = self.method
@@ -904,18 +982,22 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
                 # return a pointer that will not be deleted
                 res += ident+'  return AMILabType<{0} >::CreateVar(&res,true);\n'.format(typename)
               else:
-                 if rettype.GetFullString().endswith('* &'):
-                 #if config.types[method.returntype].GetFullString().endswith('&'):
-                   res += ident+'  return AMILabType<{0} >::CreateVar(res,true);\n'.format(typename)
+                 if rettype.GetFullString().endswith('const *'):
+                     # deal with const pointer: create new variable
+                    res += ident+'  return AMILabType<{0} >::CreateVar(*res);\n'.format(typename)
                  else:
-                   # rely on AMILabType to deal with "T const &" creation
-                   rettype_mainid = rettype.GetMainTypeId()
-                   if rettype.GetFullString().endswith('const &') and \
-                      not(rettype.GetFullString().endswith('* const &')):
-                     res += ident+'  return AMILabType<{0} >::'.format(typename)\
-                                 +'CreateVar(res);\n'
+                   if rettype.GetFullString().endswith('* &'):
+                   #if config.types[method.returntype].GetFullString().endswith('&'):
+                     res += ident+'  return AMILabType<{0} >::CreateVar(res,true);\n'.format(typename)
                    else:
-                     res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
+                     # rely on AMILabType to deal with "T const &" creation
+                     rettype_mainid = rettype.GetMainTypeId()
+                     if rettype.GetFullString().endswith('const &') and \
+                        not(rettype.GetFullString().endswith('* const &')):
+                       res += ident+'  return AMILabType<{0} >::'.format(typename)\
+                                   +'CreateVar(res);\n'
+                     else:
+                       res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
             else:
               res += ident+'  return AMILabType<{0} >::CreateVarFromSmtPtr(res);\n'.format(shared_type)
   return res
@@ -1520,7 +1602,10 @@ def WrapClass(classname,include_file,inputfile):
     if len(fm.Converters)>0:
       class_decl+=indent+"// Converters:\n"
     pos = 0
+    print fm.Converters
     for m in fm.Converters:
+      print "m=",m
+      m.Print()
       missingtypes = MissingTypes(classname,m)
       m.iswrapped=(missingtypes=="")
       if missingtypes!="":
@@ -1663,18 +1748,21 @@ def WrapClass(classname,include_file,inputfile):
       n=0
       add_public_typedefs += "// Adding public typedefs \n"
     for td in fm.Typedefs:
-      add_public_typedefs += indent
-      # need to find the variable that corresponds to the type to add ...
-      # for now just adding a string
-      st = '{0}  --  {1}'.format(td.GetFullString(),\
-            config.ClassShortName(\
-                config.types[td._reftypeid].GetString(),args.val.libname))
-      add_public_typedefs += 'BasicVariable::ptr type_{0} = AMILabType<std::string>::CreateVar(new std::string("{1}"));\n'.format(n,st)
-      add_public_typedefs += indent
-      add_public_typedefs += 'type_{0}->Rename("{1}");\n'.format(n,td.name)
-      add_public_typedefs += indent
-      add_public_typedefs += "Variables_AddVar(amiobject->GetContext(),type_{0}->Name(),type_{0},context);\n".format(n)
-      n=n+1
+      if td._reftypeid in config.types:
+        add_public_typedefs += indent
+        # need to find the variable that corresponds to the type to add ...
+        # for now just adding a string
+        st = '{0}  --  {1}'.format(td.GetFullString(),\
+              config.ClassShortName(\
+                  config.types[td._reftypeid].GetString(),args.val.libname))
+        add_public_typedefs += 'BasicVariable::ptr type_{0} = AMILabType<std::string>::CreateVar(new std::string("{1}"));\n'.format(n,st)
+        add_public_typedefs += indent
+        add_public_typedefs += 'type_{0}->Rename("{1}");\n'.format(n,td.name)
+        add_public_typedefs += indent
+        add_public_typedefs += "Variables_AddVar(amiobject->GetContext(),type_{0}->Name(),type_{0},context);\n".format(n)
+        n=n+1
+      else:
+        add_public_typedefs += indent + "// type {} not recognized".format(td._reftypeid)
 
     #print "add public enumerations"
     # Add public Enumerations
