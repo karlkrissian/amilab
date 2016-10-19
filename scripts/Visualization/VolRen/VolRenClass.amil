@@ -42,7 +42,7 @@ if (!exists(VolRenClass)) {
       }
       return=res
     }
-    ::trace=true, "gives tracing information"
+    ::trace=false, "gives tracing information"
     member = "\"VolRenClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
@@ -251,11 +251,12 @@ if (!exists(VolRenClass)) {
     }
 
     #---------------------------------------------------------------------------
-    proc ::ShowHistograms( NUM toggle) \
+    proc ::ShowHistograms( NUM toggle, NUM _index) \
     {
       if ::trace { eval ::trace_begin; }
       if (::volVector.size()>0){
-        index=::vbCtrl.GetSelection()
+        index=_index
+        #::vbCtrl.GetSelection()
         if (!toggle){
           ::volVector[index].imhisto1.dw.Show(true)
           if ::volVector[index].volmapper.GetClassName()==\
@@ -288,7 +289,7 @@ if (!exists(VolRenClass)) {
     #---------------------------------------------------------------------------
     proc ::ShowHistogramToggle( ) \
     {
-      ::ShowHistograms(true)
+      ::ShowHistograms(true, ::vbCtrl.GetSelection())
     }
 
 
@@ -570,7 +571,7 @@ if (!exists(VolRenClass)) {
         ::renwin_interact.Render()
         ::renwin_interact.Refresh()
         ::EnableGPUmode(0)
-        ::ShowHistograms(false)
+        ::ShowHistograms(false,0)
         ::volVector[0].OnLinearColormap()
 
         # TODO: fix the dependency of the renderer for the volVector[0] ...
@@ -622,7 +623,7 @@ if (!exists(VolRenClass)) {
     {
 printn "::SetRendererBg() begin"
       if (::volVector.size()>0) {
-        ::volVector[0].renwin.Render()
+        #::volVector[0].renwin.Render()
         ::volVector[0].SetBackground(::background_color.Red(),\
             ::background_color.Green(),::background_color.Blue(),\
             ::background_color2.Red(),::background_color2.Green(),\
@@ -656,7 +657,7 @@ printn "::SetRendererBg() end"
         ::renwin_interact.Render()
         ::renwin_interact.Refresh()
         ::EnableGPUmode(1)
-        ::ShowHistograms(false)
+        ::ShowHistograms(false,1)
         ::volVector[1].OnLinearColormap()
         #Set Linear curve
         ::volVector[1].ResetLinearCurve1()
@@ -692,20 +693,22 @@ printn "::SetRendererBg() end"
         # StaticBox gives problems on XP ..., avoid it ...
         sbox_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
         ::panel.SetSizer(sbox_sizer)
-        ::splitter =wx.wxSplitterWindow(&::panel,-1)
+        ::splitter =wx.wxSplitterWindow(::panel,-1)
 
-        sbox_sizer.Add( &::splitter, 1, wx.wxALL | wx.wxEXPAND,2)
+        sbox_sizer.Add( ::splitter, 1, wx.wxALL | wx.wxEXPAND,2)
         # create widget here
-        ::panel1 = wx.wxPanel(&::splitter)
+        ::panel1 = wx.wxPanel(::splitter)
         #::panel1.SetBackgroundColour(wx.wxColour(0,0,50))
         ::panel1_sizer = wx.wxBoxSizer(wx.wxVERTICAL)
-        ::panel1.SetSizer(&::panel1_sizer)   
+        ::panel1.SetSizer(::panel1_sizer)   
         ::renwin_interact = wxvtk.wxVTKRenderWindowInteractor(::panel1,wx.wxID_ANY)
         ::panel1_sizer.Add(::renwin_interact,1,wx.wxEXPAND )
         #,1, wx.wxEXPAND | wx.wxALL | wx.wxALIGN_CENTER,0 )
         ::renwin_interact.UseCaptureMouseOn()
         ::renwin_interact.Enable(true)
         ::renwin_interact.Initialize()
+
+        ::renwin_interact.SetMinSize(&wx.wxSize(50,50))
 
         # Still drawing problem (missed exposed events???)
         ::icons.LoadIconPNG2("Transparent background","Transparent_background")
@@ -767,14 +770,18 @@ printn "::SetRendererBg() end"
       ::renwin_interact.Update()
       ::panel.Update()
       # now can create the renderer
-      ::renwin_interact.wxWindowBase.Layout()
-      ::renwin_interact.wxWindowBase.Show()
-      ::renwin_interact.Show()
-      ::renwin_interact.Render()
-      ::renwin_interact.Update()
+      #::renwin_interact.wxWindowBase.Layout()
+      #::renwin_interact.wxWindowBase.Show()
+      #::renwin_interact.Show()
+printn "4.1.3"
+      #::renwin_interact.Render()
+      #::renwin_interact.Update()
+printn "4.1.5"
       ::volVector[0].CreateRenderer(::renwin_interact)
       #::volVector[0].AddAnnotatedCube() 
-      ::SetRendererBg()
+printn "4.2"
+      #::SetRendererBg()
+printn "5"
       
       if ::trace { eval ::trace_end; }
     }
@@ -929,7 +936,7 @@ printn "::SetRendererBg() end"
 
     #----------------------------
     proc ::OnChangePage(){
-      ::ShowHistograms(false)
+      ::ShowHistograms(false, ::vbCtrl.GetSelection())
     }
     #----------------------------
     proc ::PreviewApplied() \

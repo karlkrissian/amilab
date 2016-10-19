@@ -14,7 +14,7 @@ if (!exists(SimplevtkVolumeClass)) {
       }
       return=res
     }
-    ::trace2=true, "gives tracing information"
+    ::trace2=false, "gives tracing information"
     member = "\"SimplevtkVolumeClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
@@ -77,7 +77,7 @@ if (!exists(SimplevtkVolumeClass)) {
       singleLineTextProp.ItalicOff()
       singleLineTextProp.ShadowOff()
       ::singleLineTextT = vtk.vtkTextMapper.New()
-      ::singleLineTextT.SetInput(text)
+      ::singleLineTextT.SetInputData(text)
       tprop = ::singleLineTextT.GetTextProperty()
       tprop.ShallowCopy(&singleLineTextProp)
       tprop.SetVerticalJustificationToTop()
@@ -401,7 +401,7 @@ if (!exists(SimplevtkVolumeClass)) {
             ::volmapper.SetMaskInput(::mask)
           }
           if (::volrenmapper_type!=3) {
-            ::volmapper.SetInput(::vtkinput)
+            ::volmapper.SetInputData(::vtkinput)
           } else {
             ::volmapper.SetInput(0,::vtkinput)
           }
@@ -413,7 +413,7 @@ if (!exists(SimplevtkVolumeClass)) {
                   #::volmapper.GetNumberOfInputConnections(0) +\
                   #" %1% " % + \
                   #::volmapper.GetNumberOfInputConnections(1) 
-            ::volmapper.SetInput(1,&::vtkinput2)
+            ::volmapper.SetInputData(1,&::vtkinput2)
             #printn "number of input connections after %1%" % \
                   #::volmapper.GetNumberOfInputConnections(0) +\
                   #" %1% " % + \
@@ -618,7 +618,7 @@ if (!exists(SimplevtkVolumeClass)) {
     ::vol.SetProperty( ::property )
     ::vol.SetMapper( ::volmapper )
 
-    ::volmapper.SetInput(0,::vtkinput)
+    ::volmapper.SetInputData(0,&::vtkinput)
     #Add volume to renderer
     if (exists(::renderer)){
       ::renderer.AddVolume(::vol)
