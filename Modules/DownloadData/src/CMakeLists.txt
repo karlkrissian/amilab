@@ -32,13 +32,15 @@ SET( ${KIT}_ENABLE_WRAPPING      ON )
 set(  wxParams_INCLUDE_DIRS
     ${AMILab_SOURCE_DIR}/../wxParams/src)
 
-SET(${KIT}_AMILab_PATHS
+SET(${KIT}_INCLUDE_PATHS
+    ${AMILab_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}
     ${AMILab_SOURCE_DIR}/LanguageBase
     ${AMILab_SOURCE_DIR}/Language
     ${AMILab_SOURCE_DIR}/Common/include
     ${AMILab_SOURCE_DIR}/CommonBase
     ${AMILab_SOURCE_DIR}/Wrapping/include
     ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
+    ${AMILab_SOURCE_DIR}
     ${AMILab_SOURCE_DIR}
     ${AMILab_BINARY_DIR}
 )
@@ -49,7 +51,7 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping
     ${${KIT}_BINARY_DIR}/Wrapping/Generated
-    ${${KIT}_AMILab_PATHS}
+    ${${KIT}_INCLUDE_PATHS}
     ${Boost_INCLUDE_DIR}
  )
 
