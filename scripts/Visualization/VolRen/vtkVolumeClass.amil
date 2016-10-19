@@ -30,7 +30,7 @@ if (!exists(vtkVolumeClass)) {
       }
       return=res
     }
-    ::trace=true, "gives tracing information"
+    ::trace=false, "gives tracing information"
     member = "\"vtkVolumeClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
@@ -195,7 +195,7 @@ if (!exists(vtkVolumeClass)) {
       {
         ::box.SetInteractor(&::renwininter)
         ::box.SetPlaceFactor(1.01)
-        ::box.SetInput(&::vtkinput)
+        ::box.SetInputData(::vtkinput)
         
         ::box.SetDefaultRenderer(&::renderer)
         ::box.InsideOutOn()
@@ -250,7 +250,7 @@ if (!exists(vtkVolumeClass)) {
       {
         ::transf_box.SetInteractor(&::renwininter)
         ::transf_box.SetPlaceFactor(1.01)
-        ::transf_box.SetInput(&::vtkinput2) 
+        ::transf_box.SetInputData(::vtkinput2) 
         ::transf_box.SetDefaultRenderer(&::renderer)
         ::transf_box.InsideOutOn()
         ::transf_box.PlaceWidget()
@@ -1202,7 +1202,7 @@ if (!exists(vtkVolumeClass)) {
         for n=0 to 2 {
           ::planeWidgets.push_back(&vtk.vtkImagePlaneWidget.New())
           ::planeWidgets[n].DisplayTextOn()
-          ::planeWidgets[n].SetInput(&::vtkinput)
+          ::planeWidgets[n].SetInputData(::vtkinput)
           ::planeWidgets[n].SetPicker(&::picker)
           ::planeWidgets[n].SetInteractor(&::renwininter)
         }
