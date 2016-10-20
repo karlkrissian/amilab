@@ -31,7 +31,10 @@
 #include "VarContexts.hpp"
 
 #ifndef _WITHOUT_VTK_
-#include "vtkMultiThreader.h"
+    #include "vtkMultiThreader.h"
+//     #include <vtkAutoInit.h>
+//     VTK_MODULE_INIT(vtkRenderingOpenGL);
+//     VTK_MODULE_INIT(vtkInteractionStyle);
 #endif
 
 #include "token_list.h"
@@ -526,8 +529,12 @@ bool MyApp::OnInit()
     #endif
   }
 
-  mainframe->LoadToolBar();
-  mainframe->UpdateVars();
+  // check if main frame is still available
+  if (GB_main_wxFrame)
+  {
+    mainframe->LoadToolBar();
+    mainframe->UpdateVars();
+  }
 
   return true;
 
