@@ -26,23 +26,25 @@ lsobject.input_name  = "global::ls_input"
 lsobject.Gui()
 lsobject.load_input()
 
-lsobject.init_mode = 1
+lsobject.params.init_mode = 1
 
 # Create initial sphere
 ls_init = ls_input*0-4
 func "SyntheticImages/AddSphere.amil"
 AddSphereClass AddSphere
 
-AddSphere.AddBrightSphere_mm( &ls_init, \
-                    ls_init.tx/2+ctobject->R, ls_init.ty/2,ls_init.tz/2, \
-                    ctobject->r-2,-1,1)
+AddSphere.AddBrightSphere_mm( ls_init, \
+                    ls_init.tx/2+ctobject.R, \
+                    ls_init.ty/2,\
+                    ls_init.tz/2, \
+                    ctobject.r-2,-1,1)
 
 lsobject.initial_name  = "global::ls_init"
 lsobject.load_initial()
 
-lsobject.Imean = max(ls_input)
-lsobject.Isd = (max(ls_input)-min(ls_input))/2
-lsobject.T = 150
+lsobject.params.Imean = max(ls_input)
+lsobject.params.Isd = (max(ls_input)-min(ls_input))/2
+lsobject.params.T = 150
 lsobject.win.Update(-1)
 lsobject.ReRun()
 
