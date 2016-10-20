@@ -35,9 +35,6 @@
 #endif
 //#include "style.hpp"
 
-#ifdef AMI_USE_OPENMP
-  #include <omp.h>
-#endif
 
 #include <iosfwd>
 
