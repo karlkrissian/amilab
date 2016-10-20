@@ -9,7 +9,7 @@ vnl_matrix<double>
 vnl_diag_matrix<double>
 vnl_vector<double>
 vnl_symmetric_eigensystem<double>
-vnl_vector_fixed<double, 3u>
+vnl_vector_fixed<double, 3>
 #
 #
 #-----------------
@@ -25,46 +25,46 @@ itk::SmartPointer<itkAmiCommand>
 
 itk::MetaDataDictionary
 
-itk::Matrix<double, 2u, 2u>
-itk::Matrix<double, 3u, 3u>
+itk::Matrix<double, 2, 2>
+itk::Matrix<double, 3, 3>
 
-itk::Vector<double, 2u>
-itk::Vector<double, 3u>
+itk::Vector<double, 2>
+itk::Vector<double, 3>
 
-itk::Point<double, 2u>
-itk::Point<double, 3u>
+itk::Point<double, 2>
+itk::Point<double, 3>
 
-itk::ImageRegion<2u>
-itk::ImageRegion<3u>
+itk::ImageRegion<2>
+itk::ImageRegion<3>
 
-itk::Index<2u>
-itk::Index<3u>
+itk::Index<2>
+itk::Index<3>
 
-itk::Size<2u>
-itk::Size<3u>
+itk::Size<2>
+itk::Size<3>
 
 # Image related classes
 #
-itk::SmartPointer<itk::Image<float, 2u> >
-itk::SmartPointer<itk::Image<unsigned char, 2u> >
-itk::SmartPointer<itk::Image<float, 3u> >
-itk::SmartPointer<itk::Image<unsigned char, 3u> >
-itk::SmartPointer<itk::Image<short, 3u> >
-itk::SmartPointer<itk::Image<unsigned short, 3u> >
+itk::SmartPointer<itk::Image<float, 2U> >
+itk::SmartPointer<itk::Image<unsigned char, 2U> >
+itk::SmartPointer<itk::Image<float, 3U> >
+itk::SmartPointer<itk::Image<unsigned char, 3U> >
+itk::SmartPointer<itk::Image<short, 3U> >
+itk::SmartPointer<itk::Image<unsigned short, 3U> >
 itk::DefaultPixelAccessor<float>
 
 # IO classes
 #-------------------------------------------------------------------------------
-itk::SmartPointer<itk::ImageFileReader<itk::Image<unsigned char, 2u>, itk::DefaultConvertPixelTraits<unsigned char> > >
-itk::SmartPointer<itk::ImageFileWriter<itk::Image<unsigned char, 2u> > >
-itk::SmartPointer<itk::ImageFileReader<itk::Image<float, 2u>, itk::DefaultConvertPixelTraits<float> > >
-itk::SmartPointer<itk::ImageFileWriter<itk::Image<float, 2u> > >
+itk::SmartPointer<itk::ImageFileReader<itk::Image<unsigned char, 2U>, itk::DefaultConvertPixelTraits<unsigned char> > >
+itk::SmartPointer<itk::ImageFileWriter<itk::Image<unsigned char, 2U> > >
+itk::SmartPointer<itk::ImageFileReader<itk::Image<float, 2U>, itk::DefaultConvertPixelTraits<float> > >
+itk::SmartPointer<itk::ImageFileWriter<itk::Image<float, 2U> > >
 
 # Dicom related classes
 #-------------------------------------------------------------------------------
-itk::SmartPointer<itk::ImageSeriesReader<itk::Image<short, 3u> > >
-itk::SmartPointer<itk::ImageSeriesReader<itk::Image<float, 3u> > >
-itk::SmartPointer<itk::ImageSeriesReader<itk::Image<unsigned char, 3u> > >
+itk::SmartPointer<itk::ImageSeriesReader<itk::Image<short, 3U> > >
+itk::SmartPointer<itk::ImageSeriesReader<itk::Image<float, 3U> > >
+itk::SmartPointer<itk::ImageSeriesReader<itk::Image<unsigned char, 3U> > >
 
 #itk::SmartPointer<itk::DICOMImageIO2>
 itk::SmartPointer<itk::GDCMImageIO>
@@ -72,17 +72,20 @@ itk::SmartPointer<itk::GDCMSeriesFileNames>
 
 # Filter related classes
 #-------------------------------------------------------------------------------
-itk::SmartPointer<itk::BinaryThresholdImageFilter<itk::Image<unsigned char, 2u>, itk::Image<unsigned char, 2u> > >
-itk::Vector<double, 2u>
-itk::SmartPointer<itk::TranslationTransform<double, 2u> >
-itk::SmartPointer<itk::ResampleImageFilter<itk::Image<unsigned char, 2u>, itk::Image<unsigned char, 2u>, double> >
+itk::SmartPointer<itk::BinaryThresholdImageFilter<itk::Image<unsigned char, 2U>, itk::Image<unsigned char, 2U> > >
+itk::Vector<double, 2>
+itk::SmartPointer<itk::TranslationTransform<double, 2> >
 
+# not available in 4.6
+#itk::SmartPointer<itk::ResampleImageFilter<itk::Image<unsigned char, 2U>, itk::Image<unsigned char, 2U>, double> >
+# itk 4.6
+itk::SmartPointer<itk::ResampleImageFilter<itk::Image<unsigned char, 2U>, itk::Image<unsigned char, 2U>, double, double> >
 
 #-------------------------------------------------------------------------------
 # OrientFilter
 #-------------------------------------------------------------------------------
-itk::SmartPointer<itk::OrientImageFilter<itk::Image<unsigned short, 3u>, itk::Image<unsigned short, 3u> > >
-itk::SmartPointer<itk::OrientImageFilter<itk::Image<short, 3u>, itk::Image<short, 3u> > >
+itk::SmartPointer<itk::OrientImageFilter<itk::Image<unsigned short, 3U>, itk::Image<unsigned short, 3U> > >
+itk::SmartPointer<itk::OrientImageFilter<itk::Image<short, 3U>, itk::Image<short, 3U> > >
 
 
 # Anisotropic diffusion
@@ -90,14 +93,14 @@ itk::SmartPointer<itk::OrientImageFilter<itk::Image<short, 3u>, itk::Image<short
 # Gradient AD float,float 2D and 3D
 #---------------------------------------
 
-itk::SmartPointer<itk::GradientAnisotropicDiffusionImageFilter<itk::Image<float, 2u>, itk::Image<float, 2u> > >
-itk::SmartPointer<itk::GradientAnisotropicDiffusionImageFilter<itk::Image<float, 3u>, itk::Image<float, 3u> > >
+itk::SmartPointer<itk::GradientAnisotropicDiffusionImageFilter<itk::Image<float, 2U>, itk::Image<float, 2U> > >
+itk::SmartPointer<itk::GradientAnisotropicDiffusionImageFilter<itk::Image<float, 3U>, itk::Image<float, 3U> > >
 
 #-------------------------------------------------------------------------------
 # Canny Edge Detection
 # float 2D and 3D
-itk::SmartPointer<itk::CannyEdgeDetectionImageFilter<itk::Image<float, 2u>, itk::Image<float, 2u> > >
-itk::SmartPointer<itk::CannyEdgeDetectionImageFilter<itk::Image<float, 3u>, itk::Image<float, 3u> > >
+itk::SmartPointer<itk::CannyEdgeDetectionImageFilter<itk::Image<float, 2U>, itk::Image<float, 2U> > >
+itk::SmartPointer<itk::CannyEdgeDetectionImageFilter<itk::Image<float, 3U>, itk::Image<float, 3U> > >
 
 #
 #----------------
@@ -119,7 +122,7 @@ gdcm::GroupDict
 gdcm::Dict
 gdcm::Dict::ConstIterator
 # Needed here for the moment, TODO: improve this
-std::pair<gdcm::Tag const, gdcm::DictEntry>
+std::pair<const gdcm::Tag, gdcm::DictEntry>
 
 # typedef here
 gdcm::Dict::MapDictEntry
@@ -131,7 +134,8 @@ gdcm::Reader
 gdcm::File
 gdcm::FileMetaInformation
 gdcm::Tag
-gdcm::PrivateTag
+# compilation problem
+#gdcm::PrivateTag
 gdcm::DataElement
 
 gdcm::DataSet
