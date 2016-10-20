@@ -357,6 +357,7 @@ typedef short int WXTYPE;
     #endif
 #endif
 
+#ifndef __GCCXML__
 #if defined(__has_include)
     /*
         Notice that we trust our configure tests more than __has_include(),
@@ -389,6 +390,7 @@ typedef short int WXTYPE;
         #endif
     #endif
 #endif /* defined(__has_include) */
+#endif // GXXXML
 
 /* provide replacement for C99 va_copy() if the compiler doesn't have it */
 
