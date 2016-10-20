@@ -15,8 +15,10 @@ include_directories (
   ${CMAKE_CURRENT_BINARY_DIR}/${AMI_ITK_VERSION}/Generated
   )
 
-INCLUDE( ${USE_ITK_FILE} )
-#MESSAGE( "USE_ITK_FILE = ${USE_ITK_FILE}")
+MESSAGE( "USE_ITK_FILE = ${USE_ITK_FILE}")
+MESSAGE( "ITK_USE_FILE = ${ITK_USE_FILE}")
+#INCLUDE( ${USE_ITK_FILE} )
+INCLUDE( ${ITK_USE_FILE} )
 INCLUDE( ${wxWidgets_USE_FILE})
 
 #INCLUDE( ${USE_VTK_FILE})
@@ -319,10 +321,10 @@ SET(WrapITK_SRCS
 IF(WrapITK_SHARED)
   set_source_files_properties(${WrapITK_SRCS} 
     PROPERTIES COMPILE_FLAGS "-DWrapITK_EXPORTS")
-ENDIF(WrapVTK_SHARED)
+ENDIF(WrapITK_SHARED)
 
-target_link_libraries( WrapVTK
-)
+#target_link_libraries( WrapITK
+#)
 
 IF(WrapITK_SHARED)
   my_add_shared_library ( WrapITK)
