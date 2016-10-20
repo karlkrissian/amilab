@@ -363,24 +363,7 @@ ENDIF(AMI_ENABLE_WRAPPING)
 #     ENDIF(CMAKE_COMPILER_IS_GNUCC)
 # ENDIF(UNIX)
 
-OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
-
-IF(AMI_USE_VTK)
-  FIND_PACKAGE ( VTK )
-
-  IF(VTK_FOUND)
-    SET(AMI_VTK_VERSION "${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
-  ENDIF(VTK_FOUND)
-
-  # Separe Mac generated files
-  #IF (APPLE)
-  #  SET(AMI_VTK_VERSION ${AMI_VTK_VERSION}/Mac)
-  #ENDIF(APPLE)
-  #MESSAGE("VTK version: ${AMI_VTK_VERSION}\n")
-
-ENDIF(AMI_USE_VTK)
-
-
+# find package ITK before VTK otherwise VTK_LIBRARIES is not good
 OPTION(AMI_USE_ITK "Use ITK: recommended" ON)
 
 IF(AMI_USE_ITK)
@@ -391,6 +374,33 @@ IF(AMI_USE_ITK)
     SET(AMI_ITK_VERSION "${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}")
   ENDIF(ITK_FOUND)
 ENDIF(AMI_USE_ITK)
+
+MESSAGE("VTK_LIBRARIES (400)=${VTK_LIBRARIES}")
+
+OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
+
+IF(AMI_USE_VTK)
+  FIND_PACKAGE(VTK COMPONENTS vtkRenderingVolumeOpenGL vtkInteractionWidgets vtkRenderingContext2D vtkViewsCore vtkChartsCore vtkInteractionImage vtkIOLegacy vtkViewsContext2D vtkRenderingLOD vtkIOMINC NO_MODULE)
+
+  IF(VTK_FOUND)
+    MESSAGE("***   VTK FOUND ${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION} *** ")
+    SET(AMI_VTK_VERSION "${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
+    MESSAGE("VTK_USE_FILE=${VTK_USE_FILE}")
+    INCLUDE(${VTK_USE_FILE})
+    MESSAGE("VTK_LIBRARIES (376)=${VTK_LIBRARIES}")
+    set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS ${VTK_DEFINITIONS})
+    MESSAGE("VTK_DEFINITIONS=${VTK_DEFINITIONS}")
+  ENDIF(VTK_FOUND)
+
+  # Separe Mac generated files
+  #IF (APPLE)
+  #  SET(AMI_VTK_VERSION ${AMI_VTK_VERSION}/Mac)
+  #ENDIF(APPLE)
+  #MESSAGE("VTK version: ${AMI_VTK_VERSION}\n")
+
+ENDIF(AMI_USE_VTK)
+
+MESSAGE("VTK_LIBRARIES (387)=${VTK_LIBRARIES}")
 
 FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
@@ -597,6 +607,8 @@ include_directories (
 
 #INCLUDE(${wxWidgets_USE_FILE})
 
+MESSAGE("VTK_LIBRARIES (604) =${VTK_LIBRARIES}")
+
 # for compatibility with previous name
 SET( AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR} )
 
@@ -665,9 +677,6 @@ include_directories (
   ${OPTICFLOW_INCLUDE_DIR}
   )
 
-IF(AMI_USE_VTK)
-  INCLUDE( ${VTK_USE_FILE} )
-ENDIF(AMI_USE_VTK)
 
 INCLUDE(${wxWidgets_USE_FILE})
 
@@ -717,6 +726,7 @@ include_directories (
 #   ${Boost_LIBRARIES}
 # )
 
+MESSAGE("VTK_LIBRARIES (721) =${VTK_LIBRARIES}")
 
 add_executable (${AMILAB_BIN} WIN32
   # MACOSX_BUNDLE
@@ -791,12 +801,20 @@ IF(AMI_WRAP_EXAMPLES)
   SET(amilab_ownlibs WrapExamples ${amilab_ownlibs})
 ENDIF(AMI_WRAP_EXAMPLES)
 
+MESSAGE("VTK_LIBRARIES (798)=${VTK_LIBRARIES}")
+
 IF(AMI_USE_VTK)
   SET(amilab_ownlibs
       ${amilab_ownlibs}
       myVTK4
   )
-  INCLUDE(${VTK_USE_FILE})
+  MESSAGE("")
+  MESSAGE("***")
+  MESSAGE("VTK_USE_FILE=${VTK_USE_FILE}")
+  MESSAGE("USE_VTK_FILE=${USE_VTK_FILE}")
+  MESSAGE("VTK_LIBRARIES (809)=${VTK_LIBRARIES}")
+  MESSAGE("***")
+  MESSAGE("")
 
 #   SET(LINK_VTK
 #     vtkGraphics
