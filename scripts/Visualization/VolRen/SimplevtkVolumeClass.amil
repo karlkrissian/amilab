@@ -558,16 +558,16 @@ if (!exists(SimplevtkVolumeClass)) {
       # Create the property and attach the transfer functions
       ::property = vtk.vtkVolumeProperty.New()
       ::property.SetIndependentComponents(1)
-      ::property.SetColor( &::colorFun )
-      ::property.SetScalarOpacity( &::opacityFun )
+      ::property.SetColor( ::colorFun )
+      ::property.SetScalarOpacity( ::opacityFun )
       # Create our transfer function
       ::colorFun2=vtk.vtkColorTransferFunction.New()
       ::opacityFun2=vtk.vtkPiecewiseFunction.New()
       # Create the property and attach the transfer functions
       ::property2 = vtk.vtkVolumeProperty.New()
       ::property2.SetIndependentComponents(1)
-      ::property2.SetColor( &::colorFun2 )
-      ::property2.SetScalarOpacity( &::opacityFun2 )
+      ::property2.SetColor( ::colorFun2 )
+      ::property2.SetScalarOpacity( ::opacityFun2 )
 
       ::property.SetInterpolationTypeToLinear()
       ::property2.SetInterpolationTypeToLinear()
@@ -618,7 +618,7 @@ if (!exists(SimplevtkVolumeClass)) {
     ::vol.SetProperty( ::property )
     ::vol.SetMapper( ::volmapper )
 
-    ::volmapper.SetInputData(0,&::vtkinput)
+    ::volmapper.SetInputData(0,::vtkinput)
     #Add volume to renderer
     if (exists(::renderer)){
       ::renderer.AddVolume(::vol)
