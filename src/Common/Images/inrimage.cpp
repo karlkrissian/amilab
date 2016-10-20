@@ -2343,7 +2343,8 @@ InrImage :: operator vtkImageData*()
 //---------------------------------------------------
 InrImage :: operator vtkImageData_ptr()
 {
-  return vtk_new<vtkImageData>()((vtkImageData*)(*this));
+  vtkImageData_ptr res = vtk_new<vtkImageData>()((vtkImageData*)(*this));
+  return res;
 }
 
 #endif // AMI_USE_VTK
