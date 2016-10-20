@@ -683,9 +683,10 @@ class ParsePublicMembers:
     # Look for the title and number attributes (see text)
     access=attrs.get('access',None)
     mname=attrs.get('name',None)
+    print "type:",name," method name = ",mname, " id:",attrs.get('id',None)
     demangled=attrs.get('demangled',None)
     context = attrs.get('context',None)
-    if demangled==None and context!="_1":
+    if demangled==None and context!="_1" and mname!=None:
         demangled = config.types[context].GetFullString()+"::"+mname
     static=attrs.get('static',"0")
     const=attrs.get('const',"0")
