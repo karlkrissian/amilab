@@ -1,6 +1,7 @@
 
-#pragma once
-
+#ifndef __GCCXML__
+  #pragma once
+#endif
 
 #include "wx_includes_common.h"
 
