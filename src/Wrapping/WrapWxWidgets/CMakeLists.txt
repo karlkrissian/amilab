@@ -2,7 +2,7 @@
 # The extension is already found.  Any number of sources could be listed here.
 
 INCLUDE( ${wxWidgets_USE_FILE})
-INCLUDE( ${USE_ITK_FILE} )
+INCLUDE( ${ITK_USE_FILE} )
 
 include_directories (
   ${wxParams_INCLUDE_DIRS}
