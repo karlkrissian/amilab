@@ -796,12 +796,12 @@ if (!exists(vtkVolumeClass)) {
 #}
         }
         ::SetShadingProperties()
-      ::property.SetColor( &::colorFun )
-      ::property.SetScalarOpacity( &::opacityFun )
+      ::property.SetColor( ::colorFun )
+      ::property.SetScalarOpacity( ::opacityFun )
 
 #if ::move_2 {
-      #::property2.SetColor( &::colorFun2 )
-      #::property2.SetScalarOpacity( &::opacityFun2 )
+      #::property2.SetColor( ::colorFun2 )
+      #::property2.SetScalarOpacity( ::opacityFun2 )
 #}
       } else {
         InfoDialog "No histogram available."
@@ -859,8 +859,8 @@ if (!exists(vtkVolumeClass)) {
         ::SetShadingProperties()
 
 
-        ::property2.SetColor( &::colorFun2 )
-        ::property2.SetScalarOpacity( &::opacityFun2 )
+        ::property2.SetColor( ::colorFun2 )
+        ::property2.SetScalarOpacity( ::opacityFun2 )
 
       } else {
         InfoDialog "No histogram available."
@@ -919,7 +919,7 @@ if (!exists(vtkVolumeClass)) {
 
       ::use_shade   = ::selected_curv.use_shade
       ::blend_mode  = ::selected_curv.blend_mode
-      ::SetLinearCurve(&curve)
+      ::SetLinearCurve(curve)
       ::OnRender()
       ::win.Update(-1)
       if ::trace { eval ::trace_end; }
@@ -988,12 +988,12 @@ if (!exists(vtkVolumeClass)) {
       }
 
       if (exists(::property)){
-        ::vol.SetProperty( &::property )
+        ::vol.SetProperty( ::property )
       }
       #      printn "::move_2 = %1%" % ::move_2
       #      if ::move_2 {
       if (exists(::property2) && ::volrenmapper_type==3){
-        ::volmapper.SetProperty2( &::property2 )
+        ::volmapper.SetProperty2( ::property2 )
         #printn "::volmapper.SetProperty2( &::property2 )"
       }
       #      }
