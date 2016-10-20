@@ -33,6 +33,13 @@
   typedef std::vector<unsigned long>  vector_ulong;
   typedef std::vector<std::string>    vector_string;
   
+  typedef vector_double::iterator vector_double_it;
+  typedef vector_float::iterator  vector_float_it;
+  typedef vector_int::iterator    vector_int_it;
+  typedef vector_long::iterator   vector_long_it;
+  typedef vector_ulong::iterator  vector_ulong_it;
+  typedef vector_string::iterator vector_string_it;
+    
   // instanciate iterators
   vector_double::iterator vdi;
   vector_float ::iterator vfi;
