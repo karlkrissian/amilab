@@ -171,7 +171,8 @@ if (!exists(URLLoadClass)) {
 
     #---------------------------------------------------------------------------
     proc ::LoadDenoisingImage( STRING imname ) {
-      ::url_name = "http://decsai.ugr.es/~javier/denoise/%1%.png" % imname
+      #::url_name = "http://decsai.ugr.es/~javier/denoise/%1%.png" % imname
+      ::url_name = "http://download.visinf.tu-darmstadt.de/data/foe/img/%1%.png" % imname
       ::OnUrl()
       ::ReadImage(false)
     }
@@ -646,7 +647,7 @@ if (!exists(URLLoadClass)) {
       }
 
       ::win.BeginBook()
-        ::win.AddPage("1")
+        ::win.AddPage("Standard")
           ::AddDenoisingButtons()
         ::win.AddPage("sipi")
           ::Add_SIPI_misc_Buttons( )
