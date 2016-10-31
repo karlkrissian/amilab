@@ -11,68 +11,41 @@ import args
 
 # 1. find the event.h file
 
-#-------------------------------------------------------------
-# Find file
-#-------------------------------------------------------------
-#-------------------------------------------------------------
-class FindFile(handler.ContentHandler):
-  def __init__(self, filename):
-    self.search_filename = filename
-    self.found=False
-    self.name=""
-
-  def startElement(self, name, attrs):
-    if not (name == "File"): return
-    name = attrs.get('name', None)
-    if name.find(self.search_filename)!=-1:
-      self.name=name
-      found = True
-
-
 # 2. register event macros
 
 # 3. add event macros
 
 
-def CreateHeaderFileMacros(inputfile,outputfile,headerfilename):
-  # Create the handler
-  dh = FindFile(headerfilename+".h")
-
-  parser = make_parser()
-  # Tell the parser to use our handler
-  parser.setContentHandler(dh)
-  # Parse the input
-  inputfile.seek(0)
-  parser.parse(inputfile)
+def CreateHeaderFileMacros(inputfilename_macros,outputfile):
   res = ""
-  if dh.name != "":
-    print "file is: ", dh.name
-    headerfile = open(dh.name, 'r')
-    found_macros=[]
-    for line in headerfile:
-      # limited to macros of type #define VTKXXXX 0x9999 for the moment
-      findmacro = re.match(r"^\s*#define\s+(VTK[_0-9a-zA-Z]+)\s*((0x[0-9]+)|([0-9]+))\s(//.*)*$",line)
-      if (findmacro!=None):
-        found_macros.append(findmacro.group(1))
-        #print "Found macro : ", findmacro.group(1), " = ", findmacro.group(2)
-      
-    if len(found_macros)>0:
-      # add all the values
-      res += "\n"
-      res += "  // MACROS from file {0}.h\n".format(headerfilename)
-      for m in found_macros:
-        res += "  #ifdef {0}\n".format(m)
-        res += "    ADD_{0}_MACRO({1});\n".format(args.val.libname.upper(), m)
-        res += "  #endif\n"
-      res += "\n"
-    else:
-      res += "  // No macro found in file {0}.h\n".format(headerfilename)
+  headerfile = open(inputfilename_macros,"r")
+  found_macros=[]
+  for line in headerfile:
+    # limited to macros of type #define VTKXXXX 0x9999 for the moment
+    findmacro = re.match(r"^\s*#define\s+(VTK[_0-9a-zA-Z]+)\s*((0x[0-9]+)|([0-9]+))\s(//.*)*$",line)
+    if (findmacro!=None):
+      found_macros.append(findmacro.group(1))
+      #print "Found macro : ", findmacro.group(1), " = ", findmacro.group(2)
+    
+  if len(found_macros)>0:
+    # add all the values
+    res += "\n"
+    res += "  // MACROS from file {0}.h\n".format(inputfilename_macros)
+    for m in found_macros:
+      print "processing macro ",m
+      res += "  #ifdef {0}\n".format(m)
+      res += "    ADD_{0}_MACRO({1});\n".format(args.val.libname.upper(), m)
+      res += "  #endif\n"
+    res += "\n"
+  else:
+    res += "  // No macro found in {0}\n".format(inputfilename_macros)
   return res
 
 
-def CreateMacros(inputfile,outputfile):
+def CreateMacros(inputfilename_macros,outputfile):
+  print "**** CreateMacros ****"
   wrapped_macros=""
-  wrapped_macros += CreateHeaderFileMacros(inputfile,outputfile,"vtkType")
+  wrapped_macros += CreateHeaderFileMacros(inputfilename_macros,outputfile)
 
   if wrapped_macros!="":
     # Create the macros context

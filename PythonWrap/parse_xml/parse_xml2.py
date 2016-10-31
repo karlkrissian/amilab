@@ -268,7 +268,11 @@ if __name__ == '__main__':
     # Tell the parser we are not interested in XML namespaces
     parser.setFeature(feature_namespaces, 0)
 
-    inputfile = open(args.val.xmlfilename,'r')
+    inputfile         = open(args.val.xmlfilename,'r')
+    
+    # is this file always present? we suppose that it is ...
+    inputfilename_macros  = args.val.xmlfilename+".macros"
+    print "input filename for macros is : ", inputfilename_macros
     
     # add classes from the corresponding file if any
     if args.val.classes_file != '':
@@ -936,7 +940,7 @@ if __name__ == '__main__':
       if args.val.libname=="wx":
         wx_lib.create_macros.CreateMacros(inputfile,f)
       if args.val.libname=="vtk":
-        vtk_lib.create_macros.CreateMacros(inputfile,f)
+        vtk_lib.create_macros.CreateMacros(inputfilename_macros,f)
       f.write("}\n")
       f.write("\n")
       

@@ -139,12 +139,12 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
   #print "AvailableType({0},...)".format(typename)
   #if typename.find('SurfacePoly')!=-1:
   #  print "**************** Checking for SurfacePoly *********************"
-  #  print "check_includes {0}".format(check_includes)
+  #print "check_includes {0}".format(check_includes)
   #  print "typename '{0}'".format(typename)
   if check_includes:
     if (typename in config.available_classes):
       #if typename.find('SurfacePoly')!=-1:
-      #  print "AddDeclare..."
+      #print "AddDeclare..."
       config.AddDeclare(typename)
       if typename==config.types[typeid].GetDemangled():
         #print "AvailableType for {0}".format(typename)
@@ -178,7 +178,7 @@ def AvailableType(typename,typeid,missing_types,check_includes=False,return_type
 
 #------------------------------
 def MissingTypes(classname,method,check_includes=False):
-  #print  "Checking types for {0}".format(method.name)
+  #print  "\n\nChecking types for {0}\n\n".format(method.name)
   missing_types=[]
   if method.returntype!=None:
     if method.returntype in config.types:
@@ -201,7 +201,7 @@ def MissingTypes(classname,method,check_includes=False):
       typename=config.types[a.typeid].GetDemangled()
       typefullname=config.types[a.typeid].GetFullString()
       #
-      ispointer= config.types[a.typeid].GetType()=="PointerType"
+      ispointer= config.types[a.typeid].GetRealType()=="PointerType"
       isconstpointer = typefullname.endswith("const *")
       if typename=='void' and ispointer:
         print "\t\tneed to deal with 'void pointer' here"
@@ -221,6 +221,16 @@ def MissingTypes(classname,method,check_includes=False):
             avail = AvailableType(shared_type,typeid,missing_types,check_includes)
           else:
             avail = AvailableType(typename,typeid,missing_types,check_includes)
+            if not avail:
+              # needed typedefname since std::string is a typedef and not recognized
+              # in its full name
+              typedefname = config.types[a.typeid].GetString()
+              avail = AvailableType(typedefname,typeid,missing_types,check_includes)
+              # if this type is available, pop the last type from 
+              # the missing types list
+              if avail:
+                missing_types.pop()
+              
           if (not avail):
             utils.WarningMessage("type {0} not available: {1}".format(typename,config.types[typeid].GetType()))
   res = ""
@@ -228,6 +238,7 @@ def MissingTypes(classname,method,check_includes=False):
     for t in missing_types:
       res += t+", "
     res = res[:-2]
+    #print "missing types:",res
   if res!="":
     method.missingtypes=True
   return res
@@ -373,7 +384,7 @@ class MethodInfo:
 
 
 def CheckBlackList(mname,demangled):
-  print "check for {0}, {1}, in blacklist".format(mname,demangled)
+  #print "check for {0}, {1}, in blacklist".format(mname,demangled)
   try:
     if mname in mem_blacklist.members_blacklist:
       utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format(mname))
@@ -570,7 +581,7 @@ class ParsePublicMembers:
       utils.WarningMessage("\t\t {0} \t\t {1}".format(typename,argname))
       # append argument to list
       arg=arginfo.ArgInfo()
-      arg.name=argname
+      arg.SetName(argname)
       arg.typeid=typeid
       if default != None:
         arg.default=self.CheckEnumDefault(default)
@@ -683,7 +694,7 @@ class ParsePublicMembers:
     # Look for the title and number attributes (see text)
     access=attrs.get('access',None)
     mname=attrs.get('name',None)
-    print "type:",name," method name = ",mname, " id:",attrs.get('id',None)
+    #print "type:",name," method name = ",mname, " id:",attrs.get('id',None)
     demangled=attrs.get('demangled',None)
     context = attrs.get('context',None)
     if demangled==None and context!="_1" and mname!=None:
@@ -716,7 +727,7 @@ class ParsePublicMembers:
       # replace it by the class or structure name ...
       # only if not template ... so check for '<' character
       #if mname != config.types[context].GetString() and config.types[context].GetString().find("<")==-1:
-      print "config.types[context].GetString()=",config.types[context].GetString()
+      #print "config.types[context].GetString()=",config.types[context].GetString()
       if mname==None or config.types[context].GetString().find(mname)==-1:
         utils.WarningMessage(" replacing constructor name {0} --> {1}".format(mname,config.types[context].GetString()))
         mname = config.types[context].GetString()
@@ -779,10 +790,16 @@ def AddParameters(method,numparam=-1):
   res='('
   if (len(method.args)>0):
     if numparam!=0:
-      res += method.args[0].name
+      res += '({0}) {1}'.format(
+        config.types[method.args[0].typeid].GetFullString(),
+        method.args[0].name)
     for i in range(1,len(method.args)):
       if numparam==-1 or i<numparam:
-        res += ', {0}'.format(method.args[i].name)
+        # cast parameter to its type to avoid problems
+        # especially because of type substitution
+        res += ', ({0}) {1}'.format(
+          config.types[method.args[i].typeid].GetFullString(),
+          method.args[i].name)
   res += ')'
   return res
 
@@ -811,6 +828,7 @@ def ImplementMethodDescription(classname, method, constructor=False, methodcount
   res += "    wrap_{0}::SetParametersComments()\n".format(wrapmethod_name) 
   res += "{\n"
   for a in method.args:
+    # if the type is std::string, avoid GetMainTypeId()??
     maintypeid = config.types[a.typeid].GetMainTypeId()
     typename=config.types[maintypeid].GetDemangled()
     if typename in typesubst.type_substitute.keys():
@@ -818,9 +836,9 @@ def ImplementMethodDescription(classname, method, constructor=False, methodcount
     
     shared_type = config.IsSharedPtr(typename)
     if shared_type==None:
-		typename_comment = typename
+      typename_comment = typename
     else:
-		typename_comment = shared_type
+      typename_comment = shared_type
     if typename.count(",")>0:
       res += '  ADDPARAMCOMMENT_TYPE( {0}, "parameter named \'{1}\''.format(config.ClassTypeDef(typename_comment),a.name)
     else:
@@ -849,6 +867,7 @@ def ImplementMethodDescription(classname, method, constructor=False, methodcount
 def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''):
   
   wrapmethod_name = method.usedname
+  #print "ImplementMethodCall ", classname, ", ", wrapmethod_name
   if classname!="":
     wrapclass_name="WrapClass_{0}".format(config.ClassUsedName(classname))
     if method.static=="1":
@@ -896,8 +915,11 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
           else:
             methodcall = '(*{0}) {1}{2}'.format(obj_ptr,method.name,methodparams)
       else:
-        # operator without arguments: put it in front
-        methodcall = '{0} (*{1})'.format(method.name,obj_ptr)
+        if method.name=='()':
+          methodcall = '(*{0}) ()'.format(obj_ptr)
+        else:
+          # operator without arguments: put it in front
+          methodcall = '{0} (*{1})'.format(method.name,obj_ptr)
     else:
       if method.converter:
         methodcall = '(*{1}).operator {0}()'.format(\
@@ -914,8 +936,11 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
             methodcall = '{0}'.format(method.name)
         methodcall += methodparams;
     
-    returnpointer= (config.types[method.returntype].GetType()=="PointerType")
-    #print "returnpointer = {0}\n".format(returnpointer)
+    # using GetRealType to check pointer type return to deal with typedefs
+    returnpointer= (config.types[method.returntype].GetRealType()=="PointerType")
+    #print "returnpointer = {0}".format(returnpointer)
+    #print "returned type = ", config.types[method.returntype].GetType()
+    #print "returned type = ", config.types[method.returntype].GetRealType(), "\n"
     # not in constructor and returning void
     if (returntypest=="void")and(not returnpointer):
       res += ident+'  {0};\n'.format(methodcall)
@@ -925,7 +950,6 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
       maintypeid   = config.types[method.returntype].GetMainTypeId()
       returntypest = config.types[maintypeid].GetString()
       # create a string topointer to convert result to a pointer for calling WrapClass_...::CreateVar ...
-      returnpointer= (config.types[method.returntype].GetType()=="PointerType")
       pointercount = config.types[method.returntype].GetFullString().count("*")
       #if returnpointer:
       #  topointer=''
@@ -974,7 +998,7 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
             shared_type = config.IsSharedPtr(typename)
             if shared_type==None:
               rettype = config.types[method.returntype]
-              if rettype.GetType() == "ReferenceType" and \
+              if rettype.GetRealType() == "ReferenceType" and \
                   not(rettype.GetFullString().endswith('const &')) and \
                   not(rettype.GetFullString().endswith('* &')):
                 if (method.static!="1") and (rettype.GetString()==classname):
@@ -1686,16 +1710,19 @@ def WrapClass(classname,include_file,inputfile):
     for f in fm.Fields:
       typename  = config.types[f.typeid].GetString()
       demangled = config.types[f.typeid].GetDemangled()
+      available_type =  (typename  in config.available_classes) or \
+                        (typename  in config.available_types)
+      if not available_type:
+        # try with demangled
+        typename = demangled
+        available_type =  (typename  in config.available_classes) or \
+                          (typename  in config.available_types)
       shared_type = config.IsSharedPtr(typename)
       if shared_type!=None:
         typename=shared_type
       fulltypename=config.types[f.typeid].GetFullString()
-      ispointer= config.types[f.typeid].GetType()=="PointerType"
+      ispointer= config.types[f.typeid].GetRealType()=="PointerType"
       isconstpointer = fulltypename.endswith("const *")
-      available_type =  (typename  in config.available_classes) or \
-                        (typename  in config.available_types)   or \
-                        (demangled in config.available_classes) or \
-                        (demangled in config.available_types)
       add_public_fields += indent+"\n"
       # Wwe can't take address of a bit field
       if not available_type or f.bits!=None or config.types[f.typeid].GetType()=="ArrayType":
@@ -1858,7 +1885,7 @@ def WrapClass(classname,include_file,inputfile):
       config.templatetypes(m.group(2),template_params)
       for template_param in template_params:
         template_param = template_param.strip(' ')
-        print "To check for include: '{0}'".format(template_param)
+        #print "To check for include: '{0}'".format(template_param)
         if template_param in config.classes.keys():
           fileid = config.types[config.classes[template_param]].fileid
           filetoadd = FindIncludeFile(template_param,fileid)

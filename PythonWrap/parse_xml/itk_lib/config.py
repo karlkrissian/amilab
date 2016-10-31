@@ -9,6 +9,8 @@ def get_include_file(classname,filename):
     incfile = '#include "itkMatrix.h"\n'+incfile
   if classname.startswith("std::set"):
     incfile = '#include <set>\n'+incfile
+  if classname.startswith("std::map"):
+    incfile = '#include <map>\n'+incfile
   return incfile
   #return "{0}.h".format(classname)
   

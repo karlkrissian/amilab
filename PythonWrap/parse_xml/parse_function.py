@@ -94,7 +94,7 @@ class FindFunction(handler.ContentHandler):
       utils.WarningMessage("\t\t {0} \t\t {1}".format(typename,argname))
       # append argument to list
       arg=arginfo.ArgInfo()
-      arg.name=argname
+      arg.SetName(argname)
       arg.typeid=typeid
       if default != None:
         arg.default=self.CheckEnumDefault(default)
@@ -115,7 +115,7 @@ class FindFunction(handler.ContentHandler):
 
     funcname = attrs.get('name', None)
     context = attrs.get('context',None)
-    print "funcname=",funcname," context=",context," contextname=",config.types[context].GetFullString()
+    #print "funcname=",funcname," context=",context," contextname=",config.types[context].GetFullString()
     
     demangled=attrs.get('demangled',None)
     if demangled==None and context!="_1":
@@ -128,7 +128,7 @@ class FindFunction(handler.ContentHandler):
         if  (self.search_funcname != demangled) and \
             (not (self.search_funcname+"(" in demangled)):
           return
-    print "found name = {0}, demangled = {1}".format(funcname,demangled)
+    #print "found name = {0}, demangled = {1}".format(funcname,demangled)
     self.found=True
     self.infunc=True
     self.funcid = attrs.get('id',None)

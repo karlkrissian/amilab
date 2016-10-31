@@ -41,6 +41,13 @@ class ArgInfo:
     self.default=None
     self.implement_default=False
     
+  def SetName(self,n):
+    # avoid parameters named _p to prevent name conflicts
+    if n=="_p":
+      self.name = "_param_p"
+    else:
+      self.name = n
+    
   # Standard Values
   
   def GetSubstName(self):

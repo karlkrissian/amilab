@@ -147,7 +147,7 @@ class TypedefInfo(ArgTypeBase):
   def GetRealType(self):
     #print "TypedefInfo::GetRealType()"
     if (self.GetName() not in config.available_classes) and (self._reftypeid in config.types.keys()):
-      return config.types[self._reftypeid].GetType()
+      return config.types[self._reftypeid].GetRealType()
     else:
       return self.GetType()
 
@@ -185,6 +185,9 @@ class TypedefInfo(ArgTypeBase):
     return typename
 
   def GetMainTypeId(self):
+    # special case for std::string 
+    if self.GetString()=="std::string":
+      return self.GetId()
     if self._reftypeid in config.types.keys():
       maintyperef = config.types[self._reftypeid].GetMainTypeId()
       # Do an exception for MethodType ...
@@ -196,6 +199,9 @@ class TypedefInfo(ArgTypeBase):
       return self.GetId()
 
   def GetDemangled(self):
+    # special case for std::string 
+    if self.GetString()=="std::string":
+      return self.GetString()
     if self._reftypeid in config.types.keys():
       maintyperef = config.types[self._reftypeid].GetMainTypeId()
       if config.types[maintyperef].GetType()=="MethodType":
@@ -302,7 +308,8 @@ class CvQualifiedTypeInfo(ArgTypeBase):
       typename=config.types[self._reftypeid].GetFullString()
     else:
       typename=self._reftypeid
-    if self.const=="1":
+    # avoid several successive consts
+    if self.const=="1" and not typename.endswith("const"):
       return typename+" const"
     else:
       return typename
@@ -326,6 +333,9 @@ class CvQualifiedTypeInfo(ArgTypeBase):
       return config.types[self._reftypeid].GetAbstract()
     return None
 
+  def GetRealType(self):
+    return config.types[self._reftypeid].GetRealType()
+    
   def GetMainTypeId(self):
     if self._reftypeid in config.types.keys():
       return config.types[self._reftypeid].GetMainTypeId()
