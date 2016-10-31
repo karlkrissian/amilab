@@ -10,7 +10,7 @@
 //
 
 #include "amiOpenCVPlugin.h"
-#include "../build/release/Wrapping/Generated/addwrap_amiOpenCV.h"
+#include "addwrap_amiOpenCV.h"
 #include "VarContexts.hpp"
 #include "ami_object.h"
 #include "LanguageBaseConfigure.h"

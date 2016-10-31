@@ -1,22 +1,19 @@
 # Translating C++ code to amilab
 
 # set some 'typedefs', referencing to the constructors
-Size = &cv_Size__int.Size_
-Point = &cv_Point__int.Point_
-Scalar = &cv_Scalar__double.Scalar_
+Size = &cv_Size__int
+Point = &cv_Point__int
+Scalar = &cv_Scalar__double
 
-# more complicated, std::vector has default template, so long name ...
-Vector_Vec3f = &std_vector_cv_Vec_float_3_std_allocator_cv_Vec_float_3.vector
 
 # the rest is quite clean ...
 
 img = cv_imread("/home/karl/projects/data/DenoisingTestImages/barbara.png",1)
-gray= cv_Mat.Mat()
+gray= cv_Mat()
 cv_cvtColor(img, gray, CV_BGR2GRAY)
 cv_GaussianBlur( gray, gray, Size(9, 9), 2, 2 )
 
-
-circles= Vector_Vec3f()
+circles= vvec3f()
 
 cv_HoughCircles(gray, circles, CV_HOUGH_GRADIENT,2, gray.rows/4, 200, 100 )
 
@@ -34,5 +31,12 @@ for i=0 to circles.size()-1 {
   cv_circle( img, center, radius, Scalar(0,0,255), 3, 8, 0 )
 }
 
-cv_namedWindow("circles",1)
-cv_imshow("circles",img)
+# avoid cv_namedWindow because of GTK3/GTK2 incompatibilities
+#cv_namedWindow("circles",1)
+#cv_imshow("circles",img)
+
+cv_imwrite("/tmp/outputim.png",img)
+res = Image "/tmp/outputim.png"
+show img
+img_draw.compare(res)
+

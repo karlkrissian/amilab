@@ -18,6 +18,7 @@ cv::waitKey
 
 # drawing
 cv::circle
+cv::line
 
 # some processing
 
@@ -28,8 +29,31 @@ cv::circle
 #                   int minRadius=0, int maxRadius=0)
 cv::HoughCircles
 
+# void HoughLines(Mat& image, 
+#                   vector<Vec3f>& circles, 
+#                   int method, double dp, double minDist, 
+#                   double param1=100, double param2=100, 
+#                   int minRadius=0, int maxRadius=0)
+
+# void HoughLines(  InputArray image, OutputArray lines, double rho, double theta, 
+#                   int threshold, double srn=0, double stn=0 )
+# Finds lines in a binary image using the standard Hough transform.
+cv::HoughLines
+
+
+# void HoughLinesP( InputArray image, OutputArray lines, double rho, 
+#                   double theta, int threshold, double minLineLength=0, 
+#                   double maxLineGap=0 )
+# Finds line segments in a binary image using the probabilistic Hough transform.
+cv::HoughLinesP
+
 cv::cvtColor
 cv::GaussianBlur
+cv::blur
 
+# void Canny( InputArray image, OutputArray edges, double threshold1, 
+#              double threshold2, int apertureSize=3, bool L2gradient=false )
+# Finds edges in an image using the [Canny86] algorithm.
+cv::Canny
 
 cv::fitEllipse

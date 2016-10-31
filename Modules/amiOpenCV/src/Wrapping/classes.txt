@@ -4,6 +4,8 @@ PruebaClassDef
 # 
 # Matrix class to start with ...
 #
+cv::Mat::MSize
+cv::Mat::MStep
 cv::Mat
 cv::Size_<int>
 cv::Scalar_<double>
@@ -26,14 +28,18 @@ CvMat
 # wrapping error, need to be checked
 #CvMatND
 
-# need std::vector for imwrite ??
+# need std::vector for imwrite
 std::vector<int, std::allocator<int> >
 
 # need for HoughCircles, unfortunately, need to write it down here ...
-std::vector<cv::Vec<float, 3>, std::allocator<cv::Vec<float, 3> > >
+vvec3f
 
-std::vector<cv::Point_<double>, std::allocator<cv::Point_<double> > >
-std::vector<cv::Point_<float>, std::allocator<cv::Point_<float> > >
+vvec4i
+
+# vector of double points
+vptd
+# vector of float points
+vptf
 
 #
 cv::RotatedRect

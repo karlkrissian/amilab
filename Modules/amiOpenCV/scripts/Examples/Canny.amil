@@ -1,0 +1,38 @@
+# Translating C++ code to amilab
+
+
+max_lowThreshold  = 100
+lowThreshold      = 20
+ratio             = 3
+kernel_size       = 3
+
+src = cv_imread("/home/karl/projects/data/DenoisingTestImages/barbara.png",1)
+
+
+dst=cv_Mat()
+
+# Create a matrix of the same type and size as src (for dst)
+dst.create(src.size(),src.type())
+
+src_gray= cv_Mat()
+cv_cvtColor(src, src_gray, CV_BGR2GRAY)
+
+detected_edges = cv_Mat()
+
+# Reduce noise with a kernel 3x3
+cv_blur( src_gray, detected_edges, Size(3,3) )
+
+# Canny detector
+cv_Canny( detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size )
+
+# Using Canny's output as a mask, we display our result
+dst = Scalar.all(0)
+
+src.copyTo( dst, detected_edges)
+
+cv_imwrite("/tmp/outputim.png",dst)
+img = Image "/home/karl/projects/data/DenoisingTestImages/barbara.png"
+res = Image "/tmp/outputim.png"
+show img
+show res
+img_draw.compare(res_draw)

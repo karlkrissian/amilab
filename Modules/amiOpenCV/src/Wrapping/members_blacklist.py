@@ -5,4 +5,5 @@ members_blacklist=[
    "cv::Mat::zeros(int, int const*, int)", # not implemented !!!
    "cv::Mat::ones(int, int const*, int)", # not implemented !!!
    "cv::Vec<float, 3>::conj", # probably not implemented
+   "cv::Vec<int, 4>::conj", # same
 ]

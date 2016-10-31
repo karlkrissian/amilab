@@ -1,0 +1,27 @@
+# Translating C++ code to amilab
+# HoughLinesP example (http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=houghlines#houghlines)
+
+src = cv_Mat()
+dst = cv_Mat()
+color_dst = cv_Mat()
+
+src = cv_imread("/home/karl/projects/data/DenoisingTestImages/barbara.png",1)
+
+# Canny detector
+cv_Canny( src, dst, 50, 200, 3)
+cv_cvtColor(dst,color_dst,CV_GRAY2BGR)
+
+lines = vvec4i()
+cv_HoughLinesP( dst, lines, 1, Pi/180, 80, 30, 10 );
+for i = 0 to lines.size()-1 {
+  cv_line( color_dst, Point(lines[i][0], lines[i][1]), \
+      Point(lines[i][2], lines[i][3]), Scalar(0,0,255), 3, 8 );
+}
+
+
+cv_imwrite("/tmp/outputim.png",color_dst)
+img = Image "/home/karl/projects/data/DenoisingTestImages/barbara.png"
+res = Image "/tmp/outputim.png"
+show img
+show res
+img_draw.compare(res_draw)

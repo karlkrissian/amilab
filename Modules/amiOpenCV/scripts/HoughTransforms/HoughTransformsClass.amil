@@ -13,11 +13,65 @@ if (!exists(HoughTransformsClass)) {
   Class HoughTransformsClass : public ScriptGui \
   {
     
+    func "Variable/ObjectIO"
+    # 
+    #===========================================================================
+    Class ::ParamClass : public ObjectIO {
+
+        func "WxUtils/alEnum"
+
+        ::description = "Default parameters", \
+                        "Description of the set of parameters"
+
+
+
+        ::type = INT(0)
+
+        # Lines parameters
+        ::Lines_Canny_Th1    = INT(50)   , " Canny first threshold for the hysteresis procedure"
+        ::Lines_Canny_Th2    = INT(200)  , " Canny second threshold for the hysteresis procedure"
+        ::Lines_Canny_ap     = INT(3)    , " Canny aperture size for the Sobel operator"
+        ::Lines_rho          = INT(1)    , " HoughLinesP resolution of the accumulator in pixels"
+        ::Lines_theta        = Pi/180    , " HoughLinesP angle resolution of the accumulator in radians"
+        ::Lines_threshold    = INT(80)   , " HoughLinesP accumulator threshold parameter"
+        ::Lines_minlength    = INT(30)   , " HoughLinesP minimum line length"
+        ::Lines_maxlengthgap = INT(10)   , " HoughLinesP maximum allowed gap between points on the same line to link them"
+
+        # Canny parameters
+        ::Canny_max_lowThreshold  = INT(100)
+        ::Canny_lowThreshold      = INT(20),"Low threshold"
+        ::Canny_ratio             = INT(3), "Ratio between high and low thresholds"
+        ::Canny_blur_size         = INT(3), "Blur size"
+        ::Canny_kernel_size       = INT(3), "Kernel size"
+
+        # Line drawing parameters
+        ::DrawLineThickness       = INT(2), "Thickness of drawn lines"
+
+        #-----------------------------------------------------------------------
+        proc ::__assign__( VAR p) {
+          ::Lines_Canny_Th1    = p.Lines_Canny_Th1
+          ::Lines_Canny_Th2    = p.Lines_Canny_Th2
+          ::Lines_Canny_ap     = p.Lines_Canny_ap
+          ::Lines_rho          = p.Lines_rho
+          ::Lines_theta        = p.Lines_theta
+          ::Lines_threshold    = p.Lines_threshold
+          ::Lines_minlength    = p.Lines_minlength
+          ::Lines_maxlengthgap = p.Lines_maxlengthgap
+          ::Canny_lowThreshold = p.Canny_lowThreshold
+          ::Canny_ratio        = p.Canny_ratio
+          ::Canny_blur_size    = p.Canny_blur_size
+          ::Canny_kernel_size  = p.Canny_kernel_size
+          ::DrawLineThickness  = p.DrawLineThickness
+        }
+    }
+
     //---------------------------------------------------
     proc ::Init() {
       
         ::input_name   = "","Name of the input image variable"
         #::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+        
+        ::ParamClass ::params
 
         ::html_filename = GetScriptsDir+"/HoughTransforms/Doc/HoughTransforms/index.html"
     }
@@ -38,13 +92,19 @@ if (!exists(HoughTransformsClass)) {
     Comments( ::load_input, "Copies the input image in a local image member named 'input'")
 
     #-----------------------------------------------
+    # TODO if input is grayscale, convert it to RGB
+    proc ::CheckInput() {
+    }
+
+
+    #-----------------------------------------------
     proc ::RunHoughCircles() {
         # Translating C++ code to amilab
 
         # set some 'typedefs', referencing to the constructors
-        Size = &cv_Size__int.Size_
-        Point = &cv_Point__int.Point_
-        Scalar = &cv_Scalar__double.Scalar_
+        Size = cv_Size__int.Size_
+        Point = cv_Point__int.Point_
+        Scalar = cv_Scalar__double.Scalar_
 
         # more complicated, std::vector has default template, so long name ...
         Vector_Vec3f = &std_vector_cv_Vec_float_3_std_allocator_cv_Vec_float_3.vector
@@ -54,36 +114,101 @@ if (!exists(HoughTransformsClass)) {
         ::input.save "/tmp/inputim.png"
         img = cv_imread("/tmp/inputim.png",1)
         if (!img.empty()) {
-        gray= cv_Mat.Mat()
-        cv_cvtColor(img, gray, CV_BGR2GRAY)
-        cv_GaussianBlur( gray, gray, Size(3, 3), 2, 2 )
+          gray= cv_Mat.Mat()
+          cv_cvtColor(img, gray, CV_BGR2GRAY)
+          cv_GaussianBlur( gray, gray, Size(3, 3), 2, 2 )
 
+          circles= Vector_Vec3f()
 
-        circles= Vector_Vec3f()
+          cv_HoughCircles(gray, circles, CV_HOUGH_GRADIENT,2, gray.rows/4, 200, 50 )
 
-        cv_HoughCircles(gray, circles, CV_HOUGH_GRADIENT,2, gray.rows/4, 200, 50 )
+          # OK, but still need to fix some wrapping problems ...
 
-        # OK, but still need to fix some wrapping problems ...
-
-
-        for i=0 to circles.size()-1 {
-          del center
-          center = Point( cvRound(circles[i][0]), cvRound(circles[i][1]))
-          radius = cvRound(circles[i][2])
+          for i=0 to circles.size()-1 {
+            del center
+            center = Point( cvRound(circles[i][0]), cvRound(circles[i][1]))
+            radius = cvRound(circles[i][2])
           
-          # draw circle center
-          cv_circle( img, center, 3,      Scalar(0,255,0),-1, 8, 0)
-          #draw circle outline
-          cv_circle( img, center, radius, Scalar(0,0,255), 3, 8, 0 )
-        }
+            # draw circle center
+            cv_circle( img, center, 3,      Scalar(0,255,0),1, 8, 0)
+            #draw circle outline
+            cv_circle( img, center, radius, Scalar(0,0,255), 1, 8, 0 )
+          }
 
-        cv_namedWindow("circles",1)
-        cv_imshow("circles",img)
+          cv_imwrite("/tmp/outputim.png",img)
         } else {
           InfoDialog "Failed to read the image"
         }
     }
 
+    #-----------------------------------------------
+    proc ::RunCanny() {
+
+      ::input.save "/tmp/inputim.png"
+      src = cv_imread("/tmp/inputim.png",1)
+
+      dst=cv_Mat()
+
+      # Create a matrix of the same type and size as src (for dst)
+      dst.create(src.size(),src.type())
+
+      src_gray= cv_Mat()
+      cv_cvtColor(src, src_gray, CV_BGR2GRAY)
+
+      detected_edges = cv_Mat()
+
+      # Reduce noise with a kernel 3x3
+      cv_blur( src_gray, detected_edges, Size(::params.Canny__blur_size,::params.Canny__blur_size) )
+
+      # Canny detector
+      cv_Canny( detected_edges, detected_edges, ::params.Canny__lowThreshold, \
+                ::params.Canny__lowThreshold*::params.Canny__ratio, ::params.Canny__kernel_size )
+
+      # Using Canny's output as a mask, we display our result
+      dst = Scalar.all(0)
+
+      src.copyTo( dst, detected_edges)
+      
+      cv_imwrite("/tmp/outputim.png",dst)
+
+    }
+
+    #-----------------------------------------------
+    proc ::RunLines() {
+
+      src = cv_Mat()
+      dst = cv_Mat()
+      color_dst = cv_Mat()
+
+      ::input.save "/tmp/inputim.png"
+      src = cv_imread("/tmp/inputim.png",1)
+
+      # Canny detector
+      cv_Canny( src, dst, ::params.Lines_Canny_Th1, ::params.Lines_Canny_Th2, ::params.Lines_Canny_ap)
+      cv_cvtColor(dst,color_dst,CV_GRAY2BGR)
+
+      lines = vvec4i()
+      cv_HoughLinesP( dst, lines, \
+                      ::params.Lines_rho, ::params.Lines_theta, ::params.Lines_threshold, \
+                      ::params.Lines_minlength, ::params.Lines_maxlengthgap );
+      for i = 0 to lines.size()-1 {
+        cv_line( color_dst, Point(lines[i][0], lines[i][1]), \
+            Point(lines[i][2], lines[i][3]), Scalar(0,0,255), ::params.DrawLineThickness, 8 );
+      }
+      cv_imwrite("/tmp/outputim.png",color_dst)
+    }
+
+
+    #-----------------------------------------------
+    proc ::DisplayResult() \
+    {
+      #cv_namedWindow("circles",1)
+      #cv_imshow("circles",img)
+      ::res = Image "/tmp/outputim.png"
+      show ::input
+      show ::res
+      ::input_draw.compare(::res_draw)
+    }
 
     #-----------------------------------------------
     proc ::Run() \
@@ -91,8 +216,31 @@ if (!exists(HoughTransformsClass)) {
       if (!exists(::input)) {
         InfoDialog "First load the input image !"
       } else {
-        ::RunHoughCircles()
+        if (::params.type==0) {
+          ::RunHoughCircles()
+        }
+        if (::params.type==1) {
+          ::RunLines()
+        }
+        if (::params.type==2) {
+          ::RunCanny()
+        }
+        ::DisplayResult()
       }
+    }
+
+    //--------------------
+    proc ::TypeChanged() {
+      if (exists(::pages)) { del ::pages; }
+      ::pages = VarVector();
+      ::pages.push_back(::page_circles)
+      ::pages.push_back(::page_lines)
+      ::pages.push_back(::page_canny)
+
+      for n=0 to 2 {
+        ::win.EnablePanel(::pages[n], ::params.type==n)
+      }
+      ::win.SelectPage(::params_book,::params.type)
     }
 
     //---------------------------------------------------
@@ -104,29 +252,58 @@ if (!exists(HoughTransformsClass)) {
         ::win = ParamPanel("HoughTransforms")
       }
       
+      ::win.BeginBoxPanel("Input Image")
+        # set the input image
+        ::win.BeginHorizontal()
+          ::win.AddImageChoice( &::input_name, "")
+          ::win.AddButton("Load",::load_input)
+        ::win.EndHorizontal()
+      ::win.EndBoxPanel()
+
       ::win.BeginBook()
-    
-        ::win.AddPage("Init")
-
-          ::win.BeginBoxPanel("Input Image")
-            # set the input image
-            ::win.BeginHorizontal()
-              ::win.AddImageChoice( &::input_name, "")
-              ::win.AddButton("Load",::load_input)
-            ::win.EndHorizontal()
-          ::win.EndBoxPanel()
-
         ::win.AddPage("Param")
           ::win.AddLabel("Info:","Set your parameters here")
+          ::type_id = ::win.AddEnum(::params.type, "Type")
+            ::win.AddEnumChoice(::type_id, "Circles")
+            ::win.AddEnumChoice(::type_id, "Lines")
+            ::win.AddEnumChoice(::type_id, "Canny")
+          ::win.SetCallback(::TypeChanged)
 
-        ::win.AddPage("Run")
-          ::win.AddButton("Run Filter",::Run)
+          ::params_book = ::win.BeginBook()
+            ::page_circles = ::win.AddPage("Circles")
+
+            # interface for HoughLineP filter
+            ::page_lines   = ::win.AddPage("Lines")
+              ::win.BeginBoxPanel("cv::Canny()")
+                ::win.AddInt(::params.Lines_Canny_Th1,"Low_Threshold", 1,255)
+                ::win.AddInt(::params.Lines_Canny_Th2,"High_Threshold",1,255)
+                ::win.AddInt(::params.Lines_Canny_ap,"Aperture",1,10)
+              ::win.EndBoxPanel()
+              ::win.BeginBoxPanel("cv::HoughLineP()")
+                ::win.AddInt  ( ::params.Lines_rho,        "Rho",  1,10)
+                ::win.AddFloat( ::params.Lines_theta,      "Theta",0.01,Pi/2)
+                ::win.AddInt(   ::params.Lines_threshold,  "Threshold", 1,200)
+                ::win.AddInt(   ::params.Lines_minlength,  "MinLength",1,200)
+                ::win.AddInt(   ::params.Lines_maxlengthgap,"MaxLengthGap",1,200)
+              ::win.EndBoxPanel()
+
+            # interface for Canny filter
+            ::page_canny   = ::win.AddPage("Canny")
+              ::win.AddInt(::params.Canny_lowThreshold,"Threshold",1,::params.Canny_max_lowThreshold)
+              ::win.AddInt(::params.Canny_ratio,       "Ratio",1,10)
+              ::win.AddInt(::params.Canny_blur_size,   "Blur",1,10)
+              ::win.AddInt(::params.Canny_kernel_size, "Kernel",1,10)
+          ::win.EndBook()
+
+
+        ::AddParamPage(&::win)
 
         if wx.wxFileName(::html_filename).FileExists() {
           ::AddHelpPage(&::win)
         }
-    
       ::win.EndBook()
+      ::win.AddInt(::params.DrawLineThickness,"Line Thickness",1,10)
+      ::win.AddButton("Run Filter",::Run)
     
       ::AddStandardButtons(&::win)
 
