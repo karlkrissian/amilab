@@ -13,6 +13,7 @@
 #include "MainFrame.h"
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
+#include <wx/display.h>
 
 #include "CoutwxString.h"
 
@@ -398,6 +399,10 @@ bool MyApp::OnInit()
 
   int screen_size_x = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
   int screen_size_y = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+  std::cout << "screen_size_x x screen_size_y " << screen_size_x << " x " << screen_size_y << std::endl;
+  std::cout << wxDisplay::GetCount() << std::endl;
+  
+  
 
   mainframe = new MainFrame(
                 GetwxStr("AMILab ")+GetwxStr(AMILAB_VERSION),
@@ -410,6 +415,13 @@ bool MyApp::OnInit()
     mainframe->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
 //  #endif
 
+  std::cout << wxDisplay::GetFromWindow(mainframe) << std::endl;
+  wxDisplay* d = new wxDisplay();
+  wxRect g = d->GetClientArea();
+  std::cout << g.width << " x " << g.height << std::endl;
+  mainframe->SetSize(g.width*0.85,g.height*0.85);
+  delete d;
+    
 //  printf("frame->Show(true)\n");
 
 
