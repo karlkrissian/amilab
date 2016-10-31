@@ -1,4 +1,7 @@
 
+#include <vtkSystemIncludes.h>
+
+
 // several defines of VTK configuration
 #include <vtkToolkits.h>
 
@@ -64,6 +67,7 @@
 #include <vtkImageRFFT.h>
 #include <vtkImageRGBToHSI.h>
 #include <vtkImageRGBToHSV.h>
+#include <vtkImageShiftScale.h>
 #include <vtkImageViewer.h>
 #include <vtkInformation.h>
 #include <vtkInteractorStyleImage.h>
@@ -95,10 +99,12 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkSampleFunction.h>
 #include <vtkScalarBarActor.h>
 #include <vtkSliderWidget.h>
 #include <vtkSliderRepresentation2D.h>
 #include <vtkSliderRepresentation3D.h>
+#include <vtkSphere.h>
 #include <vtkSphereSource.h>
 #include <vtkTable.h>
 #include <vtkTextActor.h>

@@ -67,6 +67,7 @@ vtkImageResample
 vtkImageRFFT
 vtkImageRGBToHSI
 vtkImageRGBToHSV
+vtkImageShiftScale
 vtkImageViewer
 vtkImplicitFunction
 vtkIndent
@@ -118,9 +119,11 @@ vtkRenderWindow
 vtkRenderWindowInteractor
 vtkScalarBarActor
 vtkScalarsToColors
+vtkSampleFunction
 vtkSliderWidget
 vtkSliderRepresentation2D
 vtkSliderRepresentation3D
+vtkSphere
 vtkSphereSource
 vtkStdString
 vtkTable
