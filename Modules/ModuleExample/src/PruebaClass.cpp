@@ -93,3 +93,11 @@ InrImage::ptr PruebaClass::MedianaLocal(InrImage::ptr im, int n)
 
   return res;
 }
+
+//------------------------------------------------------------------------------
+void PruebaClass::GetArray(double a[3])
+{
+  a[0] = 1.0;
+  a[1] = sqrt(2);
+  a[2] = sqrt(3);
+}

@@ -47,6 +47,9 @@ public:
   static InrImage::ptr MedianaLocal(InrImage::ptr i, int n);
   
   
+  // test with C array
+  static void GetArray(double a[3]);
+  
 };
 
 

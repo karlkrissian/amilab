@@ -48,7 +48,7 @@ SET(${KIT}_INCLUDE_PATHS
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping
-    ${CMAKE_CURRENT_SOURCE_DIR}/Wrapping/Generated
+    ${${KIT}_BINARY_DIR}/Wrapping/Generated
     ${${KIT}_INCLUDE_PATHS}
     ${Boost_INCLUDE_DIR}
  )
