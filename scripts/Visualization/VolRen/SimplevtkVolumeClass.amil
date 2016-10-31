@@ -14,16 +14,17 @@ if (!exists(SimplevtkVolumeClass)) {
       }
       return=res
     }
-    ::trace2=false, "gives tracing information"
+    ::trace2=true, "gives tracing information"
     member = "\"SimplevtkVolumeClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
     ::trace2_begin="printn \"**\"+"+ \
                   "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
-                  "\" Begin \"+%1%;" % member
-    ::trace2_end  ="printn \"**\"+"+\
-                  "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
-                  "\" End   \"+%1%;" % member
+                  "%1%;" % member
+    ::trace2_end = ""
+    #::trace2_end  ="printn \"**\"+"+\
+                  #"::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
+                  #"\" End   \";" 
 
     #----------------------------
     proc ::Init( ) \
@@ -264,8 +265,8 @@ if (!exists(SimplevtkVolumeClass)) {
        # Create the property and attach the transfer functions
       ::property=&f
       ::property.SetIndependentComponents(1)
-      ::property.SetColor( &::colorFun )
-      ::property.SetScalarOpacity( &::opacityFun )
+      ::property.SetColor( ::colorFun )
+      ::property.SetScalarOpacity( ::opacityFun )
       ::property.SetInterpolationTypeToLinear()
       if ::trace2 { eval ::trace2_end; }
     }
@@ -290,8 +291,8 @@ if (!exists(SimplevtkVolumeClass)) {
        # Create the property and attach the transfer functions
       ::property2=&f
       ::property2.SetIndependentComponents(1)
-      ::property2.SetColor( &::colorFun2 )
-      ::property2.SetScalarOpacity( &::opacityFun2 )
+      ::property2.SetColor( ::colorFun2 )
+      ::property2.SetScalarOpacity( ::opacityFun2 )
       ::property2.SetInterpolationTypeToLinear()
       if ::trace2 { eval ::trace2_end; }
     }
@@ -307,49 +308,51 @@ if (!exists(SimplevtkVolumeClass)) {
     #----------------------------
     proc ::SetVolMapperMode () \
     {
-        # force delete to free memory??
-        if (exists(::volmapper)) { ::volmapper.Delete(); }
-        del ::volmapper
-        #printn "VolMapper Mode = %1%" %::volrenmapper_type
+      if ::trace2 { eval ::trace2_begin; }
+      # force delete to free memory??
+      if (exists(::volmapper)) { ::volmapper.Delete(); }
+      del ::volmapper
+      #printn "VolMapper Mode = %1%" %::volrenmapper_type
 
-        if ::volrenmapper_type==4 {
-          if exists(vtk->vtkSmartVolumeMapper) {
-            ::volmapper = vtk.vtkSmartVolumeMapper.New()
-          } else {
-            ::volmapper_type = 0
-          }
+      if ::volrenmapper_type==4 {
+        if exists(vtk->vtkSmartVolumeMapper) {
+          ::volmapper = vtk.vtkSmartVolumeMapper.New()
+        } else {
+          ::volmapper_type = 0
         }
-        if (::volrenmapper_type==0)||(::volrenmapper_type==3) {
-          if  (::volrenmapper_type==3) && \
-              (exists(vtkAmiVolRen)) {
-            ::volmapper = vtkAmiVolRen.vtkOpenGLGPUMultiVolumeRayCastMapper.New()
-          } else {
-            SetStatusText("Setting vtkGPUVolumeMapper")
-            ::volrenmapper_type=0
-            ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
-          }
-          # Check if the rendering is supported
-          supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
-          #supported = 1
-          if (!supported) {
-            mess= "vtkGPUVolumeRayCastMapper rendering is not supported, trying vtkVolumeRayCastMapper ..."
-            printn mess
-            #InfoDialog mess
-            del ::volmapper
-            ::volrenmapper_type=1
-          } 
-        } 
-        if ::volrenmapper_type==1 {
-          ::volmapper = vtk.vtkFixedPointVolumeRayCastMapper.New()
+      }
+      if (::volrenmapper_type==0)||(::volrenmapper_type==3) {
+        if  (::volrenmapper_type==3) && \
+            (exists(vtkAmiVolRen)) {
+          ::volmapper = vtkAmiVolRen.vtkOpenGLGPUMultiVolumeRayCastMapper.New()
+        } else {
+          SetStatusText("Setting vtkGPUVolumeMapper")
+          ::volrenmapper_type=0
+          ::volmapper = vtk.vtkGPUVolumeRayCastMapper.New()
         }
-        if ::volrenmapper_type==2 {
-          aux=(USHORT)::input
-          del ::input
-          ::input<<=aux
-          ::volmapper = vtk.vtkVolumeRayCastMapper.New()
-          compositeFunction=vtk.vtkVolumeRayCastCompositeFunction.New()
-          ::volmapper.SetVolumeRayCastFunction(&compositeFunction)
+        # Check if the rendering is supported
+        supported = ::volmapper.IsRenderSupported( &::renwin, &::property)
+        #supported = 1
+        if (!supported) {
+          mess= "vtkGPUVolumeRayCastMapper rendering is not supported, trying vtkVolumeRayCastMapper ..."
+          printn mess
+          #InfoDialog mess
+          del ::volmapper
+          ::volrenmapper_type=1
         } 
+      } 
+      if ::volrenmapper_type==1 {
+        ::volmapper = vtk.vtkFixedPointVolumeRayCastMapper.New()
+      }
+      if ::volrenmapper_type==2 {
+        aux=(USHORT)::input
+        del ::input
+        ::input<<=aux
+        ::volmapper = vtk.vtkVolumeRayCastMapper.New()
+        compositeFunction=vtk.vtkVolumeRayCastCompositeFunction.New()
+        ::volmapper.SetVolumeRayCastFunction(&compositeFunction)
+      } 
+      if ::trace2 { eval ::trace2_end; }
     }
     #----------------------------
     # Inputs:
@@ -408,12 +411,12 @@ if (!exists(SimplevtkVolumeClass)) {
           
           if (::volrenmapper_type==3) {
             del ::vtkinput2
-            ::vtkinput2 = vtktools.ToVtkImageData(&::input2)
+            ::vtkinput2 = vtktools.ToVtkImageData(::input2)
             #printn "number of input connections before %1%" % \
                   #::volmapper.GetNumberOfInputConnections(0) +\
                   #" %1% " % + \
                   #::volmapper.GetNumberOfInputConnections(1) 
-            ::volmapper.SetInputData(1,&::vtkinput2)
+            ::volmapper.SetInputData(1,::vtkinput2)
             #printn "number of input connections after %1%" % \
                   #::volmapper.GetNumberOfInputConnections(0) +\
                   #" %1% " % + \
@@ -422,18 +425,31 @@ if (!exists(SimplevtkVolumeClass)) {
           
           ::volmapper.SetBlendMode(::blend_mode)
           # connect up the volume to the property and the mapper
-          ::vol.SetProperty( &::property )
-          ::vol.SetMapper( &::volmapper )
+          ::vol.SetProperty( ::property )
+
+print "Do some debugging here ..."
+          printn "size = %1%" % ::colorFun.GetSize()
+          c=vector_double(6)
+          cd=c.data()
+          ::colorFun.GetNodeValue(0,cd)
+          print ( "%1% -"%c[0]) + ( "%1% -"%c[1]) + ( "%1% -"%c[2])
+          printn ".."
+          ::colorFun.GetNodeValue(1,cd)
+          print ( "%1% -"%c[0]) + ( "%1% -"%c[1]) + ( "%1% -"%c[2])
+          printn ".."
+
+
+          ::vol.SetMapper( ::volmapper )
            
           if (::volrenmapper_type==3) {
             #propertier for the second volume 
-            ::volmapper.SetProperty2( &::property2 )
+            ::volmapper.SetProperty2( ::property2 )
           }
           ::initialized = true
 
           #Add volume to renderer
           if (exists(::renderer)){
-            ::renderer.AddVolume(&::vol)
+            ::renderer.AddVolume(::vol)
           }
 
           return = true
@@ -552,9 +568,19 @@ if (!exists(SimplevtkVolumeClass)) {
       del ::colorFun2
       del ::opacityFun2
       del ::property2
-    # Create our transfer function
+      # Create our transfer function
       ::colorFun=vtk.vtkColorTransferFunction.New()
+      # set some values
+      ::colorFun.AddRGBPoint(0.0  ,0.0,0.0,1.0)
+      ::colorFun.AddRGBPoint(40.0  ,1.0,0.0,0.0)
+      ::colorFun.AddRGBPoint(255.0,1.0,1.0,1.0)
+
       ::opacityFun=vtk.vtkPiecewiseFunction.New()
+      ::opacityFun.AddPoint(0.0,0.0)
+      ::opacityFun.AddPoint(80.0,1.0)
+      ::opacityFun.AddPoint(80.1,0.0)
+      ::opacityFun.AddPoint(255.0,0.0)
+
       # Create the property and attach the transfer functions
       ::property = vtk.vtkVolumeProperty.New()
       ::property.SetIndependentComponents(1)

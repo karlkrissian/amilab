@@ -30,17 +30,18 @@ if (!exists(vtkVolumeClass)) {
       }
       return=res
     }
-    ::trace=false, "gives tracing information"
+    ::trace=true, "gives tracing information"
     member = "\"vtkVolumeClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
     objname = "GetObjectName(::trace)"
     ::trace_begin="printn \"**\"+"+ \
                   "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
-                  "\" Begin \"+%1%" % member+"+ \"; \" + %1%;" % objname
-    ::trace_end  ="printn \"**\"+"+\
-                  "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
-                  "\" End   \"+%1%;" % member
+                  "%1%" % member+"+ \"; \" + %1%;" % objname
+    ::trace_end=""
+    #::trace_end  ="printn \"**\"+"+\
+                  #"::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
+                  #"\" End   \";" 
 
     #----------------------------
     proc ::Init( ) \
@@ -773,6 +774,8 @@ if (!exists(vtkVolumeClass)) {
           col = ::imhisto1.dw.GetColourlinearCM(n)
           mp  = ::imhisto1.dw.GetMidpointlinearCM(n)
           s   = ::imhisto1.dw.GetSharpnesslinearCM(n)
+printn "::colorFun.AddRGBPoint"
+print ("pos= %1%"%pos)+" R=%1%"% (1.0/255*col.Red())+" G=%1%"% (1.0/255*col.Green())+" B=%1%"% (1.0/255*col.Blue())
           ::colorFun.AddRGBPoint( pos, \
                                   1.0/255*col.Red(), \
                                   1.0/255*col.Green(),\
@@ -791,18 +794,39 @@ if (!exists(vtkVolumeClass)) {
           
           y = -max(-y,-1)
           ::opacityFun.AddPoint(  pos, y , mp,s)
-#if ::move_2 {
-          #::opacityFun2.AddPoint(  pos, y , mp,s)
-#}
+          #if ::move_2 {
+                    #::opacityFun2.AddPoint(  pos, y , mp,s)
+          #}
         }
-        ::SetShadingProperties()
-      ::property.SetColor( ::colorFun )
-      ::property.SetScalarOpacity( ::opacityFun )
+        printn "size = %1%" % ::colorFun.GetSize()
+        c=vector_double(6)
+        cd=c.data()
+        ::colorFun.GetNodeValue(0,cd)
+        print ( "%1% -"%c[0]) + ( "%1% -"%c[1]) + ( "%1% -"%c[2])
+        printn ".."
+        ::colorFun.GetNodeValue(1,cd)
+        print ( "%1% -"%c[0]) + ( "%1% -"%c[1]) + ( "%1% -"%c[2])
+        printn ".."
 
-#if ::move_2 {
-      #::property2.SetColor( ::colorFun2 )
-      #::property2.SetScalarOpacity( ::opacityFun2 )
-#}
+        ::SetShadingProperties()
+        ::property.SetColor( ::colorFun )
+        ::property.SetScalarOpacity( ::opacityFun )
+
+        #if ::move_2 {
+              #::property2.SetColor( ::colorFun2 )
+              #::property2.SetScalarOpacity( ::opacityFun2 )
+        #}
+
+        printn "size = %1%" % ::colorFun.GetSize()
+        #c=vector_double(6)
+        #cd=c.data()
+        ::colorFun.GetNodeValue(0,cd)
+        print ( "%1% -"%c[0]) + ( "%1% -"%c[1]) + ( "%1% -"%c[2])
+        printn ".."
+        ::colorFun.GetNodeValue(1,cd)
+        print ( "%1% -"%c[0]) + ( "%1% -"%c[1]) + ( "%1% -"%c[2])
+        printn ".."
+
       } else {
         InfoDialog "No histogram available."
       }

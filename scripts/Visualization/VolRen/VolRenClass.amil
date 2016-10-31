@@ -42,16 +42,17 @@ if (!exists(VolRenClass)) {
       }
       return=res
     }
-    ::trace=false, "gives tracing information"
+    ::trace=true, "gives tracing information"
     member = "\"VolRenClass::\"+" 
     #"language.Vars.GetObjectContext().GetName()::"
     member += "language.Vars.GetCurrentContext().GetName()"
     ::trace_begin="printn \"**\"+"+ \
                   "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
-                  "\" Begin \"+%1%;" % member
-    ::trace_end  ="printn \"**\"+"+\
-                  "::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
-                  "\" End   \"+%1%;" % member
+                  "%1%+\" Begin \";" % member
+    ::trace_end = ""
+    #::trace_end  ="printn \"**\"+"+\
+                  #"::GetIndent(language.Vars.GetCurrentContextNumber())+"+\
+                  #"%1%+\" End   \";" % member
 
     #----------------------------
     proc ::Init() \
@@ -122,6 +123,7 @@ if (!exists(VolRenClass)) {
       #::previewer.SetApplyCallback(&::PreviewApplied)
 
       index=::vbCtrl.GetSelection()
+      printn "Index= %1%" % index
       if (exists(::input)) {
         imin = ::volVector[index].imhisto1.minval
         imax = ::volVector[index].imhisto1.maxval
@@ -573,6 +575,9 @@ if (!exists(VolRenClass)) {
         ::EnableGPUmode(0)
         ::ShowHistograms(false,0)
         ::volVector[0].OnLinearColormap()
+
+        ## Karl test 21/10/2016
+        #::volVector[0].CreateVTK()
 
         # TODO: fix the dependency of the renderer for the volVector[0] ...
         ::vtk_camera_gui.SetCamera(&::volVector[0].camera)
