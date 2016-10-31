@@ -562,9 +562,13 @@ MainFrame::MainFrame( const wxString& title,
                   #endif
                   wxAUI_MGR_HINT_FADE |
                   wxAUI_MGR_NO_VENETIAN_BLINDS_FADE |
-                  wxAUI_MGR_ALLOW_ACTIVE_PANE
+                  wxAUI_MGR_ALLOW_ACTIVE_PANE |
+                  wxAUI_MGR_LIVE_RESIZE
                 );
-
+  
+  // Set Sash size big enough to be able to resize easily the different panels
+  m_mgr.GetArtProvider()->SetMetric(wxAUI_DOCKART_SASH_SIZE,4);
+  
      // tell the manager to "commit" all the changes just made
 
   CreateMainBook(this);
