@@ -4,7 +4,8 @@
 #ifndef NOMINMAX
   #define NOMINMAX
 #endif
-
+ 
+#include <iostream>
 #include "IdentifierInfo.h"
 //#include "Variable.hpp"
 #include "AmiInstructionBlock.h"
@@ -1023,7 +1024,13 @@ this::{identifier}   {
   return(token::END_INSTRUCTION);
 } /*{end-of-line,END_INSTRUCTION}*/
 
-.                 {
+\0  {
+    std::string error_string =" lex error \t null character ";
+    // pass
+    //GB_driver.yyiperror(error_string.c_str());
+   }
+
+.   {
 
     std::string error_string =" lex error \t invalid characters ";
     GB_driver.yyiperror(error_string.c_str());

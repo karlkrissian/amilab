@@ -34,6 +34,14 @@
   #define macro_min(a,b) (((a)<(b))?(a):(b))
 #endif
 
+#ifdef _MSC_VER
+  #define __attribute__(p) 
+//  #define __attribute__  __declspec
+//  #define aligned   align
+  #define bzero(s,n) memset ((s), 0, (n))
+#endif
+
+
 namespace ami {
 
   
@@ -554,7 +562,7 @@ void ImageConvolution1D::TemplateProcess( int threadid)
                                 sizeof(__m128)*extent.GetSize((int)_dir),16);
             __m128 minvalues;
             __m128 maxvalues;
-            float values[4] __attribute__ ((aligned (16)));;
+            float values[4] __attribute__((aligned(16)));;
 
             for(z=zmin;z<=zmax; z++)
             {

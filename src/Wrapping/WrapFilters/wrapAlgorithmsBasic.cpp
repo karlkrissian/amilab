@@ -13,6 +13,7 @@
 #include "fonctions.h"
 #include "localstats.h"
 #include "wrapfunctions.hpp"
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
 
 #include "AMILabConfig.h"

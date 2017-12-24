@@ -20,7 +20,7 @@ typedef adjacency_list <  listS,
                           no_property, 
                           property < edge_weight_t, weight_type > 
                       > graph_t;
-typedef shared_ptr<graph_t> graph_ptr;
+typedef boost::shared_ptr<graph_t> graph_ptr;
 
 typedef graph_traits < graph_t >::vertex_descriptor vertex_descriptor;
 typedef graph_traits < graph_t >::edge_descriptor edge_descriptor;

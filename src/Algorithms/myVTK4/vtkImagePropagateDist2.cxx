@@ -42,6 +42,10 @@
 #include "vtkImageData.h"
 #include "vtkStructuredPointsWriter.h"
 
+#ifndef vtkFloatingPointType
+#define vtkFloatingPointType double
+#endif
+
 //#define TRUE    1
 //#define FALSE   0
 #define EPSILON 1E-5
@@ -54,7 +58,7 @@
 #define dist(a,b,c)  (distance[abs(a)][abs(b)][abs(c)])
 
 
-vtkCxxRevisionMacro(vtkImagePropagateDist2,"$Revision: 1.0$")
+//vtkCxxRevisionMacro(vtkImagePropagateDist2,"$Revision: 1.0$")
 
 //
 //---------------------------------------------------------------------------

@@ -50,6 +50,7 @@
   #include <windows.h>
 #endif
 
+#include <cmath>
 #include "IsoContour.hpp"
 
 

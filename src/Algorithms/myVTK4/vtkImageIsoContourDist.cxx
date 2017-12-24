@@ -48,12 +48,16 @@
 #define macro_min(x,y) (((x)<(y))?(x):(y))
 #define macro_max(x,y) (((x)>(y))?(x):(y))
 
+#ifndef vtkFloatingPointType
+#define vtkFloatingPointType double
+#endif
+
 #ifdef _SOLARIS_
 /* Must be a Sun machine */
 #include <thread.h>
 #endif
 
-vtkCxxRevisionMacro(vtkImageIsoContourDist,"$Revision: 1.0$")
+//vtkCxxRevisionMacro(vtkImageIsoContourDist,"$Revision: 1.0$")
 //
 //---------------------------------------------------------------------------
 vtkImageIsoContourDist* vtkImageIsoContourDist::New()

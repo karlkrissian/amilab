@@ -50,7 +50,18 @@ MACRO( RUN_GCCXML XML_INPUT XML_OUTPUT)
 
   WRAP_MESSAGE("Try to generate XML file ${XML_OUTPUT}")
 
-  SET(GCCXML_CMD castxml -x c++ --castxml-gccxml -v -std=c++98  -D__GCCXML__  -fopenmp=libomp  )
+  IF(WIN32)
+  SET(GCCXML_CMD I:/AMILabCompilationWindows/CastXMLInstall/bin/castxml.exe -x c++ -w --castxml-gccxml 
+  -v -std=c++14  -D__GCCXML__  -DBOOST_USE_WINDOWS_H -fopenmp=libomp --castxml-cc-msvc "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.12.25827/bin/HostX64/x64/cl.exe"
+  -I "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.12.25827/include"
+  -I "C:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/ucrt"
+  -I "C:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/um"
+  -I "C:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/shared"
+)
+  #${CMAKE_CXX_COMPILER}
+  ELSE(WIN32)
+  SET(GCCXML_CMD castxml -x c++ -w --castxml-gccxml -v -std=c++14  -D__GCCXML__   -fopenmp=libomp )
+  ENDIF(WIN32)
 
   # remove duplicates
   LIST(REMOVE_DUPLICATES GCCXML_INCLUDES)
@@ -387,7 +398,7 @@ MACRO( WRAP_CODE )
               ${GENERATED_DIR}/available_functions.txt)
 
 
-  SET(  WRAP_CMD ${PYTHON_EXECUTABLE})
+  SET(  WRAP_CMD ${PYTHON_EXECUTABLE} "-m" cProfile)
   SET(  WRAP_CMD ${WRAP_CMD} ${AMI_WRAPPER})
   SET(  WRAP_CMD ${WRAP_CMD} ${XML_OUTPUT})
   SET(  WRAP_CMD ${WRAP_CMD} "--libname" "${LIBNAME}")

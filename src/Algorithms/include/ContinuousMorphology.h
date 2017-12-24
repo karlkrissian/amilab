@@ -29,6 +29,8 @@
 #ifndef _CONTINUOUSMORPHOLOGY_H_
 #define _CONTINUOUSMORPHOLOGY_H_
 
+
+#include <cmath>
 #include "style.hpp"
 #include "math1.hpp"
 #include "inrimage.hpp"

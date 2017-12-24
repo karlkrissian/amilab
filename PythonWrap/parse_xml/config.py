@@ -15,6 +15,7 @@ files      = dict()
 
 
 classes_blacklist=[
+  '_0', # class created by castxml, maybe for unknown classes
   'wxHtmlWindowMouseHelper', # pb: no public constructor, destructor: can't be used with boost smart pointers
   'std::_Container_base_aux', # pb: wrapping std::vector with VC++
   'std::_Container_base_aux_alloc_real<std::allocator<std::string> >', # idem
@@ -166,6 +167,7 @@ available_types       = [
   'unsigned short int',
   'short unsigned int',
   'std::string',
+  'std::basic_string<char, std::char_traits<char>, std::allocator<char> >',
   'bool',
   'void',
   'AMIFunction',
@@ -359,6 +361,8 @@ def CreateIncludes():
 #  Check for boost shared pointer type
 #------------------------------------------------------------------
 def IsSharedPtr(typename):
+  if typename == None:
+    return None
   res = re.match(r"boost::shared_ptr<(.*)>",typename)
   if res!=None:
     # get rid of spaces with strip ...

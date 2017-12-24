@@ -56,10 +56,13 @@ if (!exists(TextureMappingExampleClass)) {
       ::vtkreaderfactory = vtk.vtkImageReader2Factory.New()
       if (res==1) {
         nbfiles = ::vtkdir.GetNumberOfFiles()
+        printn "nbfiles %1%" % nbfiles
         total_imsize = 0
         for n=0 to nbfiles-1 {
+          printn "n=%1%" % n
           SetProgress(100.0*n/nbfiles)
           file = ::vtkdir.GetFile(n)
+          printn "file=%1%" % file
           # check if vtk can read the image
           #::vtkreaderfactory.CreateImageReader2(
           #          ::inputdir_name+"/"+file)
@@ -68,9 +71,11 @@ if (!exists(TextureMappingExampleClass)) {
             del ::vtkreader; 
           }
           ::vtkreader = vtk.vtkJPEGReader.New()
-          ::vtkreader.GetOutput().ReleaseDataFlagOn()
+          ::vtkreader.ReleaseDataFlagOn()
           filename=::inputdir_name+"/"+file
+          printn "filename = %1%" % filename
           ok = ::vtkreader.CanReadFile(filename)
+          printn "can read = %1%" % ok
           if (ok>0.5)\
           {
             ::vtkReaders.push_back(&::vtkreader)
@@ -94,7 +99,7 @@ if (!exists(TextureMappingExampleClass)) {
               del imresample; 
             }
             imresample = vtk.vtkImageResample.New()
-            imresample.GetOutput().ReleaseDataFlagOn()
+            imresample.ReleaseDataFlagOn()
             ::ImResample.push_back(&imresample)
             imresample.SetAxisMagnificationFactor(0,1.0/f)
             imresample.SetAxisMagnificationFactor(1,1.0/f)
@@ -117,7 +122,7 @@ if (!exists(TextureMappingExampleClass)) {
             atext = vtk.vtkTexture.New()
             
             atext.SetInputConnection(&imresample.GetOutputPort())
-            #atext.GetOutput().ReleaseDataFlagOn()
+            #atext.ReleaseDataFlagOn()
             #atext.SetInput(&vtkim1)
             #atext.InterpolateOn()
             
@@ -454,7 +459,7 @@ if (!exists(TextureMappingExampleClass)) {
           diffsec = 4
           ::timer.Stop()
           n = ::selected_image
-          ::vtkreader.GetOutput().ReleaseDataFlagOn()
+          ::vtkreader.ReleaseDataFlagOn()
           ::PlaneActors[n].SetTexture(&::inittexture)
           ::fulltexture.RemoveInputConnection(0,&::vtkReaders[n].GetOutputPort())
           ::fulltexture.ReleaseGraphicsResources(&::renwin)
@@ -532,7 +537,7 @@ if (!exists(TextureMappingExampleClass)) {
         ::inittexture = ::PlaneActors[n].GetTexture()
         del ::fulltexture
         ::fulltexture = vtk.vtkTexture.New()
-        ::vtkreader.GetOutput().ReleaseDataFlagOn()
+        ::vtkreader.ReleaseDataFlagOn()
         ::vtkReaders[n].Update()
         ::fulltexture.SetInputConnection(&::vtkReaders[n].GetOutputPort())
         ::PlaneActors[n].SetTexture(&::fulltexture)
@@ -589,8 +594,10 @@ if (!exists(TextureMappingExampleClass)) {
     {
       if exists(::PlaneActors) {
 
-        selected_actor = &::PlaneActors[::selected_image]
-        ::interact.HighlightProp3D(&selected_actor)
+        if (::selected_image<::PlaneActors.size()) {
+          selected_actor = &::PlaneActors[::selected_image]
+          ::interact.HighlightProp3D(&selected_actor)
+        }
 
         #::outlinefilter.SetInput(&selected_actor.GetMapper().GetInput())
         ## Get the position orientation and scale of the outline

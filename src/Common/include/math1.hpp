@@ -132,12 +132,14 @@ enum Token {
 };
 
 int   comb           ( int p, int n);
+#if !defined(_MSC_VER) 
 float abs            ( float);
+#endif
 float puis           ( float a, float b);
 float nombre         ( st46 a);
 
 /* ===========================================================================
- * Expression compil�e
+ * Expression compilée
  */
 
 class COMMON_EXPORT CompileExpr

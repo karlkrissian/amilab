@@ -51,7 +51,7 @@
 #ifndef _ISOCONTOUR_2D_HPP
 #define _ISOCONTOUR_2D_HPP
 
-
+#include <cmath>
 #include "style.hpp"
 #include <iosfwd>
 #include "math1.hpp"

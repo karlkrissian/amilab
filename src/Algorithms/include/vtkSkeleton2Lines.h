@@ -54,7 +54,7 @@ class VTK_CORCTA_EXPORT vtkSkeleton2Lines : public vtkPolyDataAlgorithm
 //               -----------------
 {
 public:
-  vtkTypeRevisionMacro(vtkSkeleton2Lines,vtkPolyDataAlgorithm);
+  vtkTypeMacro(vtkSkeleton2Lines,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

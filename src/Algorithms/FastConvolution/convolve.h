@@ -111,8 +111,8 @@ inline int convolve_sse_x4_prepared_asym(  __m128* in, __m128* out, int length,
                                            __m128* kernel_reverse, 
                                            int kernel_radius);
 
-inline int convolve_sse_in_aligned(float* in, float* out, int length,
-        float* kernel, int kernel_length);
+inline int convolve_sse_in_aligned(float* in, float* out, const int length,
+        float* kernel, const int kernel_length);
 
 inline int convolve_sse_in_aligned_fixed_kernel(float* in, float* out, int length,
         float* kernel, int kernel_length);

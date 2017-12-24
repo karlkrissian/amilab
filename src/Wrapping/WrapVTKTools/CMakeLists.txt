@@ -15,8 +15,8 @@ include_directories (
   ${AMILab_BINARY_DIR}/Wrapping/WrapVTK/${AMI_VTK_VERSION}/Generated
 )
 
-INCLUDE( ${VTK_USE_FILE} )
 INCLUDE( ${wxWidgets_USE_FILE})
+INCLUDE( ${VTK_USE_FILE} )
 
 
 SET(  WrapVTKTools_SRCS

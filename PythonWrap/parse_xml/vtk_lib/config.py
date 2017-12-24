@@ -5,6 +5,8 @@
 def get_include_file(classname,filename):
   last = filename.rfind('/')
   incfile=filename[last+1:]
+  last = incfile.rfind('\\')
+  incfile=incfile[last+1:]
   incfile = '#include "{0}"'.format(incfile)
   #print "including class {0} from file {1}".format(classname,incfile)
   if filename.endswith("ostream.tcc") or classname.startswith("std::ostream"):
@@ -27,7 +29,7 @@ def implement_deleter(classname):
   if classname.endswith("Info") or \
       classname in ["vtkVariant","vtkTimeStamp","vtkIndent"] or \
       classname.endswith("String") or \
-      classname in ["st1","st2"]:
+      classname in ["vtkVolumeRayCastStaticInfoType","vtkVolumeRayCastDynamicInfoType"]:
     return ", smartpointer_nodeleter<{0} >()".format(classname)
   else:
     return ", vtk_deleter<{0} >()".format(classname)

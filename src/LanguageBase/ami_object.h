@@ -35,21 +35,21 @@
 
 //#include "Variables.hpp"
 class Variables;
-BasicVariable::ptr Variables_AddVar(  boost::shared_ptr<Variables>& vars,
+BasicVariable::ptr LanguageBase_EXPORT Variables_AddVar(  boost::shared_ptr<Variables>& vars,
                                        const std::string& name, 
                                        BasicVariable* val, 
                                        const boost::shared_ptr<Variables>& context = boost::shared_ptr<Variables>() );
 
-BasicVariable::ptr Variables_AddVar(  boost::shared_ptr<Variables>& vars,
+BasicVariable::ptr LanguageBase_EXPORT Variables_AddVar(  boost::shared_ptr<Variables>& vars,
                                        const std::string& name, 
                                        BasicVariable::ptr& val, 
                                        const boost::shared_ptr<Variables>& context = boost::shared_ptr<Variables>() );
 
-BasicVariable::ptr Variables_AddVar(  boost::shared_ptr<Variables>& vars,
+BasicVariable::ptr LanguageBase_EXPORT Variables_AddVar(  boost::shared_ptr<Variables>& vars,
                                        BasicVariable::ptr& val, 
                                        const boost::shared_ptr<Variables>& context = boost::shared_ptr<Variables>() );
 
-void               Variables_AddDefault(  boost::shared_ptr<Variables>& vars,
+void          LanguageBase_EXPORT      Variables_AddDefault(  boost::shared_ptr<Variables>& vars,
                                           boost::shared_ptr<Variables>& defcontext );
 
 #include "DefineClass.hpp"

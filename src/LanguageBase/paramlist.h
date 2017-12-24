@@ -88,7 +88,7 @@ private:
 
 /**  Declaration of the parameters list
  **/
-class ParamListDecl {
+class LanguageBase_EXPORT ParamListDecl {
 
   int         num_param;
   std::string name[MAX_PARAM];

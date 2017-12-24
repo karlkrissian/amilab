@@ -87,6 +87,10 @@
 
 #include "vtkCell.h" // Needed for VTK_CELL_SIZE
 
+#ifndef VTK_LARGE_INTEGER
+#define 	VTK_LARGE_INTEGER   2147483647
+#endif
+
 #define VTK_NUMBER_STATISTICS 12
 
 class vtkIdList;

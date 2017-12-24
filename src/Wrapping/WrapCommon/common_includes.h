@@ -1,4 +1,9 @@
 
+#ifdef __GCCXML__
+//#define __nullptr NULL
+//#define _NOEXCEPT
+//#define constexpr const
+#endif
 
 
 #include "amiImageExtent.h"

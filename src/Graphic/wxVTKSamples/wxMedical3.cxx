@@ -37,8 +37,8 @@
 #include "vtkImageData.h"
 #include "vtkImageMapToColors.h"
 #include "vtkImageActor.h"
-#include "vtkTesting.h"
-#include "vtkTestUtilities.h"
+//#include "vtkTesting.h"
+//#include "vtkTestUtilities.h"
 
 // the application icon
 // #ifndef __WXMSW__
@@ -205,6 +205,7 @@ void wxMedical3Frame::ConfigureVTK()
   vtkVolume16Reader *v16 = NULL;
   if (!input.get())
   {
+    #ifndef _MSC_VER
     char* fname = vtkTestUtilities::ExpandDataFileName(0, 0, "Data/headsq/quarter");
   
     // The following reader is used to read a series of 2D slices (images)
@@ -220,6 +221,7 @@ void wxMedical3Frame::ConfigureVTK()
       v16->SetImageRange(1, 93);
       v16->SetDataSpacing (3.2, 3.2, 1.5);
     delete[] fname;
+    #endif
     //input = v16->GetOutput();
   }
 

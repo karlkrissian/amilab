@@ -101,7 +101,12 @@ vtkCxxSetObjectMacro( vtkLevelSets,
                       initImage,
                       vtkImageData);
 
-vtkCxxRevisionMacro(vtkLevelSets,"$Revision: 1.0$")
+//vtkCxxRevisionMacro(vtkLevelSets,"$Revision: 1.0$")
+
+#ifndef vtkFloatingPointType
+#define vtkFloatingPointType double
+#endif
+
 
 //
 //------------------------------------------------------------------------------

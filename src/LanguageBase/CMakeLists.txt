@@ -42,7 +42,6 @@ SET(LanguageBase_SRCS
     Variable_uchar.cpp
     Variable_WrapClassMember.cpp
     Variables.cpp
-
 #    VarContexts.cpp
 #    ImageStack.cpp
 #    VarArray.cpp
@@ -130,8 +129,10 @@ ELSE(LanguageBase_SHARED)
   my_add_library ( LanguageBase)
 ENDIF(LanguageBase_SHARED)
 
+link_directories(${Boost_LIBRARY_DIR_RELEASE})
 
-MESSAGE("LanguageBase Boost_LIBRARIES=${Boost_LIBRARIES}")
+
+MESSAGE(STATUS "LanguageBase Boost_LIBRARIES=${Boost_LIBRARIES}")
 target_link_libraries(LanguageBase 
   CommonBase
   Common
@@ -162,3 +163,4 @@ INSTALL(TARGETS LanguageBase
 add_dependencies ( LanguageBase
   WrapCommon # dependency because of wrap_ImageExtent ...
 )
+

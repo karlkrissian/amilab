@@ -20,6 +20,7 @@
 #include "NLmeans.h"
 #include "fonctions.h"
 #include "wrapfunctions.hpp"
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
 #include "ImageDerivatives.h"
 #include "message_dialog.h"

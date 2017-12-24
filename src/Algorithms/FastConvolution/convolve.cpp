@@ -40,6 +40,20 @@
  *
  * */
 
+#ifdef _MSC_VER
+#define bzero(s,n) memset ((s), 0, (n))
+ //#define ALIGN16(__Declaration__) __declspec(align(16))  __Declaration__ 
+#define ALIGN16(__Declaration__)  __Declaration__ 
+#define ALIGN32(__Declaration__)  __Declaration__ 
+#define ALIGN16_ARRAY(__Declaration__)  __Declaration__ 
+#define ALIGN32_ARRAY(__Declaration__)  __Declaration__ 
+#else
+#define ALIGN16( __Declaration__ )   __Declaration__ __attribute__ ((aligned (16)))
+#define ALIGN32( __Declaration__ )   __Declaration__ __attribute__ ((aligned (32)))
+#define ALIGN16_ARRAY( __Declaration__ )   __Declaration__ __attribute__ ((aligned (16)))
+#define ALIGN32_ARRAY( __Declaration__ )   __Declaration__ __attribute__ ((aligned (32)))
+#endif
+
 
 /* A simple implementation of a 1D convolution that just iterates over
  * scalar values of the input array. 
@@ -142,10 +156,10 @@ void sse_free_kernel(__m128* kernel)
 int convolve_sse_simple_prepared( float* in, float* out, int length,
                                   __m128* kernel_reverse, int kernel_length)
 {
-    __m128 data_block __attribute__ ((aligned (16)));
+    ALIGN16(__m128 data_block);
 
-    __m128 prod __attribute__ ((aligned (16)));
-    __m128 acc __attribute__ ((aligned (16)));
+    ALIGN16(__m128 prod);
+    ALIGN16(__m128 acc);
 
     //for(int i=0; i<length-kernel_length; i+=4){
 
@@ -199,6 +213,7 @@ int convolve_sse_simple(float* in, float* out, int length,
   __m128* kernel_reverse = sse_prepare_kernel_reverse(kernel,kernel_length);    
   convolve_sse_simple_prepared(in,out,length,kernel_reverse,kernel_length);
   sse_free_kernel(kernel_reverse);
+  return 0;
 }
 
 //------------------------------------------------------------------------------
@@ -212,9 +227,9 @@ inline int convolve_sse_partial_unroll_prepared(
                                   float* in, float* out, int length,
                                   __m128* kernel_reverse, int kernel_length)
 {
-    __m128 data_block __attribute__ ((aligned (16)));
-    __m128 prod __attribute__ ((aligned (16)));
-    __m128 acc __attribute__ ((aligned (16)));
+    ALIGN16(__m128 data_block );
+    ALIGN16(__m128 prod );
+    ALIGN16(__m128 acc );
 
     int i;
     for(i=0; i<=length-kernel_length-3; i+=4){
@@ -272,6 +287,7 @@ inline int convolve_sse_partial_unroll( float* in, float* out, int length,
     convolve_sse_partial_unroll_prepared(in,out,length,
                                          kernel_reverse,kernel_length);
   sse_free_kernel(kernel_reverse);
+  return 0;
 }
 
 //------------------------------------------------------------------------------
@@ -280,8 +296,8 @@ inline int convolve_sse_x4_prepared(  __m128* in, __m128* out, int length,
                                       __m128* kernel_reverse, int kernel_length)
 {
 
-    __m128 prod __attribute__ ((aligned (16)));
-    __m128 acc __attribute__ ((aligned (16)));
+    ALIGN16(__m128 prod);
+    ALIGN16(__m128 acc);
 
     int i;
     for(i=0; i<=length-kernel_length; i++){
@@ -320,9 +336,9 @@ inline int convolve_sse_x4_prepared_sym(  __m128* in, __m128* out, int length,
                                           int kernel_radius)
 {
 
-    __m128 prod __attribute__ ((aligned (16)));
-    __m128 acc __attribute__ ((aligned (16)));
-    __m128 sum __attribute__ ((aligned (16)));
+    ALIGN16(__m128 prod );
+    ALIGN16(__m128 acc );
+    ALIGN16(__m128 sum );
     int kernel_length = 2*kernel_radius+1;
 
     int i;
@@ -367,9 +383,9 @@ inline int convolve_sse_x4_prepared_asym(  __m128* in, __m128* out, int length,
                                            int kernel_radius)
 {
 
-    __m128 prod __attribute__ ((aligned (16)));
-    __m128 acc __attribute__ ((aligned (16)));
-    __m128 sum __attribute__ ((aligned (16)));
+    ALIGN16(__m128 prod);
+    ALIGN16(__m128 acc);
+    ALIGN16(__m128 sum);
     int kernel_length = 2*kernel_radius+1;
 
     int i;
@@ -429,18 +445,21 @@ inline int convolve_sse_x4_prepared_asym(  __m128* in, __m128* out, int length,
  * an aligned data load (_mm_load_ps), speeding up the algorithm 
  * by ~2x.
  * */
-inline int convolve_sse_in_aligned(float* in, float* out, int length,
-        float* kernel, int kernel_length)
+inline int convolve_sse_in_aligned(float* in, float* out, const int length,
+        float* kernel, const int kernel_length)
 {
-    float kernel_block[4] __attribute__ ((aligned (16)));
-    int length1 = ((int)(1.0*(length-1)/4.0)+1)*4; // force multiple of 4 length for alignment
-    float in_aligned[4][length1] __attribute__ ((aligned (16)));
+    ALIGN16(float kernel_block[4]);
+    const int length1 = ((int)(1.0*(length-1)/4.0)+1)*4; // force multiple of 4 length for alignment
 
-    __m128 kernel_reverse[kernel_length] __attribute__ ((aligned (16)));    
-    __m128 data_block __attribute__ ((aligned (16)));
+    float* in_aligned[4];
+    for (int i = 0; i < 4; i++) in_aligned[i] = (float*)_mm_malloc(sizeof(float)*length1, 16);
 
-    __m128 prod __attribute__ ((aligned (16)));
-    __m128 acc __attribute__ ((aligned (16)));
+    __m128 *kernel_reverse;
+    kernel_reverse = (__m128*)_mm_malloc(sizeof(__m128)*kernel_length,16);
+    ALIGN16(__m128 data_block);
+
+    ALIGN16(__m128 prod);
+    ALIGN16(__m128 acc);
 
     // Repeat the kernel across the vector
     for(int i=0; i<kernel_length; i++){
@@ -499,6 +518,8 @@ inline int convolve_sse_in_aligned(float* in, float* out, int length,
       i++;
     }
 
+    for (int i = 0; i < 4; i++)  _mm_free(in_aligned[i]);
+    _mm_free(kernel_reverse);
     return 0;
 }
 
@@ -509,14 +530,15 @@ inline int convolve_sse_in_aligned(float* in, float* out, int length,
 inline int convolve_sse_in_aligned_fixed_kernel(float* in, float* out, int length,
         float* kernel, int kernel_length)
 {
-    float kernel_block[4] __attribute__ ((aligned (16)));
-    float in_aligned[4][length] __attribute__ ((aligned (16)));
+    ALIGN16(float kernel_block[4]);
+    float* in_aligned[4];
+    for (int i = 0; i < 4; i++) in_aligned[i] = (float*)_mm_malloc(sizeof(float)*length, 16);
 
-    __m128 kernel_reverse[KERNEL_LENGTH] __attribute__ ((aligned (16)));    
-    __m128 data_block __attribute__ ((aligned (16)));
+    ALIGN16(__m128 kernel_reverse[KERNEL_LENGTH]);
+    ALIGN16(__m128 data_block);
 
-    __m128 prod __attribute__ ((aligned (16)));
-    __m128 acc __attribute__ ((aligned (16)));
+    ALIGN16(__m128 prod);
+    ALIGN16(__m128 acc);
 
     // Repeat the kernel across the vector
     for(int i=0; i<KERNEL_LENGTH; i++){
@@ -562,6 +584,8 @@ inline int convolve_sse_in_aligned_fixed_kernel(float* in, float* out, int lengt
         out[i] += in_aligned[0][i+k] * kernel[KERNEL_LENGTH - k - 1];
     }
 
+    for (int i = 0; i < 4; i++)  _mm_free(in_aligned[i]);
+
     return 0;
 }
 
@@ -575,18 +599,16 @@ inline int convolve_sse_in_aligned_fixed_kernel(float* in, float* out, int lengt
 inline int convolve_sse_unrolled_avx_vector(float* in, float* out, int length,
         float* kernel, int kernel_length)
 {
-    float kernel_block[SSE_SIMD_LENGTH] __attribute__ (
-            (aligned (ALIGNMENT)));
-    float in_aligned[SSE_SIMD_LENGTH][length] __attribute__ (
-            (aligned (ALIGNMENT)));
+    ALIGN32_ARRAY(float kernel_block[SSE_SIMD_LENGTH]);
+    float* in_aligned[SSE_SIMD_LENGTH];
+    for (int i = 0; i < SSE_SIMD_LENGTH; i++) in_aligned[i] = (float*)_mm_malloc(sizeof(float)*length, 16);
 
-    __m128 kernel_reverse[KERNEL_LENGTH] __attribute__ (
-            (aligned (ALIGNMENT)));    
-    __m128 data_block __attribute__ ((aligned (ALIGNMENT)));
+    ALIGN32_ARRAY(__m128 kernel_reverse[KERNEL_LENGTH]);
+    ALIGN32(__m128 data_block);
 
-    __m128 prod __attribute__ ((aligned (ALIGNMENT)));
-    __m128 acc0 __attribute__ ((aligned (ALIGNMENT)));
-    __m128 acc1 __attribute__ ((aligned (ALIGNMENT)));
+    ALIGN32(__m128 prod );
+    ALIGN32(__m128 acc0 );
+    ALIGN32(__m128 acc1 );
 
     // Repeat the kernel across the vector
     for(int i=0; i<KERNEL_LENGTH; i++){
@@ -648,6 +670,8 @@ inline int convolve_sse_unrolled_avx_vector(float* in, float* out, int length,
         out[i] += in_aligned[0][i+k] * kernel[KERNEL_LENGTH - k - 1];
     }
 
+    for (int i = 0; i < SSE_SIMD_LENGTH; i++) _mm_free(in_aligned[i]);
+    
     return 0;
 }
 
@@ -655,20 +679,18 @@ inline int convolve_sse_unrolled_avx_vector(float* in, float* out, int length,
 inline int convolve_sse_unrolled_vector(float* in, float* out, 
         int length, float* kernel, int kernel_length)
 {
-    float kernel_block[SSE_SIMD_LENGTH] __attribute__ (
-            (aligned (ALIGNMENT)));
-    float in_aligned[SSE_SIMD_LENGTH][length] __attribute__ (
-            (aligned (ALIGNMENT)));
+    ALIGN32_ARRAY(float kernel_block[SSE_SIMD_LENGTH]);
+    float* in_aligned[SSE_SIMD_LENGTH];
+    for (int i = 0; i < SSE_SIMD_LENGTH; i++) in_aligned[i] = (float*)_mm_malloc(sizeof(float)*length, 16);
 
-    __m128 kernel_reverse[KERNEL_LENGTH] __attribute__ (
-            (aligned (ALIGNMENT)));    
-    __m128 data_block __attribute__ ((aligned (ALIGNMENT)));
+    ALIGN32_ARRAY(__m128 kernel_reverse[KERNEL_LENGTH]);
+    ALIGN32(__m128 data_block);
 
-    __m128 prod __attribute__ ((aligned (ALIGNMENT)));
-    __m128 acc0 __attribute__ ((aligned (ALIGNMENT)));
-    __m128 acc1 __attribute__ ((aligned (ALIGNMENT)));
-    __m128 acc2 __attribute__ ((aligned (ALIGNMENT)));
-    __m128 acc3 __attribute__ ((aligned (ALIGNMENT)));
+    ALIGN32(__m128 prod );
+    ALIGN32(__m128 acc0 );
+    ALIGN32(__m128 acc1 );
+    ALIGN32(__m128 acc2 );
+    ALIGN32(__m128 acc3 );
 
     // Repeat the kernel across the vector
     for(int i=0; i<KERNEL_LENGTH; i++){
@@ -741,6 +763,7 @@ inline int convolve_sse_unrolled_vector(float* in, float* out,
         out[i] += in_aligned[0][i+k] * kernel[KERNEL_LENGTH - k - 1];
     }
 
+    for (int i = 0; i < SSE_SIMD_LENGTH; i++)  _mm_free(in_aligned[i]);
     return 0;
 }
 
@@ -752,18 +775,15 @@ inline int convolve_sse_unrolled_vector(float* in, float* out,
 int convolve_avx_unrolled_vector(float* in, float* out, 
         int length, float* kernel, int kernel_length)
 {
-    float kernel_block[AVX_SIMD_LENGTH] __attribute__ (
-            (aligned (ALIGNMENT)));
-    float in_aligned[AVX_SIMD_LENGTH][length] __attribute__ (
-            (aligned (ALIGNMENT)));
+    float kernel_block[AVX_SIMD_LENGTH] __attribute__((aligned(ALIGNMENT)));
+    float in_aligned[AVX_SIMD_LENGTH][length] __attribute__((aligned(ALIGNMENT)));
 
-    __m256 kernel_reverse[KERNEL_LENGTH] __attribute__ (
-            (aligned (ALIGNMENT)));    
-    __m256 data_block __attribute__ ((aligned (ALIGNMENT)));
+    __m256 kernel_reverse[KERNEL_LENGTH] __attribute__((aligned(ALIGNMENT)));    
+    __m256 data_block __attribute__((aligned(ALIGNMENT)));
 
-    __m256 prod __attribute__ ((aligned (ALIGNMENT)));
-    __m256 acc0 __attribute__ ((aligned (ALIGNMENT)));
-    __m256 acc1 __attribute__ ((aligned (ALIGNMENT)));
+    __m256 prod __attribute__((aligned(ALIGNMENT)));
+    __m256 acc0 __attribute__((aligned(ALIGNMENT)));
+    __m256 acc1 __attribute__((aligned(ALIGNMENT)));
 
     // Repeat the kernel across the vector
     for(int i=0; i<KERNEL_LENGTH; i++){
@@ -827,18 +847,15 @@ int convolve_avx_unrolled_vector(float* in, float* out,
 inline int convolve_avx_unrolled_vector_partial_aligned(float* in, float* out, 
         int length, float* kernel, int kernel_length)
 {
-    float kernel_block[AVX_SIMD_LENGTH] __attribute__ (
-            (aligned (ALIGNMENT)));
-    float in_aligned[AVX_SIMD_LENGTH][length] __attribute__ (
-            (aligned (ALIGNMENT)));
+    float kernel_block[AVX_SIMD_LENGTH] __attribute__((aligned(ALIGNMENT)));
+    float in_aligned[AVX_SIMD_LENGTH][length] __attribute__((aligned(ALIGNMENT)));
 
-    __m256 kernel_reverse[KERNEL_LENGTH] __attribute__ (
-            (aligned (ALIGNMENT)));    
-    __m256 data_block __attribute__ ((aligned (ALIGNMENT)));
+    __m256 kernel_reverse[KERNEL_LENGTH] __attribute__((aligned(ALIGNMENT)));    
+    __m256 data_block __attribute__((aligned(ALIGNMENT)));
 
-    __m256 prod __attribute__ ((aligned (ALIGNMENT)));
-    __m256 acc0 __attribute__ ((aligned (ALIGNMENT)));
-    __m256 acc1 __attribute__ ((aligned (ALIGNMENT)));
+    __m256 prod __attribute__((aligned(ALIGNMENT)));
+    __m256 acc0 __attribute__((aligned(ALIGNMENT)));
+    __m256 acc1 __attribute__((aligned(ALIGNMENT)));
 
     // Repeat the kernel across the vector
     for(int i=0; i<KERNEL_LENGTH; i++){

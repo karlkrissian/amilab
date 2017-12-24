@@ -92,6 +92,10 @@
 
 #include "StringUtils.hpp"
 
+#ifndef vtkFloatingPointType
+#define vtkFloatingPointType double
+#endif
+
 LigneCrest Crest::_lignecrest_defaut;
 
 

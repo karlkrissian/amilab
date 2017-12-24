@@ -153,7 +153,7 @@ typedef boost::shared_ptr<vtkImageData>  vtkImageData_ptr;
 #if defined(_MSC_VER) 
 //|| defined(__MINGW32__)
 int   rint(const float& a);
-float roundf(const float& a);
+//float roundf(const float& a);
 #endif
 
 //#include "Coordonnees.hpp"

@@ -80,6 +80,8 @@
 #include <vtkTriangleFilter.h>
 #endif // _WITHOUT_VTK_
 
+#define vtkFloatingPointType double
+
 #include "vtk_common.h"
 
 #include <stdio.h>

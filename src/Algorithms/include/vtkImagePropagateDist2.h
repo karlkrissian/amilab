@@ -182,7 +182,7 @@ class VTK_LEVELSETS_EXPORT vtkImagePropagateDist2 : public vtkImageAlgorithm
 {
 public:
   static vtkImagePropagateDist2 *New();
-  vtkTypeRevisionMacro(vtkImagePropagateDist2,vtkImageAlgorithm);
+  vtkTypeMacro(vtkImagePropagateDist2,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   // Description

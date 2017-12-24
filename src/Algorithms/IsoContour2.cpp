@@ -84,6 +84,7 @@ using namespace boost;
   #include <windows.h>
 #endif
 
+#include <cmath>
 #include <stdlib.h>
 #include "IsoContour2.hpp"
 #include "Timing.hpp"

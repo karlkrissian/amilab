@@ -26,7 +26,7 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
-
+#include <cmath>
 #include "style.hpp"
 #include "math1.hpp"
 

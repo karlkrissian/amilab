@@ -50,7 +50,7 @@ IF(AMI_ENABLE_WRAPPING)
 
   SET(GCCXML_FLAGS "")
   IF(WIN32)
-    SET(GCCXML_FLAGS ${GCCXML_FLAGS} -D_WIN32 -DWIN32 -D_MSC_VER -D__GCCXML__)
+    SET(GCCXML_FLAGS ${GCCXML_FLAGS} -D_WIN32 -DWIN32 -D__GCCXML__)
   ENDIF(WIN32)
   MESSAGE("GCCXML_FLAGS='${GCCXML_FLAGS}'")
 
@@ -74,12 +74,26 @@ IF(AMI_ENABLE_WRAPPING)
 #     COMMAND ${GCCXML} -fxml=${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include  -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES}  ${VTK_DEFS}  ${XML_INPUT}
 #     DEPENDS ${XML_INPUT}
 #   )
-  MESSAGE("castxml  -x c++ --castxml-gccxml -v -std=c++98 -fopenmp=libomp -o ${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language   -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}   ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}")
+  IF(WIN32)
+  MESSAGE("I:/AMILabCompilationWindows/CastXMLInstall/bin/castxml.exe -w -x c++ --castxml-gccxml -v -std=c++14  -DBOOST_USE_WINDOWS_H -fopenmp=libomp --castxml-cc-msvc ${CMAKE_CXX_COMPILER} -o ${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language   -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}   ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}")
   execute_process(
-    COMMAND castxml  -x c++ --castxml-gccxml -v -std=c++98 -fopenmp=libomp -o ${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include -I${AMILAB_SOURCE_DIR}/CommonBase -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${WX_INCLUDES} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}
+    COMMAND I:/AMILabCompilationWindows/CastXMLInstall/bin/castxml.exe -w -x c++ --castxml-gccxml -v -std=c++14  -DBOOST_USE_WINDOWS_H -fopenmp=libomp --castxml-cc-msvc ${CMAKE_CXX_COMPILER}
+  -I "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.12.25827/include"
+  -I "C:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/ucrt"
+  -I "C:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/um"
+  -I "C:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/shared"
+  -o ${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include -I${AMILAB_SOURCE_DIR}/CommonBase -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${WX_INCLUDES} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}
     OUTPUT_VARIABLE gccxml_result
     ERROR_VARIABLE gccxml_error
   )
+  ELSE(WIN32)
+  MESSAGE("castxml  -x c++ --castxml-gccxml -v -std=c++14 -fopenmp=libomp -o ${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include  -I${AMILAB_SOURCE_DIR}/Common/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language   -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${WX_INCLUDES}   ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}")
+  execute_process(
+    COMMAND castxml  -x c++ --castxml-gccxml -v -std=c++14 -fopenmp=libomp -o ${XML_OUTPUT} -I${AMILAB_SOURCE_DIR}/Wrapping/include -I${AMILAB_SOURCE_DIR}/CommonBase -I${AMILAB_SOURCE_DIR}/Common/include -I${AMILAB_SOURCE_DIR}/Graphic/include -I${wxParams_INCLUDE_DIRS} -I${AMILAB_SOURCE_DIR}/LanguageBase -I${AMILAB_SOURCE_DIR}/Language  -I${CMAKE_BINARY_DIR} -I${Boost_INCLUDE_DIR}  ${VTK_INCLUDES} ${WX_INCLUDES} ${WX_DEFS} ${GCCXML_FLAGS} ${XML_INPUT}
+    OUTPUT_VARIABLE gccxml_result
+    ERROR_VARIABLE gccxml_error
+  )
+  ENDIF(WIN32)
   MESSAGE(" gccxml_result = ${gccxml_result} ")
   MESSAGE(" gccxml_error = ${gccxml_error} ")
    

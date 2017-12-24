@@ -1,6 +1,4 @@
-from xml.sax import saxutils,handler
-from xml.sax import make_parser
-from xml.sax.handler import feature_namespaces
+
 import sys
 import shutil
 import fileinput
@@ -40,7 +38,7 @@ def get_include_file(funcname, filename):
   return incfile
 
 def WxHelpLink(funcname):
-  if funcname in config.available_operators.keys():
+  if funcname in config.available_operators:
     mname=config.available_operators[funcname]
   else:
     mname=funcname
@@ -378,28 +376,21 @@ def ImplementCopyMethodWrap(funcname, method):
 #----------------------------------------------------------------------
 def FindIncludeFile(funcname,fileid):
   include_file=""
-  if fileid in config.files.keys():
+  if fileid in config.files:
     filename = config.files[fileid]
     include_file=filename
   else:
-    print "Include file for {0} not found".format(classname)
+    print "Include file for {0} not found".format(funcname)
     return "";
   return '#include "{0}"'.format(include_file)
 
 #----------------------------------------------------------------------
 #  WrapFunction
 #----------------------------------------------------------------------
-def WrapFunction(funcname,include_file,inputfile):
+def WrapFunction(funcname,include_file,xmltree):
   # Create the handler
   dh = parse_function.FindFunction(funcname)
-
-  parser = make_parser()
-  # Tell the parser to use our handler
-  parser.setContentHandler(dh)
-  # Parse the input
-  inputfile.seek(0)
-  parser.parse(inputfile)
-
+  dh.parse(xmltree)
   #
   if not(dh.found):
     print "... {0} : function not found ...".format(funcname)

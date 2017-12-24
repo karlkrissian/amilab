@@ -51,6 +51,7 @@
   #include <windows.h>
 #endif
 
+#include <cmath>
 #include "style.hpp"
 #include <iosfwd>
 #include "math1.hpp"

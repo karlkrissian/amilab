@@ -53,7 +53,7 @@
 #define dist2(a,b,c)  (sq[abs(a)]+sq[abs(b)]+sq[abs(c)])
 #define dist(a,b,c)  (distance[abs(a)][abs(b)][abs(c)])
 
-vtkCxxRevisionMacro(vtkImagePropagateDist,"$Revision: 1.0$")
+//vtkCxxRevisionMacro(vtkImagePropagateDist,"$Revision: 1.0$")
 
 
 //

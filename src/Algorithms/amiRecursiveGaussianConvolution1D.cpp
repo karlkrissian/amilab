@@ -31,6 +31,7 @@
 
 #include <iostream>
 
+
 #ifndef M_PI
 # define M_PI           3.14159265358979323846  /* pi */
 #endif
@@ -45,11 +46,7 @@
 
 #ifdef _MSC_VER
   #define bzero(s,n) memset ((s), 0, (n))
-  #define ALIGN16( __Declaration__ ) \
-    __declspec( align( 16 ) )  __Declaration__ 
-
-    //__pragma( pack(push, 1) ) 
-    //__pragma( pack(pop) )
+  #define ALIGN16(__Declaration__) __declspec(align(16))  __Declaration__ 
 #else
     #define ALIGN16( __Declaration__ ) \
       __Declaration__ __attribute__ ((aligned (16)))
@@ -311,7 +308,9 @@ void RecursiveGaussianConvolution1D::SetUp ( ScalarRealType spacing )
  * Apply Recursive Filter
  */
 template <class T>
+#ifndef _MSC_VER
 __attribute__((optimize("unroll-loops")))
+#endif
 void RecursiveGaussianConvolution1D
 ::FilterDataArray (	T* outs, const T* data,
                     T* scratch, const unsigned int& ln )
@@ -400,7 +399,9 @@ void RecursiveGaussianConvolution1D
 /**
  * Apply Recursive Filter
  */
+#ifndef _MSC_VER
 __attribute__((optimize("unroll-loops")))
+#endif
 void FilterDataArray_Float_New(float *outs, 
 							   const float *data,
 							   float *scratch, 

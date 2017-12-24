@@ -45,6 +45,9 @@
 #include "vtkImageData.h"
 #include "vtkImageAlgorithm.h"
 
+#ifndef vtkFloatingPointType
+#define vtkFloatingPointType double
+#endif
 
 //BTX
 #include "vtkMinHeap.h"
@@ -178,7 +181,7 @@ public:
 class VTK_EXPORT vtkFastMarching_nD_plus : public vtkImageAlgorithm
 {
 public:
-  vtkTypeRevisionMacro(vtkFastMarching_nD_plus,vtkImageAlgorithm);
+  vtkTypeMacro(vtkFastMarching_nD_plus,vtkImageAlgorithm);
   void PrintSelf(std::ostream& os, vtkIndent indent);
 
   // Description:

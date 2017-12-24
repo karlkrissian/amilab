@@ -97,11 +97,13 @@ class ClassInfo(ArgTypeBase):
   
   def GetString(self):
     if self._context != None:
-      if self._context in config.types.keys() and self._context!="_1":
-        return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
-      else:
-        #print "context = ",self._context," not recognized"
+      if self._context=="_1":
         return self.GetName()
+      else:
+        try:
+          return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
+        except:
+          return self.GetName()
     else:
       #print "no context for class ",self.GetName()
       return self.GetName()
@@ -117,10 +119,10 @@ class NamespaceInfo(ArgTypeBase):
     self._type="Namespace"
   
   def GetString(self):
-    if self._context != None:
-      if self._context in config.types.keys() and self._context!="_1":
+    if self._context != None and self._context!="_1":
+      try:
         return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
-      else:
+      except:
         return self.GetName()
     else:
       return self.GetName()
@@ -145,42 +147,45 @@ class TypedefInfo(ArgTypeBase):
     self._type="Typedef"
     
   def GetRealType(self):
-    #print "TypedefInfo::GetRealType()"
-    if (self.GetName() not in config.available_classes) and (self._reftypeid in config.types.keys()):
-      return config.types[self._reftypeid].GetRealType()
+    if self.GetName() not in config.available_classes:
+      try:
+        return config.types[self._reftypeid].GetRealType()
+      except:
+        return self.GetType()
     else:
       return self.GetType()
 
   def GetString(self):
     # deal with typedef inside a class ...
-    if self._context != None:
-      if self._context in config.types.keys() and self._context!="_1":
+    if self._context != None and self._context!="_1":
+      try:
         return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
-    if self._reftypeid in config.types.keys():
-      #print config.types[self._reftypeid].GetString()
+      except:
+        pass
+    try:
       # if member typedef (or function), keep the typedef name
-      #print "*** {0}".format(self.GetName())
       maintyperef = config.types[self._reftypeid].GetMainTypeId()
       if config.types[maintyperef].GetType()=="MethodType":
         #print "*** returning '{0}'".format(self.GetName())
         typename=self.GetName()
       else:
         typename=config.types[self._reftypeid].GetString()
-    else:
+    except:
       typename=self._reftypeid
     return typename
 
 
   def GetFullString(self):
-    if self._reftypeid in config.types.keys():
+    try:
       #print config.types[self._reftypeid].GetString()
       # if member typedef (or function), keep the typedef name
-      maintyperef = config.types[self._reftypeid].GetMainTypeId()
+      reftype = config.types[self._reftypeid]
+      maintyperef = reftype.GetMainTypeId()
       if config.types[maintyperef].GetType()=="MethodType":
         typename=self.GetName()
       else:
-        typename=config.types[self._reftypeid].GetFullString()
-    else:
+        typename=reftype.GetFullString()
+    except:
       typename=self._reftypeid
     return typename
 
@@ -188,27 +193,27 @@ class TypedefInfo(ArgTypeBase):
     # special case for std::string 
     if self.GetString()=="std::string":
       return self.GetId()
-    if self._reftypeid in config.types.keys():
+    try:
       maintyperef = config.types[self._reftypeid].GetMainTypeId()
       # Do an exception for MethodType ...
       if config.types[maintyperef].GetType()=="MethodType":
         return self.GetId()
       else:
         return maintyperef
-    else:
+    except:
       return self.GetId()
 
   def GetDemangled(self):
     # special case for std::string 
     if self.GetString()=="std::string":
       return self.GetString()
-    if self._reftypeid in config.types.keys():
+    try:
       maintyperef = config.types[self._reftypeid].GetMainTypeId()
       if config.types[maintyperef].GetType()=="MethodType":
         typename = self.GetName()
       else:
         typename=config.types[self._reftypeid].GetDemangled()
-    else:
+    except:
       typename=self._reftypeid
     return typename
 
@@ -234,7 +239,7 @@ class EnumerationInfo(ArgTypeBase):
   def SetName(self,n):
     self._name=n
     # register global enums or enums that belong to available types
-    if (self._context=="_1") or (self._context in config.types.keys()):
+    if (self._context=="_1") or (self._context in config.types):
       self.Register()
       
     
@@ -244,7 +249,7 @@ class EnumerationInfo(ArgTypeBase):
 
   def GetString(self):
     if self._context != None:
-      if self._context in config.types.keys() and self._context!="_1":
+      if self._context in config.types and self._context!="_1":
         return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
       else:
         return self.GetName()
@@ -273,9 +278,9 @@ class ArrayTypeInfo(ArgTypeBase):
     self._type="ArrayType"
 
   def GetString(self):
-    if self._reftypeid in config.types.keys():
+    try:
       typename=config.types[self._reftypeid].GetString()
-    else:
+    except:
       typename=self._reftypeid
     return typename
 
@@ -304,9 +309,9 @@ class CvQualifiedTypeInfo(ArgTypeBase):
     self.const = v
 
   def GetFullString(self):
-    if self._reftypeid in config.types.keys():
+    try:
       typename=config.types[self._reftypeid].GetFullString()
-    else:
+    except:
       typename=self._reftypeid
     # avoid several successive consts
     if self.const=="1" and not typename.endswith("const"):
@@ -315,31 +320,32 @@ class CvQualifiedTypeInfo(ArgTypeBase):
       return typename
   
   def GetString(self):
-    if self._reftypeid in config.types.keys():
+    try:
       typename=config.types[self._reftypeid].GetString()
-    else:
+    except:
       typename=self._reftypeid
     return typename
 
   def GetDemangled(self):
-    if self._reftypeid in config.types.keys():
+    try:
       typename=config.types[self._reftypeid].GetDemangled()
-    else:
+    except:
       typename=self._reftypeid
     return typename
 
   def GetAbstract(self):
-    if self._reftypeid in config.types.keys():
+    try:
       return config.types[self._reftypeid].GetAbstract()
-    return None
+    except:
+      return None
 
   def GetRealType(self):
     return config.types[self._reftypeid].GetRealType()
     
   def GetMainTypeId(self):
-    if self._reftypeid in config.types.keys():
+    try:
       return config.types[self._reftypeid].GetMainTypeId()
-    else:
+    except:
       return self.GetId()
       
   def IsConst(self):
@@ -352,9 +358,9 @@ class ReferenceTypeInfo(ArgTypeBase):
     self._type="ReferenceType"
   
   def GetFullString(self):
-    if self._reftypeid in config.types.keys():
+    try:
       typename=config.types[self._reftypeid].GetFullString()
-    else:
+    except:
       typename=self._reftypeid
     return typename+" &"
 
@@ -362,29 +368,31 @@ class ReferenceTypeInfo(ArgTypeBase):
     return config.types[self._reftypeid].IsConst()
   
   def GetString(self):
-    if self._reftypeid in config.types.keys():
+    try:
       typename=config.types[self._reftypeid].GetString()
-    else:
+    except:
       typename=self._reftypeid
     return typename
 
   def GetDemangled(self):
-    if self._reftypeid in config.types.keys():
+    try:
       typename=config.types[self._reftypeid].GetDemangled()
-    else:
+    except:
       typename=self._reftypeid
     return typename
 
   def GetAbstract(self):
-    if self._reftypeid in config.types.keys():
+    try:
       return config.types[self._reftypeid].GetAbstract()
-    return None
+    except:
+      return None
 
   def GetMainTypeId(self):
-    if self._reftypeid in config.types.keys():
+    try:
       return config.types[self._reftypeid].GetMainTypeId()
-    else:
+    except:
       return self.GetId()
+
 #------------------------------
 class PointerTypeInfo(ArgTypeBase):
   def __init__(self):
@@ -392,30 +400,30 @@ class PointerTypeInfo(ArgTypeBase):
     self._type="PointerType"
   
   def GetFullString(self):
-    if self._reftypeid in config.types.keys():
+    try:
       typename=config.types[self._reftypeid].GetFullString()
-    else:
+    except:
       typename=self._reftypeid
     return typename+" *"
 
   def GetString(self):
-    if self._reftypeid in config.types.keys():
+    try:
       typename=config.types[self._reftypeid].GetString()
-    else:
+    except:
       typename=self._reftypeid
     return typename
 
   def GetDemangled(self):
-    if self._reftypeid in config.types.keys():
+    try:
       typename=config.types[self._reftypeid].GetDemangled()
-    else:
+    except:
       typename=self._reftypeid
     return typename
 
   def GetMainTypeId(self):
-    if self._reftypeid in config.types.keys():
+    try:
       return config.types[self._reftypeid].GetMainTypeId()
-    else:
+    except:
       return self.GetId()
 
 #------------------------------

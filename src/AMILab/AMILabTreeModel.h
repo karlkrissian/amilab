@@ -51,7 +51,7 @@ class amiDataViewClientData: public wxClientData
     ~amiDataViewClientData() 
     {
       if (GetName()=="vtkAmiVolRen") {
-        printf("~amiDataViewClientData() for vtkAmiVolRen: use_count = %d%\n", m_Var.use_count());
+        printf("~amiDataViewClientData() for vtkAmiVolRen: use_count = %d\n", m_Var.use_count());
       }
     }
     void        SetPath(std::string path) { m_path=path; }

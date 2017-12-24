@@ -13,6 +13,7 @@
 //#define _USE_WII_
 #ifdef _USE_WII_
 
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
 
 extern "C" {

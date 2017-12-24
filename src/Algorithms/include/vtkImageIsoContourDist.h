@@ -59,7 +59,7 @@ class VTK_LEVELSETS_EXPORT vtkImageIsoContourDist : public vtkThreadedImageAlgor
 {
 public:
   static vtkImageIsoContourDist *New();
-  vtkTypeRevisionMacro(vtkImageIsoContourDist,vtkThreadedImageAlgorithm);
+  vtkTypeMacro(vtkImageIsoContourDist,vtkThreadedImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   // Description

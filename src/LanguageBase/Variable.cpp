@@ -65,8 +65,8 @@ void ToStream(std::ostream& o, const char* st)
 }
 
 #define VARTYPE_PROP(type,name,isnum) \
-  template<> LanguageBase_EXPORT vartype GetVarType<type>()  { return name;     } \
-  template<> LanguageBase_EXPORT bool IsNumerical  <type>()  { return isnum;    }
+  template<>  vartype GetVarType<type>()  { return name;     } \
+  template<>  bool IsNumerical  <type>()  { return isnum;    }
 
 
 VARTYPE_PROP( InrImage,             type_image,           false);
@@ -78,32 +78,33 @@ VARTYPE_PROP( unsigned long,        type_ulong,           true); /// New (added:
 VARTYPE_PROP( int,                  type_int,             true);
 VARTYPE_PROP( short,                type_short,           true);
 VARTYPE_PROP( unsigned short,       type_ushort,          true);
-VARTYPE_PROP( unsigned char,        type_uchar,           true)
-VARTYPE_PROP( std::string,          type_string,          false)
+VARTYPE_PROP(unsigned char, type_uchar, true)
+VARTYPE_PROP(std::string, type_string, false)
 //VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
 //VARTYPE_PROP( FILE,                 type_file,            false)
-VARTYPE_PROP( C_wrap_procedure,     type_c_procedure,     false)
-VARTYPE_PROP( WrapClassMember,      type_class_member,    false)
-VARTYPE_PROP( C_wrap_imagefunction, type_c_image_function,false)
-VARTYPE_PROP( C_wrap_varfunction,   type_c_function,      false)
-VARTYPE_PROP( AMIFunction,          type_ami_function,    false)
-VARTYPE_PROP( AMIClass,             type_ami_class,       false)
-VARTYPE_PROP( AMIObject,            type_ami_object,      false)
+VARTYPE_PROP(C_wrap_procedure, type_c_procedure, false)
+VARTYPE_PROP(WrapClassMember, type_class_member, false)
+VARTYPE_PROP(C_wrap_imagefunction, type_c_image_function, false)
+VARTYPE_PROP(C_wrap_varfunction, type_c_function, false)
+VARTYPE_PROP(AMIFunction, type_ami_function, false)
+VARTYPE_PROP(AMIClass, type_ami_class, false)
+VARTYPE_PROP(AMIObject, type_ami_object, false)
 //VARTYPE_PROP( ,         type_ami_cpp_object,  false)
-VARTYPE_PROP( FloatMatrix,          type_matrix,          false)
+VARTYPE_PROP(FloatMatrix, type_matrix, false)
 //VARTYPE_PROP( GLTransfMatrix,       type_gltransform,     false)
-VARTYPE_PROP( VarArray,             type_array,           false)
+VARTYPE_PROP(VarArray, type_array, false)
 
 #undef VARTYPE_PROP
 
 
 #define VARTYPE_STRING_DOUBLE(type,val1,val2) \
-  template <> std::string LanguageBase_EXPORT Variable<type>::GetValueAsString() const { return (boost::format("%1%")%(val1)).str();} \
-  template <> double      LanguageBase_EXPORT Variable<type>::GetValueAsDouble() const { return (double) (val2); } 
+  template <> std::string                     Variable<type>::GetValueAsString() const { return (boost::format("%1%")%(val1)).str();} \
+  template <> double                          Variable<type>::GetValueAsDouble() const { return (double)(val2); }
+
 
 #define VARTYPE_DEFAULT(type) \
-  template <> std::string LanguageBase_EXPORT Variable<type>::GetValueAsString() const { return (boost::format("%1%")%(#type)).str();} \
-  template <> double      LanguageBase_EXPORT Variable<type>::GetValueAsDouble() const { return 0.0; } 
+  template <> std::string                     Variable<type>::GetValueAsString() const { return (boost::format("%1%")%(#type)).str();} \
+  template <> double                          Variable<type>::GetValueAsDouble() const { return 0.0; }
 
 
 VARTYPE_STRING_DOUBLE( float,                Value(),                   Value())
@@ -117,15 +118,15 @@ VARTYPE_STRING_DOUBLE( unsigned short,       (int)Value(),              Value())
 VARTYPE_STRING_DOUBLE( unsigned char,        (int)Value(),              Value())
 //VARTYPE_STRING_DOUBLE( std::string,          Value(),                   0)
 
-template <> LanguageBase_EXPORT std::string Variable<std::string>::GetValueAsString() const { return Value();} 
-template <> LanguageBase_EXPORT double Variable<std::string>::GetValueAsDouble() const { return 0; } 
+template <>  std::string Variable<std::string>::GetValueAsString() const { return Value();} 
+template <>  double Variable<std::string>::GetValueAsDouble() const { return 0; } 
 
 // FloatMatrix
-template <> LanguageBase_EXPORT std::string Variable<FloatMatrix>::GetValueAsString() const 
+template <>  std::string Variable<FloatMatrix>::GetValueAsString() const 
 {
    return Pointer()->PrintToString();
 } 
-template <> LanguageBase_EXPORT double Variable<FloatMatrix>::GetValueAsDouble() const { return 0.0; } 
+template <>  double Variable<FloatMatrix>::GetValueAsDouble() const { return 0.0; } 
 
 VARTYPE_DEFAULT( InrImage)
 //VARTYPE_DEFAULT( DessinImage)

@@ -11,7 +11,7 @@
 #include "vtkConvexHull.h"
 #include "vtkObjectFactory.h"
 
-vtkCxxRevisionMacro(vtkConvexHull,"$Revision: 1.0$")
+//vtkCxxRevisionMacro(vtkConvexHull,"$Revision: 1.0$")
 
 //----------------------------------------------------------------------
 ProjectionLine::ProjectionLine(int min,int max)

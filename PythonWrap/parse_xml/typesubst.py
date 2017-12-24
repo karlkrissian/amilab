@@ -18,6 +18,7 @@ type_shortname={
   'short unsigned int' : 'suint',
   'short int'          : 'sint',
   'signed char'        : 'schar',
+  'std::allocator<std::basic_string<char, std::char_traits<char>, std::allocator<char> > >': 'alloc_basicstring'
 }
 
 # type substitution
@@ -33,6 +34,7 @@ type_substitute={
 #  'short int'          : 'int',
   'signed char'        : 'unsigned char',
   'void'               : 'unsigned char',
+  'std::basic_string<char, std::char_traits<char>, std::allocator<char> >': 'std::string'
 }
 #'bool':'int',
 
@@ -189,7 +191,11 @@ def ConvertSmtPtrToPtr_char(typeid,substvar,typevar):
     # trick to convert to char *, not const char *, but maybe not valid ...
     res = "{0} {1} = &(*{2})[0];".format(fulltypename,typevar,substvar)
   else:
-    res = "{0} {1} = {2}->c_str();".format(fulltypename,typevar,substvar)
+    if fulltypename == "char * const":
+      # force cast, still may not be valid
+      res = "{0} {1} = ({0}) {2}->c_str();".format(fulltypename, typevar, substvar)
+    else:
+      res = "{0} {1} = {2}->c_str();".format(fulltypename,typevar,substvar)
   #print "res = {0}".format(res)
   return res
   

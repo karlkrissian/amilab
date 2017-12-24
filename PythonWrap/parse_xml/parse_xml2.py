@@ -1,9 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from xml.sax import saxutils,handler
-from xml.sax import make_parser
-from xml.sax.handler import feature_namespaces
+import xml.etree.ElementTree as ET
 
 import sys
 import shutil
@@ -77,18 +75,6 @@ def FindAvailableClasses():
 #----------------------------------------------------------------------
 def WrapMethodTypePointer(typedefname,include_file):
   #print "WrapMethodPointer({0},..)".format(typedefname)
-  # Create the handler
-  #dh = FindMethodTypePointer(typedefname)
-
-  ## Tell the parser to use our handler
-  #parser.setContentHandler(dh)
-  ## Parse the input
-  #inputfile.seek(0)
-  #parser.parse(inputfile)
-
-  #
-  #if dh.found:
-  #utils.WarningMessage( "{0} id= {1}".format(typedefname,dh.typedefid))
 
   # Create Header File
   header_filename=args.val.outputdir+"/wrap_{0}.h.new".format(typedefname)
@@ -190,6 +176,243 @@ def WrapMethodTypePointer(typedefname,include_file):
   wrap_class.BackupFile(header_filename)
   wrap_class.BackupFile(impl_filename)
 
+#----------------------------------------------------------------------
+# process ancestors
+#----------------------------------------------------------------------
+def process_ancestors():
+
+  if (args.val.profile):
+    t0 = time.clock()
+
+  typedefs_global = dict()
+  typedefs_namespace = dict()
+  # 1 create dictionnary of classes to speed-up ...
+  print "Creating classes dict"
+  classes_dict = dict()
+  print "number of types = {0} ".format(len(config.types))
+  for f, f_type in config.types.iteritems():
+    if f_type.GetType() in ["Class", "Struct"]:
+      classes_dict[f] = f_type.GetFullString()
+    if f_type.GetType() == "Typedef":
+      maintypeid = f_type.GetMainTypeId()
+      name = f_type.GetName()
+
+      context = f_type.GetContext()
+      ok = False
+      if context == "_1":
+        typedef_name = name
+        typedefs_global[name] = f
+        ok = True
+      else:
+        try:
+          context_type = config.types[context]
+          # print context, " ", context_type.GetType()
+          if context_type.GetType() == "Namespace":
+            contextname = context_type.GetFullString()
+            typedef_name = contextname + "::" + name
+            ok = True
+            typedefs_namespace[typedef_name] = f
+        except:
+          pass
+
+  if (args.val.profile):
+    t1 = time.clock()
+    print t1 - t0, "seconds process time"
+
+  print "Creating ancestors"
+  # 2. create list of classes
+  ancestors = args.val.ancestors[:]
+  ancestors_toremove = ["_0"]
+  ancestors_toadd = []
+
+  print "ancestors:", ancestors
+  # print "demanged_typefs:", fpm.parse_public_members.demangled_typedefs
+  # check for possible typedefs
+  for a in ancestors:
+    # print "Checking '{0}'".format(a)
+    if a in fpm.parse_public_members.demangled_typedefs.keys():
+      # print "Processing {0}".format(a)
+      ancestors_toremove.append(a)
+      # replace it with its referenced type
+      # find referenced type
+      t = fpm.parse_public_members.demangled_typedefs[a]
+      refid = t.GetMainTypeId()
+      # print "refid = {0}".format(refid)
+      if refid in config.types:
+        print "1.adding '{0}' ".format(config.types[refid].GetFullString())
+        print config.types[refid], " ", refid
+        ancestors_toadd.append(config.types[refid].GetFullString())
+    if a in typedefs_global:
+      # print "Processing {0}".format(a)
+      ancestors_toremove.append(a)
+      # replace it with its referenced type
+      # find referenced type
+      t = typedefs_global[a]
+      refid = t
+      # print "refid = {0}".format(refid)
+      if refid in config.types:
+        print "2.adding '{0}' ".format(config.types[refid].GetFullString())
+        print config.types[refid], " ", refid
+        ancestors_toadd.append(config.types[refid].GetFullString())
+    if a in typedefs_namespace:
+      # print "Processing {0}".format(a)
+      ancestors_toremove.append(a)
+      # replace it with its referenced type
+      # find referenced type
+      t = typedefs_namespace[a]
+      refid = t
+      # print "refid = {0}".format(refid)
+      if refid in config.types:
+        print "3.adding '{0}' ".format(config.types[refid].GetFullString())
+        print config.types[refid]
+        ancestors_toadd.append(config.types[refid].GetFullString())
+
+  # remove processed typedefs
+  ancestors[:] = [x for x in ancestors if x not in ancestors_toremove]
+  # remove duplicates
+  ancestors = list(set(ancestors + ancestors_toadd))
+
+  # 3. expand ancestor to classes within templates
+  ancestors_templates = ancestors[:]
+  for b in ancestors:
+    if wrap_class.IsTemplate(b):
+      # print "Looking for additional types in ", b
+      ttypes = []
+      config.templatetypes(b, ttypes)
+      # print ttypes
+      for nt in ttypes:
+        # print "  Searching for '{0}'".format(nt)
+        if nt not in ancestors_templates:
+          if nt in classes_dict.values() and \
+                  nt not in config.classes_blacklist and \
+                  (nt not in config.available_types) and \
+                  (nt not in args.val.available_external_classes) and \
+                  (nt not in args.val.available_external_classes2) and \
+                  (nt not in config.available_builtin_classes):
+            ancestors_templates.append(nt)
+            # print "    added ..."
+          # else:
+          # print "    not in classes_dict.values()"
+  # print "New ancestors list = ",ancestors_templates
+  ancestors = ancestors_templates[:]
+  # Deal with typedefs
+  # for b in ancestors:
+  # Deal with inheritence
+  for b in ancestors:
+    if b.find("stream") != -1:
+      print "Check for {0}".format(b)
+    # find the id of the class
+    for f in classes_dict.keys():
+      if classes_dict[f] == b:
+        if b.find("stream") != -1:
+          print "in classes_dict.keys()"
+        # print "ancestors to add?"
+        # recursively add the ancestors to the list
+        bases = config.types[f].bases
+        # print bases
+        # if b=="wxTopLevelWindow":
+        # print bases
+        f_anc = []
+        if bases != None:
+          f_anc = bases
+        newlist = []
+        while f_anc != []:
+          anc_id = f_anc.pop()[0]
+          if b.find("stream") != -1:
+            print "processing base {0}".format(config.types[anc_id].GetFullString())
+          # if b=="wxTopLevelWindow":
+          # print anc_id
+          if not (anc_id in classes_dict):
+            print "{0} not in classes_dict.keys() ...".format(anc_id)
+          if anc_id in classes_dict:
+            # if b=="wxTopLevelWindow":
+            # print classes_dict[anc_id]," args.val.templates=",args.val.templates
+            # print classes_dict[anc_id] not in ancestors
+            # print classes_dict[anc_id] not in config.classes_blacklist
+            if classes_dict[anc_id] not in ancestors and \
+                    classes_dict[anc_id] not in config.classes_blacklist and \
+                    (classes_dict[anc_id] not in config.available_types) and \
+                    (classes_dict[anc_id] not in args.val.available_external_classes) and \
+                    (classes_dict[anc_id] not in args.val.available_external_classes2) and \
+                    (classes_dict[anc_id] not in config.available_builtin_classes) and \
+                    ((not wrap_class.IsTemplate(classes_dict[anc_id])) \
+                     or args.val.templates):
+              m = re.match(args.val.filter, classes_dict[anc_id])
+              exclude = False
+              for excl in config.classes_startswith_blacklist:
+                if classes_dict[anc_id].startswith(excl):
+                  exclude = True
+              # print "Check ancestor {0} to match filter".format(classes_dict[anc_id])
+              if m != None and not exclude:
+                # print "OK"
+                main_anc_id = config.types[anc_id].GetMainTypeId()
+                if b.find("stream") != -1:
+                  print config.types[anc_id].GetType()
+                if main_anc_id != anc_id:
+                  if b.find("stream") != -1:
+                    print "anc_id {0}, main_anc_id {1}".format(anc_id, main_anc_id)
+                  if main_anc_id in classes_dict:
+                    anc_id = main_anc_id
+                ancestors.append(classes_dict[anc_id])
+                newlist.append(classes_dict[anc_id])
+                bases = config.types[anc_id].bases
+                # if b.startswith("itk"):
+                # if b=="wxTopLevelWindow":
+                # print "**** bases=",bases
+                if bases != None:
+                  for newanc in bases:
+                    print "newanc={0}".format(newanc[0])
+                    if newanc[0] not in config.classes_blacklist:
+                      exclude = False
+                      for excl in config.classes_startswith_blacklist:
+                        print "excl={0}".format(excl)
+                        if newanc[0].startswith(excl):
+                          exclude = True
+                      if not exclude:
+                        f_anc.append(newanc)
+                      # print "adding __ {0}".format(newanc)
+        # print "New ancestors of {0} are {1}".format(b,newlist)
+  # print "All ancestors are   {0} ".format(ancestors)
+  # write ancestors file
+  print args.val.ancestors_file
+  # print "ancestors={0}".format(ancestors)
+  f = open(args.val.ancestors_file, "w")
+  # ancestors dependencies
+  ancestors_depfile = os.path.splitext(args.val.ancestors_file)[0] + \
+                      "_depfile.txt"
+  print "Writing ancestors dependencies file"
+  f1 = open(ancestors_depfile, "w")
+  # first sort
+  ancestors.sort()
+  for a in ancestors:
+    # check size of file
+    if len(a) > 100 or a == "_0":
+      print "Rejecting {0} from ancestors (too long name or '_0')\n".format(a)
+      continue
+    if a not in args.val.available_external_classes:
+      f.write(a + "\n")
+    else:
+      print "Rejecting {0} from ancestors\n".format(a)
+    # print a
+    # print config.types.values()
+    if a in classes_dict.values():
+      # print "*"
+      pos = classes_dict.values().index(a)
+      # print pos
+      fid = config.types[classes_dict.keys()[pos]].fileid
+      # print fid
+      # print config.files[fid]
+      f1.write(a + " | " + config.files[fid] + "\n")
+
+  if (args.val.generate_html):
+    generate_html.obj.Initialization(args.val.templatefile_dir, \
+                                     args.val.outputhtmldir, \
+                                     "index.html", \
+                                     args.val.url, \
+                                     args.val.libname)
+    generate_html.obj.GenerateHTMLClassesFile(ancestors)
+  sys.exit(0)
+
 
 #----------------------------------------------------------------------
 # main
@@ -240,9 +463,6 @@ if __name__ == '__main__':
         args.val.outputdir=tempfile.mkdtemp("wrap")
         print "{0} failed: switch to temporary output directory {1}".format(prev,args.val.outputdir)
 
-    # Create a parser
-    parser = make_parser()
-
     config.libmodule = None
     if args.val.libname=="wx":
       import wx_lib
@@ -265,11 +485,8 @@ if __name__ == '__main__':
     if config.libmodule!=None:
       args.val.filter = config.libmodule.get_var_filter()
 
-    # Tell the parser we are not interested in XML namespaces
-    parser.setFeature(feature_namespaces, 0)
+    xmltree = ET.parse(args.val.xmlfilename)
 
-    inputfile         = open(args.val.xmlfilename,'r')
-    
     # is this file always present? we suppose that it is ...
     inputfilename_macros  = args.val.xmlfilename+".macros"
     print "input filename for macros is : ", inputfilename_macros
@@ -287,9 +504,9 @@ if __name__ == '__main__':
       classes_file.close()
       if n>0 and args.val.addwrap:
         # remove the file to allow its new creation by cmake
+        os.remove(args.val.classes_file+".bak")
         os.rename(args.val.classes_file,args.val.classes_file+".bak")
       
-    # Create the handler
     # Get public members of available classes given in parameter
     config.parsed_classes = args.val.classes[:]
 
@@ -297,23 +514,13 @@ if __name__ == '__main__':
     
     print "*** Find types and variables"
     ft = findtypesvars.FindTypesAndVariables(config.parsed_classes)
-    parser.setContentHandler(ft)
-    # Parse the input
-    inputfile.seek(0)
-    parser.parse(inputfile)
+    ft.parse(xmltree)
     print "*** Find types and variables end"
 
-    print "*** Find public members"
-    if args.val.ancestors != []:
-      fpm = findtypesvars.FindPublicMembers(args.val.ancestors[:])
-    else:
-      fpm = findtypesvars.FindPublicMembers(config.parsed_classes)
-    parser.setContentHandler(fpm)
-    # Parse the input
-    inputfile.seek(0)
-    parser.parse(inputfile)
-    print "*** Find public members end"
-    
+    if (args.val.profile):
+      t1 = time.clock()
+      print t1 - t0, "seconds process time"
+
     saveconf = open(args.val.outputdir+"/saveconfig.dat","w")
     pickle.dump(config.types,saveconf,-1)
 
@@ -323,273 +530,29 @@ if __name__ == '__main__':
     #print "BLACKLIST=", config.classes_blacklist
 
     if args.val.ancestors != []:
-
-      typedefs_global = dict()
-      typedefs_namespace = dict()
-      # 1 create dictionnary of classes to speed-up ...
-      print "Creating classes dict"
-      classes_dict = dict()
-      typedef_dict = dict()
-      for f in config.types.keys():
-        if config.types[f].GetType() in ["Class","Struct"] :
-          classes_dict[f] = config.types[f].GetFullString()
-        if config.types[f].GetType()=="Typedef":
-          typedef_dict[f] = config.types[f].GetFullString()
-          maintypeid = config.types[f].GetMainTypeId()
-          name = config.types[f].GetName()
-          
-          context = config.types[f].GetContext()
-          ok=False
-          if context=="_1":
-            typedef_name  = name
-            typedefs_global[name] = f
-            ok=True
-          else:
-            if context in config.types.keys():
-              #print context, " ", config.types[context].GetType()
-              if config.types[context].GetType()=="Namespace":
-                contextname = config.types[context].GetFullString()
-                typedef_name  = contextname+"::"+name
-                ok=True
-                typedefs_namespace[typedef_name] = f
-          #if ok:
-            #print "typedef : Name: [{0}] Typedef name: [{1}] Main type: [{2}]".\
-                #format( config.types[f].GetName(),\
-                        #typedef_name,\
-                        #config.types[maintypeid].GetString())
-      #print "==================="
-      #print "Global typedefs:"
-      #print "==================="
-      #for n in typedefs_global.keys():
-        #print n
-      #print "==================="
-      #print "Namespace typedefs:"
-      #print "==================="
-      #for n in typedefs_namespace.keys():
-        #print n
-      #print typedef_dict
-      
-      #print "--------------------"
-      #print classes_dict.values()
-      #print "--------------------"
-      
-      print "Creating ancestors"
-      # 2. create list of classes
-      ancestors = args.val.ancestors[:]
-      ancestors_toremove=[]
-      ancestors_toadd=[]
-      
-      print "ancestors:", ancestors
-      #print "demanged_typefs:", fpm.parse_public_members.demangled_typedefs
-      # check for possible typedefs
-      for a in ancestors:
-        #print "Checking '{0}'".format(a)
-        if a in fpm.parse_public_members.demangled_typedefs.keys():
-          #print "Processing {0}".format(a)
-          ancestors_toremove.append(a)
-          # replace it with its referenced type
-          # find referenced type
-          t = fpm.parse_public_members.demangled_typedefs[a]
-          refid = t.GetMainTypeId()
-          #print "refid = {0}".format(refid)
-          if refid in config.types.keys():
-            print "1.adding '{0}' ".format(config.types[refid].GetFullString())
-            print config.types[refid], " ",refid
-            ancestors_toadd.append(config.types[refid].GetFullString())
-        if a in typedefs_global.keys():
-          #print "Processing {0}".format(a)
-          ancestors_toremove.append(a)
-          # replace it with its referenced type
-          # find referenced type
-          t = typedefs_global[a]
-          refid = t
-          #print "refid = {0}".format(refid)
-          if refid in config.types.keys():
-            print "2.adding '{0}' ".format(config.types[refid].GetFullString())
-            print config.types[refid], " ",refid
-            ancestors_toadd.append(config.types[refid].GetFullString())
-        if a in typedefs_namespace.keys():
-          #print "Processing {0}".format(a)
-          ancestors_toremove.append(a)
-          # replace it with its referenced type
-          # find referenced type
-          t = typedefs_namespace[a]
-          refid = t
-          #print "refid = {0}".format(refid)
-          if refid in config.types.keys():
-            print "3.adding '{0}' ".format(config.types[refid].GetFullString())
-            print config.types[refid]
-            ancestors_toadd.append(config.types[refid].GetFullString())
-      
-      # remove processed typedefs
-      ancestors[:]=[x for x in ancestors if x not in ancestors_toremove]
-      # remove duplicates
-      ancestors = list(set(ancestors+ancestors_toadd))
-
-      # 3. expand ancestor to classes within templates
-      ancestors_templates = ancestors[:]
-      for b in ancestors:
-        if wrap_class.IsTemplate(b):
-          #print "Looking for additional types in ", b
-          ttypes=[]
-          config.templatetypes(b,ttypes)
-          #print ttypes
-          for nt in ttypes:
-            #print "  Searching for '{0}'".format(nt)
-            if nt not in ancestors_templates:
-              if nt in classes_dict.values() and \
-                 nt not in config.classes_blacklist and\
-                 (nt not in config.available_types) and \
-                 (nt not in args.val.available_external_classes) and \
-                 (nt not in args.val.available_external_classes2) and \
-                 (nt not in config.available_builtin_classes):
-                ancestors_templates.append(nt)
-                #print "    added ..."
-              #else:
-                #print "    not in classes_dict.values()"
-      #print "New ancestors list = ",ancestors_templates
-      ancestors = ancestors_templates[:]
-      # Deal with typedefs
-      #for b in ancestors:
-        ##print "b=",b
-        ## find the class corresponding to typedefs
-        #for k in typedef_dict.keys():
-          #if typedef_dict[k]==b:
-            #print "Found typedef {0}".format(b)
-            #tid = config.types[k].GetRefTypeId()
-            #print "with type {0}, {1}: {2}".\
-                #format( config.types[tid].GetFullString(),\
-                        #config.types[tid].GetString(),\
-                        #config.types[k].GetFullString())
-            #newclass=config.types[tid].GetFullString()
-            #ancestors.append(newclass)
-            ##newlist.append(newclass)
-      # Deal with inheritence
-      for b in ancestors:
-        if b.find("stream") != -1:
-          print "Check for {0}".format(b)
-        # find the id of the class
-        for f in classes_dict.keys():
-          if classes_dict[f] == b:
-            if b.find("stream") != -1:
-              print "in classes_dict.keys()"
-            #print "ancestors to add?"
-            # recursively add the ancestors to the list
-            bases=config.types[f].bases
-            #print bases
-            #if b=="wxTopLevelWindow":
-              #print bases
-            f_anc=[]
-            if bases!=None:
-              f_anc = bases
-            newlist=[]
-            while f_anc != []:
-              anc_id = f_anc.pop()[0]
-              if b.find("stream") != -1:
-                print "processing base {0}".format(config.types[anc_id].GetFullString())
-              #if b=="wxTopLevelWindow":
-              #print anc_id
-              if not(anc_id in classes_dict.keys()):
-                print "{0} not in classes_dict.keys() ...".format(anc_id)
-              if anc_id in classes_dict.keys():
-                #if b=="wxTopLevelWindow":
-                #print classes_dict[anc_id]," args.val.templates=",args.val.templates
-                #print classes_dict[anc_id] not in ancestors
-                #print classes_dict[anc_id] not in config.classes_blacklist
-                if  classes_dict[anc_id] not in ancestors and  \
-                    classes_dict[anc_id] not in config.classes_blacklist and\
-                    (classes_dict[anc_id] not in config.available_types) and \
-                    (classes_dict[anc_id] not in args.val.available_external_classes) and \
-                    (classes_dict[anc_id] not in args.val.available_external_classes2) and \
-                    (classes_dict[anc_id] not in config.available_builtin_classes) and\
-                    ( (not wrap_class.IsTemplate(classes_dict[anc_id])) \
-                      or args.val.templates ):
-                  m = re.match(args.val.filter, classes_dict[anc_id])
-                  exclude=False
-                  for excl in config.classes_startswith_blacklist:
-                    if classes_dict[anc_id].startswith(excl):
-                      exclude=True
-                  #print "Check ancestor {0} to match filter".format(classes_dict[anc_id])
-                  if m != None and not exclude:
-                    #print "OK"
-                    main_anc_id = config.types[anc_id].GetMainTypeId()
-                    if b.find("stream") != -1:
-                      print config.types[anc_id].GetType()
-                    if main_anc_id != anc_id:
-                      if b.find("stream") != -1:
-                        print "anc_id {0}, main_anc_id {1}".format(anc_id,main_anc_id)
-                      if main_anc_id in classes_dict.keys():
-                        anc_id = main_anc_id
-                    ancestors.append(classes_dict[anc_id])
-                    newlist.append(classes_dict[anc_id])
-                    bases=config.types[anc_id].bases
-                    #if b.startswith("itk"):
-                      #if b=="wxTopLevelWindow":
-                      #print "**** bases=",bases
-                    if bases!=None:
-                      for newanc in bases:
-                        print "newanc={0}".format(newanc[0])
-                        if newanc[0] not in config.classes_blacklist:
-                          exclude=False
-                          for excl in config.classes_startswith_blacklist:
-                            print "excl={0}".format(excl)
-                            if newanc[0].startswith(excl):
-                              exclude=True
-                          if not exclude:
-                            f_anc.append(newanc)
-                          #print "adding __ {0}".format(newanc)
-            #print "New ancestors of {0} are {1}".format(b,newlist)
-      #print "All ancestors are   {0} ".format(ancestors)
-      # write ancestors file
-      print args.val.ancestors_file
-      #print "ancestors={0}".format(ancestors)
-      f = open (args.val.ancestors_file, "w")
-      # ancestors dependencies
-      ancestors_depfile = os.path.splitext(args.val.ancestors_file)[0]+\
-                          "_depfile.txt"
-      print "Writing ancestors dependencies file"
-      f1 = open(ancestors_depfile,"w")
-      # first sort
-      ancestors.sort()
-      for a in ancestors:
-        if a not in args.val.available_external_classes:
-          f.write(a+"\n")
-        else:
-          print "Rejecting {0} from ancestors\n".format(a)
-        #print a
-        #print config.types.values()
-        if a in classes_dict.values():
-          #print "*"
-          pos = classes_dict.values().index(a)
-          #print pos
-          fid = config.types[classes_dict.keys()[pos]].fileid
-          #print fid
-          #print config.files[fid]
-          f1.write(a+" | "+config.files[fid]+"\n")
-      
-      if(args.val.generate_html):
-        generate_html.obj.Initialization( args.val.templatefile_dir, \
-                                          args.val.outputhtmldir,\
-                                          "index.html",\
-                                          args.val.url,\
-                                          args.val.libname)
-        generate_html.obj.GenerateHTMLClassesFile(ancestors)
-      sys.exit(0)
+      print "*** Find public members"
+      if args.val.ancestors != []:
+        fpm = findtypesvars.FindPublicMembers(args.val.ancestors[:])
+      else:
+        fpm = findtypesvars.FindPublicMembers(config.parsed_classes)
+      fpm.parse(xmltree, ['Field','Enumeration','Typedef'])
+      print "*** Find public members end"
+      if (args.val.profile):
+        t2 = time.clock()
+        print t2 - t1, "seconds process time"
+      process_ancestors()
+    else:
+      print "*** Find public members"
+      if args.val.ancestors != []:
+        fpm = findtypesvars.FindPublicMembers(args.val.ancestors[:])
+      else:
+        fpm = findtypesvars.FindPublicMembers(config.parsed_classes)
+      fpm.parse(xmltree, None)
+      print "*** Find public members end"
 
     if (args.val.profile):
       t2 = time.clock()
       print t2 - t1, "seconds process time"
-    
-    # Parse the input again, TODO: avoid 2 parses here ...
-    #inputfile.seek(0)
-    #parser.parse(inputfile)
-
-    # Create the handler
-    #ff = findfiles.FindFiles()
-    #parser.setContentHandler(ff)
-    ## Parse the input
-    #inputfile.seek(0)
-    #parser.parse(inputfile)
     
     # now files are parsed in ft
     utils.WarningMessage( "Number of files found : {0}".format(ft.number_of_files))
@@ -651,7 +614,7 @@ if __name__ == '__main__':
     while (len(config.needed_classes)>0) and (n<nmax):
       #print "\n\n needed classes:", config.needed_classes, "\n\n"
       cl = config.needed_classes.pop()
-      #print "Class: {0} \t usedname: {1}".format(cl,wrap_class.ClassUsedName(cl))
+      print "Class: {0} ".format(cl)
       config.include_list = []
       config.declare_list = []
       wrap_class.HTMLInitialization(  args.val.generate_html, \
@@ -660,7 +623,7 @@ if __name__ == '__main__':
                                       "index.html", \
                                       args.val.url, \
                                       args.val.libname)
-      wrap_class.WrapClass(cl,include_file,inputfile)
+      wrap_class.WrapClass(cl,include_file,xmltree)
       config.wrapped_classes.append(cl)
       if args.val.r:
         for c in config.new_needed_classes:
@@ -696,7 +659,7 @@ if __name__ == '__main__':
                                           "index.html", \
                                           args.val.url, \
                                           args.val.libname)
-          wrap_class.WrapClass(cl,include_file,inputfile)
+          wrap_class.WrapClass(cl,include_file,xmltree)
 
     utils.WarningMessage( "Wrapped classes: {0}".format(config.wrapped_classes))
     
@@ -831,7 +794,7 @@ if __name__ == '__main__':
       f.write("  BasicVariable::ptr  tdvar;\n")
       f.write("  BasicVariable::ptr  newvar;\n")
       # check for typedefs
-      for td_name in config.typedefs.keys():
+      for td_name in config.typedefs:
         td_id = config.typedefs[td_name]
         # check if it points to a wrapped classe
         td = config.types[td_id]
@@ -938,9 +901,9 @@ if __name__ == '__main__':
       f.write("{\n")
       # Add variables and macros
       if args.val.libname=="wx":
-        wx_lib.create_macros.CreateMacros(inputfile,f)
+          wx_lib.create_macros.CreateMacros(xmltree,f)
       if args.val.libname=="vtk":
-        vtk_lib.create_macros.CreateMacros(inputfilename_macros,f)
+          vtk_lib.create_macros.CreateMacros(inputfilename_macros,f)
       f.write("}\n")
       f.write("\n")
       
@@ -972,7 +935,7 @@ if __name__ == '__main__':
       print "Function: {0} ".format(func)
       config.include_list = []
       config.declare_list = []
-      wrap_function.WrapFunction(func,include_file,inputfile)
+      wrap_function.WrapFunction(func,include_file,xmltree)
       wrapped_functions.append(func)
         
     if (args.val.profile):

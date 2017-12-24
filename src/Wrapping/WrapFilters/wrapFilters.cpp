@@ -20,6 +20,7 @@
 #include "LeastSquares.h"
 #include "wrap_StructureTensor.h"
 //#include "RegionGrowingTest.h"
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
 #include "ImageDerivatives.h"
 

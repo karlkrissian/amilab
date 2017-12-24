@@ -91,6 +91,11 @@ LanguageBase_VAR_IMPORT VarContexts  Vars;
 COMMON_VAR_IMPORT unsigned char GB_debug;
 COMMON_VAR_IMPORT unsigned char GB_verbose;
 
+#ifdef _MSC_VER
+  #define __attribute__(p) 
+//  #define __attribute__  __declspec
+//  #define aligned   align
+#endif
 
 // not thread-safe !!!
 static InrImage* tenseur_xx;
@@ -967,21 +972,21 @@ InrImage::ptr Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
     // l0 will contain hxx, hxy, hxz, gx
     // l1 will contain hxy, hyy, hyz, gy
     // l2 will contain hxz, hyz, hzz, gz
-    float L0[4] __attribute__ ((aligned (16)));
-    float L1[4] __attribute__ ((aligned (16)));
-    float L2[4] __attribute__ ((aligned (16)));
+    float L0[4] __attribute__((aligned(16)));
+    float L1[4] __attribute__((aligned(16)));
+    float L2[4] __attribute__((aligned(16)));
 
-    float T0[4] __attribute__ ((aligned (16)));
-    float T1[4] __attribute__ ((aligned (16)));
-    float T2[4] __attribute__ ((aligned (16)));
-    float T3[4] __attribute__ ((aligned (16)));
-    float T4[4] __attribute__ ((aligned (16)));
-    float T5[4] __attribute__ ((aligned (16)));
+    float T0[4] __attribute__((aligned(16)));
+    float T1[4] __attribute__((aligned(16)));
+    float T2[4] __attribute__((aligned(16)));
+    float T3[4] __attribute__((aligned(16)));
+    float T4[4] __attribute__((aligned(16)));
+    float T5[4] __attribute__((aligned(16)));
 
-    __m128 l0 __attribute__ ((aligned (16)));
-    __m128 l1 __attribute__ ((aligned (16)));
-    __m128 l2 __attribute__ ((aligned (16)));
-    __m128 acc __attribute__ ((aligned (16)));
+    __m128 l0 __attribute__((aligned(16)));
+    __m128 l1 __attribute__((aligned(16)));
+    __m128 l2 __attribute__((aligned(16)));
+    __m128 acc __attribute__((aligned(16)));
 
     bool    process;
     float   tens[6] __attribute__ ((aligned (16)));;

@@ -18,7 +18,7 @@
 #include "vtkPolyData.h"
 #include "vtkCellArray.h"
 
-vtkCxxRevisionMacro(vtkSkeleton2Lines,"$Revision: 1.0$")
+//vtkCxxRevisionMacro(vtkSkeleton2Lines,"$Revision: 1.0$")
 
 vtkSkeleton2Lines* vtkSkeleton2Lines::New()
 {
@@ -32,6 +32,10 @@ vtkSkeleton2Lines* vtkSkeleton2Lines::New()
   return new vtkSkeleton2Lines;
 
 } // vtkSkeleton2Lines::New()
+
+#ifndef vtkFloatingPointType
+#define vtkFloatingPointType double
+#endif
 
 
 //----------------------------------------------------------------------

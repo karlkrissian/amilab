@@ -2,8 +2,6 @@
 # Create macro variables
 #
 
-from xml.sax import saxutils,handler
-from xml.sax import make_parser
 import re
 # load command line arguments
 import args
@@ -14,12 +12,26 @@ import args
 # Find file
 #-------------------------------------------------------------
 #-------------------------------------------------------------
-class FindFile(handler.ContentHandler):
+class FindFile():
   def __init__(self, filename):
     self.search_filename = filename
     self.found=False
     self.name=""
 
+  #---------------------------------------------
+  def parse(self, xmltree):
+    # go through elements
+    root = xmltree.getroot()
+    self.parseElt(root)
+
+  #---------------------------------------------
+  def parseElt(self,elt):
+    self.startElement(elt.tag, elt.attrib)
+    for child in list(elt):
+      self.parseElt(child)
+    #self.endElement(elt.tag)
+
+  #---------------------------------------------
   def startElement(self, name, attrs):
     if not (name == "File"): return
     name = attrs.get('name', None)
@@ -33,19 +45,16 @@ class FindFile(handler.ContentHandler):
 # 3. add event macros
 
 
-def CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,headerfilename):
+def CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,headerfilename):
   # Create the handler
   if (headerfilename=="version"):
     dh = FindFile("string.h")
   else:
     dh = FindFile(headerfilename+".h")
 
-  parser = make_parser()
-  # Tell the parser to use our handler
-  parser.setContentHandler(dh)
   # Parse the input
-  inputfile.seek(0)
-  parser.parse(inputfile)
+  dh.parse(xmltree)
+
   res = ""
   if dh.name != "":
     if headerfilename=="version":
@@ -102,31 +111,31 @@ def CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,headerfilename)
   return res
 
 
-def CreateMacros(inputfile,outputfile):
+def CreateMacros(xmltree,outputfile):
   all_found_macros=[]
   wrapped_macros=""
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"defs")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"version")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"toplevel")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"valtext")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"types")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"treebase")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"textctrl")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"statusbr")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"listbase")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"slider")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"dataview")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextctrl")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextformatdlg")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextindentpage")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextliststylepage")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextprint")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextstyledlg")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextstylepage")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextsymboldlg")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"richtext/richtextstyles")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"event")
-  wrapped_macros += CreateHeaderFileMacros(all_found_macros,inputfile,outputfile,"notebook")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"defs")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"version")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"toplevel")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"valtext")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"types")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"treebase")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"textctrl")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"statusbr")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"listbase")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"slider")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"dataview")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"richtext/richtextctrl")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"richtext/richtextformatdlg")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"richtext/richtextindentpage")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"richtext/richtextliststylepage")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"richtext/richtextprint")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"richtext/richtextstyledlg")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"richtext/richtextstylepage")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"richtext/richtextsymboldlg")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"richtext/richtextstyles")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"event")
+  wrapped_macros += CreateHeaderFileMacros(all_found_macros,xmltree,outputfile,"notebook")
 
   if wrapped_macros!="":
     # Create the macros context

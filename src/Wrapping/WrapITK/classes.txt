@@ -119,13 +119,13 @@ gdcm::Dicts
 gdcm::DictEntry
 gdcm::GroupDict
 
-gdcm::Dict
-gdcm::Dict::ConstIterator
+#gdcm::Dict
+#gdcm::Dict::ConstIterator
 # Needed here for the moment, TODO: improve this
-std::pair<const gdcm::Tag, gdcm::DictEntry>
+#std::pair<gdcm::Tag const, gdcm::DictEntry>
 
-# typedef here
-gdcm::Dict::MapDictEntry
+## typedef here
+#gdcm::Dict::MapDictEntry
 
 gdcm::PrivateDict
 gdcm::Image
@@ -140,8 +140,8 @@ gdcm::DataElement
 
 gdcm::DataSet
 gdcm::DataSet::DataElementSet
-gdcm::DataSet::Iterator
-gdcm::DataSet::ConstIterator
+#gdcm::DataSet::Iterator
+#gdcm::DataSet::ConstIterator
 
 
 gdcm::StringFilter
@@ -157,15 +157,12 @@ gdcm::VM
 gdcm::Scanner
 #gdcm::Scanner::ValuesType
 # this one cannot work for the moment
-#gdcm::Scanner::ValuesTypes::iterator scanner_vt_it;
-# now in WrapCommon
-#std::set<std::string, std::less<std::string>, std::allocator<std::string> >
-#std::set<std::string, std::less<std::string>, std::allocator<std::string> >::iterator
+##gdcm::Scanner::ValuesTypes::iterator scanner_vt_it;
 
 gdcm::Directory
 gdcm::SimpleSubjectWatcher
 gdcm::Version
 
 
-#std::map<gdcm::Tag, char const*, std::less<gdcm::Tag>, std::allocator<std::pair<gdcm::Tag const, char const*> > >
-#std::pair<gdcm::Tag const, char const*>
+##std::map<gdcm::Tag, char const*, std::less<gdcm::Tag>, std::allocator<std::pair<gdcm::Tag const, char const*> > >
+##std::pair<gdcm::Tag const, char const*>

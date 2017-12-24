@@ -1,5 +1,4 @@
 
-from xml.sax import saxutils,handler
 import utils
 import re
 
@@ -34,7 +33,7 @@ def IsTemplate(classname):
   return re.match(r"(.*)<(.*)>",classname)!=None
 
 #-------------------------------------------------------------
-class FindFunction(handler.ContentHandler):
+class FindFunction():
   def __init__(self, funcname):
     self.search_funcname = funcname
     self.name         = funcname
@@ -48,6 +47,19 @@ class FindFunction(handler.ContentHandler):
     self.missingtypes = False
     self.converter    = False
     self.const        = False
+
+  #---------------------------------------------
+  def parse(self, xmltree):
+    # go through elements
+    root = xmltree.getroot()
+    self.parseElt(root)
+
+  #---------------------------------------------
+  def parseElt(self,elt):
+    self.startElement(elt.tag, elt.attrib)
+    for child in list(elt):
+      self.parseElt(child)
+    self.endElement(elt.tag)
 
   #---------------------------------------------
   def CheckEnumDefault(self, default):
@@ -65,7 +77,7 @@ class FindFunction(handler.ContentHandler):
     if self.returntype!=None:
       res += config.types[self.returntype].GetFullString()+" "
     if self.name in config.available_operators.keys():
-      res += funcname+"::operator "+self.name+'('
+      res += self.search_funcname+"::operator "+self.name+'('
     else:
       res += self.name+'('
     for a in self.args:

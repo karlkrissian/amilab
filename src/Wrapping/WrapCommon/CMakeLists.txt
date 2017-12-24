@@ -38,7 +38,7 @@ IF(AMI_ENABLE_WRAPPING)
   #-----------------------------------------------------------------------------
   SET(GCCXML_FLAGS "")
   IF(WIN32)
-    SET(GCCXML_FLAGS ${GCCXML_FLAGS} -D_WIN32 -DWIN32 -D_MSC_VER)
+    SET(GCCXML_FLAGS ${GCCXML_FLAGS} -D_WIN32 -DWIN32 ) #-D_MSC_VER)
   ENDIF(WIN32)
   
   # Add Frameworks information

@@ -5,7 +5,7 @@
 #include "Variables.hpp"
 
 
-BasicVariable::ptr Variables_AddVar(  boost::shared_ptr<Variables>& vars,
+BasicVariable::ptr LanguageBase_EXPORT Variables_AddVar(  boost::shared_ptr<Variables>& vars,
                                        const std::string& name, 
                                        BasicVariable* val, 
                                        const boost::shared_ptr<Variables>& context )
@@ -13,7 +13,7 @@ BasicVariable::ptr Variables_AddVar(  boost::shared_ptr<Variables>& vars,
   return vars->AddVar(name,val,context);
 }
 
-BasicVariable::ptr Variables_AddVar(  boost::shared_ptr<Variables>& vars,
+BasicVariable::ptr LanguageBase_EXPORT Variables_AddVar(  boost::shared_ptr<Variables>& vars,
                                        const std::string& name, 
                                        BasicVariable::ptr& val, 
                                        const boost::shared_ptr<Variables>& context )
@@ -21,7 +21,7 @@ BasicVariable::ptr Variables_AddVar(  boost::shared_ptr<Variables>& vars,
   return vars->AddVar(name,val,context);
 }
 
-BasicVariable::ptr Variables_AddVar(  boost::shared_ptr<Variables>& vars,
+BasicVariable::ptr LanguageBase_EXPORT Variables_AddVar(  boost::shared_ptr<Variables>& vars,
                                        BasicVariable::ptr& val, 
                                        const boost::shared_ptr<Variables>& context )
 {
@@ -29,7 +29,7 @@ BasicVariable::ptr Variables_AddVar(  boost::shared_ptr<Variables>& vars,
 }
 
 
-void Variables_AddDefault(  boost::shared_ptr<Variables>& vars,
+void LanguageBase_EXPORT Variables_AddDefault(  boost::shared_ptr<Variables>& vars,
                             boost::shared_ptr<Variables>& defcontext )
 {
   return vars->AddDefault(defcontext);

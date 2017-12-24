@@ -45,6 +45,7 @@
   #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#include <cmath>
 #include "math1.hpp"
 #include "fonction2D.hpp"
 

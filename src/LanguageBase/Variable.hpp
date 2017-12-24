@@ -1234,4 +1234,75 @@ template<> std::string Variable<WrapClassMember>::TreeCtrlInfo() const;
 };
 */
 
+
+#define DECLARE_VARTYPE_PROP(type,name,isnum) \
+  template<> LanguageBase_EXPORT vartype GetVarType<type>(); \
+  template<> LanguageBase_EXPORT bool IsNumerical  <type>();
+
+DECLARE_VARTYPE_PROP(InrImage, type_image, false);
+DECLARE_VARTYPE_PROP(bool, type_bool, true);
+DECLARE_VARTYPE_PROP(float, type_float, true);
+DECLARE_VARTYPE_PROP(double, type_double, true); /// New (added: 24/05/2010)
+DECLARE_VARTYPE_PROP(long, type_long, true); /// New (added: 27/05/2010)
+DECLARE_VARTYPE_PROP(unsigned long, type_ulong, true); /// New (added: 27/05/2010)
+DECLARE_VARTYPE_PROP(int, type_int, true);
+DECLARE_VARTYPE_PROP(short, type_short, true);
+DECLARE_VARTYPE_PROP(unsigned short, type_ushort, true);
+DECLARE_VARTYPE_PROP(unsigned char, type_uchar, true)
+DECLARE_VARTYPE_PROP(std::string, type_string, false)
+//DECLARE_VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
+//DECLARE_VARTYPE_PROP( FILE,                 type_file,            false)
+DECLARE_VARTYPE_PROP(C_wrap_procedure, type_c_procedure, false)
+DECLARE_VARTYPE_PROP(WrapClassMember, type_class_member, false)
+DECLARE_VARTYPE_PROP(C_wrap_imagefunction, type_c_image_function, false)
+DECLARE_VARTYPE_PROP(C_wrap_varfunction, type_c_function, false)
+DECLARE_VARTYPE_PROP(AMIFunction, type_ami_function, false)
+DECLARE_VARTYPE_PROP(AMIClass, type_ami_class, false)
+DECLARE_VARTYPE_PROP(AMIObject, type_ami_object, false)
+//DECLARE_VARTYPE_PROP( ,         type_ami_cpp_object,  false)
+DECLARE_VARTYPE_PROP(FloatMatrix, type_matrix, false)
+//DECLARE_VARTYPE_PROP( GLTransfMatrix,       type_gltransform,     false)
+DECLARE_VARTYPE_PROP(VarArray, type_array, false)
+
+#define DECLARE_VARTYPE_STRING_DOUBLE(type,val1,val2) \
+  template <> std::string LanguageBase_EXPORT Variable<type>::GetValueAsString() const; \
+  template <> double      LanguageBase_EXPORT Variable<type>::GetValueAsDouble() const; 
+
+#define DECLARE_VARTYPE_DEFAULT(type) \
+  template <> std::string LanguageBase_EXPORT Variable<type>::GetValueAsString() const; \
+  template <> double      LanguageBase_EXPORT Variable<type>::GetValueAsDouble() const; \
+
+DECLARE_VARTYPE_STRING_DOUBLE(float, Value(), Value())
+DECLARE_VARTYPE_STRING_DOUBLE(double, Value(), Value())
+DECLARE_VARTYPE_STRING_DOUBLE(long, Value(), Value())
+DECLARE_VARTYPE_STRING_DOUBLE(unsigned long, Value(), Value())
+DECLARE_VARTYPE_STRING_DOUBLE(bool, (Value() ? "true" : "false"), (Value() ? 1 : 0)) /// New (added: 19/11/2010)
+DECLARE_VARTYPE_STRING_DOUBLE(int, Value(), Value())
+DECLARE_VARTYPE_STRING_DOUBLE(short, Value(), Value())
+DECLARE_VARTYPE_STRING_DOUBLE(unsigned short, (int)Value(), Value())
+DECLARE_VARTYPE_STRING_DOUBLE(unsigned char, (int)Value(), Value())
+//DECLARE_VARTYPE_STRING_DOUBLE( std::string,          Value(),                   0)
+
+template <> LanguageBase_EXPORT std::string Variable<std::string>::GetValueAsString() const; 
+template <> LanguageBase_EXPORT double Variable<std::string>::GetValueAsDouble() const;
+
+// FloatMatrix
+template <> LanguageBase_EXPORT std::string Variable<FloatMatrix>::GetValueAsString() const;
+template <> LanguageBase_EXPORT double Variable<FloatMatrix>::GetValueAsDouble() const;
+
+DECLARE_VARTYPE_DEFAULT(InrImage)
+//DECLARE_VARTYPE_DEFAULT DessinImage)
+//DECLARE_VARTYPE_DEFAULT Viewer3D)
+DECLARE_VARTYPE_DEFAULT(FILE)
+DECLARE_VARTYPE_DEFAULT(C_wrap_procedure)
+DECLARE_VARTYPE_DEFAULT(C_wrap_imagefunction)
+DECLARE_VARTYPE_DEFAULT(C_wrap_varfunction)
+DECLARE_VARTYPE_DEFAULT(AMIFunction)
+DECLARE_VARTYPE_DEFAULT(AMIClass)
+DECLARE_VARTYPE_DEFAULT(AMIObject)
+//DECLARE_VARTYPE_DEFAULT GLTransfMatrix)
+DECLARE_VARTYPE_DEFAULT(VarArray)
+DECLARE_VARTYPE_DEFAULT(WrapClassMember)
+
+
 #endif

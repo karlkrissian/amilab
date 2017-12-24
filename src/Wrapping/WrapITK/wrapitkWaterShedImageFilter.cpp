@@ -76,8 +76,7 @@ InrImage* wrap_itkWaterShedImageFilter2D(ParamList* p)
   typedef itk::WatershedImageFilter<ImageType> WatershedFilterType;
 
   typedef unsigned long OutputPixelType;
-  typedef itk::Image< OutputPixelType,Dimension > OutputImageType;
-  OutputImageType::Pointer outimage;
+  WatershedFilterType::OutputImageType::Pointer outimage;
 
   // Convert from InrImage to ITK
   std::cout << "Converting image to ITK format " << std::endl;
@@ -99,7 +98,7 @@ InrImage* wrap_itkWaterShedImageFilter2D(ParamList* p)
   // Convert from ITK to InrImage
  std::cout << "Converting back to InrImage " << std::endl;
 
-  res = ITKToInr<OutputPixelType,Dimension>(outimage, region);
+  res = ITKToInr<itk::IdentifierType,Dimension>(outimage, region);
 
   return res;
 
@@ -144,9 +143,7 @@ InrImage* wrap_itkWaterShedImageFilter3D(ParamList* p)
 
   typedef itk::WatershedImageFilter<ImageType> WatershedFilterType;
 
-  typedef unsigned long OutputPixelType;
-  typedef itk::Image< OutputPixelType,Dimension > OutputImageType;
-  OutputImageType::Pointer outimage;
+  WatershedFilterType::OutputImageType::Pointer outimage;
 
   // Convert from InrImage to ITK
   std::cout << "Converting image to ITK format " << std::endl;
@@ -168,7 +165,7 @@ InrImage* wrap_itkWaterShedImageFilter3D(ParamList* p)
   // Convert from ITK to InrImage
  std::cout << "Converting back to InrImage " << std::endl;
 
-  res = ITKToInr<OutputPixelType,Dimension>(outimage, region);
+  res = ITKToInr<itk::IdentifierType,Dimension>(outimage, region);
 
   return res;
 

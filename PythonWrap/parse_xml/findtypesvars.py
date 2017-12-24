@@ -2,7 +2,7 @@
 # Parse types and variables
 #
 
-from xml.sax import saxutils,handler
+import xml.etree.ElementTree as ET
 import config
 
 import argtypes
@@ -30,10 +30,10 @@ variablelist = ('Variable')
 
 
 #------------------------------
-class FindTypesAndVariables(handler.ContentHandler):
+class FindTypesAndVariables():
   
   #---------------------------------------------
-  def __init__(self,class_list):
+  def __init__(self, class_list):
     self.class_list = class_list
     #self.parse_public_members = wrap_class.ParsePublicMembers(class_list)
     self.found=False
@@ -45,9 +45,22 @@ class FindTypesAndVariables(handler.ContentHandler):
     print "FindTypesAndVariables"
 
   #---------------------------------------------
-  def ParseClass(self, name, attrs):
+  def parse(self, xmltree):
+    # go through elements
+    root = xmltree.getroot()
+    self.parseElt(root)
+
+  #---------------------------------------------
+  def parseElt(self,elt):
+    self.startElement(elt.tag, elt.attrib)
+    for child in list(elt):
+      self.parseElt(child)
+    self.endElement(elt.tag)
+
+  #---------------------------------------------
+  def ParseClass(self, tag, attrs):
     # If it's not a comic element, ignore it
-    if (self.inclass)and(name=='Base'):
+    if (self.inclass)and(tag=='Base'):
       baseaccess  = attrs.get('access', None)
       basevirtual = attrs.get('virtual', None)
       if baseaccess=='public':
@@ -57,11 +70,11 @@ class FindTypesAndVariables(handler.ContentHandler):
       return True
       
     # allow namespaces
-    if (name!="Namespace"):
-      if (name not in config.class_types): return False
+    if (tag!="Namespace"):
+      if (tag not in config.class_types): return False
 
     # create the corresponding structure
-    self.argtype = eval("argtypes."+name+"Info()")
+    self.argtype = eval("argtypes."+tag+"Info()")
     
     # Class Id
     classid = attrs.get('id', None)
@@ -69,11 +82,11 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # Name
     classname = attrs.get('name', None)
-    if name=='Typedef':
+    if tag=='Typedef':
       print "typedef='{0}'".format(classname)
     if classname=="":
         # replace empty name by type+id
-        classname=name+classid
+        classname=tag+classid
     self.argtype.SetName(classname)
     
     if classname!=None:
@@ -87,18 +100,20 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     demangled=attrs.get('demangled',None)
     #print "demangled = ",demangled
-    #print "name = ",name
+    #print "tag = ",tag
     #print "----- classname =",classname,
     if classname!=None:
         if demangled==None:
             demangled=classname
             #print "context = ", context,
-            if context in config.types:
-                #print " context type =",config.types[context].GetType(),
-                if config.types[context].GetType() in [ "Namespace", "Class", "Struct" ]:
+            try:
+                context_type = config.types[context]
+                if context_type.GetType() in [ "Namespace", "Class", "Struct" ]:
                     #print config.types[context].GetDemangled()
-                    if config.types[context].GetDemangled()!="::":
-                        demangled = config.types[context].GetDemangled() + "::"+demangled
+                    if context_type.GetDemangled()!="::":
+                        demangled = context_type.GetDemangled() + "::"+demangled
+            except:
+                pass
     #print " setting demangled to ",demangled
     self.argtype.SetDemangled(demangled)
     
@@ -144,17 +159,17 @@ class FindTypesAndVariables(handler.ContentHandler):
     return True
   
   #---------------------------------------------
-  def startElement(self, name, attrs):
+  def startElement(self, tag, attrs):
 
     # first check for Files
-    if name == 'File':
+    if tag == 'File':
       self.number_of_files = self.number_of_files + 1
       fileid = attrs.get('id', None)
       name   = attrs.get('name', None)
       config.files[fileid]=name
 
     # first check for variable
-    if name in variablelist:
+    if tag in variablelist:
       name = attrs.get('name', None)
       if name == None: return
       typeid = attrs.get('type', None)
@@ -163,7 +178,7 @@ class FindTypesAndVariables(handler.ContentHandler):
       #print "added var ", name
       return
 
-    if self.ParseClass(name,attrs):
+    if self.ParseClass(tag,attrs):
       return
     
     ## don't parse public members if only looking at the class hierarchy
@@ -176,7 +191,7 @@ class FindTypesAndVariables(handler.ContentHandler):
     # don't parse enums if only looking at the class hierarchy
     if args.val.ancestors == []:
       # Deal with these enums after the possible classes enum members
-      if self.inenum and name =="EnumValue":
+      if self.inenum and tag =="EnumValue":
         name = attrs.get('name', None)
         val = attrs.get('init',0)
         config.enumvalues[name]=self.argtype.GetContext()
@@ -184,7 +199,7 @@ class FindTypesAndVariables(handler.ContentHandler):
         return
       
       # parse first argument of operatorfunction
-      if self.inoperatorfunction and name=='Argument':
+      if self.inoperatorfunction and tag=='Argument':
         self.argtype._first_argument_id = attrs.get('type',0)
         self.inoperatorfunction = False
         return
@@ -192,19 +207,19 @@ class FindTypesAndVariables(handler.ContentHandler):
     # don't parse non-classes types if only looking at the class hierarchy
     if args.val.ancestors == []:
       # ignore elements that cannot be argument types
-      if not (name in typelist): return
+      if not (tag in typelist): return
     else:
       # accept classes or typedefs ...
-      if (not (name in config.class_types)) and (name != "Typedef"): return
+      if (not (tag in config.class_types)) and (tag != "Typedef"): return
 
     # first check for variable
-    if name =="Enumeration": self.inenum = True
+    if tag =="Enumeration": self.inenum = True
 
     # first check for variable
-    if name =="OperatorFunction": self.inoperatorfunction = True
+    if tag =="OperatorFunction": self.inoperatorfunction = True
 
     # create the corresponding structure
-    self.argtype = eval("argtypes."+name+"Info()")
+    self.argtype = eval("argtypes."+tag+"Info()")
     
     # Look for the title and number attributes (see text)
     id = attrs.get('id', None)
@@ -216,13 +231,17 @@ class FindTypesAndVariables(handler.ContentHandler):
       self.argtype.SetRefTypeId(typeid)
 
     # Store typedefs
-    if name=="Typedef":
+    if tag=="Typedef":
       name_attribute = attrs.get('name', None)
       config.typedefs[name_attribute]=id
       # File id
       self.argtype.fileid = attrs.get('file', None)
       #print "Added typedef {0} {1} {2}".format(name,id,self.argtype.GetRealType())
-    
+      if name_attribute=="string":
+        print "found string typedef"
+        print config.types[typeid].demangled
+        # change type name and demanged?
+
     context = attrs.get('context', None)
     if context != None:
       self.argtype.SetContext(context)
@@ -254,15 +273,50 @@ class FindTypesAndVariables(handler.ContentHandler):
 
 
 #-------------------------------------------------------------------------------
-class FindPublicMembers(handler.ContentHandler):
+class FindPublicMembers():
   #---------------------------------------------
   def __init__(self,class_list):
+    print "FindPublicMembers.__init__"
     self.parse_public_members = wrap_class.ParsePublicMembers(class_list)
     self.found=False
+
+  #---------------------------------------------
+  def parse(self, xmltree, tagfilter):
+    self.tagfilter = tagfilter
+    # go through elements
+    root = xmltree.getroot()
+    print " nb of elemnts = ", len(list(root))
+    self.parseElt(root, 0)
+
+  #---------------------------------------------
+  def parseElt(self,elt, level):
+    self.startElement(elt.tag, elt.attrib)
+    if level==0:
+      index = 0
+      size = len(list(elt))
+      percent = 0
+      filter_count = 0
+    for child in list(elt):
+      if self.tagfilter==None or child.tag in self.tagfilter:
+          self.parseElt(child, level+1)
+      if level==0:
+          index = index+1
+          prev_percent = percent
+          percent = index*100/size
+          if self.tagfilter==None or child.tag in self.tagfilter:
+            filter_count = filter_count + 1
+          if percent>prev_percent+5:
+            print "done {0} % count {1}".format(percent,filter_count)
+            filter_count = 0
+          else:
+              percent = prev_percent
+    self.endElement(elt.tag)
+
   #---------------------------------------------
   def startElement(self, name, attrs):
     # don't parse public members if only looking at the class hierarchy
     #if args.val.ancestors == []:
+    #print "FindPublicMembers.startElement( ", name, ", ..)"
     # Check for public members of user-given classes
     if self.parse_public_members.startElement(name,attrs):
       # if parsing has found the right contexts, and there is nothing 

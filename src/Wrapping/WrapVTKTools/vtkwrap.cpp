@@ -7,6 +7,10 @@
 #include "surface.hpp"
 using namespace amilab;
 
+#ifndef vtkFloatingPointType
+#define vtkFloatingPointType double
+#endif
+
 // all the needed vtk files
 
 // standard VTK

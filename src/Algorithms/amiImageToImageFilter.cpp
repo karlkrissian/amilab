@@ -11,6 +11,7 @@
 //
 
 #include "amiImageToImageFilter.h"
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
 #include <iostream>
 #include "Timing.hpp"

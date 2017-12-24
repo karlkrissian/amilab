@@ -7,7 +7,7 @@
 
 // std classes: should not be here ...
 #include <vector>
-#include <set>
+#include <set>  
 
 // string should be recognized as builtin type
 #include <string>
@@ -21,6 +21,7 @@
 #include <vnl/vnl_diag_matrix.h>
 
 #ifdef __GCCXML__
+#define ITK_TEMPLATE_EXPLICIT_MetaDataObject
   template class vnl_matrix<double>;
   template class vnl_diag_matrix<double>;
   template class vnl_vector<double>;

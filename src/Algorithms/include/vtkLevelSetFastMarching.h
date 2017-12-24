@@ -50,6 +50,10 @@
 #include "vtkMinHeap.h"
 //ETX
 
+#ifndef vtkFloatingPointType
+#define vtkFloatingPointType double
+#endif
+
 #include <list>
 
 #define VTK_VAL_ACCEPTED 0
@@ -176,7 +180,7 @@ public:
 class VTK_EXPORT vtkLevelSetFastMarching : public vtkImageAlgorithm
 {
 public:
-  vtkTypeRevisionMacro(vtkLevelSetFastMarching,vtkImageAlgorithm);
+  vtkTypeMacro(vtkLevelSetFastMarching,vtkImageAlgorithm);
   void PrintSelf(std::ostream& os, vtkIndent indent);
 
   // Description:

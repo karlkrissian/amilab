@@ -183,19 +183,23 @@ InrImage* itkRead(const std::string& fname)
 
   InrImage* res = NULL;
 
-  itk::ImageIOBase* image_io=NULL;
   typedef  itk::Image< unsigned char, 3>    ImageType;
-  typedef  itk::ImageFileReader< ImageType >  ReaderType;
-  ReaderType::Pointer reader = ReaderType::New();
   typedef   itk::ImageIOBase::IOComponentType comptype;
   comptype image_component_type = itk::ImageIOBase::UNKNOWNCOMPONENTTYPE;
   typedef   itk::ImageIOBase::IOPixelType ptype;
   ptype image_pixel_type = itk::ImageIOBase::UNKNOWNPIXELTYPE;
 
+  itk::ImageIOBase::Pointer image_io =
+    itk::ImageIOFactory::CreateImageIO(fname.c_str(), itk::ImageIOFactory::ReadMode);
+
   try {
-    reader->SetFileName( fname.c_str());
-    reader->GenerateOutputInformation();
-    image_io= reader->GetImageIO();
+    if (!image_io)
+    {
+      std::cerr << "Could not CreateImageIO for: " << fname << std::endl;
+      return NULL;
+    }
+    image_io->SetFileName(fname);
+    image_io->ReadImageInformation();
     image_component_type = image_io->GetComponentType();
     image_pixel_type = image_io->GetPixelType();
     std::cout << "  Component Type = " << image_io->GetComponentTypeAsString(image_component_type) << std::endl;

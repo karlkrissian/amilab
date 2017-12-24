@@ -368,14 +368,14 @@ bool MyApp::OnInit()
   if (!hide_mainframe) {
     //wxBitmap bitmap;
     wxBitmap bitmap(amilab_splash_xpm );
-    if (bitmap.IsOk())
-    {
-    wxSplashScreen *splash;
-    splash = new wxSplashScreen(bitmap,
-        wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-        1500, NULL, -1, wxDefaultPosition, wxDefaultSize,
-        wxSIMPLE_BORDER|wxSTAY_ON_TOP);
-    }
+    //if (bitmap.IsOk())
+    //{
+    //wxSplashScreen *splash;
+    //splash = new wxSplashScreen(bitmap,
+    //    wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+    //    1500, NULL, -1, wxDefaultPosition, wxDefaultSize,
+    //    wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+    //}
     wxYield();
   }
 

@@ -62,7 +62,7 @@ protected:
 class VTK_LEVELSETS_EXPORT vtkConvexHull : public vtkImageAlgorithm
 {
 public:
-  vtkTypeRevisionMacro(vtkConvexHull,vtkImageAlgorithm);
+  vtkTypeMacro(vtkConvexHull,vtkImageAlgorithm);
   //vtkTypeMacro(vtkConvexHull,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
