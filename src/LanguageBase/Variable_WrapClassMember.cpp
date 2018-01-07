@@ -78,7 +78,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::TryCast(c
   return BasicVariable::ptr();
 }
 
-
+/*
 // Arithmetic operators
 
 /// +a
@@ -93,14 +93,12 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::operator 
   return BasicVariable::empty_variable;
 }
 
-/*
 
 /// prefix -- operator --a
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::operator --()
-{  RETURN_VARPTR(WrapClassMember,--RefValue()); }
+//template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::operator --()
+//{  RETURN_VARPTR(WrapClassMember,--RefValue()); }
 
 
-*/
 
 /// prefix * operator *a
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::operator *()
@@ -208,15 +206,14 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::operator 
 
 
 /// a/=b
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::operator /=(const BasicVariable::ptr& b)
-{ 
-  if (b->IsNumeric()) {
-    RefValue() /= b->GetValueAsDouble();
-  } else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
-}
-*/
+//template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::operator /=(const BasicVariable::ptr& b)
+//{ 
+//  if (b->IsNumeric()) {
+//    RefValue() /= b->GetValueAsDouble();
+//  } else
+//    CLASS_ERROR("operation not defined");
+//  return this->NewReference(); 
+//}
 
 //  Comparison Operators
 
@@ -341,7 +338,7 @@ VAR_IMPL_FUNC(WrapClassMember,  exp,  exp)
 VAR_IMPL_FUNC(WrapClassMember,  log,  log)
 VAR_IMPL_FUNC(WrapClassMember,  ln,   log)
 VAR_IMPL_FUNC(WrapClassMember,  sqrt, sqrt)
-
+*/
 
 /**
  * Array subscript operator

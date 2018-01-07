@@ -105,5 +105,8 @@ if (!exists(FileTest)) {
 }
 FileTest.Execute()
 
-quit
+del FileTestClass
+del FileTest
+
+#quit
 

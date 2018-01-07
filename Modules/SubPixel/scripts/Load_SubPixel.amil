@@ -1,10 +1,11 @@
 
-del SubPixelPlugin
-func "SubPixelPlugin"
+func "Common/ModulePlugin"
 
 if (!exists(SubPixel_obj)) {
-  SubPixelPlugin SubPixel_obj
+  ModulePlugin SubPixel_obj
+  SubPixel_obj.SetModuleName("SubPixel")
   SubPixel_obj.Load()
 } else {
-  InfoDialog "The script class SubPixelPlugin to be already instanciated." 
+  InfoDialog "The script object SubPixel_obj to be already instanciated."
 }
+

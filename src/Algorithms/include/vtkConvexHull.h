@@ -26,7 +26,7 @@
 #include <vtkConvexHullConfigure.h>
 #include <vtkLevelSetsConfigure.h>
 
-#include "vtkImageAlgorithm.h"
+#include "vtkSimpleImageToImageFilter.h"
 #include "vtkImageData.h"
 #include "vtkFloatArray.h"
 
@@ -59,10 +59,10 @@ protected:
 
 
 //----------------------------------------------------------------------
-class VTK_LEVELSETS_EXPORT vtkConvexHull : public vtkImageAlgorithm
+class VTK_LEVELSETS_EXPORT vtkConvexHull : public vtkSimpleImageToImageFilter
 {
 public:
-  vtkTypeMacro(vtkConvexHull,vtkImageAlgorithm);
+  vtkTypeMacro(vtkConvexHull, vtkSimpleImageToImageFilter);
   //vtkTypeMacro(vtkConvexHull,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
@@ -86,7 +86,7 @@ public:
   //vtkSetObjectMacro(OutputImage,vtkImageData);
   //vtkGetObjectMacro(OutputImage,vtkImageData);
 
-  void Update() {ExecuteData(this->GetOutput());};
+  //void Update() {ExecuteData(this->GetOutput());};
 
 protected:
 
@@ -98,12 +98,9 @@ protected:
   void  GetLineExtent(float& minline, float& maxline, float slope[3], 
 		      int dims[3], float Resolution);
 
-  void ExecuteData(vtkDataObject *);
-  void Execute() { this->vtkImageAlgorithm::Execute(); };
+  virtual void SimpleExecute(vtkImageData* input, vtkImageData* output);
 
-
-//BTX
-  //
+private:
 
   vtkImageData* InputImage; 
   vtkImageData* ProjectionImage;
@@ -115,7 +112,6 @@ protected:
   int   Angles;
   float Resolution;
 
-//ETX
 }; // vtkConvexHull()
 
 #endif // __vtkConvexHull_h

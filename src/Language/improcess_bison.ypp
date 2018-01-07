@@ -5180,7 +5180,7 @@ expr_string: expr_var
             Description:  This rule is created to avoid changing a lot of code in the process of converting string operation to operations on Variable\<std::string> ...
           **/
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
-          if (var->Type()==type_string)  {
+          if ((var.get())&&(var->Type()==type_string))  {
             DYNAMIC_CAST_VARIABLE(std::string,var,varstr) 
             char* res;
             res = new char[varstr->Value().length()+1];
@@ -7174,12 +7174,17 @@ image:
         |
         T_vtkSignedBorgefors T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-        float dmax = $5;
-
-      GET_VARSTACK_VALUE(InrImage, im);
-        InrImage::ptr res ( Func_vtkSignedBorgefors(im.get(),
-                    dmax));
-        ADD_VARSTACK_PTR(InrImage,res);
+        /**
+        Parameters:
+            (3) image expression: input image
+            (4) expression: maximal distance
+        Description:
+            Computes the signed distance transform up to the given distance
+        **/
+          float dmax = $5;
+          GET_VARSTACK_VALUE(InrImage, im);
+          InrImage::ptr res ( Func_vtkSignedBorgefors(im.get(), dmax));
+          ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_vtkSignedFMDist T_OP_PAR var_image  T_COMMA expr T_CL_PAR

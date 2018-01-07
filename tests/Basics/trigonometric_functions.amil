@@ -83,5 +83,6 @@ if(R != 0) {
 
 CTest.PrintTestResult( OK )
 
-quit
+del CTest
+#quit
 

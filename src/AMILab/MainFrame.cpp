@@ -3150,7 +3150,7 @@ void MainFrame::LoadToolBar   ( )
 //   wxToolTip::Enable(true);
 //   but_clear->SetToolTip(GetwxStr("Clear current line"));
   tb1->AddSeparator();
-  tb1->AddTool(wxID_ToolHelp, wxT("Help"), wxArtProvider::GetBitmap(wxART_HELP),
+  tb1->AddTool(wxID_ToolHelp, wxT("Help"), wxArtProvider::GetBitmap(wxART_HELP,wxART_OTHER,wxSize(16,16)),
       wxT("Help (load in default browser)"));
 
   tb1->AddTool(wxID_ToolQuit, wxT("Quit"), wxArtProvider::GetBitmap(wxART_QUIT),

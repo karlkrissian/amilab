@@ -12,8 +12,8 @@ if (!exists(CTestClass)) {
 
     #------------------------------------
     proc ::Enable() {
-      NoMessageDialog(1)    # Hide message dialog
-      ami.MainFrame.Show(0) # Hide main frame
+      #NoMessageDialog(1)    # Hide message dialog
+      #ami.MainFrame.Show(0) # Hide main frame
     }
 
     #------------------------------------

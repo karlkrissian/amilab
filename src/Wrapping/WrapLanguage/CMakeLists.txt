@@ -7,6 +7,7 @@ SET(WrapLanguage_TYPE STATIC)
 include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/Generated
+  ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated
 )
 
 INCLUDE( ${wxWidgets_USE_FILE})
@@ -36,12 +37,15 @@ IF(AMI_ENABLE_WRAPPING)
     SET(GCCXML_FLAGS ${GCCXML_FLAGS} -F /System/Library/Frameworks )
   ENDIF(APPLE)
   MESSAGE("GCCXML_FLAGS='${GCCXML_FLAGS}'")
+
+  INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapWxWidgets.cmake)
   GCCXML_USE_WXWIDGETS()
 
   SET(XML_OUTPUT "${GENERATED_DIR}/language_includes.xml")
   SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/language_includes.h")
 
   # Adding needed includes for wrapping ???
+  SET(GCCXML_INCLUDES "-I${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}" ${GCCXML_INCLUDES} )
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Wrapping/include")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/Common/include")
   SET(GCCXML_INCLUDES ${GCCXML_INCLUDES} "-I${AMILAB_SOURCE_DIR}/CommonBase")
@@ -71,6 +75,15 @@ IF(AMI_ENABLE_WRAPPING)
   #-----------------------------------------------------------------------------
   # Generating and reading ancestors
   #-----------------------------------------------------------------------------
+
+  # Read vtk ancestors list
+  SET( WXWIDGETS_OUTDIR ${AMILab_BINARY_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}/Generated)
+  FILE(READ "${WXWIDGETS_OUTDIR}/ancestors.txt" wx_ancestors_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" wx_ancestors_list ${wx_ancestors_txt} )
+  SET(AVAILABLE_EXTERNAL_CLASSES ${wx_ancestors_list})
+  SET(EXTERNAL_DLLNAME WrapWxWidgets)
+
+
   CREATE_ANCESTORS()
   FILE(READ "${ANCESTORS_FILE}" ancestors_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" ancestors_list ${ancestors_txt} )

@@ -73,7 +73,7 @@ if (!exists(FastMarchingDistClass)) {
 
         vtk_FM = algorithms.vtkLevelSetFastMarching.New()
 
-        vtk_FM.SetInput(&vtk_input)
+        vtk_FM.SetInputData(&vtk_input)
         vtk_FM.Setinitimage(&vtk_init);
         # if we set initiso to a different value than -1E10 (default value)
         # the it will call InitIsoSurf which recomputes the distance close to the surface

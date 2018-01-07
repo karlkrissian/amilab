@@ -51,6 +51,8 @@ Driver::Driver()
 
   procedure_declaration = false;
 
+  nomessagedialog = false;
+
 //  init_debug_stream();
   init_err_output();
   init_res_output();
@@ -68,8 +70,8 @@ bool Driver::parse_stream(std::istream& in,
                           const std::string& sname,
                           bool inconsole)
 {
-  OutputDebugStringA("---------------------------------\n");
-  OutputDebugString(L"Driver::parse_stream()\n");
+  //OutputDebugStringA("---------------------------------\n");
+  //OutputDebugString(L"Driver::parse_stream()\n");
   class Scanner* previous_lexer;
 
   bool   in_console_bak   = in_console;
@@ -122,10 +124,10 @@ bool Driver::parse_stream(std::istream& in,
 bool Driver::parse_file(const std::string &filename)
 {
 
-  OutputDebugStringA("---------------------------------\n");
-  OutputDebugStringA("Driver::parse_file()\n");
-  OutputDebugStringA(filename.c_str());
-  OutputDebugStringA("\n");
+  //OutputDebugStringA("---------------------------------\n");
+  //OutputDebugStringA("Driver::parse_file()\n");
+  //OutputDebugStringA(filename.c_str());
+  //OutputDebugStringA("\n");
   //std::cout << "parse_file for " << filename  << std::endl;
   std::ifstream in(filename.c_str());
   if (!in.good()) return false;
@@ -149,10 +151,10 @@ bool Driver::parse_file(const std::string &filename)
 //-----------------------------------------------------------
 bool Driver::parse_string(const std::string &input, const std::string& sname)
 {
-  OutputDebugStringA("---------------------------------\n");
-  OutputDebugStringA("Driver::parse_string()\n");
-  OutputDebugStringA(input.c_str());
-  OutputDebugStringA("\n");
+  //OutputDebugStringA("---------------------------------\n");
+  //OutputDebugStringA("Driver::parse_string()\n");
+  //OutputDebugStringA(input.c_str());
+  //OutputDebugStringA("\n");
   std::istringstream iss(input);
     return parse_stream(iss, sname);
 }
@@ -196,10 +198,10 @@ int Driver::error(const std::string& m)
 //-----------------------------------------------------------
 bool Driver::parse_block( const AmiInstructionBlock::ptr& b )
 {
-  OutputDebugStringA("---------------------------------\n");
-  OutputDebugStringA("Driver::parse_block()\n");
-  OutputDebugStringA(b->GetBody().c_str());
-  OutputDebugStringA("\n");
+  //OutputDebugStringA("---------------------------------\n");
+  //OutputDebugStringA("Driver::parse_block()\n");
+  //OutputDebugStringA(b->GetBody().c_str());
+  //OutputDebugStringA("\n");
   yyiplineno = b->GetStartingLine();
   std::string body = b->GetBody(); // +"  ";
   // fill last too characters with 0
@@ -212,8 +214,8 @@ bool Driver::parse_block( const AmiInstructionBlock::ptr& b )
 //-----------------------------------------------------------
 void Driver::ParseClassBody(const AMIClass::ptr& oclass)
 {
-  OutputDebugStringA("---------------------------------\n");
-  OutputDebugStringA("Driver::ParseClassBody()\n");
+  //OutputDebugStringA("---------------------------------\n");
+  //OutputDebugStringA("Driver::ParseClassBody()\n");
   string previous_filename = this->current_file;
   if (oclass.get()) {
     // recursive call to possible parent

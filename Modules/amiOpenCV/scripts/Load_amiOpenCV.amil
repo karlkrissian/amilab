@@ -1,6 +1,4 @@
 
-#del amiOpenCVPlugin
-#func "amiOpenCVPlugin"
 func "Common/ModulePlugin"
 
 if (!exists(amiOpenCV_obj)) {

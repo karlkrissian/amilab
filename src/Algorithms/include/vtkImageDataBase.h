@@ -45,7 +45,7 @@ class vtkImageDataBase
 
       vtk_iw = vtkStructuredPointsWriter::New();
 
-      vtk_iw->SetInput(_image);
+      vtk_iw->SetInputData(_image);
       vtk_iw->SetFileName(name);
       vtk_iw->SetFileTypeToBinary();
 

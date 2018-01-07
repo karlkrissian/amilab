@@ -37,6 +37,7 @@
 #include "vtkPointData.h"
 #include "vtkImageData.h"
 #include "vtkFloatArray.h"
+#include "vtkImageCast.h"
 
 #define true    1
 #define false   0
@@ -168,8 +169,6 @@ void vtkImageFastSignedChamfer::InitParam( vtkImageData* input, vtkImageData* ou
       outputImage->AllocateScalars(outputImage->GetInformation());
     }
 
-    //    outputImage->CopyAndCastFrom(this->inputImage,
-    //                                 this->inputImage->GetExtent());
   }
     
 } //  InitParam()
@@ -186,11 +185,11 @@ void vtkImageFastSignedChamfer::SetMinMaxX( int** minx, int** maxx)
 //----------------------------------------------------------------------------
 // This method is passed  input and output data, and executes the filter
 // algorithm to fill the output from the input.
-void vtkImageFastSignedChamfer::ExecuteData(vtkDataObject *outData)
-//                   -------
+void vtkImageFastSignedChamfer::SimpleExecute(vtkImageData* input, vtkImageData* output)
+//                              -------------
 {
 
-  InitParam( this->GetImageDataInput(0), this->GetOutput());
+  InitParam( input, output);
 
   if (tz == 1) {
     coeff_a = 1.;
@@ -265,26 +264,26 @@ void vtkImageFastSignedChamfer::FastSignedChamfer2D( )
       if (*buf<=-maxdist) { buf++; continue; }
 
       if (*buf>-coeff_a) {
-    // C4 neighbors
-    val = *buf+coeff_a;
-    buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
-    buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
+        // C4 neighbors
+        val = *buf+coeff_a;
+        buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
+        buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
     
-    // C8 neighbors
-    val = *buf+coeff_b;
-    buf1 = buf-neighbor2[0]; if (val < *buf1) *buf1 = val;
-    buf1 = buf-neighbor2[1]; if (val < *buf1) *buf1 = val;
+        // C8 neighbors
+        val = *buf+coeff_b;
+        buf1 = buf-neighbor2[0]; if (val < *buf1) *buf1 = val;
+        buf1 = buf-neighbor2[1]; if (val < *buf1) *buf1 = val;
       }
       if (*buf<coeff_a) {
-    // C4 neighbors
-    val = *buf-coeff_a;
-    buf1 = buf-neighbor1[0]; if (val > *buf1) *buf1 = val;
-    buf1 = buf-neighbor1[1]; if (val > *buf1) *buf1 = val;
+        // C4 neighbors
+        val = *buf-coeff_a;
+        buf1 = buf-neighbor1[0]; if (val > *buf1) *buf1 = val;
+        buf1 = buf-neighbor1[1]; if (val > *buf1) *buf1 = val;
     
-    // C8 neighbors
-    val = *buf-coeff_b;
-    buf1 = buf-neighbor2[0]; if (val > *buf1) *buf1 = val;
-    buf1 = buf-neighbor2[1]; if (val > *buf1) *buf1 = val;
+        // C8 neighbors
+        val = *buf-coeff_b;
+        buf1 = buf-neighbor2[0]; if (val > *buf1) *buf1 = val;
+        buf1 = buf-neighbor2[1]; if (val > *buf1) *buf1 = val;
       }
     
       buf++;
@@ -301,26 +300,26 @@ void vtkImageFastSignedChamfer::FastSignedChamfer2D( )
       if (*buf<=-maxdist) { buf--; continue; }
 
       if (*buf>-coeff_a) {
-    // C4 neighbors
-    val = *buf+coeff_a;
-    buf1 = buf+neighbor1[0]; if (val < *buf1) *buf1 = val;
-    buf1 = buf+neighbor1[1]; if (val < *buf1) *buf1 = val;
+        // C4 neighbors
+        val = *buf+coeff_a;
+        buf1 = buf+neighbor1[0]; if (val < *buf1) *buf1 = val;
+        buf1 = buf+neighbor1[1]; if (val < *buf1) *buf1 = val;
     
-    // C8 neighbors
-    val = *buf+coeff_b;
-    buf1 = buf+neighbor2[0]; if (val < *buf1) *buf1 = val;
-    buf1 = buf+neighbor2[1]; if (val < *buf1) *buf1 = val;
+        // C8 neighbors
+        val = *buf+coeff_b;
+        buf1 = buf+neighbor2[0]; if (val < *buf1) *buf1 = val;
+        buf1 = buf+neighbor2[1]; if (val < *buf1) *buf1 = val;
       }
       if (*buf<coeff_a) {
-    // C4 neighbors
-    val = *buf-coeff_a;
-    buf1 = buf+neighbor1[0]; if (val > *buf1) *buf1 = val;
-    buf1 = buf+neighbor1[1]; if (val > *buf1) *buf1 = val;
+        // C4 neighbors
+        val = *buf-coeff_a;
+        buf1 = buf+neighbor1[0]; if (val > *buf1) *buf1 = val;
+        buf1 = buf+neighbor1[1]; if (val > *buf1) *buf1 = val;
     
-    // C8 neighbors
-    val = *buf-coeff_b;
-    buf1 = buf+neighbor2[0]; if (val > *buf1) *buf1 = val;
-    buf1 = buf+neighbor2[1]; if (val > *buf1) *buf1 = val;
+        // C8 neighbors
+        val = *buf-coeff_b;
+        buf1 = buf+neighbor2[0]; if (val > *buf1) *buf1 = val;
+        buf1 = buf+neighbor2[1]; if (val > *buf1) *buf1 = val;
       }
 
       buf--;
@@ -333,36 +332,35 @@ void vtkImageFastSignedChamfer::FastSignedChamfer2D( )
   // Compute the borders
   for(y=0;y<=ty-1;y++)
     for(x=0;x<=tx-1;x++) {
-      if ((x==0)||(x==tx-1)||
-      (y==0)||(y==ty-1)){
+      if ((x==0)||(x==tx-1)|| (y==0)||(y==ty-1)){
     
-    if (x==0) imin = 0; else imin = -1;
-    if (y==0) jmin = 0; else jmin = -1;
+        if (x==0) imin = 0; else imin = -1;
+        if (y==0) jmin = 0; else jmin = -1;
     
-    if (x==tx-1) imax = 0; else imax = 1;
-    if (y==ty-1) jmax = 0; else jmax = 1;
+        if (x==tx-1) imax = 0; else imax = 1;
+        if (y==ty-1) jmax = 0; else jmax = 1;
           
-    min = *buf;
+        min = *buf;
 
-    buf1 = buf + imin;
-    for (i=imin; i<=imax; i++) {
-        buf2 = buf1;
-        if (jmin==-1) buf2 -= tx;
-        for (j=jmin; j<=jmax; j++) {
-            n = abs(i)+abs(j);
-            if ( n==0 ) continue;
-            switch ( n ) {
-            case 1:  val = *buf2+coeff_a; break;
-            case 2:  val = *buf2+coeff_b; break;
-            default: 
-                fprintf(stderr,
-                        "Func_Chamfer2_2D() \t Chamfer error (%d,%d) \n",x,y);
+        buf1 = buf + imin;
+        for (i=imin; i<=imax; i++) {
+            buf2 = buf1;
+            if (jmin==-1) buf2 -= tx;
+            for (j=jmin; j<=jmax; j++) {
+                n = abs(i)+abs(j);
+                if ( n==0 ) continue;
+                switch ( n ) {
+                case 1:  val = *buf2+coeff_a; break;
+                case 2:  val = *buf2+coeff_b; break;
+                default: 
+                    fprintf(stderr,
+                            "Func_Chamfer2_2D() \t Chamfer error (%d,%d) \n",x,y);
+                }
+                if ( val<min ) min = val;
+                buf2 += tx;
             }
-            if ( val<min ) min = val;
-            buf2 += tx;
+            buf1++;
         }
-        buf1++;
-    }
     
         *buf = min;
       

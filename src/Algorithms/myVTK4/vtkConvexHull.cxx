@@ -10,6 +10,7 @@
 
 #include "vtkConvexHull.h"
 #include "vtkObjectFactory.h"
+#include "vtkImageCast.h"
 
 //vtkCxxRevisionMacro(vtkConvexHull,"$Revision: 1.0$")
 
@@ -97,6 +98,8 @@ vtkConvexHull::vtkConvexHull()
   Resolution = 0.01;
   Slopes = vtkFloatArray::New();
   Slopes->SetNumberOfComponents(3);
+  this->SetNumberOfInputPorts(1);
+  this->SetNumberOfOutputPorts(1);
 } // vtkConvexHull::vtkConvexHull()
 
 
@@ -273,7 +276,7 @@ void vtkConvexHull::GetLineExtent(float& minLine, float& maxLine, float slope[3]
 //----------------------------------------------------------------------
 //
 //
-void vtkConvexHull::ExecuteData(vtkDataObject *output)
+void vtkConvexHull::SimpleExecute(vtkImageData* input, vtkImageData* output)
 {
   ProjectionLine* line;
   int             dims[3];
@@ -298,25 +301,19 @@ void vtkConvexHull::ExecuteData(vtkDataObject *output)
   fprintf(stderr,"vtkConvexHull execution...\n");
   
   // Create float input image
-  InputImage=vtkImageData::New();
-  vtkImageData::SetScalarType( VTK_FLOAT, InputImage->GetInformation());
-  vtkImageData::SetNumberOfScalarComponents(1, InputImage->GetInformation());
-  InputImage->SetDimensions( this->GetImageDataInput(0)->GetDimensions());
-  InputImage->SetOrigin(     this->GetImageDataInput(0)->GetOrigin());
-  InputImage->SetSpacing(    this->GetImageDataInput(0)->GetSpacing());
-  InputImage->CopyAndCastFrom(this->GetImageDataInput(0),
-			      this->GetImageDataInput(0)->GetExtent());
-
+  vtkSmartPointer<vtkImageCast> cast = vtkSmartPointer<vtkImageCast>::New();
+  cast->SetInputData(input);
+  cast->SetOutputScalarType(VTK_FLOAT);
+  cast->Update();
+  InputImage = cast->GetOutput();
   
-  OutputImage=this->GetOutput();
+  OutputImage=output;
   //OutputImage->SetScalarType(VTK_FLOAT);
   //OutputImage->SetNumberOfScalarComponents(1);
   OutputImage->SetDimensions(InputImage->GetDimensions());
   OutputImage->SetOrigin(InputImage->GetOrigin());
   OutputImage->SetSpacing(InputImage->GetSpacing());
   OutputImage->AllocateScalars(VTK_FLOAT,1);
-  
-  
   
   InputImage->GetDimensions(dims);
   
@@ -344,19 +341,19 @@ void vtkConvexHull::ExecuteData(vtkDataObject *output)
     // projection of the vector (1,0,0)
     projectionI=Slope[0]/Resolution;
     // project all pixels of the image to the line
-    inputPtr=(float*)InputImage->GetScalarPointer(0,0,0);
+    inputPtr=(float*)InputImage->GetScalarPointer();
     
     index=0;
     for (k=0;k<dims[2];k++) {
       for (j=0;j<dims[1];j++) {
-	// projection of (0,j,k) 
-	pos=(j*Slope[1]+k*Slope[2])/Resolution;
-	for (i=0;i<dims[0];i++) {
-	  pos += projectionI;
-	  line->AddValue(pos,index,*inputPtr);
-	  inputPtr++;
-	  index++;
-	}
+	      // projection of (0,j,k) 
+	      pos=(j*Slope[1]+k*Slope[2])/Resolution;
+	      for (i=0;i<dims[0];i++) {
+	        pos += projectionI;
+	        line->AddValue(pos,index,*inputPtr);
+	        inputPtr++;
+	        index++;
+	      }
       }
     }
     
@@ -390,8 +387,8 @@ void vtkConvexHull::ExecuteData(vtkDataObject *output)
     }
     delete line;
   }
-	
-} // vtkConvexHull::ExecuteData()
+
+} // vtkConvexHull::RequestData()
 
 
 //----------------------------------------------------------------------

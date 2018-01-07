@@ -61,6 +61,7 @@ if(B != 10) {
 
 CTest.PrintTestResult( OK )
 
-quit
+del CTest
+#quit
 
 

@@ -3,7 +3,7 @@
 #
 
 #
-# Enable testing for AMILab proyect.
+# Enable testing for AMILab project.
 #
 ENABLE_TESTING()
 
@@ -34,7 +34,7 @@ MACRO(ADD_AMILAB_TESTS name-test amilab-options test)
 #-------------------------------------------------------------------------------
 
 ADD_TEST(${name-test}
-         "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${AMILAB_BIN}_release"
+         "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${AMILAB_BIN}_relwithdebinfo"
          ${amilab-options}
          ${test} ${ARGN})
 

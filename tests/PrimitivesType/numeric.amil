@@ -9,6 +9,10 @@
 # Check the Numeric primitives type.
 # - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
+del NumericTestClass
+del NumericTest
+
 if (!exists(NumericTestClass)) {
 
   #------------------------------------
@@ -212,5 +216,5 @@ if (!exists(NumericTest)) {
 }
 NumericTest.Execute(0)
 
-quit
+#quit
 

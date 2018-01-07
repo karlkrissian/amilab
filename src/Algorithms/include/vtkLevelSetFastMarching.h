@@ -43,7 +43,7 @@
 #include <vtkLevelSetsConfigure.h>
 #include "vtkPointData.h"
 #include "vtkImageData.h"
-#include "vtkImageAlgorithm.h"
+#include "vtkSimpleImageToImageFilter.h"
 
 
 //BTX
@@ -177,10 +177,10 @@ public:
 //ETX
 
 //----------------------------------------------------------------------
-class VTK_EXPORT vtkLevelSetFastMarching : public vtkImageAlgorithm
+class VTK_EXPORT vtkLevelSetFastMarching : public vtkSimpleImageToImageFilter
 {
 public:
-  vtkTypeMacro(vtkLevelSetFastMarching,vtkImageAlgorithm);
+  vtkTypeMacro(vtkLevelSetFastMarching, vtkSimpleImageToImageFilter);
   void PrintSelf(std::ostream& os, vtkIndent indent);
 
   // Description:
@@ -283,8 +283,8 @@ protected:
   vtkLevelSetFastMarching(const vtkLevelSetFastMarching&);
   void operator=(const vtkLevelSetFastMarching&);
 
-  void ExecuteData(vtkDataObject* output);
-  void InitParam();
+  virtual void SimpleExecute(vtkImageData* input, vtkImageData* output);
+  void InitParam(vtkImageData* input, vtkImageData* output);
 
 //BTX
   // 2D or 3D processing

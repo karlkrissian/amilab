@@ -5,6 +5,8 @@ if (!exists(SubPixel)) {
   func "../Load_SubPixel"
 }
 
+del Subpixel2DClass
+
 if (!exists(Subpixel2DClass)){
 
 
@@ -113,26 +115,26 @@ if (!exists(Subpixel2DClass)){
         bsum    = 0.0
         
         #Diference image and curvature
-        diff = ::res->aintensity - ::res->bintensity
-        r = 1/::res->curvature
+        diff = ::res.aintensity - ::res.bintensity
+        r = 1/::res.curvature
         
         #mins and maxs
         modmin = min(diff)
         cumin  = min(r)
-        bmin   = min(::res->bcoef)
+        bmin   = min(::res.bcoef)
         modmax = max(diff)
         cumax  = max(r)
         
         #Calculate means
         modmed = mean(diff)
         cumed  = mean(r)
-        bmed   = mean(::res->bcoef)
+        bmed   = mean(::res.bcoef)
         
         
         #Variances (because we need the means)
         modsumvar = (diff - modmed) * (diff - modmed)
         cusumvar  = (r - cumed) * (r - cumed)
-        bsumvar   = (::res->bcoef - bmed) * (::res->bcoef - bmed)
+        bsumvar   = (::res.bcoef - bmed) * (::res.bcoef - bmed)
         #Calculate variances
         modvar = mean(modsumvar)
         cuvar  = mean(cusumvar)
@@ -175,29 +177,29 @@ if (!exists(Subpixel2DClass)){
         imx = ::input_draw.GetXPos()
         imy = ::input_draw.GetYPos()
         #Initialize pos to a value higer than the maximum position
-        pos = ::res->border.tx + 1
+        pos = ::res.border.tx + 1
         #First, find the position of the pixel inside the border pixel position
-        for i=0 to ::res->border.tx-1 {
-          if ((::res->xpos(i,0) == imx) && (::res->ypos(i,0) == imy)) {
+        for i=0 to ::res.border.tx-1 {
+          if ((::res.xpos(i,0) == imx) && (::res.ypos(i,0) == imy)) {
             pos = i
             break
           }
         }
         #Successfull??
-        if (pos != ::res->border.tx+1) {
+        if (pos != ::res.border.tx+1) {
           #Show pixel information
-          if (::res->border(pos,0) == 2) {
-            ::s_pos = sprint("(%g,", ::res->xpos(pos,0))+\
-                      sprint("%g): HORIZONTAL", ::res->ypos(pos,0))
+          if (::res.border(pos,0) == 2) {
+            ::s_pos = sprint("(%g,", ::res.xpos(pos,0))+\
+                      sprint("%g): HORIZONTAL", ::res.ypos(pos,0))
           } else {
-            ::s_pos = sprint("(%g,", ::res->xpos(pos,0))+\
-                      sprint("%g): VERTICAL", ::res->ypos(pos,0))
+            ::s_pos = sprint("(%g,", ::res.xpos(pos,0))+\
+                      sprint("%g): VERTICAL", ::res.ypos(pos,0))
           }
           
-          ::s_mod   = sprint("%f", ::res->aintensity(pos,0)-::res->bintensity(pos,0))
-          ::s_rad   = sprint("%f", 1/::res->curvature(pos,0))
-          ::s_slope = sprint("%f", ::res->bcoef(pos,0))
-          ::s_disp  = sprint("%f", ::res->acoef(pos,0))
+          ::s_mod   = sprint("%f", ::res.aintensity(pos,0)-::res.bintensity(pos,0))
+          ::s_rad   = sprint("%f", 1/::res.curvature(pos,0))
+          ::s_slope = sprint("%f", ::res.bcoef(pos,0))
+          ::s_disp  = sprint("%f", ::res.acoef(pos,0))
         } else {
           #Is not a border pixel
           ::s_pos = sprint("(%g,", imx)+\
@@ -218,24 +220,24 @@ if (!exists(Subpixel2DClass)){
     #-----------------------
     proc ::GetBorders() {
       #Create four new images for displacements inside the pixel
-      dx1 = Image(DOUBLE,::res->xpos.tx,1,1)
-      dy1 = Image(DOUBLE,::res->xpos.tx,1,1)
-      dx2 = Image(DOUBLE,::res->xpos.tx,1,1)
-      dy2 = Image(DOUBLE,::res->xpos.tx,1,1)
+      dx1 = Image(DOUBLE,::res.xpos.tx,1,1)
+      dy1 = Image(DOUBLE,::res.xpos.tx,1,1)
+      dx2 = Image(DOUBLE,::res.xpos.tx,1,1)
+      dy2 = Image(DOUBLE,::res.xpos.tx,1,1)
       dx1 = -0.4
       #y = a + b*x + c*x*x
-      dy1 = ::res->acoef + ::res->bcoef*dx1 + ::res->ccoef*dx1*dx1
+      dy1 = ::res.acoef + ::res.bcoef*dx1 + ::res.ccoef*dx1*dx1
       dy1 = -dy1
       dx2 = 0.4
-      dy2 = ::res->acoef + ::res->bcoef*dx2 + ::res->ccoef*dx2*dx2
+      dy2 = ::res.acoef + ::res.bcoef*dx2 + ::res.ccoef*dx2*dx2
       dy2 = -dy2
       #Create images for draw points (draw line from x1,y1 to x2,y2)
-      x1pos = ((DOUBLE)::res->xpos+dx1)*(::res->border==2)+((DOUBLE)::res->xpos+dy1)*(::res->border!=2)
-      y1pos = ((DOUBLE)::res->ypos+dy1)*(::res->border==2)+((DOUBLE)::res->ypos+dx1)*(::res->border!=2)
-      x2pos = ((DOUBLE)::res->xpos+dx2)*(::res->border==2)+((DOUBLE)::res->xpos+dy2)*(::res->border!=2)
-      y2pos = ((DOUBLE)::res->ypos+dy2)*(::res->border==2)+((DOUBLE)::res->ypos+dx2)*(::res->border!=2)
+      x1pos = ((DOUBLE)::res.xpos+dx1)*(::res.border==2)+((DOUBLE)::res.xpos+dy1)*(::res.border!=2)
+      y1pos = ((DOUBLE)::res.ypos+dy1)*(::res.border==2)+((DOUBLE)::res.ypos+dx1)*(::res.border!=2)
+      x2pos = ((DOUBLE)::res.xpos+dx2)*(::res.border==2)+((DOUBLE)::res.xpos+dy2)*(::res.border!=2)
+      y2pos = ((DOUBLE)::res.ypos+dy2)*(::res.border==2)+((DOUBLE)::res.ypos+dx2)*(::res.border!=2)
       #inside delimits the draw area inside the region defined by xmin,xmax,ymin and ymax
-      #inside = (::res->xpos>=xmin)*(::res->xpos<=xmax)*(::res->ypos>=ymin)*(::res->ypos<=ymax)
+      #inside = (::res.xpos>=xmin)*(::res.xpos<=xmax)*(::res.ypos>=ymin)*(::res.ypos<=ymax)
       
       #Create the border points image (x1,y1,x2,y2)
       border_pts = Image(DOUBLE,x1pos.tx,1,1,4)
@@ -253,14 +255,14 @@ if (!exists(Subpixel2DClass)){
       px = (borders[0]+borders[2]) / 2
       py = (borders[1]+borders[3]) / 2
       #Calculate normal point
-      div = (::res->aintensity - ::res->bintensity) / sqrt(1+::res->bcoef*::res->bcoef)
+      div = (::res.aintensity - ::res.bintensity) / sqrt(1+::res.bcoef*::res.bcoef)
       sign = (div>=0)*1 + (div<0)*-1
-      nx = ::res->bcoef * sign
+      nx = ::res.bcoef * sign
       ny = Image(DOUBLE,nx.tx,1,1)
       ny = sign * 1
       
-      normx = (px+nx)*(::res->border==2)+(px+ny)*(::res->border!=2)
-      normy = (py+ny)*(::res->border==2)+(py+nx)*(::res->border!=2)
+      normx = (px+nx)*(::res.border==2)+(px+ny)*(::res.border!=2)
+      normy = (py+ny)*(::res.border==2)+(py+nx)*(::res.border!=2)
       
       #Create the normal points image (x1,y1,x2,y2)
       norm_pts = Image(DOUBLE,px.tx,1,1,4)
@@ -336,6 +338,7 @@ if (!exists(Subpixel2DClass)){
     #-----------------------
     
     proc ::Run() {
+      printn "Run"
       if (!exists(::input)) {
         ::load_input()
       }
@@ -360,20 +363,20 @@ if (!exists(Subpixel2DClass)){
       ::sp2D = SubPixel2D(&::norm_input,::threshold,::linear)
       
       if (::alg_type == 0) {
-        ::res = ::sp2D->SuperGradienteCurvo()
+        ::res = ::sp2D.SuperGradienteCurvo()
         ::s_method = "Basic method"
       }
       if (::alg_type == 1) {
-        ::sp2D->DenoisingGus()
-        ::res = ::sp2D.GetDenoised()
+        ::sp2D.DenoisingGus()
+        ::res = ::sp2D.getDenoised()
         ::s_method = "Averaged method"
       }
       if (::alg_type == 2) {
-        ::sp2D->SubpixelDenoising(::niter)
-        ::res = ::sp2D.GetDenoised()
+        ::sp2D.SubpixelDenoising(::niter)
+        ::res = ::sp2D.getDenoised()
         ::s_method = "Subpixel denoising"
       }
-			if (::alg_type != 2 || (::alg_type == 2 && ::thresholds_crossed==0)) {
+      if (::alg_type != 2 || (::alg_type == 2 && ::thresholds_crossed==0)) {
         ::win.Update(-1)
         ::win.EnablePanel(::pxinf_panel, 1)
         ::win.EnablePanel(::stat_panel, 1)
@@ -407,7 +410,7 @@ if (!exists(Subpixel2DClass)){
       if (exists(::input)) {
         if (::show_averaged || ::draw_on_averaged) {
           if (exists(::res)) {
-            ::averaged <<= ::res->denoised
+            ::averaged <<= ::res.denoised
             show ::averaged
             if(::show_averaged) {
               show ::input
@@ -417,7 +420,7 @@ if (!exists(Subpixel2DClass)){
         } else {
           if (::show_restored || ::draw_on_restored) {
             if (exists(::res)) {
-              ::restored <<= ::res->restored
+              ::restored <<= ::res.restored
               show ::restored
               if (::show_restored) {
                 show ::input
@@ -528,21 +531,21 @@ if (!exists(Subpixel2DClass)){
     {
       if (exists(::input) && exists(::res)) {
         dx1 = 0
-        dy1 = ::res->acoef
+        dy1 = ::res.acoef
         dy1 = -dy1
         #Create images for draw points (draw line from x1,y1 to x2,y2)
-        px = ((DOUBLE)::res->xpos+dx1)*(::res->border==2)+((DOUBLE)::res->xpos+dy1)*(::res->border!=2)
-        py = ((DOUBLE)::res->ypos+dy1)*(::res->border==2)+((DOUBLE)::res->ypos+dx1)*(::res->border!=2)
+        px = ((DOUBLE)::res.xpos+dx1)*(::res.border==2)+((DOUBLE)::res.xpos+dy1)*(::res.border!=2)
+        py = ((DOUBLE)::res.ypos+dy1)*(::res.border==2)+((DOUBLE)::res.ypos+dx1)*(::res.border!=2)
 
         #Calculate normal point
-        div = (::res->aintensity - ::res->bintensity) / sqrt(1+::res->bcoef*::res->bcoef)
+        div = (::res.aintensity - ::res.bintensity) / sqrt(1+::res.bcoef*::res.bcoef)
         sign = (div>=0)*1 + (div<0)*-1
-        nx = ::res->bcoef * sign
+        nx = ::res.bcoef * sign
         ny = Image(DOUBLE,nx.tx,1,1)
         ny = sign * 1
         
-        normx = (px+nx)*(::res->border==2)+(px+ny)*(::res->border!=2)
-        normy = (py+ny)*(::res->border==2)+(py+nx)*(::res->border!=2)
+        normx = (px+nx)*(::res.border==2)+(px+ny)*(::res.border!=2)
+        normy = (py+ny)*(::res.border==2)+(py+nx)*(::res.border!=2)
         
         #Create the normal points image (x1,y1,x2,y2)
         norm_pts = Image(DOUBLE,px.tx,1,1,4)

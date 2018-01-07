@@ -51,6 +51,7 @@ if (!exists(FiducialsClass)) {
           it = wx.wxListItem()
           it.SetColumn(0)
           it.SetText(text)
+          it.SetId(::listctrl.GetItemCount())
           res = ::listctrl.InsertItem(&it)
           del it
         }

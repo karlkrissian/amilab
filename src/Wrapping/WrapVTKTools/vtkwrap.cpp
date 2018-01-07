@@ -784,40 +784,23 @@ InrImage*  Func_vtkFastMarching(
 InrImage*    Func_vtkSignedBorgefors(InrImage* im, float dmax)
 {
 #ifdef AMI_USE_VTK
-  
   vtkImageData*              vtk_image;
   vtkImageFastSignedChamfer* vtk_SDT;
   InrImage*                  res;
-
-  //  fprintf(stderr,"Func_vtkSignedBorgefors() \t begin \n");
-
-  //  fprintf(stderr,"Func_vtkSignedBorgefors() \t conversion vtkImageData \n");
   // Convert InrImage to vtkImageData
   vtk_image = (vtkImageData*) (*im);
-
-  //  fprintf(stderr,"Func_vtkSignedBorgefors() \t conversion vtkImageSignedBorgefors \n");
   vtk_SDT = vtkImageFastSignedChamfer::New();
-
   vtk_SDT->SetInputData(   vtk_image);
   vtk_SDT->Setmaxdist( dmax);
   vtk_SDT->Setnoborder(1);
-
   vtk_SDT->Update();
-
-  //  fprintf(stderr,"Func_vtkSignedBorgefors() \t conversion InrImage \n");
-
   res = new InrImage( vtk_SDT->GetOutput());
-
   vtk_SDT->Delete();
-
-  //  fprintf(stderr,"Func_vtkSignedBorgefors() \t end \n");
   return res;
-
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
 #endif // AMI_USE_VTK
-
 } // Func_vtkSignedBorgefors()
 
 

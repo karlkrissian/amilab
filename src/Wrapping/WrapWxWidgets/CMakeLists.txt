@@ -189,6 +189,9 @@ ENDIF(AMI_USE_PRECOMP_HEADERS)
 # however speeds up the linking ...
 OPTION(WrapWxWidgets_SHARED     "Compile WrapWxWidgets library as shared" OFF)
 
+CONFIGURE_FILE(
+    ${AMILab_SOURCE_DIR}/Wrapping/include/WrapWxWidgetsConfigure.h.in
+    ${AMILab_BINARY_DIR}/WrapWxWidgetsConfigure.h)
 
 
 IF(WrapWxWidgets_SHARED)

@@ -216,30 +216,27 @@ void vtkImageIsoContourDist::SetMinMaxX( int** minx, int** maxx)
   max_x = maxx;
 }
 
-
 //----------------------------------------------------------------------------
 // This method is passed  input and output data, and executes the filter
 // algorithm to fill the output from the input.
-void vtkImageIsoContourDist::ExecuteData(vtkDataObject *outData)
-//                   -------
+int vtkImageIsoContourDist::RequestData(
+  vtkInformation* vtkNotUsed(request),
+  vtkInformationVector** inputVector,
+  vtkInformationVector* vtkNotUsed(outputVector))
 {
-
-
-  InitParam( );
+  InitParam();
 
   if (tz == 1) {
     IsoSurfDist2D();
   }
   else {
-    if (narrowband==NULL)
+    if (narrowband == NULL)
       IsoSurfDist3D();
     else
       IsoSurfDist3D_band();
   }
-
-
-} // Execute()
-
+  return 1;
+}
 
 //----------------------------------------------------------------------
 void vtkImageIsoContourDist::IsoSurfDist2D( )
@@ -565,7 +562,9 @@ void vtkImageIsoContourDist::IsoSurfDist3D_band( )
 
   IsoSurfDistInit( );
 
-  if (this->GetNumberOfThreads()<=1)
+  auto threads = vtkMultiThreader::GetGlobalDefaultNumberOfThreads();
+
+  if (threads<=1)
     IsoSurfDist3D_band(0,this->bandsize-1);
   else {
   
@@ -578,7 +577,7 @@ void vtkImageIsoContourDist::IsoSurfDist3D_band( )
     boost::shared_ptr<vtkMultiThreader> threader = vtk_new<vtkMultiThreader> ()();
 
     // Threaded execution
-    threader->SetNumberOfThreads(this->GetNumberOfThreads());
+    threader->SetNumberOfThreads(threads);
 
     // setup threading and the invoke threadedExecute
     threader->SetSingleMethod(vtkImageIsoContourDist_ThreadedBand3D, this);

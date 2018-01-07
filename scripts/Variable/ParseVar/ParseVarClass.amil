@@ -38,6 +38,7 @@ if (!exists(ParseVarClass)) {
       for n=::list_start to -max(-(sa.Count()-1),-(::list_start+::maxlist-1)) {
         text = sa[n]
         it = wx.wxListItem()
+        it.SetId(::listctrl.GetItemCount())
         it.SetColumn(0)
         it.SetText(text)
         res = ::listctrl.InsertItem(&it)

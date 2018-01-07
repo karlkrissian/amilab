@@ -11,7 +11,8 @@ if (!exists(URLLoadClass)) {
 
   Class URLLoadClass : public ScriptGui \
   {
-    
+    ::verbose = false
+
     proc ::CreateImageLists_sipi_misc() \
     {
       func "Utils/Var_Vec"
@@ -110,7 +111,9 @@ if (!exists(URLLoadClass)) {
           if descr_re.Matches(&current_line) {
             vinfo.descr    = wx.FromWxString(descr_re   .GetMatch(&current_line,1))
           }
-          printn "Found '%1%'" % vinfo.name + " '%1%' " % vinfo.modality + " '%1%' " % vinfo.size + " '%1%' " % vinfo.descr 
+          if (::verbose) {
+              printn "Found '%1%'" % vinfo.name + " '%1%' " % vinfo.modality + " '%1%' " % vinfo.size + " '%1%' " % vinfo.descr
+          }
           # TODO: check why += does not work
           ::osirix_examples.v.push_back(&vinfo)
         } else {
@@ -210,6 +213,8 @@ if (!exists(URLLoadClass)) {
       varname=::Im2Var_sipi_misc(imname)
       ::output_filename  = varname
       ::output_imagename = varname
+      printn "url_name = %1% " % ::url_name
+      printn "output_filename = %1% " % ::output_filename
       ::win.Update(-1)
       ::ReadImage(!::sipi_misc_has_icon[n])
       #if  {
@@ -286,7 +291,9 @@ if (!exists(URLLoadClass)) {
     #---------------------------------------------------------------------------
     proc ::AddImageButton( STRING varname) \
     {
-      printn "Starting ::AddImageButton(%1%)" %varname
+      if (::verbose) {
+        printn "Starting ::AddImageButton(%1%)" %varname
+      }
       return=::LoadImageIcon(varname);
       eval "bmp = wx.wxBitmap(&::%1%_icon.Scale(32,32));" % varname
       #eval "::bmp_%1% = &bmp;" % varname
@@ -365,7 +372,9 @@ if (!exists(URLLoadClass)) {
         if imname == "WRIX" { imname = "WRIST"; }
         varname = ::Im2Var_osirix_examples(::osirix_examples[n].name)
         # 1. check if the icon exists
-        printn "varname = %1%" % varname
+        if (::verbose) {
+          printn "varname = %1%" % varname
+        }
         icon_filename = ::IconFileName(varname)
         if !wx.wxFileName(icon_filename).FileExists() {
           # preview link
@@ -450,13 +459,15 @@ if (!exists(URLLoadClass)) {
     #---------------------------------------------------------------------------
     proc ::Download_size( ) \
     {
-      SetStatusText(" Output size = %1%" % wx.wxFileName(::output_fname).\
-        GetSize().ToDouble()/1000 )
+      size = wx.wxFileName(::output_fname).GetSize().ToDouble()/1000
+      #printn "download size %1% " % size
+      SetStatusText(" Output size = %1%" %  size)
     }
 
     #---------------------------------------------------------------------------
     proc ::URL2File( STRING urlstr, STRING fname) \
     {
+      printn "URL2File %1% " % urlstr
       ::evh = wx.wxAmiEventHandler(&::Download_size)
       ::timer = wx.wxTimer(&::evh)
       ::evh.Connect(wx.wxEVT_TIMER,&::evh.GetEventFunction())
@@ -470,7 +481,10 @@ if (!exists(URLLoadClass)) {
           canread = in_st.CanRead()
           while canread {
             in_st.Read(&out_file)
-            SetStatusText("%1% Kb read from url stream" % (in_st.LastRead()/1000))
+            mess = "%1% Kb read from url stream" % (in_st.LastRead()/1000)
+            printn "*"
+            printn "mess"
+            SetStatusText(mess)
             canread = in_st.CanRead()
           }
           return=true
@@ -488,7 +502,9 @@ if (!exists(URLLoadClass)) {
     #---------------------------------------------
     proc ::URL2Icon( STRING urlstr, STRING varname) \
     {
-      printn "%1%" % urlstr
+      if (::verbose) {
+        printn "%1%" % urlstr
+      }
       icon_filename = ::IconFileName(varname)
       url = wx.wxURL(urlstr)
       if url.IsOk() {
@@ -573,11 +589,16 @@ if (!exists(URLLoadClass)) {
     #-----------------------------------------------
     proc ::ReadImage( NUM saveicon) \
     {
+      printn "ReadImage saveicon=%1%" % saveicon
       wx_fname = wx.wxFileName.CreateTempFileName(::output_filename)
       wx_fname.Replace("\\","/")
       fname = wx.FromWxString(wx_fname)
       SetStatusText("temporary file is "+fname)
+
+      printn "start URL2File"
       ::URL2File(::url_name,fname)
+      printn "end URL2File"
+
       imname = wx.FromWxString(wx.wxFileName(::output_imagename).GetName())
       cmd= "global::"+imname+" = Image \"%1%\";" % fname
       SetStatusText(cmd)

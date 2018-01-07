@@ -33,6 +33,7 @@
 #include "vtkObjectFactory.h"
 #include "vtkStructuredPointsWriter.h"
 #include "vtkFloatArray.h"
+#include "vtkImageCast.h"
 
 #ifndef _WIN32
 #include <strings.h>
@@ -226,18 +227,11 @@ void vtkFastMarching_nD_plus::InitParam()
   // check the image is in float format, or convert
   type = force->GetScalarType();
   if (type != VTK_FLOAT) {
-    vtkDebugMacro(<<"making a copy of the input into float format");
-    // Create a copy of the data
-    force = vtkImageData::New();
-    vtkImageData::SetScalarType( VTK_FLOAT, force->GetInformation());
-    vtkImageData::SetNumberOfScalarComponents(this->GetImageDataInput(0)->GetNumberOfScalarComponents(),
-                                              force->GetInformation()    );
-    force->SetDimensions( this->GetImageDataInput(0)->GetDimensions());
-    force->SetOrigin(     this->GetImageDataInput(0)->GetOrigin());
-    force->SetSpacing(    this->GetImageDataInput(0)->GetSpacing());
-
-    force->CopyAndCastFrom(this->GetImageDataInput(0),
-               this->GetImageDataInput(0)->GetExtent());
+    vtkSmartPointer<vtkImageCast> cast = vtkSmartPointer<vtkImageCast>::New();
+    cast->SetInputData(this->GetImageDataInput(0));
+    cast->SetOutputScalarType(VTK_FLOAT);
+    cast->Update();
+    force = cast->GetOutput();
     force_allocated = 1;
   }
 

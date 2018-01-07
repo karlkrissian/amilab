@@ -29,6 +29,7 @@ template<>  LanguageBase_EXPORT bool
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<WrapClassMember>::TryCast(const std::string& type_string) const; ///New Added:12-07-2010
 
 
+/*
 // Arithmetic operators
 
 /// +a
@@ -150,7 +151,7 @@ VAR_DECL_FUNC(WrapClassMember,log)
 VAR_DECL_FUNC(WrapClassMember,ln)
 VAR_DECL_FUNC(WrapClassMember,norm)
 VAR_DECL_FUNC(WrapClassMember,sqrt)
-
+*/
 
 /**
  * Array subscript operator,

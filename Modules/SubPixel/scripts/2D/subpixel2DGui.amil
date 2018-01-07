@@ -4,6 +4,9 @@ func "subpixel2DClass.amil"
 #----------------
 # Main
 #----------------
+
+del subp2D
+
 if (!exists(subp2D)) {
   Subpixel2DClass subp2D
   subp2D.CreateGui()

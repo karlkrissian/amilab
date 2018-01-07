@@ -65,5 +65,6 @@ if(argc>0) {
 
 CTest.PrintTestResult( OK )
 
-quit
+del CTest
+#quit
 

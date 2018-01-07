@@ -49,6 +49,7 @@
 #include "vtkFloatArray.h"
 #include "vtkStructuredPointsWriter.h"
 #include "vtkImageGaussianSmooth.h"
+#include "vtkImageCast.h"
 
 #include "vtk_common.h"
 #include <memory>
@@ -135,14 +136,11 @@ static vtkImageData* CreateImageDataFloat( vtkImageData* im)
 
  vtkImageData *Target;
 
- Target = vtkImageData::New();
- Target->SetDimensions(im->GetDimensions());
- Target->SetSpacing(   im->GetSpacing   ());
- Target->SetOrigin(    im->GetOrigin    ());
- vtkImageData::SetScalarType(               VTK_FLOAT,Target->GetInformation()); 
- vtkImageData::SetNumberOfScalarComponents( 1,        Target->GetInformation());
- Target->CopyAndCastFrom(im, im->GetExtent());
-// Target->AllocateScalars();
+ vtkSmartPointer<vtkImageCast> cast = vtkSmartPointer<vtkImageCast>::New();
+ cast->SetInputData(im);
+ cast->SetOutputScalarType(VTK_FLOAT);
+ cast->Update();
+ Target = cast->GetOutput();
 
  return Target;
 
@@ -1148,25 +1146,6 @@ float vtkAnisoGaussSeidel::Iterate3D()
   FinPour
   FinPour
 
-    /*
-  image_resultat->CopyAndCastFrom(this->im_tmp,
-                  this->im_tmp->GetExtent());
-    */
-
-    /*
-  fprintf(stderr," Pourcentage of isotropic points = %2.5f \n",
-      nbpts_isotropic/(1.0*(nbpts_isotropic+nbpts_anisotropic))*100.0);
- std::cout << std::endl;
- std::cout << " Erreur = " << erreur << std::endl;
- std::cout << "( " << erreur_x << ", " 
-               << erreur_y << ", " 
-               << erreur_z << " )" << std::endl; 
- std::cout << "nb de points variables " << nb_points_instables << std::endl;
-
-  diff /= txy*tz;
-
- std::cout << "diff =" << sqrt(diff) << std::endl;
-    */
 
   return erreur;
 

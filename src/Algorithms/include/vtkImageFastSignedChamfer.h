@@ -53,14 +53,15 @@
 
 #include <vtkLevelSetsConfigure.h>
 #include "vtkImageAlgorithm.h"
+#include "vtkSimpleImageToImageFilter.h"
 #include "vtkFloatArray.h"
 #include "vtk_common.h"
 
-class VTK_LEVELSETS_EXPORT vtkImageFastSignedChamfer : public vtkImageAlgorithm
+class VTK_LEVELSETS_EXPORT vtkImageFastSignedChamfer : public vtkSimpleImageToImageFilter
 {
 public:
   static vtkImageFastSignedChamfer *New();
-  vtkTypeMacro(vtkImageFastSignedChamfer,vtkImageAlgorithm);
+  vtkTypeMacro(vtkImageFastSignedChamfer, vtkSimpleImageToImageFilter);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   // Description
@@ -97,7 +98,7 @@ protected:
   vtkImageFastSignedChamfer();
   ~vtkImageFastSignedChamfer();
 
-  void ExecuteData(vtkDataObject *outData);
+  virtual void SimpleExecute(vtkImageData* input, vtkImageData* output);
 
   void FastSignedChamfer2D();
   void FastSignedChamfer3DOld();

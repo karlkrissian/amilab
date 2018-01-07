@@ -284,7 +284,8 @@ bool MyApp::OnInit()
 #endif
 
 #ifdef WIN32
-  RedirectIOToConsole();
+  //RedirectIOToConsole();
+  //RedirectIOToFile();
 #endif
 
 /*    if ( !wxApp::OnInit() )
@@ -453,7 +454,8 @@ bool MyApp::OnInit()
     // 1. in current directory
     wxString homedir = ::wxGetUserHome();
     wxFileName amilab_config;
-    amilab_config.AssignCwd();
+    //amilab_config.AssignCwd();
+    amilab_config.AssignDir(homedir);
     amilab_config.SetFullName(wxT("config.amil"));
 
     if (!amilab_config.FileExists()) {
@@ -560,6 +562,9 @@ int MyApp::OnExit()
   std::cout << "deleting config" << std::endl;
   delete config;
   std::cout << "returning 0" << std::endl;
+#ifdef WIN32
+  //ResetIO();
+#endif
   return 0;
 }
 

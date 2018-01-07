@@ -1711,19 +1711,25 @@ def WrapClass(classname,include_file,xmltree):
       demangled = config.types[f.typeid].GetDemangled()
       available_type =  (typename  in config.available_classes) or \
                         (typename  in config.available_types)
-      if not available_type:
-        # try with demangled
-        typename = demangled
-        available_type =  (typename  in config.available_classes) or \
-                          (typename  in config.available_types)
+
       shared_type = config.IsSharedPtr(typename)
       if shared_type!=None:
         typename=shared_type
+        # check again for type inside shared_ptr<..>
+        available_type = (typename in config.available_classes) or \
+                         (typename in config.available_types)
+
+      if not available_type:
+        # try with demangled
+        typename = demangled
+        # check again with demangled
+        available_type =  (typename  in config.available_classes) or \
+                          (typename  in config.available_types)
       fulltypename=config.types[f.typeid].GetFullString()
       ispointer= config.types[f.typeid].GetRealType()=="PointerType"
       isconstpointer = fulltypename.endswith("const *")
       add_public_fields += indent+"\n"
-      # Wwe can't take address of a bit field
+      # We can't take address of a bit field
       if not available_type or f.bits!=None or config.types[f.typeid].GetType()=="ArrayType":
         if not available_type:
           add_public_fields += indent+"/* Type not available '{0}'\n".format(typename)

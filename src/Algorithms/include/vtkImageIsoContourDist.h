@@ -52,14 +52,14 @@
 #define _vtkImageIsoContourDist_h
 
 #include <vtkLevelSetsConfigure.h>
-#include "vtkThreadedImageAlgorithm.h"
+#include "vtkImageAlgorithm.h"
 #include "vtkFloatArray.h"
 
-class VTK_LEVELSETS_EXPORT vtkImageIsoContourDist : public vtkThreadedImageAlgorithm
+class VTK_LEVELSETS_EXPORT vtkImageIsoContourDist : public vtkImageAlgorithm
 {
 public:
   static vtkImageIsoContourDist *New();
-  vtkTypeMacro(vtkImageIsoContourDist,vtkThreadedImageAlgorithm);
+  vtkTypeMacro(vtkImageIsoContourDist,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   // Description
@@ -92,7 +92,7 @@ protected:
   vtkImageIsoContourDist();
   ~vtkImageIsoContourDist();
 
-  void ExecuteData(vtkDataObject *outData);
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   void IsoSurfDistInit();
 

@@ -43,6 +43,7 @@
 #include "vtkObjectFactory.h"
 #include "vtkStructuredPointsWriter.h"
 #include "vtkFloatArray.h"
+#include "vtkImageCast.h"
 
 #ifndef _WIN32
 #include <strings.h>
@@ -210,7 +211,7 @@ vtkLevelSetFastMarching::~vtkLevelSetFastMarching()
 } // ~vtkLevelSetFastMarching
 
 //----------------------------------------------------------------------
-void vtkLevelSetFastMarching::InitParam()
+void vtkLevelSetFastMarching::InitParam(vtkImageData* input, vtkImageData* output)
 {
 
   int type;
@@ -218,29 +219,18 @@ void vtkLevelSetFastMarching::InitParam()
   //  fprintf(stderr,"vtkLevelSetFastMarching::InitParam() begin\n");
 
   // Get force image from input
-  force  = this->GetImageDataInput(0);
-  if (force == NULL)
-    {
-      vtkErrorMacro("Missing input");
-      return;
-    }
-  // check the image is in float format, or convert
-  type = force->GetScalarType();
-  if (type != VTK_FLOAT) {
-    vtkDebugMacro(<<"making a copy of the input into float format");
-    // Create a copy of the data
-    force = vtkImageData::New();
-    vtkImageData::SetScalarType( VTK_FLOAT, force->GetInformation());
-    vtkImageData::SetNumberOfScalarComponents(1, force->GetInformation());
-    force->SetDimensions( this->GetImageDataInput(0)->GetDimensions());
-    force->SetOrigin(     this->GetImageDataInput(0)->GetOrigin());
-    force->SetSpacing(    this->GetImageDataInput(0)->GetSpacing());
-
-    force->CopyAndCastFrom(this->GetImageDataInput(0),
-               this->GetImageDataInput(0)->GetExtent());
+  if (input->GetScalarType() == VTK_FLOAT) {
+    force = input;
+    force_allocated = false;
+  }
+  else {
+    vtkSmartPointer<vtkImageCast> cast = vtkSmartPointer<vtkImageCast>::New();
+    cast->SetInputData(input);
+    cast->SetOutputScalarType(VTK_FLOAT);
+    cast->Update();
+    force = cast->GetOutput();
     force_allocated = 1;
   }
-
 
   // The mask must be UNSIGNED_CHAR
   if (mask != NULL) {
@@ -336,7 +326,7 @@ void vtkLevelSetFastMarching::InitParam()
 
 
   // Get the time image (output of the algorithm)
-  T      = this->GetOutput();
+  T = output;
   
   T->SetDimensions(this->GetImageDataInput(0)->GetDimensions());
   T->SetSpacing(   this->GetImageDataInput(0)->GetSpacing());
@@ -395,9 +385,9 @@ void vtkLevelSetFastMarching::SetNarrowBand( int* band, int size)
 
 
 //----------------------------------------------------------------------
-void vtkLevelSetFastMarching::ExecuteData(vtkDataObject *outData)
+void vtkLevelSetFastMarching::SimpleExecute(vtkImageData* input, vtkImageData* output)
 {
-  
+
   FM_TrialPoint p;
 
   //  InrImage* ImEvol;
@@ -411,7 +401,7 @@ void vtkLevelSetFastMarching::ExecuteData(vtkDataObject *outData)
   //  fprintf(stderr,"vtkLevelSetFastMarching::Execute() begin ----------------------------- \n");
   //  fprintf(stderr,"vtkLevelSetFastMarching::Execute() initparam \n");
 
-  InitParam();
+  InitParam(input, output);
 
   bool use_target_points;
   bool stop_evolution;
@@ -571,7 +561,7 @@ void vtkLevelSetFastMarching::ExecuteData(vtkDataObject *outData)
 
   // Check for the maximum
 
-} // vtkLevelSetFastMarching::Execute()
+} // vtkLevelSetFastMarching::SimpleExecute()
 
 
 //----------------------------------------------------------------------

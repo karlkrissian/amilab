@@ -11,7 +11,7 @@ Class FourierUtilsClass \
   proc ::FFT( IMAGE input) {
     input_vtk = vtktools.ToVtkImageData(&input)
     fft = vtk.vtkImageFFT.New()
-    fft.SetInput(&input_vtk)
+    fft.SetInputData(&input_vtk)
     fft.Update()
     res_vtk = fft.GetOutput()
     return = vtktools.FromVtkImageData(&res_vtk)
@@ -24,7 +24,7 @@ Class FourierUtilsClass \
   proc ::RFFT( IMAGE input) {
     input_vtk = vtktools.ToVtkImageData(&input)
     rfft = vtk.vtkImageRFFT.New()
-    rfft.SetInput(&input_vtk)
+    rfft.SetInputData(&input_vtk)
     rfft.Update()
     res_vtk = rfft.GetOutput()
     return = vtktools.FromVtkImageData(&res_vtk)
@@ -66,7 +66,7 @@ Class FourierUtilsClass \
   {
     input_vtk = vtktools.ToVtkImageData(&input)
     fc = vtk.vtkImageFourierCenter.New()
-    fc.SetInput(&input_vtk)
+    fc.SetInputData(&input_vtk)
     fc.Update()
     res_vtk = fc.GetOutput()
     return=vtkImageFourierCenter(&input)

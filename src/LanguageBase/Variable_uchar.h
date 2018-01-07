@@ -92,6 +92,11 @@ template<> LanguageBase_EXPORT BasicVariable::ptr Variable<unsigned char>::opera
 
 template<> LanguageBase_EXPORT BasicVariable::ptr Variable<unsigned char>::operator ||(const BasicVariable::ptr& b);
 
+template<> LanguageBase_EXPORT BasicVariable::ptr Variable<unsigned char>::operator ^(const BasicVariable::ptr& b);
+
+template<> LanguageBase_EXPORT BasicVariable::ptr Variable<unsigned char>::operator |(const BasicVariable::ptr& b);
+
+template<> LanguageBase_EXPORT BasicVariable::ptr Variable<unsigned char>::operator &(const BasicVariable::ptr& b);
 
 // TODO: don t define trigonometry for int, it should be floating point
 // and these functions should not be operators ...

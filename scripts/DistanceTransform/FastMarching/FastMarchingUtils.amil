@@ -108,7 +108,7 @@ Class FastMarchingUtils \
       }
     }
 
-    vtk_FM.SetInput(&vtk_input)
+    vtk_FM.SetInputData(&vtk_input)
     vtk_FM.Setinitimage(&vtk_init);
     # if we set initiso to a different value than -1E10 (default value)
     # the it will call InitIsoSurf which recomputes the distance close to the surface
@@ -154,7 +154,7 @@ Class FastMarchingUtils \
       }
     }
 
-    vtk_FM.SetInput(&vtk_input)
+    vtk_FM.SetInputData(&vtk_input)
     vtk_FM.Setinitimage(&vtk_init);
     # if we set initiso to a different value than -1E10 (default value)
     # the it will call InitIsoSurf which recomputes the distance close to the surface
@@ -264,7 +264,7 @@ Class CompetingFastMarching {
     vtk_init    = vtktools.ToVtkImageData(&initim)
     vtk_class   = vtktools.ToVtkImageData(&::classim)
 
-    ::vtk_FM.SetInput(      &vtk_speed)
+    ::vtk_FM.SetInputData(      &vtk_speed)
     ::vtk_FM.Setinitimage(  &vtk_init);
     ::vtk_FM.Setclass_image(&vtk_class);
     # if we set initiso to a different value than -1E10 (default value)

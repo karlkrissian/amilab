@@ -57,6 +57,10 @@ Class ModulePlugin \
       last_removed = last
       execpath2.RemoveLastDir()
     }
+    if (last.MakeUpper().Cmp("RELWITHDEBINFO")==0) {
+      last_removed = last
+      execpath2.RemoveLastDir()
+    }
     if (last.MakeUpper().Cmp("BIN")==0) {
       execpath2.RemoveLastDir()
     }
