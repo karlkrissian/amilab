@@ -111,59 +111,6 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 
   WRAP_CODE()
 
-#   #MESSAGE("Processing classes ${ancestors_list} and addwrap")
-#   IF ((${NB_MISSING_CLASSES} GREATER 0) OR 
-#       (NOT EXISTS ${GENERATED_DIR}/addwrap_vtk.h) OR
-#       (NOT EXISTS ${GENERATED_DIR}/addwrap_vtk.cpp))
-#     # Go for python wrapping
-#     IF(GENERATE_HTML_HELP)
-#       ADD_CUSTOM_COMMAND(
-#         OUTPUT  ${OUTPUT_LIST} ${GENERATED_DIR}/addwrap_vtk.h ${GENERATED_DIR}/addwrap_vtk.cpp
-#         COMMAND
-#             ${PYTHON_EXECUTABLE}
-#               ${AMI_WRAPPER} ${XML_OUTPUT}
-#               --libname vtk
-#               --filter "vtk*"
-#               --classes ${MISSING_CLASSES}
-#               --constructor New
-#               --available_classes ${ancestors_list}
-#               --outputdir "${GENERATED_DIR}"
-#               --templates
-#               --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-#               --addwrap
-#               --profile
-#               --generate-html             #flag to generate html help
-#               --url ${CLASSES_URL_LIST}   #base URL html help
-#               --outputhtmldir ${HTML_DIR} #HTML directory
-#               -q
-#           #DEPENDS
-#           #  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION}/classes.txt
-#           VERBATIM
-#       )
-#     ELSE(GENERATE_HTML_HELP)
-#       ADD_CUSTOM_COMMAND(
-#         OUTPUT  ${OUTPUT_LIST} ${GENERATED_DIR}/addwrap_vtk.h ${GENERATED_DIR}/addwrap_vtk.cpp
-#         COMMAND
-#           ${PYTHON_EXECUTABLE}
-#             ${AMI_WRAPPER} ${XML_OUTPUT}
-#             --libname vtk
-#             --filter "vtk*"
-#             --classes ${MISSING_CLASSES}
-#             --constructor New
-#             --available_classes ${ancestors_list}
-#             --outputdir "${GENERATED_DIR}"
-#             --templates
-#             --templatefile_dir "${AMILAB_SOURCE_DIR}/../PythonWrap/"
-#             --addwrap
-#             --profile
-#             -q
-#   #         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
-#         VERBATIM
-#       )
-#     ENDIF(GENERATE_HTML_HELP)
-#   ENDIF((${NB_MISSING_CLASSES} GREATER 0) OR 
-#       (NOT EXISTS ${GENERATED_DIR}/addwrap_vtk.h) OR
-#       (NOT EXISTS ${GENERATED_DIR}/addwrap_vtk.cpp))
 
 ENDIF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
 

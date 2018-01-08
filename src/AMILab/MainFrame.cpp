@@ -606,7 +606,7 @@ MainFrame::MainFrame( const wxString& title,
                   .Caption(wxT("Output"))
                   .Bottom()
                   .MaximizeButton(true)
-                  .MinSize(wxSize(100,50)));
+                  .MinSize(wxSize(100,150)));
 
   CreateParamBook(this);
   m_mgr.AddPane(_param_book,

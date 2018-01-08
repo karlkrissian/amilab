@@ -3,3 +3,4 @@
 #include <vtkSystemIncludes.h>
 
 #include <vtkSmartVolumeMapper.h>
+#include <vtkSimpleImageToImageFilter.h>

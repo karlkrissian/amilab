@@ -211,3 +211,9 @@ target_link_libraries( WrapWxWidgets
   ${wxWidgets_LIBRARIES}
   ${Boost_LIBRARIES}
 )
+
+IF(MSVC)
+  # SET INCREMENTAL LINKING: much faster ...
+  set_target_properties( WrapWxWidgets 
+    PROPERTIES LINK_FLAGS_RELEASE "/INCREMENTAL:YES")
+ENDIF(MSVC)
