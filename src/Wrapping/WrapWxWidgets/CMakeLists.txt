@@ -174,6 +174,15 @@ SET(WrapWxWidgets_SRCS
      ${WrapWxWidgets_HDRS}
 )
 
+IF (AMI_USE_PRECOMP_HEADERS)
+  IF(MSVC)
+    # precompiled header
+    SET(WrapWxWidgets_SRCS
+         ${WrapWxWidgets_SRCS} wrap_wxprec.cpp
+    )
+  ENDIF(MSVC)
+ENDIF(AMI_USE_PRECOMP_HEADERS)
+
 #MESSAGE("WrapWxWidgets_SRCS = ${WrapWxWidgets_SRCS}")
 
 IF (AMI_USE_PRECOMP_HEADERS)
@@ -205,6 +214,13 @@ SET(amilab_ownlibs
   CommonBase
   WrapCommon
 )
+IF (AMI_USE_PRECOMP_HEADERS)
+  # try  precompiled header with visual
+  IF(MSVC)
+    add_precompiled_header(WrapWxWidgets wrap_wxprec.hpp SOURCE_CXX wrap_wxprec.cpp FORCEINCLUDE)
+  ENDIF(MSVC )
+ENDIF(AMI_USE_PRECOMP_HEADERS)
+
 
 target_link_libraries( WrapWxWidgets
   ${amilab_ownlibs}
@@ -212,8 +228,3 @@ target_link_libraries( WrapWxWidgets
   ${Boost_LIBRARIES}
 )
 
-IF(MSVC)
-  # SET INCREMENTAL LINKING: much faster ...
-  set_target_properties( WrapWxWidgets 
-    PROPERTIES LINK_FLAGS_RELEASE "/INCREMENTAL:YES")
-ENDIF(MSVC)

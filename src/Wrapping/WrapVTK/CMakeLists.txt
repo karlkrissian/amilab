@@ -155,6 +155,14 @@ SET(WrapVTK_SRCS
 WRAP_MESSAGE("WrapVTK_SRCS =  ${WrapVTK_SRCS}")
 
 IF (AMI_USE_PRECOMP_HEADERS)
+  IF(MSVC)
+    # precompiled header
+    SET(WrapVTK_SRCS ${WrapVTK_SRCS} wrap_vtkprec.cpp
+    )
+  ENDIF(MSVC)
+ENDIF(AMI_USE_PRECOMP_HEADERS)
+
+IF (AMI_USE_PRECOMP_HEADERS)
   IF(CMAKE_COMPILER_IS_GNUCXX)
     ADD_PCH_RULE(${AMILAB_SOURCE_DIR}/Wrapping/include/wrap_prec.hpp WrapVTK_SRCS)
     #ADD_PCH_RULE(${AMILAB_SOURCE_DIR}/Common/include/DefineClass.hpp WrapVTK_SRCS)
@@ -184,6 +192,13 @@ ENDIF(WrapVTK_SHARED)
 IF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)
   SET_TARGET_PROPERTIES(WrapVTK PROPERTIES COMPILE_FLAGS "-fPIC -fpermissive")
 ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_COMPILER_IS_GNUCC)
+
+IF (AMI_USE_PRECOMP_HEADERS)
+  # try  precompiled header with visual
+  IF(MSVC)
+    add_precompiled_header(WrapVTK wrap_vtkprec.hpp SOURCE_CXX wrap_vtkprec.cpp FORCEINCLUDE)
+  ENDIF(MSVC )
+ENDIF(AMI_USE_PRECOMP_HEADERS)
 
 SET(amilab_ownlibs
   LanguageBase

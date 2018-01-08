@@ -317,6 +317,13 @@ SET(WrapITK_SRCS
      classes.txt
 )
 
+IF (AMI_USE_PRECOMP_HEADERS)
+  IF(MSVC)
+    # precompiled header
+    SET(WrapITK_SRCS ${WrapITK_SRCS} wrap_itkprec.cpp
+    )
+  ENDIF(MSVC)
+ENDIF(AMI_USE_PRECOMP_HEADERS)
 
 IF(WrapITK_SHARED)
   set_source_files_properties(${WrapITK_SRCS} 
@@ -331,6 +338,14 @@ IF(WrapITK_SHARED)
 ELSE(WrapITK_SHARED)
   my_add_library ( WrapITK)
 ENDIF(WrapITK_SHARED)
+
+IF (AMI_USE_PRECOMP_HEADERS)
+  # try  precompiled header with visual
+  IF(MSVC)
+    add_precompiled_header(WrapITK wrap_itkprec.hpp SOURCE_CXX wrap_itkprec.cpp FORCEINCLUDE)
+  ENDIF(MSVC )
+ENDIF(AMI_USE_PRECOMP_HEADERS)
+
 
 
 

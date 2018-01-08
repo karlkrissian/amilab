@@ -581,6 +581,9 @@ include(amilab_macros)
 
 include(PCH_GCC4_v2)
 
+# include precompile headers functions
+include(PrecompiledHeader)
+
 InitPrintSources()
 
 IF (CMAKE_COMPILER_IS_GNUCXX)
