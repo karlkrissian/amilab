@@ -47,7 +47,11 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   FILE(READ "${WRAPPING_DIR}/methodpointers.txt" methodpointers_txt)
   STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
 
-  SET(CASTXMLSTART_LIST ${classes_list} ${functions_list} ${methodpointers_list})
+  # Read other values to give as parameter to castxmlstart
+  FILE(READ "${WRAPPING_DIR}/castxml_start.txt" castxmlstart_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" castxmlstart_list ${castxmlstart_txt} )
+
+  SET(CASTXMLSTART_LIST ${classes_list} ${functions_list} ${methodpointers_list} ${castxmlstart_list})
   JOIN_CASTXML(CASTXMLSTART "," ${CASTXMLSTART_LIST})
   MESSAGE("CASTXMLSTART = ${CASTXMLSTART}")
 
@@ -175,9 +179,9 @@ SET(WrapWxWidgets_HDRS
   ${AMI_WXWIDGETS_VERSION}/wx_includes.h
   ${wx_HDRS}
   classes_common.txt
-  members_blacklist.py
   wrap_wxprec.hpp
   wx_includes_common.h
+  ${AMI_WXWIDGETS_VERSION}/members_blacklist.py
   ${AMI_WXWIDGETS_VERSION}/classes.txt
   ${AMI_WXWIDGETS_VERSION}/functions.txt
   ${AMI_WXWIDGETS_VERSION}/methodpointers.txt
