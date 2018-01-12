@@ -9,6 +9,8 @@ import re
 # load command line arguments
 import args
 
+import logging
+
 # 1. find the event.h file
 
 # 2. register event macros
@@ -32,7 +34,7 @@ def CreateHeaderFileMacros(inputfilename_macros,outputfile):
     res += "\n"
     res += "  // MACROS from file {0}.h\n".format(inputfilename_macros)
     for m in found_macros:
-      print "processing macro ",m
+      logging.debug( "processing macro {0}".format(m))
       res += "  #ifdef {0}\n".format(m)
       res += "    ADD_{0}_MACRO({1});\n".format(args.val.libname.upper(), m)
       res += "  #endif\n"
@@ -43,7 +45,7 @@ def CreateHeaderFileMacros(inputfilename_macros,outputfile):
 
 
 def CreateMacros(inputfilename_macros,outputfile):
-  print "**** CreateMacros ****"
+  logging.debug( "**** CreateMacros ****")
   wrapped_macros=""
   wrapped_macros += CreateHeaderFileMacros(inputfilename_macros,outputfile)
 

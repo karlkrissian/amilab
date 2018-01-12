@@ -40,6 +40,24 @@ IF(AMI_ENABLE_WRAPPING)
   WRAP_INIT(" Algorithms")
 
 
+  SET(WRAPPING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+  #------------------------------------------------------------
+  # Read list of classes and functions to wrap
+  #------------------------------------------------------------
+
+  # Read list of classes to wrap
+  READ_CLASSES(
+    "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"
+  ) 
+  #FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt" classes_txt)
+  #STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
+  READ_FUNCTIONS("${CMAKE_CURRENT_SOURCE_DIR}/functions.txt")
+
+  SET(CASTXMLSTART_LIST ${classes_list} ${functions_list})
+  JOIN(CASTXMLSTART "," ${CASTXMLSTART_LIST})
+  MESSAGE("CASTXMLSTART = ${CASTXMLSTART}")
+
   #------------------------------------------------------------
   # Creating XML file
   #------------------------------------------------------------
@@ -140,16 +158,6 @@ IF(AMI_ENABLE_WRAPPING)
   # Generating the classes, functions, etc...  lists
   #------------------------------------------------------------
 
-  SET(WRAPPING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
-  # Read list of classes to wrap
-  READ_CLASSES(
-    "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"
-  ) 
-  #FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt" classes_txt)
-  #STRING(REGEX REPLACE "[\r\n]" ";" classes_list ${classes_txt} )
-  READ_FUNCTIONS("${CMAKE_CURRENT_SOURCE_DIR}/functions.txt")
-
   #------------------------------------------------------------
   # Generating and reading ancestors
   #------------------------------------------------------------
@@ -204,8 +212,15 @@ SET(WrapAlgorithms_SRCS
      ${WrapAlgorithms_SRCS}
      ${WrapAlgorithms_HDRS}
      classes.txt
+     functions.txt
      algorithms_includes.h
 )
+
+IF (AMI_USE_PRECOMP_HEADERS)
+  IF(MSVC) # precompiled header
+    SET( WrapAlgorithms_SRCS ${WrapAlgorithms_SRCS} wrap_algorithmsprec.cpp )
+  ENDIF(MSVC)
+ENDIF(AMI_USE_PRECOMP_HEADERS)
 
 #MESSAGE("WrapAlgorithms_SRCS =  ${WrapAlgorithms_SRCS}")
 
@@ -216,6 +231,12 @@ target_link_libraries( WrapAlgorithms
   WrapCommon
 )
 
+IF (AMI_USE_PRECOMP_HEADERS)
+  IF(MSVC) # try  precompiled header with visual
+    add_precompiled_header(WrapAlgorithms wrap_algorithmsprec.hpp 
+                            SOURCE_CXX wrap_algorithmsprec.cpp FORCEINCLUDE)
+  ENDIF(MSVC)
+ENDIF(AMI_USE_PRECOMP_HEADERS)
 
 add_dependencies ( WrapAlgorithms 
   WrapWxWidgets 

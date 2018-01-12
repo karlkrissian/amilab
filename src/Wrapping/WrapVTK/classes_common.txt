@@ -12,6 +12,7 @@ vtkAlgorithmOutput
 vtkAmiCommand
 vtkAnnotatedCubeActor
 vtkAppendPolyData
+vtkArrayIterator
 vtkArrowSource
 vtkAxesActor
 vtkAxis
@@ -31,9 +32,12 @@ vtkCollection
 vtkColorTransferFunction
 vtkCommand
 vtkConeSource
+vtkContextKeyEvent
+vtkContextMouseEvent
 vtkCursor3D
 # need to fix vtkWeakPointer<> standard deleter??
 #vtkWeakPointer<vtkContext2D>
+vtkContext2D
 vtkContextScene
 vtkContextView
 vtkCoordinate
@@ -41,7 +45,9 @@ vtkCornerAnnotation
 vtkCubeAxesActor
 vtkDataArray
 vtkDataObject
+vtkDataRepresentation
 vtkDataSet
+vtkDataSetAttributes
 vtkDICOMImageReader
 vtkDirectory
 vtkDoubleArray
@@ -54,6 +60,7 @@ vtkGPUInfo
 vtkGPUInfoList
 vtkGPUVolumeRayCastMapper
 vtkHomogeneousTransform
+vtkIdList
 vtkImageAlgorithm
 vtkImageData
 vtkImageFFT
@@ -126,6 +133,7 @@ vtkSliderRepresentation3D
 vtkSphere
 vtkSphereSource
 vtkStdString
+vtkStructuredPoints
 vtkTable
 vtkTextActor
 vtkTextMapper
@@ -140,6 +148,8 @@ vtkUnsignedCharArray
 vtkUnstructuredGridVolumeRayCastMapper
 vtkVariant
 vtkVersion
+vtkVector2f
+vtkVector2i
 vtkViewport
 vtkVolume
 vtkVolumeCollection

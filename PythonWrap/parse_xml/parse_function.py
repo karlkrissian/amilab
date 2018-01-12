@@ -130,7 +130,7 @@ class FindFunction():
     #print "funcname=",funcname," context=",context," contextname=",config.types[context].GetFullString()
     
     demangled=attrs.get('demangled',None)
-    if demangled==None and context!="_1":
+    if demangled==None and config.types[context].GetName()!="::":
         demangled = config.types[context].GetFullString()+"::"+funcname
     
     if (funcname != self.search_funcname):

@@ -12,6 +12,7 @@
 #include "vtkAmiCommand.h"
 #include <vtkAnnotatedCubeActor.h>
 #include <vtkAppendPolyData.h>
+#include <vtkArrayIterator.h>
 #include <vtkArrowSource.h>
 #include <vtkAxesActor.h>
 #include <vtkAxis.h>
@@ -33,11 +34,16 @@
 #include <vtkContext2D.h>
 #include <vtkContextScene.h>
 #include <vtkContextView.h>
+#include <vtkContextKeyEvent.h>
+#include <vtkContextMouseEvent.h>
 #include <vtkCoordinate.h>
 #include <vtkCoordinate.h>
 #include <vtkCornerAnnotation.h>
 #include <vtkCubeAxesActor.h>
 #include <vtkCursor3D.h>
+#include <vtkDataRepresentation.h>
+#include <vtkDataSet.h>
+#include <vtkDataSetAttributes.h>
 #include <vtkDICOMImageReader.h>
 #include <vtkDirectory.h>
 #include <vtkDoubleArray.h>
@@ -55,6 +61,7 @@
 #include <vtkGPUInfo.h>
 #include <vtkGPUInfoList.h>
 #include <vtkGPUVolumeRayCastMapper.h>
+#include <vtkIdList.h>
 #include <vtkImageData.h>
 #include <vtkImageFFT.h>
 #include <vtkImageFourierCenter.h>
@@ -106,6 +113,7 @@
 #include <vtkSliderRepresentation3D.h>
 #include <vtkSphere.h>
 #include <vtkSphereSource.h>
+#include <vtkStructuredPoints.h>
 #include <vtkTable.h>
 #include <vtkTextActor.h>
 #include <vtkTextMapper.h>
@@ -115,6 +123,7 @@
 #include <vtkTransform.h>
 #include <vtkIdTypeArray.h>
 #include <vtkUnstructuredGridVolumeRayCastMapper.h>
+#include <vtkVector.h>
 #include <vtkVersion.h>
 #include <vtkVolume.h>
 #include <vtkVolumeCollection.h>

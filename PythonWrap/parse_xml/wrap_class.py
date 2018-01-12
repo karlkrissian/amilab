@@ -37,8 +37,10 @@ import parse_function
 
 import generate_html #HTML generate file functions
 
+import logging
+
 if args.val.classes_includes!='':
-  #print "-------- args.val.classes_includes -------------"
+  print "-------- args.val.classes_includes -------------"
   import imp
   classes_inc = imp.load_source("classes_inc_module",args.val.classes_includes)
 
@@ -51,7 +53,7 @@ def IsTemplate(classname):
   return re.match(r"(.*)<(.*)>",classname)!=None
 
 def IsWithinContext(classname):
-  return config.types[config.classes[classname]].GetContext() != "_1"
+  return config.types[config.types[config.classes[classname]].GetContext()].GetName() != "::"
 
 
 def ClassConstructor(classname):
@@ -68,28 +70,38 @@ def ClassConstructor(classname):
     return no_ns.group(2)
 
 def FindIncludeFile(classname,fileid):
+  if classname.startswith("std::ostream") \
+          or classname.startswith("std::basic_ostream"):
+    #print "FindIncludeFile({0},{1}) include ostream".format(classname,fileid)
+    return '#include <ostream>\n'
+
   #print "FindIncludeFile classname=",classname, " fileid=",fileid
   try:
-    #print "classname=",classname, " keys:", classes_inc.classes_includes.keys()
-    if classname in classes_inc.classes_includes:
-      #print "*"
-      return '#include "{0}"'.format(classes_inc.classes_includes[classname])
-    else:
-      # search pattern that fit classname
-      for pattern in classes_inc.classes_includes.keys():
-        if classname.find(pattern)>-1:
-          #print "found pattern for include filename"
-          return '#include "{0}"'.format(classes_inc.classes_includes[pattern])
+    if args.val.classes_includes!='':
+      #print "classname=",classname, " keys:", classes_inc.classes_includes.keys()
+      if classname in classes_inc.classes_includes:
+        print "*"
+        return '#include "{0}"'.format(classes_inc.classes_includes[classname])
+      else:
+        # search pattern that fit classname
+        for pattern in classes_inc.classes_includes.keys():
+          if classname.find(pattern)>-1:
+            #print "found pattern for include filename"
+            return '#include "{0}"'.format(classes_inc.classes_includes[pattern])
+    #else:
+      #print "no classes_includes argument given"
   except:
+    print "Exception catched in FindIncludeFile()"
     pass
   if config.libmodule != None:
+    #print "libmodule=",config.libmodule
     if fileid in config.files:
 		include_file = config.libmodule.get_include_file(classname, \
 						config.files[fileid])
 		return '{0}'.format(include_file)
     else:
       include_file=""
-      print "Include file for {0} not found".format(classname)
+      logging.error( "Include file for {0} not found *".format(classname))
       return "";
   else:
     if fileid in config.files:
@@ -107,7 +119,7 @@ def FindIncludeFile(classname,fileid):
       include_file = incfile
     else:
       include_file=""
-      print "Include file for {0} not found".format(classname)
+      logging.warning("Include file for {0} not found **".format(classname))
       return "";
     #'#include "{0}"'.format(incfile)
     #include_file
@@ -214,15 +226,15 @@ def MissingTypes(classname,method,check_includes=False):
       typename=typeid_type.GetDemangled()
       typefullname=typeid_type.GetFullString()
       if typefullname==None:
-        print "a.typeid = ", a.typeid
-        print "MissingTypes: typefullname is None"
+        logging.warning( "a.typeid = {0}".format(a.typeid))
+        logging.warning("MissingTypes: typefullname is None")
         missing_types.append(a.typeid)
       else:
         #
         ispointer= typeid_type.GetRealType()=="PointerType"
         isconstpointer = typefullname.endswith("const *")
         if typename=='void' and ispointer:
-          print "\t\tneed to deal with 'void pointer' here"
+          logging.debug( "\t\tneed to deal with 'void pointer' here")
         else:
           #
           # discard triple pointers or double pointers with const (TODO: improve this part)
@@ -283,9 +295,9 @@ class MethodInfo:
     self.virtual=False
 
   def Print(self):
-    print " name:",self.name,
-    print " usedname:",self.usedname,
-    print " returntype:",self.returntype
+    logging.debug( " name: {0} ".format(self.name))
+    logging.debug(" usedname: {0} ".format(self.usedname))
+    logging.debug(" returntype: {0} ".format(self.returntype))
 
   def GetDescription(self,classname,constructor=False):
     res=''
@@ -362,7 +374,6 @@ class MethodInfo:
 
 
 def CheckBlackList(mname,demangled):
-  #print "check for {0}, {1}, in blacklist".format(mname,demangled)
   try:
     if mname in mem_blacklist.members_blacklist:
       utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format(mname))
@@ -375,6 +386,7 @@ def CheckBlackList(mname,demangled):
         utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format( demangled))
         return True
   except:
+    print "Exception catched during CheckBlackList ", mname
     pass
   if mname in config.members_blacklist:
     utils.WarningMessage("Do not implement member {0}, which is in the blacklist !!!".format(mname))
@@ -474,7 +486,7 @@ class ParsePublicMembers:
         method.usedname=config.available_operators[mname+"(int)"]
       else:
         method.usedname=config.available_operators[mname]
-      print "{0}: method.usedname = {1}".format(method.demangled,method.usedname)
+      logging.info( "CheckOperatorMethodName() {0}: method.usedname = {1}".format(method.demangled,method.usedname))
     elif mname=='*' and len(method.args)==0:
       # indirection operator
       method.usedname=config.available_operators[mname+'()']
@@ -529,9 +541,9 @@ class ParsePublicMembers:
         num=methodlist.count(opname)
         if num>1:
           self.method.usedname = self.method.usedname+"{0}".format(num)
-    
-        print "*** usedname = {0}".format(method.usedname)
-        print "*** CheckConverterName --> {0}\n".format(self.method.usedname)
+
+        logging.warning( "*** usedname = {0}".format(method.usedname))
+        logging.warning( "*** CheckConverterName --> {0}\n".format(self.method.usedname))
     except:
       print " CheckConvertedName failed with exception ", method.name, " returned type ", method.returntype
       self.method.usedname = "convert"+method.returntype
@@ -543,7 +555,7 @@ class ParsePublicMembers:
    #print "default for {0}".format(default)
     if default in config.enumvalues:
       typeid = config.enumvalues[default]
-      if typeid in config.types and typeid!="_1":
+      if typeid in config.types and config.types[typeid].GetName()!="::":
         #print "replacing {0} by {1}::{0} ".format(default,config.types[typeid].GetString())
         return "{1}::{0}".format(default,config.types[typeid].GetString())
     return default
@@ -602,7 +614,7 @@ class ParsePublicMembers:
     context = attrs.get('context', None)
     
     # don't process global context
-    if context=='_1': return False
+    if context in config.types and config.types[context].GetName()=='::': return False
     
     access  = attrs.get('access',  None)
     if access!="public": return False
@@ -654,7 +666,7 @@ class ParsePublicMembers:
       self.enum.name  =ename
       self.public_members.Enumerations.append(self.enum)
       self.inenum = True
-      print "found enumeration ", ename, " in ", context_type.GetDemangled()
+      logging.debug("found enumeration {0} in {1}".format(ename, context_type.GetDemangled()))
       return False # allow further processing of the enumeration
       
 
@@ -684,7 +696,7 @@ class ParsePublicMembers:
     #print "type:",name," method name = ",mname, " id:",attrs.get('id',None)
     demangled=attrs.get('demangled',None)
     context = attrs.get('context',None)
-    if demangled==None and context!="_1" and mname!=None:
+    if demangled==None and config.types[context].GetName()!="::" and mname!=None:
         demangled = config.types[context].GetFullString()+"::"+mname
     static=attrs.get('static',"0")
     const=attrs.get('const',"0")
@@ -929,7 +941,7 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
         methodcall = '(*{1}).operator {0}()'.format(\
                       config.types[method.returntype].GetFullString(),\
                       obj_ptr)
-        print "method call in converter ", methodcall
+        logging.debug( "method call in converter {0}".format( methodcall))
       else:
         if method.static=="1":
           methodcall = "{0}::{1}".format(classname,method.name)
@@ -1276,7 +1288,7 @@ def WrapClass(classname,include_file,xmltree):
   if (args.val.profile):
     t0 = time.clock()
     #print "\n**************"
-    print "\tWrapping: {0}\t".format(classname),
+    print "\t ***** Wrapping: {0}\t".format(classname)
     #print "             **************"
   parser = make_parser()
 
@@ -1297,10 +1309,10 @@ def WrapClass(classname,include_file,xmltree):
     #print "args.val.classes is ",config.parsed_classes
 
     if classname not in config.parsed_classes:
-      print "*** Find Public Members"
+      logging.debug( "*** Find Public Members")
       fpm = FindPublicMembers([classname])
       fpm.parse(xmltree)
-      print "*** Find Public Members end"
+      logging.debug( "*** Find Public Members end")
     #else:
       #print "Is part of args.val.classes"
     
@@ -1362,7 +1374,7 @@ def WrapClass(classname,include_file,xmltree):
       if m.name == "=":
         if len(m.args)==1:
           typename = config.types[m.args[0].typeid].GetFullString()
-          print " operator=({0}) found ".format(typename)
+          #print " operator=({0}) found ".format(typename)
           if typename=="{0} const &".format(classname):
             utils.WarningMessage( "Copy assign operator found: {0}".format(m.usedname))
             dh.has_copyassign = True
@@ -1531,7 +1543,7 @@ def WrapClass(classname,include_file,xmltree):
         else:
           if wrapped_constructors==0:
             wrapped_constructor_name = m.usedname
-            print "wrapped_constructor_name = {0}".format(wrapped_constructor_name)
+            logging.debug("wrapped_constructor_name = {0}".format(wrapped_constructor_name))
           wrapped_constructors = wrapped_constructors+1
         pos=pos+1
       constructors_decl+='\n'
@@ -1581,7 +1593,7 @@ def WrapClass(classname,include_file,xmltree):
       if missingtypes!="":
         class_decl+= "/* The following types are missing: "+missingtypes+"\n"
         fm.Methods[pos].missingtypes=True
-        print "missing types:",missingtypes, " for method ", m.usedname
+        logging.warning( "missing types: {0} for method {1}".format(missingtypes, m.usedname))
       class_decl+=indent+method_macro+\
                   '('+m.usedname+',"{0}  ({1})")\n'.format(\
             m.GetDescription(classname,False),\
@@ -1626,9 +1638,9 @@ def WrapClass(classname,include_file,xmltree):
     if len(fm.Converters)>0:
       class_decl+=indent+"// Converters:\n"
     pos = 0
-    print fm.Converters
+    #print fm.Converters
     for m in fm.Converters:
-      print "m=",m
+      logging.debug( "Converter m={0}".format(m))
       m.Print()
       missingtypes = MissingTypes(classname,m)
       m.iswrapped=(missingtypes=="")
@@ -1905,7 +1917,7 @@ def WrapClass(classname,include_file,xmltree):
     else:
       export_macro = ''
         
-    print "header_filename = {0}".format(header_filename)
+    logging.info("header_filename = {0}".format(header_filename))
     for line in fileinput.FileInput(header_filename,inplace=1):
       line = line.replace("${INCLUDE_BASES}",     include_bases)
       line = line.replace("${EXPORT_MACRO}",      export_macro)
@@ -2051,7 +2063,7 @@ def WrapClass(classname,include_file,xmltree):
     # in place replace TEMPLATE by classname
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
-    print "impl_filename = {0}".format(impl_filename)
+    logging.debug("impl_filename = {0}".format(impl_filename))
     for line in fileinput.FileInput(impl_filename,inplace=1):
       line = line.replace("${INCLUDES}",                config.CreateIncludes())
       line = line.replace("${IMPLEMENT_TYPE}",          implement_type)

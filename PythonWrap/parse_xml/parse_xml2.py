@@ -38,7 +38,7 @@ import wrap_function
 
 import generate_html #HTML generate file functions
 import pickle
-  
+import logging
   
 if args.val.enum_filter!='':
   #print "-------- args.val.classes_includes -------------"
@@ -199,7 +199,7 @@ def process_ancestors():
 
       context = f_type.GetContext()
       ok = False
-      if context == "_1":
+      if config.types[context].GetName() == "::":
         typedef_name = name
         typedefs_global[name] = f
         ok = True
@@ -517,6 +517,17 @@ if __name__ == '__main__':
     ft.parse(xmltree)
     print "*** Find types and variables end"
 
+    print "*** Update classes dict and register enums"
+    for class_id in config.types:
+      class_arg = config.types[class_id]
+      if (class_arg.GetType() in config.class_types) or (class_arg.GetType()=='Namespace'):
+        demangled_name = class_arg.GetDemangled()
+        #print "adding class in list:  '{0}' with id {1}".format(demangled_name, class_id)
+        config.classes[demangled_name] = class_id
+      if class_arg.GetType()=='Enumeration':
+        #print "Registering Enumeration {0}".format(class_arg.GetDemangled())
+        class_arg.Register()
+
     if (args.val.profile):
       t1 = time.clock()
       print t1 - t0, "seconds process time"
@@ -614,7 +625,7 @@ if __name__ == '__main__':
     while (len(config.needed_classes)>0) and (n<nmax):
       #print "\n\n needed classes:", config.needed_classes, "\n\n"
       cl = config.needed_classes.pop()
-      print "Class: {0} ".format(cl)
+      logging.debug( "Class: {0} ".format(cl))
       config.include_list = []
       config.declare_list = []
       wrap_class.HTMLInitialization(  args.val.generate_html, \
@@ -805,11 +816,11 @@ if __name__ == '__main__':
           if config.types[contextid].GetType()=="Namespace":
             classname = config.types[maintypeid].GetFullString()
             if classname in lib_classes:
-              print "Adding typedef {0} --> {1} ( {2} )".format(\
+              logging.debug("Adding typedef {0} --> {1} ( {2} )".format(\
                 typedefname,\
                 classname,\
                 config.types[td_id].GetString(),\
-                )
+                ))
               # Get the demangled class name
               demangled_name = config.types[maintypeid].GetDemangled()
               f.write("  // adding typedef {0}\n".format(typedefname))

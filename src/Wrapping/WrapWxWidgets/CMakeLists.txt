@@ -28,6 +28,29 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   SET(LIBNAME "wx")
   WRAP_INIT(" WxWidgets ${AMI_WXWIDGETS_VERSION}")
 
+  SET(WRAPPING_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION})
+
+  #------------------------------------------------------------
+  # Read list of classes and functions to wrap
+  #------------------------------------------------------------
+
+  # Read list of classes to wrap
+  READ_CLASSES2(
+    "${CMAKE_CURRENT_SOURCE_DIR}/classes_common.txt"
+    "${WRAPPING_DIR}/classes.txt"
+  ) 
+
+  # Read list of functions to wrap
+  READ_FUNCTIONS("${WRAPPING_DIR}/functions.txt")
+
+  # Read list of method pointers to wrap
+  FILE(READ "${WRAPPING_DIR}/methodpointers.txt" methodpointers_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
+
+  SET(CASTXMLSTART_LIST ${classes_list} ${functions_list} ${methodpointers_list})
+  JOIN_CASTXML(CASTXMLSTART "," ${CASTXMLSTART_LIST})
+  MESSAGE("CASTXMLSTART = ${CASTXMLSTART}")
+
   #------------------------------------------------------------
   # Creating XML file
   #------------------------------------------------------------
@@ -68,21 +91,6 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_WXWIDGETS)
   #------------------------------------------------------------
   # Generating the classes, functions, etc...  lists
   #------------------------------------------------------------
-
-  SET(WRAPPING_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_WXWIDGETS_VERSION})
-
-  # Read list of classes to wrap
-  READ_CLASSES2(
-    "${CMAKE_CURRENT_SOURCE_DIR}/classes_common.txt"
-    "${WRAPPING_DIR}/classes.txt"
-  ) 
-  #READ_CLASSES(  "${WRAPPING_DIR}/classes.txt")
-  # Read list of functions to wrap
-  READ_FUNCTIONS("${WRAPPING_DIR}/functions.txt")
-
-  # Read list of method pointers to wrap
-  FILE(READ "${WRAPPING_DIR}/methodpointers.txt" methodpointers_txt)
-  STRING(REGEX REPLACE "[\r\n]" ";" methodpointers_list ${methodpointers_txt} )
 
   #------------------------------------------------------------
   # Generating and reading ancestors
@@ -166,6 +174,13 @@ SET(WrapWxWidgets_HDRS
   wxAmiEventHandler.h
   ${AMI_WXWIDGETS_VERSION}/wx_includes.h
   ${wx_HDRS}
+  classes_common.txt
+  members_blacklist.py
+  wrap_wxprec.hpp
+  wx_includes_common.h
+  ${AMI_WXWIDGETS_VERSION}/classes.txt
+  ${AMI_WXWIDGETS_VERSION}/functions.txt
+  ${AMI_WXWIDGETS_VERSION}/methodpointers.txt
 )
 
 
@@ -175,11 +190,8 @@ SET(WrapWxWidgets_SRCS
 )
 
 IF (AMI_USE_PRECOMP_HEADERS)
-  IF(MSVC)
-    # precompiled header
-    SET(WrapWxWidgets_SRCS
-         ${WrapWxWidgets_SRCS} wrap_wxprec.cpp
-    )
+  IF(MSVC) # precompiled header
+    SET( WrapWxWidgets_SRCS ${WrapWxWidgets_SRCS} wrap_wxprec.cpp )
   ENDIF(MSVC)
 ENDIF(AMI_USE_PRECOMP_HEADERS)
 
@@ -209,6 +221,7 @@ ELSE(WrapWxWidgets_SHARED)
   my_add_library ( WrapWxWidgets)
 ENDIF(WrapWxWidgets_SHARED)
 
+
 SET(amilab_ownlibs
   LanguageBase
   CommonBase
@@ -218,7 +231,7 @@ IF (AMI_USE_PRECOMP_HEADERS)
   # try  precompiled header with visual
   IF(MSVC)
     add_precompiled_header(WrapWxWidgets wrap_wxprec.hpp SOURCE_CXX wrap_wxprec.cpp FORCEINCLUDE)
-  ENDIF(MSVC )
+  ENDIF(MSVC)
 ENDIF(AMI_USE_PRECOMP_HEADERS)
 
 

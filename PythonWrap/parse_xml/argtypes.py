@@ -6,6 +6,7 @@ import config
 import utils
 import typesubst
 import wrap_class
+import logging
 
 #------------------------------
 class ArgTypeBase:
@@ -97,7 +98,7 @@ class ClassInfo(ArgTypeBase):
   
   def GetString(self):
     if self._context != None:
-      if self._context=="_1":
+      if self._context in config.types and config.types[self._context].GetString()== "::":
         return self.GetName()
       else:
         try:
@@ -119,7 +120,7 @@ class NamespaceInfo(ArgTypeBase):
     self._type="Namespace"
   
   def GetString(self):
-    if self._context != None and self._context!="_1":
+    if self._context != None and self._context in config.types and config.types[self._context].GetString()!="::":
       try:
         return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
       except:
@@ -157,7 +158,7 @@ class TypedefInfo(ArgTypeBase):
 
   def GetString(self):
     # deal with typedef inside a class ...
-    if self._context != None and self._context!="_1":
+    if self._context != None and self._context in config.types and config.types[self._context].GetString()!="::":
       try:
         return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
       except:
@@ -239,9 +240,11 @@ class EnumerationInfo(ArgTypeBase):
   def SetName(self,n):
     self._name=n
     # register global enums or enums that belong to available types
-    if (self._context=="_1") or (self._context in config.types):
+    #if (self._context=="_1") or (self._context in config.types):
+    if self._context in config.types:
       self.Register()
-      
+    else:
+      logging.warning("Enum not registered because of missing context {0}".format(self.GetName()))
     
   def Register(self):
     utils.WarningMessage("Registering enum type {0} with 'int' substitution".format(self.GetString()))
@@ -249,7 +252,7 @@ class EnumerationInfo(ArgTypeBase):
 
   def GetString(self):
     if self._context != None:
-      if self._context in config.types and self._context!="_1":
+      if self._context in config.types and config.types[self._context].GetString() != "::":
         return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
       else:
         return self.GetName()

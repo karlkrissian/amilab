@@ -72,21 +72,6 @@ template<>  AMI_DLLEXPORT bool Variable<WrapClassMember>::Equal( BasicVariable::
 //------- Variable<WrapClassMember>
 //------------------------------------------------------
 
-/// Cast to a type based on its name as a string
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::TryCast(const std::string& type_string) const
-{
-  return BasicVariable::ptr();
-}
 
 
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::operator =(const BasicVariable::ptr& b)
-{
-  return BasicVariable::ptr();
-}
 
-
-// TODO: put this code within a macro???
-template<> AMI_DLLEXPORT BasicVariable::ptr Variable<WrapClassMember>::left_assign(const BasicVariable::ptr& b)
-{
-  return BasicVariable::ptr();
-}

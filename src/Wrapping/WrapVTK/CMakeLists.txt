@@ -38,6 +38,21 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   WRAP_INIT(" VTK ${AMI_VTK_VERSION}")
 
   #------------------------------------------------------------
+  # Read list of classes and functions to wrap
+  #------------------------------------------------------------
+
+  # Read list of classes to wrap
+  READ_CLASSES2(
+    "${CMAKE_CURRENT_SOURCE_DIR}/classes_common.txt"
+    "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt"
+  ) 
+  #MESSAGE("classes.txt : ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt")
+
+  SET(CASTXMLSTART_LIST ${classes_list} )
+  JOIN(CASTXMLSTART "," ${CASTXMLSTART_LIST})
+  MESSAGE("CASTXMLSTART = ${CASTXMLSTART}")
+
+  #------------------------------------------------------------
   # Creating XML file
   #------------------------------------------------------------
 
@@ -64,13 +79,6 @@ IF(AMI_ENABLE_WRAPPING AND AMI_WRAP_VTK)
   #------------------------------------------------------------
   # Generating the classes, functions, etc...  lists
   #------------------------------------------------------------
-
-  # Read list of classes to wrap
-  READ_CLASSES2(
-    "${CMAKE_CURRENT_SOURCE_DIR}/classes_common.txt"
-    "${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt"
-  ) 
-  #MESSAGE("classes.txt : ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt")
 
   SET(WRAPPING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -142,6 +150,12 @@ SET(  WrapVTK_SRCS
 SET(WrapVTK_HDRS
 	../include/wrapVTK.h
   vtkAmiCommand.h
+  wrap_vtkprec.hpp
+  classes_common.txt
+  vtk_includes_common.h
+  members_blacklist.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/classes.txt
+  ${CMAKE_CURRENT_SOURCE_DIR}/${AMI_VTK_VERSION}/vtk_includes.h
 )
 
 SET(WrapVTK_SRCS

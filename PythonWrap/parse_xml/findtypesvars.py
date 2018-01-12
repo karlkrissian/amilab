@@ -10,6 +10,7 @@ import re
 import args
 import utils
 import wrap_class
+import logging
 
 typelist=(
     'Class',
@@ -97,6 +98,7 @@ class FindTypesAndVariables():
     context = attrs.get('context', None)
     if context != None:
       self.argtype.SetContext(context)
+      #print "context exists"
     
     demangled=attrs.get('demangled',None)
     #print "demangled = ",demangled
@@ -109,24 +111,30 @@ class FindTypesAndVariables():
             try:
                 context_type = config.types[context]
                 if context_type.GetType() in [ "Namespace", "Class", "Struct" ]:
-                    #print config.types[context].GetDemangled()
+                    #print "demangled context is ", config.types[context].GetDemangled()
                     if context_type.GetDemangled()!="::":
                         demangled = context_type.GetDemangled() + "::"+demangled
+                # print " setting demangled to ",demangled
+                self.argtype.SetDemangled(demangled)
             except:
-                pass
-    #print " setting demangled to ",demangled
-    self.argtype.SetDemangled(demangled)
-    
+                demangled = None
+                if context in config.types:
+                  print "exception catched trying to create demangled name"
+
     #print classname
     #if (classname == self.search_classname)or(demangled==self.search_classname):
     #self.found=True
     self.inclass=True
     
     config.types[classid] = self.argtype
+    #print "adding id {0} name {1} tag {2}".format(classid,classname,tag)
+
     # Find id from the class name
     if classname!=demangled and demangled!=None and (demangled.startswith("MT")or demangled.startswith("amilab")):
-      print "classname != demangled : {0} {1}, using the demangled name".format(classname,demangled)
-    config.classes[demangled]=classid
+      logging.info( "classname != demangled : {0} {1}, using the demangled name".format(classname,demangled))
+    if demangled!=None:
+      #print "adding class '{0}' with id {1} and name {2}".format(demangled,classid,classname)
+      config.classes[demangled]=classid
     
     #print "'{0}' '{1}' {2} id:{3}".format(name, classname,demangled,classid)
     found = classname in config.classes.keys()
@@ -239,7 +247,7 @@ class FindTypesAndVariables():
       #print "Added typedef {0} {1} {2}".format(name,id,self.argtype.GetRealType())
       if name_attribute=="string":
         print "found string typedef"
-        print config.types[typeid].demangled
+        #print config.types[typeid].demangled
         # change type name and demanged?
 
     context = attrs.get('context', None)
@@ -276,7 +284,7 @@ class FindTypesAndVariables():
 class FindPublicMembers():
   #---------------------------------------------
   def __init__(self,class_list):
-    print "FindPublicMembers.__init__"
+    logging.debug( "FindPublicMembers.__init__")
     self.parse_public_members = wrap_class.ParsePublicMembers(class_list)
     self.found=False
 
@@ -285,7 +293,7 @@ class FindPublicMembers():
     self.tagfilter = tagfilter
     # go through elements
     root = xmltree.getroot()
-    print " nb of elemnts = ", len(list(root))
+    logging.debug( " nb of elemnts = {0}".format( len(list(root))))
     self.parseElt(root, 0)
 
   #---------------------------------------------
@@ -306,7 +314,7 @@ class FindPublicMembers():
           if self.tagfilter==None or child.tag in self.tagfilter:
             filter_count = filter_count + 1
           if percent>prev_percent+5:
-            print "done {0} % count {1}".format(percent,filter_count)
+            logging.info("done {0} % count {1}".format(percent,filter_count))
             filter_count = 0
           else:
               percent = prev_percent

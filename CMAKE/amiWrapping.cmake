@@ -2,6 +2,35 @@
 INCLUDE(${AMILab_SOURCE_DIR}/../CMAKE/CHECK_WRAPPED_FILES.cmake)
 
 #-------------------------------------------------------------------------------
+# Convenient function to join list of elements
+#
+FUNCTION(JOIN OUTPUT GLUE)
+    SET(_TMP_RESULT "")
+    SET(_GLUE "") # effective glue is empty at the beginning
+    FOREACH(arg ${ARGN})
+        SET(_TMP_RESULT "${_TMP_RESULT}${_GLUE}${arg}")
+        SET(_GLUE "${GLUE}")
+    ENDFOREACH()
+    SET(${OUTPUT} "${_TMP_RESULT}" PARENT_SCOPE)
+ENDFUNCTION()
+
+#-------------------------------------------------------------------------------
+# Convenient function to join list of elements
+# convert templates with the name of class only
+#
+FUNCTION(JOIN_CASTXML OUTPUT GLUE)
+    SET(_TMP_RESULT "")
+    SET(_GLUE "") # effective glue is empty at the beginning
+    FOREACH(arg ${ARGN})
+        STRING(REGEX REPLACE "<" ";" arg_splitted ${arg} )
+        LIST(GET arg_splitted 0 used_arg)
+        SET(_TMP_RESULT "${_TMP_RESULT}${_GLUE}${used_arg}")
+        SET(_GLUE "${GLUE}")
+    ENDFOREACH()
+    SET(${OUTPUT} "${_TMP_RESULT}" PARENT_SCOPE)
+ENDFUNCTION()
+
+#-------------------------------------------------------------------------------
 #
 # needs 
 #  GENERATED_DIR
@@ -78,7 +107,11 @@ MACRO( RUN_GCCXML XML_INPUT XML_OUTPUT)
   IF(GCCXML_INCLUDEFILES)
     SET(GCCXML_CMD ${GCCXML_CMD} "${GCCXML_INCLUDEFILES}")
   ENDIF(GCCXML_INCLUDEFILES)
-  
+
+  IF(CASTXMLSTART)
+    SET(GCCXML_CMD ${GCCXML_CMD} "--castxml-start" "${CASTXMLSTART}")
+  ENDIF(CASTXMLSTART)
+
   SET(GCCXML_CMD ${GCCXML_CMD} ${XML_INPUT})
   
   IF(WIN32)
@@ -288,7 +321,7 @@ MACRO( CREATE_ANCESTORS_DEPS )
       STRING(SUBSTRING ${dep} 0 ${LEN} CLASSNAME)
       MATH(EXPR BEG "${SPLIT_POS}+2")
       STRING(SUBSTRING ${dep} ${BEG} -1 DEPFILE)
-      MESSAGE("${CLASSNAME} --> ${DEPFILE}")
+      #MESSAGE("${CLASSNAME} --> ${DEPFILE}")
       # create the simulated map structure
       ClassUsedName( CLASSNAME m_class )
       SET(CLASSDEP_${m_class} ${DEPFILE})
@@ -398,7 +431,11 @@ MACRO( WRAP_CODE )
               ${GENERATED_DIR}/available_functions.txt)
 
 
-  SET(  WRAP_CMD ${PYTHON_EXECUTABLE} "-m" cProfile)
+  SET(  WRAP_CMD ${PYTHON_EXECUTABLE} )
+
+  # enable for profiling of python execution
+  #SET(  WRAP_CMD ${WRAP_CMD} "-m" cProfile)
+
   SET(  WRAP_CMD ${WRAP_CMD} ${AMI_WRAPPER})
   SET(  WRAP_CMD ${WRAP_CMD} ${XML_OUTPUT})
   SET(  WRAP_CMD ${WRAP_CMD} "--libname" "${LIBNAME}")
@@ -465,17 +502,19 @@ MACRO( WRAP_CODE )
 
   SET(  WRAP_CMD ${WRAP_CMD} "-q")
 
+  MESSAGE("*******")
+  MESSAGE("******* WRAPPING_DIR is ${WRAPPING_DIR}")
+  MESSAGE("*******")
+
   IF(EXISTS ${WRAPPING_DIR}/classes_includes.py)
-    SET(WRAP_CMD ${WRAP_CMD} "--classes_includes" 
-          ${WRAPPING_DIR}/classes_includes.py)
+    SET(WRAP_CMD ${WRAP_CMD} "--classes_includes"  ${WRAPPING_DIR}/classes_includes.py)
   ENDIF(EXISTS ${WRAPPING_DIR}/classes_includes.py)
   IF(EXISTS ${WRAPPING_DIR}/members_blacklist.py)
-    SET(WRAP_CMD ${WRAP_CMD} "--members_blacklist" 
-          ${WRAPPING_DIR}/members_blacklist.py)
+      MESSAGE("******* found members_blacklist.py")
+    SET(WRAP_CMD ${WRAP_CMD} "--members_blacklist"  ${WRAPPING_DIR}/members_blacklist.py)
   ENDIF(EXISTS ${WRAPPING_DIR}/members_blacklist.py)
   IF(EXISTS ${WRAPPING_DIR}/enum_filter.py)
-    SET(WRAP_CMD ${WRAP_CMD} "--enum_filter" 
-          ${WRAPPING_DIR}/enum_filter.py)
+    SET(WRAP_CMD ${WRAP_CMD} "--enum_filter"  ${WRAPPING_DIR}/enum_filter.py)
   ENDIF(EXISTS ${WRAPPING_DIR}/enum_filter.py)
 
 
