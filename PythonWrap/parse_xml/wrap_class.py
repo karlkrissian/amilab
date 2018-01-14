@@ -144,12 +144,13 @@ def FormatArgDefault(argdef):
   return argdef.replace('"',"'").replace('\\000','')
 
 
-def WxHelpLink(classname,method):
+def HelpLink(classname, method):
   if method.name in config.available_operators:
     mname=config.available_operators[method.name]
   else:
     mname=method.name
-  return "http://docs.wxwidgets.org/stable/wx_{0}.html#{1}".format(classname.lower(),mname.lower())
+  return ""
+  #"http://docs.wxwidgets.org/stable/wx_{0}.html#{1}".format(classname.lower(),mname.lower())
 
 
 #------------------------------
@@ -1565,7 +1566,7 @@ def WrapClass(classname,include_file,xmltree):
       staticmethods_decl+=indent+'ADD_CLASS_STATICMETHOD('+\
               m.usedname+',"{0} ({1}).");\n'.format(\
                               m.GetDescription(classname,False),\
-                              WxHelpLink(classname,m))
+                              HelpLink(classname, m))
       if missingtypes!="":
         staticmethods_decl +=  indent+"*/\n"
       pos=pos+1
@@ -1597,7 +1598,7 @@ def WrapClass(classname,include_file,xmltree):
       class_decl+=indent+method_macro+\
                   '('+m.usedname+',"{0}  ({1})")\n'.format(\
             m.GetDescription(classname,False),\
-            WxHelpLink(classname,m))
+            HelpLink(classname, m))
       if missingtypes!="":
         class_decl += "*/\n"
       generate_html.obj.AddClassMethod(m)
@@ -1622,13 +1623,13 @@ def WrapClass(classname,include_file,xmltree):
         class_decl+=indent+'// {0}('.format(method_macro)+\
             m.usedname+',"{0} ({1})")\n'.format(\
             m.GetDescription(classname,False),\
-            WxHelpLink(classname,m))
+            HelpLink(classname, m))
         m.iswrapped=False
       else:
         class_decl+=indent+'{0}('.format(method_macro)+m.usedname+',\
             "{0} ({1})")\n'.format(\
             m.GetDescription(classname,False),\
-            WxHelpLink(classname,m))
+            HelpLink(classname, m))
       if missingtypes!="":
         class_decl += "*/\n"
       pos = pos + 1
@@ -1650,7 +1651,7 @@ def WrapClass(classname,include_file,xmltree):
       class_decl+=indent+'{0}('.format(method_macro)+m.usedname+',\
           "{0} ({1})")\n'.format(\
           m.GetDescription(classname,False),\
-          WxHelpLink(classname,m))
+          HelpLink(classname, m))
       if missingtypes!="":
         class_decl += "*/\n"
       pos = pos + 1
@@ -1983,7 +1984,7 @@ def WrapClass(classname,include_file,xmltree):
                                 config.ClassUsedName(classname)+','+\
                                 m.usedname+',"{0} ({1}).");\n'.format(\
                                 m.GetDescription(classname,True),\
-                                WxHelpLink(classname,m))
+                                HelpLink(classname, m))
         if m.duplicated:
           impl += ImplementDuplicatedMethodWrap(classname,m,methodcount,fm.Constructors,True)
         else:

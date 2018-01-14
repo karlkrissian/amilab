@@ -55,6 +55,15 @@
   class wxEventTypeTag<wxHtmlCellEvent> et13(id);
   class wxEventTypeTag<wxHtmlLinkEvent> et14(id);
   // TODO list all the possible types of events here ...
+  namespace wrap_wx {
+    enum
+    {
+      wxPATH_NO_SEPARATOR = 0x0000,  // for symmetry with wxPATH_GET_SEPARATOR
+      wxPATH_GET_VOLUME = 0x0001,  // include the volume if applicable
+      wxPATH_GET_SEPARATOR = 0x0002   // terminate the path with the separator
+    };
+
+  };
 #endif // __GCCXML__
 
 

@@ -230,6 +230,18 @@ class StructInfo(ArgTypeBase):
     self.abstract='0'
     self.public_members=wrap_class.PublicMembers()
 
+  def GetString(self):
+    if self._context != None:
+      try:
+        if config.types[self._context].GetString() != "::":
+          return "{0}::{1}".format(config.types[self._context].GetString(),self.GetName())
+        else:
+          return self.GetName()
+      except:
+        return self.GetName()
+    else:
+      return self.GetName()
+
 #------------------------------
 class EnumerationInfo(ArgTypeBase):
   def __init__(self):

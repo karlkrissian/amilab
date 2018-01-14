@@ -229,7 +229,7 @@ def process_ancestors():
   # print "demanged_typefs:", fpm.parse_public_members.demangled_typedefs
   # check for possible typedefs
   for a in ancestors:
-    # print "Checking '{0}'".format(a)
+    print "Checking '{0}'".format(a)
     if a in fpm.parse_public_members.demangled_typedefs.keys():
       # print "Processing {0}".format(a)
       ancestors_toremove.append(a)
@@ -243,7 +243,6 @@ def process_ancestors():
         print config.types[refid], " ", refid
         ancestors_toadd.append(config.types[refid].GetFullString())
     if a in typedefs_global:
-      # print "Processing {0}".format(a)
       ancestors_toremove.append(a)
       # replace it with its referenced type
       # find referenced type
@@ -255,7 +254,6 @@ def process_ancestors():
         print config.types[refid], " ", refid
         ancestors_toadd.append(config.types[refid].GetFullString())
     if a in typedefs_namespace:
-      # print "Processing {0}".format(a)
       ancestors_toremove.append(a)
       # replace it with its referenced type
       # find referenced type
@@ -272,6 +270,8 @@ def process_ancestors():
   # remove duplicates
   ancestors = list(set(ancestors + ancestors_toadd))
 
+  print "ancestors:",ancestors
+  print "expand ancestor to classes within templates"
   # 3. expand ancestor to classes within templates
   ancestors_templates = ancestors[:]
   for b in ancestors:
@@ -281,7 +281,7 @@ def process_ancestors():
       config.templatetypes(b, ttypes)
       # print ttypes
       for nt in ttypes:
-        # print "  Searching for '{0}'".format(nt)
+        print "  Searching for '{0}'".format(nt)
         if nt not in ancestors_templates:
           if nt in classes_dict.values() and \
                   nt not in config.classes_blacklist and \
@@ -290,15 +290,17 @@ def process_ancestors():
                   (nt not in args.val.available_external_classes2) and \
                   (nt not in config.available_builtin_classes):
             ancestors_templates.append(nt)
-            # print "    added ..."
+            print "    added ..."
           # else:
           # print "    not in classes_dict.values()"
-  # print "New ancestors list = ",ancestors_templates
+  #print "New ancestors list = ",ancestors_templates
   ancestors = ancestors_templates[:]
   # Deal with typedefs
   # for b in ancestors:
+  #print "Deal with inheritence"
   # Deal with inheritence
   for b in ancestors:
+    #print "dealing with ",b
     if b.find("stream") != -1:
       print "Check for {0}".format(b)
     # find the id of the class
@@ -325,6 +327,9 @@ def process_ancestors():
           if not (anc_id in classes_dict):
             print "{0} not in classes_dict.keys() ...".format(anc_id)
           if anc_id in classes_dict:
+            #print "looking at ", classes_dict[anc_id]
+            #print "config : ", config.types[anc_id]
+            #print "string : ", config.types[anc_id].GetFullString()
             # if b=="wxTopLevelWindow":
             # print classes_dict[anc_id]," args.val.templates=",args.val.templates
             # print classes_dict[anc_id] not in ancestors
@@ -344,7 +349,7 @@ def process_ancestors():
                   exclude = True
               # print "Check ancestor {0} to match filter".format(classes_dict[anc_id])
               if m != None and not exclude:
-                # print "OK"
+                print "OK"
                 main_anc_id = config.types[anc_id].GetMainTypeId()
                 if b.find("stream") != -1:
                   print config.types[anc_id].GetType()
@@ -374,17 +379,18 @@ def process_ancestors():
         # print "New ancestors of {0} are {1}".format(b,newlist)
   # print "All ancestors are   {0} ".format(ancestors)
   # write ancestors file
-  print args.val.ancestors_file
+  #print args.val.ancestors_file
   # print "ancestors={0}".format(ancestors)
   f = open(args.val.ancestors_file, "w")
   # ancestors dependencies
   ancestors_depfile = os.path.splitext(args.val.ancestors_file)[0] + \
                       "_depfile.txt"
-  print "Writing ancestors dependencies file"
+  print "*** Writing ancestors dependencies file"
   f1 = open(ancestors_depfile, "w")
   # first sort
   ancestors.sort()
   for a in ancestors:
+    #print "ancestor '{0}'".format(a)
     # check size of file
     if len(a) > 100 or a == "_0":
       print "Rejecting {0} from ancestors (too long name or '_0')\n".format(a)
@@ -393,14 +399,13 @@ def process_ancestors():
       f.write(a + "\n")
     else:
       print "Rejecting {0} from ancestors\n".format(a)
-    # print a
     # print config.types.values()
     if a in classes_dict.values():
       # print "*"
       pos = classes_dict.values().index(a)
-      # print pos
+      #print " pos = {0} id = {1}".format(pos,classes_dict.keys()[pos])
       fid = config.types[classes_dict.keys()[pos]].fileid
-      # print fid
+      #print "fid=",fid
       # print config.files[fid]
       f1.write(a + " | " + config.files[fid] + "\n")
 
@@ -503,10 +508,11 @@ if __name__ == '__main__':
           n=n+1
       classes_file.close()
       if n>0 and args.val.addwrap:
-        # remove the file to allow its new creation by cmake
-        os.remove(args.val.classes_file+".bak")
+        if os.path.isfile(args.val.classes_file+".bak"):
+          # remove the file to allow its new creation by cmake
+          os.remove(args.val.classes_file+".bak")
         os.rename(args.val.classes_file,args.val.classes_file+".bak")
-      
+
     # Get public members of available classes given in parameter
     config.parsed_classes = args.val.classes[:]
 

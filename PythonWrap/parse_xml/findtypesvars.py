@@ -139,7 +139,14 @@ class FindTypesAndVariables():
     #print "'{0}' '{1}' {2} id:{3}".format(name, classname,demangled,classid)
     found = classname in config.classes.keys()
     #print "found is ", found
-    
+
+    # Abstract
+    self.argtype.abstract = attrs.get('abstract', '0')
+
+    # File id
+    self.argtype.fileid = attrs.get('file', None)
+    # print "fileid = ", self.argtype.fileid
+
     # Incomplete
     incomplete = attrs.get('incomplete', '0')
     self.argtype.incomplete = incomplete
@@ -149,13 +156,7 @@ class FindTypesAndVariables():
       config.incomplete_classes.append(classname)
       return True
     
-    # Abstract
-    self.argtype.abstract = attrs.get('abstract', '0')
-        
-    # File id
-    self.argtype.fileid = attrs.get('file', None)
-    #print "fileid = ", self.argtype.fileid 
-    
+
     # Not sure about the utility of this condition!!!
     #if demangled==self.search_classname and classname!=demangled:
       ## add an equivalence of the type name and the demangled name
