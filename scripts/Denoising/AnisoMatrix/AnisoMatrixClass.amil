@@ -603,12 +603,11 @@ if (!exists(AnisoMatrixClass)) {
           ::win.BeginPanel("Input")
             ::input_parent = ::win.CurrentParent()
             ::input_sizer = ::win..GetCurrentSizer()
-            ::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,220,200))
+            #::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,220,200))
             ::win.AddImageChoice( &::input_name, "Input")
           ::win.EndPanel()
 
           ::win.BeginPanel("PDE parameters",true)
-            ::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,210,230))
             
             ::win.BeginHorizontal()
               ::dt_id = ::win.AddFloat( &::params.dt,"dt",0.01,1)
@@ -619,6 +618,8 @@ if (!exists(AnisoMatrixClass)) {
 
             ::params.scheme_modes.SetGuiMode(1)
             ::params.scheme_modes.AddGui(&::win)
+            #::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,210,230))
+            ::win.Refresh()
           ::win.EndPanel()
 
 
@@ -626,7 +627,7 @@ if (!exists(AnisoMatrixClass)) {
           ::mat_boxid = ::win.BeginBoxPanel("Matrix diffusion parameters")
             del s
             s = ::win.GetCurrentSizer()
-            ::win.CurrentParent().SetBackgroundColour(wx.wxColour(200,240,230))
+            #::win.CurrentParent().SetBackgroundColour(wx.wxColour(200,240,230))
 
             ::params.local_struct_modes.SetGuiMode(1)
             ::params.local_struct_modes.AddGui(&::win)
@@ -653,7 +654,7 @@ if (!exists(AnisoMatrixClass)) {
           
           #------------ Noise ----------------
           ::win.BeginBoxPanel("Noise parameters")
-            ::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,240,220))
+            #::win.CurrentParent().SetBackgroundColour(wx.wxColour(240,240,220))
 
             ::win.BeginHorizontal()
               ::params.noise_models.SetGuiMode(1)
@@ -672,7 +673,7 @@ if (!exists(AnisoMatrixClass)) {
           
           #------------ Controls ----------------
           ::win.BeginPanel("Controls")
-            ::win.CurrentParent().SetBackgroundColour(wx.wxColour(200,220,250))
+            #::win.CurrentParent().SetBackgroundColour(wx.wxColour(200,220,250))
             del s
             s = ::win.GetCurrentSizer()
             ::win.BeginHorizontal()

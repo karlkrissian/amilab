@@ -286,7 +286,7 @@ if (!exists(vtkIsoSurfaceClass)) {
       # compute normals
       ::renderer.ResetCamera()
       ::vol2_normals = vtk.vtkPolyDataNormals.New()
-      ::vol2_normals.SetInput(::vol2_polydata)
+      ::vol2_normals.SetInputData(::vol2_polydata)
       ::vol2_normals.SetFeatureAngle(60.0)
 
       # need a vtkPolyDataMapper here ...
@@ -332,7 +332,7 @@ if (!exists(vtkIsoSurfaceClass)) {
         vol2_isosurf = isosurf(::input2,::vol2_threshold)
         del ::vol2_polydata
         ::vol2_polydata = vtktools.ToVtkPolyData(&vol2_isosurf)
-        ::vol2_normals.SetInput(&::vol2_polydata)
+        ::vol2_normals.SetInputData(&::vol2_polydata)
         if (::reset_camera) { ::renderer.ResetCamera(); }
         ::renwin_interact.Render()
       }
