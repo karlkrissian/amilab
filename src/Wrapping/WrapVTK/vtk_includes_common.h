@@ -82,6 +82,7 @@
 #include <vtkJPEGReader.h>
 #include <vtkLight.h>
 #include <vtkLightCollection.h>
+#include <vtkLine.h>
 #include <vtkLODActor.h>
 #include <vtkLookupTable.h>
 #include <vtkOpenGLGPUVolumeRayCastMapper.h>
@@ -100,6 +101,8 @@
 #include <vtkPolyDataConnectivityFilter.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataNormals.h>
+#include <vtkPolygon.h>
+#include <vtkPolyLine.h>
 #include <vtkProperty.h>
 #include <vtkProperty2D.h>
 #include <vtkRendererCollection.h>
@@ -125,6 +128,7 @@
 #include <vtkUnstructuredGridVolumeRayCastMapper.h>
 #include <vtkVector.h>
 #include <vtkVersion.h>
+#include <vtkVertexGlyphFilter.h>
 #include <vtkVolume.h>
 #include <vtkVolumeCollection.h>
 #include <vtkVolumeProperty.h>
