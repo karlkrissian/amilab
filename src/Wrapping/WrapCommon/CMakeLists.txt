@@ -32,6 +32,19 @@ IF(AMI_ENABLE_WRAPPING)
   WRAP_INIT(" Common")
 
   #-----------------------------------------------------------------------------
+  # Generating the classes, functions, etc...  lists
+  #-----------------------------------------------------------------------------
+  READ_CLASSES(  "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"  ) 
+  READ_FUNCTIONS("${CMAKE_CURRENT_SOURCE_DIR}/functions.txt")
+
+  # Read other values to give as parameter to castxmlstart
+  FILE(READ "${WRAPPING_DIR}/castxml_start.txt" castxmlstart_txt)
+  STRING(REGEX REPLACE "[\r\n]" ";" castxmlstart_list ${castxmlstart_txt} ${castxmlstart_list})
+
+  SET(CASTXMLSTART_LIST ${classes_list} ${functions_list})
+  JOIN_CASTXML(CASTXMLSTART "," ${CASTXMLSTART_LIST})
+
+  #-----------------------------------------------------------------------------
   # Creating XML file
   #-----------------------------------------------------------------------------
   SET(GCCXML_FLAGS "")
@@ -68,12 +81,6 @@ IF(AMI_ENABLE_WRAPPING)
     SET(HTML_DIR "${GENERATED_DIR}/html")
     CreateDirectory( ${HTML_DIR} )
   ENDIF(GENERATE_HTML_HELP)
-
-  #-----------------------------------------------------------------------------
-  # Generating the classes, functions, etc...  lists
-  #-----------------------------------------------------------------------------
-  READ_CLASSES(  "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"  ) 
-  READ_FUNCTIONS("${CMAKE_CURRENT_SOURCE_DIR}/functions.txt")
 
   #-----------------------------------------------------------------------------
   # Generating and reading ancestors

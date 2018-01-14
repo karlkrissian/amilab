@@ -25,6 +25,15 @@ IF(AMI_ENABLE_WRAPPING)
   WRAP_INIT(" Language")
 
   #-----------------------------------------------------------------------------
+  # Generating the classes, functions, etc...  lists
+  #-----------------------------------------------------------------------------
+  READ_CLASSES(  "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"  ) 
+  READ_FUNCTIONS("${CMAKE_CURRENT_SOURCE_DIR}/functions.txt")
+
+  SET(CASTXMLSTART_LIST ${classes_list} ${functions_list})
+  JOIN_CASTXML(CASTXMLSTART "," ${CASTXMLSTART_LIST})
+
+  #-----------------------------------------------------------------------------
   # Creating XML file
   #-----------------------------------------------------------------------------
   SET(GCCXML_FLAGS "")
@@ -66,11 +75,6 @@ IF(AMI_ENABLE_WRAPPING)
     CreateDirectory( ${HTML_DIR} )
   ENDIF(GENERATE_HTML_HELP)
 
-  #-----------------------------------------------------------------------------
-  # Generating the classes, functions, etc...  lists
-  #-----------------------------------------------------------------------------
-  READ_CLASSES(  "${CMAKE_CURRENT_SOURCE_DIR}/classes.txt"  ) 
-  READ_FUNCTIONS("${CMAKE_CURRENT_SOURCE_DIR}/functions.txt")
 
   #-----------------------------------------------------------------------------
   # Generating and reading ancestors
