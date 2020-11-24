@@ -11,6 +11,7 @@ import args
 import utils
 import wrap_class
 import logging
+import os
 
 typelist=(
     'Class',
@@ -175,7 +176,17 @@ class FindTypesAndVariables():
       self.number_of_files = self.number_of_files + 1
       fileid = attrs.get('id', None)
       name   = attrs.get('name', None)
-      config.files[fileid]=name
+      name = os.path.abspath(name)
+      if not(os.path.isfile(name)):
+        print("file not found {}".format(name))
+        # try with prefix
+        prefixes = ["/usr"]
+        for pref in prefixes:
+          if os.path.isfile(pref+name):
+            name = pref+name
+            print("found {}".format(name))
+            break
+      config.files[fileid] = name
 
     # first check for variable
     if tag in variablelist:
