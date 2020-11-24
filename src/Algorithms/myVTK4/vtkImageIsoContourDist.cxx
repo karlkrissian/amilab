@@ -562,7 +562,7 @@ void vtkImageIsoContourDist::IsoSurfDist3D_band( )
 
   IsoSurfDistInit( );
 
-  auto threads = vtkMultiThreader::GetGlobalDefaultNumberOfThreads();
+  int threads = vtkMultiThreader::GetGlobalDefaultNumberOfThreads();
 
   if (threads<=1)
     IsoSurfDist3D_band(0,this->bandsize-1);

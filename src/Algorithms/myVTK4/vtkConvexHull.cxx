@@ -11,6 +11,7 @@
 #include "vtkConvexHull.h"
 #include "vtkObjectFactory.h"
 #include "vtkImageCast.h"
+#include "vtkSmartPointer.h"
 
 //vtkCxxRevisionMacro(vtkConvexHull,"$Revision: 1.0$")
 

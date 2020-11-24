@@ -34,6 +34,8 @@
 #include "vtkStructuredPointsWriter.h"
 #include "vtkFloatArray.h"
 #include "vtkImageCast.h"
+#include "vtkSmartPointer.h"
+
 
 #ifndef _WIN32
 #include <strings.h>
