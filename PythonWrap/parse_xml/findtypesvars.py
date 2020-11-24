@@ -62,7 +62,7 @@ class FindTypesAndVariables():
     # ---------------------------------------------
     def ParseClass(self, tag, attrs):
         # If it's not a comic element, ignore it
-        if (self.inclass) and (tag == 'Base'):
+        if self.inclass and (tag == 'Base'):
             baseaccess = attrs.get('access', None)
             basevirtual = attrs.get('virtual', None)
             if baseaccess == 'public':
@@ -72,8 +72,8 @@ class FindTypesAndVariables():
             return True
 
         # allow namespaces
-        if (tag != "Namespace"):
-            if (tag not in config.class_types): return False
+        if tag != "Namespace":
+            if tag not in config.class_types: return False
 
         # create the corresponding structure
         self.argtype = eval("argtypes." + tag + "Info()")
@@ -97,7 +97,7 @@ class FindTypesAndVariables():
 
         # Set Context
         context = attrs.get('context', None)
-        if context != None:
+        if context is not None:
             self.argtype.SetContext(context)
             # print "context exists"
 
@@ -131,10 +131,10 @@ class FindTypesAndVariables():
         # print "adding id {0} name {1} tag {2}".format(classid,classname,tag)
 
         # Find id from the class name
-        if classname != demangled and demangled != None and (
+        if classname != demangled and demangled is not None and (
                 demangled.startswith("MT") or demangled.startswith("amilab")):
             logging.info("classname != demangled : {0} {1}, using the demangled name".format(classname, demangled))
-        if demangled != None:
+        if demangled is not None:
             # print "adding class '{0}' with id {1} and name {2}".format(demangled,classid,classname)
             config.classes[demangled] = classid
 
