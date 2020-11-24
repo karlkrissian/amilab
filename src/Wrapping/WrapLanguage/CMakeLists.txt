@@ -112,8 +112,8 @@ FOREACH( class ${ancestors_list} ${functions_list})
   SET( WrapLanguage_HDRS ${GENERATED_DIR}/wrap_${m_class}.h ${WrapLanguage_HDRS})
   SET( WrapLanguage_SRCS ${GENERATED_DIR}/wrap_${m_class}.cpp ${WrapLanguage_SRCS})
 ENDFOREACH( class ${ancestors_list} ${functions_list}) 
-SET( WrapLanguage_HDRS ${GENERATED_DIR}/addwrap_language.h   ${WrapLanguage_HDRS})
-SET( WrapLanguage_SRCS ${GENERATED_DIR}/addwrap_language.cpp ${WrapLanguage_SRCS})
+SET( WrapLanguage_HDRS ${GENERATED_DIR}/addwrap_Language.h   ${WrapLanguage_HDRS})
+SET( WrapLanguage_SRCS ${GENERATED_DIR}/addwrap_Language.cpp ${WrapLanguage_SRCS})
 
 
 # file(GLOB language_HDRS  "*.h"  )
