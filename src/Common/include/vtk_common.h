@@ -17,6 +17,7 @@
 #include <boost/scoped_array.hpp>
 #include <boost/shared_array.hpp>
 #include "vtkImageData.h"
+#include "vtkSmartPointer.h"
 
 #include "DefineClass.hpp"
 #include "amilab_messages.h"
