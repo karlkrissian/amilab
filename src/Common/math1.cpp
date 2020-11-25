@@ -163,11 +163,11 @@ int comb( int p, int n)
 
 #if !(defined(_MSC_VER))
 // || defined(__MINGW32__))
-float abs( float r)
-{
-  if (r < 0)  return -r;
-  return r;
-}
+//float abs( float r)
+//{
+//  if (r < 0)  return -r;
+//  return r;
+//}
 #endif
 
 /* ---------------------------------------------------------------------------
