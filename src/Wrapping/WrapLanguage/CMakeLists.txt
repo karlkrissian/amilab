@@ -50,8 +50,8 @@ IF(AMI_ENABLE_WRAPPING)
   INCLUDE(${AMILAB_SOURCE_DIR}/../CMAKE/amiWrapWxWidgets.cmake)
   GCCXML_USE_WXWIDGETS()
 
-  SET(XML_OUTPUT "${GENERATED_DIR}/language_includes.xml")
-  SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/language_includes.h")
+  SET(XML_OUTPUT "${GENERATED_DIR}/Language_includes.xml")
+  SET(XML_INPUT  "${CMAKE_CURRENT_SOURCE_DIR}/Language_includes.h")
 
   # Adding needed includes for wrapping ???
   SET(GCCXML_INCLUDES "-I${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets/${AMI_WXWIDGETS_VERSION}" ${GCCXML_INCLUDES} )
@@ -127,7 +127,7 @@ MESSAGE("---------------------")
 SET(WrapLanguage_SRCS
      ${WrapLanguage_SRCS}
      ${WrapLanguage_HDRS}
-     language_includes.h
+     Language_includes.h
      classes.txt
 )
 

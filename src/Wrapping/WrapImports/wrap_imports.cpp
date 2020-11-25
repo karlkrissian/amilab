@@ -60,7 +60,7 @@ extern bool CheckNullVar(ParamList* _p, int _n);
 #include "addwrap_algorithms.h"
 
 // Includes and declarations needed for language
-#include "addwrap_language.h"
+#include "addwrap_Language.h"
 
 #ifndef VarContexts_declared
   #define VarContexts_declared
