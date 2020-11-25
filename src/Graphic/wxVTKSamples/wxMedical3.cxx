@@ -206,21 +206,21 @@ void wxMedical3Frame::ConfigureVTK()
   if (!input.get())
   {
     #ifndef _MSC_VER
-    char* fname = vtkTestUtilities::ExpandDataFileName(0, 0, "Data/headsq/quarter");
-  
-    // The following reader is used to read a series of 2D slices (images)
-    // that compose the volume. The slice dimensions are set, and the
-    // pixel spacing. The data Endianness must also be specified. The
-    // reader usese the FilePrefix in combination with the slice number to
-    // construct filenames using the format FilePrefix.%d. (In this case
-    // the FilePrefix is the root name of the file: quarter.)
-    v16 = vtkVolume16Reader::New();
-      v16->SetDataDimensions(64,64);
-      v16->SetDataByteOrderToLittleEndian();
-      v16->SetFilePrefix ( fname );
-      v16->SetImageRange(1, 93);
-      v16->SetDataSpacing (3.2, 3.2, 1.5);
-    delete[] fname;
+//     char* fname = vtkTestUtilities::ExpandDataFileName(0, 0, "Data/headsq/quarter");
+//   
+//     // The following reader is used to read a series of 2D slices (images)
+//     // that compose the volume. The slice dimensions are set, and the
+//     // pixel spacing. The data Endianness must also be specified. The
+//     // reader usese the FilePrefix in combination with the slice number to
+//     // construct filenames using the format FilePrefix.%d. (In this case
+//     // the FilePrefix is the root name of the file: quarter.)
+//     v16 = vtkVolume16Reader::New();
+//       v16->SetDataDimensions(64,64);
+//       v16->SetDataByteOrderToLittleEndian();
+//       v16->SetFilePrefix ( fname );
+//       v16->SetImageRange(1, 93);
+//       v16->SetDataSpacing (3.2, 3.2, 1.5);
+//     delete[] fname;
     #endif
     //input = v16->GetOutput();
   }
