@@ -133,7 +133,7 @@ enum Token {
 
 int   comb           ( int p, int n);
 #if !defined(_MSC_VER) 
-float abs            ( float);
+//float abs            ( float);
 #endif
 float puis           ( float a, float b);
 float nombre         ( st46 a);
