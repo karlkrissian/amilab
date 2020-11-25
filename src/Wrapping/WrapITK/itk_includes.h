@@ -330,7 +330,7 @@ namespace itk_castxml {
 
 #ifndef WIN32
     // problem on windows with const for gdcm::Tag in std::pair
-    typdef std::pair<gdcm::Tag const, char const*> v62;
+    typedef std::pair<gdcm::Tag const, char const*> v62;
 #endif
     gdcm::Dict::MapDictEntry mde;
     gdcm::Dict::MapDictEntry::iterator  mde_iterator;
