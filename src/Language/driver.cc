@@ -696,7 +696,7 @@ void Driver::res_print(const char* st)
   if (GB_main_wxFrame)
     *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString(st, wxConvUTF8);
   std::cout << st << std::endl;
-  OutputDebugStringA(st);
+//  OutputDebugStringA(st);
 } // Driver::res_print()
 
 //--------------------------------------------
