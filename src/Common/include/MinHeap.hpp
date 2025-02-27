@@ -176,7 +176,7 @@ template<class T> int MinHeap<T>::UpHeap( int pos)
 //                                ------
 {
 
-    register int  up;
+    int  up;
     T val;
 
     //    fprintf(stderr,"UpHeap(%d)\n",pos);
@@ -205,7 +205,7 @@ template<class T> int MinHeap<T>::DownHeap( int pos)
 //                                --------
 {
 
-    register int  down;
+    int  down;
     T val;
 
     //    fprintf(stderr,"DownHeap(%d)\n",pos);

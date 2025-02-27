@@ -91,7 +91,7 @@ namespace ami {
                             float rayon2,
                             InrImage::ptr ref,
                             InrImage::ptr recons
-                          )  throw (Excep_points_proches);
+                          )  noexcept(false);
       
   };
 }

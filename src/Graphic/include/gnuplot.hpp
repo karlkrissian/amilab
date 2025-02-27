@@ -167,7 +167,7 @@ namespace ami {
                   std::string name, std::string title="");
 
     ///
-    int ReadData( std::string nom_donnees, std::string title="") throw ( ErreurLecture);
+    int ReadData( std::string nom_donnees, std::string title="") noexcept(false);
     //
 
     void SetSize(std::string s) { size = s; }

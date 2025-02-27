@@ -118,7 +118,7 @@ public:
   /**
     Acc�s � l'�l�ment n
    */
-  T& operator[](int n) const throw(OutOfArray);
+  T& operator[](int n) const noexcept(false);
   // ----------
 
 
@@ -363,7 +363,7 @@ template<class T> void TableauDyn<T> :: Supprime( int pos)
   TableauDyn<T>
  */
 template<class T>
-T& TableauDyn<T> :: operator[](int n) const throw (OutOfArray)
+T& TableauDyn<T> :: operator[](int n) const noexcept(false)
 //                            ----------
 {
 

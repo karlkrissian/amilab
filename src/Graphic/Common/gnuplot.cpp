@@ -178,7 +178,7 @@ int ami::GnuPlot::AddCurve( InrImage::ptr im,
 
 //----------------------------------------------------------------------
 ///
-int ami::GnuPlot :: ReadData( std::string nom_donnees, std::string title) throw ( ErreurLecture)
+int ami::GnuPlot :: ReadData( std::string nom_donnees, std::string title) noexcept(false)
 //                          --------
 {
     FILE*  fic_donnees;    

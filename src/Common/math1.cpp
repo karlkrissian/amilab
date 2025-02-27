@@ -224,7 +224,7 @@ float puis( float a, float b)
 /* ---------------------------------------------------------------------------
  */
 
-static int   round( float a)
+static int  my_round( float a)
 {
  If fabs(a)<32767 Then
    If a >= 0 Then
@@ -587,7 +587,7 @@ float CompileExpr :: Resultat()
       //     -----------------
         term1 = Depile();
 	term2 = 1;
-	for(   i = 1 ;  i <= round(term1) ;  i++ Faire
+	for(   i = 1 ;  i <= my_round(term1) ;  i++ Faire
 	  term2 *= i;
 	} // end for
         Empile( term2);

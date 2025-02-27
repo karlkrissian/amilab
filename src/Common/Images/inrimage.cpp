@@ -263,7 +263,7 @@ int IM_WriteImage ( const char *name,
 #endif // USE_MAGICK
 
 //--------------------------------------------------------------------------
-unsigned char InrImage :: ReadAMI( ) throw (ErreurLecture)
+unsigned char InrImage :: ReadAMI( )
 //                           -------
 {
   unsigned char   res; 
@@ -396,7 +396,7 @@ unsigned char InrImage :: ReadMagick( ) throw (ErreurLecture)
 #endif // USE_MAGICK
 
 //--------------------------------------------------------------------------
-unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
+unsigned char InrImage :: ReadVTK( )
 //                           -------
 {
 
@@ -564,7 +564,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
 
 
 //--------------------------------------------------------------------------
-unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
+unsigned char InrImage :: ReadVTKImage( )
 //                           ------------
 {
 
@@ -753,7 +753,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
 
 
 //--------------------------------------------------------------------------
-unsigned char InrImage :: Read( ) throw (ErreurLecture)
+unsigned char InrImage :: Read( )
 //                           ---
 {
 
@@ -857,7 +857,7 @@ unsigned char InrImage :: Read( ) throw (ErreurLecture)
 
 
 //--------------------------------------------------------------------------
-unsigned char InrImage :: LitEntete( )  throw (ErreurLecture)
+unsigned char InrImage :: LitEntete( )
 //                           ---------
 {
 
@@ -905,7 +905,7 @@ unsigned char InrImage :: LitEntete( )  throw (ErreurLecture)
 
 
 //--------------------------------------------------------------------------
-unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
+unsigned char InrImage :: Alloue( )
 //                           ------ 
 {
 
@@ -957,7 +957,7 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
 
 
 //--------------------------------------------------------------------------
- unsigned char InrImage :: Ecrit( ) throw( ImageWriteError)
+ unsigned char InrImage :: Ecrit( )
 //                           -----     
 {
 
@@ -2229,7 +2229,7 @@ void InrImage :: InitBuffer( int pos )
 
 
 //-----------------------------------------------------------------
-void InrImage::BufferPos( int x, int y, int z) throw (DepassementLimites)
+void InrImage::BufferPos( int x, int y, int z)
 //             ---------
 {
   #ifdef _debug_

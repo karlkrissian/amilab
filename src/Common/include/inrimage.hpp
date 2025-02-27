@@ -373,29 +373,29 @@ private:
 
 
   ///
-  unsigned char   ReadAMI() throw (ErreurLecture);
+  unsigned char   ReadAMI();
 
 #ifdef USE_MAGICK
   ///
-  unsigned char   ReadMagick() throw (ErreurLecture);
+  unsigned char   ReadMagick();
 #endif
 
   ///
-  unsigned char   ReadVTK() throw (ErreurLecture);
+  unsigned char   ReadVTK();
 
   ///
-  unsigned char   ReadVTKImage() throw (ErreurLecture);
+  unsigned char   ReadVTKImage();
 
   // Op�ation d'allocation, de lecture, d'ecriture
   ///
-  unsigned char   Read() throw (ErreurLecture);
+  unsigned char   Read();
 
   ///
-  unsigned char   LitEntete() throw (ErreurLecture);
+  unsigned char   LitEntete();
   ///
-  unsigned char   Alloue() throw (ErreurAllocation);
+  unsigned char   Alloue();
   ///
-  unsigned char   Ecrit() throw (ImageWriteError);
+  unsigned char   Ecrit();
   ///
   unsigned char   Desalloue();
 
@@ -802,7 +802,7 @@ public:
     float SpaceToVoxelZ( float z) const { return (z-_translation_z)/_size_z; }
 
     //
-    void BufferPos( int x, int y, int z=0) throw (DepassementLimites);
+    void BufferPos( int x, int y, int z=0);
 
     void GetBufferIncrements( int& incx, int& incy, int& incz) const
     {
@@ -1016,7 +1016,7 @@ public:
 
 
     //  {\bf Operator(x,y,z) }
-    double operator()( int x, int y, int z) const throw (DepassementLimites)
+    double operator()( int x, int y, int z) const
     //         --------
     {
 
@@ -1034,7 +1034,7 @@ public:
 
 
     //  {\bf Operator(x,y,z) }
-    double operator()( int x, int y) const throw (DepassementLimites)
+    double operator()( int x, int y) const
     //         --------
     {
 
@@ -1307,7 +1307,7 @@ inline void InrImage :: MinMax( float* min, float* max)
   switch ( (WORDTYPE) _format ) {
 
     case WT_DOUBLE:
-      register FORMAT_DOUBLE*         buf_DOUBLE;
+      FORMAT_DOUBLE*         buf_DOUBLE;
 
       buf_DOUBLE = (FORMAT_DOUBLE*) this->GetData();
       *min = *max = (float) (*buf_DOUBLE);
@@ -1321,7 +1321,7 @@ inline void InrImage :: MinMax( float* min, float* max)
     break;
 
     case WT_FLOAT:
-      register  FORMAT_FLOAT*          buf_FLOAT;
+       FORMAT_FLOAT*          buf_FLOAT;
       buf_FLOAT = (FORMAT_FLOAT*) this->GetData();
       *min = *max = *buf_FLOAT;
       //#pragma omp parallel for
@@ -1334,7 +1334,7 @@ inline void InrImage :: MinMax( float* min, float* max)
     break;
 
     case WT_UNSIGNED_CHAR:
-      register FORMAT_UNSIGNED_CHAR*  buf_UNSIGNED_CHAR;
+      FORMAT_UNSIGNED_CHAR*  buf_UNSIGNED_CHAR;
 
       buf_UNSIGNED_CHAR = (FORMAT_UNSIGNED_CHAR*) this->GetData();
       *min = *max = (float) *buf_UNSIGNED_CHAR;
@@ -1348,7 +1348,7 @@ inline void InrImage :: MinMax( float* min, float* max)
     break;
 
     case WT_UNSIGNED_SHORT:
-      register FORMAT_UNSIGNED_SHORT* buf_UNSIGNED_SHORT;
+      FORMAT_UNSIGNED_SHORT* buf_UNSIGNED_SHORT;
 
       buf_UNSIGNED_SHORT = (FORMAT_UNSIGNED_SHORT*) this->GetData();
       *min = *max = (float) *buf_UNSIGNED_SHORT;
@@ -1362,7 +1362,7 @@ inline void InrImage :: MinMax( float* min, float* max)
     break;
 
     case WT_SIGNED_SHORT:
-      register FORMAT_SIGNED_SHORT*   buf_SIGNED_SHORT;
+      FORMAT_SIGNED_SHORT*   buf_SIGNED_SHORT;
 
       buf_SIGNED_SHORT = (FORMAT_SIGNED_SHORT*) this->GetData();
       *min = *max = (float) *buf_SIGNED_SHORT;
@@ -1376,7 +1376,7 @@ inline void InrImage :: MinMax( float* min, float* max)
     break;
 
     case WT_UNSIGNED_INT:
-      register FORMAT_UNSIGNED_INT*   buf_UNSIGNED_INT;
+      FORMAT_UNSIGNED_INT*   buf_UNSIGNED_INT;
 
       buf_UNSIGNED_INT = (FORMAT_UNSIGNED_INT*) this->GetData();
       *min = *max = (float) *buf_UNSIGNED_INT;
@@ -1390,7 +1390,7 @@ inline void InrImage :: MinMax( float* min, float* max)
     break;
 
     case WT_SIGNED_INT:
-      register FORMAT_SIGNED_INT*   buf_SIGNED_INT;
+      FORMAT_SIGNED_INT*   buf_SIGNED_INT;
 
       buf_SIGNED_INT = (FORMAT_SIGNED_INT*) this->GetData();
       *min = *max = (float) (*buf_SIGNED_INT);

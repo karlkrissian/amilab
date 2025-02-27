@@ -791,7 +791,7 @@ public:
   }
 
 
-  Vect3D<T>& Normalise( ) throw (NormeFaible)
+  Vect3D<T>& Normalise( ) noexcept(false)
   //         ---------
   {
     

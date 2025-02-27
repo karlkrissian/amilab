@@ -192,8 +192,7 @@ float MultiCrest :: Distance( const multiligne& ligne, int p1, int p2)
  */
 tab_multipoints& MultiCrest ::  ListePoints( int x, 
 //                                        -----------
-						 int y, int z)
-  throw (ExceptionListeVide)
+						 int y, int z) noexcept(false)
 {
 
    

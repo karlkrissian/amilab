@@ -221,7 +221,7 @@ protected:
 
 
   ///
-  Point3D& Point( const t_point& p) throw (ExceptionBadPointNumber)
+  Point3D& Point( const t_point& p)  noexcept(false)
   //       -----
   {
     Si (p.point < 0) Ou (p.point >= lignes->NbPoints(p.ligne)) Alors
@@ -294,9 +294,8 @@ protected:
   /**
     Tableau des points associ�s au voxel (x,y,z)
    */
-  tab_points&  ListePoints( int x, int y, int z) 
+  tab_points&  ListePoints( int x, int y, int z)  noexcept(false);
   //                -----------
-    throw (ExceptionListeVide);
 
 
   /**

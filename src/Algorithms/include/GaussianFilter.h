@@ -220,7 +220,7 @@ public:
 
   //------------------------------------------------------------
   ///
-  double GaussienneInterp( double x) throw (OrdreNonTraite)
+  double GaussienneInterp( double x) noexcept(false)
   //         ----------------
   {
 
@@ -247,7 +247,7 @@ public:
 
   //------------------------------------------------------------
   ///
-  double Gaussienne( double x) throw (OrdreNonTraite)
+  double Gaussienne( double x) noexcept(false)
   //         ----------
   {
 
@@ -353,11 +353,10 @@ public:
   //
   {
 
-    
-      register float*       entree1;
-      register float*       entree2;
-      register int      i;
-      register double  val,resultat;
+      float*       entree1;
+      float*       entree2;
+      int      i;
+      double  val,resultat;
 
     resultat = (*entree) * _tab_coeff[0];
 
@@ -383,10 +382,10 @@ public:
   {
 
     
-      register float*       entree1;
-      register float*       entree2;
-      register int      i;
-      register double  val,resultat;
+      float*       entree1;
+      float*       entree2;
+      int      i;
+      double  val,resultat;
 
     resultat = (*entree) * _tab_coeff[0];
 
@@ -412,10 +411,10 @@ public:
   {
 
     
-      register float*       entree1;
-      register float*       entree2;
-      register int      i;
-      register double  val,resultat;
+      float*       entree1;
+      float*       entree2;
+      int      i;
+      double  val,resultat;
 
     resultat = (*entree) * _tab_coeff[0];
 
@@ -441,10 +440,10 @@ public:
   {
 
     
-      register float*       entree1;
-      register float*       entree2;
-      register int      i;
-      register double  val,resultat;
+      float*       entree1;
+      float*       entree2;
+      int      i;
+      double  val,resultat;
 
     resultat = (*entree) * _tab_coeff[0];
 
@@ -470,10 +469,10 @@ public:
   {
 
     
-      register float*       entree1;
-      register float*       entree2;
-      register int      i;
-      register double  val,resultat;
+      float*       entree1;
+      float*       entree2;
+      int      i;
+      double  val,resultat;
 
     resultat = (*entree) * _tab_coeff[0];
 
@@ -499,10 +498,10 @@ public:
   {
 
     
-      register float*       entree1;
-      register float*       entree2;
-      register int      i;
-      register double  val,resultat;
+      float*       entree1;
+      float*       entree2;
+      int      i;
+      double  val,resultat;
 
     resultat = (*entree) * _tab_coeff[0];
 
@@ -526,12 +525,10 @@ public:
   void Filtre1D( InrImage* entree, InrImage* sortie, InrImage* masque,
   //   --------
      direction_filtre dir, double sigma, int ordre)
-    throw (BadImageType, ImagesDiffDim)
-
   {
 
     
-  //      register int x,y,z;
+  //      int x,y,z;
       float*          entree_buf;
       float*          sortie_buf;
       unsigned char* masque_buf = NULL;
@@ -635,12 +632,10 @@ public:
   //   ------------------
          InrImageCompressee* sortie, InrImage* masque,
          direction_filtre dir, double sigma, int ordre)
-    throw (BadImageType, ImagesDiffDim)
-
   {
 
     
-  //      register int x,y,z;
+  //      int x,y,z;
       float*          entree_buf;
 //      float*          sortie_buf;
       unsigned char* masque_buf = NULL;
@@ -746,7 +741,6 @@ public:
   //         -------------
      direction_filtre dir,
      int x, int y, int z)
-    throw (BadImageType, GaussianNotInitialized)
   {
 
     Si (entree->_format!=WT_FLOAT) AlorsFait throw BadImageType();

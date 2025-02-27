@@ -100,7 +100,7 @@ Fonction2D :: ~Fonction2D( )
 
 //----------------------------------------------------------------------
 ///
-void Fonction2D :: Read( Chaine nom) throw( ErreurLecture)
+void Fonction2D :: Read( Chaine nom) noexcept(false)
 //                           ---
 {
 

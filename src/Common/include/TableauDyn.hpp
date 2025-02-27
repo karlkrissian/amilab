@@ -167,7 +167,7 @@ public:
 //#ifdef _MSC_VER
 //  T& operator[](int n) const; //throw(OutOfArray);
 //#else
-  T& operator[](int n) const throw(OutOfArray);
+  T& operator[](int n) const noexcept(false);
 //#endif
   // ----------
 
@@ -422,7 +422,7 @@ template<class T> void TableauDyn<T> :: Supprime( int pos)
   TableauDyn<T>
  */
 template<class T>
-T& TableauDyn<T> :: operator[](int n) const throw (OutOfArray)
+T& TableauDyn<T> :: operator[](int n) const noexcept(false)
 //                            ----------
 {
 
