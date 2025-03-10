@@ -55,7 +55,7 @@ static Chaine ce_fichier="IsoLigne2.cpp   ";
  */
 int IsoLigne2 :: RechercheLignes( int num_face, num_valeurs val, 
                          LigneFace** lignes_trouvees)
-  throw (ErreurDivers)
+  noexcept(false)
 
 {
   MethodeCourante("RechercheLignes", ce_fichier);
@@ -504,8 +504,7 @@ int IsoLigne2 :: PointsFace( int num_face, PtPosition* pts_trouves)
  */
 int IsoLigne2 :: ExtractLignes( PtPosition** pts_trouves)
 //                            -------------
-  throw (WarningDivers)
-
+  noexcept(false)
 {
   MethodeCourante("ExtractLignes", ce_fichier);
 

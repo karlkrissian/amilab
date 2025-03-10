@@ -240,10 +240,11 @@ InrImage* itkRead(const std::string& fname)
     case itk::ImageIOBase::FLOAT:  res = itkReadClass<float,          imdim>()(fname,WT_FLOAT);           break; \
     case itk::ImageIOBase::DOUBLE: res = itkReadClass<double,         imdim>()(fname,WT_DOUBLE);          break; \
     case itk::ImageIOBase::CHAR:    \
-    case itk::ImageIOBase::UNKNOWNPIXELTYPE:  \
     default:  \
       std::cerr << "Format not supported in InrImage class "<< std::endl;  \
   }
+
+//  case itk::ImageIOBase::UNKNOWNPIXELTYPE: 
 
 #define READ_VECTOR_IMAGE(imdim,vdim) \
   switch(image_component_type) { \
@@ -271,12 +272,13 @@ InrImage* itkRead(const std::string& fname)
     case itk::ImageIOBase::DOUBLE:  \
       res = itkReadClass<itk::Vector<double,vdim>,         imdim>::\
             ConvertVector(fname,WT_DOUBLE,vdim);          break; \
-    case itk::ImageIOBase::UNKNOWNPIXELTYPE:\
     default:  \
       std::cerr << "Format not supported in InrImage class "<< std::endl;  \
   }
 
-/*
+  //case itk::ImageIOBase::UNKNOWNPIXELTYPE:
+  
+  /*
     case itk::ImageIOBase::CHAR:    \
     case itk::ImageIOBase::UNKNOWNPIXELTYPE:  \
       std::cerr << "Format not supported in InrImage class "<< std::endl;  \

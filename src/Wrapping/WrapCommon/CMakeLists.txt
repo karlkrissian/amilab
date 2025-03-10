@@ -140,10 +140,10 @@ SET(WrapCommon_SRCS
 
 ADD_LIBRARY(${CURRENT_LIB} ${${CURRENT_LIB}_TYPE}  ${${CURRENT_LIB}_SRCS})
 
-set(CMAKE_CXX_FLAGS "-std=c++11")
-IF (CMAKE_COMPILER_IS_GNUCXX)
-  set_target_properties( ${CURRENT_LIB}  PROPERTIES COMPILE_CXX_FLAGS  "-std=c++11")
-ENDIF()
+# set(CMAKE_CXX_FLAGS "-std=c++11")
+# IF (CMAKE_COMPILER_IS_GNUCXX)
+#   set_target_properties( ${CURRENT_LIB}  PROPERTIES COMPILE_CXX_FLAGS  "-std=c++11")
+# ENDIF()
 
 # recursive dependencies
 #target_link_libraries(WrapCommon 

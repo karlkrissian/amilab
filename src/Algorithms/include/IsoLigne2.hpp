@@ -112,7 +112,7 @@ private:
     @return     nombre de lignes trouv�s: 0,1 ou 2
    */
   int RechercheLignes( int num_face, num_valeurs val, LigneFace** lignes_trouvees)
-    throw (ErreurDivers);
+    noexcept(false);
 
 
   /**
@@ -158,7 +158,7 @@ public:
     @param      pts_trouves liste des points trouv�s sur les faces.
    */
   int ExtractLignes( PtPosition** pts_trouves)
-    throw (WarningDivers);
+    noexcept(false);
   //
 
 

@@ -3141,7 +3141,7 @@ InrImage* operator ^ ( InrImage& i1,  InrImage& i2 )
 {
 
   InrImage* res;
-  register float ux,uy,uz,vx,vy,vz;
+  float ux,uy,uz,vx,vy,vz;
 
   if ( i1._tx != i2._tx )  return NULL;
   if ( i1._ty != i2._ty )  return NULL;

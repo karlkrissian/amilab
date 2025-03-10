@@ -55,6 +55,7 @@
       class wxEventTypeTag<wxHtmlCellEvent> et13(id);
       class wxEventTypeTag<wxHtmlLinkEvent> et14(id);
   // TODO list all the possible types of events here ...
+
   namespace wrap_wx {
 
     // force include headers in namespace
@@ -64,8 +65,8 @@
     #undef _WX_FILENAME_H_
 
     #include <wx/regex.h>
-    #include <wx/timer.h>
-    #include <wx/filename.h>
+    //#include <wx/timer.h>
+    //#include <wx/filename.h>
 
 //    enum
 //    {
@@ -75,6 +76,7 @@
 //    };
 
   };
-#endif // __GCCXML__
+
+  #endif // __GCCXML__
 
 

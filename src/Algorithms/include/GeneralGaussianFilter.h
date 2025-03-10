@@ -558,20 +558,17 @@ public:
   int GetDim() const { return _dim; }
 
   ///
-  Vect3D<double>  Gradient( const int& x, const int& y, const int& z) 
+  Vect3D<double>  Gradient( const int& x, const int& y, const int& z)  noexcept(false);
   //              --------
-    throw (GradientNotComputed);
 
   ///
-  Vect2D<double>  Gradient( int x, int y)
+  Vect2D<double>  Gradient( int x, int y)  noexcept(false);
   //              --------
-    throw (GradientNotComputed);
 
   /// trilinear interpolation
   Vect3D<double>  InterpolatedGradient( const double& x, 
                                         const double& y, 
-                                        const double& z) 
-    throw (GradientNotComputed);
+                                        const double& z)  noexcept(false);
 
   ///
   void InitHessienDepuisGrad();
@@ -582,18 +579,15 @@ public:
    */
   void HessienDepuisGrad( 
   //   -----------------
-    double* hessien, int x, int y, int z )
-    throw (GradientNotComputed);
+    double* hessien, int x, int y, int z ) noexcept(false);
 
   ///
-  void  Hessien2D( double* hessien, int x, int y )
+  void  Hessien2D( double* hessien, int x, int y ) noexcept(false);
   //    ---------
-    throw (HessianNotComputed);
 
   ///
-  void  Hessien( double* hessien, int x, int y, int z) 
+  void  Hessien( double* hessien, int x, int y, int z)  noexcept(false);
   //    -------
-    throw (HessianNotComputed);
 
 }; // GeneralGaussianFilter
 

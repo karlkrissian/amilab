@@ -248,7 +248,7 @@ public:
   }
 
   ///
-  unsigned char AjoutePoint( int x, int y, int z) throw (TropDePoints)
+  unsigned char AjoutePoint( int x, int y, int z) noexcept(false)
   //
   {
 

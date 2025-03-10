@@ -54,8 +54,8 @@ float ContinuousMorphology::NormGradient( float* buf_image,
   int   xp,yp,zp,xm,ym,zm;
   float   dxp,dyp,dzp;
   float   dxm,dym,dzm;
-  register float   norm,val; //,normx,normy,normz,  sqrt2, norm1;
-  register float   val_max; //,val_min;
+  float   norm,val; //,normx,normy,normz,  sqrt2, norm1;
+  float   val_max; //,val_min;
 
   xp = yp = zp = 0;
   xm = ym = zm = 0;

@@ -213,12 +213,12 @@ inline void DessinImageBase::FastImageRectangle(
     _current_slice->DrawRectangle(x_min,y_min,x_max-x_min,y_max-y_min);
 */
     // TODO: use wxImage ...
-    register int x, y;
+    int x, y;
 
     rgb_color color = intensite.GetCompactColor();
 
-    register rgb_color* data1 = image_data + y_min*width + x_min;
-    register rgb_color* data;
+    rgb_color* data1 = image_data + y_min*width + x_min;
+    rgb_color* data;
     for ( y = y_min; y < y_max; y++, data1+=width)
     {
         data = data1;
@@ -1936,8 +1936,8 @@ void DessinImageBase :: DrawColorBar( )
     char     Istring[20];
     char     Istring_min[20];
     char     Istring_max[20];
-    register float          val,val_step,step,vpos2;
-    register ClasseCouleur  couleur;
+    float          val,val_step,step,vpos2;
+    ClasseCouleur  couleur;
     float                   valmin, valmax;
     //float                   Imin, Imax;
 
@@ -2079,9 +2079,9 @@ void DessinImageBase::DrawSlice( int slice_id )
 {
   CLASS_MESSAGE((boost::format(" slice_id = %1%") % slice_id).str().c_str())
 
-  register int             x,y;
-  register double           px, py;
-  register double           px1, py1;
+  int             x,y;
+  double           px, py;
+  double           px1, py1;
 
   int ix[3] = {0,0,2}; // 3D image axis to draw on display X coordinates
   int iy[3] = {1,2,1}; // 3D image axis to draw on display Y coordinates
@@ -2114,7 +2114,7 @@ void DessinImageBase::DrawSlice( int slice_id )
   int incr[3] = { 1,  _image->DimX(), _image->DimX()*_image->DimY()};
   int incr_x = incr[cix];
 
-  register double displ_dimx, displ_dimy; // display size (in screen pixels) in X and Y
+  double displ_dimx, displ_dimy; // display size (in screen pixels) in X and Y
 
   /* todo: adapt these methods
   // Dans le cas d'un masque
@@ -2158,9 +2158,9 @@ void DessinImageBase::DrawSlice( int slice_id )
     CLASS_ERROR(" _current_slice not OK !");
     return;
   }
-  register rgb_color* image_data  = (rgb_color*)
+  rgb_color* image_data  = (rgb_color*)
                                     _current_slice->GetData();
-  register int        image_width = _current_slice->GetWidth();
+  int        image_width = _current_slice->GetWidth();
 
 //  _current_slice->SetPen(*wxTRANSPARENT_PEN);
   if (!_image) {
@@ -2170,11 +2170,11 @@ void DessinImageBase::DrawSlice( int slice_id )
 
   // lock the image to be sure it cannot be deleted!
   InrImage::ptr image_lock(_image);
-  register InrImage* image = image_lock.get();
-  register WORDTYPE image_format = image->GetFormat();
-  register ClasseCouleur* colors = &_tab_intensite_couleur.front();
-  register ClasseCouleur couleur;
-  register int buf_pos[3];
+  InrImage* image = image_lock.get();
+  WORDTYPE image_format = image->GetFormat();
+  ClasseCouleur* colors = &_tab_intensite_couleur.front();
+  ClasseCouleur couleur;
+  int buf_pos[3];
 
   buf_pos[cip] = cpos;
 
@@ -2311,9 +2311,9 @@ void DessinImageBase::DrawSlice( int slice_id )
 void DessinImageBase::DessinePlanZ( )
 //                    ------------
 {
-     register int             x,y;
-     register double           px, py;
-     register double           px1, py1;
+     int             x,y;
+     double           px, py;
+     double           px1, py1;
 
 
   InrImage::ptr maskimage;
@@ -2351,9 +2351,9 @@ void DessinImageBase::DessinePlanZ( )
   } // end if
 
   FixeImageCourante( IMAGE_XY);
-  register rgb_color* image_data  = (rgb_color*)
+  rgb_color* image_data  = (rgb_color*)
                                     _current_slice->GetData();
-  register int        image_width = _current_slice->GetWidth();
+  int        image_width = _current_slice->GetWidth();
 
 //  _current_slice->SetPen(*wxTRANSPARENT_PEN);
   if (!_image.get()) {
@@ -2364,10 +2364,10 @@ void DessinImageBase::DessinePlanZ( )
 
   // lock the image to be sure it cannot be deleted!
   InrImage::ptr image_lock(_image);
-  register InrImage* image = image_lock.get();
-  register WORDTYPE image_format = image->GetFormat();
-  register ClasseCouleur* colors = &_tab_intensite_couleur.front();
-  register ClasseCouleur couleur;
+  InrImage* image = image_lock.get();
+  WORDTYPE image_format = image->GetFormat();
+  ClasseCouleur* colors = &_tab_intensite_couleur.front();
+  ClasseCouleur couleur;
 
   image->InitBuffer( );
   InitLookUpTable();
@@ -2426,10 +2426,10 @@ void DessinImageBase::DessinePlanZ( )
 void DessinImageBase :: DessinePlanY( )
 //                                ------------
 {
-     register int             x, z;
-     register float           px, pz;
-     register float           px1,pz1;
-     register ClasseCouleur   couleur;
+     int             x, z;
+     float           px, pz;
+     float           px1,pz1;
+     ClasseCouleur   couleur;
 
   InrImage::ptr maskimage;
   if (_draw_mask) {
@@ -2456,8 +2456,8 @@ void DessinImageBase :: DessinePlanY( )
        (int) round(Param._Zoom._zoom_size_z*_size_z+1E-4));
 
   FixeImageCourante( IMAGE_XZ);
-  register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
-  register  int               image_width = _current_slice->GetWidth();
+   rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
+   int               image_width = _current_slice->GetWidth();
 
   InitBuffer( );
 
@@ -2512,10 +2512,10 @@ void DessinImageBase :: DessinePlanY( )
 void DessinImageBase :: DessinePlanX( )
 //                     ------------
 {
-     register int             y,z;
-     register float           py,pz;
-     register float           py1,pz1;
-     register ClasseCouleur   couleur;
+     int             y,z;
+     float           py,pz;
+     float           py1,pz1;
+     ClasseCouleur   couleur;
 
   InrImage::ptr maskimage;
   if (_draw_mask) {
@@ -2541,8 +2541,8 @@ void DessinImageBase :: DessinePlanX( )
        (int) round(Param._Zoom._zoom_size_y*_size_y+1E-4));
 
   FixeImageCourante( IMAGE_ZY);
-  register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
-  register  int               image_width = _current_slice->GetWidth();
+   rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
+   int               image_width = _current_slice->GetWidth();
 
   if ( _draw_mask ) maskimage->InitBuffer( );
   InitBuffer( );
@@ -2595,13 +2595,13 @@ void DessinImageBase :: DessinePlanX( )
 void DessinImageBase :: DessineCoupes( )
 //                      -------------
 {
-     register int      x,y;
-     register float        px, py; // position de dessin du pixel
-     register int      planZ;
-     register int      pos_x, pos_y; // position de l'image en x et y
-     register int      nx, ny; // nombre de lignes et de colonnes
-     register int      qx, qy; // position en ligne et en colonne
-     register ClasseCouleur couleur;
+     int      x,y;
+     float        px, py; // position de dessin du pixel
+     int      planZ;
+     int      pos_x, pos_y; // position de l'image en x et y
+     int      nx, ny; // nombre de lignes et de colonnes
+     int      qx, qy; // position en ligne et en colonne
+     ClasseCouleur couleur;
      float     val,dimx,dimy;
 
   InrImage::ptr maskimage;
@@ -2638,8 +2638,8 @@ void DessinImageBase :: DessineCoupes( )
                             (int) round(ny*(2+_size_y*Param._Zoom._zoom_size_y)+1E-4));
 
   FixeImageCourante( IMAGE_COUPES);
-  register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
-  register  int               image_width = _current_slice->GetWidth();
+   rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
+   int               image_width = _current_slice->GetWidth();
 
   FastImageRectangle( image_data, image_width,
                       0,     0,
@@ -2704,10 +2704,10 @@ void DessinImageBase :: DessineCoupes( )
 void DessinImageBase :: DessinePlanMasqueZ( )
 //                      ------------------
 {
-     register int             x,y;
-     register float           px, py;
-     register float           px1, py1;
-     register ClasseCouleur   couleur;
+     int             x,y;
+     float           px, py;
+     float           px1, py1;
+     ClasseCouleur   couleur;
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir 0.99999 a la valeur superieure et d'eviter
   //--- un plantage
@@ -2728,8 +2728,8 @@ void DessinImageBase :: DessinePlanMasqueZ( )
   } // end if
 
   FixeImageCourante( IMAGE_XY);
-  register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
-  register  int               image_width = _current_slice->GetWidth();
+   rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
+   int               image_width = _current_slice->GetWidth();
 
   InrImage::ptr maskimage;
   if (_draw_mask) maskimage = _mask_image.lock();
@@ -2797,18 +2797,18 @@ void DessinImageBase :: DessinePlanMasqueZ( )
 void DessinImageBase :: DessinePlanMasqueY( )
 //                      ------------------
 {
-     register int            x, z;
-     register float          px,pz;
-     register float          px1,pz1;
-     register ClasseCouleur  couleur;
+     int            x, z;
+     float          px,pz;
+     float          px1,pz1;
+     ClasseCouleur  couleur;
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir 0.99999 a la valeur superieure et d'eviter
   //--- un plantage
   CreeImage( IMAGE_XZ, (int) (Param._Zoom._zoom_size_x*_size_x+1E-4), (int) (Param._Zoom._zoom_size_z*_size_z+1E-4));
 
   FixeImageCourante( IMAGE_XZ);
-  register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
-  register  int               image_width = _current_slice->GetWidth();
+   rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
+   int               image_width = _current_slice->GetWidth();
 
   InrImage::ptr maskimage;
   if (_draw_mask) {
@@ -2873,18 +2873,18 @@ void DessinImageBase :: DessinePlanMasqueY( )
 void DessinImageBase :: DessinePlanMasqueX( )
 //                      ------------------
 {
-     register int             y,z;
-     register float           py,pz;
-     register float           py1,pz1;
-     register ClasseCouleur   couleur;
+     int             y,z;
+     float           py,pz;
+     float           py1,pz1;
+     ClasseCouleur   couleur;
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir a la valeur superieure et d'eviter
   //--- un plantage
   CreeImage( IMAGE_ZY, (int) (Param._Zoom._zoom_size_z*_size_z+1E-4), (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
 
   FixeImageCourante( IMAGE_ZY);
-  register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
-  register  int               image_width = _current_slice->GetWidth();
+   rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
+   int               image_width = _current_slice->GetWidth();
 
   InrImage::ptr maskimage;
   if (_draw_mask) {
@@ -2948,13 +2948,13 @@ void DessinImageBase :: DessinePlanMasqueX( )
 void DessinImageBase :: DessineMasqueCoupes( )
 //                      -------------------
 {
-     register int      x,y;
-     register float        px, py; // position de dessin du pixel
-     register int      planZ;
-     register int      pos_x, pos_y; // position de l'image en x et y
-     register int      nx, ny; // nombre de lignes et de colonnes
-     register int      qx, qy; // position en ligne et en colonne
-     register ClasseCouleur couleur;
+     int      x,y;
+     float        px, py; // position de dessin du pixel
+     int      planZ;
+     int      pos_x, pos_y; // position de l'image en x et y
+     int      nx, ny; // nombre de lignes et de colonnes
+     int      qx, qy; // position en ligne et en colonne
+     ClasseCouleur couleur;
      float     val,dimx,dimy;
 
   InrImage::ptr maskimage;
@@ -2984,8 +2984,8 @@ void DessinImageBase :: DessineMasqueCoupes( )
   CreeImage( IMAGE_COUPES, (int) (nx*(2+_size_x*Param._Zoom._zoom_size_x)), (int) (ny*(2+_size_y*Param._Zoom._zoom_size_y)));
 
   FixeImageCourante( IMAGE_COUPES);
-  register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
-  register  int               image_width = _current_slice->GetWidth();
+   rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
+   int               image_width = _current_slice->GetWidth();
 
   FastImageRectangle( image_data, image_width,
                       0,     0,
@@ -3059,10 +3059,10 @@ void DessinImageBase :: DessinePlanXIsoContour(
      InrImage::ptr&            image,
      float                   seuil)
 {
-     register int        y,z;
-     register float          val00,val10,val01,val11;
-     register float          p1,p2,p3,p4;
-     register float          pos_z, pos_y;
+     int        y,z;
+     float          val00,val10,val01,val11;
+     float          p1,p2,p3,p4;
+     float          pos_z, pos_y;
 
      int                    P1y,P1z,P2y,P2z,P3y,P3z,P4y,P4z;
      float                   S,f;
@@ -3161,10 +3161,10 @@ void DessinImageBase :: DessinePlanYIsoContour(
      InrImage::ptr&            image,
      float                   seuil)
 {
-     register int            x,z;
-     register float          val00,val10,val01,val11;
-     register float          p1,p2,p3,p4;
-     register float          pos_x, pos_z;
+     int            x,z;
+     float          val00,val10,val01,val11;
+     float          p1,p2,p3,p4;
+     float          pos_x, pos_z;
 
      int                    P1x,P1z,P2x,P2z,P3x,P3z,P4x,P4z;
      float                   S,f;
@@ -3262,10 +3262,10 @@ void DessinImageBase :: DessinePlanZIsoContour(
      InrImage::ptr&            image,
      float                   seuil)
 {
-     register int            x,y;
-     register float          val00,val10,val01,val11;
-     register float          p1,p2,p3,p4;
-     register float          pos_x, pos_y;
+     int            x,y;
+     float          val00,val10,val01,val11;
+     float          p1,p2,p3,p4;
+     float          pos_x, pos_y;
 
      int                    P1x,P1y,P2x,P2y,P3x,P3y,P4x,P4y;
      float                   S,f;
@@ -3360,9 +3360,9 @@ void DessinImageBase :: DessinePlanZIsoContour(
 void DessinImageBase::DessinePlanInterpZ( )
 //                    ------------------
 {
-     register int            x,y,n,n2,i,j;
-     register float          px, py;
-     register ClasseCouleur  couleur;
+     int            x,y,n,n2,i,j;
+     float          px, py;
+     ClasseCouleur  couleur;
 
   switch ( _interpole_subdivision ){
     case INTERP_SUB_2:   n = 2; break;
@@ -3402,8 +3402,8 @@ void DessinImageBase::DessinePlanInterpZ( )
   } // end if
 
   FixeImageCourante( IMAGE_XY);
-  register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
-  register  int               image_width = _current_slice->GetWidth();
+   rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
+   int               image_width = _current_slice->GetWidth();
 
   InrImage::ptr maskimage;
   if (_draw_mask) {
@@ -3472,9 +3472,9 @@ void DessinImageBase::DessinePlanInterpZ( )
 void DessinImageBase :: DessinePlanInterpY( )
 //                                ------------------
 {
-     register int            x, z,n,n2,i,j;
-     register float          px,pz;
-     register ClasseCouleur  couleur;
+     int            x, z,n,n2,i,j;
+     float          px,pz;
+     ClasseCouleur  couleur;
 
   switch ( _interpole_subdivision ){
     case INTERP_SUB_2:   n = 2; break;
@@ -3501,8 +3501,8 @@ void DessinImageBase :: DessinePlanInterpY( )
        (int) (Param._Zoom._zoom_size_z*_size_z+1E-4));
 
   FixeImageCourante( IMAGE_XZ);
-  register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
-  register  int               image_width = _current_slice->GetWidth();
+   rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
+   int               image_width = _current_slice->GetWidth();
 
   InrImage::ptr maskimage;
   if (_draw_mask) maskimage = _mask_image.lock();
@@ -3561,9 +3561,9 @@ void DessinImageBase :: DessinePlanInterpY( )
 void DessinImageBase::DessinePlanInterpX( )
 //                    ------------------
 {
-    register  int               y,z,n,n2,i,j;
-    register  float             py,pz;
-    register  ClasseCouleur     couleur;
+     int               y,z,n,n2,i,j;
+     float             py,pz;
+     ClasseCouleur     couleur;
 
   switch ( _interpole_subdivision ){
     case INTERP_SUB_2:   n = 2; break;
@@ -3595,8 +3595,8 @@ void DessinImageBase::DessinePlanInterpX( )
     return;
   }
 
-  register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
-  register  int               image_width = _current_slice->GetWidth();
+   rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
+   int               image_width = _current_slice->GetWidth();
 
   InitBuffer( );
 
@@ -3658,8 +3658,8 @@ void DessinImageBase :: DrawLineZ( float x1, float y1,
                  float x2, float y2)
 {
 
-     register float          pos_x1, pos_y1;
-     register float          pos_x2, pos_y2;
+     float          pos_x1, pos_y1;
+     float          pos_x2, pos_y2;
 
      //  SetLineParameters( size, style, _cap_style, _join_style);
      //SetPenColor( _couleur_masque);
@@ -3684,7 +3684,7 @@ void DessinImageBase :: DrawLineZ( float x1, float y1,
 void DessinImageBase :: DrawCircleR( int x, int y, int r)
 {
 
-     register float          pos_x, pos_y;
+     float          pos_x, pos_y;
      
 
      //  SetLineParameters( size, style, _cap_style, _join_style);

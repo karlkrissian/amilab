@@ -207,7 +207,7 @@ private:
   //
 
   /// Ajoute un point dans la liste des points a propager
-  void AjoutePropage( int i, int j) throw (LimitesAtteintes);
+  void AjoutePropage( int i, int j) noexcept(false);
   //
 
 

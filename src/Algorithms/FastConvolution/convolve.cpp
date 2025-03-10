@@ -63,9 +63,9 @@
 inline int convolve_naive(float* in, float* out, int length,
         float* kernel, int kernel_length)
 {
-  register float tmp;
-  register float* in1;
-  register float* k1;
+  float tmp;
+  float* in1;
+  float* k1;
   int i;
   for(i=0; i<=length-kernel_length; i++)
   {

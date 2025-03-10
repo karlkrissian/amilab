@@ -170,8 +170,11 @@ class TypedefInfo(ArgTypeBase):
         try:
             # if member typedef (or function), keep the typedef name
             maintyperef = config.types[self._reftypeid].GetMainTypeId()
-            if config.types[maintyperef].GetType() == "MethodType":
+            maintype = config.types[maintyperef]
+            if maintype.GetType() == "MethodType":
                 # print "*** returning '{0}'".format(self.GetName())
+                typename = self.GetName()
+            elif maintype.GetType() == "Struct" and maintype._name == '':
                 typename = self.GetName()
             else:
                 typename = config.types[self._reftypeid].GetString()
@@ -185,7 +188,10 @@ class TypedefInfo(ArgTypeBase):
             # if member typedef (or function), keep the typedef name
             reftype = config.types[self._reftypeid]
             maintyperef = reftype.GetMainTypeId()
-            if config.types[maintyperef].GetType() == "MethodType":
+            maintype = config.types[maintyperef]
+            if maintype.GetType() == "MethodType":
+                typename = self.GetName()
+            elif maintype.GetType() == "Struct" and maintype._name == '':
                 typename = self.GetName()
             else:
                 typename = reftype.GetFullString()

@@ -1322,7 +1322,7 @@ Vect3D<double> GeneralGaussianFilter :: Gradient( const int& x,
                                                   const int& y, 
                                                   const int& z) 
 //                                         --------
-      throw (GradientNotComputed)
+    noexcept(false)
 {
 
   double gx,gy,gz; 
@@ -1362,7 +1362,7 @@ Vect3D<double> GeneralGaussianFilter :: Gradient( const int& x,
 //------------------------------------------------------
 Vect2D<double> GeneralGaussianFilter :: Gradient( int x, int y)
 //                                         --------
-      throw (GradientNotComputed)
+    noexcept(false)
 {
 
   double gx,gy; 
@@ -1409,7 +1409,7 @@ Vect2D<double> GeneralGaussianFilter :: Gradient( int x, int y)
 Vect3D<double> GeneralGaussianFilter :: InterpolatedGradient( const double& x, 
                                                               const double& y,  
                                                               const double& z) 
-      throw (GradientNotComputed)
+                                                              noexcept(false)
 {
 
   double gx,gy,gz; 
@@ -1468,7 +1468,7 @@ void GeneralGaussianFilter :: HessienDepuisGrad(
 //                               -----------------
        double* hessien, int x, int y, int z
     )
-    throw (GradientNotComputed)
+    noexcept(false)
 {
 
   
@@ -1514,7 +1514,7 @@ void GeneralGaussianFilter :: HessienDepuisGrad(
 void GeneralGaussianFilter :: Hessien2D( double* hessien,
 //                               ---------
             int x, int y)
-      throw (HessianNotComputed)
+            noexcept(false)
 {
 
   
@@ -1552,7 +1552,7 @@ void GeneralGaussianFilter :: Hessien2D( double* hessien,
 void GeneralGaussianFilter :: Hessien( double* hessien,
 //                               -------
             int x, int y, int z) 
-      throw (HessianNotComputed)
+            noexcept(false)
 {
 
   

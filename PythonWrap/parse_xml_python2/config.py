@@ -32,6 +32,7 @@ classes_blacklist=[
 
   'std::_Iterator_with_base<std::bidirectional_iterator_tag, std::string, long long, std::string const*, std::string const&, std::_Iterator_base_aux>', # std::set<std::string>::iterator on windows with gccxml
 
+  'std::_Rb_tree_const_iterator<std::basic_string<char> >', # not found while compiling
 
   'wxTrackable', # problem protected destructor: to fix (wx2.9.3)
   #'wxConfigBase', # problems in 2.9.3 also
@@ -82,6 +83,8 @@ available_types       = [
   'unsigned short int',
   'short unsigned int',
   'std::string',
+  'std::__cxx11::basic_string<char>', # issue with double declaration of std::string
+  'std::basic_string<char>',          # issue with double declaration of std::string
   'std::basic_string<char, std::char_traits<char>, std::allocator<char> >',
   'bool',
   'void',

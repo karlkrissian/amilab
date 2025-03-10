@@ -74,7 +74,7 @@ def FindAvailableClasses():
 #  WrapMethodTypePointer
 #----------------------------------------------------------------------
 def WrapMethodTypePointer(typedefname,include_file):
-  #print "WrapMethodPointer({0},..)".format(typedefname)
+  print "WrapMethodPointer({0},..)".format(typedefname)
 
   # Create Header File
   header_filename=args.val.outputdir+"/wrap_{0}.h.new".format(typedefname)
@@ -427,6 +427,7 @@ if __name__ == '__main__':
     if (args.val.profile):
       t0 = time.clock()
     # add the user defined classes
+    print("args.val.available_classes=", args.val.available_classes)
     for cl in args.val.available_classes:
       config.available_classes.append(cl)
 

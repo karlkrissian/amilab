@@ -264,7 +264,7 @@ private:
  */
   unsigned char ExisteContour( int x, int y, int z) 
   //
-    throw ( OutOfRange);
+  noexcept(false);
 
 
 /**

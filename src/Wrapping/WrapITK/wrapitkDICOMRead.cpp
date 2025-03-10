@@ -265,10 +265,11 @@ InrImage* itkDICOMRead(const std::string DicomFolder)
     case itk::ImageIOBase::FLOAT:  res = itkReadDICOMClass<float,   imdim>()(fileNames,WT_FLOAT);    break; \
     case itk::ImageIOBase::DOUBLE: res = itkReadDICOMClass<double,   imdim>()(fileNames,WT_DOUBLE);  break; \
     case itk::ImageIOBase::CHAR:    \
-    case itk::ImageIOBase::UNKNOWNPIXELTYPE:  \
     default:  \
       std::cerr << "Format not supported in InrImage class "<< std::endl;  \
   }
+
+//  case itk::ImageIOBase::UNKNOWNPIXELTYPE:  
 
   switch (image_pixel_type) {
     case itk::ImageIOBase::SCALAR:

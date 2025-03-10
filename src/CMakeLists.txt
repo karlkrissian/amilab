@@ -351,8 +351,8 @@ OPTION(AMI_ENABLE_WRAPPING "Enable Automatic Wrapping: need gccxml, python, ..."
 
 IF(AMI_ENABLE_WRAPPING)
   FIND_PACKAGE( GCCXML REQUIRED)
-  find_package (Python2 COMPONENTS Interpreter)
-  set(PYTHON_EXECUTABLE ${Python2_EXECUTABLE})
+  find_package (Python3 COMPONENTS Interpreter)
+  set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
   # FIND_PACKAGE( PythonInterp REQUIRED)
   OPTION(AMI_WRAP_WXWIDGETS "Enable Automatic Wrapping OF WXWIDGETS" ON)
   OPTION(AMI_WRAP_VTK       "Enable Automatic Wrapping OF VTK"       ON)

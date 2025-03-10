@@ -24,8 +24,10 @@ vector_string_it
 
 # ----- std::set<...> -----
 
-set_string
-set_string_iterator
+# for working for the moment
+# set_string
+# set_string_iterator
+
 # giving an error now
 #set_string_pair_iterator_bool
 

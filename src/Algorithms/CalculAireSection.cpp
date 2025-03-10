@@ -286,8 +286,7 @@ void CalculAireSection :: DeleteGrille( )
 
 //--------------------------------------------------
 /// Ajoute un point dans la liste des points a propager
-void CalculAireSection :: AjoutePropage( int i, int j)
-  throw (LimitesAtteintes)
+void CalculAireSection :: AjoutePropage( int i, int j) noexcept(false)
 //
 {
 

@@ -31,9 +31,9 @@ ImageLinearInterpolator::ImageLinearInterpolator( InrImage* im)
 
 double ImageLinearInterpolator::InterpLinIntensite2( double dx1, double dx2, int tx1, int tx2)
 {
-  register double coeff00,coeff01,coeff10,coeff11;
-  register int    tx12;
-  register double res = 0;
+  double coeff00,coeff01,coeff10,coeff11;
+  int    tx12;
+  double res = 0;
 
   coeff00 = 1.0 - dx1;
   coeff10 = dx1;
@@ -82,11 +82,11 @@ double ImageLinearInterpolator::InterpLinIntensite( float x, float y, float z)
 
   if ((z==0)||(_tz == 1)) return InterpLinIntensite(x,y);
 
-  register int     xi,yi,zi;
-  register double dx,dy,dz;
-  register double res = 0;
-  register double coeff000,coeff010,coeff100,coeff110;
-  register double coeff001,coeff011,coeff101,coeff111;
+  int     xi,yi,zi;
+  double dx,dy,dz;
+  double res = 0;
+  double coeff000,coeff010,coeff100,coeff110;
+  double coeff001,coeff011,coeff101,coeff111;
 
   if (x < 0)       x= (float) 0.0;
   if (y < 0)       y= (float) 0.0;

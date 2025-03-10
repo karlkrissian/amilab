@@ -97,7 +97,7 @@ wxWindow* wxGetTopLevelParent(wxWindow *win)
   
   #if  wxCHECK_VERSION(2, 9, 0)
     #ifdef __WXGTK__
-//      #define GDK_WINDOW_XWINDOW(win)       (gdk_x11_window_get_xid (win))
+      #define GDK_WINDOW_XWINDOW(win)       (gdk_x11_window_get_xid (win))
 
       #define piz(wxwin) WX_PIZZA((wxwin)->m_wxwindow)
       #define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \

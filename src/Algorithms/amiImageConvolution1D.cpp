@@ -108,12 +108,12 @@ double ImageConvolution1D::ConvolveDirX(  T* input,
                                           const T& maxval)
 {
   
-  register T*       input1;
-  register T*       input2;
-  register int      i;
-  register int      x1;
-  register int      x2;
-  register double   val,res;
+  T*       input1;
+  T*       input2;
+  int      i;
+  int      x1;
+  int      x2;
+  double   val,res;
 
   res = (*input) * _kernel_coeff[0];
 
@@ -172,12 +172,12 @@ double ImageConvolution1D::ConvolveDirY(  T* input,
                                           const T& minval, 
                                           const T& maxval)
 {
-  register T*       input1;
-  register T*       input2;
-  register int      i;
-  register int      y1;
-  register int      y2;
-  register double   val,res;
+  T*       input1;
+  T*       input2;
+  int      i;
+  int      y1;
+  int      y2;
+  double   val,res;
 
   res = (*input) * _kernel_coeff[0];
 
@@ -236,12 +236,12 @@ double ImageConvolution1D::ConvolveDirZ(  T* input,
                                           const T& minval, 
                                           const T& maxval)
 {
-  register T*       input1;
-  register T*       input2;
-  register int      i;
-  register int      z1;
-  register int      z2;
-  register double   val,res;
+  T*       input1;
+  T*       input2;
+  int      i;
+  int      z1;
+  int      z2;
+  double   val,res;
 
   res = (*input) * _kernel_coeff[0];
 

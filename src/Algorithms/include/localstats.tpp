@@ -93,7 +93,7 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
   T*        buf;
   T*        bufmin;
   T*        bufmax;
-  register T* res_buf;
+  T* res_buf;
 
   // check that input and output are of the right type ???
 
@@ -156,9 +156,9 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
             *res_buf++  = *buf++;
       } else {
   
-        register short p2_leftlimit  = p2_min+size;
+        short p2_leftlimit  = p2_min+size;
         // we can compute up to dim2-1-size safely
-        register short p2_rightlimit = p2_max-size;
+        short p2_rightlimit = p2_max-size;
   
         //---------- LEFT BOUNDARY
         // start at 0
@@ -168,8 +168,8 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
         bufmax    +=size;
         *res_buf++ = *bufmax;
   
-        register short pos;
-        register short maxpos = p2_leftlimit+1;
+        short pos;
+        short maxpos = p2_leftlimit+1;
 
         // go up to p2_leftlimit
         for (pos=p2_min+1;pos<maxpos;pos++)
@@ -325,7 +325,7 @@ void FastLocalMeanX_noborder( InrImage* in, InrImage* out,
                   % typeid(T).name() 
                   % typeid(TInc).name())
 
-  register const unsigned char d = 2*size+1;
+  const unsigned char d = 2*size+1;
   T* in_buf;
   T* vmin_buf;
   T* vmax_buf;
@@ -753,10 +753,10 @@ void FastLocalSumX( InrImage* in, InrImage* out,
   //T*        buf[stepsize];
   //T*        bufmin[stepsize];
   //T*        bufmax[stepsize];
-  register boost::scoped_array<T*> res_buf(new T*[stepsize]);
-  register boost::scoped_array<double> sum(new double[stepsize]);
-  //register T*        res_buf[stepsize];
-  //register float     sum[stepsize];
+  boost::scoped_array<T*> res_buf(new T*[stepsize]);
+  boost::scoped_array<double> sum(new double[stepsize]);
+  //T*        res_buf[stepsize];
+  //float     sum[stepsize];
   //int       num_values;
 
   // check that input and output are of the right type ???
@@ -820,9 +820,9 @@ void FastLocalSumX( InrImage* in, InrImage* out,
         }
       } else {
   
-        register unsigned short p2_leftlimit  = p2_min+size;
+        unsigned short p2_leftlimit  = p2_min+size;
         // we can compute up to dim2-1-size safely
-        register unsigned short p2_rightlimit = p2_max-size;
+        unsigned short p2_rightlimit = p2_max-size;
   
         // sum variable could cumulate numerical errors
         // 3 loops to deal with boundaries
@@ -844,8 +844,8 @@ void FastLocalSumX( InrImage* in, InrImage* out,
         for(ns=0;ns<stepsize;ns++) 
           *res_buf[ns]++ = sum[ns];
   
-        register unsigned short pos;
-        register unsigned short maxpos = p2_leftlimit+1;
+        unsigned short pos;
+        unsigned short maxpos = p2_leftlimit+1;
 
         // go up to p2_leftlimit
         for (pos=p2_min+1;pos<maxpos;pos++)
@@ -927,12 +927,12 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
   T*        buf;
   T*        bufmin;
   T*        bufmax;
-  register T*        res_buf;
+  T*        res_buf;
 
-  register boost::scoped_array<double> sum(new double[stepsize]);
-  //register float    sum[stepsize]; // compute 4 sums in parallel
+  boost::scoped_array<double> sum(new double[stepsize]);
+  //float    sum[stepsize]; // compute 4 sums in parallel
 
-  register unsigned char ns;
+  unsigned char ns;
 
   //int       num_values;
 
@@ -1003,9 +1003,9 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
         }
       } else {
   
-        register unsigned short p2_leftlimit  = p2_min+size;
+        unsigned short p2_leftlimit  = p2_min+size;
         // we can compute up to dim2-1-size safely
-        register unsigned short p2_rightlimit = p2_max-size;
+        unsigned short p2_rightlimit = p2_max-size;
   
         // sum variable could cumulate numerical errors
         // 3 loops to deal with boundaries
@@ -1027,8 +1027,8 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
           res_buf[ns] = sum[ns];
         res_buf += dir2_inc;
   
-        register unsigned short pos;
-        register unsigned short maxpos = p2_leftlimit+1;
+        unsigned short pos;
+        unsigned short maxpos = p2_leftlimit+1;
 
         // go up to p2_leftlimit
         for (pos=p2_min+1;pos<maxpos;pos++)
@@ -1145,8 +1145,8 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
   T*        buf;
   T*        bufmin;
   T*        bufmax;
-  register T*        res_buf;
-  register double    sum;
+  T*        res_buf;
+  double    sum;
   //int       num_values;
 
   // check that input and output are of the right type ???
@@ -1205,9 +1205,9 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
         }
       } else {
   
-        register unsigned short p2_leftlimit  = p2_min+size;
+        unsigned short p2_leftlimit  = p2_min+size;
         // we can compute up to dim2-1-size safely
-        register unsigned short p2_rightlimit = p2_max-size;
+        unsigned short p2_rightlimit = p2_max-size;
   
         // sum variable could cumulate numerical errors
         // 3 loops to deal with boundaries
@@ -1226,8 +1226,8 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
         *res_buf = sum;
         res_buf += dir2_inc;
   
-        register unsigned short pos;
-        register unsigned short maxpos = p2_leftlimit+1;
+        unsigned short pos;
+        unsigned short maxpos = p2_leftlimit+1;
 
         // go up to p2_leftlimit
         for (pos=p2_min+1;pos<maxpos;pos++)

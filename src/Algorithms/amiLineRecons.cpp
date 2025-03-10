@@ -72,7 +72,7 @@ void LineRecons::DessineCylindre(
                       float rayon2,
                       InrImage::ptr ref,
                       InrImage::ptr recons
-                    )  throw (Excep_points_proches)
+                    )  noexcept(false)
 
 //  point1 sera nomme M1, point2 sera nomme M2, point0->M0, point3->M3
 //  dessin d'un cylindre a base d'une gaussienne circulaire dont

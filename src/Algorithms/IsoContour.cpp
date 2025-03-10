@@ -120,7 +120,7 @@ unsigned char   IsoContour :: PassageParZero( int& signe,   double valeur)
 
 //--------------------------------------------------
 ///
-unsigned char IsoContour :: ExisteContour( int x, int y, int z) throw ( OutOfRange)
+unsigned char IsoContour :: ExisteContour( int x, int y, int z) noexcept(false)
 //
 {
 

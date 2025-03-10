@@ -1425,7 +1425,7 @@ float ami::AnisoGS::Itere2D ( InrImage* im )
   float   alpha1_x, gamma1_x;
   float   alpha1_y, gamma1_y;
   float*  in;
-  register float    *Iconv;
+  float    *Iconv;
 //    float gradient[2];
 //    float hessien[2][2];
 
@@ -2192,7 +2192,7 @@ float ami::AnisoGS::Itere3D( InrImage* im )
     float   alpha1_y, gamma1_y;
     float   alpha1_z, gamma1_z;
     float*  in;
-    register float    *Iconv; 
+     float    *Iconv; 
     float gradient[3];
     float hessien[3][3];
     float vmax[3];
@@ -2632,7 +2632,7 @@ float ami::AnisoGS::Itere3D_2_new( InrImage* im )
     float   alpha1_y, gamma1_y;
     float   alpha1_z, gamma1_z;
     float*  in;
-    register float    *Iconv; 
+     float    *Iconv; 
     float gradient[3];
     float hessien[3][3];
     unsigned long outoflimits = 0;
@@ -3320,7 +3320,7 @@ float ami::AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
     double   alpha1_y, gamma1_y;
     double   alpha1_z, gamma1_z;
     float*  in;
-    register float    *Iconv=NULL; 
+     float    *Iconv=NULL; 
 //    float gradient[3];
 //    float hessien[3][3];
     unsigned long outoflimits=0;
@@ -4066,7 +4066,7 @@ float ami::AnisoGS::Itere3D_distance( InrImage* im )
     int x,y,z; //,n,i;
     float   val0,val1;
     float*  in;
-//    register float    *Iconv; 
+//     float    *Iconv; 
 
     float   erreur,norm_grad;
     double diff;
@@ -4293,7 +4293,7 @@ float ami::AnisoGS::Itere3D_distance_flux( InrImage* im )
     float   alpha1_y;
     float   alpha1_z;
     float*  in;
-//    register float    *Iconv; 
+//     float    *Iconv; 
 
     float   erreur,norm_grad;
     double diff;
@@ -4779,7 +4779,7 @@ float  ami::AnisoGS::Itere3D_3( InrImage* im )
     double   alpha1_y, gamma1_y;
     double   alpha1_z, gamma1_z;
     float*  in;
-    register float    *Iconv; 
+     float    *Iconv; 
     float gradient[3];
     float hessien[3][3];
 //    float vmax[3];

@@ -139,8 +139,8 @@ void  DeriveesLissees :: CalculFonction3D( InrImage* image_entree, DerivativesFu
 //                       ----------------
 { 
     int x,y,z;
-    register float    *gx, *gy, *gz;
-    register float    *Hxx, *Hyy, *Hzz, *Hxy, *Hxz, *Hyz; 
+    float    *gx, *gy, *gz;
+    float    *Hxx, *Hyy, *Hzz, *Hxy, *Hxz, *Hyz; 
     InrImage         im_aux;
     float gradient[3];
     float hessien[3][3];
