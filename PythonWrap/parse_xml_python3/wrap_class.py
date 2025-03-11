@@ -25,14 +25,7 @@ from argtypes import *
 
 import utils
 
-import findtypesvars
-import findfiles
-import wx_lib
-
 import arginfo
-
-import parse_function
-
 import generate_html  # HTML generate file functions
 
 import logging
@@ -93,8 +86,8 @@ def FindIncludeFile(classname, fileid):
                         return '#include "{0}"'.format(classes_inc.classes_includes[pattern])
         # else:
         # print "no classes_includes argument given"
-    except:
-        print("Exception catched in FindIncludeFile()")
+    except Exception as e:
+        print(f"Exception catched in FindIncludeFile() {e}")
         pass
     if config.libmodule != None:
         # print "libmodule=",config.libmodule
@@ -1073,7 +1066,7 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
 def ImplementMethodWrap(classname, method, constructor=False, methodcount=1, \
                         light=False):
     try:
-        # print "ImplementMethodWrap {0} {1} {2}".format(classname,method.usedname,constructor)
+        print("ImplementMethodWrap {0} {1} {2}".format(classname,method.usedname,constructor))
         wrapmethod_name = method.usedname
         if classname != "":
             wrapclass_name = "WrapClass_{0}".format(config.ClassUsedName(classname))
@@ -1151,8 +1144,8 @@ def ImplementMethodWrap(classname, method, constructor=False, methodcount=1, \
         res += ImplementMethodCall(classname, method, -1, constructor)
         res += "}\n"
         return res
-    except:
-        return "// Failed to implement method: exception raised"
+    except Exception as e:
+        return f"// Failed to implement method {method.name}: exception raised {e}"
 
 
 # -----------------------------------------------------------------
@@ -1410,8 +1403,8 @@ def WrapClass(classname, include_file, xmltree):
             if m.name == "=":
                 if len(m.args) == 1:
                     typename = config.types[m.args[0].typeid].GetFullString()
-                    # print " operator=({0}) found ".format(typename)
-                    if typename == "{0} const &".format(classname):
+                    print(" operator=({0}) found ".format(typename))
+                    if typename == "{0} const &".format(classname) or typename == classname:
                         utils.WarningMessage("Copy assign operator found: {0}".format(m.usedname))
                         dh.has_copyassign = True
             pos = pos + 1
@@ -2013,7 +2006,7 @@ def WrapClass(classname, include_file, xmltree):
                     implement_createvar += "  return BasicVariable::ptr();\n"
 
         # Create Implementation File
-        # print "Create Implementation File"
+        print("Create Implementation File")
         impl_filename = args.val.outputdir + "/wrap_{0}.cpp.new".format(config.ClassUsedName(classname))
         if IsTemplate(classname) or IsWithinContext(classname):
             shutil.copyfile(args.val.templatefile_dir + "/wrap_templateclass.cpp.in", impl_filename)
@@ -2061,8 +2054,9 @@ def WrapClass(classname, include_file, xmltree):
             impl += ImplementCopyMethodWrap(classname, m, args.val.light)
 
         # Methods
+        print("Methods")
         for m in fm.Methods:
-            # print "implementing method "+m.usedname
+            print("implementing method "+m.usedname)
             missingtypes = MissingTypes(classname, m, True)
             if missingtypes != "":
                 impl += "/* The following types are missing: " + missingtypes + "\n"

@@ -227,7 +227,7 @@ class TypedefInfo(ArgTypeBase):
             maintyperef = config.types[self._reftypeid].GetMainTypeId()
             maintype = config.types[maintyperef]
             if maintype.GetType() == "MethodType" or \
-               maintype.GetType() == "Struct" and maintype.maintype.EmptyName():
+               maintype.GetType() == "Struct" and maintype.EmptyName():
                 typename = self.GetName()
             else:
                 typename = config.types[self._reftypeid].GetDemangled()

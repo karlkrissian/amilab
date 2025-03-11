@@ -1,40 +1,19 @@
-
-from xml.sax import saxutils, handler
-import sys
-import shutil
-import fileinput
-# import os
-import glob
-import re
-import os.path
-import datetime
+"""
+    ArgInfo class
+"""
 
 # configuration, containing the global variables
 import config
-
-# load command line arguments
-import args
-
 # type substitution
 import typesubst
-
 # type argument information
 from argtypes import *
 
-import utils
-
-import findtypesvars
-import findfiles
-import wx_lib
-
-# import parse_class
-
-# -----------------------------------------
-# ArgInfo: dealing with method arguments
-#
-
 
 class ArgInfo:
+    """ 
+        Dealing with method arguments
+    """
     def __init__(self):
         self.name = ""
         self.typeid = 0
@@ -44,7 +23,9 @@ class ArgInfo:
         self.implement_default = False
 
     def SetName(self, n):
-        # avoid parameters named _p to prevent name conflicts
+        """
+            avoid parameters named _p to prevent name conflicts"
+        """
         if n == "_p":
             self.name = "_param_p"
         else:
@@ -262,6 +243,12 @@ class ArgInfo:
 
     def WrapGetParam(self, noconstructor_call, returnstring, quiet):
         self.maintypeid = config.types[self.typeid].GetMainTypeId()
+        if config.types[self.maintypeid].EmptyName():
+            # Find a typedef for this type
+            for _,id in config.typedefs.items():
+                if config.types[id].GetRefTypeId() == self.maintypeid:
+                    self.maintypeid = id
+                    break
         self.typename = config.types[self.maintypeid].GetDemangled()
         # print "WrapGetParam {0}, {1}, '{2}'".format(self.name,config.types[self.typeid].GetType(), config.types[self.typeid].GetFullString())
         self.returnstring = returnstring

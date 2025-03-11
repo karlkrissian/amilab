@@ -904,6 +904,7 @@ ${VTK_LIBRARIES}
   # should be included in wxWdigets_LIBRARIES already ...
   #  ${WX_gl}
   ${Boost_LIBRARIES}
+  ${GTK3_LIBRARIES}
 )
 
 IF (AMI_WRAP_MICRONTRACKER)
