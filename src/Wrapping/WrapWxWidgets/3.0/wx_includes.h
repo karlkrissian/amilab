@@ -66,7 +66,7 @@
 
     #include <wx/regex.h>
     //#include <wx/timer.h>
-    //#include <wx/filename.h>
+    #include <wx/filename.h>
 
 //    enum
 //    {

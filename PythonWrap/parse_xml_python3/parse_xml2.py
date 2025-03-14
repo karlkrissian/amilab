@@ -43,6 +43,8 @@ if args.val.enum_filter != '':
     loader = importlib.machinery.SourceFileLoader('module_enum_filter', args.val.enum_filter)
     enum_filter = loader.load_module()
     print("*** Imported enum_filter")
+else:
+    enum_filter = None
 
 
 def FindAvailableClasses():
@@ -902,6 +904,9 @@ if __name__ == '__main__':
         f.write("static void wrap_enums( Variables::ptr& context)\n".format(
             args.val.libname))
         f.write("{\n")
+        # Avoid wrapping twice the same enum
+        # currently in can happen with wxWidget because of namespace wrap_wx --> to improve
+        wrapped_enums = []
         # Add global enumerations
         for t in list(config.types.keys()):
             if config.types[t].GetType() == "Enumeration":
@@ -914,11 +919,14 @@ if __name__ == '__main__':
                 # check if values starts with libname to avoid adding everything
                 # valid for wxWidgets I think), but must be changed
 
-                try:
-                    wrap_enum = enum_filter.CheckEnum(
-                        enum_name, context_name, enumkeys)
-                except Exception as e:
-                    print(f"CheckEnum did not work ... exception {e}")
+                if enum_filter:
+                    try:
+                        wrap_enum = enum_filter.CheckEnum(
+                            enum_name, context_name, enumkeys)
+                    except Exception as e:
+                        print(f"CheckEnum did not work ... exception {e}")
+                        wrap_enum = enumkeys[0].startswith(args.val.libname)
+                else:
                     wrap_enum = enumkeys[0].startswith(args.val.libname)
 
                 if wrap_enum:
@@ -930,25 +938,27 @@ if __name__ == '__main__':
                         '.', 'enum')
                     if enum_usedname == "":
                         enum_usedname = config.types[t].GetId()
-                    # Create an amiobject
-                    f.write("\n")
-                    f.write(f"  // New enumeration {enum_usedname} {t=} \n")
-                    f.write(
-                        f"  AMIObject::ptr obj_{enum_usedname}(new AMIObject);\n")
-                    f.write(
-                        f'  obj_{enum_usedname}->SetName("{enum_usedname}");\n')
-                    # add all the values
-                    f.write("\n")
-                    for ev in enumkeys:
-                        f.write('  AddEnumVal(obj_{0},"{1}",{2});\n'.format(
-                            enum_usedname, ev, config.types[t]._values[ev]))
-                    f.write("\n")
-                    f.write(
-                        "  // Add enum to context, and add to default contexts\n")
-                    f.write(
-                        "  context->AddVar<AMIObject>(obj_{0}->GetName().c_str(),obj_{0},context);\n".format(enum_usedname))
-                    f.write(
-                        "  context->AddDefault(obj_{0}->GetContext());\n".format(enum_usedname))
+                    if enum_usedname not in wrapped_enums:
+                        wrapped_enums.append(enum_usedname)
+                        # Create an amiobject
+                        f.write("\n")
+                        f.write(f"  // New enumeration {enum_usedname} {t=} \n")
+                        f.write(
+                            f"  AMIObject::ptr obj_{enum_usedname}(new AMIObject);\n")
+                        f.write(
+                            f'  obj_{enum_usedname}->SetName("{enum_usedname}");\n')
+                        # add all the values
+                        f.write("\n")
+                        for ev in enumkeys:
+                            f.write('  AddEnumVal(obj_{0},"{1}",{2});\n'.format(
+                                enum_usedname, ev, config.types[t]._values[ev]))
+                        f.write("\n")
+                        f.write(
+                            "  // Add enum to context, and add to default contexts\n")
+                        f.write(
+                            "  context->AddVar<AMIObject>(obj_{0}->GetName().c_str(),obj_{0},context);\n".format(enum_usedname))
+                        f.write(
+                            "  context->AddDefault(obj_{0}->GetContext());\n".format(enum_usedname))
         f.write("}\n")
         f.write("\n")
 
